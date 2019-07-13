@@ -2,15 +2,15 @@ import 'package:aves/thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class ImageFullscreenPage extends StatelessWidget {
-  final int id;
+  final Map entry;
 
-  ImageFullscreenPage({this.id});
+  ImageFullscreenPage({this.entry});
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     return Thumbnail(
-      id: id,
+      entry: entry,
       extent: width,
     );
   }

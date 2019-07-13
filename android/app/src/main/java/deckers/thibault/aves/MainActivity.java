@@ -1,24 +1,21 @@
 package deckers.thibault.aves;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
-import android.util.Size;
-import android.util.SparseArray;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Key;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.signature.ObjectKey;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -27,47 +24,42 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.app.FlutterActivity;
-import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 class ThumbnailFetcher {
-    private ContentResolver contentResolver;
-    private SparseArray<AsyncTask> taskMap = new SparseArray<>();
+    private Activity activity;
+    private HashMap<String, AsyncTask> taskMap = new HashMap<>();
 
-    ThumbnailFetcher(ContentResolver contentResolver) {
-        this.contentResolver = contentResolver;
+    ThumbnailFetcher(Activity activity) {
+        this.activity = activity;
     }
 
-    void fetch (Integer id, Result result) {
-        AsyncTask task = new BitmapWorkerTask(contentResolver).execute(new BitmapWorkerTask.MyTaskParams(id, result, this::complete));
-        taskMap.append(id, task);
+    void fetch(ImageEntry entry, Integer width, Integer height, Result result) {
+        BitmapWorkerTask.MyTaskParams params = new BitmapWorkerTask.MyTaskParams(entry, width, height, result, this::complete);
+        AsyncTask task = new BitmapWorkerTask(activity).execute(params);
+        taskMap.put(entry.getUri().toString(), task);
     }
 
-    void cancel(Integer id) {
-        AsyncTask task = taskMap.get(id, null);
+    void cancel(String uri) {
+        AsyncTask task = taskMap.get(uri);
         if (task != null) task.cancel(true);
-        taskMap.remove(id);
+        taskMap.remove(uri);
     }
 
-    void complete(Integer id) {
-        taskMap.remove(id);
+    private void complete(String uri) {
+        taskMap.remove(uri);
     }
 }
 
@@ -81,7 +73,7 @@ public class MainActivity extends FlutterActivity {
         super.onCreate(savedInstanceState);
         GeneratedPluginRegistrant.registerWith(this);
 
-        thumbnailFetcher = new ThumbnailFetcher(getContentResolver());
+        thumbnailFetcher = new ThumbnailFetcher(this);
         new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
                 (call, result) -> {
                     switch (call.method) {
@@ -89,13 +81,16 @@ public class MainActivity extends FlutterActivity {
                             getPermissionResult(result, this);
                             break;
                         case "getThumbnail": {
-                            Integer id = call.argument("id");
-                            thumbnailFetcher.fetch(id, result);
+                            Map map = call.argument("entry");
+                            Integer width = call.argument("width");
+                            Integer height = call.argument("height");
+                            ImageEntry entry = new ImageEntry(map);
+                            thumbnailFetcher.fetch(entry, width, height, result);
                             break;
                         }
                         case "cancelGetThumbnail": {
-                            Integer id = call.argument("id");
-                            thumbnailFetcher.cancel(id);
+                            String uri = call.argument("uri");
+                            thumbnailFetcher.cancel(uri);
                             result.success(null);
                             break;
                         }
@@ -105,21 +100,6 @@ public class MainActivity extends FlutterActivity {
                     }
                 });
     }
-
-//  public void getImageThumbnail(final Result result, String uri, int width, int height) {
-//    // https://developer.android.com/reference/android/content/ContentResolver.html#loadThumbnail(android.net.Uri,%20android.util.Size,%20android.os.CancellationSignal)
-//    try {
-//      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//        Bitmap bmp = getContentResolver().loadThumbnail(Uri.parse(uri), new Size(width, height), null);
-//        result.success(bmp);
-//      } else {
-//        // TODO get by mediastore
-//        getContentResolver().
-//      }
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//  }
 
     public void getPermissionResult(final Result result, final Activity activity) {
         Dexter.withActivity(activity)
@@ -137,47 +117,32 @@ public class MainActivity extends FlutterActivity {
                         builder.setMessage("This permission is needed for use this features of the app so please, allow it!");
                         builder.setTitle("We need this permission");
                         builder.setCancelable(false);
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-                                intent.setData(uri);
-                                activity.startActivity(intent);
-
-                            }
+                        builder.setPositiveButton("OK", (dialog, id) -> {
+                            dialog.cancel();
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                            intent.setData(uri);
+                            activity.startActivity(intent);
                         });
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
+                        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
                         AlertDialog alert = builder.create();
                         alert.show();
-
-
                     }
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(PermissionRequest permission, final PermissionToken token) {
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                         builder.setMessage("This permission is needed for use this features of the app so please, allow it!");
                         builder.setTitle("We need this permission");
                         builder.setCancelable(false);
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                token.continuePermissionRequest();
-
-                            }
+                        builder.setPositiveButton("OK", (dialog, id) -> {
+                            dialog.cancel();
+                            token.continuePermissionRequest();
                         });
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                                token.cancelPermissionRequest();
-                            }
+                        builder.setNegativeButton("Cancel", (dialog, id) -> {
+                            dialog.cancel();
+                            token.cancelPermissionRequest();
                         });
                         AlertDialog alert = builder.create();
                         alert.show();
@@ -196,12 +161,15 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
     private static final String LOG_TAG = Utils.createLogTag(BitmapWorkerTask.class);
 
     static class MyTaskParams {
-        Integer id;
+        ImageEntry entry;
+        int width, height;
         Result result;
-        Consumer<Integer> complete;
+        Consumer<String> complete;
 
-        MyTaskParams(Integer id, Result result, Consumer<Integer> complete) {
-            this.id = id;
+        MyTaskParams(ImageEntry entry, int width, int height, Result result, Consumer<String> complete) {
+            this.entry = entry;
+            this.width = width;
+            this.height = height;
             this.result = result;
             this.complete = complete;
         }
@@ -217,26 +185,40 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
         }
     }
 
-    private ContentResolver cr;
+    @SuppressLint("StaticFieldLeak")
+    private Activity activity;
 
-    BitmapWorkerTask(ContentResolver cr) {
-        this.cr = cr;
+    BitmapWorkerTask(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
     protected MyTaskResult doInBackground(MyTaskParams... params) {
         MyTaskParams p = params[0];
+        ImageEntry entry = p.entry;
         byte[] data = null;
         if (!this.isCancelled()) {
-            Log.d(LOG_TAG, "getThumbnail with id=" + p.id + "(called)");
-            Bitmap bmp = MediaStore.Images.Thumbnails.getThumbnail(cr, p.id, MediaStore.Images.Thumbnails.MINI_KIND, null);
-            if (bmp != null) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                data = stream.toByteArray();
+            Log.d(LOG_TAG, "getThumbnail with uri=" + entry.getUri() + "(called)");
+            // add signature to ignore cache for images which got modified but kept the same URI
+            Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
+            FutureTarget<Bitmap> target = Glide.with(activity)
+                    .asBitmap()
+                    .load(entry.getUri())
+                    .signature(signature)
+                    .submit(p.width, p.height);
+            try {
+                Bitmap bmp = target.get();
+                if (bmp != null) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                    data = stream.toByteArray();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            Glide.with(activity).clear(target);
         } else {
-            Log.d(LOG_TAG, "getThumbnail with id=" + p.id + "(cancelled)");
+            Log.d(LOG_TAG, "getThumbnail with uri=" + entry.getUri() + "(cancelled)");
         }
         return new MyTaskResult(p, data);
     }
@@ -244,11 +226,11 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
     @Override
     protected void onPostExecute(MyTaskResult result) {
         MethodChannel.Result r = result.params.result;
-        result.params.complete.accept(result.params.id);
+        result.params.complete.accept(result.params.entry.getUri().toString());
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getthumbnail-null", "failed to get thumbnail for id=" + result.params.id, null);
+            r.error("getthumbnail-null", "failed to get thumbnail for uri=" + result.params.entry.getUri(), null);
         }
     }
 }

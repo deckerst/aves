@@ -4,7 +4,6 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 
@@ -58,11 +57,27 @@ public class ImageEntry {
         init();
     }
 
+    public ImageEntry(Map map) {
+        this(
+                (String) map.get("path"),
+                toLong(map.get("contentId")),
+                (String) map.get("mimeType"),
+                (int) map.get("width"),
+                (int) map.get("height"),
+                (int) map.get("orientationDegrees"),
+                toLong(map.get("sizeBytes")),
+                (String) map.get("title"),
+                toLong(map.get("dateModifiedSecs")),
+                toLong(map.get("sourceDateTakenMillis")),
+                (String) map.get("bucketDisplayName"),
+                toLong(map.get("durationMillis"))
+        );
+    }
+
     public static Map toMap(ImageEntry entry) {
         return new HashMap<String, Object>() {{
             put("path", entry.path);
             put("contentId", entry.contentId);
-            put("uri", entry.uri);
             put("mimeType", entry.mimeType);
             put("width", entry.width);
             put("height", entry.height);
@@ -73,6 +88,8 @@ public class ImageEntry {
             put("sourceDateTakenMillis", entry.sourceDateTakenMillis);
             put("bucketDisplayName", entry.bucketDisplayName);
             put("durationMillis", entry.durationMillis);
+            //
+            put("uri", entry.getUri().toString());
         }};
     }
 
@@ -173,5 +190,12 @@ public class ImageEntry {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    // convenience method
+
+    private static long toLong(Object o) {
+        if (o instanceof Integer) return Long.valueOf((Integer)o);
+        return (long)o;
     }
 }

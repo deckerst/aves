@@ -25,6 +25,8 @@ class MyApp extends StatelessWidget {
 class ImageFetcher {
   static const platform = const MethodChannel('deckers.thibault.aves/mediastore');
 
+  static double devicePixelRatio;
+
   static Future<List> getImages() async {
     try {
       final result = await platform.invokeMethod('getImages');
@@ -35,10 +37,12 @@ class ImageFetcher {
     return [];
   }
 
-  static Future<Uint8List> getThumbnail(int id) async {
+  static Future<Uint8List> getThumbnail(Map entry, double width, double height) async {
     try {
       final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
-        'id': id,
+        'entry': entry,
+        'width': (width * devicePixelRatio).round(),
+        'height': (height * devicePixelRatio).round(),
       });
       return result as Uint8List;
     } on PlatformException catch (e) {
@@ -47,10 +51,10 @@ class ImageFetcher {
     return Uint8List(0);
   }
 
-  static cancelGetThumbnail(int id) async {
+  static cancelGetThumbnail(String uri) async {
     try {
       await platform.invokeMethod('cancelGetThumbnail', <String, dynamic>{
-        'id': id,
+        'uri': uri,
       });
     } on PlatformException catch (e) {
       debugPrint('failed with exception=${e.message}');
@@ -76,13 +80,17 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
     imageLoader = ImageFetcher.getImages();
+
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      ImageFetcher.devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+      debugPrint('$runtimeType devicePixelRatio=${ImageFetcher.devicePixelRatio}');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var columnCount = 4;
-    var spacing = 1.0;
-    var extent = (MediaQuery.of(context).size.width - spacing * (columnCount - 1)) / columnCount;
+    var extent = MediaQuery.of(context).size.width / columnCount;
     debugPrint('MediaQuery.of(context).size=${MediaQuery.of(context).size} extent=$extent');
     return Scaffold(
       appBar: AppBar(
@@ -112,16 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: scrollController,
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: extent,
-                        mainAxisSpacing: spacing,
-                        crossAxisSpacing: spacing,
                       ),
                       itemBuilder: (gridContext, index) {
                         var imageEntryMap = imageEntryList[index] as Map;
-                        var contentId = imageEntryMap['contentId'];
                         return GestureDetector(
                           onTap: () => Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ImageFullscreenPage(id: contentId)),
+                                MaterialPageRoute(builder: (context) => ImageFullscreenPage(entry: imageEntryMap)),
                               ),
                           child: Container(
                             decoration: BoxDecoration(
@@ -131,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             child: Thumbnail(
-                              id: contentId,
+                              entry: imageEntryMap,
                               extent: extent,
                             ),
                           ),
