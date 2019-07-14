@@ -1,8 +1,8 @@
 import 'dart:typed_data';
-import 'package:aves/image_fullscreen_page.dart';
+
+import 'package:aves/settings.dart';
 import 'package:aves/thumbnail.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,11 +25,9 @@ class MyApp extends StatelessWidget {
 class ImageFetcher {
   static const platform = const MethodChannel('deckers.thibault.aves/mediastore');
 
-  static double devicePixelRatio;
-
-  static Future<List> getImages() async {
+  static Future<List> getImageEntries() async {
     try {
-      final result = await platform.invokeMethod('getImages');
+      final result = await platform.invokeMethod('getImageEntries');
       return result as List;
     } on PlatformException catch (e) {
       debugPrint('failed with exception=${e.message}');
@@ -37,12 +35,12 @@ class ImageFetcher {
     return [];
   }
 
-  static Future<Uint8List> getThumbnail(Map entry, double width, double height) async {
+  static Future<Uint8List> getImageBytes(Map entry, int width, int height) async {
     try {
-      final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
+      final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
         'entry': entry,
-        'width': (width * devicePixelRatio).round(),
-        'height': (height * devicePixelRatio).round(),
+        'width': width,
+        'height': height,
       });
       return result as Uint8List;
     } on PlatformException catch (e) {
@@ -51,9 +49,9 @@ class ImageFetcher {
     return Uint8List(0);
   }
 
-  static cancelGetThumbnail(String uri) async {
+  static cancelGetImageBytes(String uri) async {
     try {
-      await platform.invokeMethod('cancelGetThumbnail', <String, dynamic>{
+      await platform.invokeMethod('cancelGetImageBytes', <String, dynamic>{
         'uri': uri,
       });
     } on PlatformException catch (e) {
@@ -79,11 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
-    imageLoader = ImageFetcher.getImages();
+    imageLoader = ImageFetcher.getImageEntries();
 
     WidgetsBinding.instance.addPostFrameCallback((duration) {
-      ImageFetcher.devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-      debugPrint('$runtimeType devicePixelRatio=${ImageFetcher.devicePixelRatio}');
+      settings.devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+      debugPrint('$runtimeType devicePixelRatio=${settings.devicePixelRatio}');
     });
   }
 
@@ -112,9 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: EdgeInsets.symmetric(vertical: 0.0),
                   child: DraggableScrollbar.arrows(
                     labelTextBuilder: (double offset) => Text(
-                          "${offset ~/ 1}",
-                          style: TextStyle(color: Colors.blueGrey),
-                        ),
+                      "${offset ~/ 1}",
+                      style: TextStyle(color: Colors.blueGrey),
+                    ),
                     controller: scrollController,
                     child: GridView.builder(
                       controller: scrollController,
@@ -122,24 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         maxCrossAxisExtent: extent,
                       ),
                       itemBuilder: (gridContext, index) {
-                        var imageEntryMap = imageEntryList[index] as Map;
-                        return GestureDetector(
-                          onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ImageFullscreenPage(entry: imageEntryMap)),
-                              ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.grey.shade700,
-                                width: 0.5,
-                              ),
-                            ),
-                            child: Thumbnail(
-                              entry: imageEntryMap,
-                              extent: extent,
-                            ),
-                          ),
+                        return Thumbnail(
+                          entry: imageEntryList[index] as Map,
+                          extent: extent,
                         );
                       },
                       itemCount: imageEntryList.length,

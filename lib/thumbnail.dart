@@ -1,7 +1,10 @@
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:aves/image_fullscreen_page.dart';
 import 'package:aves/main.dart';
 import 'package:aves/mime_types.dart';
+import 'package:aves/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -17,16 +20,20 @@ class Thumbnail extends StatefulWidget {
 
 class ThumbnailState extends State<Thumbnail> {
   Future<Uint8List> loader;
+  Uint8List bytes;
+
+  String get uri => widget.entry['uri'];
 
   @override
   void initState() {
     super.initState();
-    loader = ImageFetcher.getThumbnail(widget.entry, widget.extent, widget.extent);
+    var dim = (widget.extent * settings.devicePixelRatio).round();
+    loader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
   }
 
   @override
   void dispose() {
-    ImageFetcher.cancelGetThumbnail(widget.entry['uri']);
+    ImageFetcher.cancelGetImageBytes(uri);
     super.dispose();
   }
 
@@ -36,35 +43,64 @@ class ThumbnailState extends State<Thumbnail> {
     var isVideo = mimeType.startsWith(MimeTypes.MIME_VIDEO);
     var isGif = mimeType == MimeTypes.MIME_GIF;
     var iconSize = widget.extent / 4;
-    return FutureBuilder(
-        future: loader,
-        builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
-          var ready = snapshot.connectionState == ConnectionState.done && !snapshot.hasError;
-          Uint8List bytes = ready ? snapshot.data : kTransparentImage;
-          return Hero(
-            tag: widget.entry['uri'],
-            child: Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: [
-                Image.memory(
-                  bytes,
-                  width: widget.extent,
-                  height: widget.extent,
-                  fit: BoxFit.cover,
-                ),
-                if (isVideo)
-                  Icon(
-                    Icons.play_circle_outline,
-                    size: iconSize,
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ImageFullscreenPage(entry: widget.entry, thumbnail: bytes),
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey.shade700,
+            width: 0.5,
+          ),
+        ),
+        child: FutureBuilder(
+            future: loader,
+            builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
+              if (bytes == null && snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                bytes = snapshot.data;
+              }
+              return Stack(
+                alignment: AlignmentDirectional.bottomStart,
+                children: [
+                  Hero(
+                    tag: uri,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // during hero animation back from a fullscreen image,
+                        // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
+                        // so we wrap the image to apply better constraints
+                        var dim = min(constraints.maxWidth, constraints.maxHeight);
+                        return Container(
+                          alignment: Alignment.center,
+                          constraints: BoxConstraints.tight(Size(dim, dim)),
+                          child: Image.memory(
+                            bytes ?? kTransparentImage,
+                            width: dim,
+                            height: dim,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      }
+                    ),
                   ),
-                if (isGif)
-                  Icon(
-                    Icons.gif,
-                    size: iconSize,
-                  ),
-              ],
-            ),
-          );
-        });
+                  if (isVideo)
+                    Icon(
+                      Icons.play_circle_outline,
+                      size: iconSize,
+                    ),
+                  if (isGif)
+                    Icon(
+                      Icons.gif,
+                      size: iconSize,
+                    ),
+                ],
+              );
+            }),
+      ),
+    );
   }
 }

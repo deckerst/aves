@@ -77,10 +77,10 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
                 (call, result) -> {
                     switch (call.method) {
-                        case "getImages":
+                        case "getImageEntries":
                             getPermissionResult(result, this);
                             break;
-                        case "getThumbnail": {
+                        case "getImageBytes": {
                             Map map = call.argument("entry");
                             Integer width = call.argument("width");
                             Integer height = call.argument("height");
@@ -88,7 +88,7 @@ public class MainActivity extends FlutterActivity {
                             thumbnailFetcher.fetch(entry, width, height, result);
                             break;
                         }
-                        case "cancelGetThumbnail": {
+                        case "cancelGetImageBytes": {
                             String uri = call.argument("uri");
                             thumbnailFetcher.cancel(uri);
                             result.success(null);
@@ -198,7 +198,7 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
         ImageEntry entry = p.entry;
         byte[] data = null;
         if (!this.isCancelled()) {
-            Log.d(LOG_TAG, "getThumbnail with uri=" + entry.getUri() + "(called)");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + "(called)");
             // add signature to ignore cache for images which got modified but kept the same URI
             Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
             FutureTarget<Bitmap> target = Glide.with(activity)
@@ -218,7 +218,7 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
             }
             Glide.with(activity).clear(target);
         } else {
-            Log.d(LOG_TAG, "getThumbnail with uri=" + entry.getUri() + "(cancelled)");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + "(cancelled)");
         }
         return new MyTaskResult(p, data);
     }
@@ -230,7 +230,7 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getthumbnail-null", "failed to get thumbnail for uri=" + result.params.entry.getUri(), null);
+            r.error("getImageBytes-null", "failed to get thumbnail for uri=" + result.params.entry.getUri(), null);
         }
     }
 }
