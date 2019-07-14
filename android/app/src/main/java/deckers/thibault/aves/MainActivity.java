@@ -64,6 +64,7 @@ class ThumbnailFetcher {
 }
 
 public class MainActivity extends FlutterActivity {
+    private static final String LOG_TAG = Utils.createLogTag(MainActivity.class);
     private static final String CHANNEL = "deckers.thibault.aves/mediastore";
 
     private ThumbnailFetcher thumbnailFetcher;
@@ -85,6 +86,7 @@ public class MainActivity extends FlutterActivity {
                             Integer width = call.argument("width");
                             Integer height = call.argument("height");
                             ImageEntry entry = new ImageEntry(map);
+                            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri());
                             thumbnailFetcher.fetch(entry, width, height, result);
                             break;
                         }
@@ -198,7 +200,6 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
         ImageEntry entry = p.entry;
         byte[] data = null;
         if (!this.isCancelled()) {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + "(called)");
             // add signature to ignore cache for images which got modified but kept the same URI
             Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
             FutureTarget<Bitmap> target = Glide.with(activity)
@@ -218,7 +219,7 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
             }
             Glide.with(activity).clear(target);
         } else {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + "(cancelled)");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " (cancelled)");
         }
         return new MyTaskResult(p, data);
     }
@@ -226,11 +227,13 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
     @Override
     protected void onPostExecute(MyTaskResult result) {
         MethodChannel.Result r = result.params.result;
-        result.params.complete.accept(result.params.entry.getUri().toString());
+        String uri = result.params.entry.getUri().toString();
+        result.params.complete.accept(uri);
         if (result.data != null) {
+            Log.d(LOG_TAG, "return bytes for uri=" + uri);
             r.success(result.data);
         } else {
-            r.error("getImageBytes-null", "failed to get thumbnail for uri=" + result.params.entry.getUri(), null);
+            r.error("getImageBytes-null", "failed to get thumbnail for uri=" + uri, null);
         }
     }
 }

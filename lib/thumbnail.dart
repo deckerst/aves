@@ -1,10 +1,9 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:aves/image_fetcher.dart';
 import 'package:aves/image_fullscreen_page.dart';
-import 'package:aves/main.dart';
 import 'package:aves/mime_types.dart';
-import 'package:aves/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -22,13 +21,17 @@ class ThumbnailState extends State<Thumbnail> {
   Future<Uint8List> loader;
   Uint8List bytes;
 
+  int get imageWidth => widget.entry['width'];
+
+  int get imageHeight => widget.entry['height'];
+
+  String get mimeType => widget.entry['mimeType'];
+
   String get uri => widget.entry['uri'];
 
   @override
   void initState() {
     super.initState();
-    var dim = (widget.extent * settings.devicePixelRatio).round();
-    loader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
   }
 
   @override
@@ -39,7 +42,11 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    String mimeType = widget.entry['mimeType'];
+    if (loader == null) {
+      var dim = (widget.extent * MediaQuery.of(context).devicePixelRatio).round();
+      loader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
+    }
+
     var isVideo = mimeType.startsWith(MimeTypes.MIME_VIDEO);
     var isGif = mimeType == MimeTypes.MIME_GIF;
     var iconSize = widget.extent / 4;
@@ -68,24 +75,22 @@ class ThumbnailState extends State<Thumbnail> {
                 children: [
                   Hero(
                     tag: uri,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        // during hero animation back from a fullscreen image,
-                        // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
-                        // so we wrap the image to apply better constraints
-                        var dim = min(constraints.maxWidth, constraints.maxHeight);
-                        return Container(
-                          alignment: Alignment.center,
-                          constraints: BoxConstraints.tight(Size(dim, dim)),
-                          child: Image.memory(
-                            bytes ?? kTransparentImage,
-                            width: dim,
-                            height: dim,
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      }
-                    ),
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      // during hero animation back from a fullscreen image,
+                      // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
+                      // so we wrap the image to apply better constraints
+                      var dim = min(constraints.maxWidth, constraints.maxHeight);
+                      return Container(
+                        alignment: Alignment.center,
+                        constraints: BoxConstraints.tight(Size(dim, dim)),
+                        child: Image.memory(
+                          bytes ?? kTransparentImage,
+                          width: dim,
+                          height: dim,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    }),
                   ),
                   if (isVideo)
                     Icon(

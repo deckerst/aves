@@ -1,6 +1,7 @@
+import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aves/main.dart';
+import 'package:aves/image_fetcher.dart';
 import 'package:flutter/material.dart';
 
 class ImageFullscreenPage extends StatefulWidget {
@@ -18,14 +19,13 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
 
   int get imageWidth => widget.entry['width'];
 
-  int get imageHeight => widget.entry['width'];
+  int get imageHeight => widget.entry['height'];
 
   String get uri => widget.entry['uri'];
 
   @override
   void initState() {
     super.initState();
-    loader = ImageFetcher.getImageBytes(widget.entry, imageWidth, imageHeight);
   }
 
   @override
@@ -36,21 +36,41 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (loader == null) {
+      var mediaQuery = MediaQuery.of(context);
+      var screenSize = mediaQuery.size;
+      var dpr = mediaQuery.devicePixelRatio;
+      var requestWidth = imageWidth * dpr;
+      var requestHeight = imageHeight * dpr;
+      if (imageWidth > screenSize.width || imageHeight > screenSize.height) {
+        var ratio = max(imageWidth / screenSize.width, imageHeight / screenSize.height);
+        requestWidth /= ratio;
+        requestHeight /= ratio;
+      }
+      loader = ImageFetcher.getImageBytes(widget.entry, requestWidth.round(), requestHeight.round());
+    }
     return FutureBuilder(
         future: loader,
         builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
           var ready = snapshot.connectionState == ConnectionState.done && !snapshot.hasError;
-          Uint8List bytes = ready ? snapshot.data : widget.thumbnail;
           return Hero(
             tag: uri,
-            child: Center(
-              child: Image.memory(
-                bytes,
-                width: imageWidth.toDouble(),
-                height: imageHeight.toDouble(),
-                fit: BoxFit.contain,
-                gaplessPlayback: true,
-              ),
+            child: Stack(
+              children: [
+                Image.memory(
+                  widget.thumbnail,
+                  width: imageWidth.toDouble(),
+                  height: imageHeight.toDouble(),
+                  fit: BoxFit.contain,
+                ),
+                if (ready)
+                  Image.memory(
+                    snapshot.data,
+                    width: imageWidth.toDouble(),
+                    height: imageHeight.toDouble(),
+                    fit: BoxFit.contain,
+                  ),
+              ],
             ),
           );
         });
