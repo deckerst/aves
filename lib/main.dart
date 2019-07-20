@@ -1,3 +1,4 @@
+import 'package:aves/common/fake_app_bar.dart';
 import 'package:aves/model/image_fetcher.dart';
 import 'package:aves/thumbnail_collection.dart';
 import 'package:flutter/material.dart';
@@ -14,18 +15,14 @@ class MyApp extends StatelessWidget {
       title: 'Aves',
       theme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
+        accentColor: Colors.amberAccent,
       ),
-      home: HomePage(title: 'Home'),
+      home: HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -47,15 +44,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+    debugPrint('MediaQuery.of(context).viewInsets.bottom=${MediaQuery.of(context).viewInsets.bottom}');
+
+    return MediaQuery.removeViewInsets(
+      context: context,
+      // remove bottom view insets to paint underneath the translucent navigation bar
+      removeBottom: true,
+      child: Scaffold(
+        // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
+        appBar: FakeAppBar(),
+        body: imageEntryList == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ThumbnailCollection(imageEntryList),
       ),
-      body: imageEntryList == null
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : ThumbnailCollection(imageEntryList),
     );
   }
 }

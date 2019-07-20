@@ -42,27 +42,31 @@ class ThumbnailCollection extends StatelessWidget {
       controller: scrollController,
       child: CustomScrollView(
         controller: scrollController,
-        slivers: sections.keys
-            .map((sectionKey) => SliverStickyHeader(
-                  header: SectionHeader(sectionKey),
-                  sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        var entries = sections[sectionKey];
-                        if (index >= entries.length) return null;
-                        return Thumbnail(
-                          entry: entries[index],
-                          extent: extent,
-                        );
-                      },
-                      childCount: sections[sectionKey].length,
-                    ),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: columnCount,
-                    ),
+        slivers: [
+          SliverAppBar(
+            title: Text('Aves - All'),
+            floating: true,
+          ),
+          ...sections.keys.map((sectionKey) => SliverStickyHeader(
+                header: SectionHeader(sectionKey),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      var entries = sections[sectionKey];
+                      if (index >= entries.length) return null;
+                      return Thumbnail(
+                        entry: entries[index],
+                        extent: extent,
+                      );
+                    },
+                    childCount: sections[sectionKey].length,
                   ),
-                ))
-            .toList(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: columnCount,
+                  ),
+                ),
+              ))
+        ],
       ),
     );
   }
