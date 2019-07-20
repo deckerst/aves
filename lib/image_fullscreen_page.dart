@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aves/image_fetcher.dart';
+import 'package:aves/model/image_fetcher.dart';
 import 'package:flutter/material.dart';
 
 class ImageFullscreenPage extends StatefulWidget {
@@ -57,11 +57,15 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
             tag: uri,
             child: Stack(
               children: [
-                Image.memory(
-                  widget.thumbnail,
-                  width: imageWidth.toDouble(),
-                  height: imageHeight.toDouble(),
-                  fit: BoxFit.contain,
+                Center(
+                  child: widget.thumbnail == null
+                      ? CircularProgressIndicator()
+                      : Image.memory(
+                          widget.thumbnail,
+                          width: imageWidth.toDouble(),
+                          height: imageHeight.toDouble(),
+                          fit: BoxFit.contain,
+                        ),
                 ),
                 if (ready)
                   Image.memory(

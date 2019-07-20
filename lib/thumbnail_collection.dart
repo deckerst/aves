@@ -1,7 +1,7 @@
+import 'package:aves/common/draggable_scrollbar.dart';
 import 'package:aves/common/outlined_text.dart';
 import 'package:aves/thumbnail.dart';
 import "package:collection/collection.dart";
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
@@ -34,50 +34,37 @@ class ThumbnailCollection extends StatelessWidget {
     var columnCount = 4;
     var extent = MediaQuery.of(context).size.width / columnCount;
 
-    return CustomScrollView(
-      slivers: sections.keys
-          .map((sectionKey) => SliverStickyHeader(
-                header: SectionHeader(sectionKey),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      var entries = sections[sectionKey];
-                      if (index >= entries.length) return null;
-                      return Thumbnail(
-                        entry: entries[index],
-                        extent: extent,
-                      );
-                    },
-                    childCount: sections[sectionKey].length,
+    return DraggableScrollbar.arrows(
+      labelTextBuilder: (double offset) => Text(
+        "${offset ~/ 1}",
+        style: TextStyle(color: Colors.blueGrey),
+      ),
+      controller: scrollController,
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: sections.keys
+            .map((sectionKey) => SliverStickyHeader(
+                  header: SectionHeader(sectionKey),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        var entries = sections[sectionKey];
+                        if (index >= entries.length) return null;
+                        return Thumbnail(
+                          entry: entries[index],
+                          extent: extent,
+                        );
+                      },
+                      childCount: sections[sectionKey].length,
+                    ),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: columnCount,
+                    ),
                   ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: columnCount,
-                  ),
-                ),
-              ))
-          .toList(),
+                ))
+            .toList(),
+      ),
     );
-
-//    return DraggableScrollbar.arrows(
-//      labelTextBuilder: (double offset) => Text(
-//        "${offset ~/ 1}",
-//        style: TextStyle(color: Colors.blueGrey),
-//      ),
-//      controller: scrollController,
-//      child: GridView.builder(
-//        controller: scrollController,
-//        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-//          maxCrossAxisExtent: extent,
-//        ),
-//        itemBuilder: (gridContext, index) {
-//          return Thumbnail(
-//            entry: imageEntryList[index],
-//            extent: extent,
-//          );
-//        },
-//        itemCount: imageEntryList.length,
-//      ),
-//    );
   }
 }
 

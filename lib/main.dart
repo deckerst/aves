@@ -1,4 +1,4 @@
-import 'package:aves/image_fetcher.dart';
+import 'package:aves/model/image_fetcher.dart';
 import 'package:aves/thumbnail_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
