@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:aves/image_fetcher.dart';
 import 'package:aves/image_fullscreen_page.dart';
-import 'package:aves/mime_types.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 

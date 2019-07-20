@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 class ImageFetcher {
   static const platform = const MethodChannel('deckers.thibault.aves/mediastore');
 
-  static Future<List> getImageEntries() async {
+  static Future<List<Map>> getImageEntries() async {
     try {
       final result = await platform.invokeMethod('getImageEntries');
-      return result as List;
+      return (result as List).cast<Map>();
     } on PlatformException catch (e) {
       debugPrint('failed with exception=${e.message}');
     }

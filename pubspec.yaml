@@ -19,7 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  collection:
   draggable_scrollbar:
+  flutter_sticky_header:
+  intl:
   transparent_image:
 
 dev_dependencies:
