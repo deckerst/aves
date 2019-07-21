@@ -1,13 +1,14 @@
 import 'package:aves/common/draggable_scrollbar.dart';
 import 'package:aves/common/outlined_text.dart';
 import 'package:aves/thumbnail.dart';
+import 'package:aves/utils/date_utils.dart';
 import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
 
 class ThumbnailCollection extends StatelessWidget {
-  final Map<String, List<Map>> sections;
+  final Map<DateTime, List<Map>> sections;
   final ScrollController scrollController = ScrollController();
 
   ThumbnailCollection(List<Map> entries) : sections = groupBy(entries, getDayTaken);
@@ -22,11 +23,9 @@ class ThumbnailCollection extends StatelessWidget {
     return null;
   }
 
-  static DateFormat sectionDateFormat = DateFormat('yyyy/MM/dd');
-
-  static String getDayTaken(Map entry) {
-    var date = getBestDate(entry);
-    return date == null ? 'Unknown' : sectionDateFormat.format(date);
+  static DateTime getDayTaken(Map entry) {
+    var d = getBestDate(entry);
+    return d == null ? null : DateTime(d.year, d.month, d.day);
   }
 
   @override
@@ -48,7 +47,7 @@ class ThumbnailCollection extends StatelessWidget {
             floating: true,
           ),
           ...sections.keys.map((sectionKey) => SliverStickyHeader(
-                header: SectionHeader(sectionKey),
+                header: DaySectionHeader(sectionKey),
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -69,6 +68,26 @@ class ThumbnailCollection extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class DaySectionHeader extends StatelessWidget {
+  final String text;
+
+  static DateFormat md = DateFormat.MMMMd();
+  static DateFormat ymd = DateFormat.yMMMMd();
+
+  static formatDate(DateTime date) {
+    if (isToday(date)) return 'Today';
+    if (isThisYear(date)) return md.format(date);
+    return ymd.format(date);
+  }
+
+  DaySectionHeader(DateTime date) : text = formatDate(date);
+
+  @override
+  Widget build(BuildContext context) {
+    return SectionHeader(text);
   }
 }
 

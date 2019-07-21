@@ -59,8 +59,6 @@ public class MediaStoreImageProvider {
         try {
             Cursor cursor = activity.getContentResolver().query(filesUri, PROJECTION, SELECTION, null, orderBy);
             if (cursor != null) {
-                Log.d(LOG_TAG, "fetch query returned " + cursor.getCount() + " entries");
-
                 int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
                 int pathColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
                 int mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
