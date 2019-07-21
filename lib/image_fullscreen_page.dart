@@ -39,45 +39,42 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery.removeViewInsets(
-      context: context,
-      // remove bottom view insets to paint underneath the translucent navigation bar
-      removeBottom: true,
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            PhotoViewGallery.builder(
-              itemCount: entries.length,
-              builder: (context, index) {
-                var entry = entries[index];
-                return PhotoViewGalleryPageOptions(
-                  imageProvider: FileImage(File(entry['path'])),
-                  heroTag: entry['uri'],
-                  minScale: PhotoViewComputedScale.contained,
-                  initialScale: PhotoViewComputedScale.contained,
-                );
-              },
-              loadingChild: Center(
-                child: CircularProgressIndicator(),
-              ),
-              pageController: _pageController,
-              onPageChanged: (index) {
-                debugPrint('onPageChanged: index=$index');
-                setState(() => _currentPage = index);
-              },
-              transitionOnUserGestures: true,
-              scrollPhysics: BouncingScrollPhysics(),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          PhotoViewGallery.builder(
+            itemCount: entries.length,
+            builder: (context, index) {
+              var entry = entries[index];
+              return PhotoViewGalleryPageOptions(
+                imageProvider: FileImage(File(entry['path'])),
+                heroTag: entry['uri'],
+                minScale: PhotoViewComputedScale.contained,
+                initialScale: PhotoViewComputedScale.contained,
+              );
+            },
+            loadingChild: Center(
+              child: CircularProgressIndicator(),
             ),
-            if (_currentPage != null)
-              FullscreenOverlay(
-                entry: entries[_currentPage],
-                index: _currentPage,
-                total: entries.length,
-              ),
-          ],
-        ),
+            pageController: _pageController,
+            onPageChanged: (index) {
+              debugPrint('onPageChanged: index=$index');
+              setState(() => _currentPage = index);
+            },
+            transitionOnUserGestures: true,
+            scrollPhysics: BouncingScrollPhysics(),
+          ),
+          if (_currentPage != null)
+            FullscreenOverlay(
+              entry: entries[_currentPage],
+              index: _currentPage,
+              total: entries.length,
+            ),
+        ],
+      ),
+      resizeToAvoidBottomInset: false,
 //        Hero(
 //          tag: uri,
 //          child: Stack(
@@ -106,7 +103,6 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
 //            ],
 //          ),
 //        ),
-      ),
     );
   }
 }
@@ -119,22 +115,20 @@ class FullscreenOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('FullscreenOverlay MediaQuery.of(context)=${MediaQuery.of(context)}');
-    // TODO TLAD find actual value from MediaQuery before insets removal
-    var viewInsetsBottom = 46.0;
+    var viewInsets = MediaQuery.of(context).viewInsets;
     var date = ImageEntry.getBestDate(entry);
     return IgnorePointer(
       child: Container(
-        padding: EdgeInsets.all(8.0).add(EdgeInsets.only(bottom: viewInsetsBottom)),
+        padding: EdgeInsets.all(8.0).add(EdgeInsets.only(bottom: viewInsets.bottom)),
         color: Colors.black45,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$index / $total - ${entry['title']}'),
+            Text('${index + 1} / $total - ${entry['title']}'),
             Row(
               children: [
-                Expanded(child: Text('${DateFormat.yMMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
+                Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
                 Expanded(child: Text('${entry['width']} × ${entry['height']}')),
               ],
             ),

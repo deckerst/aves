@@ -44,21 +44,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('MediaQuery.of(context).viewInsets.bottom=${MediaQuery.of(context).viewInsets.bottom}');
-
-    return MediaQuery.removeViewInsets(
-      context: context,
-      // remove bottom view insets to paint underneath the translucent navigation bar
-      removeBottom: true,
-      child: Scaffold(
-        // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
-        appBar: FakeAppBar(),
-        body: imageEntryList == null
+    return Scaffold(
+      // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
+      appBar: FakeAppBar(),
+      body: Container(
+        child: imageEntryList == null
             ? Center(
                 child: CircularProgressIndicator(),
               )
             : ThumbnailCollection(imageEntryList),
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }
