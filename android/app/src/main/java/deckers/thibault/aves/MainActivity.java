@@ -93,7 +93,8 @@ public class MainActivity extends FlutterActivity {
                         case "cancelGetImageBytes": {
                             String uri = call.argument("uri");
                             thumbnailFetcher.cancel(uri);
-                            result.success(null);
+                            // do not send `null`, as it closes the channel
+                            result.success("");
                             break;
                         }
                         default:
@@ -214,12 +215,14 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
                     bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
                     data = stream.toByteArray();
                 }
+            } catch (InterruptedException e) {
+                Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " interrupted");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             Glide.with(activity).clear(target);
         } else {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " (cancelled)");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " cancelled");
         }
         return new MyTaskResult(p, data);
     }

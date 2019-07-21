@@ -1,24 +1,16 @@
 package deckers.thibault.aves.model;
 
-import android.content.ContentUris;
-import android.content.Context;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import deckers.thibault.aves.utils.Constants;
 
 public class ImageEntry {
-    private static final Uri mediaStoreContentUri = MediaStore.Files.getContentUri("external");
-
     // from source
     private String path; // best effort to get local path from content providers
     private long contentId; // should be defined for mediastore, use full URI otherwise
@@ -39,11 +31,13 @@ public class ImageEntry {
         init();
     }
 
-    public ImageEntry(String path, long id, String mimeType, int width, int height, int orientationDegrees, long sizeBytes,
+    // uri: content provider uri
+    // path: FileUtils.getPathFromUri(activity, itemUri) is useful (for Download, File, etc.) but is slower than directly using `MediaStore.MediaColumns.DATA` from the MediaStore query
+    public ImageEntry(Uri uri, String path, long id, String mimeType, int width, int height, int orientationDegrees, long sizeBytes,
                       String title, long dateModifiedSecs, long dateTakenMillis, String bucketDisplayName, long durationMillis) {
+        this.uri = uri;
         this.path = path;
         this.contentId = id;
-        this.uri = null;
         this.mimeType = mimeType;
         this.width = width;
         this.height = height;
@@ -59,6 +53,7 @@ public class ImageEntry {
 
     public ImageEntry(Map map) {
         this(
+                Uri.parse((String) map.get("uri")),
                 (String) map.get("path"),
                 toLong(map.get("contentId")),
                 (String) map.get("mimeType"),
@@ -76,6 +71,7 @@ public class ImageEntry {
 
     public static Map toMap(ImageEntry entry) {
         return new HashMap<String, Object>() {{
+            put("uri", entry.uri.toString());
             put("path", entry.path);
             put("contentId", entry.contentId);
             put("mimeType", entry.mimeType);
@@ -88,13 +84,15 @@ public class ImageEntry {
             put("sourceDateTakenMillis", entry.sourceDateTakenMillis);
             put("bucketDisplayName", entry.bucketDisplayName);
             put("durationMillis", entry.durationMillis);
-            //
-            put("uri", entry.getUri().toString());
         }};
     }
 
     private void init() {
         isVideo = mimeType.startsWith(Constants.MIME_VIDEO);
+    }
+
+    public Uri getUri() {
+        return uri;
     }
 
     @Nullable
@@ -104,18 +102,6 @@ public class ImageEntry {
 
     public String getFilename() {
         return path == null ? null : new File(path).getName();
-    }
-
-    public InputStream getInputStream(Context context) throws FileNotFoundException {
-        // FileInputStream is faster than input stream from ContentResolver
-        return path != null ? new FileInputStream(path) : context.getContentResolver().openInputStream(getUri());
-    }
-
-    public Uri getUri() {
-        if (uri != null) {
-            return uri;
-        }
-        return ContentUris.withAppendedId(mediaStoreContentUri, contentId);
     }
 
     public boolean isVideo() {

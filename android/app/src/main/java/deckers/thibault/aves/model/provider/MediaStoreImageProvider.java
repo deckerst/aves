@@ -1,6 +1,7 @@
 package deckers.thibault.aves.model.provider;
 
 import android.app.Activity;
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -39,22 +40,24 @@ public class MediaStoreImageProvider {
 
 
     public List<ImageEntry> fetchAll(Activity activity) {
-        return fetch(activity, FILES_URI, null);
+        return fetch(activity, FILES_URI);
     }
 
-    public List<ImageEntry> fetch(final Activity activity, final Uri uri, String mimeType) {
+    private List<ImageEntry> fetch(final Activity activity, final Uri queryUri) {
         ArrayList<ImageEntry> entries = new ArrayList<>();
 
         // URI should refer to the "files" table, not to the "images" or "videos" one,
         // as our projection includes a mix of columns from both
-        Uri filesUri = uri;
-        if (!FILES_URI.equals(uri)) {
-            String id = uri.getLastPathSegment();
+        Uri filesUri = queryUri;
+        if (!FILES_URI.equals(queryUri)) {
+            String id = queryUri.getLastPathSegment();
             filesUri = Uri.withAppendedPath(FILES_URI, id);
         }
 
+        String orderBy = MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC";
+
         try {
-            Cursor cursor = activity.getContentResolver().query(filesUri, PROJECTION, SELECTION, null, null);
+            Cursor cursor = activity.getContentResolver().query(filesUri, PROJECTION, SELECTION, null, orderBy);
             if (cursor != null) {
                 Log.d(LOG_TAG, "fetch query returned " + cursor.getCount() + " entries");
 
@@ -72,9 +75,12 @@ public class MediaStoreImageProvider {
                 int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
 
                 while (cursor.moveToNext()) {
+                    long contentId = cursor.getLong(idColumn);
+                    Uri itemUri = ContentUris.withAppendedId(FILES_URI, contentId);
                     ImageEntry imageEntry = new ImageEntry(
+                            itemUri,
                             cursor.getString(pathColumn),
-                            cursor.getLong(idColumn),
+                            contentId,
                             cursor.getString(mimeTypeColumn),
                             cursor.getInt(widthColumn),
                             cursor.getInt(heightColumn),
