@@ -1,5 +1,7 @@
 import 'package:aves/common/draggable_scrollbar.dart';
 import 'package:aves/common/outlined_text.dart';
+import 'package:aves/image_fullscreen_page.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/thumbnail.dart';
 import 'package:aves/utils/date_utils.dart';
 import "package:collection/collection.dart";
@@ -8,25 +10,11 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
 
 class ThumbnailCollection extends StatelessWidget {
+  final List<Map> entries;
   final Map<DateTime, List<Map>> sections;
   final ScrollController scrollController = ScrollController();
 
-  ThumbnailCollection(List<Map> entries) : sections = groupBy(entries, getDayTaken);
-
-  static DateTime getBestDate(Map entry) {
-    var dateTakenMillis = entry['sourceDateTakenMillis'] as int;
-    if (dateTakenMillis != null && dateTakenMillis > 0) return DateTime.fromMillisecondsSinceEpoch(dateTakenMillis);
-
-    var dateModifiedSecs = entry['dateModifiedSecs'] as int;
-    if (dateModifiedSecs != null && dateModifiedSecs > 0) return DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
-
-    return null;
-  }
-
-  static DateTime getDayTaken(Map entry) {
-    var d = getBestDate(entry);
-    return d == null ? null : DateTime(d.year, d.month, d.day);
-  }
+  ThumbnailCollection(this.entries) : sections = groupBy(entries, ImageEntry.getDayTaken);
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +39,23 @@ class ThumbnailCollection extends StatelessWidget {
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      var entries = sections[sectionKey];
-                      if (index >= entries.length) return null;
-                      return Thumbnail(
-                        entry: entries[index],
-                        extent: extent,
+                      var sectionEntries = sections[sectionKey];
+                      if (index >= sectionEntries.length) return null;
+                      var entry = sectionEntries[index];
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageFullscreenPage(
+                              entries: entries,
+                              initialUri: entry['uri'],
+                            ),
+                          ),
+                        ),
+                        child: Thumbnail(
+                          entry: entry,
+                          extent: extent,
+                        ),
                       );
                     },
                     childCount: sections[sectionKey].length,

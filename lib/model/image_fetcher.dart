@@ -11,7 +11,7 @@ class ImageFetcher {
       final result = await platform.invokeMethod('getImageEntries');
       return (result as List).cast<Map>();
     } on PlatformException catch (e) {
-      debugPrint('failed with exception=${e.message}');
+      debugPrint('getImageEntries failed with exception=${e.message}');
     }
     return [];
   }
@@ -25,7 +25,7 @@ class ImageFetcher {
       });
       return result as Uint8List;
     } on PlatformException catch (e) {
-      debugPrint('failed with exception=${e.message}');
+      debugPrint('getImageBytes failed with exception=${e.message}');
     }
     return Uint8List(0);
   }
@@ -36,7 +36,20 @@ class ImageFetcher {
         'uri': uri,
       });
     } on PlatformException catch (e) {
-      debugPrint('failed with exception=${e.message}');
+      debugPrint('cancelGetImageBytes failed with exception=${e.message}');
     }
+  }
+
+  // return map with: 'aperture' 'exposureTime' 'focalLength' 'iso'
+  static Future<Map> getOverlayMetadata (String path) async {
+    try {
+      final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
+        'path': path,
+      });
+      return result as Map;
+    } on PlatformException catch (e) {
+      debugPrint('getOverlayMetadata failed with exception=${e.message}');
+    }
+    return Map();
   }
 }

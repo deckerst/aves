@@ -1,34 +1,35 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
+import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_fetcher.dart';
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
+import 'package:intl/intl.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class ImageFullscreenPage extends StatefulWidget {
-  final Map entry;
-  final Uint8List thumbnail;
+  final List<Map> entries;
+  final String initialUri;
 
-  ImageFullscreenPage({this.entry, this.thumbnail});
+  ImageFullscreenPage({this.entries, this.initialUri});
 
   @override
   ImageFullscreenPageState createState() => ImageFullscreenPageState();
 }
 
 class ImageFullscreenPageState extends State<ImageFullscreenPage> {
-  int get imageWidth => widget.entry['width'];
+  int _currentPage;
+  PageController _pageController;
 
-  int get imageHeight => widget.entry['height'];
-
-  String get uri => widget.entry['uri'];
-
-  String get path => widget.entry['path'];
-
-  double requestWidth, requestHeight;
+  List<Map> get entries => widget.entries;
 
   @override
   void initState() {
     super.initState();
+    var index = entries.indexWhere((entry) => entry['uri'] == widget.initialUri);
+    _currentPage = max(0, index);
+    _pageController = PageController(initialPage: _currentPage);
   }
 
   @override
@@ -38,50 +39,126 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (requestWidth == null || requestHeight == null) {
-      var mediaQuery = MediaQuery.of(context);
-      var screenSize = mediaQuery.size;
-      var dpr = mediaQuery.devicePixelRatio;
-      requestWidth = imageWidth * dpr;
-      requestHeight = imageHeight * dpr;
-      if (imageWidth > screenSize.width || imageHeight > screenSize.height) {
-        var ratio = max(imageWidth / screenSize.width, imageHeight / screenSize.height);
-        requestWidth /= ratio;
-        requestHeight /= ratio;
-      }
-    }
     return MediaQuery.removeViewInsets(
       context: context,
       // remove bottom view insets to paint underneath the translucent navigation bar
       removeBottom: true,
       child: Scaffold(
-        body: Hero(
-          tag: uri,
-          child: Stack(
-            children: [
-              Center(
-                child: widget.thumbnail == null
-                    ? CircularProgressIndicator()
-                    : Image.memory(
-                        widget.thumbnail,
-                        width: requestWidth,
-                        height: requestHeight,
-                        fit: BoxFit.contain,
-                      ),
+        backgroundColor: Colors.black,
+        body: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            PhotoViewGallery.builder(
+              itemCount: entries.length,
+              builder: (context, index) {
+                var entry = entries[index];
+                return PhotoViewGalleryPageOptions(
+                  imageProvider: FileImage(File(entry['path'])),
+                  heroTag: entry['uri'],
+                  minScale: PhotoViewComputedScale.contained,
+                  initialScale: PhotoViewComputedScale.contained,
+                );
+              },
+              loadingChild: Center(
+                child: CircularProgressIndicator(),
               ),
-              Center(
-                child: FadeInImage(
-                  placeholder: MemoryImage(kTransparentImage),
-                  image: FileImage(File(path)),
-                  fadeOutDuration: Duration(milliseconds: 1),
-                  fadeInDuration: Duration(milliseconds: 200),
-                  width: requestWidth,
-                  height: requestHeight,
-                  fit: BoxFit.contain,
-                ),
+              pageController: _pageController,
+              onPageChanged: (index) {
+                debugPrint('onPageChanged: index=$index');
+                setState(() => _currentPage = index);
+              },
+              transitionOnUserGestures: true,
+              scrollPhysics: BouncingScrollPhysics(),
+            ),
+            if (_currentPage != null)
+              FullscreenOverlay(
+                entry: entries[_currentPage],
+                index: _currentPage,
+                total: entries.length,
               ),
-            ],
-          ),
+          ],
+        ),
+//        Hero(
+//          tag: uri,
+//          child: Stack(
+//            children: [
+//              Center(
+//                child: widget.thumbnail == null
+//                    ? CircularProgressIndicator()
+//                    : Image.memory(
+//                        widget.thumbnail,
+//                        width: requestWidth,
+//                        height: requestHeight,
+//                        fit: BoxFit.contain,
+//                      ),
+//              ),
+//              Center(
+//                child: FadeInImage(
+//                  placeholder: MemoryImage(kTransparentImage),
+//                  image: FileImage(File(path)),
+//                  fadeOutDuration: Duration(milliseconds: 1),
+//                  fadeInDuration: Duration(milliseconds: 200),
+//                  width: requestWidth,
+//                  height: requestHeight,
+//                  fit: BoxFit.contain,
+//                ),
+//              ),
+//            ],
+//          ),
+//        ),
+      ),
+    );
+  }
+}
+
+class FullscreenOverlay extends StatelessWidget {
+  final Map entry;
+  final int index, total;
+
+  FullscreenOverlay({this.entry, this.index, this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('FullscreenOverlay MediaQuery.of(context)=${MediaQuery.of(context)}');
+    // TODO TLAD find actual value from MediaQuery before insets removal
+    var viewInsetsBottom = 46.0;
+    var date = ImageEntry.getBestDate(entry);
+    return IgnorePointer(
+      child: Container(
+        padding: EdgeInsets.all(8.0).add(EdgeInsets.only(bottom: viewInsetsBottom)),
+        color: Colors.black45,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('$index / $total - ${entry['title']}'),
+            Row(
+              children: [
+                Expanded(child: Text('${DateFormat.yMMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
+                Expanded(child: Text('${entry['width']} × ${entry['height']}')),
+              ],
+            ),
+            FutureBuilder(
+              future: ImageFetcher.getOverlayMetadata(entry['path']),
+              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+                if (snapshot.connectionState != ConnectionState.done || snapshot.hasError) {
+                  return Text('');
+                }
+                var metadata = snapshot.data;
+                if (metadata.isEmpty) {
+                  return Text('');
+                }
+                return Row(
+                  children: [
+                    Expanded(child: Text(metadata['aperture'])),
+                    Expanded(child: Text(metadata['exposureTime'])),
+                    Expanded(child: Text(metadata['focalLength'])),
+                    Expanded(child: Text(metadata['iso'])),
+                  ],
+                );
+              },
+            )
+          ],
         ),
       ),
     );

@@ -16,6 +16,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.signature.ObjectKey;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -24,6 +27,8 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +85,10 @@ public class MainActivity extends FlutterActivity {
                     switch (call.method) {
                         case "getImageEntries":
                             getPermissionResult(result, this);
+                            break;
+                        case "getOverlayMetadata":
+                            String path = call.argument("path");
+                            getOverlayMetadata(result, path);
                             break;
                         case "getImageBytes": {
                             Map map = call.argument("entry");
@@ -153,10 +162,35 @@ public class MainActivity extends FlutterActivity {
                 }).check();
     }
 
-    public List<Map> fetchAll(Activity activity) {
+    List<Map> fetchAll(Activity activity) {
         return new MediaStoreImageProvider().fetchAll(activity).stream()
                 .map(ImageEntry::toMap)
                 .collect(Collectors.toList());
+    }
+
+    void getOverlayMetadata (Result result, String path) {
+        try (InputStream is = new FileInputStream(path)) {
+            Metadata metadata = ImageMetadataReader.readMetadata(is);
+            ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+            Map<String, String> metadataMap = new HashMap<>();
+            if (directory != null) {
+                if (directory.containsTag(ExifSubIFDDirectory.TAG_FNUMBER)) {
+                    metadataMap.put("aperture", directory.getDescription(ExifSubIFDDirectory.TAG_FNUMBER));
+                }
+                if (directory.containsTag(ExifSubIFDDirectory.TAG_EXPOSURE_TIME)) {
+                    metadataMap.put("exposureTime", directory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
+                }
+                if (directory.containsTag(ExifSubIFDDirectory.TAG_FOCAL_LENGTH)) {
+                    metadataMap.put("focalLength", directory.getDescription(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
+                }
+                if (directory.containsTag(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT)) {
+                    metadataMap.put("iso", "ISO" + directory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+                }
+            }
+            result.success(metadataMap);
+        } catch (Exception e) {
+            result.error("getOverlayMetadata-exception", "failed to get metadata for path=" + path, e);
+        }
     }
 }
 
