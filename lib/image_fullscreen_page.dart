@@ -121,38 +121,67 @@ class FullscreenOverlay extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8.0).add(EdgeInsets.only(bottom: viewInsets.bottom)),
         color: Colors.black45,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${index + 1} / $total - ${entry['title']}'),
-            Row(
-              children: [
-                Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
-                Expanded(child: Text('${entry['width']} × ${entry['height']}')),
-              ],
-            ),
-            FutureBuilder(
-              future: ImageFetcher.getOverlayMetadata(entry['path']),
-              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-                if (snapshot.connectionState != ConnectionState.done || snapshot.hasError) {
-                  return Text('');
-                }
-                var metadata = snapshot.data;
-                if (metadata.isEmpty) {
-                  return Text('');
-                }
-                return Row(
-                  children: [
-                    Expanded(child: Text(metadata['aperture'])),
-                    Expanded(child: Text(metadata['exposureTime'])),
-                    Expanded(child: Text(metadata['focalLength'])),
-                    Expanded(child: Text(metadata['iso'])),
-                  ],
-                );
-              },
-            )
-          ],
+        child: DefaultTextStyle(
+          style: TextStyle(
+            shadows: [
+              Shadow(
+                color: Colors.black87,
+                offset: Offset(0.0, 1.0),
+              )
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${index + 1} / $total – ${entry['title']}',
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 4),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 8.0),
+                    child: Icon(
+                      Icons.calendar_today,
+                      size: 16,
+                    ),
+                  ),
+                  Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
+                  Expanded(child: Text('${entry['width']} × ${entry['height']}')),
+                ],
+              ),
+              SizedBox(height: 4),
+              FutureBuilder(
+                future: ImageFetcher.getOverlayMetadata(entry['path']),
+                builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done || snapshot.hasError) {
+                    return Text('');
+                  }
+                  var metadata = snapshot.data;
+                  if (metadata.isEmpty) {
+                    return Text('');
+                  }
+                  return Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: Icon(
+                          Icons.camera,
+                          size: 16,
+                        ),
+                      ),
+                      Expanded(child: Text((metadata['aperture'] as String).replaceAll('f', 'ƒ'))),
+                      Expanded(child: Text(metadata['exposureTime'])),
+                      Expanded(child: Text(metadata['focalLength'])),
+                      Expanded(child: Text(metadata['iso'])),
+                    ],
+                  );
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

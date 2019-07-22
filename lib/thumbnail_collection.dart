@@ -103,8 +103,15 @@ class SectionHeader extends StatelessWidget {
       child: OutlinedText(
         primaryText,
         style: TextStyle(
-          color: Colors.white,
+          color: Colors.grey[200],
           fontSize: 20,
+          shadows: [
+            Shadow(
+              offset: Offset(0, 2),
+              blurRadius: 3,
+              color: Colors.grey[900]
+            ),
+          ],
         ),
         outlineColor: Colors.black87,
         outlineWidth: 2,
