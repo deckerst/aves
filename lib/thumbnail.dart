@@ -7,18 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class Thumbnail extends StatefulWidget {
-  Thumbnail({Key key, @required this.entry, @required this.extent}) : super(key: key);
-
   final Map entry;
   final double extent;
+  final double devicePixelRatio;
+
+  Thumbnail({
+    Key key,
+    @required this.entry,
+    @required this.extent,
+    @required this.devicePixelRatio,
+  }) : super(key: key);
 
   @override
   ThumbnailState createState() => ThumbnailState();
 }
 
 class ThumbnailState extends State<Thumbnail> {
-  Future<Uint8List> loader;
-  Uint8List bytes;
+  Future<Uint8List> _byteLoader;
 
   String get mimeType => widget.entry['mimeType'];
 
@@ -27,6 +32,19 @@ class ThumbnailState extends State<Thumbnail> {
   @override
   void initState() {
     super.initState();
+    initByteLoader();
+  }
+
+  @override
+  void didUpdateWidget(Thumbnail oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (uri == oldWidget.entry['uri'] && widget.extent == oldWidget.extent) return;
+    initByteLoader();
+  }
+
+  initByteLoader() {
+    var dim = (widget.extent * widget.devicePixelRatio).round();
+    _byteLoader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
   }
 
   @override
@@ -37,11 +55,6 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    if (loader == null) {
-      var dim = (widget.extent * MediaQuery.of(context).devicePixelRatio).round();
-      loader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
-    }
-
     var isVideo = mimeType.startsWith(MimeTypes.MIME_VIDEO);
     var isGif = mimeType == MimeTypes.MIME_GIF;
     var iconSize = widget.extent / 4;
@@ -53,11 +66,9 @@ class ThumbnailState extends State<Thumbnail> {
         ),
       ),
       child: FutureBuilder(
-          future: loader,
+          future: _byteLoader,
           builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
-            if (bytes == null && snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-              bytes = snapshot.data;
-            }
+            var bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
             return Stack(
               alignment: AlignmentDirectional.bottomStart,
               children: [
@@ -72,7 +83,7 @@ class ThumbnailState extends State<Thumbnail> {
                       alignment: Alignment.center,
                       constraints: BoxConstraints.tight(Size(dim, dim)),
                       child: Image.memory(
-                        bytes ?? kTransparentImage,
+                        bytes,
                         width: dim,
                         height: dim,
                         fit: BoxFit.cover,

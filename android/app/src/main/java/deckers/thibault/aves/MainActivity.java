@@ -267,7 +267,6 @@ class BitmapWorkerTask extends AsyncTask<BitmapWorkerTask.MyTaskParams, Void, Bi
         String uri = result.params.entry.getUri().toString();
         result.params.complete.accept(uri);
         if (result.data != null) {
-            Log.d(LOG_TAG, "return bytes for uri=" + uri);
             r.success(result.data);
         } else {
             r.error("getImageBytes-null", "failed to get thumbnail for uri=" + uri, null);

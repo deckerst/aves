@@ -19,7 +19,7 @@ class ThumbnailCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var columnCount = 4;
-    var extent = MediaQuery.of(context).size.width / columnCount;
+    var mediaQuery = MediaQuery.of(context);
 
     return DraggableScrollbar.arrows(
       labelTextBuilder: (double offset) => Text(
@@ -43,18 +43,11 @@ class ThumbnailCollection extends StatelessWidget {
                       if (index >= sectionEntries.length) return null;
                       var entry = sectionEntries[index];
                       return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageFullscreenPage(
-                              entries: entries,
-                              initialUri: entry['uri'],
-                            ),
-                          ),
-                        ),
+                        onTap: () => _showFullscreen(context, entry),
                         child: Thumbnail(
                           entry: entry,
-                          extent: extent,
+                          extent: mediaQuery.size.width / columnCount,
+                          devicePixelRatio: mediaQuery.devicePixelRatio,
                         ),
                       );
                     },
@@ -66,6 +59,18 @@ class ThumbnailCollection extends StatelessWidget {
                 ),
               ))
         ],
+      ),
+    );
+  }
+
+  Future _showFullscreen(BuildContext context, Map entry) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImageFullscreenPage(
+          entries: entries,
+          initialUri: entry['uri'],
+        ),
       ),
     );
   }
@@ -109,7 +114,7 @@ class SectionHeader extends StatelessWidget {
             Shadow(
               offset: Offset(0, 2),
               blurRadius: 3,
-              color: Colors.grey[900]
+              color: Colors.grey[900],
             ),
           ],
         ),
