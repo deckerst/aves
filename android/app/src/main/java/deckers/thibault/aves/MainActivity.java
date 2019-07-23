@@ -95,7 +95,6 @@ public class MainActivity extends FlutterActivity {
                             Integer width = call.argument("width");
                             Integer height = call.argument("height");
                             ImageEntry entry = new ImageEntry(map);
-                            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri());
                             thumbnailFetcher.fetch(entry, width, height, result);
                             break;
                         }

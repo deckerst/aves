@@ -20,6 +20,7 @@ class ThumbnailCollection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+//    debugPrint('$runtimeType build with sections=${sections.length}');
     return DraggableScrollbar.arrows(
       labelTextBuilder: (double offset) => Text(
         "${offset ~/ 1}",
@@ -58,6 +59,7 @@ class SectionSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+//    debugPrint('$runtimeType build with sectionKey=$sectionKey');
     var columnCount = 4;
     var mediaQuery = MediaQuery.of(context);
 

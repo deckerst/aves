@@ -9,7 +9,9 @@ class ImageFetcher {
   static Future<List<Map>> getImageEntries() async {
     try {
       final result = await platform.invokeMethod('getImageEntries');
-      return (result as List).cast<Map>();
+      final entries = (result as List).cast<Map>();
+      debugPrint('getImageEntries found ${entries.length} entries');
+      return entries;
     } on PlatformException catch (e) {
       debugPrint('getImageEntries failed with exception=${e.message}');
     }
@@ -17,6 +19,7 @@ class ImageFetcher {
   }
 
   static Future<Uint8List> getImageBytes(Map entry, int width, int height) async {
+    debugPrint('getImageBytes with uri=${entry['uri']}');
     try {
       final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
         'entry': entry,

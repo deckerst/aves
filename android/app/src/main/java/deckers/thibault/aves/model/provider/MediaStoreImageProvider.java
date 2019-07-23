@@ -109,8 +109,6 @@ public class MediaStoreImageProvider {
         } catch (Exception e) {
             Log.d(LOG_TAG, "failed to get entries", e);
         }
-
-        Log.d(LOG_TAG, "fetch completed with " + entries.size() + " entries");
         return entries;
     }
 }

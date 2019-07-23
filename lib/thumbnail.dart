@@ -32,6 +32,7 @@ class ThumbnailState extends State<Thumbnail> {
   @override
   void initState() {
     super.initState();
+//    debugPrint('initState with uri=$uri entry=${widget.entry['path']}');
     initByteLoader();
   }
 
@@ -39,6 +40,7 @@ class ThumbnailState extends State<Thumbnail> {
   void didUpdateWidget(Thumbnail oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (uri == oldWidget.entry['uri'] && widget.extent == oldWidget.extent) return;
+//    debugPrint('didUpdateWidget FROM uri=${oldWidget.entry['uri']} TO uri=$uri entry=${widget.entry['path']}');
     initByteLoader();
   }
 
@@ -49,6 +51,7 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   void dispose() {
+//    debugPrint('dispose with uri=$uri entry=${widget.entry['path']}');
     ImageFetcher.cancelGetImageBytes(uri);
     super.dispose();
   }
