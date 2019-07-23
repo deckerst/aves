@@ -60,19 +60,18 @@ class SectionSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 //    debugPrint('$runtimeType build with sectionKey=$sectionKey');
-    var columnCount = 4;
-    var mediaQuery = MediaQuery.of(context);
-
+    final columnCount = 4;
     return SliverStickyHeader(
       header: DaySectionHeader(date: sectionKey),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            var sectionEntries = sections[sectionKey];
+          (sliverContext, index) {
+            final sectionEntries = sections[sectionKey];
             if (index >= sectionEntries.length) return null;
-            var entry = sectionEntries[index];
+            final entry = sectionEntries[index];
+            final mediaQuery = MediaQuery.of(sliverContext);
             return GestureDetector(
-              onTap: () => _showFullscreen(context, entry),
+              onTap: () => _showFullscreen(sliverContext, entry),
               child: Thumbnail(
                 entry: entry,
                 extent: mediaQuery.size.width / columnCount,

@@ -39,9 +39,9 @@ class _FullscreenOverlayState extends State<FullscreenOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    var viewInsets = MediaQuery.of(context).viewInsets;
-    var date = ImageEntry.getBestDate(entry);
-    var subRowConstraints = BoxConstraints(maxWidth: 400);
+    final viewInsets = MediaQuery.of(context).viewInsets;
+    final date = ImageEntry.getBestDate(entry);
+    final subRowConstraints = BoxConstraints(maxWidth: 400);
     return IgnorePointer(
       child: Container(
         padding: EdgeInsets.all(8.0).add(EdgeInsets.only(bottom: viewInsets.bottom)),

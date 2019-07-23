@@ -128,7 +128,7 @@ class DraggableScrollbar extends StatefulWidget {
   _DraggableScrollbarState createState() => _DraggableScrollbarState();
 
   static buildScrollThumbAndLabel({@required Widget scrollThumb, @required Color backgroundColor, @required Animation<double> thumbAnimation, @required Animation<double> labelAnimation, @required Text labelText, @required BoxConstraints labelConstraints, @required bool alwaysVisibleScrollThumb}) {
-    var scrollThumbAndLabel = labelText == null
+    final scrollThumbAndLabel = labelText == null
         ? scrollThumb
         : Row(
             mainAxisSize: MainAxisSize.min,

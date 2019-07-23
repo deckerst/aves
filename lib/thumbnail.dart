@@ -45,7 +45,7 @@ class ThumbnailState extends State<Thumbnail> {
   }
 
   initByteLoader() {
-    var dim = (widget.extent * widget.devicePixelRatio).round();
+    final dim = (widget.extent * widget.devicePixelRatio).round();
     _byteLoader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
   }
 
@@ -58,9 +58,9 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    var isVideo = mimeType.startsWith(MimeTypes.MIME_VIDEO);
-    var isGif = mimeType == MimeTypes.MIME_GIF;
-    var iconSize = widget.extent / 4;
+    final isVideo = mimeType.startsWith(MimeTypes.MIME_VIDEO);
+    final isGif = mimeType == MimeTypes.MIME_GIF;
+    final iconSize = widget.extent / 4;
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -71,7 +71,7 @@ class ThumbnailState extends State<Thumbnail> {
       child: FutureBuilder(
           future: _byteLoader,
           builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
-            var bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
+            final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
             return Stack(
               alignment: AlignmentDirectional.bottomStart,
               children: [
@@ -81,7 +81,7 @@ class ThumbnailState extends State<Thumbnail> {
                     // during hero animation back from a fullscreen image,
                     // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
                     // so we wrap the image to apply better constraints
-                    var dim = min(constraints.maxWidth, constraints.maxHeight);
+                    final dim = min(constraints.maxWidth, constraints.maxHeight);
                     return Container(
                       alignment: Alignment.center,
                       constraints: BoxConstraints.tight(Size(dim, dim)),

@@ -29,7 +29,7 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
   @override
   void initState() {
     super.initState();
-    var index = entries.indexWhere((entry) => entry['uri'] == widget.initialUri);
+    final index = entries.indexWhere((entry) => entry['uri'] == widget.initialUri);
     _currentPage = max(0, index);
     _pageController = PageController(initialPage: _currentPage);
   }
@@ -49,7 +49,7 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
           PhotoViewGallery.builder(
             itemCount: entries.length,
             builder: (context, index) {
-              var entry = entries[index];
+              final entry = entries[index];
               return PhotoViewGalleryPageOptions(
                 imageProvider: FileImage(File(entry['path'])),
                 heroTag: entry['uri'],
