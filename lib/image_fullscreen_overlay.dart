@@ -7,7 +7,7 @@ class FullscreenOverlay extends StatefulWidget {
   final List<Map> entries;
   final int index;
 
-  FullscreenOverlay({this.entries, this.index});
+  const FullscreenOverlay({Key key, this.entries, this.index}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _FullscreenOverlayState();

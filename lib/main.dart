@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         accentColor: Colors.amberAccent,
-        scaffoldBackgroundColor: Colors.grey[900]
+        scaffoldBackgroundColor: Colors.grey[900],
       ),
       home: HomePage(),
     );
@@ -29,18 +29,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map> imageEntryList;
+  Future<List<Map>> _entryListLoader;
 
   @override
   void initState() {
     super.initState();
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
-    getImageEntries();
-  }
-
-  getImageEntries() async {
-    imageEntryList = await ImageFetcher.getImageEntries();
-    setState(() {});
+    _entryListLoader = ImageFetcher.getImageEntries();
   }
 
   @override
@@ -49,11 +44,17 @@ class _HomePageState extends State<HomePage> {
       // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
       appBar: FakeAppBar(),
       body: Container(
-        child: imageEntryList == null
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : ThumbnailCollection(imageEntryList),
+        child: FutureBuilder(
+          future: _entryListLoader,
+          builder: (futureContext, AsyncSnapshot<List<Map>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+              return ThumbnailCollection(entries: snapshot.data);
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        ),
       ),
       resizeToAvoidBottomInset: false,
     );

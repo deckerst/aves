@@ -6,12 +6,13 @@ class OutlinedText extends StatelessWidget {
   final double outlineWidth;
   final Color outlineColor;
 
-  OutlinedText(
+  const OutlinedText(
     this.data, {
+    Key key,
     this.style,
     @required this.outlineWidth,
     @required this.outlineColor,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

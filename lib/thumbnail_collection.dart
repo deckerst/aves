@@ -14,13 +14,12 @@ class ThumbnailCollection extends StatelessWidget {
   final Map<DateTime, List<Map>> sections;
   final ScrollController scrollController = ScrollController();
 
-  ThumbnailCollection(this.entries) : sections = groupBy(entries, ImageEntry.getDayTaken);
+  ThumbnailCollection({Key key, this.entries})
+      : sections = groupBy(entries, ImageEntry.getDayTaken),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var columnCount = 4;
-    var mediaQuery = MediaQuery.of(context);
-
     return DraggableScrollbar.arrows(
       labelTextBuilder: (double offset) => Text(
         "${offset ~/ 1}",
@@ -34,31 +33,56 @@ class ThumbnailCollection extends StatelessWidget {
             title: Text('Aves - All'),
             floating: true,
           ),
-          ...sections.keys.map((sectionKey) => SliverStickyHeader(
-                header: DaySectionHeader(sectionKey),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      var sectionEntries = sections[sectionKey];
-                      if (index >= sectionEntries.length) return null;
-                      var entry = sectionEntries[index];
-                      return GestureDetector(
-                        onTap: () => _showFullscreen(context, entry),
-                        child: Thumbnail(
-                          entry: entry,
-                          extent: mediaQuery.size.width / columnCount,
-                          devicePixelRatio: mediaQuery.devicePixelRatio,
-                        ),
-                      );
-                    },
-                    childCount: sections[sectionKey].length,
-                  ),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: columnCount,
-                  ),
-                ),
-              ))
+          ...sections.keys.map((sectionKey) => SectionSliver(
+                entries: entries,
+                sections: sections,
+                sectionKey: sectionKey,
+              )),
         ],
+      ),
+    );
+  }
+}
+
+class SectionSliver extends StatelessWidget {
+  final List<Map> entries;
+  final Map<DateTime, List<Map>> sections;
+  final DateTime sectionKey;
+
+  const SectionSliver({
+    Key key,
+    this.entries,
+    this.sections,
+    this.sectionKey,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var columnCount = 4;
+    var mediaQuery = MediaQuery.of(context);
+
+    return SliverStickyHeader(
+      header: DaySectionHeader(date: sectionKey),
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            var sectionEntries = sections[sectionKey];
+            if (index >= sectionEntries.length) return null;
+            var entry = sectionEntries[index];
+            return GestureDetector(
+              onTap: () => _showFullscreen(context, entry),
+              child: Thumbnail(
+                entry: entry,
+                extent: mediaQuery.size.width / columnCount,
+                devicePixelRatio: mediaQuery.devicePixelRatio,
+              ),
+            );
+          },
+          childCount: sections[sectionKey].length,
+        ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columnCount,
+        ),
       ),
     );
   }
@@ -79,6 +103,10 @@ class ThumbnailCollection extends StatelessWidget {
 class DaySectionHeader extends StatelessWidget {
   final String text;
 
+  DaySectionHeader({Key key, DateTime date})
+      : text = formatDate(date),
+        super(key: key);
+
   static DateFormat md = DateFormat.MMMMd();
   static DateFormat ymd = DateFormat.yMMMMd();
 
@@ -88,25 +116,23 @@ class DaySectionHeader extends StatelessWidget {
     return ymd.format(date);
   }
 
-  DaySectionHeader(DateTime date) : text = formatDate(date);
-
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(text);
+    return SectionHeader(text: text);
   }
 }
 
 class SectionHeader extends StatelessWidget {
-  final String primaryText;
+  final String text;
 
-  SectionHeader(this.primaryText);
+  const SectionHeader({Key key, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
       child: OutlinedText(
-        primaryText,
+        text,
         style: TextStyle(
           color: Colors.grey[200],
           fontSize: 20,

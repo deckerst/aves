@@ -41,7 +41,7 @@ class ImageFetcher {
   }
 
   // return map with: 'aperture' 'exposureTime' 'focalLength' 'iso'
-  static Future<Map> getOverlayMetadata (String path) async {
+  static Future<Map> getOverlayMetadata(String path) async {
     try {
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'path': path,

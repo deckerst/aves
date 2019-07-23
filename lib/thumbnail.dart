@@ -11,7 +11,7 @@ class Thumbnail extends StatefulWidget {
   final double extent;
   final double devicePixelRatio;
 
-  Thumbnail({
+  const Thumbnail({
     Key key,
     @required this.entry,
     @required this.extent,

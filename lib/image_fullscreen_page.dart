@@ -10,7 +10,11 @@ class ImageFullscreenPage extends StatefulWidget {
   final List<Map> entries;
   final String initialUri;
 
-  ImageFullscreenPage({this.entries, this.initialUri});
+  const ImageFullscreenPage({
+    Key key,
+    this.entries,
+    this.initialUri,
+  }) : super(key: key);
 
   @override
   ImageFullscreenPageState createState() => ImageFullscreenPageState();
