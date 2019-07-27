@@ -6,6 +6,24 @@ import 'package:aves/model/image_fetcher.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+const kOverlayBackground = Colors.black26;
+
+class Blurred extends StatelessWidget {
+  final Widget child;
+
+  const Blurred({Key key, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+        child: child,
+      ),
+    );
+  }
+}
+
 class FullscreenTopOverlay extends StatelessWidget {
   final List<Map> entries;
   final int index;
@@ -16,21 +34,18 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: SafeArea(
-          child: Container(
-            height: kToolbarHeight,
-            child: AppBar(
-              title: Text('${index + 1}/${entries.length}'),
-              actions: [
+    return Blurred(
+      child: SafeArea(
+        child: Container(
+          height: kToolbarHeight,
+          child: AppBar(
+            title: Text('${index + 1}/${entries.length}'),
+            actions: [
 //                IconButton(icon: Icon(Icons.delete), onPressed: delete),
-                IconButton(icon: Icon(Icons.share), onPressed: share),
-              ],
-              elevation: 0,
-              backgroundColor: Colors.black26,
-            ),
+              IconButton(icon: Icon(Icons.share), onPressed: share),
+            ],
+            elevation: 0,
+            backgroundColor: kOverlayBackground,
           ),
         ),
       ),
@@ -83,13 +98,13 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
     final viewInsets = mediaQuery.viewInsets;
     final date = ImageEntry.getBestDate(entry);
     final subRowWidth = min(400.0, screenWidth);
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: IgnorePointer(
+    return Blurred(
+      child: IgnorePointer(
+        child: Padding(
+          padding: EdgeInsets.only(bottom: viewInsets.bottom),
           child: Container(
-            padding: EdgeInsets.all(8.0).add(EdgeInsets.only(bottom: viewInsets.bottom)),
-            color: Colors.black26,
+            padding: EdgeInsets.all(8.0),
+            color: kOverlayBackground,
             child: DefaultTextStyle(
               style: TextStyle(
                 shadows: [
@@ -130,7 +145,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                         _lastDetails = snapshot.data;
                       }
                       return (_lastDetails == null || _lastDetails.isEmpty)
-                          ? Text('')
+                          ? SizedBox.shrink()
                           : SizedBox(
                               width: subRowWidth,
                               child: Row(
