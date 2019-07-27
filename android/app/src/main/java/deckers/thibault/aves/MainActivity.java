@@ -28,6 +28,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -187,6 +188,8 @@ public class MainActivity extends FlutterActivity {
                 }
             }
             result.success(metadataMap);
+        } catch (FileNotFoundException e) {
+            result.error("getOverlayMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
         } catch (Exception e) {
             result.error("getOverlayMetadata-exception", "failed to get metadata for path=" + path, e);
         }
