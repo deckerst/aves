@@ -25,7 +25,7 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
   PageController _pageController;
   ValueNotifier<bool> _overlayVisible = ValueNotifier(false);
   AnimationController _overlayAnimationController;
-  Animation<Offset> _overlayOffset;
+  Animation<Offset> _topOverlayOffset, _bottomOverlayOffset;
 
   List<Map> get entries => widget.entries;
 
@@ -39,7 +39,8 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
       duration: Duration(milliseconds: 250),
       vsync: this,
     );
-    _overlayOffset = Tween(begin: Offset(0, 0), end: Offset(0, 1)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
+    _topOverlayOffset = Tween(begin: Offset(0, 0), end: Offset(0, -1)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
+    _bottomOverlayOffset = Tween(begin: Offset(0, 0), end: Offset(0, 1)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
     _overlayVisible.addListener(onOverlayVisibleChange);
   }
 
@@ -78,17 +79,25 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
             transitionOnUserGestures: true,
             scrollPhysics: BouncingScrollPhysics(),
           ),
-          if (_currentPage != null)
+          if (_currentPage != null) ...[
+            SlideTransition(
+              position: _topOverlayOffset,
+              child: FullscreenTopOverlay(
+                entries: entries,
+                index: _currentPage,
+              ),
+            ),
             Positioned(
               bottom: 0,
               child: SlideTransition(
-                position: _overlayOffset,
-                child: FullscreenOverlay(
+                position: _bottomOverlayOffset,
+                child: FullscreenBottomOverlay(
                   entries: entries,
                   index: _currentPage,
                 ),
               ),
             )
+          ]
         ],
       ),
       resizeToAvoidBottomInset: false,

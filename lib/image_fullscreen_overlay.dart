@@ -6,23 +6,59 @@ import 'package:aves/model/image_fetcher.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class FullscreenOverlay extends StatefulWidget {
+class FullscreenTopOverlay extends StatelessWidget {
   final List<Map> entries;
   final int index;
 
-  const FullscreenOverlay({Key key, this.entries, this.index}) : super(key: key);
+  Map get entry => entries[index];
+
+  const FullscreenTopOverlay({Key key, this.entries, this.index}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _FullscreenOverlayState();
+  Widget build(BuildContext context) {
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+        child: SafeArea(
+          child: Container(
+            height: kToolbarHeight,
+            child: AppBar(
+              title: Text('${index + 1}/${entries.length}'),
+              actions: [
+//                IconButton(icon: Icon(Icons.delete), onPressed: delete),
+                IconButton(icon: Icon(Icons.share), onPressed: share),
+              ],
+              elevation: 0,
+              backgroundColor: Colors.black26,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  delete() {}
+
+  share() {
+    ImageFetcher.share(entry['uri'], entry['mimeType']);
+  }
 }
 
-class _FullscreenOverlayState extends State<FullscreenOverlay> {
+class FullscreenBottomOverlay extends StatefulWidget {
+  final List<Map> entries;
+  final int index;
+
+  const FullscreenBottomOverlay({Key key, this.entries, this.index}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _FullscreenBottomOverlayState();
+}
+
+class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   Future<Map> _detailLoader;
   Map _lastDetails;
 
   Map get entry => widget.entries[widget.index];
-
-  int get total => widget.entries.length;
 
   @override
   void initState() {
@@ -31,7 +67,7 @@ class _FullscreenOverlayState extends State<FullscreenOverlay> {
   }
 
   @override
-  void didUpdateWidget(FullscreenOverlay oldWidget) {
+  void didUpdateWidget(FullscreenBottomOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     initDetailLoader();
   }
@@ -70,7 +106,7 @@ class _FullscreenOverlayState extends State<FullscreenOverlay> {
                   SizedBox(
                     width: screenWidth,
                     child: Text(
-                      '${widget.index + 1}/$total – ${entry['title']}',
+                      entry['title'],
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
