@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
+import deckers.thibault.aves.utils.ShareUtils;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodChannel;
@@ -102,9 +103,15 @@ public class MainActivity extends FlutterActivity {
                         case "cancelGetImageBytes": {
                             String uri = call.argument("uri");
                             thumbnailFetcher.cancel(uri);
-                            // do not send `null`, as it closes the channel
-                            result.success("");
+                            result.success(null);
                             break;
+                        }
+                        case "share": {
+                            String title = call.argument("title");
+                            Uri uri = Uri.parse(call.argument("uri"));
+                            String mimeType = call.argument("mimeType");
+                            ShareUtils.share(this, title, uri, mimeType);
+                            result.success(null);
                         }
                         default:
                             result.notImplemented();

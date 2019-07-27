@@ -55,4 +55,16 @@ class ImageFetcher {
     }
     return Map();
   }
+
+  static share(String uri, String mimeType) async {
+    try {
+      await platform.invokeMethod('share', <String, dynamic>{
+        'title': 'Share via:',
+        'uri': uri,
+        'mimeType': mimeType,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('share failed with exception=${e.message}');
+    }
+  }
 }
