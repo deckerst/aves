@@ -20,9 +20,12 @@ class ImageFullscreenPage extends StatefulWidget {
   ImageFullscreenPageState createState() => ImageFullscreenPageState();
 }
 
-class ImageFullscreenPageState extends State<ImageFullscreenPage> {
+class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTickerProviderStateMixin {
   int _currentPage;
   PageController _pageController;
+  ValueNotifier<bool> _overlayVisible = ValueNotifier(false);
+  AnimationController _overlayAnimationController;
+  Animation<Offset> _overlayOffset;
 
   List<Map> get entries => widget.entries;
 
@@ -32,10 +35,17 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
     final index = entries.indexWhere((entry) => entry['uri'] == widget.initialUri);
     _currentPage = max(0, index);
     _pageController = PageController(initialPage: _currentPage);
+    _overlayAnimationController = AnimationController(
+      duration: Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _overlayOffset = Tween(begin: Offset(0, 0), end: Offset(0, 1)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
+    _overlayVisible.addListener(onOverlayVisibleChange);
   }
 
   @override
   void dispose() {
+    _overlayVisible.removeListener(onOverlayVisibleChange);
     super.dispose();
   }
 
@@ -44,7 +54,6 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
-        alignment: Alignment.bottomCenter,
         children: [
           PhotoViewGallery.builder(
             itemCount: entries.length,
@@ -55,6 +64,7 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
                 heroTag: entry['uri'],
                 minScale: PhotoViewComputedScale.contained,
                 initialScale: PhotoViewComputedScale.contained,
+                onTapUp: (tapContext, details, value) => _overlayVisible.value = !_overlayVisible.value,
               );
             },
             loadingChild: Center(
@@ -69,10 +79,16 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
             scrollPhysics: BouncingScrollPhysics(),
           ),
           if (_currentPage != null)
-            FullscreenOverlay(
-              entries: entries,
-              index: _currentPage,
-            ),
+            Positioned(
+              bottom: 0,
+              child: SlideTransition(
+                position: _overlayOffset,
+                child: FullscreenOverlay(
+                  entries: entries,
+                  index: _currentPage,
+                ),
+              ),
+            )
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -105,5 +121,12 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> {
 //          ),
 //        ),
     );
+  }
+
+  onOverlayVisibleChange() {
+    if (_overlayVisible.value)
+      _overlayAnimationController.forward();
+    else
+      _overlayAnimationController.reverse();
   }
 }
