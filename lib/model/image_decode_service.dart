@@ -17,15 +17,17 @@ class ImageDecodeService {
 
   static Future<Uint8List> getImageBytes(ImageEntry entry, int width, int height) async {
     debugPrint('getImageBytes with uri=${entry.uri}');
-    try {
-      final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
-        'entry': entry.toMap(),
-        'width': width,
-        'height': height,
-      });
-      return result as Uint8List;
-    } on PlatformException catch (e) {
-      debugPrint('getImageBytes failed with exception=${e.message}');
+    if (width > 0 && height > 0) {
+      try {
+        final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
+          'entry': entry.toMap(),
+          'width': width,
+          'height': height,
+        });
+        return result as Uint8List;
+      } on PlatformException catch (e) {
+        debugPrint('getImageBytes failed with exception=${e.message}');
+      }
     }
     return Uint8List(0);
   }

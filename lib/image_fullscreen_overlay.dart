@@ -94,17 +94,17 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    var mediaQuery = MediaQuery.of(context);
-    final screenWidth = mediaQuery.size.width;
-    final viewInsets = mediaQuery.viewInsets;
+    final innerPadding = EdgeInsets.all(8.0);
+    final mediaQuery = MediaQuery.of(context);
+    final overlayContentMaxWidth = mediaQuery.size.width - mediaQuery.viewPadding.horizontal - innerPadding.horizontal;
     final date = entry.getBestDate();
-    final subRowWidth = min(400.0, screenWidth);
+    final subRowWidth = min(400.0, overlayContentMaxWidth);
     return Blurred(
       child: IgnorePointer(
         child: Padding(
-          padding: EdgeInsets.only(bottom: viewInsets.bottom),
+          padding: mediaQuery.viewInsets + mediaQuery.viewPadding.copyWith(top: 0),
           child: Container(
-            padding: EdgeInsets.all(8.0),
+            padding: innerPadding,
             color: kOverlayBackground,
             child: DefaultTextStyle(
               style: TextStyle(
@@ -120,7 +120,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: screenWidth,
+                    width: overlayContentMaxWidth,
                     child: Text(
                       entry.title,
                       overflow: TextOverflow.ellipsis,
