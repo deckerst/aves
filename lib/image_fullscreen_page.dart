@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:aves/image_fullscreen_overlay.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -53,55 +55,63 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          PhotoViewGallery.builder(
-            itemCount: entries.length,
-            builder: (context, index) {
-              final entry = entries[index];
-              return PhotoViewGalleryPageOptions(
-                imageProvider: FileImage(File(entry.path)),
-                heroTag: entry.uri,
-                minScale: PhotoViewComputedScale.contained,
-                initialScale: PhotoViewComputedScale.contained,
-                onTapUp: (tapContext, details, value) => _overlayVisible.value = !_overlayVisible.value,
-              );
-            },
-            loadingChild: Center(
-              child: CircularProgressIndicator(),
-            ),
-            pageController: _pageController,
-            onPageChanged: (index) {
-              debugPrint('onPageChanged: index=$index');
-              setState(() => _currentPage = index);
-            },
-            transitionOnUserGestures: true,
-            scrollPhysics: BouncingScrollPhysics(),
-          ),
-          if (_currentPage != null) ...[
-            SlideTransition(
-              position: _topOverlayOffset,
-              child: FullscreenTopOverlay(
-                entries: entries,
-                index: _currentPage,
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              child: SlideTransition(
-                position: _bottomOverlayOffset,
-                child: FullscreenBottomOverlay(
-                  entries: entries,
-                  index: _currentPage,
+    return PageView(
+      scrollDirection: Axis.vertical,
+      children: [
+        ClipRect(
+          child: Scaffold(
+            backgroundColor: Colors.black,
+            body: Stack(
+              children: [
+                PhotoViewGallery.builder(
+                  itemCount: entries.length,
+                  builder: (context, index) {
+                    final entry = entries[index];
+                    return PhotoViewGalleryPageOptions(
+                      imageProvider: FileImage(File(entry.path)),
+                      heroTag: entry.uri,
+                      minScale: PhotoViewComputedScale.contained,
+                      initialScale: PhotoViewComputedScale.contained,
+                      onTapUp: (tapContext, details, value) => _overlayVisible.value = !_overlayVisible.value,
+                    );
+                  },
+                  loadingChild: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  pageController: _pageController,
+                  onPageChanged: (index) {
+                    debugPrint('onPageChanged: index=$index');
+                    setState(() => _currentPage = index);
+                  },
+                  transitionOnUserGestures: true,
+                  scrollPhysics: BouncingScrollPhysics(),
                 ),
-              ),
-            )
-          ]
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
+                if (_currentPage != null) ...[
+                  SlideTransition(
+                    position: _topOverlayOffset,
+                    child: FullscreenTopOverlay(
+                      entries: entries,
+                      index: _currentPage,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: SlideTransition(
+                      position: _bottomOverlayOffset,
+                      child: FullscreenBottomOverlay(
+                        entries: entries,
+                        index: _currentPage,
+                      ),
+                    ),
+                  )
+                ]
+              ],
+            ),
+            resizeToAvoidBottomInset: false,
+          ),
+        ),
+        InfoPage(entry: entries[_currentPage]),
+      ],
 //        Hero(
 //          tag: uri,
 //          child: Stack(
@@ -138,5 +148,54 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
       _overlayAnimationController.forward();
     else
       _overlayAnimationController.reverse();
+  }
+}
+
+class InfoPage extends StatelessWidget {
+  final ImageEntry entry;
+
+  const InfoPage({this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    final date = entry.getBestDate();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Info'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InfoRow('Title', entry.title),
+            InfoRow('Date', '${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}'),
+            InfoRow('Size', formatFilesize(entry.sizeBytes)),
+            InfoRow('Resolution', '${entry.width} × ${entry.height} (${entry.getMegaPixels()} MP)'),
+            InfoRow('Path', entry.path),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class InfoRow extends StatelessWidget {
+  final String label, value;
+
+  const InfoRow(this.label, this.value);
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        Text(
+          label,
+          style: TextStyle(color: Colors.white70),
+        ),
+        SizedBox(width: 8),
+        Text(value),
+      ],
+    );
   }
 }

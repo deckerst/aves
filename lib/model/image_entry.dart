@@ -65,6 +65,10 @@ class ImageEntry {
     };
   }
 
+  int getMegaPixels() {
+    return ((width * height) / 1000000).round();
+  }
+
   DateTime getBestDate() {
     if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) return DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
     if (dateModifiedSecs != null && dateModifiedSecs > 0) return DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);

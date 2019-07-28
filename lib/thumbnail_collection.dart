@@ -30,25 +30,27 @@ class ThumbnailCollection extends StatelessWidget {
         ),
       );
     }
-    return DraggableScrollbar.arrows(
-      labelTextBuilder: (double offset) => Text(
-        "${offset ~/ 1}",
-        style: TextStyle(color: Colors.blueGrey),
-      ),
-      controller: scrollController,
-      child: CustomScrollView(
+    return SafeArea(
+      child: DraggableScrollbar.arrows(
+        labelTextBuilder: (double offset) => Text(
+          "${offset ~/ 1}",
+          style: TextStyle(color: Colors.blueGrey),
+        ),
         controller: scrollController,
-        slivers: [
-          SliverAppBar(
-            title: Text('Aves - All'),
-            floating: true,
-          ),
-          ...sections.keys.map((sectionKey) => SectionSliver(
-                entries: entries,
-                sections: sections,
-                sectionKey: sectionKey,
-              )),
-        ],
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverAppBar(
+              title: Text('Aves - All'),
+              floating: true,
+            ),
+            ...sections.keys.map((sectionKey) => SectionSliver(
+                  entries: entries,
+                  sections: sections,
+                  sectionKey: sectionKey,
+                )),
+          ],
+        ),
       ),
     );
   }
