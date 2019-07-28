@@ -5,6 +5,7 @@ import android.os.Bundle;
 import deckers.thibault.aves.channelhandlers.AppAdapterHandler;
 import deckers.thibault.aves.channelhandlers.ImageDecodeHandler;
 import deckers.thibault.aves.channelhandlers.MediaStoreStreamHandler;
+import deckers.thibault.aves.channelhandlers.MetadataHandler;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
@@ -22,6 +23,7 @@ public class MainActivity extends FlutterActivity {
         FlutterView messenger = getFlutterView();
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
         new MethodChannel(messenger, ImageDecodeHandler.CHANNEL).setMethodCallHandler(new ImageDecodeHandler(this, mediaStoreStreamHandler));
+        new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler());
         new EventChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandler(mediaStoreStreamHandler);
     }
 }

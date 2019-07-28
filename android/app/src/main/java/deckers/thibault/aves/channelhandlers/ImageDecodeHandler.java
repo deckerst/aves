@@ -8,9 +8,6 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -18,10 +15,6 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -65,10 +58,6 @@ public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
                 result.success(null);
                 break;
             }
-            case "getOverlayMetadata":
-                String path = call.argument("path");
-                getOverlayMetadata(result, path);
-                break;
             default:
                 result.notImplemented();
                 break;
@@ -123,32 +112,5 @@ public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
                         alert.show();
                     }
                 }).check();
-    }
-
-    private void getOverlayMetadata(MethodChannel.Result result, String path) {
-        try (InputStream is = new FileInputStream(path)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
-            ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-            Map<String, String> metadataMap = new HashMap<>();
-            if (directory != null) {
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_FNUMBER)) {
-                    metadataMap.put("aperture", directory.getDescription(ExifSubIFDDirectory.TAG_FNUMBER));
-                }
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_EXPOSURE_TIME)) {
-                    metadataMap.put("exposureTime", directory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
-                }
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_FOCAL_LENGTH)) {
-                    metadataMap.put("focalLength", directory.getDescription(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
-                }
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT)) {
-                    metadataMap.put("iso", "ISO" + directory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
-                }
-            }
-            result.success(metadataMap);
-        } catch (FileNotFoundException e) {
-            result.error("getOverlayMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
-        } catch (Exception e) {
-            result.error("getOverlayMetadata-exception", "failed to get metadata for path=" + path, e);
-        }
     }
 }

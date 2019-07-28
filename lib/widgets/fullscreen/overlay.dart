@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/model/android_app_service.dart';
-import 'package:aves/model/image_decode_service.dart';
+import 'package:aves/model/metadata_service.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -90,7 +90,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   }
 
   initDetailLoader() {
-    _detailLoader = ImageDecodeService.getOverlayMetadata(entry.path);
+    _detailLoader = MetadataService.getOverlayMetadata(entry.path);
   }
 
   @override

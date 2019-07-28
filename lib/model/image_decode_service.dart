@@ -41,17 +41,4 @@ class ImageDecodeService {
       debugPrint('cancelGetImageBytes failed with exception=${e.message}');
     }
   }
-
-  // return map with: 'aperture' 'exposureTime' 'focalLength' 'iso'
-  static Future<Map> getOverlayMetadata(String path) async {
-    try {
-      final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
-        'path': path,
-      });
-      return result as Map;
-    } on PlatformException catch (e) {
-      debugPrint('getOverlayMetadata failed with exception=${e.message}');
-    }
-    return Map();
-  }
 }
