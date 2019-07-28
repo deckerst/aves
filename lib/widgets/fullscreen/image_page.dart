@@ -23,6 +23,7 @@ class FullscreenPage extends StatefulWidget {
 }
 
 class FullscreenPageState extends State<FullscreenPage> with SingleTickerProviderStateMixin {
+  bool _isInitialScale = true;
   int _currentHorizontalPage, _currentVerticalPage = 0;
   PageController _horizontalPager, _verticalPager;
   ValueNotifier<bool> _overlayVisible = ValueNotifier(false);
@@ -62,6 +63,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
           PageView(
             scrollDirection: Axis.vertical,
             controller: _verticalPager,
+            physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
             onPageChanged: (page) => setState(() => _currentVerticalPage = page),
             children: [
               ImagePage(
@@ -69,6 +71,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
                 pageController: _horizontalPager,
                 onTap: () => _overlayVisible.value = !_overlayVisible.value,
                 onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
+                onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
               ),
               InfoPage(
                 entry: entries[_currentHorizontalPage],
@@ -141,12 +144,14 @@ class ImagePage extends StatefulWidget {
   final PageController pageController;
   final VoidCallback onTap;
   final ValueChanged<int> onPageChanged;
+  final ValueChanged<PhotoViewScaleState> onScaleChanged;
 
   const ImagePage({
     this.entries,
     this.pageController,
     this.onTap,
     this.onPageChanged,
+    this.onScaleChanged,
   });
 
   @override
@@ -174,6 +179,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
       ),
       pageController: widget.pageController,
       onPageChanged: widget.onPageChanged,
+      scaleStateChangedCallback: widget.onScaleChanged,
       transitionOnUserGestures: true,
       scrollPhysics: BouncingScrollPhysics(),
     );
