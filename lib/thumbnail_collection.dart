@@ -1,9 +1,9 @@
-import 'package:aves/common/draggable_scrollbar.dart';
-import 'package:aves/common/outlined_text.dart';
-import 'package:aves/image_fullscreen_page.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/thumbnail.dart';
 import 'package:aves/utils/date_utils.dart';
+import 'package:aves/widgets/common/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/outlined_text.dart';
+import 'package:aves/widgets/fullscreen/image_page.dart';
 import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
@@ -103,7 +103,7 @@ class SectionSliver extends StatelessWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ImageFullscreenPage(
+        builder: (context) => FullscreenPage(
           entries: entries,
           initialUri: entry.uri,
         ),
