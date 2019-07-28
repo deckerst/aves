@@ -72,6 +72,7 @@ class FullscreenBottomOverlay extends StatefulWidget {
 
 class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   Future<Map> _detailLoader;
+  ImageEntry _lastEntry;
   Map _lastDetails;
 
   ImageEntry get entry => widget.entries[widget.index];
@@ -97,8 +98,6 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
     final innerPadding = EdgeInsets.all(8.0);
     final mediaQuery = MediaQuery.of(context);
     final overlayContentMaxWidth = mediaQuery.size.width - mediaQuery.viewPadding.horizontal - innerPadding.horizontal;
-    final date = entry.getBestDate();
-    final subRowWidth = min(400.0, overlayContentMaxWidth);
     return Blurred(
       child: IgnorePointer(
         child: Padding(
@@ -106,67 +105,89 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
           child: Container(
             padding: innerPadding,
             color: kOverlayBackground,
-            child: DefaultTextStyle(
-              style: TextStyle(
-                shadows: [
-                  Shadow(
-                    color: Colors.black87,
-                    offset: Offset(0.0, 1.0),
-                  )
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: overlayContentMaxWidth,
-                    child: Text(
-                      entry.title,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  SizedBox(
-                    width: subRowWidth,
-                    child: Row(
-                      children: [
-                        Icon(Icons.calendar_today, size: 16),
-                        SizedBox(width: 8),
-                        Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
-                        Expanded(child: Text('${entry.width} × ${entry.height}')),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  FutureBuilder(
-                    future: _detailLoader,
-                    builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                        _lastDetails = snapshot.data;
-                      }
-                      return (_lastDetails == null || _lastDetails.isEmpty)
-                          ? SizedBox.shrink()
-                          : SizedBox(
-                              width: subRowWidth,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.camera, size: 16),
-                                  SizedBox(width: 8),
-                                  Expanded(child: Text((_lastDetails['aperture'] as String).replaceAll('f', 'ƒ'))),
-                                  Expanded(child: Text(_lastDetails['exposureTime'])),
-                                  Expanded(child: Text(_lastDetails['focalLength'])),
-                                  Expanded(child: Text(_lastDetails['iso'])),
-                                ],
-                              ),
-                            );
-                    },
-                  )
-                ],
-              ),
+            child: FutureBuilder(
+              future: _detailLoader,
+              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                  _lastDetails = snapshot.data;
+                  _lastEntry = entry;
+                }
+                return _lastEntry == null
+                    ? SizedBox.shrink()
+                    : _FullscreenBottomOverlayContent(
+                        entry: _lastEntry,
+                        details: _lastDetails,
+                        maxWidth: overlayContentMaxWidth,
+                      );
+              },
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FullscreenBottomOverlayContent extends StatelessWidget {
+  final ImageEntry entry;
+  final Map details;
+  final double maxWidth;
+
+  _FullscreenBottomOverlayContent({this.entry, this.details, this.maxWidth});
+
+  @override
+  Widget build(BuildContext context) {
+    final subRowWidth = min(400.0, maxWidth);
+    final date = entry.getBestDate();
+    return DefaultTextStyle(
+      style: TextStyle(
+        shadows: [
+          Shadow(
+            color: Colors.black87,
+            offset: Offset(0.0, 1.0),
+          )
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: maxWidth,
+            child: Text(
+              entry.title,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          SizedBox(height: 4),
+          SizedBox(
+            width: subRowWidth,
+            child: Row(
+              children: [
+                Icon(Icons.calendar_today, size: 16),
+                SizedBox(width: 8),
+                Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
+                Expanded(child: Text('${entry.width} × ${entry.height}')),
+              ],
+            ),
+          ),
+          if (details != null && details.isNotEmpty) ...[
+            SizedBox(height: 4),
+            SizedBox(
+              width: subRowWidth,
+              child: Row(
+                children: [
+                  Icon(Icons.camera, size: 16),
+                  SizedBox(width: 8),
+                  Expanded(child: Text((details['aperture'] as String).replaceAll('f', 'ƒ'))),
+                  Expanded(child: Text(details['exposureTime'])),
+                  Expanded(child: Text(details['focalLength'])),
+                  Expanded(child: Text(details['iso'])),
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
