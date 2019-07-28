@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:aves/model/android_app_service.dart';
+import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_fetcher.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,10 +26,10 @@ class Blurred extends StatelessWidget {
 }
 
 class FullscreenTopOverlay extends StatelessWidget {
-  final List<Map> entries;
+  final List<ImageEntry> entries;
   final int index;
 
-  Map get entry => entries[index];
+  ImageEntry get entry => entries[index];
 
   const FullscreenTopOverlay({Key key, this.entries, this.index}) : super(key: key);
 
@@ -55,12 +56,12 @@ class FullscreenTopOverlay extends StatelessWidget {
   delete() {}
 
   share() {
-    ImageFetcher.share(entry['uri'], entry['mimeType']);
+    AndroidAppService.share(entry.uri, entry.mimeType);
   }
 }
 
 class FullscreenBottomOverlay extends StatefulWidget {
-  final List<Map> entries;
+  final List<ImageEntry> entries;
   final int index;
 
   const FullscreenBottomOverlay({Key key, this.entries, this.index}) : super(key: key);
@@ -73,7 +74,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   Future<Map> _detailLoader;
   Map _lastDetails;
 
-  Map get entry => widget.entries[widget.index];
+  ImageEntry get entry => widget.entries[widget.index];
 
   @override
   void initState() {
@@ -88,7 +89,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   }
 
   initDetailLoader() {
-    _detailLoader = ImageFetcher.getOverlayMetadata(entry['path']);
+    _detailLoader = ImageDecodeService.getOverlayMetadata(entry.path);
   }
 
   @override
@@ -96,7 +97,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
     var mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final viewInsets = mediaQuery.viewInsets;
-    final date = ImageEntry.getBestDate(entry);
+    final date = entry.getBestDate();
     final subRowWidth = min(400.0, screenWidth);
     return Blurred(
       child: IgnorePointer(
@@ -121,7 +122,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                   SizedBox(
                     width: screenWidth,
                     child: Text(
-                      entry['title'],
+                      entry.title,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -133,7 +134,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                         Icon(Icons.calendar_today, size: 16),
                         SizedBox(width: 8),
                         Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
-                        Expanded(child: Text('${entry['width']} × ${entry['height']}')),
+                        Expanded(child: Text('${entry.width} × ${entry.height}')),
                       ],
                     ),
                   ),

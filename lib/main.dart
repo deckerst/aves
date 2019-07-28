@@ -1,5 +1,6 @@
 import 'package:aves/common/fake_app_bar.dart';
-import 'package:aves/model/image_fetcher.dart';
+import 'package:aves/model/image_decode_service.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/thumbnail_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,13 +30,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<Map>> _entryListLoader;
+  static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
+
+  List<ImageEntry> entries = List();
+  bool done = false;
 
   @override
   void initState() {
     super.initState();
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
-    _entryListLoader = ImageFetcher.getImageEntries();
+    eventChannel.receiveBroadcastStream().cast<Map>().listen(
+          (entryMap) => setState(() => entries.add(ImageEntry.fromMap(entryMap))),
+          onDone: () {
+            debugPrint('mediastore stream done');
+            setState(() => done = true);
+          },
+          onError: (error) => debugPrint('mediastore stream error=$error'),
+        );
+    ImageDecodeService.getImageEntries();
   }
 
   @override
@@ -43,18 +55,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
       appBar: FakeAppBar(),
-      body: Container(
-        child: FutureBuilder(
-          future: _entryListLoader,
-          builder: (futureContext, AsyncSnapshot<List<Map>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-              return ThumbnailCollection(entries: snapshot.data);
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),
+      body: ThumbnailCollection(
+        entries: entries,
+        done: done,
       ),
       resizeToAvoidBottomInset: false,
     );

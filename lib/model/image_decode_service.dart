@@ -1,28 +1,25 @@
 import 'dart:typed_data';
 
+import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ImageFetcher {
-  static const platform = const MethodChannel('deckers.thibault.aves/mediastore');
+class ImageDecodeService {
+  static const platform = const MethodChannel('deckers.thibault/aves/image');
 
-  static Future<List<Map>> getImageEntries() async {
+  static getImageEntries() async {
     try {
-      final result = await platform.invokeMethod('getImageEntries');
-      final entries = (result as List).cast<Map>();
-      debugPrint('getImageEntries found ${entries.length} entries');
-      return entries;
+      await platform.invokeMethod('getImageEntries');
     } on PlatformException catch (e) {
       debugPrint('getImageEntries failed with exception=${e.message}');
     }
-    return [];
   }
 
-  static Future<Uint8List> getImageBytes(Map entry, int width, int height) async {
-    debugPrint('getImageBytes with uri=${entry['uri']}');
+  static Future<Uint8List> getImageBytes(ImageEntry entry, int width, int height) async {
+    debugPrint('getImageBytes with uri=${entry.uri}');
     try {
       final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
-        'entry': entry,
+        'entry': entry.toMap(),
         'width': width,
         'height': height,
       });
@@ -54,17 +51,5 @@ class ImageFetcher {
       debugPrint('getOverlayMetadata failed with exception=${e.message}');
     }
     return Map();
-  }
-
-  static share(String uri, String mimeType) async {
-    try {
-      await platform.invokeMethod('share', <String, dynamic>{
-        'title': 'Share via:',
-        'uri': uri,
-        'mimeType': mimeType,
-      });
-    } on PlatformException catch (e) {
-      debugPrint('share failed with exception=${e.message}');
-    }
   }
 }

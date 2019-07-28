@@ -1,13 +1,14 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aves/model/image_fetcher.dart';
+import 'package:aves/model/image_decode_service.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class Thumbnail extends StatefulWidget {
-  final Map entry;
+  final ImageEntry entry;
   final double extent;
   final double devicePixelRatio;
 
@@ -25,34 +26,31 @@ class Thumbnail extends StatefulWidget {
 class ThumbnailState extends State<Thumbnail> {
   Future<Uint8List> _byteLoader;
 
-  String get mimeType => widget.entry['mimeType'];
+  String get mimeType => widget.entry.mimeType;
 
-  String get uri => widget.entry['uri'];
+  String get uri => widget.entry.uri;
 
   @override
   void initState() {
     super.initState();
-//    debugPrint('initState with uri=$uri entry=${widget.entry['path']}');
     initByteLoader();
   }
 
   @override
   void didUpdateWidget(Thumbnail oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (uri == oldWidget.entry['uri'] && widget.extent == oldWidget.extent) return;
-//    debugPrint('didUpdateWidget FROM uri=${oldWidget.entry['uri']} TO uri=$uri entry=${widget.entry['path']}');
+    if (uri == oldWidget.entry.uri && widget.extent == oldWidget.extent) return;
     initByteLoader();
   }
 
   initByteLoader() {
     final dim = (widget.extent * widget.devicePixelRatio).round();
-    _byteLoader = ImageFetcher.getImageBytes(widget.entry, dim, dim);
+    _byteLoader = ImageDecodeService.getImageBytes(widget.entry, dim, dim);
   }
 
   @override
   void dispose() {
-//    debugPrint('dispose with uri=$uri entry=${widget.entry['path']}');
-    ImageFetcher.cancelGetImageBytes(uri);
+    ImageDecodeService.cancelGetImageBytes(uri);
     super.dispose();
   }
 

@@ -2,12 +2,13 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aves/image_fullscreen_overlay.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class ImageFullscreenPage extends StatefulWidget {
-  final List<Map> entries;
+  final List<ImageEntry> entries;
   final String initialUri;
 
   const ImageFullscreenPage({
@@ -27,12 +28,12 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
   AnimationController _overlayAnimationController;
   Animation<Offset> _topOverlayOffset, _bottomOverlayOffset;
 
-  List<Map> get entries => widget.entries;
+  List<ImageEntry> get entries => widget.entries;
 
   @override
   void initState() {
     super.initState();
-    final index = entries.indexWhere((entry) => entry['uri'] == widget.initialUri);
+    final index = entries.indexWhere((entry) => entry.uri == widget.initialUri);
     _currentPage = max(0, index);
     _pageController = PageController(initialPage: _currentPage);
     _overlayAnimationController = AnimationController(
@@ -61,8 +62,8 @@ class ImageFullscreenPageState extends State<ImageFullscreenPage> with SingleTic
             builder: (context, index) {
               final entry = entries[index];
               return PhotoViewGalleryPageOptions(
-                imageProvider: FileImage(File(entry['path'])),
-                heroTag: entry['uri'],
+                imageProvider: FileImage(File(entry.path)),
+                heroTag: entry.uri,
                 minScale: PhotoViewComputedScale.contained,
                 initialScale: PhotoViewComputedScale.contained,
                 onTapUp: (tapContext, details, value) => _overlayVisible.value = !_overlayVisible.value,

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Utils;
@@ -39,11 +40,11 @@ public class MediaStoreImageProvider {
             + " OR " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
 
-    public List<ImageEntry> fetchAll(Activity activity) {
+    public Stream<ImageEntry> fetchAll(Activity activity) {
         return fetch(activity, FILES_URI);
     }
 
-    private List<ImageEntry> fetch(final Activity activity, final Uri queryUri) {
+    private Stream<ImageEntry> fetch(final Activity activity, final Uri queryUri) {
         ArrayList<ImageEntry> entries = new ArrayList<>();
 
         // URI should refer to the "files" table, not to the "images" or "videos" one,
@@ -109,6 +110,6 @@ public class MediaStoreImageProvider {
         } catch (Exception e) {
             Log.d(LOG_TAG, "failed to get entries", e);
         }
-        return entries;
+        return entries.stream();
     }
 }

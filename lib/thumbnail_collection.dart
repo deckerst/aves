@@ -10,17 +10,26 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
 
 class ThumbnailCollection extends StatelessWidget {
-  final List<Map> entries;
-  final Map<DateTime, List<Map>> sections;
+  final List<ImageEntry> entries;
+  final bool done;
+  final Map<DateTime, List<ImageEntry>> sections;
   final ScrollController scrollController = ScrollController();
 
-  ThumbnailCollection({Key key, this.entries})
-      : sections = groupBy(entries, ImageEntry.getDayTaken),
+  ThumbnailCollection({Key key, this.entries, this.done})
+      : sections = groupBy(entries, (entry) => entry.getDayTaken()),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
 //    debugPrint('$runtimeType build with sections=${sections.length}');
+    if (!done) {
+      return Center(
+        child: Text(
+          'streamed ${entries.length} items',
+          style: TextStyle(fontSize: 16),
+        ),
+      );
+    }
     return DraggableScrollbar.arrows(
       labelTextBuilder: (double offset) => Text(
         "${offset ~/ 1}",
@@ -46,8 +55,8 @@ class ThumbnailCollection extends StatelessWidget {
 }
 
 class SectionSliver extends StatelessWidget {
-  final List<Map> entries;
-  final Map<DateTime, List<Map>> sections;
+  final List<ImageEntry> entries;
+  final Map<DateTime, List<ImageEntry>> sections;
   final DateTime sectionKey;
 
   const SectionSliver({
@@ -88,13 +97,13 @@ class SectionSliver extends StatelessWidget {
     );
   }
 
-  Future _showFullscreen(BuildContext context, Map entry) {
+  Future _showFullscreen(BuildContext context, ImageEntry entry) {
     return Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ImageFullscreenPage(
           entries: entries,
-          initialUri: entry['uri'],
+          initialUri: entry.uri,
         ),
       ),
     );
