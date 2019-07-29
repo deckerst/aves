@@ -73,8 +73,20 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
                 onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
                 onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
               ),
-              InfoPage(
-                entry: entries[_currentHorizontalPage],
+              NotificationListener(
+                onNotification: (notification) {
+                  if (notification is BackUpNotification) {
+                    _verticalPager.animateToPage(
+                      0,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                  return false;
+                },
+                child: InfoPage(
+                  entry: entries[_currentHorizontalPage],
+                ),
               ),
             ],
           ),

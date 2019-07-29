@@ -2,8 +2,8 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/model/android_app_service.dart';
-import 'package:aves/model/metadata_service.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/metadata_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -43,7 +43,11 @@ class FullscreenTopOverlay extends StatelessWidget {
             title: Text('${index + 1}/${entries.length}'),
             actions: [
 //                IconButton(icon: Icon(Icons.delete), onPressed: delete),
-              IconButton(icon: Icon(Icons.share), onPressed: share),
+              IconButton(
+                icon: Icon(Icons.share),
+                onPressed: share,
+                tooltip: 'Share',
+              ),
             ],
             elevation: 0,
             backgroundColor: kOverlayBackground,
