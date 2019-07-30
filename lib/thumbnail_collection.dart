@@ -30,13 +30,10 @@ class ThumbnailCollection extends StatelessWidget {
         ),
       );
     }
+    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    final sectionKeys = sections.keys.toList();
     return SafeArea(
       child: DraggableScrollbar.arrows(
-        labelTextBuilder: (double offset) => Text(
-          "${offset ~/ 1}",
-          style: TextStyle(color: Colors.blueGrey),
-        ),
-        controller: scrollController,
         child: CustomScrollView(
           controller: scrollController,
           slivers: [
@@ -44,12 +41,27 @@ class ThumbnailCollection extends StatelessWidget {
               title: Text('Aves - All'),
               floating: true,
             ),
-            ...sections.keys.map((sectionKey) => SectionSliver(
-                  entries: entries,
-                  sections: sections,
-                  sectionKey: sectionKey,
-                )),
+            ...sectionKeys.map((sectionKey) {
+              Widget sliver = SectionSliver(
+                entries: entries,
+                sections: sections,
+                sectionKey: sectionKey,
+              );
+              if (sectionKey == sectionKeys.last) {
+                sliver = SliverPadding(
+                  padding: EdgeInsets.only(bottom: bottomInsets),
+                  sliver: sliver,
+                );
+              }
+              return sliver;
+            }),
           ],
+        ),
+        controller: scrollController,
+        padding: EdgeInsets.only(bottom: bottomInsets),
+        labelTextBuilder: (double offset) => Text(
+          "${offset ~/ 1}",
+          style: TextStyle(color: Colors.blueGrey),
         ),
       ),
     );
