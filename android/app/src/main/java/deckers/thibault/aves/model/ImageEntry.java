@@ -1,8 +1,8 @@
 package deckers.thibault.aves.model;
 
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.text.format.DateUtils;
+
+import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -21,14 +21,11 @@ public class ImageEntry {
     private String title, bucketDisplayName;
     private long dateModifiedSecs, sourceDateTakenMillis;
     private long durationMillis;
-    // derived
-    private boolean isVideo;
 
     public ImageEntry(Uri uri, String mimeType) {
         this.contentId = -1;
         this.uri = uri;
         this.mimeType = mimeType;
-        init();
     }
 
     // uri: content provider uri
@@ -48,7 +45,6 @@ public class ImageEntry {
         this.sourceDateTakenMillis = dateTakenMillis;
         this.bucketDisplayName = bucketDisplayName;
         this.durationMillis = durationMillis;
-        init();
     }
 
     public ImageEntry(Map map) {
@@ -87,10 +83,6 @@ public class ImageEntry {
         }};
     }
 
-    private void init() {
-        isVideo = mimeType.startsWith(Constants.MIME_VIDEO);
-    }
-
     public Uri getUri() {
         return uri;
     }
@@ -105,7 +97,7 @@ public class ImageEntry {
     }
 
     public boolean isVideo() {
-        return isVideo;
+        return mimeType.startsWith(Constants.MIME_VIDEO);
     }
 
     public boolean isEditable() {
@@ -132,56 +124,14 @@ public class ImageEntry {
         return orientationDegrees;
     }
 
-    public long getSizeBytes() {
-        return sizeBytes;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public long getDateModifiedSecs() {
         return dateModifiedSecs;
-    }
-
-    String getBucketDisplayName() {
-        return bucketDisplayName;
-    }
-
-    public String getDuration() {
-        return DateUtils.formatElapsedTime(durationMillis / 1000);
-    }
-
-    public int getMegaPixels() {
-        return Math.round((width * height) / 1000000f);
-    }
-
-    // setters
-
-    public void setContentId(long contentId) {
-        this.contentId = contentId;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public void setSizeBytes(long sizeBytes) {
-        this.sizeBytes = sizeBytes;
-    }
-
-    public void setDateModifiedSecs(long dateModifiedSecs) {
-        this.dateModifiedSecs = dateModifiedSecs;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     // convenience method
 
     private static long toLong(Object o) {
-        if (o instanceof Integer) return Long.valueOf((Integer)o);
-        return (long)o;
+        if (o instanceof Integer) return Long.valueOf((Integer) o);
+        return (long) o;
     }
 }

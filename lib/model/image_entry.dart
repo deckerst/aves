@@ -1,3 +1,5 @@
+import 'mime_types.dart';
+
 class ImageEntry {
   String uri;
   String path;
@@ -64,6 +66,8 @@ class ImageEntry {
       'durationMillis': durationMillis,
     };
   }
+
+  bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
 
   int getMegaPixels() {
     return ((width * height) / 1000000).round();

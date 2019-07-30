@@ -8,12 +8,15 @@ import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.ByteArrayOutputStream;
 import java.util.function.Consumer;
 
+import deckers.thibault.aves.decoder.VideoThumbnail;
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
@@ -61,11 +64,28 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         if (!this.isCancelled()) {
             // add signature to ignore cache for images which got modified but kept the same URI
             Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
-            FutureTarget<Bitmap> target = Glide.with(activity)
-                    .asBitmap()
-                    .load(entry.getUri())
+            RequestOptions options = new RequestOptions()
                     .signature(signature)
-                    .submit(p.width, p.height);
+                    .override(p.width, p.height);
+
+            FutureTarget<Bitmap> target;
+            if (entry.isVideo()) {
+                options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+                target = Glide.with(activity)
+                        .asBitmap()
+                        .apply(options)
+                        .load(new VideoThumbnail(activity, entry.getUri()))
+                        .signature(signature)
+                        .submit(p.width, p.height);
+            } else {
+                target = Glide.with(activity)
+                        .asBitmap()
+                        .apply(options)
+                        .load(entry.getUri())
+                        .signature(signature)
+                        .submit(p.width, p.height);
+            }
+
             try {
                 Bitmap bmp = target.get();
                 if (bmp != null) {

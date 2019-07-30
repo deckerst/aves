@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channelhandlers;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.adobe.xmp.XMPException;
 import com.adobe.xmp.XMPIterator;
