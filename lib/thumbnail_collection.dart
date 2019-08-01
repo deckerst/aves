@@ -16,7 +16,7 @@ class ThumbnailCollection extends StatelessWidget {
   final ScrollController scrollController = ScrollController();
 
   ThumbnailCollection({Key key, this.entries, this.done})
-      : sections = groupBy(entries, (entry) => entry.getDayTaken()),
+      : sections = groupBy(entries, (entry) => entry.getMonthTaken()),
         super(key: key);
 
   @override
@@ -85,7 +85,7 @@ class SectionSliver extends StatelessWidget {
 //    debugPrint('$runtimeType build with sectionKey=$sectionKey');
     final columnCount = 4;
     return SliverStickyHeader(
-      header: DaySectionHeader(date: sectionKey),
+      header: MonthSectionHeader(date: sectionKey),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (sliverContext, index) {
@@ -138,6 +138,28 @@ class DaySectionHeader extends StatelessWidget {
     if (isToday(date)) return 'Today';
     if (isThisYear(date)) return md.format(date);
     return ymd.format(date);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SectionHeader(text: text);
+  }
+}
+
+class MonthSectionHeader extends StatelessWidget {
+  final String text;
+
+  MonthSectionHeader({Key key, DateTime date})
+      : text = formatDate(date),
+        super(key: key);
+
+  static DateFormat m = DateFormat.MMMM();
+  static DateFormat ym = DateFormat.yMMMM();
+
+  static formatDate(DateTime date) {
+    if (isThisMonth(date)) return 'This month';
+    if (isThisYear(date)) return m.format(date);
+    return ym.format(date);
   }
 
   @override

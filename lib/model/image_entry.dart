@@ -79,8 +79,8 @@ class ImageEntry {
     return null;
   }
 
-  DateTime getDayTaken() {
+  DateTime getMonthTaken() {
     final d = getBestDate();
-    return d == null ? null : DateTime(d.year, d.month, d.day);
+    return d == null ? null : DateTime(d.year, d.month);
   }
 }
