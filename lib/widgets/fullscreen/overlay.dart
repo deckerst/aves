@@ -4,26 +4,11 @@ import 'dart:ui';
 import 'package:aves/model/android_app_service.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_service.dart';
+import 'package:aves/widgets/common/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 const kOverlayBackground = Colors.black26;
-
-class Blurred extends StatelessWidget {
-  final Widget child;
-
-  const Blurred({Key key, this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-        child: child,
-      ),
-    );
-  }
-}
 
 class FullscreenTopOverlay extends StatelessWidget {
   final List<ImageEntry> entries;
@@ -35,23 +20,23 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Blurred(
-      child: SafeArea(
-        child: Container(
-          height: kToolbarHeight,
-          child: AppBar(
-            title: Text('${index + 1}/${entries.length}'),
-            actions: [
-//                IconButton(icon: Icon(Icons.delete), onPressed: delete),
-              IconButton(
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            OverlayButton(
+              child: BackButton(),
+            ),
+            Spacer(),
+            OverlayButton(
+              child: IconButton(
                 icon: Icon(Icons.share),
                 onPressed: share,
                 tooltip: 'Share',
               ),
-            ],
-            elevation: 0,
-            backgroundColor: kOverlayBackground,
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -102,28 +87,31 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
     final innerPadding = EdgeInsets.all(8.0);
     final mediaQuery = MediaQuery.of(context);
     final overlayContentMaxWidth = mediaQuery.size.width - mediaQuery.viewPadding.horizontal - innerPadding.horizontal;
-    return Blurred(
-      child: IgnorePointer(
-        child: Padding(
-          padding: mediaQuery.viewInsets + mediaQuery.viewPadding.copyWith(top: 0),
-          child: Container(
-            padding: innerPadding,
-            color: kOverlayBackground,
-            child: FutureBuilder(
-              future: _detailLoader,
-              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                  _lastDetails = snapshot.data;
-                  _lastEntry = entry;
-                }
-                return _lastEntry == null
-                    ? SizedBox.shrink()
-                    : _FullscreenBottomOverlayContent(
-                        entry: _lastEntry,
-                        details: _lastDetails,
-                        maxWidth: overlayContentMaxWidth,
-                      );
-              },
+    return BlurredRect(
+      child: Container(
+        color: kOverlayBackground,
+        child: IgnorePointer(
+          child: Padding(
+            padding: mediaQuery.viewInsets + mediaQuery.viewPadding.copyWith(top: 0),
+            child: Container(
+              padding: innerPadding,
+              child: FutureBuilder(
+                future: _detailLoader,
+                builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                    _lastDetails = snapshot.data;
+                    _lastEntry = entry;
+                  }
+                  return _lastEntry == null
+                      ? SizedBox.shrink()
+                      : _FullscreenBottomOverlayContent(
+                          entry: _lastEntry,
+                          details: _lastDetails,
+                          position: '${widget.index + 1}/${widget.entries.length}',
+                          maxWidth: overlayContentMaxWidth,
+                        );
+                },
+              ),
             ),
           ),
         ),
@@ -135,9 +123,10 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
 class _FullscreenBottomOverlayContent extends StatelessWidget {
   final ImageEntry entry;
   final Map details;
+  final String position;
   final double maxWidth;
 
-  _FullscreenBottomOverlayContent({this.entry, this.details, this.maxWidth});
+  _FullscreenBottomOverlayContent({this.entry, this.details, this.position, this.maxWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +148,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
           SizedBox(
             width: maxWidth,
             child: Text(
-              entry.title,
+              '$position – ${entry.title}',
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -192,6 +181,29 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class OverlayButton extends StatelessWidget {
+  final Widget child;
+
+  const OverlayButton({this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlurredOval(
+      child: Material(
+        type: MaterialType.circle,
+        color: kOverlayBackground,
+        child: Ink(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white30, width: 0.5),
+            shape: BoxShape.circle,
+          ),
+          child: child,
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -69,7 +70,11 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
               ImagePage(
                 entries: entries,
                 pageController: _horizontalPager,
-                onTap: () => _overlayVisible.value = !_overlayVisible.value,
+                onTap: () {
+                  final visible = !_overlayVisible.value;
+                  _overlayVisible.value = visible;
+                  SystemChrome.setEnabledSystemUIOverlays(visible ? []: SystemUiOverlay.values);
+                },
                 onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
                 onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
               ),
