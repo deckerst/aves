@@ -366,6 +366,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
       return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
           changePosition(notification);
+          return false;
         },
         child: Stack(
           children: <Widget>[

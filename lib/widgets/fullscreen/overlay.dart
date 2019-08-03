@@ -13,23 +13,35 @@ const kOverlayBackground = Colors.black26;
 class FullscreenTopOverlay extends StatelessWidget {
   final List<ImageEntry> entries;
   final int index;
+  final Animation<double> scale;
+  final EdgeInsets viewInsets, viewPadding;
 
   ImageEntry get entry => entries[index];
 
-  const FullscreenTopOverlay({Key key, this.entries, this.index}) : super(key: key);
+  const FullscreenTopOverlay({
+    Key key,
+    this.entries,
+    this.index,
+    this.scale,
+    this.viewInsets,
+    this.viewPadding,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
         padding: EdgeInsets.all(8.0),
         child: Row(
           children: [
             OverlayButton(
+              scale: scale,
               child: BackButton(),
             ),
             Spacer(),
             OverlayButton(
+              scale: scale,
               child: IconButton(
                 icon: Icon(Icons.share),
                 onPressed: share,
@@ -52,8 +64,15 @@ class FullscreenTopOverlay extends StatelessWidget {
 class FullscreenBottomOverlay extends StatefulWidget {
   final List<ImageEntry> entries;
   final int index;
+  final EdgeInsets viewInsets, viewPadding;
 
-  const FullscreenBottomOverlay({Key key, this.entries, this.index}) : super(key: key);
+  const FullscreenBottomOverlay({
+    Key key,
+    this.entries,
+    this.index,
+    this.viewInsets,
+    this.viewPadding,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _FullscreenBottomOverlayState();
@@ -86,13 +105,15 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   Widget build(BuildContext context) {
     final innerPadding = EdgeInsets.all(8.0);
     final mediaQuery = MediaQuery.of(context);
-    final overlayContentMaxWidth = mediaQuery.size.width - mediaQuery.viewPadding.horizontal - innerPadding.horizontal;
+    final viewInsets = widget.viewInsets ?? mediaQuery.viewInsets;
+    final viewPadding = widget.viewPadding ?? mediaQuery.viewPadding;
+    final overlayContentMaxWidth = mediaQuery.size.width - viewPadding.horizontal - innerPadding.horizontal;
     return BlurredRect(
       child: Container(
         color: kOverlayBackground,
         child: IgnorePointer(
           child: Padding(
-            padding: mediaQuery.viewInsets + mediaQuery.viewPadding.copyWith(top: 0),
+            padding: viewInsets + viewPadding.copyWith(top: 0),
             child: Container(
               padding: innerPadding,
               child: FutureBuilder(
@@ -187,22 +208,26 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
 }
 
 class OverlayButton extends StatelessWidget {
+  final Animation<double> scale;
   final Widget child;
 
-  const OverlayButton({this.child});
+  const OverlayButton({Key key, this.scale, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlurredOval(
-      child: Material(
-        type: MaterialType.circle,
-        color: kOverlayBackground,
-        child: Ink(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white30, width: 0.5),
-            shape: BoxShape.circle,
+    return ScaleTransition(
+      scale: scale,
+      child: BlurredOval(
+        child: Material(
+          type: MaterialType.circle,
+          color: kOverlayBackground,
+          child: Ink(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.white30, width: 0.5),
+              shape: BoxShape.circle,
+            ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );

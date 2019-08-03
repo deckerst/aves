@@ -5,6 +5,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -27,9 +28,11 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
   bool _isInitialScale = true;
   int _currentHorizontalPage, _currentVerticalPage = 0;
   PageController _horizontalPager, _verticalPager;
-  ValueNotifier<bool> _overlayVisible = ValueNotifier(false);
+  ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   AnimationController _overlayAnimationController;
-  Animation<Offset> _topOverlayOffset, _bottomOverlayOffset;
+  Animation<double> _topOverlayScale;
+  Animation<Offset> _bottomOverlayOffset;
+  EdgeInsets _frozenViewInsets, _frozenViewPadding;
 
   List<ImageEntry> get entries => widget.entries;
 
@@ -41,12 +44,20 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage);
     _overlayAnimationController = AnimationController(
-      duration: Duration(milliseconds: 250),
+      duration: Duration(milliseconds: 300),
       vsync: this,
     );
-    _topOverlayOffset = Tween(begin: Offset(0, 0), end: Offset(0, -1)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
-    _bottomOverlayOffset = Tween(begin: Offset(0, 0), end: Offset(0, 1)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
+    _topOverlayScale = CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart);
+    _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
     _overlayVisible.addListener(onOverlayVisibleChange);
+    initOverlay();
+  }
+
+  initOverlay() async {
+    // wait for MaterialPageRoute.transitionDuration
+    // to show overlay after hero animation is complete
+    await Future.delayed(Duration(milliseconds: 300));
+    onOverlayVisibleChange();
   }
 
   @override
@@ -70,11 +81,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
               ImagePage(
                 entries: entries,
                 pageController: _horizontalPager,
-                onTap: () {
-                  final visible = !_overlayVisible.value;
-                  _overlayVisible.value = visible;
-                  SystemChrome.setEnabledSystemUIOverlays(visible ? []: SystemUiOverlay.values);
-                },
+                onTap: () => _overlayVisible.value = !_overlayVisible.value,
                 onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
                 onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
               ),
@@ -96,12 +103,12 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
             ],
           ),
           if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
-            SlideTransition(
-              position: _topOverlayOffset,
-              child: FullscreenTopOverlay(
-                entries: entries,
-                index: _currentHorizontalPage,
-              ),
+            FullscreenTopOverlay(
+              entries: entries,
+              index: _currentHorizontalPage,
+              scale: _topOverlayScale,
+              viewInsets: _frozenViewInsets,
+              viewPadding: _frozenViewPadding,
             ),
             Positioned(
               bottom: 0,
@@ -110,6 +117,8 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
                 child: FullscreenBottomOverlay(
                   entries: entries,
                   index: _currentHorizontalPage,
+                  viewInsets: _frozenViewInsets,
+                  viewPadding: _frozenViewPadding,
                 ),
               ),
             )
@@ -148,11 +157,19 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
     );
   }
 
-  onOverlayVisibleChange() {
-    if (_overlayVisible.value)
+  onOverlayVisibleChange() async {
+    if (_overlayVisible.value) {
+      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
       _overlayAnimationController.forward();
-    else
-      _overlayAnimationController.reverse();
+    } else {
+      final mq = MediaQuery.of(context);
+      _frozenViewInsets = mq.viewInsets;
+      _frozenViewPadding = mq.viewPadding;
+      SystemChrome.setEnabledSystemUIOverlays([]);
+      await _overlayAnimationController.reverse();
+      _frozenViewInsets = null;
+      _frozenViewPadding = null;
+    }
   }
 }
 
