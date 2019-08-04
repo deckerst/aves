@@ -108,31 +108,29 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
     final viewInsets = widget.viewInsets ?? mediaQuery.viewInsets;
     final viewPadding = widget.viewPadding ?? mediaQuery.viewPadding;
     final overlayContentMaxWidth = mediaQuery.size.width - viewPadding.horizontal - innerPadding.horizontal;
-    return BlurredRect(
-      child: Container(
-        color: kOverlayBackground,
-        child: IgnorePointer(
+    return IgnorePointer(
+      child: BlurredRect(
+        child: Container(
+          color: kOverlayBackground,
+          padding: viewInsets + viewPadding.copyWith(top: 0),
           child: Padding(
-            padding: viewInsets + viewPadding.copyWith(top: 0),
-            child: Container(
-              padding: innerPadding,
-              child: FutureBuilder(
-                future: _detailLoader,
-                builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                    _lastDetails = snapshot.data;
-                    _lastEntry = entry;
-                  }
-                  return _lastEntry == null
-                      ? SizedBox.shrink()
-                      : _FullscreenBottomOverlayContent(
-                          entry: _lastEntry,
-                          details: _lastDetails,
-                          position: '${widget.index + 1}/${widget.entries.length}',
-                          maxWidth: overlayContentMaxWidth,
-                        );
-                },
-              ),
+            padding: innerPadding,
+            child: FutureBuilder(
+              future: _detailLoader,
+              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+                if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                  _lastDetails = snapshot.data;
+                  _lastEntry = entry;
+                }
+                return _lastEntry == null
+                    ? SizedBox.shrink()
+                    : _FullscreenBottomOverlayContent(
+                        entry: _lastEntry,
+                        details: _lastDetails,
+                        position: '${widget.index + 1}/${widget.entries.length}',
+                        maxWidth: overlayContentMaxWidth,
+                      );
+              },
             ),
           ),
         ),

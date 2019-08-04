@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -26,7 +25,7 @@ class Thumbnail extends StatefulWidget {
 class ThumbnailState extends State<Thumbnail> {
   Future<Uint8List> _byteLoader;
 
-  String get mimeType => widget.entry.mimeType;
+  ImageEntry get entry => widget.entry;
 
   String get uri => widget.entry.uri;
 
@@ -56,55 +55,95 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    final isVideo = mimeType.startsWith(MimeTypes.MIME_VIDEO);
-    final isGif = mimeType == MimeTypes.MIME_GIF;
-    final iconSize = widget.extent / 4;
+    final fontSize = (widget.extent / 8).roundToDouble();
+    final iconSize = fontSize * 2;
+    return DefaultTextStyle(
+      style: TextStyle(
+        color: Colors.grey[200],
+        fontSize: fontSize,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.grey.shade700,
+            width: 0.5,
+          ),
+        ),
+        child: FutureBuilder(
+            future: _byteLoader,
+            builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
+              final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
+              return Stack(
+                alignment: AlignmentDirectional.bottomStart,
+                children: [
+                  Hero(
+                    tag: uri,
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      // during hero animation back from a fullscreen image,
+                      // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
+                      // so we wrap the image to apply better constraints
+                      final dim = min(constraints.maxWidth, constraints.maxHeight);
+                      return Container(
+                        alignment: Alignment.center,
+                        constraints: BoxConstraints.tight(Size(dim, dim)),
+                        child: Image.memory(
+                          bytes,
+                          width: dim,
+                          height: dim,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    }),
+                  ),
+                  if (entry.isVideo)
+                    VideoTag(
+                      entry: entry,
+                      iconSize: iconSize,
+                    )
+                  else if (entry.isGif)
+                    Icon(
+                      Icons.gif,
+                      size: iconSize,
+                    ),
+                ],
+              );
+            }),
+      ),
+    );
+  }
+}
+
+class VideoTag extends StatelessWidget {
+  final ImageEntry entry;
+  final double iconSize;
+
+  const VideoTag({Key key, this.entry, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.all(1),
+      padding: EdgeInsets.only(right: 4),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey.shade700,
-          width: 0.5,
+        color: Color(0xBB000000),
+        borderRadius: BorderRadius.all(
+          Radius.circular(iconSize),
         ),
       ),
-      child: FutureBuilder(
-          future: _byteLoader,
-          builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
-            final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
-            return Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: [
-                Hero(
-                  tag: uri,
-                  child: LayoutBuilder(builder: (context, constraints) {
-                    // during hero animation back from a fullscreen image,
-                    // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
-                    // so we wrap the image to apply better constraints
-                    final dim = min(constraints.maxWidth, constraints.maxHeight);
-                    return Container(
-                      alignment: Alignment.center,
-                      constraints: BoxConstraints.tight(Size(dim, dim)),
-                      child: Image.memory(
-                        bytes,
-                        width: dim,
-                        height: dim,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }),
-                ),
-                if (isVideo)
-                  Icon(
-                    Icons.play_circle_outline,
-                    size: iconSize,
-                  ),
-                if (isGif)
-                  Icon(
-                    Icons.gif,
-                    size: iconSize,
-                  ),
-              ],
-            );
-          }),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.play_circle_outline,
+            size: iconSize,
+          ),
+          SizedBox(width: 2),
+          Text(
+            entry.getDurationText(),
+          )
+        ],
+      ),
     );
   }
 }

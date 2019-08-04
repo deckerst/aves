@@ -39,7 +39,7 @@ class InfoPageState extends State<InfoPage> {
   Widget build(BuildContext context) {
     final date = entry.getBestDate();
     final dateText = '${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}';
-    final resolutionText = '${entry.width} × ${entry.height}${entry.isVideo ? '': ' (${entry.getMegaPixels()} MP)'}';
+    final resolutionText = '${entry.width} × ${entry.height}${entry.isVideo ? '' : ' (${entry.getMegaPixels()} MP)'}';
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,6 +75,7 @@ class InfoPageState extends State<InfoPage> {
             SectionRow('File'),
             InfoRow('Title', entry.title),
             InfoRow('Date', dateText),
+            if (entry.isVideo) InfoRow('Duration', entry.getDurationText()),
             InfoRow('Resolution', resolutionText),
             InfoRow('Size', formatFilesize(entry.sizeBytes)),
             InfoRow('Path', entry.path),
@@ -86,7 +87,7 @@ class InfoPageState extends State<InfoPage> {
                   return Text(snapshot.error);
                 }
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return CircularProgressIndicator();
+                  return SizedBox.shrink();
                 }
                 final metadataMap = snapshot.data.cast<String, Map>();
                 final directoryNames = metadataMap.keys.toList()..sort();
@@ -122,17 +123,15 @@ class SectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(child: Divider(color: Colors.white70)),
-          SizedBox(width: 8),
-          Text(title, style: TextStyle(fontSize: 18)),
-          SizedBox(width: 8),
-          Expanded(child: Divider(color: Colors.white70)),
-        ],
-      ),
+    return Row(
+      children: [
+        Expanded(child: Divider(color: Colors.white70)),
+        Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(title, style: TextStyle(fontSize: 20)),
+        ),
+        Expanded(child: Divider(color: Colors.white70)),
+      ],
     );
   }
 }

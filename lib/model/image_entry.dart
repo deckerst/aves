@@ -67,6 +67,8 @@ class ImageEntry {
     };
   }
 
+  bool get isGif => mimeType == MimeTypes.MIME_GIF;
+
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
 
   int getMegaPixels() {
@@ -82,5 +84,20 @@ class ImageEntry {
   DateTime getMonthTaken() {
     final d = getBestDate();
     return d == null ? null : DateTime(d.year, d.month);
+  }
+
+  String getDurationText() {
+    final d = Duration(milliseconds: durationMillis);
+
+    String twoDigits(int n) {
+      if (n >= 10) return '$n';
+      return '0$n';
+    }
+
+    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(Duration.secondsPerMinute));
+    if (d.inHours == 0) return '${d.inMinutes}:$twoDigitSeconds';
+
+    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(Duration.minutesPerHour));
+    return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
   }
 }

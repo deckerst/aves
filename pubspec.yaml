@@ -19,10 +19,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  chewie:
   collection:
   flutter_sticky_header:
   intl:
   photo_view:
+  screen:
   transparent_image:
 
 dev_dependencies:

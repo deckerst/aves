@@ -4,11 +4,14 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:screen/screen.dart';
+import 'package:video_player/video_player.dart';
 
 class FullscreenPage extends StatefulWidget {
   final List<ImageEntry> entries;
@@ -50,6 +53,8 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
     _topOverlayScale = CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart);
     _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
     _overlayVisible.addListener(onOverlayVisibleChange);
+
+    Screen.keepOn(true);
     initOverlay();
   }
 
@@ -68,64 +73,70 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          PageView(
-            scrollDirection: Axis.vertical,
-            controller: _verticalPager,
-            physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
-            onPageChanged: (page) => setState(() => _currentVerticalPage = page),
-            children: [
-              ImagePage(
-                entries: entries,
-                pageController: _horizontalPager,
-                onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
-                onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
-              ),
-              NotificationListener(
-                onNotification: (notification) {
-                  if (notification is BackUpNotification) {
-                    _verticalPager.animateToPage(
-                      0,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
-                  }
-                  return false;
-                },
-                child: InfoPage(
-                  entry: entries[_currentHorizontalPage],
-                ),
-              ),
-            ],
-          ),
-          if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
-            FullscreenTopOverlay(
-              entries: entries,
-              index: _currentHorizontalPage,
-              scale: _topOverlayScale,
-              viewInsets: _frozenViewInsets,
-              viewPadding: _frozenViewPadding,
-            ),
-            Positioned(
-              bottom: 0,
-              child: SlideTransition(
-                position: _bottomOverlayOffset,
-                child: FullscreenBottomOverlay(
+    return WillPopScope(
+      onWillPop: () {
+        Screen.keepOn(false);
+        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        return Future.value(true);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            PageView(
+              scrollDirection: Axis.vertical,
+              controller: _verticalPager,
+              physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
+              onPageChanged: (page) => setState(() => _currentVerticalPage = page),
+              children: [
+                ImagePage(
                   entries: entries,
-                  index: _currentHorizontalPage,
-                  viewInsets: _frozenViewInsets,
-                  viewPadding: _frozenViewPadding,
+                  pageController: _horizontalPager,
+                  onTap: () => _overlayVisible.value = !_overlayVisible.value,
+                  onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
+                  onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
                 ),
+                NotificationListener(
+                  onNotification: (notification) {
+                    if (notification is BackUpNotification) {
+                      _verticalPager.animateToPage(
+                        0,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                    return false;
+                  },
+                  child: InfoPage(
+                    entry: entries[_currentHorizontalPage],
+                  ),
+                ),
+              ],
+            ),
+            if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
+              FullscreenTopOverlay(
+                entries: entries,
+                index: _currentHorizontalPage,
+                scale: _topOverlayScale,
+                viewInsets: _frozenViewInsets,
+                viewPadding: _frozenViewPadding,
               ),
-            )
-          ]
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
+              Positioned(
+                bottom: 0,
+                child: SlideTransition(
+                  position: _bottomOverlayOffset,
+                  child: FullscreenBottomOverlay(
+                    entries: entries,
+                    index: _currentHorizontalPage,
+                    viewInsets: _frozenViewInsets,
+                    viewPadding: _frozenViewPadding,
+                  ),
+                ),
+              )
+            ]
+          ],
+        ),
+        resizeToAvoidBottomInset: false,
 //        Hero(
 //          tag: uri,
 //          child: Stack(
@@ -154,6 +165,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
 //            ],
 //          ),
 //        ),
+      ),
     );
   }
 
@@ -162,9 +174,9 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
       _overlayAnimationController.forward();
     } else {
-      final mq = MediaQuery.of(context);
-      _frozenViewInsets = mq.viewInsets;
-      _frozenViewPadding = mq.viewPadding;
+      final mediaQuery = MediaQuery.of(context);
+      _frozenViewInsets = mediaQuery.viewInsets;
+      _frozenViewPadding = mediaQuery.viewPadding;
       SystemChrome.setEnabledSystemUIOverlays([]);
       await _overlayAnimationController.reverse();
       _frozenViewInsets = null;
@@ -198,8 +210,24 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
     super.build(context);
     return PhotoViewGallery.builder(
       itemCount: widget.entries.length,
-      builder: (context, index) {
+      builder: (galleryContext, index) {
         final entry = widget.entries[index];
+        if (entry.isVideo) {
+          final screenSize = MediaQuery.of(galleryContext).size;
+          final videoAspectRatio = entry.width / entry.height;
+          final childWidth = min(screenSize.width, entry.width);
+          final childHeight = childWidth / videoAspectRatio;
+          debugPrint('ImagePageState video path=${entry.path} childWidth=$childWidth childHeight=$childHeight var=$videoAspectRatio car=${childWidth / childHeight}');
+
+          return PhotoViewGalleryPageOptions.customChild(
+            child: AvesVideo(entry: entry),
+            childSize: Size(childWidth, childHeight),
+            // no heroTag because `Chewie` already internally builds one with the videoController
+            minScale: PhotoViewComputedScale.contained,
+            initialScale: PhotoViewComputedScale.contained,
+            onTapUp: (tapContext, details, value) => widget.onTap?.call(),
+          );
+        }
         return PhotoViewGalleryPageOptions(
           imageProvider: FileImage(File(entry.path)),
           heroTag: entry.uri,
@@ -221,4 +249,44 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class AvesVideo extends StatefulWidget {
+  final ImageEntry entry;
+
+  const AvesVideo({Key key, this.entry}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => AvesVideoState();
+}
+
+class AvesVideoState extends State<AvesVideo> {
+  VideoPlayerController videoPlayerController;
+  ChewieController chewieController;
+
+  @override
+  void initState() {
+    super.initState();
+    videoPlayerController = VideoPlayerController.file(
+      File(widget.entry.path),
+      // ensure the first frame is shown after the video is initialized
+    )..initialize().then((_) => setState(() {}));
+    chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+    );
+  }
+
+  @override
+  void dispose() {
+    videoPlayerController.dispose();
+    chewieController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Chewie(
+      controller: chewieController,
+    );
+  }
 }
