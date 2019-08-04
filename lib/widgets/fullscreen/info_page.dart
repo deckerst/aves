@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 class InfoPage extends StatefulWidget {
@@ -14,7 +17,7 @@ class InfoPage extends StatefulWidget {
 }
 
 class InfoPageState extends State<InfoPage> {
-  Future<Map> _metadataLoader;
+  Future<Map> _catalogLoader, _metadataLoader;
   bool _scrollStartFromTop = false;
 
   ImageEntry get entry => widget.entry;
@@ -32,6 +35,7 @@ class InfoPageState extends State<InfoPage> {
   }
 
   initMetadataLoader() {
+    _catalogLoader = MetadataService.getCatalogMetadata(entry.path);
     _metadataLoader = MetadataService.getAllMetadata(entry.path);
   }
 
@@ -72,47 +76,110 @@ class InfoPageState extends State<InfoPage> {
         child: ListView(
           padding: EdgeInsets.all(8.0),
           children: [
-            SectionRow('File'),
             InfoRow('Title', entry.title),
             InfoRow('Date', dateText),
             if (entry.isVideo) InfoRow('Duration', entry.durationText),
             InfoRow('Resolution', resolutionText),
             InfoRow('Size', formatFilesize(entry.sizeBytes)),
             InfoRow('Path', entry.path),
-            SectionRow('Metadata'),
+            FutureBuilder(
+              future: _catalogLoader,
+              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+                if (snapshot.hasError) return Text(snapshot.error);
+                if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                final metadata = snapshot.data;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ..._buildLocationSection(metadata['latitude'], metadata['longitude']),
+                    ..._buildTagSection(metadata['keywords']),
+                  ],
+                );
+              },
+            ),
             FutureBuilder(
               future: _metadataLoader,
               builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-                if (snapshot.hasError) {
-                  return Text(snapshot.error);
-                }
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return SizedBox.shrink();
-                }
+                if (snapshot.hasError) return Text(snapshot.error);
+                if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
                 final metadataMap = snapshot.data.cast<String, Map>();
                 final directoryNames = metadataMap.keys.toList()..sort();
                 return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: directoryNames.expand(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SectionRow('Metadata'),
+                    ...directoryNames.expand(
                       (directoryName) {
                         final directory = metadataMap[directoryName];
                         final tagKeys = directory.keys.toList()..sort();
                         return [
-                          if (directoryName.isNotEmpty) Padding(
-                            padding: EdgeInsets.symmetric(vertical: 4.0),
-                            child: Text(directoryName, style: TextStyle(fontSize: 18)),
-                          ),
+                          if (directoryName.isNotEmpty)
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 4.0),
+                              child: Text(directoryName, style: TextStyle(fontSize: 18)),
+                            ),
                           ...tagKeys.map((tagKey) => InfoRow(tagKey, directory[tagKey])),
                           SizedBox(height: 16),
                         ];
                       },
-                    ).toList());
+                    )
+                  ],
+                );
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> _buildLocationSection(double latitude, double longitude) {
+    if (latitude == null || longitude == null) return [];
+    final latLng = LatLng(latitude, longitude);
+    return [
+      SectionRow('Location'),
+      SizedBox(
+        height: 200,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(
+            Radius.circular(16),
+          ),
+          child: GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: latLng,
+              zoom: 12,
+            ),
+            markers: [
+              Marker(
+                markerId: MarkerId(entry.path),
+                icon: BitmapDescriptor.defaultMarker,
+                position: latLng,
+              )
+            ].toSet(),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildTagSection(String keywords) {
+    if (keywords == null) return [];
+    return [
+      SectionRow('XMP Tags'),
+      Wrap(
+        children: keywords
+            .split(' ')
+            .where((word) => word.isNotEmpty)
+            .map((word) => Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Chip(
+                    backgroundColor: Colors.indigo,
+                    label: Text(word),
+                  ),
+                ))
+            .toList(),
+      ),
+    ];
   }
 }
 
