@@ -22,6 +22,7 @@ dependencies:
   chewie:
   collection:
   flutter_sticky_header:
+  geocoder:
   google_maps_flutter:
   intl:
   photo_view:

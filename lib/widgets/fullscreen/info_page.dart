@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -35,7 +36,18 @@ class InfoPageState extends State<InfoPage> {
   }
 
   initMetadataLoader() {
-    _catalogLoader = MetadataService.getCatalogMetadata(entry.path);
+    _catalogLoader = MetadataService.getCatalogMetadata(entry.path).then((metadata) async {
+      final latitude = metadata['latitude'];
+      final longitude = metadata['longitude'];
+      if (latitude != null && longitude != null) {
+        final coordinates = Coordinates(latitude, longitude);
+        final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        if (addresses != null && addresses.length > 0) {
+          metadata['address'] = addresses.first;
+        }
+      }
+      return metadata;
+    });
     _metadataLoader = MetadataService.getAllMetadata(entry.path);
   }
 
@@ -91,7 +103,7 @@ class InfoPageState extends State<InfoPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ..._buildLocationSection(metadata['latitude'], metadata['longitude']),
+                    ..._buildLocationSection(metadata['latitude'], metadata['longitude'], metadata['address']),
                     ..._buildTagSection(metadata['keywords']),
                   ],
                 );
@@ -133,7 +145,7 @@ class InfoPageState extends State<InfoPage> {
     );
   }
 
-  List<Widget> _buildLocationSection(double latitude, double longitude) {
+  List<Widget> _buildLocationSection(double latitude, double longitude, Address address) {
     if (latitude == null || longitude == null) return [];
     final latLng = LatLng(latitude, longitude);
     return [
@@ -159,6 +171,11 @@ class InfoPageState extends State<InfoPage> {
           ),
         ),
       ),
+      if (address != null)
+        Padding(
+          padding: EdgeInsets.only(top: 8),
+          child: InfoRow('Address', address.addressLine),
+        ),
     ];
   }
 
