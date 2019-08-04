@@ -3,15 +3,15 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/info_page.dart';
-import 'package:aves/widgets/fullscreen/overlay.dart';
-import 'package:chewie/chewie.dart';
+import 'package:aves/widgets/fullscreen/overlay_bottom.dart';
+import 'package:aves/widgets/fullscreen/overlay_top.dart';
+import 'package:aves/widgets/fullscreen/video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:screen/screen.dart';
-import 'package:video_player/video_player.dart';
 
 class FullscreenPage extends StatefulWidget {
   final List<ImageEntry> entries;
@@ -243,47 +243,4 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class AvesVideo extends StatefulWidget {
-  final ImageEntry entry;
-
-  const AvesVideo({Key key, this.entry}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => AvesVideoState();
-}
-
-class AvesVideoState extends State<AvesVideo> {
-  VideoPlayerController videoPlayerController;
-  ChewieController chewieController;
-
-  ImageEntry get entry => widget.entry;
-
-  @override
-  void initState() {
-    super.initState();
-    videoPlayerController = VideoPlayerController.file(
-      File(entry.path),
-    );
-    chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      aspectRatio: entry.aspectRatio,
-      autoInitialize: true,
-    );
-  }
-
-  @override
-  void dispose() {
-    videoPlayerController.dispose();
-    chewieController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Chewie(
-      controller: chewieController,
-    );
-  }
 }
