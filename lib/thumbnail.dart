@@ -55,7 +55,7 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = (widget.extent / 8).roundToDouble();
+    final fontSize = min(14.0, (widget.extent / 8).roundToDouble());
     final iconSize = fontSize * 2;
     return DefaultTextStyle(
       style: TextStyle(
@@ -86,12 +86,14 @@ class ThumbnailState extends State<Thumbnail> {
                       return Container(
                         alignment: Alignment.center,
                         constraints: BoxConstraints.tight(Size(dim, dim)),
-                        child: Image.memory(
-                          bytes,
-                          width: dim,
-                          height: dim,
-                          fit: BoxFit.cover,
-                        ),
+                        child: bytes.length > 0
+                            ? Image.memory(
+                                bytes,
+                                width: dim,
+                                height: dim,
+                                fit: BoxFit.cover,
+                              )
+                            : Icon(Icons.error),
                       );
                     }),
                   ),
@@ -123,7 +125,7 @@ class VideoTag extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(1),
-      padding: EdgeInsets.only(right: 4),
+      padding: EdgeInsets.only(right: iconSize / 4),
       decoration: BoxDecoration(
         color: Color(0xBB000000),
         borderRadius: BorderRadius.all(
@@ -139,9 +141,7 @@ class VideoTag extends StatelessWidget {
             size: iconSize,
           ),
           SizedBox(width: 2),
-          Text(
-            entry.getDurationText(),
-          )
+          Text(entry.durationText)
         ],
       ),
     );

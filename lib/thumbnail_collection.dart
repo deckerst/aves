@@ -16,7 +16,7 @@ class ThumbnailCollection extends StatelessWidget {
   final ScrollController scrollController = ScrollController();
 
   ThumbnailCollection({Key key, this.entries, this.done})
-      : sections = groupBy(entries, (entry) => entry.getMonthTaken()),
+      : sections = groupBy(entries, (entry) => entry.monthTaken),
         super(key: key);
 
   @override

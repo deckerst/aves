@@ -150,7 +150,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subRowWidth = min(400.0, maxWidth);
-    final date = entry.getBestDate();
+    final date = entry.bestDate;
     return DefaultTextStyle(
       style: TextStyle(
         shadows: [

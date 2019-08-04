@@ -37,9 +37,9 @@ class InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final date = entry.getBestDate();
+    final date = entry.bestDate;
     final dateText = '${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}';
-    final resolutionText = '${entry.width} × ${entry.height}${entry.isVideo ? '' : ' (${entry.getMegaPixels()} MP)'}';
+    final resolutionText = '${entry.width} × ${entry.height}${entry.isVideo ? '' : ' (${entry.megaPixels} MP)'}';
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -75,7 +75,7 @@ class InfoPageState extends State<InfoPage> {
             SectionRow('File'),
             InfoRow('Title', entry.title),
             InfoRow('Date', dateText),
-            if (entry.isVideo) InfoRow('Duration', entry.getDurationText()),
+            if (entry.isVideo) InfoRow('Duration', entry.durationText),
             InfoRow('Resolution', resolutionText),
             InfoRow('Size', formatFilesize(entry.sizeBytes)),
             InfoRow('Path', entry.path),

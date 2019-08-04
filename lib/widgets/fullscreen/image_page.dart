@@ -213,15 +213,9 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
       builder: (galleryContext, index) {
         final entry = widget.entries[index];
         if (entry.isVideo) {
-          final screenSize = MediaQuery.of(galleryContext).size;
-          final videoAspectRatio = entry.width / entry.height;
-          final childWidth = min(screenSize.width, entry.width);
-          final childHeight = childWidth / videoAspectRatio;
-          debugPrint('ImagePageState video path=${entry.path} childWidth=$childWidth childHeight=$childHeight var=$videoAspectRatio car=${childWidth / childHeight}');
-
           return PhotoViewGalleryPageOptions.customChild(
             child: AvesVideo(entry: entry),
-            childSize: Size(childWidth, childHeight),
+            childSize: MediaQuery.of(galleryContext).size,
             // no heroTag because `Chewie` already internally builds one with the videoController
             minScale: PhotoViewComputedScale.contained,
             initialScale: PhotoViewComputedScale.contained,
@@ -264,15 +258,18 @@ class AvesVideoState extends State<AvesVideo> {
   VideoPlayerController videoPlayerController;
   ChewieController chewieController;
 
+  ImageEntry get entry => widget.entry;
+
   @override
   void initState() {
     super.initState();
     videoPlayerController = VideoPlayerController.file(
-      File(widget.entry.path),
-      // ensure the first frame is shown after the video is initialized
-    )..initialize().then((_) => setState(() {}));
+      File(entry.path),
+    );
     chewieController = ChewieController(
       videoPlayerController: videoPlayerController,
+      aspectRatio: entry.aspectRatio,
+      autoInitialize: true,
     );
   }
 

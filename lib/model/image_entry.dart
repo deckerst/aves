@@ -71,22 +71,22 @@ class ImageEntry {
 
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
 
-  int getMegaPixels() {
-    return ((width * height) / 1000000).round();
-  }
+  double get aspectRatio => height == 0 ? 1 : width / height;
 
-  DateTime getBestDate() {
+  int get megaPixels => (width * height / 1000000).round();
+
+  DateTime get bestDate {
     if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) return DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
     if (dateModifiedSecs != null && dateModifiedSecs > 0) return DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
     return null;
   }
 
-  DateTime getMonthTaken() {
-    final d = getBestDate();
+  DateTime get monthTaken {
+    final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month);
   }
 
-  String getDurationText() {
+  String get durationText {
     final d = Duration(milliseconds: durationMillis);
 
     String twoDigits(int n) {
