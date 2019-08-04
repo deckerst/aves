@@ -1,5 +1,5 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/thumbnail.dart';
+import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/utils/date_utils.dart';
 import 'package:aves/widgets/common/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/outlined_text.dart';

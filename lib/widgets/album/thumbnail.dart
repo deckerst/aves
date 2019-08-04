@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/album/thumbnail_tags.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -103,46 +104,12 @@ class ThumbnailState extends State<Thumbnail> {
                       iconSize: iconSize,
                     )
                   else if (entry.isGif)
-                    Icon(
-                      Icons.gif,
-                      size: iconSize,
+                    GifTag(
+                      iconSize: iconSize,
                     ),
                 ],
               );
             }),
-      ),
-    );
-  }
-}
-
-class VideoTag extends StatelessWidget {
-  final ImageEntry entry;
-  final double iconSize;
-
-  const VideoTag({Key key, this.entry, this.iconSize}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(1),
-      padding: EdgeInsets.only(right: iconSize / 4),
-      decoration: BoxDecoration(
-        color: Color(0xBB000000),
-        borderRadius: BorderRadius.all(
-          Radius.circular(iconSize),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.play_circle_outline,
-            size: iconSize,
-          ),
-          SizedBox(width: 2),
-          Text(entry.durationText)
-        ],
       ),
     );
   }
