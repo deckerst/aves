@@ -98,7 +98,7 @@ class InfoPageState extends State<InfoPage> {
                         final directory = metadataMap[directoryName];
                         final tagKeys = directory.keys.toList()..sort();
                         return [
-                          Padding(
+                          if (directoryName.isNotEmpty) Padding(
                             padding: EdgeInsets.symmetric(vertical: 4.0),
                             child: Text(directoryName, style: TextStyle(fontSize: 18)),
                           ),

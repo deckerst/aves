@@ -23,7 +23,7 @@ public class MainActivity extends FlutterActivity {
         FlutterView messenger = getFlutterView();
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
         new MethodChannel(messenger, ImageDecodeHandler.CHANNEL).setMethodCallHandler(new ImageDecodeHandler(this, mediaStoreStreamHandler));
-        new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler());
+        new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));
         new EventChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandler(mediaStoreStreamHandler);
     }
 }

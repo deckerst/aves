@@ -1,5 +1,9 @@
 package deckers.thibault.aves.channelhandlers;
 
+import android.content.Context;
+import android.media.MediaMetadataRetriever;
+import android.text.format.Formatter;
+
 import androidx.annotation.NonNull;
 
 import com.adobe.xmp.XMPException;
@@ -7,6 +11,7 @@ import com.adobe.xmp.XMPIterator;
 import com.adobe.xmp.XMPMeta;
 import com.adobe.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
@@ -19,11 +24,18 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import deckers.thibault.aves.utils.Constants;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MetadataHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/metadata";
+
+    private Context context;
+
+    public MetadataHandler(Context context) {
+        this.context = context;
+    }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
@@ -61,6 +73,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
             result.success(metadataMap);
+        } catch (ImageProcessingException e) {
+            result.error("getOverlayMetadata-imageprocessing", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
         } catch (FileNotFoundException e) {
             result.error("getOverlayMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
         } catch (Exception e) {
@@ -103,10 +117,46 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
             result.success(metadataMap);
+        } catch (ImageProcessingException e) {
+            getAllVideoMetadataFallback(call, result);
         } catch (FileNotFoundException e) {
             result.error("getAllMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
         } catch (Exception e) {
             result.error("getAllMetadata-exception", "failed to get metadata for path=" + path, e);
+        }
+    }
+
+    private void getAllVideoMetadataFallback(MethodCall call, MethodChannel.Result result) {
+        String path = call.argument("path");
+
+        try {
+            Map<String, Map<String, String>> metadataMap = new HashMap<>();
+            Map<String, String> dirMap = new HashMap<>();
+            // unnamed fallback directory
+            metadataMap.put("", dirMap);
+
+            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+            retriever.setDataSource(path);
+            for (Map.Entry<Integer, String> kv : Constants.MEDIA_METADATA_KEYS.entrySet()) {
+                Integer key = kv.getKey();
+                String value = retriever.extractMetadata(key);
+                if (value != null) {
+                    switch (key) {
+                        case MediaMetadataRetriever.METADATA_KEY_BITRATE:
+                            value = Formatter.formatFileSize(context, Long.parseLong(value)) + "/sec";
+                            break;
+                        case MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION:
+                            value += "°";
+                            break;
+                    }
+                    dirMap.put(kv.getValue(), value);
+                }
+            }
+            retriever.release();
+
+            result.success(metadataMap);
+        } catch (Exception e) {
+            result.error("getAllVideoMetadataFallback-exception", "failed to get metadata for path=" + path, e);
         }
     }
 }
