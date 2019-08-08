@@ -18,7 +18,8 @@ class InfoPage extends StatefulWidget {
 }
 
 class InfoPageState extends State<InfoPage> {
-  Future<Map> _catalogLoader, _metadataLoader;
+  Future<Map> _metadataLoader;
+  Future<CatalogMetadata> _catalogLoader;
   bool _scrollStartFromTop = false;
 
   ImageEntry get entry => widget.entry;
@@ -36,14 +37,14 @@ class InfoPageState extends State<InfoPage> {
   }
 
   initMetadataLoader() {
-    _catalogLoader = MetadataService.getCatalogMetadata(entry.path).then((metadata) async {
-      final latitude = metadata['latitude'];
-      final longitude = metadata['longitude'];
+    _catalogLoader = MetadataService.getCatalogMetadata(entry.contentId, entry.path).then((metadata) async {
+      final latitude = metadata.latitude;
+      final longitude = metadata.longitude;
       if (latitude != null && longitude != null) {
         final coordinates = Coordinates(latitude, longitude);
         final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
         if (addresses != null && addresses.length > 0) {
-          metadata['address'] = addresses.first;
+          metadata.address = addresses.first;
         }
       }
       return metadata;
@@ -96,15 +97,15 @@ class InfoPageState extends State<InfoPage> {
             InfoRow('Path', entry.path),
             FutureBuilder(
               future: _catalogLoader,
-              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+              builder: (futureContext, AsyncSnapshot<CatalogMetadata> snapshot) {
                 if (snapshot.hasError) return Text(snapshot.error);
                 if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
                 final metadata = snapshot.data;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ..._buildLocationSection(metadata['latitude'], metadata['longitude'], metadata['address']),
-                    ..._buildTagSection(metadata['keywords']),
+                    ..._buildLocationSection(metadata.latitude, metadata.longitude, metadata.address),
+                    ..._buildTagSection(metadata.keywords),
                   ],
                 );
               },

@@ -1,8 +1,9 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/utils/date_utils.dart';
+import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/common/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/outlined_text.dart';
+import 'package:aves/widgets/debug_page.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
@@ -39,6 +40,9 @@ class ThumbnailCollection extends StatelessWidget {
           slivers: [
             SliverAppBar(
               title: Text('Aves - All'),
+              actions: [
+                IconButton(icon: Icon(Icons.whatshot), onPressed: () => goToDebug(context)),
+              ],
               floating: true,
             ),
             ...sectionKeys.map((sectionKey) {
@@ -63,6 +67,15 @@ class ThumbnailCollection extends StatelessWidget {
           "${offset ~/ 1}",
           style: TextStyle(color: Colors.blueGrey),
         ),
+      ),
+    );
+  }
+
+  Future goToDebug(BuildContext context) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DebugPage(),
       ),
     );
   }

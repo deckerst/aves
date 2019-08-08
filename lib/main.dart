@@ -1,5 +1,6 @@
 import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/metadata_storage_service.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -39,15 +40,21 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
+    setup();
+  }
+
+  setup() async {
+    await metadataDb.init();
+
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => setState(() => entries.add(ImageEntry.fromMap(entryMap))),
-          onDone: () {
-            debugPrint('mediastore stream done');
-            setState(() => done = true);
-          },
-          onError: (error) => debugPrint('mediastore stream error=$error'),
-        );
-    ImageDecodeService.getImageEntries();
+      onDone: () {
+        debugPrint('mediastore stream done');
+        setState(() => done = true);
+      },
+      onError: (error) => debugPrint('mediastore stream error=$error'),
+    );
+    await ImageDecodeService.getImageEntries();
   }
 
   @override

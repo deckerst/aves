@@ -1,3 +1,5 @@
+import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/metadata_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,21 +19,25 @@ class MetadataService {
     return Map();
   }
 
-  // return map with:
-  // 'dateMillis': date taken in milliseconds since Epoch (long)
-  // 'latitude': latitude (double)
-  // 'longitude': longitude (double)
-  // 'keywords': space separated XMP subjects (string)
-  static Future<Map> getCatalogMetadata(String path) async {
+  static Future<CatalogMetadata> getCatalogMetadata(int contentId, String path) async {
+    CatalogMetadata metadata;
     try {
+      // return map with:
+      // 'dateMillis': date taken in milliseconds since Epoch (long)
+      // 'latitude': latitude (double)
+      // 'longitude': longitude (double)
+      // 'keywords': space separated XMP subjects (string)
       final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
         'path': path,
-      });
-      return result as Map;
+      }) as Map;
+      result['contentId'] = contentId;
+      metadata = CatalogMetadata.fromMap(result);
+      metadataDb.insert(metadata);
+      return metadata;
     } on PlatformException catch (e) {
       debugPrint('getCatalogMetadata failed with exception=${e.message}');
     }
-    return Map();
+    return null;
   }
 
   // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'

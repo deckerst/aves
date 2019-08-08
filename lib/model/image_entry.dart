@@ -1,3 +1,5 @@
+import 'package:geocoder/model.dart';
+
 import 'mime_types.dart';
 
 class ImageEntry {
@@ -99,5 +101,37 @@ class ImageEntry {
 
     String twoDigitMinutes = twoDigits(d.inMinutes.remainder(Duration.minutesPerHour));
     return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
+  }
+}
+
+class CatalogMetadata {
+  final int contentId, dateMillis;
+  final String keywords;
+  final double latitude, longitude;
+  Address address;
+
+  CatalogMetadata({this.contentId, this.dateMillis, this.keywords, this.latitude, this.longitude});
+
+  factory CatalogMetadata.fromMap(Map map) {
+    return CatalogMetadata(
+      contentId: map['contentId'],
+      dateMillis: map['dateMillis'],
+      keywords: map['keywords'],
+      latitude: map['latitude'],
+      longitude: map['longitude'],
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'contentId': contentId,
+        'dateMillis': dateMillis,
+        'keywords': keywords,
+        'latitude': latitude,
+        'longitude': longitude,
+      };
+
+  @override
+  String toString() {
+    return 'CatalogMetadata{contentId: $contentId, dateMillis: $dateMillis, latitude: $latitude, longitude: $longitude, keywords=$keywords}';
   }
 }
