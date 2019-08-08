@@ -110,7 +110,10 @@ class CatalogMetadata {
   final double latitude, longitude;
   Address address;
 
-  CatalogMetadata({this.contentId, this.dateMillis, this.keywords, this.latitude, this.longitude});
+  CatalogMetadata({this.contentId, this.dateMillis, this.keywords, double latitude, double longitude})
+      // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
+      : this.latitude = latitude < -90.0 || latitude > 90.0 ? null : latitude,
+        this.longitude = longitude < -180.0 || longitude > 180.0 ? null : longitude;
 
   factory CatalogMetadata.fromMap(Map map) {
     return CatalogMetadata(
