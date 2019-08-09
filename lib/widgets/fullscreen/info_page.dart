@@ -37,7 +37,7 @@ class InfoPageState extends State<InfoPage> {
   }
 
   initMetadataLoader() {
-    _catalogLoader = MetadataService.getCatalogMetadata(entry.contentId, entry.path);//.then(addAddressToMetadata);
+    _catalogLoader = MetadataService.getCatalogMetadata(entry.contentId, entry.path).then(addAddressToMetadata);
     _metadataLoader = MetadataService.getAllMetadata(entry.path);
   }
 
@@ -155,30 +155,9 @@ class InfoPageState extends State<InfoPage> {
 
   List<Widget> _buildLocationSection(double latitude, double longitude, Address address) {
     if (latitude == null || longitude == null) return [];
-    final latLng = LatLng(latitude, longitude);
     return [
       SectionRow('Location'),
-      SizedBox(
-        height: 200,
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(
-            Radius.circular(16),
-          ),
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: latLng,
-              zoom: 12,
-            ),
-            markers: [
-              Marker(
-                markerId: MarkerId(entry.path),
-                icon: BitmapDescriptor.defaultMarker,
-                position: latLng,
-              )
-            ].toSet(),
-          ),
-        ),
-      ),
+      ImageMap(markerId: entry.path, latLng: LatLng(latitude, longitude)),
       if (address != null)
         Padding(
           padding: EdgeInsets.only(top: 8),
@@ -206,6 +185,47 @@ class InfoPageState extends State<InfoPage> {
       ),
     ];
   }
+}
+
+class ImageMap extends StatefulWidget {
+  final String markerId;
+  final LatLng latLng;
+
+  const ImageMap({Key key, this.markerId, this.latLng}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => ImageMapState();
+}
+
+class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return SizedBox(
+      height: 200,
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(
+          Radius.circular(16),
+        ),
+        child: GoogleMap(
+          initialCameraPosition: CameraPosition(
+            target: widget.latLng,
+            zoom: 12,
+          ),
+          markers: [
+            Marker(
+              markerId: MarkerId(widget.markerId),
+              icon: BitmapDescriptor.defaultMarker,
+              position: widget.latLng,
+            )
+          ].toSet(),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class SectionRow extends StatelessWidget {

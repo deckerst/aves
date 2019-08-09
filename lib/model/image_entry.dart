@@ -135,6 +135,6 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId: $contentId, dateMillis: $dateMillis, latitude: $latitude, longitude: $longitude, xmpSubjects=$xmpSubjects}';
+    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects}';
   }
 }
