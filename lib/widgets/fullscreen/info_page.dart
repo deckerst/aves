@@ -37,19 +37,26 @@ class InfoPageState extends State<InfoPage> {
   }
 
   initMetadataLoader() {
-    _catalogLoader = MetadataService.getCatalogMetadata(entry.contentId, entry.path).then((metadata) async {
-      final latitude = metadata.latitude;
-      final longitude = metadata.longitude;
-      if (latitude != null && longitude != null) {
-        final coordinates = Coordinates(latitude, longitude);
+    _catalogLoader = MetadataService.getCatalogMetadata(entry.contentId, entry.path);//.then(addAddressToMetadata);
+    _metadataLoader = MetadataService.getAllMetadata(entry.path);
+  }
+
+  Future<CatalogMetadata> addAddressToMetadata(metadata) async {
+    if (metadata == null) return null;
+    final latitude = metadata.latitude;
+    final longitude = metadata.longitude;
+    if (latitude != null && longitude != null) {
+      final coordinates = Coordinates(latitude, longitude);
+      try {
         final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
         if (addresses != null && addresses.length > 0) {
           metadata.address = addresses.first;
         }
+      } catch (e) {
+        debugPrint('$runtimeType addAddressToMetadata failed with exception=${e.message}');
       }
-      return metadata;
-    });
-    _metadataLoader = MetadataService.getAllMetadata(entry.path);
+    }
+    return metadata;
   }
 
   @override
@@ -104,8 +111,8 @@ class InfoPageState extends State<InfoPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ..._buildLocationSection(metadata.latitude, metadata.longitude, metadata.address),
-                    ..._buildTagSection(metadata.keywords),
+                    ..._buildLocationSection(metadata?.latitude, metadata?.longitude, metadata?.address),
+                    ..._buildTagSection(metadata?.xmpSubjects),
                   ],
                 );
               },
@@ -180,12 +187,12 @@ class InfoPageState extends State<InfoPage> {
     ];
   }
 
-  List<Widget> _buildTagSection(String keywords) {
-    if (keywords == null) return [];
+  List<Widget> _buildTagSection(String xmpSubjects) {
+    if (xmpSubjects == null) return [];
     return [
       SectionRow('XMP Tags'),
       Wrap(
-        children: keywords
+        children: xmpSubjects
             .split(' ')
             .where((word) => word.isNotEmpty)
             .map((word) => Padding(

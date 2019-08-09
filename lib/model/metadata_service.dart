@@ -26,7 +26,7 @@ class MetadataService {
       // 'dateMillis': date taken in milliseconds since Epoch (long)
       // 'latitude': latitude (double)
       // 'longitude': longitude (double)
-      // 'keywords': space separated XMP subjects (string)
+      // 'xmpSubjects': space separated XMP subjects (string)
       final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
         'path': path,
       }) as Map;

@@ -20,7 +20,7 @@ class MetadataDb {
       await path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE $table(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, keywords TEXT, latitude REAL, longitude REAL)',
+          'CREATE TABLE $table(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, xmpSubjects TEXT, latitude REAL, longitude REAL)',
         );
       },
       version: 1,
