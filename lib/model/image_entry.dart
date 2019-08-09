@@ -69,6 +69,14 @@ class ImageEntry {
     };
   }
 
+  @override
+  String toString() {
+    return 'ImageEntry{uri=$uri, path=$path}';
+  }
+
+  // TODO TLAD add xmp subjects, address, etc.
+  String get searchable => title.toLowerCase();
+
   bool get isGif => mimeType == MimeTypes.MIME_GIF;
 
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);

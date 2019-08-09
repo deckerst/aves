@@ -1,23 +1,23 @@
 import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_storage_service.dart';
-import 'package:aves/widgets/album/thumbnail_collection.dart';
+import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(AvesApp());
 }
 
-class MyApp extends StatelessWidget {
+class AvesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Aves',
       theme: ThemeData(
         brightness: Brightness.dark,
-        accentColor: Colors.amberAccent,
+        accentColor: Colors.indigoAccent,
         scaffoldBackgroundColor: Colors.grey[900],
       ),
       home: HomePage(),
@@ -34,7 +34,6 @@ class _HomePageState extends State<HomePage> {
   static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
   List<ImageEntry> entries = List();
-  bool done = false;
 
   @override
   void initState() {
@@ -48,12 +47,12 @@ class _HomePageState extends State<HomePage> {
 
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => setState(() => entries.add(ImageEntry.fromMap(entryMap))),
-      onDone: () {
-        debugPrint('mediastore stream done');
-        setState(() => done = true);
-      },
-      onError: (error) => debugPrint('mediastore stream error=$error'),
-    );
+          onDone: () {
+            debugPrint('mediastore stream done');
+            setState(() {});
+          },
+          onError: (error) => debugPrint('mediastore stream error=$error'),
+        );
     await ImageDecodeService.getImageEntries();
   }
 
@@ -62,10 +61,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
       appBar: FakeAppBar(),
-      body: ThumbnailCollection(
-        entries: entries,
-        done: done,
-      ),
+      body: AllCollectionPage(entries: entries),
       resizeToAvoidBottomInset: false,
     );
   }

@@ -3,7 +3,6 @@ import 'package:aves/utils/date_utils.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/common/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/outlined_text.dart';
-import 'package:aves/widgets/debug_page.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
@@ -12,43 +11,29 @@ import 'package:intl/intl.dart';
 
 class ThumbnailCollection extends StatelessWidget {
   final List<ImageEntry> entries;
-  final bool done;
-  final Map<DateTime, List<ImageEntry>> sections;
-  final ScrollController scrollController = ScrollController();
+  final Widget appBar;
 
-  ThumbnailCollection({Key key, this.entries, this.done})
-      : sections = groupBy(entries, (entry) => entry.monthTaken),
+  final Map<DateTime, List<ImageEntry>> _sections;
+  final ScrollController _scrollController = ScrollController();
+
+  ThumbnailCollection({Key key, this.entries, this.appBar})
+      : _sections = groupBy(entries, (entry) => entry.monthTaken),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-//    debugPrint('$runtimeType build with sections=${sections.length}');
-    if (!done) {
-      return Center(
-        child: Text(
-          'streamed ${entries.length} items',
-          style: TextStyle(fontSize: 16),
-        ),
-      );
-    }
     final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-    final sectionKeys = sections.keys.toList();
+    final sectionKeys = _sections.keys.toList();
     return SafeArea(
       child: DraggableScrollbar.arrows(
         child: CustomScrollView(
-          controller: scrollController,
+          controller: _scrollController,
           slivers: [
-            SliverAppBar(
-              title: Text('Aves - All'),
-              actions: [
-                IconButton(icon: Icon(Icons.whatshot), onPressed: () => goToDebug(context)),
-              ],
-              floating: true,
-            ),
+            if (appBar != null) appBar,
             ...sectionKeys.map((sectionKey) {
               Widget sliver = SectionSliver(
                 entries: entries,
-                sections: sections,
+                sections: _sections,
                 sectionKey: sectionKey,
               );
               if (sectionKey == sectionKeys.last) {
@@ -61,21 +46,12 @@ class ThumbnailCollection extends StatelessWidget {
             }),
           ],
         ),
-        controller: scrollController,
+        controller: _scrollController,
         padding: EdgeInsets.only(bottom: bottomInsets),
         labelTextBuilder: (double offset) => Text(
           "${offset ~/ 1}",
           style: TextStyle(color: Colors.blueGrey),
         ),
-      ),
-    );
-  }
-
-  Future goToDebug(BuildContext context) {
-    return Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DebugPage(),
       ),
     );
   }
