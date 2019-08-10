@@ -31,6 +31,20 @@ class GifTag extends StatelessWidget {
   }
 }
 
+class GpsTag extends StatelessWidget {
+  final double iconSize;
+
+  const GpsTag({Key key, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Tag(
+      icon: Icons.place,
+      iconSize: iconSize,
+    );
+  }
+}
+
 class Tag extends StatelessWidget {
   final IconData icon;
   final double iconSize;

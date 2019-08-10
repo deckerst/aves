@@ -104,9 +104,9 @@ class ThumbnailState extends State<Thumbnail> {
                       iconSize: iconSize,
                     )
                   else if (entry.isGif)
-                    GifTag(
-                      iconSize: iconSize,
-                    ),
+                    GifTag(iconSize: iconSize)
+                  else if (entry.hasGps)
+                    GpsTag(iconSize: iconSize)
                 ],
               );
             }),

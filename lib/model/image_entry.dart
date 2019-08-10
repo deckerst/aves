@@ -91,7 +91,7 @@ class ImageEntry with ChangeNotifier {
   int get megaPixels => (width * height / 1000000).round();
 
   DateTime get bestDate {
-    if (isCataloged && catalogMetadata.dateMillis > 0) return DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
+    if ((catalogMetadata?.dateMillis ?? 0) > 0) return DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
     if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) return DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
     if (dateModifiedSecs != null && dateModifiedSecs > 0) return DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
     return null;

@@ -47,11 +47,17 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage);
     _overlayAnimationController = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 400),
       vsync: this,
     );
-    _topOverlayScale = CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart);
-    _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(parent: _overlayAnimationController, curve: Curves.easeOutQuart, reverseCurve: Curves.easeInQuart));
+    _topOverlayScale = CurvedAnimation(
+      parent: _overlayAnimationController,
+      curve: Curves.easeOutQuart,
+    );
+    _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(
+      parent: _overlayAnimationController,
+      curve: Curves.easeOutQuart,
+    ));
     _overlayVisible.addListener(onOverlayVisibleChange);
 
     Screen.keepOn(true);
@@ -101,7 +107,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
                     if (notification is BackUpNotification) {
                       _verticalPager.animateToPage(
                         0,
-                        duration: const Duration(milliseconds: 400),
+                        duration: const Duration(milliseconds: 350),
                         curve: Curves.easeInOut,
                       );
                     }
