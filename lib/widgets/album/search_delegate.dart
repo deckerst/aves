@@ -51,7 +51,7 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       return SizedBox.shrink();
     }
     final lowerQuery = query.toLowerCase();
-    final matches = entries.where((entry) => entry.searchable.contains(lowerQuery)).toList();
+    final matches = entries.where((entry) => entry.search(lowerQuery)).toList();
     if (matches.isEmpty) {
       return Center(
         child: Text(

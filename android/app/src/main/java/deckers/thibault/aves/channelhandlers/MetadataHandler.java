@@ -174,7 +174,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                         int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
                         for (int i = 1; i < count + 1; i++) {
                             XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
-                            sb.append(" ").append(item.getValue());
+                            sb.append(";").append(item.getValue());
                         }
                         metadataMap.put("xmpSubjects", sb.toString());
                     }

@@ -30,6 +30,7 @@ dependencies:
   screen:
   sqflite:
   transparent_image:
+  tuple:
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/fullscreen/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay_bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay_top.dart';
 import 'package:aves/widgets/fullscreen/video.dart';

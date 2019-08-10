@@ -1,21 +1,27 @@
-import 'package:geocoder/model.dart';
+import 'package:aves/model/catalog_metadata.dart';
+import 'package:aves/model/metadata_service.dart';
+import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:tuple/tuple.dart';
 
 import 'mime_types.dart';
 
-class ImageEntry {
-  String uri;
-  String path;
-  int contentId;
-  String mimeType;
-  int width;
-  int height;
-  int orientationDegrees;
-  int sizeBytes;
-  String title;
-  int dateModifiedSecs;
-  int sourceDateTakenMillis;
-  String bucketDisplayName;
-  int durationMillis;
+class ImageEntry with ChangeNotifier {
+  final String uri;
+  final String path;
+  final int contentId;
+  final String mimeType;
+  final int width;
+  final int height;
+  final int orientationDegrees;
+  final int sizeBytes;
+  final String title;
+  final int dateModifiedSecs;
+  final int sourceDateTakenMillis;
+  final String bucketDisplayName;
+  final int durationMillis;
+  CatalogMetadata catalogMetadata;
+  String addressLine, addressCountry;
 
   ImageEntry({
     this.uri,
@@ -74,18 +80,18 @@ class ImageEntry {
     return 'ImageEntry{uri=$uri, path=$path}';
   }
 
-  // TODO TLAD add xmp subjects, address, etc.
-  String get searchable => title.toLowerCase();
-
   bool get isGif => mimeType == MimeTypes.MIME_GIF;
 
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
+
+  bool get isCataloged => catalogMetadata != null;
 
   double get aspectRatio => height == 0 ? 1 : width / height;
 
   int get megaPixels => (width * height / 1000000).round();
 
   DateTime get bestDate {
+    if (isCataloged && catalogMetadata.dateMillis > 0) return DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
     if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) return DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
     if (dateModifiedSecs != null && dateModifiedSecs > 0) return DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
     return null;
@@ -110,39 +116,46 @@ class ImageEntry {
     String twoDigitMinutes = twoDigits(d.inMinutes.remainder(Duration.minutesPerHour));
     return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
   }
-}
 
-class CatalogMetadata {
-  final int contentId, dateMillis;
-  final String xmpSubjects;
-  final double latitude, longitude;
-  Address address;
+  bool get hasGps => isCataloged && catalogMetadata.latitude != null;
 
-  CatalogMetadata({this.contentId, this.dateMillis, this.xmpSubjects, double latitude, double longitude})
-      // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
-      : this.latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
-        this.longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
+  bool get isLocated => addressLine != null;
 
-  factory CatalogMetadata.fromMap(Map map) {
-    return CatalogMetadata(
-      contentId: map['contentId'],
-      dateMillis: map['dateMillis'],
-      xmpSubjects: map['xmpSubjects'],
-      latitude: map['latitude'],
-      longitude: map['longitude'],
-    );
+  Tuple2<double, double> get latLng => isCataloged ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
+
+  List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
+
+  catalog() async {
+    if (isCataloged) return;
+    catalogMetadata = await MetadataService.getCatalogMetadata(contentId, path);
+    notifyListeners();
   }
 
-  Map<String, dynamic> toMap() => {
-        'contentId': contentId,
-        'dateMillis': dateMillis,
-        'xmpSubjects': xmpSubjects,
-        'latitude': latitude,
-        'longitude': longitude,
-      };
+  locate() async {
+    if (isLocated) return;
+    await catalog();
+    final latitude = catalogMetadata?.latitude;
+    final longitude = catalogMetadata?.longitude;
+    if (latitude != null && longitude != null) {
+      final coordinates = Coordinates(latitude, longitude);
+      try {
+        final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        if (addresses != null && addresses.length > 0) {
+          final address = addresses.first;
+          addressLine = address.addressLine;
+          addressCountry = address.countryName;
+          notifyListeners();
+        }
+      } catch (e) {
+        debugPrint('$runtimeType addAddressToMetadata failed with exception=${e.message}');
+      }
+    }
+  }
 
-  @override
-  String toString() {
-    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects}';
+  bool search(String query) {
+    if (title.toLowerCase().contains(query)) return true;
+    if (catalogMetadata?.xmpSubjects?.toLowerCase()?.contains(query) ?? false) return true;
+    if (isLocated && addressLine.toLowerCase().contains(query)) return true;
+    return false;
   }
 }
