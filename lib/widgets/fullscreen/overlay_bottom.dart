@@ -130,7 +130,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
               ],
             ),
           ),
-          if (details != null) ...[
+          if (details != null && !details.isEmpty) ...[
             SizedBox(height: 4),
             SizedBox(
               width: subRowWidth,

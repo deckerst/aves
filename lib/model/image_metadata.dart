@@ -20,8 +20,8 @@ class CatalogMetadata {
   factory CatalogMetadata.fromMap(Map map) {
     return CatalogMetadata(
       contentId: map['contentId'],
-      dateMillis: map['dateMillis'],
-      xmpSubjects: map['xmpSubjects'],
+      dateMillis: map['dateMillis'] ?? 0,
+      xmpSubjects: map['xmpSubjects'] ?? '',
       latitude: map['latitude'],
       longitude: map['longitude'],
     );
@@ -53,12 +53,14 @@ class OverlayMetadata {
 
   factory OverlayMetadata.fromMap(Map map) {
     return OverlayMetadata(
-      aperture: map['aperture'],
-      exposureTime: map['exposureTime'],
-      focalLength: map['focalLength'],
-      iso: map['iso'],
+      aperture: map['aperture'] ?? '',
+      exposureTime: map['exposureTime'] ?? '',
+      focalLength: map['focalLength'] ?? '',
+      iso: map['iso'] ?? '',
     );
   }
+
+  bool get isEmpty => aperture.isEmpty && exposureTime.isEmpty && focalLength.isEmpty && iso.isEmpty;
 
   @override
   String toString() {
