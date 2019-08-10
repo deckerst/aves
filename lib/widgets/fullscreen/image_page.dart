@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aves/model/android_app_service.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay_bottom.dart';
@@ -79,6 +80,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
+    final entry = entries[_currentHorizontalPage];
     return WillPopScope(
       onWillPop: () {
         Screen.keepOn(false);
@@ -104,18 +106,10 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
                 ),
                 NotificationListener(
                   onNotification: (notification) {
-                    if (notification is BackUpNotification) {
-                      _verticalPager.animateToPage(
-                        0,
-                        duration: const Duration(milliseconds: 350),
-                        curve: Curves.easeInOut,
-                      );
-                    }
+                    if (notification is BackUpNotification) goToVerticalPage(0);
                     return false;
                   },
-                  child: InfoPage(
-                    entry: entries[_currentHorizontalPage],
-                  ),
+                  child: InfoPage(entry: entry),
                 ),
               ],
             ),
@@ -126,6 +120,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
                 scale: _topOverlayScale,
                 viewInsets: _frozenViewInsets,
                 viewPadding: _frozenViewPadding,
+                onActionSelected: (action) => onActionSelected(entry, action),
               ),
               Positioned(
                 bottom: 0,
@@ -175,6 +170,14 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
     );
   }
 
+  goToVerticalPage(int page) {
+    return _verticalPager.animateToPage(
+      page,
+      duration: Duration(milliseconds: 350),
+      curve: Curves.easeInOut,
+    );
+  }
+
   onOverlayVisibleChange() async {
     if (_overlayVisible.value) {
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
@@ -189,7 +192,20 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
       _frozenViewPadding = null;
     }
   }
+
+  onActionSelected(ImageEntry entry, FullscreenAction action) {
+    switch (action) {
+      case FullscreenAction.info:
+        goToVerticalPage(1);
+        break;
+      case FullscreenAction.share:
+        AndroidAppService.share(entry.uri, entry.mimeType);
+        break;
+    }
+  }
 }
+
+enum FullscreenAction { info, share }
 
 class ImagePage extends StatefulWidget {
   final List<ImageEntry> entries;

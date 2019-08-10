@@ -1,6 +1,6 @@
-import 'package:aves/model/android_app_service.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/blurred.dart';
+import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:flutter/material.dart';
 
 class FullscreenTopOverlay extends StatelessWidget {
@@ -8,6 +8,7 @@ class FullscreenTopOverlay extends StatelessWidget {
   final int index;
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
+  final Function(FullscreenAction value) onActionSelected;
 
   ImageEntry get entry => entries[index];
 
@@ -18,6 +19,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     this.scale,
     this.viewInsets,
     this.viewPadding,
+    this.onActionSelected,
   }) : super(key: key);
 
   @override
@@ -37,20 +39,27 @@ class FullscreenTopOverlay extends StatelessWidget {
               scale: scale,
               child: IconButton(
                 icon: Icon(Icons.share),
-                onPressed: share,
+                onPressed: () => onActionSelected?.call(FullscreenAction.share),
                 tooltip: 'Share',
+              ),
+            ),
+            SizedBox(width: 8),
+            OverlayButton(
+              scale: scale,
+              child: PopupMenuButton<FullscreenAction>(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: FullscreenAction.info,
+                    child: Text("Info"),
+                  ),
+                ],
+                onSelected: onActionSelected,
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  delete() {}
-
-  share() {
-    AndroidAppService.share(entry.uri, entry.mimeType);
   }
 }
 
