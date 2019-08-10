@@ -1,5 +1,5 @@
-import 'package:aves/model/catalog_metadata.dart';
-import 'package:aves/model/metadata_storage_service.dart';
+import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -40,16 +40,16 @@ class MetadataService {
     return null;
   }
 
-  // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
-  static Future<Map> getOverlayMetadata(String path) async {
+  static Future<OverlayMetadata> getOverlayMetadata(String path) async {
     try {
+      // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'path': path,
-      });
-      return result as Map;
+      }) as Map;
+      return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {
       debugPrint('getOverlayMetadata failed with exception=${e.message}');
     }
-    return Map();
+    return null;
   }
 }

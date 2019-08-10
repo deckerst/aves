@@ -1,4 +1,4 @@
-import 'package:aves/model/catalog_metadata.dart';
+import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';

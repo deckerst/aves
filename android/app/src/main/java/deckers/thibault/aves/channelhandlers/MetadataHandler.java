@@ -183,6 +183,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
             result.success(metadataMap);
+        } catch (ImageProcessingException e) {
+            result.error("getCatalogMetadata-imageprocessing", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
         } catch (FileNotFoundException e) {
             result.error("getCatalogMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
         } catch (Exception e) {

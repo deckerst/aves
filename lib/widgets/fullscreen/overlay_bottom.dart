@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/widgets/common/blurred.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,9 @@ class FullscreenBottomOverlay extends StatefulWidget {
 }
 
 class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
-  Future<Map> _detailLoader;
+  Future<OverlayMetadata> _detailLoader;
   ImageEntry _lastEntry;
-  Map _lastDetails;
+  OverlayMetadata _lastDetails;
 
   ImageEntry get entry => widget.entries[widget.index];
 
@@ -63,7 +64,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
             padding: innerPadding,
             child: FutureBuilder(
               future: _detailLoader,
-              builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+              builder: (futureContext, AsyncSnapshot<OverlayMetadata> snapshot) {
                 if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
                   _lastDetails = snapshot.data;
                   _lastEntry = entry;
@@ -87,7 +88,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
 
 class _FullscreenBottomOverlayContent extends StatelessWidget {
   final ImageEntry entry;
-  final Map details;
+  final OverlayMetadata details;
   final String position;
   final double maxWidth;
 
@@ -129,7 +130,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
               ],
             ),
           ),
-          if (details != null && details.isNotEmpty) ...[
+          if (details != null) ...[
             SizedBox(height: 4),
             SizedBox(
               width: subRowWidth,
@@ -137,10 +138,10 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
                 children: [
                   Icon(Icons.camera, size: 16),
                   SizedBox(width: 8),
-                  Expanded(child: Text((details['aperture'] as String).replaceAll('f', 'ƒ'))),
-                  Expanded(child: Text(details['exposureTime'])),
-                  Expanded(child: Text(details['focalLength'])),
-                  Expanded(child: Text(details['iso'])),
+                  Expanded(child: Text(details.aperture)),
+                  Expanded(child: Text(details.exposureTime)),
+                  Expanded(child: Text(details.focalLength)),
+                  Expanded(child: Text(details.iso)),
                 ],
               ),
             ),

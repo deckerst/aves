@@ -1,5 +1,5 @@
-import 'package:aves/model/catalog_metadata.dart';
-import 'package:aves/model/metadata_storage_service.dart';
+import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata_db.dart';
 import 'package:flutter/material.dart';
 
 class DebugPage extends StatefulWidget {

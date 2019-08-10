@@ -1,4 +1,4 @@
-import 'package:aves/model/catalog_metadata.dart';
+import 'package:aves/model/image_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -52,7 +52,7 @@ class MetadataDb {
   }
 
   insert(CatalogMetadata metadata) async {
-    debugPrint('$runtimeType insert metadata=$metadata');
+//    debugPrint('$runtimeType insert metadata=$metadata');
     final db = await _database;
     await db.insert(
       table,
