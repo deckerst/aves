@@ -147,44 +147,47 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getCatalogMetadata(MethodCall call, MethodChannel.Result result) {
         String path = call.argument("path");
+        String mimeType = call.argument("mimeType");
         try (InputStream is = new FileInputStream(path)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
             Map<String, Object> metadataMap = new HashMap<>();
+            if (!Constants.MIME_MP2TS.equalsIgnoreCase(mimeType)) {
+                Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-            // EXIF Sub-IFD
-            ExifSubIFDDirectory exifSubDir = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-            if (exifSubDir != null) {
-                if (exifSubDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
-                    metadataMap.put("dateMillis", exifSubDir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, null, TimeZone.getDefault()).getTime());
-                }
-            }
-
-            // GPS
-            GpsDirectory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-            if (gpsDir != null) {
-                GeoLocation geoLocation = gpsDir.getGeoLocation();
-                if (geoLocation != null) {
-                    metadataMap.put("latitude", geoLocation.getLatitude());
-                    metadataMap.put("longitude", geoLocation.getLongitude());
-                }
-            }
-
-            // XMP
-            XmpDirectory xmpDir = metadata.getFirstDirectoryOfType(XmpDirectory.class);
-            if (xmpDir != null) {
-                XMPMeta xmpMeta = xmpDir.getXMPMeta();
-                try {
-                    if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
-                        StringBuilder sb = new StringBuilder();
-                        int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
-                        for (int i = 1; i < count + 1; i++) {
-                            XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
-                            sb.append(";").append(item.getValue());
-                        }
-                        metadataMap.put("xmpSubjects", sb.toString());
+                // EXIF Sub-IFD
+                ExifSubIFDDirectory exifSubDir = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+                if (exifSubDir != null) {
+                    if (exifSubDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
+                        metadataMap.put("dateMillis", exifSubDir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, null, TimeZone.getDefault()).getTime());
                     }
-                } catch (XMPException e) {
-                    e.printStackTrace();
+                }
+
+                // GPS
+                GpsDirectory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+                if (gpsDir != null) {
+                    GeoLocation geoLocation = gpsDir.getGeoLocation();
+                    if (geoLocation != null) {
+                        metadataMap.put("latitude", geoLocation.getLatitude());
+                        metadataMap.put("longitude", geoLocation.getLongitude());
+                    }
+                }
+
+                // XMP
+                XmpDirectory xmpDir = metadata.getFirstDirectoryOfType(XmpDirectory.class);
+                if (xmpDir != null) {
+                    XMPMeta xmpMeta = xmpDir.getXMPMeta();
+                    try {
+                        if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
+                            StringBuilder sb = new StringBuilder();
+                            int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
+                            for (int i = 1; i < count + 1; i++) {
+                                XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
+                                sb.append(";").append(item.getValue());
+                            }
+                            metadataMap.put("xmpSubjects", sb.toString());
+                        }
+                    } catch (XMPException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

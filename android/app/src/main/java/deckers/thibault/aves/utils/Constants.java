@@ -10,6 +10,7 @@ public class Constants {
 
     public static final String MIME_VIDEO = "video";
     public static final String MIME_GIF = "image/gif";
+    public static final String MIME_MP2TS = "video/mp2ts";
 
     // video metadata keys, from android.media.MediaMetadataRetriever
 

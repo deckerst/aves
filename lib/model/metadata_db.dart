@@ -51,14 +51,18 @@ class MetadataDb {
     return null;
   }
 
-  insertMetadata(CatalogMetadata metadata) async {
-//    debugPrint('$runtimeType insertMetadata metadata=$metadata');
+  saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
+    if (metadataEntries == null || metadataEntries.isEmpty) return;
+    final start = DateTime.now();
     final db = await _database;
-    await db.insert(
-      metadataTable,
-      metadata.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    final batch = db.batch();
+    metadataEntries.where((metadata) => metadata != null).forEach((metadata) => batch.insert(
+          metadataTable,
+          metadata.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        ));
+    await batch.commit(noResult: true);
+    debugPrint('$runtimeType saveMetadata complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
   }
 
   Future<List<AddressDetails>> getAllAddresses() async {
@@ -78,13 +82,17 @@ class MetadataDb {
     return null;
   }
 
-  insertAddress(AddressDetails metadata) async {
-//    debugPrint('$runtimeType insertAddress metadata=$metadata');
+  saveAddresses(Iterable<AddressDetails> addresses) async {
+    if (addresses == null || addresses.isEmpty) return;
+    final start = DateTime.now();
     final db = await _database;
-    await db.insert(
-      addressTable,
-      metadata.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    final batch = db.batch();
+    addresses.where((address) => address != null).forEach((address) => batch.insert(
+          addressTable,
+          address.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        ));
+    await batch.commit(noResult: true);
+    debugPrint('$runtimeType saveAddresses complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${addresses.length} entries');
   }
 }

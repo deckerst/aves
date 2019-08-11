@@ -1,6 +1,5 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
-import 'package:aves/model/metadata_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,7 +21,6 @@ class MetadataService {
   }
 
   static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry) async {
-    CatalogMetadata metadata;
     try {
       // return map with:
       // 'dateMillis': date taken in milliseconds since Epoch (long)
@@ -34,9 +32,7 @@ class MetadataService {
         'path': entry.path,
       }) as Map;
       result['contentId'] = entry.contentId;
-      metadata = CatalogMetadata.fromMap(result);
-      metadataDb.insertMetadata(metadata);
-      return metadata;
+      return CatalogMetadata.fromMap(result);
     } on PlatformException catch (e) {
       debugPrint('getCatalogMetadata failed with exception=${e.message}');
     }
