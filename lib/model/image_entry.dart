@@ -129,6 +129,8 @@ class ImageEntry with ChangeNotifier {
 
   Tuple2<double, double> get latLng => isCataloged ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
 
+  String get geoUri => hasGps ? 'geo:${catalogMetadata.latitude},${catalogMetadata.longitude}' : null;
+
   List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
   catalog() async {

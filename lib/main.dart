@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
     debugPrint('$runtimeType catalogEntries cataloging complete');
 
     // sort with more accurate date
-    entries.sort((a,b) => b.bestDate.compareTo(a.bestDate));
+    entries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
     setState(() {});
 
     debugPrint('$runtimeType catalogEntries locating start');

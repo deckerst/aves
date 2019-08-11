@@ -21,12 +21,35 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
+            case "edit": {
+                String title = call.argument("title");
+                Uri uri = Uri.parse(call.argument("uri"));
+                String mimeType = call.argument("mimeType");
+                edit(title, uri, mimeType);
+                result.success(null);
+                break;
+            }
+            case "setAs": {
+                String title = call.argument("title");
+                Uri uri = Uri.parse(call.argument("uri"));
+                String mimeType = call.argument("mimeType");
+                setAs(title, uri, mimeType);
+                result.success(null);
+                break;
+            }
             case "share": {
                 String title = call.argument("title");
                 Uri uri = Uri.parse(call.argument("uri"));
                 String mimeType = call.argument("mimeType");
-                share(context, title, uri, mimeType);
+                share(title, uri, mimeType);
                 result.success(null);
+                break;
+            }
+            case "showOnMap": {
+                Uri geoUri = Uri.parse(call.argument("geoUri"));
+                showOnMap(geoUri);
+                result.success(null);
+                break;
             }
             default:
                 result.notImplemented();
@@ -34,10 +57,29 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         }
     }
 
-    private void share(Context context, String title, Uri uri, String mimeType) {
+    private void edit(String title, Uri uri, String mimeType) {
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setDataAndType(uri, mimeType);
+        context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    private void setAs(String title, Uri uri, String mimeType) {
+        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+        intent.setDataAndType(uri, mimeType);
+        context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    private void share(String title, Uri uri, String mimeType) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType(mimeType);
         context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    private void showOnMap(Uri geoUri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, geoUri);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        }
     }
 }

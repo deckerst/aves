@@ -52,6 +52,19 @@ class FullscreenTopOverlay extends StatelessWidget {
                     value: FullscreenAction.info,
                     child: Text("Info"),
                   ),
+                  PopupMenuItem(
+                    value: FullscreenAction.edit,
+                    child: Text("Edit"),
+                  ),
+                  PopupMenuItem(
+                    value: FullscreenAction.setAs,
+                    child: Text("Set as"),
+                  ),
+                  if (entry.hasGps)
+                    PopupMenuItem(
+                      value: FullscreenAction.showOnMap,
+                      child: Text("Show on map"),
+                    ),
                 ],
                 onSelected: onActionSelected,
               ),

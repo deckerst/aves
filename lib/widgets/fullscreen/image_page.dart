@@ -195,17 +195,26 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
 
   onActionSelected(ImageEntry entry, FullscreenAction action) {
     switch (action) {
+      case FullscreenAction.edit:
+        AndroidAppService.edit(entry.uri, entry.mimeType);
+        break;
       case FullscreenAction.info:
         goToVerticalPage(1);
         break;
+      case FullscreenAction.setAs:
+        AndroidAppService.setAs(entry.uri, entry.mimeType);
+        break;
       case FullscreenAction.share:
         AndroidAppService.share(entry.uri, entry.mimeType);
+        break;
+      case FullscreenAction.showOnMap:
+        AndroidAppService.showOnMap(entry.geoUri);
         break;
     }
   }
 }
 
-enum FullscreenAction { info, share }
+enum FullscreenAction { edit, info, setAs, share, showOnMap }
 
 class ImagePage extends StatefulWidget {
   final List<ImageEntry> entries;
