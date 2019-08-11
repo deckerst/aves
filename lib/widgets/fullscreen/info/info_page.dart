@@ -41,13 +41,13 @@ class InfoPageState extends State<InfoPage> {
         title: Text('Info'),
       ),
       body: NotificationListener(
-        onNotification: handleTopScroll,
+        onNotification: _handleTopScroll,
         child: ListView(
           padding: EdgeInsets.all(8.0),
           children: [
             InfoRow('Title', entry.title),
             InfoRow('Date', dateText),
-            if (entry.isVideo) InfoRow('Duration', entry.durationText),
+            if (entry.isVideo) ..._buildVideoRows(),
             InfoRow('Resolution', resolutionText),
             InfoRow('Size', formatFilesize(entry.sizeBytes)),
             InfoRow('Path', entry.path),
@@ -60,7 +60,13 @@ class InfoPageState extends State<InfoPage> {
     );
   }
 
-  bool handleTopScroll(Notification notification) {
+  List<Widget> _buildVideoRows() {
+    final rotation = entry.catalogMetadata?.videoRotation;
+    if (rotation != null) InfoRow('Rotation', '$rotation°');
+    return [InfoRow('Duration', entry.durationText), if (rotation != null) InfoRow('Rotation', '$rotation°')];
+  }
+
+  bool _handleTopScroll(Notification notification) {
     if (notification is ScrollNotification) {
       if (notification is ScrollStartNotification) {
         final metrics = notification.metrics;

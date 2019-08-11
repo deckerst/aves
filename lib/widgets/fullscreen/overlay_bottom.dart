@@ -45,7 +45,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   }
 
   initDetailLoader() {
-    _detailLoader = MetadataService.getOverlayMetadata(entry.path);
+    _detailLoader = MetadataService.getOverlayMetadata(entry);
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +8,11 @@ class MetadataService {
   static const platform = const MethodChannel('deckers.thibault/aves/metadata');
 
   // return Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
-  static Future<Map> getAllMetadata(String path) async {
+  static Future<Map> getAllMetadata(ImageEntry entry) async {
     try {
       final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
-        'path': path,
+        'mimeType': entry.mimeType,
+        'path': entry.path,
       });
       return result as Map;
     } on PlatformException catch (e) {
@@ -19,7 +21,7 @@ class MetadataService {
     return Map();
   }
 
-  static Future<CatalogMetadata> getCatalogMetadata(int contentId, String path) async {
+  static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry) async {
     CatalogMetadata metadata;
     try {
       // return map with:
@@ -28,9 +30,10 @@ class MetadataService {
       // 'longitude': longitude (double)
       // 'xmpSubjects': space separated XMP subjects (string)
       final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
-        'path': path,
+        'mimeType': entry.mimeType,
+        'path': entry.path,
       }) as Map;
-      result['contentId'] = contentId;
+      result['contentId'] = entry.contentId;
       metadata = CatalogMetadata.fromMap(result);
       metadataDb.insert(metadata);
       return metadata;
@@ -40,11 +43,12 @@ class MetadataService {
     return null;
   }
 
-  static Future<OverlayMetadata> getOverlayMetadata(String path) async {
+  static Future<OverlayMetadata> getOverlayMetadata(ImageEntry entry) async {
     try {
       // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
-        'path': path,
+        'mimeType': entry.mimeType,
+        'path': entry.path,
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {

@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever;
 import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.adobe.xmp.XMPException;
 import com.adobe.xmp.XMPIterator;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import deckers.thibault.aves.utils.Constants;
+import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -60,6 +62,10 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 result.notImplemented();
                 break;
         }
+    }
+
+    private boolean isVideo(@Nullable String mimeType) {
+        return mimeType != null && mimeType.startsWith(Constants.MIME_VIDEO);
     }
 
     private void getAllMetadata(MethodCall call, MethodChannel.Result result) {
@@ -108,7 +114,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getAllVideoMetadataFallback(MethodCall call, MethodChannel.Result result) {
         String path = call.argument("path");
-
         try {
             Map<String, Map<String, String>> metadataMap = new HashMap<>();
             Map<String, String> dirMap = new HashMap<>();
@@ -182,6 +187,29 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     e.printStackTrace();
                 }
             }
+
+            if (isVideo(call.argument("mimeType"))) {
+                try {
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    retriever.setDataSource(path);
+                    String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+                    String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                    retriever.release();
+
+                    if (dateString != null) {
+                        long dateMillis = Utils.parseVideoMetadataDate(dateString);
+                        // some videos have an invalid default date (19040101T000000.000Z) that is before Epoch time
+                        if (dateMillis > 0) {
+                            metadataMap.put("dateMillis", dateMillis);
+                        }
+                    }
+                    if (rotationString != null) {
+                        metadataMap.put("videoRotation", Integer.parseInt(rotationString));
+                    }
+                } catch (Exception e) {
+                    result.error("getCatalogMetadata-exception", "failed to get video metadata for path=" + path, e);
+                }
+            }
             result.success(metadataMap);
         } catch (ImageProcessingException e) {
             result.error("getCatalogMetadata-imageprocessing", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
@@ -193,11 +221,17 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getOverlayMetadata(MethodCall call, MethodChannel.Result result) {
+        Map<String, String> metadataMap = new HashMap<>();
+
+        if (isVideo(call.argument("mimeType"))) {
+            result.success(metadataMap);
+            return;
+        }
+
         String path = call.argument("path");
         try (InputStream is = new FileInputStream(path)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-            Map<String, String> metadataMap = new HashMap<>();
             if (directory != null) {
                 if (directory.containsTag(ExifSubIFDDirectory.TAG_FNUMBER)) {
                     metadataMap.put("aperture", directory.getDescription(ExifSubIFDDirectory.TAG_FNUMBER));

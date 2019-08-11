@@ -86,7 +86,13 @@ class ImageEntry with ChangeNotifier {
 
   bool get isCataloged => catalogMetadata != null;
 
-  double get aspectRatio => height == 0 ? 1 : width / height;
+  double get aspectRatio {
+    if (width == 0 || height == 0) return 1;
+    if (isVideo && isCataloged) {
+      if (catalogMetadata.videoRotation % 180 == 90) return height / width;
+    }
+    return width / height;
+  }
 
   int get megaPixels => (width * height / 1000000).round();
 
@@ -127,7 +133,7 @@ class ImageEntry with ChangeNotifier {
 
   catalog() async {
     if (isCataloged) return;
-    catalogMetadata = await MetadataService.getCatalogMetadata(contentId, path);
+    catalogMetadata = await MetadataService.getCatalogMetadata(this);
     notifyListeners();
   }
 

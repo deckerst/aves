@@ -30,7 +30,7 @@ class MetadataSectionState extends State<MetadataSection> {
   }
 
   initMetadataLoader() async {
-    _metadataLoader = MetadataService.getAllMetadata(widget.entry.path);
+    _metadataLoader = MetadataService.getAllMetadata(widget.entry);
   }
 
   @override
