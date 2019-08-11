@@ -21,7 +21,7 @@ class XmpTagSection extends AnimatedWidget {
                     .map((tag) => Padding(
                           padding: EdgeInsets.symmetric(horizontal: 4.0),
                           child: Chip(
-                            backgroundColor: Colors.indigo,
+                            backgroundColor: Theme.of(context).accentColor,
                             label: Text(tag),
                           ),
                         ))

@@ -47,11 +47,14 @@ class _HomePageState extends State<HomePage> {
     await metadataDb.init();
 
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
-          (entryMap) => setState(() => entries.add(ImageEntry.fromMap(entryMap))),
+          (entryMap) => entries.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
             debugPrint('mediastore stream done');
+            await loadCatalogMetadata();
             setState(() {});
             await catalogEntries();
+            setState(() {});
+            await loadAddresses();
             await locateEntries();
           },
           onError: (error) => debugPrint('mediastore stream error=$error'),
@@ -69,10 +72,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  loadCatalogMetadata() async {
+    debugPrint('$runtimeType loadCatalogMetadata start');
+    final start = DateTime.now();
+    final saved = await metadataDb.loadMetadataEntries();
+    entries.forEach((entry) {
+      final contentId = entry.contentId;
+      if (contentId != null) {
+        entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
+      }
+    });
+    debugPrint('$runtimeType loadCatalogMetadata complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
+  }
+
+  loadAddresses() async {
+    debugPrint('$runtimeType loadAddresses start');
+    final start = DateTime.now();
+    final saved = await metadataDb.loadAddresses();
+    entries.forEach((entry) {
+      final contentId = entry.contentId;
+      if (contentId != null) {
+        entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
+      }
+    });
+    debugPrint('$runtimeType loadAddresses complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
+  }
+
   catalogEntries() async {
     debugPrint('$runtimeType catalogEntries start');
     final start = DateTime.now();
-    final uncataloguedEntries = entries.where((entry) => !entry.isCataloged);
+    final uncataloguedEntries = entries.where((entry) => !entry.isCatalogued);
     final newMetadata = List<CatalogMetadata>();
     await Future.forEach<ImageEntry>(uncataloguedEntries, (entry) async {
       await entry.catalog();
@@ -82,7 +111,6 @@ class _HomePageState extends State<HomePage> {
 
     // sort with more accurate date
     entries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
-    setState(() {});
 
     metadataDb.saveMetadata(List.unmodifiable(newMetadata));
   }
@@ -100,6 +128,6 @@ class _HomePageState extends State<HomePage> {
         newAddresses.clear();
       }
     });
-    debugPrint('$runtimeType locateEntries complete in ${DateTime.now().difference(start).inSeconds}s with ${newAddresses.length} new addresses');
+    debugPrint('$runtimeType locateEntries complete in ${DateTime.now().difference(start).inSeconds}s');
   }
 }

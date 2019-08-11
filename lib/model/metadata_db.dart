@@ -34,21 +34,13 @@ class MetadataDb {
     await init();
   }
 
-  Future<List<CatalogMetadata>> getAllMetadata() async {
-    debugPrint('$runtimeType getAllMetadata');
+  Future<List<CatalogMetadata>> loadMetadataEntries() async {
+    final start = DateTime.now();
     final db = await _database;
     final maps = await db.query(metadataTable);
-    return maps.map((map) => CatalogMetadata.fromMap(map)).toList();
-  }
-
-  Future<CatalogMetadata> getMetadata(int contentId) async {
-    debugPrint('$runtimeType getMetadata contentId=$contentId');
-    final db = await _database;
-    List<Map> maps = await db.query(metadataTable, where: 'contentId = ?', whereArgs: [contentId]);
-    if (maps.length > 0) {
-      return CatalogMetadata.fromMap(maps.first);
-    }
-    return null;
+    final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
+    debugPrint('$runtimeType loadMetadataEntries complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
+    return metadataEntries;
   }
 
   saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
@@ -65,21 +57,13 @@ class MetadataDb {
     debugPrint('$runtimeType saveMetadata complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
   }
 
-  Future<List<AddressDetails>> getAllAddresses() async {
-    debugPrint('$runtimeType getAllAddresses');
+  Future<List<AddressDetails>> loadAddresses() async {
+    final start = DateTime.now();
     final db = await _database;
     final maps = await db.query(addressTable);
-    return maps.map((map) => AddressDetails.fromMap(map)).toList();
-  }
-
-  Future<AddressDetails> getAddress(int contentId) async {
-    debugPrint('$runtimeType getAddress contentId=$contentId');
-    final db = await _database;
-    List<Map> maps = await db.query(addressTable, where: 'contentId = ?', whereArgs: [contentId]);
-    if (maps.length > 0) {
-      return AddressDetails.fromMap(maps.first);
-    }
-    return null;
+    final addresses = maps.map((map) => AddressDetails.fromMap(map)).toList();
+    debugPrint('$runtimeType loadAddresses complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${addresses.length} entries');
+    return addresses;
   }
 
   saveAddresses(Iterable<AddressDetails> addresses) async {

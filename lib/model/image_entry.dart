@@ -86,11 +86,11 @@ class ImageEntry with ChangeNotifier {
 
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
 
-  bool get isCataloged => catalogMetadata != null;
+  bool get isCatalogued => catalogMetadata != null;
 
   double get aspectRatio {
     if (width == 0 || height == 0) return 1;
-    if (isVideo && isCataloged) {
+    if (isVideo && isCatalogued) {
       if (catalogMetadata.videoRotation % 180 == 90) return height / width;
     }
     return width / height;
@@ -125,18 +125,18 @@ class ImageEntry with ChangeNotifier {
     return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
   }
 
-  bool get hasGps => isCataloged && catalogMetadata.latitude != null;
+  bool get hasGps => isCatalogued && catalogMetadata.latitude != null;
 
   bool get isLocated => addressDetails != null;
 
-  Tuple2<double, double> get latLng => isCataloged ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
+  Tuple2<double, double> get latLng => isCatalogued ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
 
   String get geoUri => hasGps ? 'geo:${catalogMetadata.latitude},${catalogMetadata.longitude}' : null;
 
   List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
   catalog() async {
-    if (isCataloged) return;
+    if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
     notifyListeners();
   }

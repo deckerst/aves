@@ -41,6 +41,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final accentHue = HSVColor.fromColor(Theme.of(context).accentColor).hue;
     return SizedBox(
       height: 200,
       child: ClipRRect(
@@ -55,7 +56,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
           markers: [
             Marker(
               markerId: MarkerId(widget.markerId),
-              icon: BitmapDescriptor.defaultMarker,
+              icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
               position: widget.latLng,
             )
           ].toSet(),

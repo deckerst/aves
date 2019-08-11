@@ -22,15 +22,15 @@ class DebugPageState extends State<DebugPage> {
   @override
   void initState() {
     super.initState();
-    _dbMetadataLoader = metadataDb.getAllMetadata();
-    _dbAddressLoader = metadataDb.getAllAddresses();
+    _dbMetadataLoader = metadataDb.loadMetadataEntries();
+    _dbAddressLoader = metadataDb.loadAddresses();
   }
 
   @override
   Widget build(BuildContext context) {
     final Map<String, List<ImageEntry>> byMimeTypes = groupBy(entries, (entry) => entry.mimeType);
-    final cataloged = entries.where((entry) => entry.isCataloged);
-    final withGps = cataloged.where((entry) => entry.hasGps);
+    final catalogued = entries.where((entry) => entry.isCatalogued);
+    final withGps = catalogued.where((entry) => entry.hasGps);
     final located = withGps.where((entry) => entry.isLocated);
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +41,7 @@ class DebugPageState extends State<DebugPage> {
         children: [
           Text('Entries: ${entries.length}'),
           ...byMimeTypes.keys.map((mimeType) => Text('- $mimeType: ${byMimeTypes[mimeType].length}')),
-          Text('Cataloged: ${cataloged.length}'),
+          Text('Catalogued: ${catalogued.length}'),
           Text('With GPS: ${withGps.length}'),
           Text('With address: ${located.length}'),
           Divider(),
