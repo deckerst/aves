@@ -34,7 +34,9 @@ class AllCollectionPage extends StatelessWidget {
     return Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DebugPage(),
+        builder: (context) => DebugPage(
+          entries: entries,
+        ),
       ),
     );
   }

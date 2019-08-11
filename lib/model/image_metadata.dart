@@ -70,3 +70,39 @@ class OverlayMetadata {
     return 'OverlayMetadata{aperture=$aperture, exposureTime=$exposureTime, focalLength=$focalLength, iso=$iso}';
   }
 }
+
+class AddressDetails {
+  final int contentId;
+  final String addressLine, countryName, adminArea, locality;
+
+  AddressDetails({
+    this.contentId,
+    this.addressLine,
+    this.countryName,
+    this.adminArea,
+    this.locality,
+  });
+
+  factory AddressDetails.fromMap(Map map) {
+    return AddressDetails(
+      contentId: map['contentId'],
+      addressLine: map['addressLine'] ?? '',
+      countryName: map['countryName'] ?? '',
+      adminArea: map['adminArea'] ?? '',
+      locality: map['locality'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'contentId': contentId,
+        'addressLine': addressLine,
+        'countryName': countryName,
+        'adminArea': adminArea,
+        'locality': locality,
+      };
+
+  @override
+  String toString() {
+    return 'AddressDetails{contentId=$contentId, addressLine=$addressLine, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
+  }
+}

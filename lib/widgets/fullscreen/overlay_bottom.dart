@@ -118,6 +118,24 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          if (entry.isLocated) ...[
+            SizedBox(height: 4),
+            SizedBox(
+              width: subRowWidth,
+              child: Row(
+                children: [
+                  Icon(Icons.place, size: 16),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      entry.shortAddress,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           SizedBox(height: 4),
           SizedBox(
             width: subRowWidth,

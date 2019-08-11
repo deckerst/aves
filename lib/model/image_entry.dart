@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,7 @@ class ImageEntry with ChangeNotifier {
   final String bucketDisplayName;
   final int durationMillis;
   CatalogMetadata catalogMetadata;
-  String addressLine, addressCountry;
+  AddressDetails addressDetails;
 
   ImageEntry({
     this.uri,
@@ -125,7 +127,7 @@ class ImageEntry with ChangeNotifier {
 
   bool get hasGps => isCataloged && catalogMetadata.latitude != null;
 
-  bool get isLocated => addressLine != null;
+  bool get isLocated => addressDetails != null;
 
   Tuple2<double, double> get latLng => isCataloged ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
 
@@ -150,8 +152,13 @@ class ImageEntry with ChangeNotifier {
         final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
         if (addresses != null && addresses.length > 0) {
           final address = addresses.first;
-          addressLine = address.addressLine;
-          addressCountry = address.countryName;
+          addressDetails = AddressDetails(
+            contentId: contentId,
+            addressLine: address.addressLine,
+            countryName: address.countryName,
+            adminArea: address.adminArea,
+            locality: address.locality,
+          );
           notifyListeners();
         }
       } catch (e) {
@@ -160,10 +167,20 @@ class ImageEntry with ChangeNotifier {
     }
   }
 
+  String get shortAddress {
+    if (!isLocated) return '';
+
+    // admin area examples: Seoul, Geneva, null
+    // locality examples: Mapo-gu, Geneva, Annecy
+    return LinkedHashSet.of(
+      [addressDetails.countryName, addressDetails.adminArea, addressDetails.locality],
+    ).where((part) => part != null && part.isNotEmpty).join(', ');
+  }
+
   bool search(String query) {
     if (title.toLowerCase().contains(query)) return true;
     if (catalogMetadata?.xmpSubjects?.toLowerCase()?.contains(query) ?? false) return true;
-    if (isLocated && addressLine.toLowerCase().contains(query)) return true;
+    if (isLocated && addressDetails.addressLine.toLowerCase().contains(query)) return true;
     return false;
   }
 }

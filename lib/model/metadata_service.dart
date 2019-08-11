@@ -35,7 +35,7 @@ class MetadataService {
       }) as Map;
       result['contentId'] = entry.contentId;
       metadata = CatalogMetadata.fromMap(result);
-      metadataDb.insert(metadata);
+      metadataDb.insertMetadata(metadata);
       return metadata;
     } on PlatformException catch (e) {
       debugPrint('getCatalogMetadata failed with exception=${e.message}');

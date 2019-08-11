@@ -20,7 +20,7 @@ class LocationSection extends AnimatedWidget {
               if (entry.isLocated)
                 Padding(
                   padding: EdgeInsets.only(top: 8),
-                  child: InfoRow('Address', entry.addressLine),
+                  child: InfoRow('Address', entry.addressDetails.addressLine),
                 ),
             ],
           );

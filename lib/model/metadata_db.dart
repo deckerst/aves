@@ -10,7 +10,8 @@ class MetadataDb {
 
   Future<String> get path async => join(await getDatabasesPath(), 'metadata.db');
 
-  static final table = 'metadata';
+  static final metadataTable = 'metadata';
+  static final addressTable = 'address';
 
   MetadataDb._private();
 
@@ -18,10 +19,9 @@ class MetadataDb {
     debugPrint('$runtimeType init');
     _database = openDatabase(
       await path,
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE $table(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, latitude REAL, longitude REAL)',
-        );
+      onCreate: (db, version) async {
+        await db.execute('CREATE TABLE $metadataTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, latitude REAL, longitude REAL)');
+        await db.execute('CREATE TABLE $addressTable(contentId INTEGER PRIMARY KEY, addressLine TEXT, countryName TEXT, adminArea TEXT, locality TEXT)');
       },
       version: 1,
     );
@@ -34,28 +34,55 @@ class MetadataDb {
     await init();
   }
 
-  Future<List<CatalogMetadata>> getAll() async {
-    debugPrint('$runtimeType getAll');
+  Future<List<CatalogMetadata>> getAllMetadata() async {
+    debugPrint('$runtimeType getAllMetadata');
     final db = await _database;
-    final maps = await db.query(table);
+    final maps = await db.query(metadataTable);
     return maps.map((map) => CatalogMetadata.fromMap(map)).toList();
   }
 
-  Future<CatalogMetadata> get(int contentId) async {
-    debugPrint('$runtimeType get contentId=$contentId');
+  Future<CatalogMetadata> getMetadata(int contentId) async {
+    debugPrint('$runtimeType getMetadata contentId=$contentId');
     final db = await _database;
-    List<Map> maps = await db.query(table, where: 'contentId = ?', whereArgs: [contentId]);
+    List<Map> maps = await db.query(metadataTable, where: 'contentId = ?', whereArgs: [contentId]);
     if (maps.length > 0) {
       return CatalogMetadata.fromMap(maps.first);
     }
     return null;
   }
 
-  insert(CatalogMetadata metadata) async {
-//    debugPrint('$runtimeType insert metadata=$metadata');
+  insertMetadata(CatalogMetadata metadata) async {
+//    debugPrint('$runtimeType insertMetadata metadata=$metadata');
     final db = await _database;
     await db.insert(
-      table,
+      metadataTable,
+      metadata.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<AddressDetails>> getAllAddresses() async {
+    debugPrint('$runtimeType getAllAddresses');
+    final db = await _database;
+    final maps = await db.query(addressTable);
+    return maps.map((map) => AddressDetails.fromMap(map)).toList();
+  }
+
+  Future<AddressDetails> getAddress(int contentId) async {
+    debugPrint('$runtimeType getAddress contentId=$contentId');
+    final db = await _database;
+    List<Map> maps = await db.query(addressTable, where: 'contentId = ?', whereArgs: [contentId]);
+    if (maps.length > 0) {
+      return AddressDetails.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  insertAddress(AddressDetails metadata) async {
+//    debugPrint('$runtimeType insertAddress metadata=$metadata');
+    final db = await _database;
+    await db.insert(
+      addressTable,
       metadata.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
