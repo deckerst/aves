@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_file_service.dart';
 import 'package:aves/widgets/album/thumbnail_tags.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -45,12 +45,12 @@ class ThumbnailState extends State<Thumbnail> {
 
   initByteLoader() {
     final dim = (widget.extent * widget.devicePixelRatio).round();
-    _byteLoader = ImageDecodeService.getImageBytes(widget.entry, dim, dim);
+    _byteLoader = ImageFileService.getImageBytes(widget.entry, dim, dim);
   }
 
   @override
   void dispose() {
-    ImageDecodeService.cancelGetImageBytes(uri);
+    ImageFileService.cancelGetImageBytes(uri);
     super.dispose();
   }
 

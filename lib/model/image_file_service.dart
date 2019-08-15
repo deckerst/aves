@@ -4,7 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ImageDecodeService {
+class ImageFileService {
   static const platform = const MethodChannel('deckers.thibault/aves/image');
 
   static getImageEntries() async {

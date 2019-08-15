@@ -60,6 +60,7 @@ class MetadataSectionState extends State<MetadataSection> {
                     ),
                   ...tagKeys.map((tagKey) {
                     final value = directory[tagKey] as String;
+                    if (value == null || value.isEmpty) return SizedBox.shrink();
                     return InfoRow(tagKey, value.length > maxValueLength ? '${value.substring(0, maxValueLength)}…' : value);
                   }),
                   SizedBox(height: 16),

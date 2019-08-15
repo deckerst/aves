@@ -1,5 +1,5 @@
-import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           },
           onError: (error) => debugPrint('mediastore stream error=$error'),
         );
-    await ImageDecodeService.getImageEntries();
+    await ImageFileService.getImageEntries();
   }
 
   @override

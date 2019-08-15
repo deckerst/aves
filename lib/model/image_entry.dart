@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:aves/model/image_decode_service.dart';
+import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:flutter/material.dart';
@@ -191,7 +191,7 @@ class ImageEntry with ChangeNotifier {
   Future<bool> rename(String newName) async {
     if (newName == filename) return true;
 
-    final newFields = await ImageDecodeService.rename(this, '$newName${extension(this.path)}');
+    final newFields = await ImageFileService.rename(this, '$newName${extension(this.path)}');
     if (newFields.isEmpty) return false;
 
     final uri = newFields['uri'];
