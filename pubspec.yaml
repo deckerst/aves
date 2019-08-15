@@ -21,6 +21,7 @@ dependencies:
     sdk: flutter
   chewie:
   collection:
+  flushbar:
   flutter_sticky_header:
   geocoder:
   google_maps_flutter:

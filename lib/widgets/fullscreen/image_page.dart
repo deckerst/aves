@@ -7,6 +7,7 @@ import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay_bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay_top.dart';
 import 'package:aves/widgets/fullscreen/video.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +39,35 @@ class FullscreenPage extends StatelessWidget {
           entries: entries,
           initialUri: initialUri,
         ),
+        resizeToAvoidBottomInset: false,
+//        Hero(
+//          tag: uri,
+//          child: Stack(
+//            children: [
+//              Center(
+//                child: widget.thumbnail == null
+//                    ? CircularProgressIndicator()
+//                    : Image.memory(
+//                        widget.thumbnail,
+//                        width: requestWidth,
+//                        height: requestHeight,
+//                        fit: BoxFit.contain,
+//                      ),
+//              ),
+//              Center(
+//                child: FadeInImage(
+//                  placeholder: MemoryImage(kTransparentImage),
+//                  image: FileImage(File(path)),
+//                  fadeOutDuration: Duration(milliseconds: 1),
+//                  fadeInDuration: Duration(milliseconds: 200),
+//                  width: requestWidth,
+//                  height: requestHeight,
+//                  fit: BoxFit.contain,
+//                ),
+//              ),
+//            ],
+//          ),
+//        ),
       ),
     );
   }
@@ -110,92 +140,53 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     final entry = entries[_currentHorizontalPage];
-    return WillPopScope(
-      onWillPop: () {
-        Screen.keepOn(false);
-        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-        return Future.value(true);
-      },
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Stack(
+    return Stack(
+      children: [
+        PageView(
+          scrollDirection: Axis.vertical,
+          controller: _verticalPager,
+          physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
+          onPageChanged: (page) => setState(() => _currentVerticalPage = page),
           children: [
-            PageView(
-              scrollDirection: Axis.vertical,
-              controller: _verticalPager,
-              physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
-              onPageChanged: (page) => setState(() => _currentVerticalPage = page),
-              children: [
-                ImagePage(
-                  entries: entries,
-                  pageController: _horizontalPager,
-                  onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                  onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
-                  onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
-                ),
-                NotificationListener(
-                  onNotification: (notification) {
-                    if (notification is BackUpNotification) goToVerticalPage(0);
-                    return false;
-                  },
-                  child: InfoPage(entry: entry),
-                ),
-              ],
+            ImagePage(
+              entries: entries,
+              pageController: _horizontalPager,
+              onTap: () => _overlayVisible.value = !_overlayVisible.value,
+              onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
+              onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
             ),
-            if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
-              FullscreenTopOverlay(
-                entries: entries,
-                index: _currentHorizontalPage,
-                scale: _topOverlayScale,
-                viewInsets: _frozenViewInsets,
-                viewPadding: _frozenViewPadding,
-                onActionSelected: (action) => onActionSelected(entry, action),
-              ),
-              Positioned(
-                bottom: 0,
-                child: SlideTransition(
-                  position: _bottomOverlayOffset,
-                  child: FullscreenBottomOverlay(
-                    entries: entries,
-                    index: _currentHorizontalPage,
-                    viewInsets: _frozenViewInsets,
-                    viewPadding: _frozenViewPadding,
-                  ),
-                ),
-              )
-            ]
+            NotificationListener(
+              onNotification: (notification) {
+                if (notification is BackUpNotification) goToVerticalPage(0);
+                return false;
+              },
+              child: InfoPage(entry: entry),
+            ),
           ],
         ),
-        resizeToAvoidBottomInset: false,
-//        Hero(
-//          tag: uri,
-//          child: Stack(
-//            children: [
-//              Center(
-//                child: widget.thumbnail == null
-//                    ? CircularProgressIndicator()
-//                    : Image.memory(
-//                        widget.thumbnail,
-//                        width: requestWidth,
-//                        height: requestHeight,
-//                        fit: BoxFit.contain,
-//                      ),
-//              ),
-//              Center(
-//                child: FadeInImage(
-//                  placeholder: MemoryImage(kTransparentImage),
-//                  image: FileImage(File(path)),
-//                  fadeOutDuration: Duration(milliseconds: 1),
-//                  fadeInDuration: Duration(milliseconds: 200),
-//                  width: requestWidth,
-//                  height: requestHeight,
-//                  fit: BoxFit.contain,
-//                ),
-//              ),
-//            ],
-//          ),
-//        ),
-      ),
+        if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
+          FullscreenTopOverlay(
+            entries: entries,
+            index: _currentHorizontalPage,
+            scale: _topOverlayScale,
+            viewInsets: _frozenViewInsets,
+            viewPadding: _frozenViewPadding,
+            onActionSelected: (action) => onActionSelected(entry, action),
+          ),
+          Positioned(
+            bottom: 0,
+            child: SlideTransition(
+              position: _bottomOverlayOffset,
+              child: FullscreenBottomOverlay(
+                entries: entries,
+                index: _currentHorizontalPage,
+                viewInsets: _frozenViewInsets,
+                viewPadding: _frozenViewPadding,
+              ),
+            ),
+          )
+        ]
+      ],
     );
   }
 
@@ -247,8 +238,16 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         });
     if (newName == null || newName.isEmpty) return;
     final success = await entry.rename(newName);
-    final snackBar = SnackBar(content: Text(success ? 'Done!' : 'Failed'));
-    Scaffold.of(context).showSnackBar(snackBar);
+    Flushbar(
+      message: success ? 'Done!' : 'Failed',
+      margin: EdgeInsets.all(8),
+      borderRadius: 8,
+      borderColor: Colors.white30,
+      borderWidth: 0.5,
+      duration: Duration(seconds: 2),
+      flushbarPosition: FlushbarPosition.TOP,
+      animationDuration: Duration(milliseconds: 600),
+    )..show(context);
   }
 
   onActionSelected(ImageEntry entry, FullscreenAction action) {
