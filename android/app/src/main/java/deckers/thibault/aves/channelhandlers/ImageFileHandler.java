@@ -26,14 +26,14 @@ import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
-public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
+public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/image";
 
     private Activity activity;
     private ImageDecodeTaskManager imageDecodeTaskManager;
     private MediaStoreStreamHandler mediaStoreStreamHandler;
 
-    public ImageDecodeHandler(Activity activity, MediaStoreStreamHandler mediaStoreStreamHandler) {
+    public ImageFileHandler(Activity activity, MediaStoreStreamHandler mediaStoreStreamHandler) {
         this.activity = activity;
         imageDecodeTaskManager = new ImageDecodeTaskManager(activity);
         this.mediaStoreStreamHandler = mediaStoreStreamHandler;
@@ -53,6 +53,9 @@ public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "rename":
                 rename(call, result);
+                break;
+            case "rotate":
+                rotate(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -94,7 +97,7 @@ public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
             result.error("rename-provider", "failed to find provider for uri=" + uri, null);
             return;
         }
-        provider.rename(activity, path, uri, mimeType, newName, new ImageProvider.RenameCallback() {
+        provider.rename(activity, path, uri, mimeType, newName, new ImageProvider.ImageOpCallback() {
             @Override
             public void onSuccess(Map<String, Object> newFields) {
                 new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
@@ -103,6 +106,35 @@ public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
             @Override
             public void onFailure() {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rename-failure", "failed to rename", null));
+            }
+        });
+    }
+
+    private void rotate(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Map map = call.argument("entry");
+        Boolean clockwise = call.argument("clockwise");
+        if (map == null || clockwise == null) {
+            result.error("rotate-args", "failed because of missing arguments", null);
+            return;
+        }
+        Uri uri = Uri.parse((String) map.get("uri"));
+        String path = (String) map.get("path");
+        String mimeType = (String) map.get("mimeType");
+
+        ImageProvider provider = ImageProviderFactory.getProvider(uri);
+        if (provider == null) {
+            result.error("rotate-provider", "failed to find provider for uri=" + uri, null);
+            return;
+        }
+        provider.rotate(activity, path, uri, mimeType, clockwise, new ImageProvider.ImageOpCallback() {
+            @Override
+            public void onSuccess(Map<String, Object> newFields) {
+                new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
+            }
+
+            @Override
+            public void onFailure() {
+                new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", null));
             }
         });
     }

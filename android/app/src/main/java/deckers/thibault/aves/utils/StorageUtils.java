@@ -5,8 +5,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import androidx.documentfile.provider.DocumentFile;
 
@@ -14,6 +16,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -162,6 +165,34 @@ public class StorageUtils {
         }
 
         return found && documentFile != null ? Optional.of(documentFile) : Optional.empty();
+    }
+
+    public static String copyFileToTemp(String path) {
+        try {
+            String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(path)).toString());
+            File temp = File.createTempFile("aves", '.' + extension);
+            Utils.copyFile(new File(path), temp);
+            temp.deleteOnExit();
+            return temp.getPath();
+        } catch (IOException e) {
+            Log.w(LOG_TAG, "failed to copy file at path=" + path);
+        }
+        return null;
+    }
+
+    public static boolean writeToDocumentFile(Context context, String from, Uri documentUri) {
+        try {
+            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(documentUri, "rw");
+            if (pfd == null) {
+                Log.w(LOG_TAG, "failed to get file descriptor for documentUri=" + documentUri);
+                return false;
+            }
+            Utils.copyFile(new File(from), pfd.getFileDescriptor());
+            return true;
+        } catch (IOException e) {
+            Log.w(LOG_TAG, "failed to write to DocumentFile at documentUri=" + documentUri);
+        }
+        return false;
     }
 
     /**

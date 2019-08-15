@@ -15,9 +15,9 @@ class ImageEntry with ChangeNotifier {
   String path;
   int contentId;
   final String mimeType;
-  final int width;
-  final int height;
-  final int orientationDegrees;
+  int width;
+  int height;
+  int orientationDegrees;
   final int sizeBytes;
   String title;
   final int dateModifiedSecs;
@@ -202,6 +202,22 @@ class ImageEntry with ChangeNotifier {
     if (contentId != null) this.contentId = contentId;
     final title = newFields['title'];
     if (title != null) this.title = title;
+    notifyListeners();
+    return true;
+  }
+
+  bool get canRotate => mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG;
+
+  Future<bool> rotate({@required bool clockwise}) async {
+    final newFields = await ImageFileService.rotate(this, clockwise: clockwise);
+    if (newFields.isEmpty) return false;
+
+    final width = newFields['width'];
+    if (width != null) this.width = width;
+    final height = newFields['height'];
+    if (height != null) this.height = height;
+    final orientationDegrees = newFields['orientationDegrees'];
+    if (orientationDegrees != null) this.orientationDegrees = orientationDegrees;
     notifyListeners();
     return true;
   }

@@ -50,29 +50,39 @@ class FullscreenTopOverlay extends StatelessWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: FullscreenAction.info,
-                    child: Text("Info"),
+                    child: MenuRow(text: 'Info', icon: Icons.info_outline),
                   ),
                   PopupMenuItem(
                     value: FullscreenAction.rename,
-                    child: Text("Rename"),
+                    child: MenuRow(text: 'Rename', icon: Icons.title),
                   ),
+                  if (entry.canRotate)
+                    PopupMenuItem(
+                      value: FullscreenAction.rotateCCW,
+                      child: MenuRow(text: 'Rotate left', icon: Icons.rotate_left),
+                    ),
+                  if (entry.canRotate)
+                    PopupMenuItem(
+                      value: FullscreenAction.rotateCW,
+                      child: MenuRow(text: 'Rotate right', icon: Icons.rotate_right),
+                    ),
                   PopupMenuDivider(),
                   PopupMenuItem(
                     value: FullscreenAction.edit,
-                    child: Text("Edit with…"),
+                    child: Text('Edit with…'),
                   ),
                   PopupMenuItem(
                     value: FullscreenAction.open,
-                    child: Text("Open with…"),
+                    child: Text('Open with…'),
                   ),
                   PopupMenuItem(
                     value: FullscreenAction.setAs,
-                    child: Text("Set as…"),
+                    child: Text('Set as…'),
                   ),
                   if (entry.hasGps)
                     PopupMenuItem(
                       value: FullscreenAction.openMap,
-                      child: Text("Show on map…"),
+                      child: Text('Show on map…'),
                     ),
                 ],
                 onSelected: onActionSelected,
@@ -81,6 +91,28 @@ class FullscreenTopOverlay extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class MenuRow extends StatelessWidget {
+  final String text;
+  final IconData icon;
+
+  const MenuRow({
+    Key key,
+    this.text,
+    this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon),
+        SizedBox(width: 8),
+        Text(text),
+      ],
     );
   }
 }

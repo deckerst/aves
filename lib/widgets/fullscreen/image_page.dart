@@ -213,6 +213,56 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     }
   }
 
+  onActionSelected(ImageEntry entry, FullscreenAction action) {
+    switch (action) {
+      case FullscreenAction.edit:
+        AndroidAppService.edit(entry.uri, entry.mimeType);
+        break;
+      case FullscreenAction.info:
+        goToVerticalPage(1);
+        break;
+      case FullscreenAction.rename:
+        showRenameDialog(entry);
+        break;
+      case FullscreenAction.open:
+        AndroidAppService.open(entry.uri, entry.mimeType);
+        break;
+      case FullscreenAction.openMap:
+        AndroidAppService.openMap(entry.geoUri);
+        break;
+      case FullscreenAction.rotateCCW:
+        rotate(entry, clockwise: false);
+        break;
+      case FullscreenAction.rotateCW:
+        rotate(entry, clockwise: true);
+        break;
+      case FullscreenAction.setAs:
+        AndroidAppService.setAs(entry.uri, entry.mimeType);
+        break;
+      case FullscreenAction.share:
+        AndroidAppService.share(entry.uri, entry.mimeType);
+        break;
+    }
+  }
+
+  showFeedback(String message) {
+    Flushbar(
+      message: message,
+      margin: EdgeInsets.all(8),
+      borderRadius: 8,
+      borderColor: Colors.white30,
+      borderWidth: 0.5,
+      duration: Duration(seconds: 2),
+      flushbarPosition: FlushbarPosition.TOP,
+      animationDuration: Duration(milliseconds: 600),
+    )..show(context);
+  }
+
+  rotate(ImageEntry entry, {@required bool clockwise}) async {
+    final success = await entry.rotate(clockwise: clockwise);
+    showFeedback(success ? 'Done!' : 'Failed');
+  }
+
   showRenameDialog(ImageEntry entry) async {
     final currentName = entry.title;
     final controller = TextEditingController(text: currentName);
@@ -238,46 +288,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         });
     if (newName == null || newName.isEmpty) return;
     final success = await entry.rename(newName);
-    Flushbar(
-      message: success ? 'Done!' : 'Failed',
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      borderColor: Colors.white30,
-      borderWidth: 0.5,
-      duration: Duration(seconds: 2),
-      flushbarPosition: FlushbarPosition.TOP,
-      animationDuration: Duration(milliseconds: 600),
-    )..show(context);
-  }
-
-  onActionSelected(ImageEntry entry, FullscreenAction action) {
-    switch (action) {
-      case FullscreenAction.edit:
-        AndroidAppService.edit(entry.uri, entry.mimeType);
-        break;
-      case FullscreenAction.info:
-        goToVerticalPage(1);
-        break;
-      case FullscreenAction.rename:
-        showRenameDialog(entry);
-        break;
-      case FullscreenAction.open:
-        AndroidAppService.open(entry.uri, entry.mimeType);
-        break;
-      case FullscreenAction.openMap:
-        AndroidAppService.openMap(entry.geoUri);
-        break;
-      case FullscreenAction.setAs:
-        AndroidAppService.setAs(entry.uri, entry.mimeType);
-        break;
-      case FullscreenAction.share:
-        AndroidAppService.share(entry.uri, entry.mimeType);
-        break;
-    }
+    showFeedback(success ? 'Done!' : 'Failed');
   }
 }
 
-enum FullscreenAction { edit, info, open, openMap, rename, setAs, share }
+enum FullscreenAction { edit, info, open, openMap, rename, rotateCCW, rotateCW, setAs, share }
 
 class ImagePage extends StatefulWidget {
   final List<ImageEntry> entries;

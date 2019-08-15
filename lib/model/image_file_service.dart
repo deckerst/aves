@@ -55,4 +55,18 @@ class ImageFileService {
     }
     return Map();
   }
+
+  static Future<Map> rotate(ImageEntry entry, {@required bool clockwise}) async {
+    try {
+      // return map with: 'width' 'height' 'orientationDegrees' (all optional)
+      final result = await platform.invokeMethod('rotate', <String, dynamic>{
+        'entry': entry.toMap(),
+        'clockwise': clockwise,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('rotate failed with exception=${e.message}');
+    }
+    return Map();
+  }
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import deckers.thibault.aves.utils.Constants;
-import deckers.thibault.aves.utils.Utils;
+import deckers.thibault.aves.utils.MetadataHelper;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -200,7 +200,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     retriever.release();
 
                     if (dateString != null) {
-                        long dateMillis = Utils.parseVideoMetadataDate(dateString);
+                        long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
                         // some videos have an invalid default date (19040101T000000.000Z) that is before Epoch time
                         if (dateMillis > 0) {
                             metadataMap.put("dateMillis", dateMillis);

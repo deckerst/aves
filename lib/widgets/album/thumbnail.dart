@@ -33,13 +33,14 @@ class ThumbnailState extends State<Thumbnail> {
   @override
   void initState() {
     super.initState();
+    entry.addListener(onEntryChange);
     initByteLoader();
   }
 
   @override
   void didUpdateWidget(Thumbnail oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (uri == oldWidget.entry.uri && widget.extent == oldWidget.extent) return;
+    if (widget.extent == oldWidget.extent && uri == oldWidget.entry.uri && widget.entry.width == oldWidget.entry.width && widget.entry.height == oldWidget.entry.height && widget.entry.orientationDegrees == oldWidget.entry.orientationDegrees) return;
     initByteLoader();
   }
 
@@ -48,8 +49,11 @@ class ThumbnailState extends State<Thumbnail> {
     _byteLoader = ImageFileService.getImageBytes(widget.entry, dim, dim);
   }
 
+  onEntryChange() => setState(() => initByteLoader());
+
   @override
   void dispose() {
+    entry.removeListener(onEntryChange);
     ImageFileService.cancelGetImageBytes(uri);
     super.dispose();
   }
@@ -74,43 +78,61 @@ class ThumbnailState extends State<Thumbnail> {
             future: _byteLoader,
             builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
               final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
-              return Stack(
-                alignment: AlignmentDirectional.bottomStart,
-                children: [
-                  Hero(
-                    tag: uri,
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      // during hero animation back from a fullscreen image,
-                      // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
-                      // so we wrap the image to apply better constraints
-                      final dim = min(constraints.maxWidth, constraints.maxHeight);
-                      return Container(
-                        alignment: Alignment.center,
-                        constraints: BoxConstraints.tight(Size(dim, dim)),
-                        child: bytes.length > 0
-                            ? Image.memory(
-                                bytes,
-                                width: dim,
-                                height: dim,
-                                fit: BoxFit.cover,
-                              )
-                            : Icon(Icons.error),
-                      );
-                    }),
-                  ),
-                  if (entry.isVideo)
-                    VideoTag(
-                      entry: entry,
-                      iconSize: iconSize,
-                    )
-                  else if (entry.isGif)
-                    GifTag(iconSize: iconSize)
-                  else if (entry.hasGps)
-                    GpsTag(iconSize: iconSize)
-                ],
-              );
+              return ThumbnailImage(entry: entry, bytes: bytes, iconSize: iconSize);
             }),
       ),
+    );
+  }
+}
+
+class ThumbnailImage extends StatelessWidget {
+  final Uint8List bytes;
+  final ImageEntry entry;
+  final double iconSize;
+
+  const ThumbnailImage({
+    Key key,
+    @required this.bytes,
+    @required this.entry,
+    @required this.iconSize,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: AlignmentDirectional.bottomStart,
+      children: [
+        Hero(
+          tag: entry.uri,
+          child: LayoutBuilder(builder: (context, constraints) {
+            // during hero animation back from a fullscreen image,
+            // the image covers the whole screen (because of the 'fit' prop and the full screen hero constraints)
+            // so we wrap the image to apply better constraints
+            final dim = min(constraints.maxWidth, constraints.maxHeight);
+            return Container(
+              alignment: Alignment.center,
+              constraints: BoxConstraints.tight(Size(dim, dim)),
+              child: bytes.length > 0
+                  ? Image.memory(
+                      bytes,
+                      width: dim,
+                      height: dim,
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(Icons.error),
+            );
+          }),
+        ),
+        if (entry.isVideo)
+          VideoTag(
+            entry: entry,
+            iconSize: iconSize,
+          )
+        else if (entry.isGif)
+          GifTag(iconSize: iconSize)
+        else if (entry.hasGps)
+          GpsTag(iconSize: iconSize)
+      ],
     );
   }
 }

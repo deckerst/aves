@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 
-import androidx.annotation.NonNull;
-
 public class Env {
     private static String[] mStorageVolumes;
     private static String mExternalStorage;
@@ -45,7 +43,7 @@ public class Env {
         return mExternalStorage;
     }
 
-    public static boolean isOnSdCard(final Activity activity, @NonNull String path) {
-        return !getExternalStorage().equals(new PathComponents(path, getStorageVolumes(activity)).getStorage());
+    public static boolean isOnSdCard(final Activity activity, String path) {
+        return path != null && !getExternalStorage().equals(new PathComponents(path, getStorageVolumes(activity)).getStorage());
     }
 }

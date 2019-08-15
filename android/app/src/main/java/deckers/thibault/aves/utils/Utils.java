@@ -1,12 +1,11 @@
 package deckers.thibault.aves.utils;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -29,48 +28,27 @@ public class Utils {
         return logTag;
     }
 
-    // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
-    public static long parseVideoMetadataDate(String dateString) {
-        // optional sub-second
-        String subSecond = null;
-        Matcher subSecondMatcher = Pattern.compile("(\\d{6})(\\.\\d+)").matcher(dateString);
-        if (subSecondMatcher.find()) {
-            subSecond = subSecondMatcher.group(2).substring(1);
-            dateString = subSecondMatcher.replaceAll("$1");
-        }
-
-        // optional time zone
-        TimeZone timeZone = null;
-        Matcher timeZoneMatcher = Pattern.compile("(Z|[+-]\\d{4})$").matcher(dateString);
-        if (timeZoneMatcher.find()) {
-            timeZone = TimeZone.getTimeZone("GMT" + timeZoneMatcher.group().replaceAll("Z", ""));
-            dateString = timeZoneMatcher.replaceAll("");
-        }
-
-        Date date = null;
-        try {
-            DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.US);
-            parser.setTimeZone((timeZone != null) ? timeZone : TimeZone.getTimeZone("GMT"));
-            date = parser.parse(dateString);
-        } catch (ParseException ex) {
-            // ignore
-        }
-
-        if (date == null) {
-            return 0;
-        }
-
-        long dateMillis = date.getTime();
-        if (subSecond != null) {
-            try {
-                int millis = (int) (Double.parseDouble("." + subSecond) * 1000);
-                if (millis >= 0 && millis < 1000) {
-                    dateMillis += millis;
-                }
-            } catch (NumberFormatException e) {
-                // ignore
+    public static void copyFile(final File source, final FileDescriptor descriptor) throws IOException {
+        try (FileInputStream inStream = new FileInputStream(source); FileOutputStream outStream = new FileOutputStream(descriptor)) {
+            final FileChannel inChannel = inStream.getChannel();
+            final FileChannel outChannel = outStream.getChannel();
+            final long size = inChannel.size();
+            long position = 0;
+            while (position < size) {
+                position += inChannel.transferTo(position, 1024L * 1024L, outChannel);
             }
         }
-        return dateMillis;
+    }
+
+    public static void copyFile(final File source, final File destination) throws IOException {
+        try (FileInputStream inStream = new FileInputStream(source); FileOutputStream outStream = new FileOutputStream(destination)) {
+            final FileChannel inChannel = inStream.getChannel();
+            final FileChannel outChannel = outStream.getChannel();
+            final long size = inChannel.size();
+            long position = 0;
+            while (position < size) {
+                position += inChannel.transferTo(position, 1024L * 1024L, outChannel);
+            }
+        }
     }
 }
