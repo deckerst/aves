@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,8 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.provider.ImageProvider;
+import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -41,28 +45,66 @@ public class ImageDecodeHandler implements MethodChannel.MethodCallHandler {
             case "getImageEntries":
                 getPermissionResult(result, activity);
                 break;
-            case "getImageBytes": {
-                Map map = call.argument("entry");
-                Integer width = call.argument("width");
-                Integer height = call.argument("height");
-                if (map == null) {
-                    result.error("getImageBytes-args", "failed to get image bytes because 'entry' is null", null);
-                    return;
-                }
-                ImageEntry entry = new ImageEntry(map);
-                imageDecodeTaskManager.fetch(result, entry, width, height);
+            case "getImageBytes":
+                getImageBytes(call, result);
                 break;
-            }
-            case "cancelGetImageBytes": {
-                String uri = call.argument("uri");
-                imageDecodeTaskManager.cancel(uri);
-                result.success(null);
+            case "cancelGetImageBytes":
+                cancelGetImageBytes(call, result);
                 break;
-            }
+            case "rename":
+                rename(call, result);
+                break;
             default:
                 result.notImplemented();
                 break;
         }
+    }
+
+    private void getImageBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Map map = call.argument("entry");
+        Integer width = call.argument("width");
+        Integer height = call.argument("height");
+        if (map == null || width == null || height == null) {
+            result.error("getImageBytes-args", "failed because of missing arguments", null);
+            return;
+        }
+        ImageEntry entry = new ImageEntry(map);
+        imageDecodeTaskManager.fetch(result, entry, width, height);
+    }
+
+    private void cancelGetImageBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        String uri = call.argument("uri");
+        imageDecodeTaskManager.cancel(uri);
+        result.success(null);
+    }
+
+    private void rename(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Map map = call.argument("entry");
+        String newName = call.argument("newName");
+        if (map == null || newName == null) {
+            result.error("rename-args", "failed because of missing arguments", null);
+            return;
+        }
+        Uri uri = Uri.parse((String) map.get("uri"));
+        String path = (String) map.get("path");
+        String mimeType = (String) map.get("mimeType");
+
+        ImageProvider provider = ImageProviderFactory.getProvider(uri);
+        if (provider == null) {
+            result.error("rename-provider", "failed to find provider for uri=" + uri, null);
+            return;
+        }
+        provider.rename(activity, path, uri, mimeType, newName, new ImageProvider.RenameCallback() {
+            @Override
+            public void onSuccess(Map<String, Object> newFields) {
+                new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
+            }
+
+            @Override
+            public void onFailure() {
+                new Handler(Looper.getMainLooper()).post(() -> result.error("rename-failure", "failed to rename", null));
+            }
+        });
     }
 
     private void getPermissionResult(final MethodChannel.Result result, final Activity activity) {

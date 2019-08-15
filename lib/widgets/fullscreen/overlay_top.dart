@@ -57,6 +57,10 @@ class FullscreenTopOverlay extends StatelessWidget {
                     child: Text("Edit"),
                   ),
                   PopupMenuItem(
+                    value: FullscreenAction.rename,
+                    child: Text("Rename"),
+                  ),
+                  PopupMenuItem(
                     value: FullscreenAction.setAs,
                     child: Text("Set as"),
                   ),

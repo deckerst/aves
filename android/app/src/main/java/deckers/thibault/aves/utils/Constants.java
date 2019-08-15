@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
+    public static final int SD_CARD_PERMISSION_REQUEST_CODE = 1;
+
     // mime types
 
     public static final String MIME_VIDEO = "video";

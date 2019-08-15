@@ -58,6 +58,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.google.guava:guava:28.0-android'
     implementation 'com.karumi:dexter:5.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

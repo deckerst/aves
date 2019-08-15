@@ -14,7 +14,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:screen/screen.dart';
 
-class FullscreenPage extends StatefulWidget {
+class FullscreenPage extends StatelessWidget {
   final List<ImageEntry> entries;
   final String initialUri;
 
@@ -25,10 +25,39 @@ class FullscreenPage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  FullscreenPageState createState() => FullscreenPageState();
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        Screen.keepOn(false);
+        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        return Future.value(true);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: FullscreenBody(
+          entries: entries,
+          initialUri: initialUri,
+        ),
+      ),
+    );
+  }
 }
 
-class FullscreenPageState extends State<FullscreenPage> with SingleTickerProviderStateMixin {
+class FullscreenBody extends StatefulWidget {
+  final List<ImageEntry> entries;
+  final String initialUri;
+
+  const FullscreenBody({
+    Key key,
+    this.entries,
+    this.initialUri,
+  }) : super(key: key);
+
+  @override
+  FullscreenBodyState createState() => FullscreenBodyState();
+}
+
+class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProviderStateMixin {
   bool _isInitialScale = true;
   int _currentHorizontalPage, _currentVerticalPage = 0;
   PageController _horizontalPager, _verticalPager;
@@ -193,6 +222,35 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
     }
   }
 
+  showRenameDialog(ImageEntry entry) async {
+    final currentName = entry.title;
+    final controller = TextEditingController(text: currentName);
+    final newName = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+            ),
+            actions: [
+              FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('CANCEL'),
+              ),
+              FlatButton(
+                onPressed: () => Navigator.pop(context, controller.text),
+                child: Text('APPLY'),
+              ),
+            ],
+          );
+        });
+    if (newName == null || newName.isEmpty) return;
+    final success = await entry.rename(newName);
+    final snackBar = SnackBar(content: Text(success ? 'Done!' : 'Failed'));
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
   onActionSelected(ImageEntry entry, FullscreenAction action) {
     switch (action) {
       case FullscreenAction.edit:
@@ -200,6 +258,9 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
         break;
       case FullscreenAction.info:
         goToVerticalPage(1);
+        break;
+      case FullscreenAction.rename:
+        showRenameDialog(entry);
         break;
       case FullscreenAction.setAs:
         AndroidAppService.setAs(entry.uri, entry.mimeType);
@@ -214,7 +275,7 @@ class FullscreenPageState extends State<FullscreenPage> with SingleTickerProvide
   }
 }
 
-enum FullscreenAction { edit, info, setAs, share, showOnMap }
+enum FullscreenAction { edit, info, rename, setAs, share, showOnMap }
 
 class ImagePage extends StatefulWidget {
   final List<ImageEntry> entries;

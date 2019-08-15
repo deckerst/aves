@@ -17,6 +17,8 @@ class MetadataSection extends StatefulWidget {
 class MetadataSectionState extends State<MetadataSection> {
   Future<Map> _metadataLoader;
 
+  static const int maxValueLength = 140;
+
   @override
   void initState() {
     super.initState();
@@ -56,7 +58,10 @@ class MetadataSectionState extends State<MetadataSection> {
                       padding: EdgeInsets.symmetric(vertical: 4.0),
                       child: Text(directoryName, style: TextStyle(fontSize: 18)),
                     ),
-                  ...tagKeys.map((tagKey) => InfoRow(tagKey, directory[tagKey])),
+                  ...tagKeys.map((tagKey) {
+                    final value = directory[tagKey] as String;
+                    return InfoRow(tagKey, value.length > maxValueLength ? '${value.substring(0, maxValueLength)}…' : value);
+                  }),
                   SizedBox(height: 16),
                 ];
               },

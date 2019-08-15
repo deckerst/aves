@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.Black.NoTitleBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowTranslucentNavigation">@bool/translucentNavBar</item> <!-- API19+, tinted background & request the SYSTEM_UI_FLAG_LAYOUT_STABLE and SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN flags -->
     </style>
 </resources>

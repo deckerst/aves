@@ -41,4 +41,18 @@ class ImageDecodeService {
       debugPrint('cancelGetImageBytes failed with exception=${e.message}');
     }
   }
+
+  static Future<Map> rename(ImageEntry entry, String newName) async {
+    try {
+      // return map with: 'contentId' 'path' 'title' 'uri' (all optional)
+      final result = await platform.invokeMethod('rename', <String, dynamic>{
+        'entry': entry.toMap(),
+        'newName': newName,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('rename failed with exception=${e.message}');
+    }
+    return Map();
+  }
 }

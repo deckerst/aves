@@ -13,10 +13,10 @@ import java.util.stream.Stream;
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Utils;
 
-public class MediaStoreImageProvider {
+public class MediaStoreImageProvider extends ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(MediaStoreImageProvider.class);
 
-    private Uri FILES_URI = MediaStore.Files.getContentUri("external");
+    public static Uri FILES_URI = MediaStore.Files.getContentUri("external");
 
     private static final String[] PROJECTION = {
             // image & video

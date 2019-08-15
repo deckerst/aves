@@ -1,23 +1,25 @@
 import 'dart:collection';
 
+import 'package:aves/model/image_decode_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:path/path.dart';
 import 'package:tuple/tuple.dart';
 
 import 'mime_types.dart';
 
 class ImageEntry with ChangeNotifier {
-  final String uri;
-  final String path;
-  final int contentId;
+  String uri;
+  String path;
+  int contentId;
   final String mimeType;
   final int width;
   final int height;
   final int orientationDegrees;
   final int sizeBytes;
-  final String title;
+  String title;
   final int dateModifiedSecs;
   final int sourceDateTakenMillis;
   final String bucketDisplayName;
@@ -81,6 +83,8 @@ class ImageEntry with ChangeNotifier {
   String toString() {
     return 'ImageEntry{uri=$uri, path=$path}';
   }
+
+  String get filename => basenameWithoutExtension(path);
 
   bool get isGif => mimeType == MimeTypes.MIME_GIF;
 
@@ -182,5 +186,23 @@ class ImageEntry with ChangeNotifier {
     if (catalogMetadata?.xmpSubjects?.toLowerCase()?.contains(query) ?? false) return true;
     if (isLocated && addressDetails.addressLine.toLowerCase().contains(query)) return true;
     return false;
+  }
+
+  Future<bool> rename(String newName) async {
+    if (newName == filename) return true;
+
+    final newFields = await ImageDecodeService.rename(this, '$newName${extension(this.path)}');
+    if (newFields.isEmpty) return false;
+
+    final uri = newFields['uri'];
+    if (uri != null) this.uri = uri;
+    final path = newFields['path'];
+    if (path != null) this.path = path;
+    final contentId = newFields['contentId'];
+    if (contentId != null) this.contentId = contentId;
+    final title = newFields['title'];
+    if (title != null) this.title = title;
+    notifyListeners();
+    return true;
   }
 }
