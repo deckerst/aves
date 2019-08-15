@@ -261,20 +261,23 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       case FullscreenAction.rename:
         showRenameDialog(entry);
         break;
+      case FullscreenAction.open:
+        AndroidAppService.open(entry.uri, entry.mimeType);
+        break;
+      case FullscreenAction.openMap:
+        AndroidAppService.openMap(entry.geoUri);
+        break;
       case FullscreenAction.setAs:
         AndroidAppService.setAs(entry.uri, entry.mimeType);
         break;
       case FullscreenAction.share:
         AndroidAppService.share(entry.uri, entry.mimeType);
         break;
-      case FullscreenAction.showOnMap:
-        AndroidAppService.showOnMap(entry.geoUri);
-        break;
     }
   }
 }
 
-enum FullscreenAction { edit, info, rename, setAs, share, showOnMap }
+enum FullscreenAction { edit, info, open, openMap, rename, setAs, share }
 
 class ImagePage extends StatefulWidget {
   final List<ImageEntry> entries;

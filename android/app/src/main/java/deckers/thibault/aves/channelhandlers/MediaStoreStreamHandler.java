@@ -19,13 +19,12 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
 
     @Override
     public void onListen(Object args, final EventChannel.EventSink events) {
-        Log.w(LOG_TAG, "onListen with args=" + args);
         eventSink = events;
     }
 
     @Override
     public void onCancel(Object args) {
-        Log.w(LOG_TAG, "onCancel with args=" + args);
+        // nothing
     }
 
     void fetchAll(Activity activity) {

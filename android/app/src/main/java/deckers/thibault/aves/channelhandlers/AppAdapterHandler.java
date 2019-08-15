@@ -29,6 +29,20 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
                 result.success(null);
                 break;
             }
+            case "open": {
+                String title = call.argument("title");
+                Uri uri = Uri.parse(call.argument("uri"));
+                String mimeType = call.argument("mimeType");
+                open(title, uri, mimeType);
+                result.success(null);
+                break;
+            }
+            case "openMap": {
+                Uri geoUri = Uri.parse(call.argument("geoUri"));
+                openMap(geoUri);
+                result.success(null);
+                break;
+            }
             case "setAs": {
                 String title = call.argument("title");
                 Uri uri = Uri.parse(call.argument("uri"));
@@ -45,12 +59,6 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
                 result.success(null);
                 break;
             }
-            case "showOnMap": {
-                Uri geoUri = Uri.parse(call.argument("geoUri"));
-                showOnMap(geoUri);
-                result.success(null);
-                break;
-            }
             default:
                 result.notImplemented();
                 break;
@@ -61,6 +69,19 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setDataAndType(uri, mimeType);
         context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    private void open(String title, Uri uri, String mimeType) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, mimeType);
+        context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    private void openMap(Uri geoUri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, geoUri);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        }
     }
 
     private void setAs(String title, Uri uri, String mimeType) {
@@ -74,12 +95,5 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.setType(mimeType);
         context.startActivity(Intent.createChooser(intent, title));
-    }
-
-    private void showOnMap(Uri geoUri) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, geoUri);
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
-        }
     }
 }
