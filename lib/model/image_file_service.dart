@@ -42,6 +42,18 @@ class ImageFileService {
     }
   }
 
+  static Future<bool> delete(ImageEntry entry) async {
+    try {
+      await platform.invokeMethod('delete', <String, dynamic>{
+        'entry': entry.toMap(),
+      });
+      return true;
+    } on PlatformException catch (e) {
+      debugPrint('delete failed with exception=${e.message}');
+    }
+    return false;
+  }
+
   static Future<Map> rename(ImageEntry entry, String newName) async {
     try {
       // return map with: 'contentId' 'path' 'title' 'uri' (all optional)

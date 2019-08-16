@@ -51,6 +51,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             case "cancelGetImageBytes":
                 cancelGetImageBytes(call, result);
                 break;
+            case "delete":
+                delete(call, result);
+                break;
             case "rename":
                 rename(call, result);
                 break;
@@ -64,14 +67,14 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getImageBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map map = call.argument("entry");
+        Map entryMap = call.argument("entry");
         Integer width = call.argument("width");
         Integer height = call.argument("height");
-        if (map == null || width == null || height == null) {
+        if (entryMap == null || width == null || height == null) {
             result.error("getImageBytes-args", "failed because of missing arguments", null);
             return;
         }
-        ImageEntry entry = new ImageEntry(map);
+        ImageEntry entry = new ImageEntry(entryMap);
         imageDecodeTaskManager.fetch(result, entry, width, height);
     }
 
@@ -81,16 +84,43 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         result.success(null);
     }
 
+    private void delete(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Map entryMap = call.argument("entry");
+        if (entryMap == null) {
+            result.error("delete-args", "failed because of missing arguments", null);
+            return;
+        }
+        Uri uri = Uri.parse((String) entryMap.get("uri"));
+        String path = (String) entryMap.get("path");
+
+        ImageProvider provider = ImageProviderFactory.getProvider(uri);
+        if (provider == null) {
+            result.error("delete-provider", "failed to find provider for uri=" + uri, null);
+            return;
+        }
+        provider.delete(activity, path, uri, new ImageProvider.ImageOpCallback() {
+            @Override
+            public void onSuccess(Map<String, Object> newFields) {
+                new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
+            }
+
+            @Override
+            public void onFailure() {
+                new Handler(Looper.getMainLooper()).post(() -> result.error("delete-failure", "failed to delete", null));
+            }
+        });
+    }
+
     private void rename(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map map = call.argument("entry");
+        Map entryMap = call.argument("entry");
         String newName = call.argument("newName");
-        if (map == null || newName == null) {
+        if (entryMap == null || newName == null) {
             result.error("rename-args", "failed because of missing arguments", null);
             return;
         }
-        Uri uri = Uri.parse((String) map.get("uri"));
-        String path = (String) map.get("path");
-        String mimeType = (String) map.get("mimeType");
+        Uri uri = Uri.parse((String) entryMap.get("uri"));
+        String path = (String) entryMap.get("path");
+        String mimeType = (String) entryMap.get("mimeType");
 
         ImageProvider provider = ImageProviderFactory.getProvider(uri);
         if (provider == null) {
@@ -111,15 +141,15 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void rotate(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map map = call.argument("entry");
+        Map entryMap = call.argument("entry");
         Boolean clockwise = call.argument("clockwise");
-        if (map == null || clockwise == null) {
+        if (entryMap == null || clockwise == null) {
             result.error("rotate-args", "failed because of missing arguments", null);
             return;
         }
-        Uri uri = Uri.parse((String) map.get("uri"));
-        String path = (String) map.get("path");
-        String mimeType = (String) map.get("mimeType");
+        Uri uri = Uri.parse((String) entryMap.get("uri"));
+        String path = (String) entryMap.get("path");
+        String mimeType = (String) entryMap.get("mimeType");
 
         ImageProvider provider = ImageProviderFactory.getProvider(uri);
         if (provider == null) {
@@ -151,7 +181,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
 
                     @Override
                     public void onPermissionDenied(PermissionDeniedResponse response) {
-
                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                         builder.setMessage("This permission is needed for use this features of the app so please, allow it!");
                         builder.setTitle("We need this permission");

@@ -32,6 +32,10 @@ import deckers.thibault.aves.utils.Utils;
 public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
 
+    public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
+        callback.onFailure();
+    }
+
     public void rename(final Activity activity, final String oldPath, final Uri oldUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {
         if (oldPath == null) {
             Log.w(LOG_TAG, "entry does not have a path, uri=" + oldUri);
@@ -114,7 +118,7 @@ public abstract class ImageProvider {
         }
     }
 
-    private void rotateJpeg(Activity activity, final String path, final Uri uri, final String mimeType, boolean clockwise, final ImageOpCallback callback) {
+    private void rotateJpeg(final Activity activity, final String path, final Uri uri, final String mimeType, boolean clockwise, final ImageOpCallback callback) {
         String editablePath = path;
         boolean onSdCard = Env.isOnSdCard(activity, path);
         if (onSdCard) {
@@ -176,7 +180,7 @@ public abstract class ImageProvider {
         }
     }
 
-    private void rotatePng(Activity activity, final String path, final Uri uri, final String mimeType, boolean clockwise, final ImageOpCallback callback) {
+    private void rotatePng(final Activity activity, final String path, final Uri uri, final String mimeType, boolean clockwise, final ImageOpCallback callback) {
         if (path == null) {
             callback.onFailure();
             return;

@@ -188,6 +188,8 @@ class ImageEntry with ChangeNotifier {
     return false;
   }
 
+  Future<bool> delete() => ImageFileService.delete(this);
+
   Future<bool> rename(String newName) async {
     if (newName == filename) return true;
 

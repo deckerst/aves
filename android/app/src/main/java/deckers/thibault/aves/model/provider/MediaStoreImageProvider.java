@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.utils.Env;
+import deckers.thibault.aves.utils.PermissionManager;
+import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
 
 public class MediaStoreImageProvider extends ImageProvider {
@@ -110,5 +113,36 @@ public class MediaStoreImageProvider extends ImageProvider {
             Log.d(LOG_TAG, "failed to get entries", e);
         }
         return entries.stream();
+    }
+
+    @Override
+    public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
+        // check write access permission to SD card
+        // Before KitKat, we do whatever we want on the SD card.
+        // From KitKat, we need access permission from the Document Provider, at the file level.
+        // From Lollipop, we can request the permission at the SD card root level.
+        if (Env.isOnSdCard(activity, path)) {
+            Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
+            if (sdCardTreeUri == null) {
+                Runnable runnable = () -> delete(activity, path, uri, callback);
+                PermissionManager.showSdCardAccessDialog(activity, runnable);
+                return;
+            }
+
+            // if the file is on SD card, calling the content resolver delete() removes the entry from the MediaStore
+            // but it doesn't delete the file, even if the app has the permission
+            StorageUtils.deleteFromSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), path);
+            Log.d(LOG_TAG, "deleted from SD card at path=" + uri);
+            callback.onSuccess(null);
+            return;
+        }
+
+        if (activity.getContentResolver().delete(uri, null, null) > 0) {
+            Log.d(LOG_TAG, "deleted from content resolver uri=" + uri);
+            callback.onSuccess(null);
+            return;
+        }
+
+        callback.onFailure();
     }
 }

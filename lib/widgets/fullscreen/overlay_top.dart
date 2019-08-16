@@ -53,6 +53,10 @@ class FullscreenTopOverlay extends StatelessWidget {
                     child: MenuRow(text: 'Info', icon: Icons.info_outline),
                   ),
                   PopupMenuItem(
+                    value: FullscreenAction.delete,
+                    child: MenuRow(text: 'Delete', icon: Icons.delete_outline),
+                  ),
+                  PopupMenuItem(
                     value: FullscreenAction.rename,
                     child: MenuRow(text: 'Rename', icon: Icons.title),
                   ),

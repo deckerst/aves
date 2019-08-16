@@ -215,6 +215,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   onActionSelected(ImageEntry entry, FullscreenAction action) {
     switch (action) {
+      case FullscreenAction.delete:
+        showDeleteDialog(entry);
+        break;
       case FullscreenAction.edit:
         AndroidAppService.edit(entry.uri, entry.mimeType);
         break;
@@ -263,6 +266,32 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     showFeedback(success ? 'Done!' : 'Failed');
   }
 
+  showDeleteDialog(ImageEntry entry) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text('Are you sure?'),
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('CANCEL'),
+            ),
+            FlatButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('DELETE'),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+    if (await entry.delete())
+      entries.remove(entry);
+    else
+      showFeedback('Failed');
+  }
+
   showRenameDialog(ImageEntry entry) async {
     final currentName = entry.title;
     final controller = TextEditingController(text: currentName);
@@ -287,12 +316,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           );
         });
     if (newName == null || newName.isEmpty) return;
-    final success = await entry.rename(newName);
-    showFeedback(success ? 'Done!' : 'Failed');
+    showFeedback(await entry.rename(newName) ? 'Done!' : 'Failed');
   }
 }
 
-enum FullscreenAction { edit, info, open, openMap, rename, rotateCCW, rotateCW, setAs, share }
+enum FullscreenAction { delete, edit, info, open, openMap, rename, rotateCCW, rotateCW, setAs, share }
 
 class ImagePage extends StatefulWidget {
   final List<ImageEntry> entries;
