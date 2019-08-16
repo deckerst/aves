@@ -2,12 +2,14 @@ import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
+  await settings.init();
   runApp(AvesApp());
 }
 

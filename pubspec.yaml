@@ -29,6 +29,7 @@ dependencies:
   path:
   photo_view:
   screen:
+  shared_preferences:
   sqflite:
   transparent_image:
   tuple:

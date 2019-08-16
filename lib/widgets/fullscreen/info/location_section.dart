@@ -1,4 +1,5 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,7 @@ class LocationSection extends AnimatedWidget {
                   entry.latLng.item2,
                 ),
                 geoUri: entry.geoUri,
-                // TODO TLAD read preferences/zoom
-                initialZoom: 12,
+                initialZoom: settings.infoMapZoom,
               ),
               if (entry.isLocated)
                 Padding(
@@ -113,7 +113,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
   }
 
   zoomBy(double amount) {
-    // TODO TLAD update preferences/zoom
+    settings.infoMapZoom += amount;
     controller.animateCamera(CameraUpdate.zoomBy(amount));
   }
 
