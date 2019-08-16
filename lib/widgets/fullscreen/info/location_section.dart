@@ -1,4 +1,5 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,7 +17,16 @@ class LocationSection extends AnimatedWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SectionRow('Location'),
-              ImageMap(markerId: entry.path, latLng: LatLng(entry.latLng.item1, entry.latLng.item2)),
+              ImageMap(
+                markerId: entry.path,
+                latLng: LatLng(
+                  entry.latLng.item1,
+                  entry.latLng.item2,
+                ),
+                geoUri: entry.geoUri,
+                // TODO TLAD read preferences/zoom
+                initialZoom: 12,
+              ),
               if (entry.isLocated)
                 Padding(
                   padding: EdgeInsets.only(top: 8),
@@ -30,39 +40,81 @@ class LocationSection extends AnimatedWidget {
 class ImageMap extends StatefulWidget {
   final String markerId;
   final LatLng latLng;
+  final String geoUri;
+  final double initialZoom;
 
-  const ImageMap({Key key, this.markerId, this.latLng}) : super(key: key);
+  const ImageMap({
+    Key key,
+    this.markerId,
+    this.latLng,
+    this.geoUri,
+    this.initialZoom,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ImageMapState();
 }
 
 class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
+  GoogleMapController controller;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final accentHue = HSVColor.fromColor(Theme.of(context).accentColor).hue;
-    return SizedBox(
-      height: 200,
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(
-          Radius.circular(16),
-        ),
-        child: GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: widget.latLng,
-            zoom: 12,
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: 200,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
+              ),
+              child: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                  target: widget.latLng,
+                  zoom: widget.initialZoom,
+                ),
+                onMapCreated: (controller) => setState(() => this.controller = controller),
+                rotateGesturesEnabled: false,
+                scrollGesturesEnabled: false,
+                zoomGesturesEnabled: false,
+                tiltGesturesEnabled: false,
+                myLocationButtonEnabled: false,
+                markers: [
+                  Marker(
+                    markerId: MarkerId(widget.markerId),
+                    icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
+                    position: widget.latLng,
+                  )
+                ].toSet(),
+              ),
+            ),
           ),
-          markers: [
-            Marker(
-              markerId: MarkerId(widget.markerId),
-              icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
-              position: widget.latLng,
-            )
-          ].toSet(),
         ),
-      ),
+        SizedBox(width: 8),
+        Column(children: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: controller == null ? null : () => zoomBy(1),
+          ),
+          IconButton(
+            icon: Icon(Icons.remove),
+            onPressed: controller == null ? null : () => zoomBy(-1),
+          ),
+          IconButton(
+            icon: Icon(Icons.open_in_new),
+            onPressed: () => AndroidAppService.openMap(widget.geoUri),
+          ),
+        ])
+      ],
     );
+  }
+
+  zoomBy(double amount) {
+    // TODO TLAD update preferences/zoom
+    controller.animateCamera(CameraUpdate.zoomBy(amount));
   }
 
   @override
