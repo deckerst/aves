@@ -1,3 +1,4 @@
+import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/date_utils.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
@@ -9,15 +10,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
 
-class ThumbnailCollection extends StatelessWidget {
-  final List<ImageEntry> entries;
+class ThumbnailCollection extends AnimatedWidget {
+  final ImageCollection collection;
+  final Widget appBar;
+
+  ThumbnailCollection({
+    Key key,
+    this.collection,
+    this.appBar,
+  }) : super(key: key, listenable: collection);
+
+  @override
+  Widget build(BuildContext context) {
+    return ThumbnailCollectionContent(
+      collection: collection,
+      appBar: appBar,
+    );
+  }
+}
+
+class ThumbnailCollectionContent extends StatelessWidget {
+  final ImageCollection collection;
   final Widget appBar;
 
   final Map<DateTime, List<ImageEntry>> _sections;
   final ScrollController _scrollController = ScrollController();
 
-  ThumbnailCollection({Key key, this.entries, this.appBar})
-      : _sections = groupBy(entries, (entry) => entry.monthTaken),
+  ThumbnailCollectionContent({
+    Key key,
+    this.collection,
+    this.appBar,
+  })  : _sections = groupBy(collection.entries, (entry) => entry.monthTaken),
         super(key: key);
 
   @override
@@ -32,7 +55,7 @@ class ThumbnailCollection extends StatelessWidget {
             if (appBar != null) appBar,
             ...sectionKeys.map((sectionKey) {
               Widget sliver = SectionSliver(
-                entries: entries,
+                collection: collection,
                 sections: _sections,
                 sectionKey: sectionKey,
               );
@@ -58,13 +81,13 @@ class ThumbnailCollection extends StatelessWidget {
 }
 
 class SectionSliver extends StatelessWidget {
-  final List<ImageEntry> entries;
+  final ImageCollection collection;
   final Map<DateTime, List<ImageEntry>> sections;
   final DateTime sectionKey;
 
   const SectionSliver({
     Key key,
-    this.entries,
+    this.collection,
     this.sections,
     this.sectionKey,
   }) : super(key: key);
@@ -105,7 +128,7 @@ class SectionSliver extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => FullscreenPage(
-          entries: entries,
+          collection: collection,
           initialUri: entry.uri,
         ),
       ),

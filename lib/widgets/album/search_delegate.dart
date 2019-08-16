@@ -1,11 +1,12 @@
+import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:flutter/material.dart';
 
 class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
-  final List<ImageEntry> entries;
+  final ImageCollection collection;
 
-  ImageSearchDelegate(this.entries);
+  ImageSearchDelegate(this.collection);
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -51,7 +52,7 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       return SizedBox.shrink();
     }
     final lowerQuery = query.toLowerCase();
-    final matches = entries.where((entry) => entry.search(lowerQuery)).toList();
+    final matches = collection.entries.where((entry) => entry.search(lowerQuery)).toList();
     if (matches.isEmpty) {
       return Center(
         child: Text(
@@ -60,6 +61,6 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
         ),
       );
     }
-    return ThumbnailCollection(entries: matches);
+    return ThumbnailCollection(collection: ImageCollection(matches));
   }
 }

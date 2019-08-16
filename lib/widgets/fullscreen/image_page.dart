@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -15,15 +16,15 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:screen/screen.dart';
 
-class FullscreenPage extends StatelessWidget {
-  final List<ImageEntry> entries;
+class FullscreenPage extends AnimatedWidget {
+  final ImageCollection collection;
   final String initialUri;
 
   const FullscreenPage({
     Key key,
-    this.entries,
+    this.collection,
     this.initialUri,
-  }) : super(key: key);
+  }) : super(key: key, listenable: collection);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class FullscreenPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: FullscreenBody(
-          entries: entries,
+          collection: collection,
           initialUri: initialUri,
         ),
         resizeToAvoidBottomInset: false,
@@ -74,12 +75,12 @@ class FullscreenPage extends StatelessWidget {
 }
 
 class FullscreenBody extends StatefulWidget {
-  final List<ImageEntry> entries;
+  final ImageCollection collection;
   final String initialUri;
 
   const FullscreenBody({
     Key key,
-    this.entries,
+    this.collection,
     this.initialUri,
   }) : super(key: key);
 
@@ -97,7 +98,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
 
-  List<ImageEntry> get entries => widget.entries;
+  ImageCollection get collection => widget.collection;
+
+  List<ImageEntry> get entries => widget.collection.entries;
 
   @override
   void initState() {
@@ -149,7 +152,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           onPageChanged: (page) => setState(() => _currentVerticalPage = page),
           children: [
             ImagePage(
-              entries: entries,
+              collection: collection,
               pageController: _horizontalPager,
               onTap: () => _overlayVisible.value = !_overlayVisible.value,
               onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
@@ -286,10 +289,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       },
     );
     if (confirmed == null || !confirmed) return;
-    if (await entry.delete())
-      entries.remove(entry);
-    else
-      showFeedback('Failed');
+    if (!await collection.delete(entry)) showFeedback('Failed');
   }
 
   showRenameDialog(ImageEntry entry) async {
@@ -323,14 +323,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 enum FullscreenAction { delete, edit, info, open, openMap, rename, rotateCCW, rotateCW, setAs, share }
 
 class ImagePage extends StatefulWidget {
-  final List<ImageEntry> entries;
+  final ImageCollection collection;
   final PageController pageController;
   final VoidCallback onTap;
   final ValueChanged<int> onPageChanged;
   final ValueChanged<PhotoViewScaleState> onScaleChanged;
 
   const ImagePage({
-    this.entries,
+    this.collection,
     this.pageController,
     this.onTap,
     this.onPageChanged,
@@ -342,13 +342,15 @@ class ImagePage extends StatefulWidget {
 }
 
 class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin {
+  List<ImageEntry> get entries => widget.collection.entries;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return PhotoViewGallery.builder(
-      itemCount: widget.entries.length,
+      itemCount: entries.length,
       builder: (galleryContext, index) {
-        final entry = widget.entries[index];
+        final entry = entries[index];
         if (entry.isVideo) {
           return PhotoViewGalleryPageOptions.customChild(
             child: AvesVideo(entry: entry),
