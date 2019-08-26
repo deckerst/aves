@@ -1,22 +1,11 @@
 package deckers.thibault.aves.channelhandlers;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 
 import androidx.annotation.NonNull;
-
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.Map;
 
@@ -43,7 +32,8 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "getImageEntries":
-                getPermissionResult(result, activity);
+                mediaStoreStreamHandler.fetchAll(activity);
+                result.success(null);
                 break;
             case "getImageBytes":
                 getImageBytes(call, result);
@@ -167,54 +157,5 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", null));
             }
         });
-    }
-
-    private void getPermissionResult(final MethodChannel.Result result, final Activity activity) {
-        Dexter.withActivity(activity)
-                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        mediaStoreStreamHandler.fetchAll(activity);
-                        result.success(null);
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                        builder.setMessage("This permission is needed for use this features of the app so please, allow it!");
-                        builder.setTitle("We need this permission");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("OK", (dialog, id) -> {
-                            dialog.cancel();
-                            Intent intent = new Intent();
-                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-                            intent.setData(uri);
-                            activity.startActivity(intent);
-                        });
-                        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, final PermissionToken token) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                        builder.setMessage("This permission is needed for use this features of the app so please, allow it!");
-                        builder.setTitle("We need this permission");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("OK", (dialog, id) -> {
-                            dialog.cancel();
-                            token.continuePermissionRequest();
-                        });
-                        builder.setNegativeButton("Cancel", (dialog, id) -> {
-                            dialog.cancel();
-                            token.cancelPermissionRequest();
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                    }
-                }).check();
     }
 }
