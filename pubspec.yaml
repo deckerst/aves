@@ -27,6 +27,7 @@ dependencies:
   google_maps_flutter:
   intl:
   path:
+  permission_handler:
   photo_view:
   screen:
   shared_preferences:

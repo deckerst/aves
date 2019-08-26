@@ -7,6 +7,7 @@ import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   await settings.init();
@@ -46,6 +47,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   setup() async {
+    final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
+      SystemNavigator.pop();
+      return;
+    }
+
     await metadataDb.init();
 
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
