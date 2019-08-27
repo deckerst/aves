@@ -1,5 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/blurred.dart';
+import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:flutter/material.dart';
 
@@ -95,28 +96,6 @@ class FullscreenTopOverlay extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class MenuRow extends StatelessWidget {
-  final String text;
-  final IconData icon;
-
-  const MenuRow({
-    Key key,
-    this.text,
-    this.icon,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon),
-        SizedBox(width: 8),
-        Text(text),
-      ],
     );
   }
 }

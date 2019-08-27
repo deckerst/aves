@@ -1,6 +1,7 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/widgets/album/search_delegate.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
+import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/debug_page.dart';
 import 'package:flutter/material.dart';
 
@@ -23,11 +24,42 @@ class AllCollectionPage extends StatelessWidget {
               delegate: ImageSearchDelegate(collection),
             ),
           ),
-          IconButton(icon: Icon(Icons.whatshot), onPressed: () => goToDebug(context)),
+          PopupMenuButton<AlbumAction>(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: AlbumAction.groupByAlbum,
+                child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
+              ),
+              PopupMenuItem(
+                value: AlbumAction.groupByDate,
+                child: MenuRow(text: 'Group by date', checked: collection.groupFactor == GroupFactor.date),
+              ),
+              PopupMenuDivider(),
+              PopupMenuItem(
+                value: AlbumAction.groupByAlbum,
+                child: MenuRow(text: 'Debug', icon: Icons.whatshot),
+              ),
+            ],
+            onSelected: (action) => onActionSelected(context, action),
+          ),
         ],
         floating: true,
       ),
     );
+  }
+
+  onActionSelected(BuildContext context, AlbumAction action) {
+    switch (action) {
+      case AlbumAction.groupByAlbum:
+        collection.group(GroupFactor.album);
+        break;
+      case AlbumAction.groupByDate:
+        collection.group(GroupFactor.date);
+        break;
+      case AlbumAction.debug:
+        goToDebug(context);
+        break;
+    }
   }
 
   Future goToDebug(BuildContext context) {
@@ -41,3 +73,5 @@ class AllCollectionPage extends StatelessWidget {
     );
   }
 }
+
+enum AlbumAction { groupByDate, groupByAlbum, debug }
