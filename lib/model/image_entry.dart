@@ -147,27 +147,28 @@ class ImageEntry with ChangeNotifier {
 
   locate() async {
     if (isLocated) return;
+
     await catalog();
     final latitude = catalogMetadata?.latitude;
     final longitude = catalogMetadata?.longitude;
-    if (latitude != null && longitude != null) {
-      final coordinates = Coordinates(latitude, longitude);
-      try {
-        final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-        if (addresses != null && addresses.length > 0) {
-          final address = addresses.first;
-          addressDetails = AddressDetails(
-            contentId: contentId,
-            addressLine: address.addressLine,
-            countryName: address.countryName,
-            adminArea: address.adminArea,
-            locality: address.locality,
-          );
-          notifyListeners();
-        }
-      } catch (e) {
-        debugPrint('$runtimeType addAddressToMetadata failed with exception=${e.message}');
+    if (latitude == null || longitude == null) return;
+
+    final coordinates = Coordinates(latitude, longitude);
+    try {
+      final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      if (addresses != null && addresses.length > 0) {
+        final address = addresses.first;
+        addressDetails = AddressDetails(
+          contentId: contentId,
+          addressLine: address.addressLine,
+          countryName: address.countryName,
+          adminArea: address.adminArea,
+          locality: address.locality,
+        );
+        notifyListeners();
       }
+    } catch (e) {
+      debugPrint('$runtimeType addAddressToMetadata failed with exception=${e.message}');
     }
   }
 

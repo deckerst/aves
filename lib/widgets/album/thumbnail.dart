@@ -54,7 +54,6 @@ class ThumbnailState extends State<Thumbnail> {
   @override
   void dispose() {
     entry.removeListener(onEntryChange);
-    ImageFileService.cancelGetImageBytes(uri);
     super.dispose();
   }
 

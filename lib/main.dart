@@ -37,7 +37,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
-  ImageCollection localMediaCollection = ImageCollection(List());
+  ImageCollection localMediaCollection = ImageCollection(
+    entries: List(),
+    groupFactor: settings.collectionGroupFactor,
+    sortFactor: settings.collectionSortFactor,
+  );
 
   @override
   void initState() {
@@ -56,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     await metadataDb.init();
 
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
-          (entryMap) => localMediaCollection.entries.add(ImageEntry.fromMap(entryMap)),
+          (entryMap) => localMediaCollection.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
             debugPrint('mediastore stream done');
             await localMediaCollection.loadCatalogMetadata();

@@ -1,6 +1,7 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/settings.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -39,6 +40,11 @@ class DebugPageState extends State<DebugPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Settings'),
+          Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
+          Text('collectionSortFactor: ${settings.collectionSortFactor}'),
+          Text('infoMapZoom: ${settings.infoMapZoom}'),
+          Divider(),
           Text('Entries: ${entries.length}'),
           ...byMimeTypes.keys.map((mimeType) => Text('- $mimeType: ${byMimeTypes[mimeType].length}')),
           Text('Catalogued: ${catalogued.length}'),

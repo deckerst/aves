@@ -100,7 +100,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   ImageCollection get collection => widget.collection;
 
-  List<ImageEntry> get entries => widget.collection.entries;
+  List<ImageEntry> get entries => widget.collection.sortedEntries;
 
   @override
   void initState() {
@@ -342,7 +342,7 @@ class ImagePage extends StatefulWidget {
 }
 
 class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin {
-  List<ImageEntry> get entries => widget.collection.entries;
+  List<ImageEntry> get entries => widget.collection.sortedEntries;
 
   @override
   Widget build(BuildContext context) {

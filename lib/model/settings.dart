@@ -1,3 +1,4 @@
+import 'package:aves/model/image_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,8 @@ class Settings {
   Settings._private();
 
   // preferences
+  static const collectionGroupFactorKey = 'collection_group_factor';
+  static const collectionSortFactorKey = 'collection_sort_factor';
   static const infoMapZoomKey = 'info_map_zoom';
 
   init() async {
@@ -44,9 +47,27 @@ class Settings {
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
+  GroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, GroupFactor.date, GroupFactor.values);
+
+  set collectionGroupFactor(GroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
+
+  SortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SortFactor.date, SortFactor.values);
+
+  set collectionSortFactor(SortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+
   // convenience methods
 
   bool getBoolOrDefault(String key, bool defaultValue) => prefs.getKeys().contains(key) ? prefs.getBool(key) : defaultValue;
+
+  T getEnumOrDefault<T>(String key, T defaultValue, List<T> values) {
+    final valueString = prefs.getString(key);
+    for (T element in values) {
+      if (element.toString() == valueString) {
+        return element;
+      }
+    }
+    return defaultValue;
+  }
 
   setAndNotify(String key, dynamic newValue) {
     var oldValue = prefs.get(key);

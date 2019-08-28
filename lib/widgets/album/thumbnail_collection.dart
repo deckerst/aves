@@ -91,10 +91,20 @@ class SectionSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    debugPrint('$runtimeType build with sectionKey=$sectionKey');
     final columnCount = 4;
+    Widget header = SizedBox.shrink();
+    if (collection.sortFactor == SortFactor.date) {
+      switch (collection.groupFactor) {
+        case GroupFactor.album:
+          header = SectionHeader(text: sectionKey);
+          break;
+        case GroupFactor.date:
+          header = MonthSectionHeader(date: sectionKey);
+          break;
+      }
+    }
     return SliverStickyHeader(
-      header: collection.groupFactor == GroupFactor.date ? MonthSectionHeader(date: sectionKey) : SectionHeader(text: sectionKey),
+      header: header,
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (sliverContext, index) {

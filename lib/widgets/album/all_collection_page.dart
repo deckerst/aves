@@ -1,4 +1,5 @@
 import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/album/search_delegate.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/menu_row.dart';
@@ -27,16 +28,27 @@ class AllCollectionPage extends StatelessWidget {
           PopupMenuButton<AlbumAction>(
             itemBuilder: (context) => [
               PopupMenuItem(
-                value: AlbumAction.groupByAlbum,
-                child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
+                value: AlbumAction.sortByDate,
+                child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
               ),
               PopupMenuItem(
-                value: AlbumAction.groupByDate,
-                child: MenuRow(text: 'Group by date', checked: collection.groupFactor == GroupFactor.date),
+                value: AlbumAction.sortBySize,
+                child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
               ),
               PopupMenuDivider(),
+              if (collection.sortFactor == SortFactor.date) ...[
+                PopupMenuItem(
+                  value: AlbumAction.groupByAlbum,
+                  child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
+                ),
+                PopupMenuItem(
+                  value: AlbumAction.groupByDate,
+                  child: MenuRow(text: 'Group by date', checked: collection.groupFactor == GroupFactor.date),
+                ),
+                PopupMenuDivider(),
+              ],
               PopupMenuItem(
-                value: AlbumAction.groupByAlbum,
+                value: AlbumAction.debug,
                 child: MenuRow(text: 'Debug', icon: Icons.whatshot),
               ),
             ],
@@ -50,14 +62,22 @@ class AllCollectionPage extends StatelessWidget {
 
   onActionSelected(BuildContext context, AlbumAction action) {
     switch (action) {
+      case AlbumAction.debug:
+        goToDebug(context);
+        break;
       case AlbumAction.groupByAlbum:
         collection.group(GroupFactor.album);
         break;
       case AlbumAction.groupByDate:
         collection.group(GroupFactor.date);
         break;
-      case AlbumAction.debug:
-        goToDebug(context);
+      case AlbumAction.sortByDate:
+        settings.collectionSortFactor = SortFactor.date;
+        collection.sort(SortFactor.date);
+        break;
+      case AlbumAction.sortBySize:
+        settings.collectionSortFactor = SortFactor.size;
+        collection.sort(SortFactor.size);
         break;
     }
   }
@@ -67,11 +87,11 @@ class AllCollectionPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => DebugPage(
-          entries: collection.entries,
+          entries: collection.sortedEntries,
         ),
       ),
     );
   }
 }
 
-enum AlbumAction { groupByDate, groupByAlbum, debug }
+enum AlbumAction { debug, groupByAlbum, groupByDate, sortByDate, sortBySize }

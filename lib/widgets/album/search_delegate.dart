@@ -52,7 +52,7 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       return SizedBox.shrink();
     }
     final lowerQuery = query.toLowerCase();
-    final matches = collection.entries.where((entry) => entry.search(lowerQuery)).toList();
+    final matches = collection.sortedEntries.where((entry) => entry.search(lowerQuery)).toList();
     if (matches.isEmpty) {
       return Center(
         child: Text(
@@ -61,6 +61,12 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
         ),
       );
     }
-    return ThumbnailCollection(collection: ImageCollection(matches));
+    return ThumbnailCollection(
+      collection: ImageCollection(
+        entries: matches,
+        groupFactor: collection.groupFactor,
+        sortFactor: collection.sortFactor,
+      ),
+    );
   }
 }
