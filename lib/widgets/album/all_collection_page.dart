@@ -66,9 +66,11 @@ class AllCollectionPage extends StatelessWidget {
         goToDebug(context);
         break;
       case AlbumAction.groupByAlbum:
+        settings.collectionGroupFactor = GroupFactor.album;
         collection.group(GroupFactor.album);
         break;
       case AlbumAction.groupByDate:
+        settings.collectionGroupFactor = GroupFactor.date;
         collection.group(GroupFactor.date);
         break;
       case AlbumAction.sortByDate:
