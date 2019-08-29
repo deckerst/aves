@@ -16,7 +16,7 @@ class AllCollectionPage extends StatelessWidget {
     return ThumbnailCollection(
       collection: collection,
       appBar: SliverAppBar(
-        title: Text('Aves - All'),
+        title: Text('All'),
         actions: [
           IconButton(
             icon: Icon(Icons.search),

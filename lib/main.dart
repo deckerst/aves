@@ -3,6 +3,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +82,7 @@ class _HomePageState extends State<HomePage> {
       // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
       appBar: FakeAppBar(),
       body: AllCollectionPage(collection: localMediaCollection),
+      drawer: AllCollectionDrawer(collection: localMediaCollection),
       resizeToAvoidBottomInset: false,
     );
   }

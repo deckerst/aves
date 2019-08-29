@@ -23,6 +23,7 @@ dependencies:
   collection:
   flushbar:
   flutter_sticky_header:
+  flutter_svg:
   geocoder:
   google_maps_flutter:
   intl:
@@ -42,3 +43,6 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/

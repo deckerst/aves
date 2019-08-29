@@ -16,6 +16,14 @@ class ImageCollection with ChangeNotifier {
     @required this.sortFactor,
   }) : _rawEntries = entries;
 
+  int get imageCount => _rawEntries.where((entry) => !entry.isVideo).length;
+
+  int get videoCount => _rawEntries.where((entry) => entry.isVideo).length;
+
+  int get albumCount => 42;
+
+  int get tagCount => 42;
+
   Map<dynamic, List<ImageEntry>> get sections {
     switch (sortFactor) {
       case SortFactor.date:
@@ -124,6 +132,14 @@ class ImageCollection with ChangeNotifier {
     });
     metadataDb.saveAddresses(List.unmodifiable(newAddresses));
     debugPrint('$runtimeType locateEntries complete in ${DateTime.now().difference(start).inSeconds}s');
+  }
+
+  ImageCollection filter(bool Function(ImageEntry) filter) {
+    return ImageCollection(
+      entries: _rawEntries.where(filter).toList(),
+      groupFactor: groupFactor,
+      sortFactor: sortFactor,
+    );
   }
 }
 
