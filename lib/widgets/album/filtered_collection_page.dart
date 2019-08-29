@@ -22,6 +22,7 @@ class FilteredCollectionPage extends StatelessWidget {
           floating: true,
         ),
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 }

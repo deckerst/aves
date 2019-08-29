@@ -9,6 +9,7 @@ class ImageCollection with ChangeNotifier {
   final List<ImageEntry> _rawEntries;
   GroupFactor groupFactor = GroupFactor.date;
   SortFactor sortFactor = SortFactor.date;
+  Set<String> albums = Set(), tags = Set();
 
   ImageCollection({
     @required List<ImageEntry> entries,
@@ -20,9 +21,9 @@ class ImageCollection with ChangeNotifier {
 
   int get videoCount => _rawEntries.where((entry) => entry.isVideo).length;
 
-  int get albumCount => 42;
+  int get albumCount => albums.length;
 
-  int get tagCount => 42;
+  int get tagCount => tags.length;
 
   Map<dynamic, List<ImageEntry>> get sections {
     switch (sortFactor) {
@@ -74,6 +75,10 @@ class ImageCollection with ChangeNotifier {
     }
     return success;
   }
+
+  updateAlbums() => albums = _rawEntries.map((entry) => entry.bucketDisplayName).toSet();
+
+  updateTags() => tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
 
   loadCatalogMetadata() async {
     debugPrint('$runtimeType loadCatalogMetadata start');

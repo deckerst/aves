@@ -1,3 +1,4 @@
+import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
@@ -7,9 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class InfoPage extends StatefulWidget {
+  final ImageCollection collection;
   final ImageEntry entry;
 
-  const InfoPage({this.entry});
+  const InfoPage({
+    Key key,
+    @required this.collection,
+    @required this.entry,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => InfoPageState();
@@ -52,7 +58,7 @@ class InfoPageState extends State<InfoPage> {
             InfoRow('Size', formatFilesize(entry.sizeBytes)),
             InfoRow('Path', entry.path),
             LocationSection(entry: entry),
-            XmpTagSection(entry: entry),
+            XmpTagSection(collection: widget.collection, entry: entry),
             MetadataSection(entry: entry),
           ],
         ),

@@ -163,7 +163,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                 if (notification is BackUpNotification) goToVerticalPage(0);
                 return false;
               },
-              child: InfoPage(entry: entry),
+              child: InfoPage(collection: collection, entry: entry),
             ),
           ],
         ),
