@@ -28,8 +28,10 @@ dependencies:
   google_maps_flutter:
   intl:
   path:
+  pdf:
   permission_handler:
   photo_view:
+  printing:
   screen:
   shared_preferences:
   sqflite:

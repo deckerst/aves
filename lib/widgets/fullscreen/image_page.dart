@@ -12,8 +12,10 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:pdf/widgets.dart' as pdf;
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:printing/printing.dart';
 import 'package:screen/screen.dart';
 
 class FullscreenPage extends AnimatedWidget {
@@ -236,6 +238,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       case FullscreenAction.openMap:
         AndroidAppService.openMap(entry.geoUri);
         break;
+      case FullscreenAction.print:
+        print(entry);
+        break;
       case FullscreenAction.rotateCCW:
         rotate(entry, clockwise: false);
         break;
@@ -262,6 +267,19 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       flushbarPosition: FlushbarPosition.TOP,
       animationDuration: Duration(milliseconds: 600),
     )..show(context);
+  }
+
+  print(ImageEntry entry) async {
+    final doc = pdf.Document(title: entry.title);
+    final image = await pdfImageFromImageProvider(
+      pdf: doc.document,
+      image: FileImage(File(entry.path)),
+    );
+    doc.addPage(pdf.Page(build: (context) => pdf.Center(child: pdf.Image(image)))); // Page
+    Printing.layoutPdf(
+      onLayout: (format) => doc.save(),
+      name: entry.title,
+    );
   }
 
   rotate(ImageEntry entry, {@required bool clockwise}) async {
@@ -320,7 +338,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 }
 
-enum FullscreenAction { delete, edit, info, open, openMap, rename, rotateCCW, rotateCW, setAs, share }
+enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share }
 
 class ImagePage extends StatefulWidget {
   final ImageCollection collection;
