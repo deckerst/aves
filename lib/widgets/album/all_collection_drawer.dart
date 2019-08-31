@@ -29,44 +29,27 @@ class AllCollectionDrawer extends StatelessWidget {
                         padding: EdgeInsets.only(top: 6.0),
                         child: SvgPicture.asset(
                           'assets/aves_logo.svg',
-                          width: 50,
+                          width: 64,
                         ),
                       ),
                       backgroundColor: Colors.white,
-                      radius: 32,
+                      radius: 44,
                     ),
                     SizedBox(width: 16),
-                    Text('Aves',
-                        style: TextStyle(
-                          fontSize: 42,
-                        )),
+                    Text(
+                      'Aves',
+                      style: TextStyle(fontSize: 44),
+                    ),
                   ],
                 ),
-                SizedBox(height: 8),
+                SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 72,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text('${collection.imageCount}'),
-                          Text('${collection.videoCount}'),
-                          Text('${collection.albumCount}'),
-                          Text('${collection.tagCount}'),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('images'),
-                        Text('videos'),
-                        Text('albums'),
-                        Text('tags'),
-                      ],
-                    ),
+                    Row(children: [Icon(Icons.photo_library), SizedBox(width: 4), Text('${collection.imageCount}')]),
+                    Row(children: [Icon(Icons.video_library), SizedBox(width: 4), Text('${collection.videoCount}')]),
+                    Row(children: [Icon(Icons.photo_album), SizedBox(width: 4), Text('${collection.albumCount}')]),
+                    Row(children: [Icon(Icons.label), SizedBox(width: 4), Text('${collection.tagCount}')]),
                   ],
                 ),
               ],
@@ -84,14 +67,14 @@ class AllCollectionDrawer extends StatelessWidget {
           Divider(),
           ...albums.map((album) => _buildFilteredCollectionNavTile(
                 context: context,
-                leading: Icon(Icons.photo_library),
+                leading: Icon(Icons.photo_album),
                 title: album,
                 filter: (entry) => entry.bucketDisplayName == album,
               )),
           Divider(),
           ...tags.map((tag) => _buildFilteredCollectionNavTile(
                 context: context,
-                leading: Icon(Icons.label_outline),
+                leading: Icon(Icons.label),
                 title: tag,
                 filter: (entry) => entry.xmpSubjects.contains(tag),
               )),
