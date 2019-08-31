@@ -18,6 +18,7 @@ class LocationSection extends AnimatedWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SectionRow('Location'),
+              SizedBox(height: 8),
               ImageMap(
                 markerId: entry.path,
                 latLng: LatLng(

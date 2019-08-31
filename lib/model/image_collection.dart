@@ -93,7 +93,6 @@ class ImageCollection with ChangeNotifier {
   }
 
   loadCatalogMetadata() async {
-    debugPrint('$runtimeType loadCatalogMetadata start');
     final start = DateTime.now();
     final saved = await metadataDb.loadMetadataEntries();
     _rawEntries.forEach((entry) {
@@ -107,7 +106,6 @@ class ImageCollection with ChangeNotifier {
   }
 
   loadAddresses() async {
-    debugPrint('$runtimeType loadAddresses start');
     final start = DateTime.now();
     final saved = await metadataDb.loadAddresses();
     _rawEntries.forEach((entry) {
@@ -120,7 +118,6 @@ class ImageCollection with ChangeNotifier {
   }
 
   catalogEntries() async {
-    debugPrint('$runtimeType catalogEntries start');
     final start = DateTime.now();
     final uncataloguedEntries = _rawEntries.where((entry) => !entry.isCatalogued);
     final newMetadata = List<CatalogMetadata>();
@@ -134,7 +131,6 @@ class ImageCollection with ChangeNotifier {
   }
 
   locateEntries() async {
-    debugPrint('$runtimeType locateEntries start');
     final start = DateTime.now();
     final unlocatedEntries = _rawEntries.where((entry) => entry.hasGps && !entry.isLocated);
     final newAddresses = List<AddressDetails>();

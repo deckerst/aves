@@ -47,21 +47,23 @@ class InfoPageState extends State<InfoPage> {
         ),
         title: Text('Info'),
       ),
-      body: NotificationListener(
-        onNotification: _handleTopScroll,
-        child: ListView(
-          padding: EdgeInsets.all(8.0) + EdgeInsets.only(bottom: bottomInsets),
-          children: [
-            InfoRow('Title', entry.title),
-            InfoRow('Date', dateText),
-            if (entry.isVideo) ..._buildVideoRows(),
-            InfoRow('Resolution', resolutionText),
-            InfoRow('Size', formatFilesize(entry.sizeBytes)),
-            InfoRow('Path', entry.path),
-            LocationSection(entry: entry),
-            XmpTagSection(collection: widget.collection, entry: entry),
-            MetadataSection(entry: entry),
-          ],
+      body: SafeArea(
+        child: NotificationListener(
+          onNotification: _handleTopScroll,
+          child: ListView(
+            padding: EdgeInsets.all(8.0) + EdgeInsets.only(bottom: bottomInsets),
+            children: [
+              InfoRow('Title', entry.title),
+              InfoRow('Date', dateText),
+              if (entry.isVideo) ..._buildVideoRows(),
+              InfoRow('Resolution', resolutionText),
+              InfoRow('Size', formatFilesize(entry.sizeBytes)),
+              InfoRow('Path', entry.path),
+              LocationSection(entry: entry),
+              XmpTagSection(collection: widget.collection, entry: entry),
+              MetadataSection(entry: entry),
+            ],
+          ),
         ),
       ),
       resizeToAvoidBottomInset: false,
