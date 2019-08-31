@@ -21,7 +21,7 @@ class DaySectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(text: text);
+    return SectionHeader(title: text);
   }
 }
 
@@ -43,36 +43,46 @@ class MonthSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(text: text);
+    return SectionHeader(title: text);
   }
 }
 
 class SectionHeader extends StatelessWidget {
-  final String text;
+  final Widget leading;
+  final String title;
 
-  const SectionHeader({Key key, this.text}) : super(key: key);
+  const SectionHeader({Key key, this.leading, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final text = OutlinedText(
+      title,
+      style: TextStyle(
+        color: Colors.grey[200],
+        fontSize: 20,
+        fontFamily: 'Concourse Caps',
+        shadows: [
+          Shadow(
+            offset: Offset(0, 2),
+            blurRadius: 3,
+            color: Colors.grey[900],
+          ),
+        ],
+      ),
+      outlineColor: Colors.black87,
+      outlineWidth: 2,
+    );
     return Container(
       padding: EdgeInsets.all(16),
-      child: OutlinedText(
-        text,
-        style: TextStyle(
-          color: Colors.grey[200],
-          fontSize: 20,
-          fontFamily: 'Concourse Caps',
-          shadows: [
-            Shadow(
-              offset: Offset(0, 2),
-              blurRadius: 3,
-              color: Colors.grey[900],
-            ),
-          ],
-        ),
-        outlineColor: Colors.black87,
-        outlineWidth: 2,
-      ),
+      child: leading != null
+          ? Row(
+              children: [
+                leading,
+                SizedBox(width: 8),
+                text,
+              ],
+            )
+          : text,
     );
   }
 }

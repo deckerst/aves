@@ -71,8 +71,8 @@ class AllCollectionDrawer extends StatelessWidget {
           ...albums.map((album) => _buildFilteredCollectionNavTile(
                 context: context,
                 leading: Icon(Icons.photo_album),
-                title: album,
-                filter: (entry) => entry.bucketDisplayName == album,
+                title: collection.getUniqueAlbumName(album, albums),
+                filter: (entry) => entry.directory == album,
               )),
           Divider(),
           ...tags.map((tag) => _buildFilteredCollectionNavTile(

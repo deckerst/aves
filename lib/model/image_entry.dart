@@ -13,6 +13,7 @@ import 'mime_types.dart';
 class ImageEntry with ChangeNotifier {
   String uri;
   String path;
+  String directory;
   int contentId;
   final String mimeType;
   int width;
@@ -41,7 +42,7 @@ class ImageEntry with ChangeNotifier {
     this.sourceDateTakenMillis,
     this.bucketDisplayName,
     this.durationMillis,
-  });
+  }) : directory = path != null ? dirname(path) : null;
 
   factory ImageEntry.fromMap(Map map) {
     return ImageEntry(

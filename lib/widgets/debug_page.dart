@@ -2,6 +2,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -40,6 +41,10 @@ class DebugPageState extends State<DebugPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text('Paths'),
+          Text('DCIM path: ${androidFileUtils.dcimPath}'),
+          Text('pictures path: ${androidFileUtils.picturesPath}'),
+          Divider(),
           Text('Settings'),
           Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
           Text('collectionSortFactor: ${settings.collectionSortFactor}'),

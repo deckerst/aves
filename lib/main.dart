@@ -3,6 +3,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
@@ -12,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   await settings.init();
+  await androidFileUtils.init();
   runApp(AvesApp());
 }
 

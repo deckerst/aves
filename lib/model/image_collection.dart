@@ -4,6 +4,7 @@ import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import "package:collection/collection.dart";
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class ImageCollection with ChangeNotifier {
   final List<ImageEntry> _rawEntries;
@@ -46,7 +47,7 @@ class ImageCollection with ChangeNotifier {
       case SortFactor.date:
         switch (groupFactor) {
           case GroupFactor.album:
-            sections = groupBy(_rawEntries, (entry) => entry.bucketDisplayName);
+            sections = groupBy(_rawEntries, (entry) => entry.directory);
             break;
           case GroupFactor.date:
             sections = groupBy(_rawEntries, (entry) => entry.monthTaken);
@@ -82,7 +83,7 @@ class ImageCollection with ChangeNotifier {
     return success;
   }
 
-  updateAlbums() => albums = _rawEntries.map((entry) => entry.bucketDisplayName).toSet();
+  updateAlbums() => albums = _rawEntries.map((entry) => entry.directory).toSet();
 
   updateTags() => tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
 
@@ -152,6 +153,17 @@ class ImageCollection with ChangeNotifier {
       groupFactor: groupFactor,
       sortFactor: sortFactor,
     );
+  }
+
+  String getUniqueAlbumName(String album, List albums) {
+    final otherAlbums = albums.where((item) => item != album);
+    final parts = album.split(separator);
+    int partCount = 0;
+    String testName;
+    do {
+      testName = separator + parts.skip(parts.length - ++partCount).join(separator);
+    } while (otherAlbums.any((item) => item.endsWith(testName)));
+    return parts.skip(parts.length - partCount).join(separator);
   }
 }
 
