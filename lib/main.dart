@@ -64,12 +64,10 @@ class _HomePageState extends State<HomePage> {
           (entryMap) => localMediaCollection.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
             debugPrint('mediastore stream done');
+            localMediaCollection.updateSections();
             localMediaCollection.updateAlbums();
             await localMediaCollection.loadCatalogMetadata();
-            setState(() {});
             await localMediaCollection.catalogEntries();
-            localMediaCollection.updateTags();
-            setState(() {});
             await localMediaCollection.loadAddresses();
             await localMediaCollection.locateEntries();
           },

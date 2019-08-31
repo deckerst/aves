@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class ImageCollection with ChangeNotifier {
   final List<ImageEntry> _rawEntries;
+  Map<dynamic, List<ImageEntry>> sections = Map();
   GroupFactor groupFactor = GroupFactor.date;
   SortFactor sortFactor = SortFactor.date;
   Set<String> albums = Set(), tags = Set();
@@ -15,7 +16,9 @@ class ImageCollection with ChangeNotifier {
     @required List<ImageEntry> entries,
     @required this.groupFactor,
     @required this.sortFactor,
-  }) : _rawEntries = entries;
+  }) : _rawEntries = entries {
+    updateSections();
+  }
 
   int get imageCount => _rawEntries.where((entry) => !entry.isVideo).length;
 
@@ -25,34 +28,39 @@ class ImageCollection with ChangeNotifier {
 
   int get tagCount => tags.length;
 
-  Map<dynamic, List<ImageEntry>> get sections {
-    switch (sortFactor) {
-      case SortFactor.date:
-        switch (groupFactor) {
-          case GroupFactor.album:
-            return groupBy(_rawEntries, (entry) => entry.bucketDisplayName);
-          case GroupFactor.date:
-            return groupBy(_rawEntries, (entry) => entry.monthTaken);
-        }
-        break;
-      case SortFactor.size:
-        return Map.fromEntries([MapEntry('All', _rawEntries)]);
-    }
-    return Map();
-  }
+  List<ImageEntry> get sortedEntries => List.unmodifiable(sections.entries.expand((e) => e.value));
 
-  List<ImageEntry> get sortedEntries {
-    return List.unmodifiable(sections.entries.expand((e) => e.value));
+  sort(SortFactor sortFactor) {
+    this.sortFactor = sortFactor;
+    updateSections();
   }
 
   group(GroupFactor groupFactor) {
     this.groupFactor = groupFactor;
+    updateSections();
+  }
+
+  updateSections() {
+    _applySort();
+    switch (sortFactor) {
+      case SortFactor.date:
+        switch (groupFactor) {
+          case GroupFactor.album:
+            sections = groupBy(_rawEntries, (entry) => entry.bucketDisplayName);
+            break;
+          case GroupFactor.date:
+            sections = groupBy(_rawEntries, (entry) => entry.monthTaken);
+            break;
+        }
+        break;
+      case SortFactor.size:
+        sections = Map.fromEntries([MapEntry('All', _rawEntries)]);
+        break;
+    }
     notifyListeners();
   }
 
-  sort(SortFactor sortFactor) {
-    this.sortFactor = sortFactor;
-
+  _applySort() {
     switch (sortFactor) {
       case SortFactor.date:
         _rawEntries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
@@ -61,8 +69,6 @@ class ImageCollection with ChangeNotifier {
         _rawEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
         break;
     }
-
-    notifyListeners();
   }
 
   add(ImageEntry entry) => _rawEntries.add(entry);
@@ -71,7 +77,7 @@ class ImageCollection with ChangeNotifier {
     final success = await ImageFileService.delete(entry);
     if (success) {
       _rawEntries.remove(entry);
-      notifyListeners();
+      updateSections();
     }
     return success;
   }
@@ -79,6 +85,12 @@ class ImageCollection with ChangeNotifier {
   updateAlbums() => albums = _rawEntries.map((entry) => entry.bucketDisplayName).toSet();
 
   updateTags() => tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
+
+  onMetadataChanged() {
+    // metadata dates impact sorting and grouping
+    updateSections();
+    updateTags();
+  }
 
   loadCatalogMetadata() async {
     debugPrint('$runtimeType loadCatalogMetadata start');
@@ -90,6 +102,7 @@ class ImageCollection with ChangeNotifier {
         entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
       }
     });
+    onMetadataChanged();
     debugPrint('$runtimeType loadCatalogMetadata complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
   }
 
@@ -116,10 +129,8 @@ class ImageCollection with ChangeNotifier {
       newMetadata.add(entry.catalogMetadata);
     });
     metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+    onMetadataChanged();
     debugPrint('$runtimeType catalogEntries complete in ${DateTime.now().difference(start).inSeconds}s with ${newMetadata.length} new entries');
-
-    // notify because metadata dates might change groups and order
-    notifyListeners();
   }
 
   locateEntries() async {
