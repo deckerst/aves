@@ -37,6 +37,7 @@ class InfoPageState extends State<InfoPage> {
     final date = entry.bestDate;
     final dateText = '${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}';
     final resolutionText = '${entry.width} × ${entry.height}${entry.isVideo ? '' : ' (${entry.megaPixels} MP)'}';
+    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -49,7 +50,7 @@ class InfoPageState extends State<InfoPage> {
       body: NotificationListener(
         onNotification: _handleTopScroll,
         child: ListView(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0) + EdgeInsets.only(bottom: bottomInsets),
           children: [
             InfoRow('Title', entry.title),
             InfoRow('Date', dateText),
@@ -63,6 +64,7 @@ class InfoPageState extends State<InfoPage> {
           ],
         ),
       ),
+      resizeToAvoidBottomInset: false,
     );
   }
 
@@ -105,7 +107,13 @@ class SectionRow extends StatelessWidget {
         Expanded(child: Divider(color: Colors.white70)),
         Padding(
           padding: EdgeInsets.all(16.0),
-          child: Text(title, style: TextStyle(fontSize: 20)),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontFamily: 'Concourse Caps',
+            ),
+          ),
         ),
         Expanded(child: Divider(color: Colors.white70)),
       ],
@@ -124,7 +132,7 @@ class InfoRow extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 4.0),
       child: RichText(
         text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
+          style: TextStyle(fontFamily: 'Concourse'),
           children: [
             TextSpan(text: '$label    ', style: TextStyle(color: Colors.white70)),
             TextSpan(text: value),

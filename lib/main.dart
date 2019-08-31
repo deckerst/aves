@@ -24,6 +24,15 @@ class AvesApp extends StatelessWidget {
         brightness: Brightness.dark,
         accentColor: Colors.indigoAccent,
         scaffoldBackgroundColor: Colors.grey[900],
+        appBarTheme: AppBarTheme(
+          textTheme: TextTheme(
+            title: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Concourse Caps',
+            ),
+          ),
+        ),
       ),
       home: HomePage(),
     );

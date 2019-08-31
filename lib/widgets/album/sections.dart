@@ -61,6 +61,7 @@ class SectionHeader extends StatelessWidget {
         style: TextStyle(
           color: Colors.grey[200],
           fontSize: 20,
+          fontFamily: 'Concourse Caps',
           shadows: [
             Shadow(
               offset: Offset(0, 2),

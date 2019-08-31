@@ -99,7 +99,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
     final subRowWidth = min(400.0, maxWidth);
     final date = entry.bestDate;
     return DefaultTextStyle(
-      style: TextStyle(
+      style: Theme.of(context).textTheme.body1.copyWith(
         shadows: [
           Shadow(
             color: Colors.black87,

@@ -56,7 +56,11 @@ class MetadataSectionState extends State<MetadataSection> {
                   if (directoryName.isNotEmpty)
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text(directoryName, style: TextStyle(fontSize: 18)),
+                      child: Text(directoryName,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'Concourse Caps',
+                          )),
                     ),
                   ...tagKeys.map((tagKey) {
                     final value = directory[tagKey] as String;

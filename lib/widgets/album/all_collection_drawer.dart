@@ -38,7 +38,10 @@ class AllCollectionDrawer extends StatelessWidget {
                     SizedBox(width: 16),
                     Text(
                       'Aves',
-                      style: TextStyle(fontSize: 44),
+                      style: TextStyle(
+                        fontSize: 44,
+                        fontFamily: 'Concourse Caps',
+                      ),
                     ),
                   ],
                 ),
