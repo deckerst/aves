@@ -30,19 +30,13 @@ class FullscreenPage extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        Screen.keepOn(false);
-        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-        return Future.value(true);
-      },
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: FullscreenBody(
-          collection: collection,
-          initialUri: initialUri,
-        ),
-        resizeToAvoidBottomInset: false,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: FullscreenBody(
+        collection: collection,
+        initialUri: initialUri,
+      ),
+      resizeToAvoidBottomInset: false,
 //        Hero(
 //          tag: uri,
 //          child: Stack(
@@ -71,7 +65,6 @@ class FullscreenPage extends AnimatedWidget {
 //            ],
 //          ),
 //        ),
-      ),
     );
   }
 }
@@ -145,53 +138,64 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     final entry = entries[_currentHorizontalPage];
-    return Stack(
-      children: [
-        PageView(
-          scrollDirection: Axis.vertical,
-          controller: _verticalPager,
-          physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
-          onPageChanged: (page) => setState(() => _currentVerticalPage = page),
-          children: [
-            ImagePage(
-              collection: collection,
-              pageController: _horizontalPager,
-              onTap: () => _overlayVisible.value = !_overlayVisible.value,
-              onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
-              onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
-            ),
-            NotificationListener(
-              onNotification: (notification) {
-                if (notification is BackUpNotification) goToVerticalPage(0);
-                return false;
-              },
-              child: InfoPage(collection: collection, entry: entry),
-            ),
-          ],
-        ),
-        if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
-          FullscreenTopOverlay(
-            entries: entries,
-            index: _currentHorizontalPage,
-            scale: _topOverlayScale,
-            viewInsets: _frozenViewInsets,
-            viewPadding: _frozenViewPadding,
-            onActionSelected: (action) => onActionSelected(entry, action),
-          ),
-          Positioned(
-            bottom: 0,
-            child: SlideTransition(
-              position: _bottomOverlayOffset,
-              child: FullscreenBottomOverlay(
-                entries: entries,
-                index: _currentHorizontalPage,
-                viewInsets: _frozenViewInsets,
-                viewPadding: _frozenViewPadding,
+    return WillPopScope(
+      onWillPop: () {
+        if (_currentVerticalPage == 1) {
+          goToVerticalPage(0);
+          return Future.value(false);
+        }
+        Screen.keepOn(false);
+        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        return Future.value(true);
+      },
+      child: Stack(
+        children: [
+          PageView(
+            scrollDirection: Axis.vertical,
+            controller: _verticalPager,
+            physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
+            onPageChanged: (page) => setState(() => _currentVerticalPage = page),
+            children: [
+              ImagePage(
+                collection: collection,
+                pageController: _horizontalPager,
+                onTap: () => _overlayVisible.value = !_overlayVisible.value,
+                onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
+                onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
               ),
+              NotificationListener(
+                onNotification: (notification) {
+                  if (notification is BackUpNotification) goToVerticalPage(0);
+                  return false;
+                },
+                child: InfoPage(collection: collection, entry: entry),
+              ),
+            ],
+          ),
+          if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
+            FullscreenTopOverlay(
+              entries: entries,
+              index: _currentHorizontalPage,
+              scale: _topOverlayScale,
+              viewInsets: _frozenViewInsets,
+              viewPadding: _frozenViewPadding,
+              onActionSelected: (action) => onActionSelected(entry, action),
             ),
-          )
-        ]
-      ],
+            Positioned(
+              bottom: 0,
+              child: SlideTransition(
+                position: _bottomOverlayOffset,
+                child: FullscreenBottomOverlay(
+                  entries: entries,
+                  index: _currentHorizontalPage,
+                  viewInsets: _frozenViewInsets,
+                  viewPadding: _frozenViewPadding,
+                ),
+              ),
+            )
+          ]
+        ],
+      ),
     );
   }
 
