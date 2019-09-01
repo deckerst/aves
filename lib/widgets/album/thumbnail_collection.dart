@@ -1,13 +1,12 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/sections.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/common/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ThumbnailCollection extends AnimatedWidget {
   final ImageCollection collection;
@@ -99,7 +98,7 @@ class SectionSliver extends StatelessWidget {
       switch (collection.groupFactor) {
         case GroupFactor.album:
           header = SectionHeader(
-            leading: getAlbumIcon(context, sectionKey),
+            leading: IconUtils.getAlbumIcon(context, sectionKey),
             title: collection.getUniqueAlbumName(sectionKey, sections.keys.toList()),
           );
           break;
@@ -133,17 +132,6 @@ class SectionSliver extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget getAlbumIcon(BuildContext context, String albumDirectory) {
-    if (androidFileUtils.isCameraPath(albumDirectory)) {
-      return Icon(Icons.photo_camera);
-    } else if (androidFileUtils.isScreenshotsPath(albumDirectory)) {
-      return Icon(Icons.smartphone);
-    } else if (androidFileUtils.isKakaoTalkPath(albumDirectory)) {
-      return SvgPicture.asset('assets/kakaotalk.svg', width: IconTheme.of(context).size);
-    }
-    return null;
   }
 
   Future _showFullscreen(BuildContext context, ImageEntry entry) {

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
-import 'package:aves/widgets/album/thumbnail_tags.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -123,14 +123,14 @@ class ThumbnailImage extends StatelessWidget {
           }),
         ),
         if (entry.isVideo)
-          VideoTag(
+          VideoIcon(
             entry: entry,
             iconSize: iconSize,
           )
         else if (entry.isGif)
-          GifTag(iconSize: iconSize)
+          GifIcon(iconSize: iconSize)
         else if (entry.hasGps)
-          GpsTag(iconSize: iconSize)
+          GpsIcon(iconSize: iconSize)
       ],
     );
   }

@@ -1,6 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class MetadataService {

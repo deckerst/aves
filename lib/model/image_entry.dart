@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:path/path.dart';
 import 'package:tuple/tuple.dart';

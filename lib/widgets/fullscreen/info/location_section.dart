@@ -99,14 +99,17 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: controller == null ? null : () => zoomBy(1),
+            tooltip: 'Zoom in',
           ),
           IconButton(
             icon: Icon(Icons.remove),
             onPressed: controller == null ? null : () => zoomBy(-1),
+            tooltip: 'Zoom out',
           ),
           IconButton(
             icon: Icon(Icons.open_in_new),
             onPressed: () => AndroidAppService.openMap(widget.geoUri),
+            tooltip: 'Show on map...',
           ),
         ])
       ],

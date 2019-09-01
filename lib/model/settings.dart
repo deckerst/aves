@@ -1,6 +1,5 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
