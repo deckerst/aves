@@ -23,4 +23,6 @@ class AndroidFileUtils {
   bool isScreenshotsPath(String path) => path != null && path.startsWith(dcimPath) && path.endsWith('Screenshots');
 
   bool isKakaoTalkPath(String path) => path != null && path.startsWith(picturesPath) && path.endsWith('KakaoTalk');
+
+  bool isTelegramPath(String path) => path != null && path.startsWith(picturesPath) && path.endsWith('Telegram');
 }

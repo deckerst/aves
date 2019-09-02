@@ -91,6 +91,8 @@ class IconUtils {
       return Icon(Icons.smartphone);
     } else if (androidFileUtils.isKakaoTalkPath(albumDirectory)) {
       return SvgPicture.asset('assets/kakaotalk.svg', width: IconTheme.of(context).size);
+    } else if (androidFileUtils.isTelegramPath(albumDirectory)) {
+      return SvgPicture.asset('assets/telegram.svg', width: IconTheme.of(context).size);
     }
     return null;
   }
