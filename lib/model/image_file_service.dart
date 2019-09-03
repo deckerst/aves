@@ -31,6 +31,16 @@ class ImageFileService {
     return Uint8List(0);
   }
 
+  static cancelGetImageBytes(String uri) async {
+    try {
+      await platform.invokeMethod('cancelGetImageBytes', <String, dynamic>{
+        'uri': uri,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('cancelGetImageBytes failed with exception=${e.message}');
+    }
+  }
+
   static Future<bool> delete(ImageEntry entry) async {
     try {
       await platform.invokeMethod('delete', <String, dynamic>{

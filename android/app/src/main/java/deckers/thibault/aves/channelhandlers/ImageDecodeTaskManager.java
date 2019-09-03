@@ -1,34 +1,45 @@
 package deckers.thibault.aves.channelhandlers;
 
 import android.app.Activity;
-import android.os.AsyncTask;
+import android.util.Log;
 
-import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
 
 public class ImageDecodeTaskManager {
-    private Activity activity;
-    private HashMap<String, AsyncTask> taskMap = new HashMap<>();
+    private static final String LOG_TAG = Utils.createLogTag(ImageDecodeTaskManager.class);
+
+    private LinkedBlockingDeque<ImageDecodeTask.Params> taskParamsQueue;
+    private boolean running = true;
 
     ImageDecodeTaskManager(Activity activity) {
-        this.activity = activity;
+        taskParamsQueue = new LinkedBlockingDeque<>();
+        new Thread(() -> {
+            try {
+                while (running) {
+                    ImageDecodeTask.Params params = taskParamsQueue.take();
+                    new ImageDecodeTask(activity).execute(params);
+                    Thread.sleep(10);
+                }
+            } catch (InterruptedException ex) {
+                Log.w(LOG_TAG, ex);
+            }
+        }).start();
     }
 
     void fetch(MethodChannel.Result result, ImageEntry entry, Integer width, Integer height) {
-        ImageDecodeTask.Params params = new ImageDecodeTask.Params(entry, width, height, result, this::complete);
-        AsyncTask task = new ImageDecodeTask(activity).execute(params);
-        taskMap.put(entry.getUri().toString(), task);
+        taskParamsQueue.addFirst(new ImageDecodeTask.Params(entry, width, height, result, this::complete));
     }
 
     void cancel(String uri) {
-        AsyncTask task = taskMap.get(uri);
-        if (task != null) task.cancel(true);
-        taskMap.remove(uri);
+        boolean removed = taskParamsQueue.removeIf(p -> uri.equals(p.entry.getUri().toString()));
+        if (removed) Log.d(LOG_TAG, "cancelled uri=" + uri);
     }
 
     private void complete(String uri) {
-        taskMap.remove(uri);
+        // nothing for now
     }
 }

@@ -59,6 +59,7 @@ class InfoPageState extends State<InfoPage> {
               InfoRow('Resolution', resolutionText),
               InfoRow('Size', formatFilesize(entry.sizeBytes)),
               InfoRow('Path', entry.path),
+              InfoRow('Uri', entry.uri),
               LocationSection(entry: entry),
               XmpTagSection(collection: widget.collection, entry: entry),
               MetadataSection(entry: entry),
