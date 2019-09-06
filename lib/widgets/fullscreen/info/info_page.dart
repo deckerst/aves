@@ -1,11 +1,10 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/file_utils.dart';
+import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class InfoPage extends StatefulWidget {
   final ImageCollection collection;
@@ -34,9 +33,8 @@ class InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final date = entry.bestDate;
-    final dateText = '${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}';
-    final resolutionText = '${entry.width} × ${entry.height}${entry.isVideo ? '' : ' (${entry.megaPixels} MP)'}';
+    // use MediaQuery instead of unreliable OrientationBuilder
+    final orientation = MediaQuery.of(context).orientation;
     final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       appBar: AppBar(
@@ -53,14 +51,19 @@ class InfoPageState extends State<InfoPage> {
           child: ListView(
             padding: EdgeInsets.all(8.0) + EdgeInsets.only(bottom: bottomInsets),
             children: [
-              InfoRow('Title', entry.title),
-              InfoRow('Date', dateText),
-              if (entry.isVideo) ..._buildVideoRows(),
-              InfoRow('Resolution', resolutionText),
-              InfoRow('Size', formatFilesize(entry.sizeBytes)),
-              InfoRow('Path', entry.path),
-              InfoRow('Uri', entry.uri),
-              LocationSection(entry: entry),
+              if (orientation == Orientation.landscape && entry.hasGps)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: BasicSection(entry: entry)),
+                    SizedBox(width: 8),
+                    Expanded(child: LocationSection(entry: entry, showTitle: false)),
+                  ],
+                )
+              else ...[
+                BasicSection(entry: entry),
+                LocationSection(entry: entry, showTitle: true),
+              ],
               XmpTagSection(collection: widget.collection, entry: entry),
               MetadataSection(entry: entry),
             ],
@@ -69,12 +72,6 @@ class InfoPageState extends State<InfoPage> {
       ),
       resizeToAvoidBottomInset: false,
     );
-  }
-
-  List<Widget> _buildVideoRows() {
-    final rotation = entry.catalogMetadata?.videoRotation;
-    if (rotation != null) InfoRow('Rotation', '$rotation°');
-    return [InfoRow('Duration', entry.durationText), if (rotation != null) InfoRow('Rotation', '$rotation°')];
   }
 
   bool _handleTopScroll(Notification notification) {

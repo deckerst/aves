@@ -7,8 +7,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationSection extends AnimatedWidget {
   final ImageEntry entry;
+  final showTitle;
 
-  const LocationSection({Key key, this.entry}) : super(key: key, listenable: entry);
+  const LocationSection({
+    Key key,
+    @required this.entry,
+    @required this.showTitle,
+  }) : super(key: key, listenable: entry);
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +22,11 @@ class LocationSection extends AnimatedWidget {
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionRow('Location'),
-              SizedBox(height: 8),
+              if (showTitle)
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: SectionRow('Location'),
+                ),
               ImageMap(
                 markerId: entry.path,
                 latLng: LatLng(
