@@ -49,7 +49,7 @@ class MetadataSectionState extends State<MetadataSection> {
         // use MediaQuery instead of unreliable OrientationBuilder
         final orientation = MediaQuery.of(context).orientation;
         if (orientation == Orientation.landscape) {
-          final threshold = directoryNames.map((k) => metadataMap[k].length).reduce((v, e) => v + e) / 2;
+          final threshold = (2 * directoryNames.length + directoryNames.map((k) => metadataMap[k].length).reduce((v, e) => v + e)) / 2;
           final first = <String>[], second = <String>[];
           var processed = 0;
           for (int i = 0; i < directoryNames.length; i++) {
@@ -58,9 +58,8 @@ class MetadataSectionState extends State<MetadataSection> {
               first.add(directoryName);
             else
               second.add(directoryName);
-            processed += 1 + metadataMap[directoryName].length;
+            processed += 2 + metadataMap[directoryName].length;
           }
-          debugPrint('first=$first second=$second');
           content = Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

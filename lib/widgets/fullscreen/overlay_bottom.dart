@@ -92,18 +92,26 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   final String position;
   final double maxWidth;
 
+  static const double interRowPadding = 4.0;
+  static const double iconPadding = 8.0;
+  static const double iconSize = 16.0;
+  static const double subRowMinWidth = 300.0;
+
   _FullscreenBottomOverlayContent({this.entry, this.details, this.position, this.maxWidth});
 
   @override
   Widget build(BuildContext context) {
-    final subRowWidth = min(400.0, maxWidth);
-    final date = entry.bestDate;
+    // use MediaQuery instead of unreliable OrientationBuilder
+    final orientation = MediaQuery.of(context).orientation;
+    final twoColumns = orientation == Orientation.landscape && maxWidth / 2 > subRowMinWidth;
+    final subRowWidth = twoColumns ? min(subRowMinWidth, maxWidth / 2) : maxWidth;
+    final hasShootingDetails = details != null && !details.isEmpty;
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.body1.copyWith(
         shadows: [
           Shadow(
             color: Colors.black87,
-            offset: Offset(0.0, 1.0),
+            offset: Offset(0.5, 1.0),
           )
         ],
       ),
@@ -113,59 +121,74 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
         children: [
           SizedBox(
             width: maxWidth,
-            child: Text(
-              '$position – ${entry.title}',
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: Text('$position – ${entry.title}', overflow: TextOverflow.ellipsis),
           ),
-          if (entry.isLocated) ...[
-            SizedBox(height: 4),
-            SizedBox(
+          if (entry.isLocated)
+            Container(
+              padding: EdgeInsets.only(top: interRowPadding),
               width: subRowWidth,
+              child: _buildLocationRow(),
+            ),
+          if (twoColumns)
+            Padding(
+              padding: EdgeInsets.only(top: interRowPadding),
               child: Row(
                 children: [
-                  Icon(Icons.place, size: 16),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      entry.shortAddress,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                  Container(width: subRowWidth, child: _buildDateRow()),
+                  if (hasShootingDetails) Container(width: subRowWidth, child: _buildShootingRow()),
                 ],
               ),
-            ),
-          ],
-          SizedBox(height: 4),
-          SizedBox(
-            width: subRowWidth,
-            child: Row(
-              children: [
-                Icon(Icons.calendar_today, size: 16),
-                SizedBox(width: 8),
-                Expanded(child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
-                Expanded(child: Text('${entry.width} × ${entry.height}')),
-              ],
-            ),
-          ),
-          if (details != null && !details.isEmpty) ...[
-            SizedBox(height: 4),
-            SizedBox(
+            )
+          else ...[
+            Container(
+              padding: EdgeInsets.only(top: interRowPadding),
               width: subRowWidth,
-              child: Row(
-                children: [
-                  Icon(Icons.camera, size: 16),
-                  SizedBox(width: 8),
-                  Expanded(child: Text(details.aperture)),
-                  Expanded(child: Text(details.exposureTime)),
-                  Expanded(child: Text(details.focalLength)),
-                  Expanded(child: Text(details.iso)),
-                ],
-              ),
+              child: _buildDateRow(),
             ),
+            if (hasShootingDetails)
+              Container(
+                padding: EdgeInsets.only(top: interRowPadding),
+                width: subRowWidth,
+                child: _buildShootingRow(),
+              ),
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildLocationRow() {
+    return Row(
+      children: [
+        Icon(Icons.place, size: iconSize),
+        SizedBox(width: iconPadding),
+        Expanded(child: Text(entry.shortAddress, overflow: TextOverflow.ellipsis)),
+      ],
+    );
+  }
+
+  Widget _buildDateRow() {
+    final date = entry.bestDate;
+    return Row(
+      children: [
+        Icon(Icons.calendar_today, size: iconSize),
+        SizedBox(width: iconPadding),
+        Expanded(flex: 3, child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
+        Expanded(flex: 2, child: Text('${entry.width} × ${entry.height}')),
+      ],
+    );
+  }
+
+  Widget _buildShootingRow() {
+    return Row(
+      children: [
+        Icon(Icons.camera, size: iconSize),
+        SizedBox(width: iconPadding),
+        Expanded(child: Text(details.aperture)),
+        Expanded(child: Text(details.exposureTime)),
+        Expanded(child: Text(details.focalLength)),
+        Expanded(child: Text(details.iso)),
+      ],
     );
   }
 }
