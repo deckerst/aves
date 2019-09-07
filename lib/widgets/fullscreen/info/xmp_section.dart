@@ -8,11 +8,11 @@ class XmpTagSection extends AnimatedWidget {
   final ImageCollection collection;
   final ImageEntry entry;
 
-  const XmpTagSection({
+  XmpTagSection({
     Key key,
     @required this.collection,
     @required this.entry,
-  }) : super(key: key, listenable: entry);
+  }) : super(key: key, listenable: entry.metadataChangeNotifier);
 
   @override
   Widget build(BuildContext context) {

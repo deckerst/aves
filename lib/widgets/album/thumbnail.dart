@@ -25,6 +25,7 @@ class Thumbnail extends StatefulWidget {
 
 class ThumbnailState extends State<Thumbnail> {
   Future<Uint8List> _byteLoader;
+  Listenable _entryChangeNotifier;
 
   ImageEntry get entry => widget.entry;
 
@@ -33,7 +34,8 @@ class ThumbnailState extends State<Thumbnail> {
   @override
   void initState() {
     super.initState();
-    entry.addListener(onEntryChange);
+    _entryChangeNotifier = Listenable.merge([entry.imageChangeNotifier, entry.metadataChangeNotifier]);
+    _entryChangeNotifier.addListener(onEntryChange);
     initByteLoader();
   }
 
@@ -53,7 +55,7 @@ class ThumbnailState extends State<Thumbnail> {
 
   @override
   void dispose() {
-    entry.removeListener(onEntryChange);
+    _entryChangeNotifier.removeListener(onEntryChange);
     super.dispose();
   }
 

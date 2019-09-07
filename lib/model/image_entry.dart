@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
+import 'package:aves/utils/change_notifier.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:path/path.dart';
@@ -10,7 +11,7 @@ import 'package:tuple/tuple.dart';
 
 import 'mime_types.dart';
 
-class ImageEntry with ChangeNotifier {
+class ImageEntry {
   String uri;
   String path;
   String directory;
@@ -27,6 +28,8 @@ class ImageEntry with ChangeNotifier {
   final int durationMillis;
   CatalogMetadata catalogMetadata;
   AddressDetails addressDetails;
+
+  AChangeNotifier imageChangeNotifier = new AChangeNotifier(), metadataChangeNotifier = new AChangeNotifier(), addressChangeNotifier = new AChangeNotifier();
 
   ImageEntry({
     this.uri,
@@ -78,6 +81,12 @@ class ImageEntry with ChangeNotifier {
       'bucketDisplayName': bucketDisplayName,
       'durationMillis': durationMillis,
     };
+  }
+
+  dispose() {
+    imageChangeNotifier.dispose();
+    metadataChangeNotifier.dispose();
+    addressChangeNotifier.dispose();
   }
 
   @override
@@ -143,7 +152,7 @@ class ImageEntry with ChangeNotifier {
   catalog() async {
     if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
-    notifyListeners();
+    metadataChangeNotifier.notifyListeners();
   }
 
   locate() async {
@@ -166,10 +175,10 @@ class ImageEntry with ChangeNotifier {
           adminArea: address.adminArea,
           locality: address.locality,
         );
-        notifyListeners();
+        addressChangeNotifier.notifyListeners();
       }
-    } catch (e) {
-      debugPrint('$runtimeType addAddressToMetadata failed with exception=${e.message}');
+    } catch (exception) {
+      debugPrint('$runtimeType addAddressToMetadata failed with exception=$exception');
     }
   }
 
@@ -204,7 +213,7 @@ class ImageEntry with ChangeNotifier {
     if (contentId != null) this.contentId = contentId;
     final title = newFields['title'];
     if (title != null) this.title = title;
-    notifyListeners();
+    metadataChangeNotifier.notifyListeners();
     return true;
   }
 
@@ -220,7 +229,7 @@ class ImageEntry with ChangeNotifier {
     if (height != null) this.height = height;
     final orientationDegrees = newFields['orientationDegrees'];
     if (orientationDegrees != null) this.orientationDegrees = orientationDegrees;
-    notifyListeners();
+    imageChangeNotifier.notifyListeners();
     return true;
   }
 }

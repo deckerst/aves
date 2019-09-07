@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
+import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -123,7 +124,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
             width: maxWidth,
             child: Text('$position – ${entry.title}', overflow: TextOverflow.ellipsis),
           ),
-          if (entry.isLocated)
+          if (entry.hasGps)
             Container(
               padding: EdgeInsets.only(top: interRowPadding),
               width: subRowWidth,
@@ -158,11 +159,17 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   }
 
   Widget _buildLocationRow() {
+    String text;
+    if (entry.isLocated) {
+      text = entry.shortAddress;
+    } else if (entry.hasGps) {
+      text = toDMS(entry.latLng).join(', ');
+    }
     return Row(
       children: [
         Icon(Icons.place, size: iconSize),
         SizedBox(width: iconPadding),
-        Expanded(child: Text(entry.shortAddress, overflow: TextOverflow.ellipsis)),
+        Expanded(child: Text(text, overflow: TextOverflow.ellipsis)),
       ],
     );
   }

@@ -5,16 +5,16 @@ final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 typedef void AndroidFileUtilsCallback(String key, dynamic oldValue, dynamic newValue);
 
 class AndroidFileUtils {
-  String dcimPath, downloadPath, picturesPath;
+  String externalStorage, dcimPath, downloadPath, picturesPath;
 
   AndroidFileUtils._private();
 
   init() async {
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
-    final ext = '/storage/emulated/0';
-    dcimPath = join(ext, 'DCIM');
-    downloadPath = join(ext, 'Download');
-    picturesPath = join(ext, 'Pictures');
+    externalStorage = '/storage/emulated/0';
+    dcimPath = join(externalStorage, 'DCIM');
+    downloadPath = join(externalStorage, 'Download');
+    picturesPath = join(externalStorage, 'Pictures');
   }
 
   bool isCameraPath(String path) => path != null && path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));

@@ -47,15 +47,20 @@ class FullscreenTopOverlay extends StatelessWidget {
             SizedBox(width: 8),
             OverlayButton(
               scale: scale,
+              child: IconButton(
+                icon: Icon(Icons.delete_outline),
+                onPressed: () => onActionSelected?.call(FullscreenAction.delete),
+                tooltip: 'Delete',
+              ),
+            ),
+            SizedBox(width: 8),
+            OverlayButton(
+              scale: scale,
               child: PopupMenuButton<FullscreenAction>(
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: FullscreenAction.info,
                     child: MenuRow(text: 'Info', icon: Icons.info_outline),
-                  ),
-                  PopupMenuItem(
-                    value: FullscreenAction.delete,
-                    child: MenuRow(text: 'Delete', icon: Icons.delete_outline),
                   ),
                   PopupMenuItem(
                     value: FullscreenAction.rename,

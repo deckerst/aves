@@ -9,11 +9,11 @@ class LocationSection extends AnimatedWidget {
   final ImageEntry entry;
   final showTitle;
 
-  const LocationSection({
+  LocationSection({
     Key key,
     @required this.entry,
     @required this.showTitle,
-  }) : super(key: key, listenable: entry);
+  }) : super(key: key, listenable: Listenable.merge([entry.metadataChangeNotifier, entry.addressChangeNotifier]));
 
   @override
   Widget build(BuildContext context) {

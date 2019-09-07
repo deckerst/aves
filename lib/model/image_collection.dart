@@ -120,7 +120,7 @@ class ImageCollection with ChangeNotifier {
 
   catalogEntries() async {
     final start = DateTime.now();
-    final uncataloguedEntries = _rawEntries.where((entry) => !entry.isCatalogued);
+    final uncataloguedEntries = _rawEntries.where((entry) => !entry.isCatalogued).toList();
     final newMetadata = List<CatalogMetadata>();
     await Future.forEach<ImageEntry>(uncataloguedEntries, (entry) async {
       await entry.catalog();
@@ -133,7 +133,7 @@ class ImageCollection with ChangeNotifier {
 
   locateEntries() async {
     final start = DateTime.now();
-    final unlocatedEntries = _rawEntries.where((entry) => entry.hasGps && !entry.isLocated);
+    final unlocatedEntries = _rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
     final newAddresses = List<AddressDetails>();
     await Future.forEach<ImageEntry>(unlocatedEntries, (entry) async {
       await entry.locate();

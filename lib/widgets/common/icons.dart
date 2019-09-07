@@ -99,7 +99,7 @@ class IconUtils {
     if (androidFileUtils.isDownloadPath(albumDirectory)) return Icon(Icons.file_download);
 
     final parts = albumDirectory.split(separator);
-    if (albumDirectory.startsWith(androidFileUtils.picturesPath) && appNameMap.keys.contains(parts.last)) {
+    if (albumDirectory.startsWith(androidFileUtils.externalStorage) && appNameMap.keys.contains(parts.last)) {
       final packageName = appNameMap[parts.last];
       return AppIcon(
         packageName: packageName,
