@@ -97,8 +97,18 @@ class SectionSliver extends StatelessWidget {
     if (collection.sortFactor == SortFactor.date) {
       switch (collection.groupFactor) {
         case GroupFactor.album:
+          Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey);
+          if (albumIcon != null) {
+            albumIcon = Material(
+              type: MaterialType.circle,
+              elevation: 3,
+              color: Colors.transparent,
+              shadowColor: Colors.black,
+              child: albumIcon,
+            );
+          }
           header = SectionHeader(
-            leading: IconUtils.getAlbumIcon(context, sectionKey),
+            leading: albumIcon,
             title: collection.getUniqueAlbumName(sectionKey, sections.keys.toList()),
           );
           break;

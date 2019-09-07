@@ -92,28 +92,20 @@ class IconUtils {
     appNameMap = await AndroidAppService.getAppNames();
   }
 
-  static Widget _buildAlbumIcon(Widget child) => Material(
-        type: MaterialType.circle,
-        elevation: 3,
-        color: Colors.transparent,
-        shadowColor: Colors.black,
-        child: child,
-      );
-
   static Widget getAlbumIcon(BuildContext context, String albumDirectory) {
     if (albumDirectory == null) return null;
-    if (androidFileUtils.isCameraPath(albumDirectory)) return _buildAlbumIcon(Icon(Icons.photo_camera));
-    if (androidFileUtils.isScreenshotsPath(albumDirectory)) return _buildAlbumIcon(Icon(Icons.smartphone));
-    if (androidFileUtils.isDownloadPath(albumDirectory)) return _buildAlbumIcon(Icon(Icons.file_download));
+    if (androidFileUtils.isCameraPath(albumDirectory)) return Icon(Icons.photo_camera);
+    if (androidFileUtils.isScreenshotsPath(albumDirectory)) return Icon(Icons.smartphone);
+    if (androidFileUtils.isDownloadPath(albumDirectory)) return Icon(Icons.file_download);
 
     final parts = albumDirectory.split(separator);
     if (albumDirectory.startsWith(androidFileUtils.picturesPath) && appNameMap.keys.contains(parts.last)) {
       final packageName = appNameMap[parts.last];
-      return _buildAlbumIcon(AppIcon(
+      return AppIcon(
         packageName: packageName,
         size: IconTheme.of(context).size,
         devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
-      ));
+      );
     }
     return null;
   }
