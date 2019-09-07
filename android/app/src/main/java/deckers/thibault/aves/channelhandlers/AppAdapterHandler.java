@@ -2,9 +2,16 @@ package deckers.thibault.aves.channelhandlers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -21,6 +28,20 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
+            case "getAppNames": {
+                result.success(getAppNames());
+                break;
+            }
+            case "getAppIcon": {
+                String packageName = call.argument("packageName");
+                Integer size = call.argument("size");
+                if (packageName == null || size == null) {
+                    result.error("getAppIcon-args", "failed because of missing arguments", null);
+                    return;
+                }
+                getAppIcon(packageName, size, result);
+                break;
+            }
             case "edit": {
                 String title = call.argument("title");
                 Uri uri = Uri.parse(call.argument("uri"));
@@ -63,6 +84,28 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
                 result.notImplemented();
                 break;
         }
+    }
+
+    private Map<String, String> getAppNames() {
+        Map<String, String> nameMap = new HashMap<>();
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        PackageManager packageManager = context.getPackageManager();
+        List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(intent, 0);
+        for (ResolveInfo resolveInfo : resolveInfoList) {
+            ApplicationInfo applicationInfo = resolveInfo.activityInfo.applicationInfo;
+            boolean isSystemPackage = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            if (!isSystemPackage) {
+                String appName = String.valueOf(packageManager.getApplicationLabel(applicationInfo));
+                nameMap.put(appName, applicationInfo.packageName);
+            }
+        }
+        return nameMap;
+    }
+
+    private void getAppIcon(String packageName, int size, MethodChannel.Result result) {
+        new AppIconDecodeTask().execute(new AppIconDecodeTask.Params(context, packageName, size, result));
     }
 
     private void edit(String title, Uri uri, String mimeType) {

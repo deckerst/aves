@@ -1,8 +1,33 @@
+import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class AndroidAppService {
   static const platform = const MethodChannel('deckers.thibault/aves/app');
+
+  static Future<Map> getAppNames() async {
+    try {
+      final result = await platform.invokeMethod('getAppNames');
+      return result as Map;
+    } on PlatformException catch (e) {
+      debugPrint('getAppNames failed with exception=${e.message}');
+    }
+    return Map();
+  }
+
+  static Future<Uint8List> getAppIcon(String packageName, int size) async {
+    try {
+      final result = await platform.invokeMethod('getAppIcon', <String, dynamic>{
+        'packageName': packageName,
+        'size': size,
+      });
+      return result as Uint8List;
+    } on PlatformException catch (e) {
+      debugPrint('getAppIcon failed with exception=${e.message}');
+    }
+    return Uint8List(0);
+  }
 
   static edit(String uri, String mimeType) async {
     try {

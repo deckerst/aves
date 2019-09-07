@@ -1,7 +1,9 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/app_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:path/path.dart';
 
 class VideoIcon extends StatelessWidget {
   final ImageEntry entry;
@@ -84,15 +86,34 @@ class OverlayIcon extends StatelessWidget {
 }
 
 class IconUtils {
+  static Map appNameMap;
+
+  static init() async {
+    appNameMap = await AndroidAppService.getAppNames();
+  }
+
+  static Widget _buildAlbumIcon(Widget child) => Material(
+        type: MaterialType.circle,
+        elevation: 3,
+        color: Colors.transparent,
+        shadowColor: Colors.black,
+        child: child,
+      );
+
   static Widget getAlbumIcon(BuildContext context, String albumDirectory) {
-    if (androidFileUtils.isCameraPath(albumDirectory)) {
-      return Icon(Icons.photo_camera);
-    } else if (androidFileUtils.isScreenshotsPath(albumDirectory)) {
-      return Icon(Icons.smartphone);
-    } else if (androidFileUtils.isKakaoTalkPath(albumDirectory)) {
-      return SvgPicture.asset('assets/kakaotalk.svg', width: IconTheme.of(context).size);
-    } else if (androidFileUtils.isTelegramPath(albumDirectory)) {
-      return SvgPicture.asset('assets/telegram.svg', width: IconTheme.of(context).size);
+    if (albumDirectory == null) return null;
+    if (androidFileUtils.isCameraPath(albumDirectory)) return _buildAlbumIcon(Icon(Icons.photo_camera));
+    if (androidFileUtils.isScreenshotsPath(albumDirectory)) return _buildAlbumIcon(Icon(Icons.smartphone));
+    if (androidFileUtils.isDownloadPath(albumDirectory)) return _buildAlbumIcon(Icon(Icons.file_download));
+
+    final parts = albumDirectory.split(separator);
+    if (albumDirectory.startsWith(androidFileUtils.picturesPath) && appNameMap.keys.contains(parts.last)) {
+      final packageName = appNameMap[parts.last];
+      return _buildAlbumIcon(AppIcon(
+        packageName: packageName,
+        size: IconTheme.of(context).size,
+        devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+      ));
     }
     return null;
   }

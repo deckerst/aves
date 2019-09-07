@@ -7,6 +7,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -14,6 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 void main() async {
   await settings.init();
   await androidFileUtils.init();
+  await IconUtils.init();
   runApp(AvesApp());
 }
 
