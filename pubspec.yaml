@@ -13,13 +13,10 @@ description: A new Flutter application.
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.0+1
 
-environment:
-  sdk: ">=2.2.2 <3.0.0"
-
 dependencies:
   flutter:
     sdk: flutter
-  chewie:
+  chewie: 0.9.7
   collection:
   flushbar:
   flutter_sticky_header:

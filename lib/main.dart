@@ -12,10 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() async {
-  await settings.init();
-  await androidFileUtils.init();
-  await IconUtils.init();
+void main() {
   runApp(AvesApp());
 }
 
@@ -51,11 +48,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
-  ImageCollection localMediaCollection = ImageCollection(
-    entries: List(),
-    groupFactor: settings.collectionGroupFactor,
-    sortFactor: settings.collectionSortFactor,
-  );
+  ImageCollection localMediaCollection = ImageCollection(entries: List());
 
   @override
   void initState() {
@@ -65,6 +58,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   setup() async {
+    await androidFileUtils.init();
+    await IconUtils.init();
+    await settings.init();
+    localMediaCollection.groupFactor = settings.collectionGroupFactor;
+    localMediaCollection.sortFactor = settings.collectionSortFactor;
+
     final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
     if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
       SystemNavigator.pop();

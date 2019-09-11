@@ -385,7 +385,10 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
         }
         return PhotoViewGalleryPageOptions(
           imageProvider: FileImage(File(entry.path)),
-          heroTag: entry.uri,
+          heroAttributes: PhotoViewHeroAttributes(
+            tag: entry.uri,
+            transitionOnUserGestures: true,
+          ),
           minScale: PhotoViewComputedScale.contained,
           initialScale: PhotoViewComputedScale.contained,
           onTapUp: (tapContext, details, value) => widget.onTap?.call(),
@@ -397,7 +400,6 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
       pageController: widget.pageController,
       onPageChanged: widget.onPageChanged,
       scaleStateChangedCallback: widget.onScaleChanged,
-      transitionOnUserGestures: true,
       scrollPhysics: BouncingScrollPhysics(),
     );
   }

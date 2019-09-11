@@ -15,8 +15,8 @@ class ImageCollection with ChangeNotifier {
 
   ImageCollection({
     @required List<ImageEntry> entries,
-    @required this.groupFactor,
-    @required this.sortFactor,
+    this.groupFactor,
+    this.sortFactor,
   }) : _rawEntries = entries {
     updateSections();
   }

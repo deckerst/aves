@@ -2,8 +2,6 @@ import 'package:path/path.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
-typedef void AndroidFileUtilsCallback(String key, dynamic oldValue, dynamic newValue);
-
 class AndroidFileUtils {
   String externalStorage, dcimPath, downloadPath, picturesPath;
 
