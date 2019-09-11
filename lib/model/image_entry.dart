@@ -217,6 +217,8 @@ class ImageEntry {
     return true;
   }
 
+  bool get canPrint => !isVideo;
+
   bool get canRotate => mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG;
 
   Future<bool> rotate({@required bool clockwise}) async {

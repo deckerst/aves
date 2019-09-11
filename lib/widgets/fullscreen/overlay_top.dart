@@ -76,10 +76,11 @@ class FullscreenTopOverlay extends StatelessWidget {
                       value: FullscreenAction.rotateCW,
                       child: MenuRow(text: 'Rotate right', icon: Icons.rotate_right),
                     ),
-                  PopupMenuItem(
-                    value: FullscreenAction.print,
-                    child: MenuRow(text: 'Print', icon: Icons.print),
-                  ),
+                  if (entry.canPrint)
+                    PopupMenuItem(
+                      value: FullscreenAction.print,
+                      child: MenuRow(text: 'Print', icon: Icons.print),
+                    ),
                   PopupMenuDivider(),
                   PopupMenuItem(
                     value: FullscreenAction.edit,

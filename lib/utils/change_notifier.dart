@@ -12,7 +12,6 @@ class AChangeNotifier implements Listenable {
 
   void dispose() => _listeners = null;
 
-  @protected
   void notifyListeners() {
     if (_listeners == null) return;
     final localListeners = List<VoidCallback>.from(_listeners);
