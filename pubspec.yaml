@@ -20,6 +20,8 @@ dependencies:
   collection:
   flushbar:
   flutter_sticky_header:
+    git:
+      url: git://github.com/deckerst/flutter_sticky_header.git
   flutter_svg:
   geocoder:
   google_maps_flutter:

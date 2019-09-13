@@ -118,7 +118,9 @@ class SectionSliver extends StatelessWidget {
       }
     }
     return SliverStickyHeader(
-      header: header,
+      header: IgnorePointer(
+        child: header,
+      ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           (sliverContext, index) {

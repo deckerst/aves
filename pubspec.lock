@@ -79,9 +79,11 @@ packages:
   flutter_sticky_header:
     dependency: "direct main"
     description:
-      name: flutter_sticky_header
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: d30ab5fbe87f590fdf16201e8195e8449344804f
+      url: "git://github.com/deckerst/flutter_sticky_header.git"
+    source: git
     version: "0.4.0"
   flutter_svg:
     dependency: "direct main"
