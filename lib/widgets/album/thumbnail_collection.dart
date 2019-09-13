@@ -45,6 +45,16 @@ class ThumbnailCollectionContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     final sectionKeys = _sections.keys.toList();
+    double topPadding = 0;
+    if (appBar != null) {
+      final topWidget = appBar;
+      if (topWidget is PreferredSizeWidget) {
+        topPadding = topWidget.preferredSize.height;
+      } else if (topWidget is SliverAppBar) {
+        topPadding = kToolbarHeight + (topWidget.bottom?.preferredSize?.height ?? 0.0);
+      }
+    }
+
     return SafeArea(
       child: DraggableScrollbar.arrows(
         child: CustomScrollView(
@@ -68,7 +78,7 @@ class ThumbnailCollectionContent extends StatelessWidget {
           ],
         ),
         controller: _scrollController,
-        padding: EdgeInsets.only(bottom: bottomInsets),
+        padding: EdgeInsets.only(top: topPadding, bottom: bottomInsets),
         labelTextBuilder: (double offset) => Text(
           "${offset ~/ 1}",
           style: TextStyle(color: Colors.blueGrey),

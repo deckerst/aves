@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 /// TLAD: copied from https://pub.dev/packages/draggable_scrollbar 0.0.4
 /// modified to allow any `ScrollView` as a child, not just `BoxScrollView`
+/// modified to apply vertical padding when computing `barMaxScrollExtent`
 
 /// Build the Scroll Thumb and label using the current configuration
 typedef Widget ScrollThumbBuilder(
@@ -343,7 +344,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     super.dispose();
   }
 
-  double get barMaxScrollExtent => context.size.height - widget.heightScrollThumb;
+  double get barMaxScrollExtent => context.size.height - widget.heightScrollThumb - widget.padding.vertical;
 
   double get barMinScrollExtent => 0.0;
 
@@ -374,24 +375,25 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
               child: widget.child,
             ),
             RepaintBoundary(
-                child: GestureDetector(
-              onVerticalDragStart: _onVerticalDragStart,
-              onVerticalDragUpdate: _onVerticalDragUpdate,
-              onVerticalDragEnd: _onVerticalDragEnd,
-              child: Container(
-                alignment: Alignment.topRight,
-                margin: EdgeInsets.only(top: _barOffset),
-                padding: widget.padding,
-                child: widget.scrollThumbBuilder(
-                  widget.backgroundColor,
-                  _thumbAnimation,
-                  _labelAnimation,
-                  widget.heightScrollThumb,
-                  labelText: labelText,
-                  labelConstraints: widget.labelConstraints,
+              child: GestureDetector(
+                onVerticalDragStart: _onVerticalDragStart,
+                onVerticalDragUpdate: _onVerticalDragUpdate,
+                onVerticalDragEnd: _onVerticalDragEnd,
+                child: Container(
+                  alignment: Alignment.topRight,
+                  margin: EdgeInsets.only(top: _barOffset),
+                  padding: widget.padding,
+                  child: widget.scrollThumbBuilder(
+                    widget.backgroundColor,
+                    _thumbAnimation,
+                    _labelAnimation,
+                    widget.heightScrollThumb,
+                    labelText: labelText,
+                    labelConstraints: widget.labelConstraints,
+                  ),
                 ),
               ),
-            )),
+            ),
           ],
         ),
       );
