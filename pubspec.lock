@@ -64,6 +64,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+  draggable_scrollbar:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: d7bd215380458393bd3dd5aa2e671f73606086f8
+      url: "git://github.com/deckerst/flutter-draggable-scrollbar.git"
+    source: git
+    version: "0.0.4"
   flushbar:
     dependency: "direct main"
     description:

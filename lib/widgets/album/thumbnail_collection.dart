@@ -2,9 +2,9 @@ import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/sections.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
-import 'package:aves/widgets/common/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
@@ -78,10 +78,9 @@ class ThumbnailCollectionContent extends StatelessWidget {
           ],
         ),
         controller: _scrollController,
-        padding: EdgeInsets.only(top: topPadding, bottom: bottomInsets),
-        labelTextBuilder: (double offset) => Text(
-          "${offset ~/ 1}",
-          style: TextStyle(color: Colors.blueGrey),
+        padding: EdgeInsets.only(
+          top: topPadding,
+          bottom: bottomInsets,
         ),
       ),
     );

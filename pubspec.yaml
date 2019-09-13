@@ -18,6 +18,9 @@ dependencies:
     sdk: flutter
   chewie: 0.9.7
   collection:
+  draggable_scrollbar:
+    git:
+      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   flushbar:
   flutter_native_timezone:
   flutter_sticky_header:
