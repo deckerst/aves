@@ -46,9 +46,7 @@ class MetadataSectionState extends State<MetadataSection> {
         final directoryNames = metadataMap.keys.toList()..sort();
 
         Widget content;
-        // use MediaQuery instead of unreliable OrientationBuilder
-        final orientation = MediaQuery.of(context).orientation;
-        if (orientation == Orientation.landscape) {
+        if (MediaQuery.of(context).size.width > 400) {
           final threshold = (2 * directoryNames.length + directoryNames.map((k) => metadataMap[k].length).reduce((v, e) => v + e)) / 2;
           final first = <String>[], second = <String>[];
           var processed = 0;
