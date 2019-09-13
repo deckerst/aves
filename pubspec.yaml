@@ -19,6 +19,7 @@ dependencies:
   chewie: 0.9.7
   collection:
   flushbar:
+  flutter_native_timezone:
   flutter_sticky_header:
     git:
       url: git://github.com/deckerst/flutter_sticky_header.git

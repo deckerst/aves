@@ -34,6 +34,12 @@ class MetadataDb {
     await init();
   }
 
+  clearMetadataEntries() async {
+    final db = await _database;
+    final count = await db.delete(metadataTable, where: '1');
+    debugPrint('$runtimeType clearMetadataEntries deleted $count entries');
+  }
+
   Future<List<CatalogMetadata>> loadMetadataEntries() async {
     final start = DateTime.now();
     final db = await _database;
@@ -55,6 +61,12 @@ class MetadataDb {
         ));
     await batch.commit(noResult: true);
     debugPrint('$runtimeType saveMetadata complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
+  }
+
+  clearAddresses() async {
+    final db = await _database;
+    final count = await db.delete(addressTable, where: '1');
+    debugPrint('$runtimeType clearAddresses deleted $count entries');
   }
 
   Future<List<AddressDetails>> loadAddresses() async {

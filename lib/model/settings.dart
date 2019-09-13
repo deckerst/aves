@@ -17,6 +17,7 @@ class Settings {
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const infoMapZoomKey = 'info_map_zoom';
+  static const catalogTimeZoneKey = 'catalog_time_zone';
 
   init() async {
     prefs = await SharedPreferences.getInstance();
@@ -45,6 +46,10 @@ class Settings {
   double get infoMapZoom => prefs.getDouble(infoMapZoomKey) ?? 12;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
+
+  String get catalogTimeZone => prefs.getString(catalogTimeZoneKey) ?? '';
+
+  set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
   GroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, GroupFactor.date, GroupFactor.values);
 

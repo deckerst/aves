@@ -10,6 +10,7 @@ import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -58,19 +59,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   setup() async {
-    await androidFileUtils.init();
-    await IconUtils.init();
-    await settings.init();
-    localMediaCollection.groupFactor = settings.collectionGroupFactor;
-    localMediaCollection.sortFactor = settings.collectionSortFactor;
-
     final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
     if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
       SystemNavigator.pop();
       return;
     }
 
+    await androidFileUtils.init();
+    await IconUtils.init();
+    await settings.init();
+    localMediaCollection.groupFactor = settings.collectionGroupFactor;
+    localMediaCollection.sortFactor = settings.collectionSortFactor;
+
     await metadataDb.init();
+    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    final catalogTimeZone = settings.catalogTimeZone;
+    if (currentTimeZone != catalogTimeZone) {
+      // clear catalog metadata to get correct date/times when moving to a different time zone
+      await metadataDb.clearMetadataEntries();
+      settings.catalogTimeZone = currentTimeZone;
+    }
 
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => localMediaCollection.add(ImageEntry.fromMap(entryMap)),
