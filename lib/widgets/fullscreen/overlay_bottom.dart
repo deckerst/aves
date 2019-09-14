@@ -180,7 +180,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
       children: [
         Icon(Icons.calendar_today, size: iconSize),
         SizedBox(width: iconPadding),
-        Expanded(flex: 3, child: Text('${DateFormat.yMMMd().format(date)} – ${DateFormat.Hm().format(date)}')),
+        Expanded(flex: 3, child: Text('${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}')),
         Expanded(flex: 2, child: Text('${entry.width} × ${entry.height}')),
       ],
     );
