@@ -137,7 +137,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
-    final entry = entries[_currentHorizontalPage];
+    final entry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage == 1) {
@@ -311,7 +311,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       },
     );
     if (confirmed == null || !confirmed) return;
-    if (!await collection.delete(entry)) showFeedback('Failed');
+    if (!await collection.delete(entry)) {
+      showFeedback('Failed');
+    } else if (entries.isEmpty) {
+      Navigator.pop(context);
+    }
   }
 
   showRenameDialog(ImageEntry entry) async {

@@ -31,7 +31,11 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   ImageEntry _lastEntry;
   OverlayMetadata _lastDetails;
 
-  ImageEntry get entry => widget.entries[widget.index];
+  ImageEntry get entry {
+    final entries = widget.entries;
+    final index = widget.index;
+    return index < entries.length ? entries[index] : null;
+  }
 
   @override
   void initState() {
