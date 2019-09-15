@@ -2,7 +2,6 @@ import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,8 +12,8 @@ class AllCollectionDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final albums = collection.albums.toList()..sort(compareAsciiUpperCaseNatural);
-    final tags = collection.tags.toList()..sort(compareAsciiUpperCaseNatural);
+    final albums = collection.sortedAlbums;
+    final tags = collection.sortedTags;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),

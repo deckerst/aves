@@ -81,7 +81,7 @@ class MetadataSectionState extends State<MetadataSection> {
     );
   }
 
-  Widget getMetadataColumn(Map<String, Map> metadataMap, List<String> directoryNames) {
+  Widget getMetadataColumn(Map<String, Map> metadataMap, Iterable<String> directoryNames) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

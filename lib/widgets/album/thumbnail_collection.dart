@@ -118,7 +118,7 @@ class SectionSliver extends StatelessWidget {
           }
           header = SectionHeader(
             leading: albumIcon,
-            title: collection.getUniqueAlbumName(sectionKey, sections.keys.toList()),
+            title: collection.getUniqueAlbumName(sectionKey, sections.keys.cast<String>()),
           );
           break;
         case GroupFactor.date:

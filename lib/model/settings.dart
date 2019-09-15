@@ -63,7 +63,7 @@ class Settings {
 
   bool getBoolOrDefault(String key, bool defaultValue) => prefs.getKeys().contains(key) ? prefs.getBool(key) : defaultValue;
 
-  T getEnumOrDefault<T>(String key, T defaultValue, List<T> values) {
+  T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
     final valueString = prefs.getString(key);
     for (T element in values) {
       if (element.toString() == valueString) {

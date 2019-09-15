@@ -11,7 +11,8 @@ class ImageCollection with ChangeNotifier {
   Map<dynamic, List<ImageEntry>> sections = Map();
   GroupFactor groupFactor = GroupFactor.date;
   SortFactor sortFactor = SortFactor.date;
-  Set<String> albums = Set(), tags = Set();
+  List<String> sortedAlbums = List.unmodifiable(Iterable.empty());
+  List<String> sortedTags = List.unmodifiable(Iterable.empty());
 
   ImageCollection({
     @required List<ImageEntry> entries,
@@ -25,9 +26,9 @@ class ImageCollection with ChangeNotifier {
 
   int get videoCount => _rawEntries.where((entry) => entry.isVideo).length;
 
-  int get albumCount => albums.length;
+  int get albumCount => sortedAlbums.length;
 
-  int get tagCount => tags.length;
+  int get tagCount => sortedTags.length;
 
   List<ImageEntry> get sortedEntries => List.unmodifiable(sections.entries.expand((e) => e.value));
 
@@ -83,9 +84,22 @@ class ImageCollection with ChangeNotifier {
     return success;
   }
 
-  updateAlbums() => albums = _rawEntries.map((entry) => entry.directory).toSet();
+  updateAlbums() {
+    Set<String> albums = _rawEntries.map((entry) => entry.directory).toSet();
+    List<String> sorted = albums.toList()
+      ..sort((a, b) {
+        final ua = getUniqueAlbumName(a, albums);
+        final ub = getUniqueAlbumName(b, albums);
+        return compareAsciiUpperCase(ua, ub);
+      });
+    sortedAlbums = List.unmodifiable(sorted);
+  }
 
-  updateTags() => tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
+  updateTags() {
+    Set<String> tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
+    List<String> sorted = tags.toList()..sort(compareAsciiUpperCase);
+    sortedTags = List.unmodifiable(sorted);
+  }
 
   onMetadataChanged() {
     // metadata dates impact sorting and grouping
@@ -155,7 +169,7 @@ class ImageCollection with ChangeNotifier {
     );
   }
 
-  String getUniqueAlbumName(String album, List albums) {
+  String getUniqueAlbumName(String album, Iterable<String> albums) {
     final otherAlbums = albums.where((item) => item != album);
     final parts = album.split(separator);
     int partCount = 0;
