@@ -19,43 +19,45 @@ class AllCollectionDrawer extends StatelessWidget {
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         children: [
           DrawerHeader(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 6.0),
-                        child: SvgPicture.asset(
-                          'assets/aves_logo.svg',
-                          width: 64,
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 6.0),
+                          child: SvgPicture.asset(
+                            'assets/aves_logo.svg',
+                            width: 64,
+                          ),
+                        ),
+                        backgroundColor: Colors.white,
+                        radius: 44,
+                      ),
+                      SizedBox(width: 16),
+                      Text(
+                        'Aves',
+                        style: TextStyle(
+                          fontSize: 44,
+                          fontFamily: 'Concourse Caps',
                         ),
                       ),
-                      backgroundColor: Colors.white,
-                      radius: 44,
-                    ),
-                    SizedBox(width: 16),
-                    Text(
-                      'Aves',
-                      style: TextStyle(
-                        fontSize: 44,
-                        fontFamily: 'Concourse Caps',
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [Icon(Icons.photo_library), SizedBox(width: 4), Text('${collection.imageCount}')]),
-                    Row(children: [Icon(Icons.video_library), SizedBox(width: 4), Text('${collection.videoCount}')]),
-                    Row(children: [Icon(Icons.photo_album), SizedBox(width: 4), Text('${collection.albumCount}')]),
-                    Row(children: [Icon(Icons.label), SizedBox(width: 4), Text('${collection.tagCount}')]),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [Icon(Icons.photo_library), SizedBox(width: 4), Text('${collection.imageCount}')]),
+                      Row(children: [Icon(Icons.video_library), SizedBox(width: 4), Text('${collection.videoCount}')]),
+                      Row(children: [Icon(Icons.photo_album), SizedBox(width: 4), Text('${collection.albumCount}')]),
+                      Row(children: [Icon(Icons.label), SizedBox(width: 4), Text('${collection.tagCount}')]),
+                    ],
+                  ),
+                ],
+              ),
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).accentColor,
@@ -87,23 +89,27 @@ class AllCollectionDrawer extends StatelessWidget {
   }
 
   _buildFilteredCollectionNavTile({BuildContext context, Widget leading, String title, bool Function(ImageEntry) filter}) {
-    return ListTile(
-      leading: leading,
-      title: Text(title),
-      dense: true,
-      onTap: () {
-        Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FilteredCollectionPage(
-              collection: collection,
-              filter: filter,
-              title: title,
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: ListTile(
+        leading: leading,
+        title: Text(title),
+        dense: true,
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FilteredCollectionPage(
+                collection: collection,
+                filter: filter,
+                title: title,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
