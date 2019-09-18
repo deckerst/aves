@@ -47,16 +47,19 @@ class MetadataSectionState extends State<MetadataSection> {
 
         Widget content;
         if (MediaQuery.of(context).size.width > 400) {
-          final threshold = (2 * directoryNames.length + directoryNames.map((k) => metadataMap[k].length).reduce((v, e) => v + e)) / 2;
           final first = <String>[], second = <String>[];
-          var processed = 0;
-          for (int i = 0; i < directoryNames.length; i++) {
-            final directoryName = directoryNames[i];
-            if (processed <= threshold)
+          var firstItemCount = 0, secondItemCount = 0;
+          var firstIndex = 0, secondIndex = directoryNames.length - 1;
+          while (firstIndex <= secondIndex) {
+            if (firstItemCount <= secondItemCount) {
+              final directoryName = directoryNames[firstIndex++];
               first.add(directoryName);
-            else
-              second.add(directoryName);
-            processed += 2 + metadataMap[directoryName].length;
+              firstItemCount += 2 + metadataMap[directoryName].length;
+            } else {
+              final directoryName = directoryNames[secondIndex--];
+              second.insert(0, directoryName);
+              secondItemCount += 2 + metadataMap[directoryName].length;
+            }
           }
           content = Row(
             crossAxisAlignment: CrossAxisAlignment.start,
