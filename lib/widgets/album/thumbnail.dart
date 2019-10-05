@@ -124,15 +124,20 @@ class ThumbnailImage extends StatelessWidget {
             );
           }),
         ),
-        if (entry.isVideo)
-          VideoIcon(
-            entry: entry,
-            iconSize: iconSize,
-          )
-        else if (entry.isGif)
-          GifIcon(iconSize: iconSize)
-        else if (entry.hasGps)
-          GpsIcon(iconSize: iconSize)
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (entry.hasGps) GpsIcon(iconSize: iconSize),
+            if (entry.isGif)
+              GifIcon(iconSize: iconSize)
+            else if (entry.isVideo)
+              VideoIcon(
+                entry: entry,
+                iconSize: iconSize,
+              ),
+          ],
+        ),
       ],
     );
   }
