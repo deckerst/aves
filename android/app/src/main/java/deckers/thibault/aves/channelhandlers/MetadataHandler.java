@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.MetadataHelper;
@@ -39,6 +41,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private static final String XMP_DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/";
     private static final String XMP_SUBJECT_PROP_NAME = "dc:subject";
+    private static final Pattern videoLocationPattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+)/?");
 
     private Context context;
 
@@ -197,6 +200,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     retriever.setDataSource(path);
                     String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
                     String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                    String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
                     retriever.release();
 
                     if (dateString != null) {
@@ -208,6 +212,25 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     }
                     if (rotationString != null) {
                         metadataMap.put("videoRotation", Integer.parseInt(rotationString));
+                    }
+                    if (locationString != null) {
+                        Matcher locationMatcher = videoLocationPattern.matcher(locationString);
+                        if (locationMatcher.find() && locationMatcher.groupCount() == 2) {
+                            String latitudeString = locationMatcher.group(1);
+                            String longitudeString = locationMatcher.group(2);
+                            if (latitudeString != null && longitudeString != null) {
+                                try {
+                                    double latitude = Double.parseDouble(latitudeString);
+                                    double longitude = Double.parseDouble(longitudeString);
+                                    if (latitude != 0 && longitude != 0) {
+                                        metadataMap.put("latitude", latitude);
+                                        metadataMap.put("longitude", longitude);
+                                    }
+                                } catch (NumberFormatException ex) {
+                                    // ignore
+                                }
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     result.error("getCatalogMetadata-exception", "failed to get video metadata for path=" + path, e);
