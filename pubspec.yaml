@@ -16,7 +16,6 @@ version: 1.0.0+1
 dependencies:
   flutter:
     sdk: flutter
-  chewie: 0.9.7
   collection:
   draggable_scrollbar:
     git:
@@ -40,6 +39,7 @@ dependencies:
   sqflite:
   transparent_image:
   tuple:
+  video_player:
 
 dev_dependencies:
   flutter_test:

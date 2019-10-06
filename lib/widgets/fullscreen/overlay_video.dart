@@ -27,6 +27,9 @@ class VideoControlOverlay extends StatefulWidget {
 }
 
 class VideoControlOverlayState extends State<VideoControlOverlay> {
+  final GlobalKey _progressBarKey = GlobalKey();
+  bool _playingOnDragStart = false;
+
   ImageEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
@@ -67,7 +70,6 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final progressBarBorderRadius = 123.0;
     final mediaQuery = MediaQuery.of(context);
     final viewInsets = widget.viewInsets ?? mediaQuery.viewInsets;
     final viewPadding = widget.viewPadding ?? mediaQuery.viewPadding;
@@ -87,6 +89,10 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
               width: mediaQuery.size.width - safePadding.horizontal,
               child: Row(
                 children: [
+                  Expanded(
+                    child: _buildProgressBar(),
+                  ),
+                  SizedBox(width: 8),
                   OverlayButton(
                     scale: scale,
                     child: value.isPlaying
@@ -101,51 +107,61 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
                             tooltip: 'Play',
                           ),
                   ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: SizeTransition(
-                      sizeFactor: scale,
-                      child: BlurredRRect(
-                        borderRadius: progressBarBorderRadius,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.black26,
-                            border: Border.all(color: Colors.white30, width: 0.5),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(progressBarBorderRadius),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(formatDuration(value.position ?? Duration.zero)),
-                                  Spacer(),
-                                  Text(formatDuration(value.duration ?? Duration.zero)),
-                                ],
-                              ),
-                              LinearProgressIndicator(value: progress),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  OverlayButton(
-                    scale: scale,
-                    child: IconButton(
-                      icon: Icon(Icons.fullscreen),
-                      onPressed: () => _goFullscreen(),
-                      tooltip: 'Fullscreen',
-                    ),
-                  ),
                 ],
               ),
             ),
     );
   }
+
+  SizeTransition _buildProgressBar() {
+    final progressBarBorderRadius = 123.0;
+    return SizeTransition(
+      sizeFactor: scale,
+      child: BlurredRRect(
+        borderRadius: progressBarBorderRadius,
+        child: GestureDetector(
+          onTapDown: (TapDownDetails details) {
+            _seek(details.globalPosition);
+          },
+          onHorizontalDragStart: (DragStartDetails details) {
+            _playingOnDragStart = controller.value.isPlaying;
+            if (_playingOnDragStart) controller.pause();
+          },
+          onHorizontalDragUpdate: (DragUpdateDetails details) {
+            _seek(details.globalPosition);
+          },
+          onHorizontalDragEnd: (DragEndDetails details) {
+            if (_playingOnDragStart) controller.play();
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              border: Border.all(color: Colors.white30, width: 0.5),
+              borderRadius: BorderRadius.all(
+                Radius.circular(progressBarBorderRadius),
+              ),
+            ),
+            child: Column(
+              key: _progressBarKey,
+              children: [
+                Row(
+                  children: [
+                    Text(formatDuration(value.position ?? Duration.zero)),
+                    Spacer(),
+                    Text(formatDuration(value.duration ?? Duration.zero)),
+                  ],
+                ),
+                LinearProgressIndicator(value: progress),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _onValueChange() => setState(() {});
 
   _playPause() async {
     if (value.isPlaying) {
@@ -159,7 +175,10 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
     setState(() {});
   }
 
-  _goFullscreen() {}
-
-  _onValueChange() => setState(() {});
+  _seek(Offset globalPosition) {
+    final keyContext = _progressBarKey.currentContext;
+    final RenderBox box = keyContext.findRenderObject();
+    final localPosition = box.globalToLocal(globalPosition);
+    controller.seekTo(value.duration * (localPosition.dx / box.size.width));
+  }
 }
