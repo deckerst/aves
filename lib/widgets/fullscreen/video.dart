@@ -60,12 +60,9 @@ class AvesVideoState extends State<AvesVideo> {
         ),
       );
     return Center(
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        child: AspectRatio(
-          aspectRatio: entry.aspectRatio,
-          child: VideoPlayer(widget.controller),
-        ),
+      child: AspectRatio(
+        aspectRatio: entry.aspectRatio,
+        child: VideoPlayer(widget.controller),
       ),
     );
   }
