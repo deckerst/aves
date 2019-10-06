@@ -16,8 +16,8 @@ class FullscreenBottomOverlay extends StatefulWidget {
 
   const FullscreenBottomOverlay({
     Key key,
-    this.entries,
-    this.index,
+    @required this.entries,
+    @required this.index,
     this.viewInsets,
     this.viewPadding,
   }) : super(key: key);

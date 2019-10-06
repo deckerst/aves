@@ -18,6 +18,24 @@ class BlurredRect extends StatelessWidget {
   }
 }
 
+class BlurredRRect extends StatelessWidget {
+  final double borderRadius;
+  final Widget child;
+
+  const BlurredRRect({Key key, this.borderRadius, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+        child: child,
+      ),
+    );
+  }
+}
+
 class BlurredOval extends StatelessWidget {
   final Widget child;
 

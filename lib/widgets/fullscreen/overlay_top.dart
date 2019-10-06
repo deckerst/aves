@@ -15,9 +15,9 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   const FullscreenTopOverlay({
     Key key,
-    this.entries,
-    this.index,
-    this.scale,
+    @required this.entries,
+    @required this.index,
+    @required this.scale,
     this.viewInsets,
     this.viewPadding,
     this.onActionSelected,

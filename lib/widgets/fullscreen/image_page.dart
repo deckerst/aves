@@ -7,6 +7,7 @@ import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay_bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay_top.dart';
+import 'package:aves/widgets/fullscreen/overlay_video.dart';
 import 'package:aves/widgets/fullscreen/video.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:printing/printing.dart';
 import 'package:screen/screen.dart';
+import 'package:tuple/tuple.dart';
+import 'package:video_player/video_player.dart';
 
 class FullscreenPage extends AnimatedWidget {
   final ImageCollection collection;
@@ -92,6 +95,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Animation<double> _topOverlayScale;
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
+  List<Tuple2<String, VideoPlayerController>> _videoControllers = List();
 
   ImageCollection get collection => widget.collection;
 
@@ -117,6 +121,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       curve: Curves.easeOutQuart,
     ));
     _overlayVisible.addListener(onOverlayVisibleChange);
+    initVideoController();
 
     Screen.keepOn(true);
     initOverlay();
@@ -132,12 +137,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   @override
   void dispose() {
     _overlayVisible.removeListener(onOverlayVisibleChange);
+    _videoControllers.forEach((kv) => kv.item2.dispose());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final entry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
+    final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage == 1) {
@@ -160,8 +166,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                 collection: collection,
                 pageController: _horizontalPager,
                 onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                onPageChanged: (page) => setState(() => _currentHorizontalPage = page),
+                onPageChanged: onHorizontalPageChanged,
                 onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
+                videoControllers: _videoControllers,
               ),
               NotificationListener(
                 onNotification: (notification) {
@@ -172,31 +179,49 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
               ),
             ],
           ),
-          if (_currentHorizontalPage != null && _currentVerticalPage == 0) ...[
-            FullscreenTopOverlay(
-              entries: entries,
-              index: _currentHorizontalPage,
-              scale: _topOverlayScale,
-              viewInsets: _frozenViewInsets,
-              viewPadding: _frozenViewPadding,
-              onActionSelected: (action) => onActionSelected(entry, action),
-            ),
-            Positioned(
-              bottom: 0,
-              child: SlideTransition(
-                position: _bottomOverlayOffset,
-                child: FullscreenBottomOverlay(
-                  entries: entries,
-                  index: _currentHorizontalPage,
-                  viewInsets: _frozenViewInsets,
-                  viewPadding: _frozenViewPadding,
-                ),
-              ),
-            )
-          ]
+          ..._buildOverlay(entry)
         ],
       ),
     );
+  }
+
+  List<Widget> _buildOverlay(ImageEntry entry) {
+    if (entry == null || _currentVerticalPage != 0) return [];
+    final videoController = entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2 : null;
+    return [
+      FullscreenTopOverlay(
+        entries: entries,
+        index: _currentHorizontalPage,
+        scale: _topOverlayScale,
+        viewInsets: _frozenViewInsets,
+        viewPadding: _frozenViewPadding,
+        onActionSelected: (action) => onActionSelected(entry, action),
+      ),
+      Positioned(
+        bottom: 0,
+        child: Column(
+          children: [
+            if (videoController != null)
+              VideoControlOverlay(
+                entry: entry,
+                controller: videoController,
+                scale: _topOverlayScale,
+                viewInsets: _frozenViewInsets,
+                viewPadding: _frozenViewPadding,
+              ),
+            SlideTransition(
+              position: _bottomOverlayOffset,
+              child: FullscreenBottomOverlay(
+                entries: entries,
+                index: _currentHorizontalPage,
+                viewInsets: _frozenViewInsets,
+                viewPadding: _frozenViewPadding,
+              ),
+            ),
+          ],
+        ),
+      )
+    ];
   }
 
   goToVerticalPage(int page) {
@@ -344,6 +369,30 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     if (newName == null || newName.isEmpty) return;
     showFeedback(await entry.rename(newName) ? 'Done!' : 'Failed');
   }
+
+  onHorizontalPageChanged(int page) {
+    _currentHorizontalPage = page;
+    initVideoController();
+    setState(() {});
+  }
+
+  initVideoController() {
+    final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
+    if (entry == null || !entry.isVideo) return;
+
+    final path = entry.path;
+    var controllerEntry = _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null);
+    if (controllerEntry != null) {
+      _videoControllers.remove(controllerEntry);
+    } else {
+      final controller = VideoPlayerController.file(File(path))..initialize();
+      controllerEntry = Tuple2(path, controller);
+    }
+    _videoControllers.insert(0, controllerEntry);
+    while (_videoControllers.length > 3) {
+      _videoControllers.removeLast().item2.dispose();
+    }
+  }
 }
 
 enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share }
@@ -354,6 +403,7 @@ class ImagePage extends StatefulWidget {
   final VoidCallback onTap;
   final ValueChanged<int> onPageChanged;
   final ValueChanged<PhotoViewScaleState> onScaleChanged;
+  final List<Tuple2<String, VideoPlayerController>> videoControllers;
 
   const ImagePage({
     this.collection,
@@ -361,6 +411,7 @@ class ImagePage extends StatefulWidget {
     this.onTap,
     this.onPageChanged,
     this.onScaleChanged,
+    this.videoControllers,
   });
 
   @override
@@ -378,10 +429,19 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
       builder: (galleryContext, index) {
         final entry = entries[index];
         if (entry.isVideo) {
+          final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2;
           return PhotoViewGalleryPageOptions.customChild(
-            child: AvesVideo(entry: entry),
+            child: videoController != null
+                ? AvesVideo(
+                    entry: entry,
+                    controller: videoController,
+                  )
+                : SizedBox(),
             childSize: MediaQuery.of(galleryContext).size,
-            // no heroTag because `Chewie` already internally builds one with the videoController
+            heroAttributes: PhotoViewHeroAttributes(
+              tag: entry.uri,
+              transitionOnUserGestures: true,
+            ),
             minScale: PhotoViewComputedScale.contained,
             initialScale: PhotoViewComputedScale.contained,
             onTapUp: (tapContext, details, value) => widget.onTap?.call(),

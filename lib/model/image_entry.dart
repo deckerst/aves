@@ -4,6 +4,7 @@ import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/utils/date_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:path/path.dart';
@@ -124,20 +125,7 @@ class ImageEntry {
     return d == null ? null : DateTime(d.year, d.month);
   }
 
-  String get durationText {
-    final d = Duration(milliseconds: durationMillis);
-
-    String twoDigits(int n) {
-      if (n >= 10) return '$n';
-      return '0$n';
-    }
-
-    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(Duration.secondsPerMinute));
-    if (d.inHours == 0) return '${d.inMinutes}:$twoDigitSeconds';
-
-    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(Duration.minutesPerHour));
-    return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
-  }
+  String get durationText => formatDuration(Duration(milliseconds: durationMillis));
 
   bool get hasGps => isCatalogued && catalogMetadata.latitude != null;
 

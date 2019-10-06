@@ -1,49 +1,82 @@
-import 'dart:io';
-
 import 'package:aves/model/image_entry.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class AvesVideo extends StatefulWidget {
   final ImageEntry entry;
+  final VideoPlayerController controller;
 
-  const AvesVideo({Key key, this.entry}) : super(key: key);
+  const AvesVideo({
+    Key key,
+    @required this.entry,
+    @required this.controller,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => AvesVideoState();
 }
 
 class AvesVideoState extends State<AvesVideo> {
-  VideoPlayerController videoPlayerController;
-  ChewieController chewieController;
-
   ImageEntry get entry => widget.entry;
+
+  VideoPlayerValue get value => widget.controller.value;
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController = VideoPlayerController.file(
-      File(entry.path),
-    );
-    chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      aspectRatio: entry.aspectRatio,
-      autoInitialize: true,
-    );
+    registerWidget(widget);
+    _onValueChange();
+  }
+
+  @override
+  void didUpdateWidget(AvesVideo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    unregisterWidget(oldWidget);
+    registerWidget(widget);
   }
 
   @override
   void dispose() {
-    videoPlayerController.dispose();
-    chewieController.dispose();
+    unregisterWidget(widget);
     super.dispose();
+  }
+
+  registerWidget(AvesVideo widget) {
+    widget.controller.addListener(_onValueChange);
+  }
+
+  unregisterWidget(AvesVideo widget) {
+    widget.controller.removeListener(_onValueChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Chewie(
-      controller: chewieController,
+    if (value == null) return SizedBox();
+    if (value.hasError)
+      return Center(
+        child: Icon(
+          Icons.error_outline,
+          size: 32,
+        ),
+      );
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: AspectRatio(
+          aspectRatio: entry.aspectRatio,
+          child: VideoPlayer(widget.controller),
+        ),
+      ),
     );
+  }
+
+  _onValueChange() {
+    if (!value.isPlaying && value.position == value.duration) goToBeginning();
+    setState(() {});
+  }
+
+  goToBeginning() async {
+    await widget.controller.seekTo(Duration.zero);
+    await widget.controller.pause();
   }
 }
