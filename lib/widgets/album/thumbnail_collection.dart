@@ -94,41 +94,19 @@ class SectionSliver extends StatelessWidget {
 
   const SectionSliver({
     Key key,
-    this.collection,
-    this.sections,
-    this.sectionKey,
+    @required this.collection,
+    @required this.sections,
+    @required this.sectionKey,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final columnCount = 4;
-    Widget header = SizedBox.shrink();
-    if (collection.sortFactor == SortFactor.date) {
-      switch (collection.groupFactor) {
-        case GroupFactor.album:
-          Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey);
-          if (albumIcon != null) {
-            albumIcon = Material(
-              type: MaterialType.circle,
-              elevation: 3,
-              color: Colors.transparent,
-              shadowColor: Colors.black,
-              child: albumIcon,
-            );
-          }
-          header = SectionHeader(
-            leading: albumIcon,
-            title: collection.getUniqueAlbumName(sectionKey, sections.keys.cast<String>()),
-          );
-          break;
-        case GroupFactor.date:
-          header = MonthSectionHeader(date: sectionKey);
-          break;
-      }
-    }
     return SliverStickyHeader(
-      header: IgnorePointer(
-        child: header,
+      header: SectionHeader(
+        collection: collection,
+        sections: sections,
+        sectionKey: sectionKey,
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
@@ -147,6 +125,8 @@ class SectionSliver extends StatelessWidget {
             );
           },
           childCount: sections[sectionKey].length,
+          addAutomaticKeepAlives: false,
+          addRepaintBoundaries: false,
         ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount,
@@ -164,6 +144,50 @@ class SectionSliver extends StatelessWidget {
           initialUri: entry.uri,
         ),
       ),
+    );
+  }
+}
+
+class SectionHeader extends StatelessWidget {
+  final ImageCollection collection;
+  final Map<dynamic, List<ImageEntry>> sections;
+  final dynamic sectionKey;
+
+  const SectionHeader({
+    Key key,
+    @required this.collection,
+    @required this.sections,
+    @required this.sectionKey,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget header = SizedBox.shrink();
+    if (collection.sortFactor == SortFactor.date) {
+      switch (collection.groupFactor) {
+        case GroupFactor.album:
+          Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey);
+          if (albumIcon != null) {
+            albumIcon = Material(
+              type: MaterialType.circle,
+              elevation: 3,
+              color: Colors.transparent,
+              shadowColor: Colors.black,
+              child: albumIcon,
+            );
+          }
+          header = TitleSectionHeader(
+            leading: albumIcon,
+            title: collection.getUniqueAlbumName(sectionKey, sections.keys.cast<String>()),
+          );
+          break;
+        case GroupFactor.date:
+          header = MonthSectionHeader(date: sectionKey);
+          break;
+      }
+    }
+    return IgnorePointer(
+      child: header,
     );
   }
 }

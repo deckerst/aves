@@ -21,7 +21,7 @@ class DaySectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(title: text);
+    return TitleSectionHeader(title: text);
   }
 }
 
@@ -43,15 +43,15 @@ class MonthSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(title: text);
+    return TitleSectionHeader(title: text);
   }
 }
 
-class SectionHeader extends StatelessWidget {
+class TitleSectionHeader extends StatelessWidget {
   final Widget leading;
   final String title;
 
-  const SectionHeader({Key key, this.leading, this.title}) : super(key: key);
+  const TitleSectionHeader({Key key, this.leading, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
