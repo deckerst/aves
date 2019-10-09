@@ -25,9 +25,10 @@ class VideoControlOverlay extends StatefulWidget {
   State<StatefulWidget> createState() => VideoControlOverlayState();
 }
 
-class VideoControlOverlayState extends State<VideoControlOverlay> {
+class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTickerProviderStateMixin {
   final GlobalKey _progressBarKey = GlobalKey();
   bool _playingOnDragStart = false;
+  AnimationController _playPauseAnimation;
 
   ImageEntry get entry => widget.entry;
 
@@ -42,6 +43,10 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
   @override
   void initState() {
     super.initState();
+    _playPauseAnimation = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
     registerWidget(widget);
     _onValueChange();
   }
@@ -56,6 +61,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
   @override
   void dispose() {
     unregisterWidget(widget);
+    _playPauseAnimation.dispose();
     super.dispose();
   }
 
@@ -75,40 +81,40 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
     final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
     return Padding(
       padding: safePadding,
-      child: value.hasError
-          ? OverlayButton(
-              scale: scale,
-              child: IconButton(
-                icon: Icon(Icons.open_in_new),
-                onPressed: () => AndroidAppService.open(entry.uri, entry.mimeType),
-                tooltip: 'Open',
-              ),
-            )
-          : SizedBox(
-              width: mediaQuery.size.width - safePadding.horizontal,
-              child: Row(
-                children: [
+      child: SizedBox(
+        width: mediaQuery.size.width - safePadding.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: value.hasError
+              ? [
+                  OverlayButton(
+                    scale: scale,
+                    child: IconButton(
+                      icon: Icon(Icons.open_in_new),
+                      onPressed: () => AndroidAppService.open(entry.uri, entry.mimeType),
+                      tooltip: 'Open',
+                    ),
+                  ),
+                ]
+              : [
                   Expanded(
                     child: _buildProgressBar(),
                   ),
                   SizedBox(width: 8),
                   OverlayButton(
                     scale: scale,
-                    child: value.isPlaying
-                        ? IconButton(
-                            icon: Icon(Icons.pause),
-                            onPressed: () => _playPause(),
-                            tooltip: 'Pause',
-                          )
-                        : IconButton(
-                            icon: Icon(Icons.play_arrow),
-                            onPressed: () => _playPause(),
-                            tooltip: 'Play',
-                          ),
+                    child: IconButton(
+                      icon: AnimatedIcon(
+                        icon: AnimatedIcons.play_pause,
+                        progress: _playPauseAnimation,
+                      ),
+                      onPressed: () => _playPause(),
+                      tooltip: 'Play',
+                    ),
                   ),
                 ],
-              ),
-            ),
+        ),
+      ),
     );
   }
 
@@ -160,18 +166,29 @@ class VideoControlOverlayState extends State<VideoControlOverlay> {
     );
   }
 
-  _onValueChange() => setState(() {});
+  _onValueChange() {
+    setState(() {});
+    updatePlayPauseIcon();
+  }
 
   _playPause() async {
     if (value.isPlaying) {
       controller.pause();
     } else {
-      if (!value.initialized) {
-        await controller.initialize();
-      }
+      if (!value.initialized) await controller.initialize();
       controller.play();
     }
     setState(() {});
+  }
+
+  updatePlayPauseIcon() {
+    final isPlaying = value.isPlaying;
+    final status = _playPauseAnimation.status;
+    if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
+      _playPauseAnimation.forward();
+    } else if (!isPlaying && status != AnimationStatus.reverse && status != AnimationStatus.dismissed) {
+      _playPauseAnimation.reverse();
+    }
   }
 
   _seek(Offset globalPosition) {

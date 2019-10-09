@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/image_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -52,13 +55,17 @@ class AvesVideoState extends State<AvesVideo> {
   @override
   Widget build(BuildContext context) {
     if (value == null) return SizedBox();
-    if (value.hasError)
-      return Center(
-        child: Icon(
-          Icons.error_outline,
-          size: 32,
-        ),
+    if (value.hasError) {
+      final mediaQuery = MediaQuery.of(context);
+      final width = min<double>(mediaQuery.size.width, entry.width.toDouble());
+      return ImagePreview(
+        entry: entry,
+        width: width,
+        height: width / entry.aspectRatio,
+        devicePixelRatio: mediaQuery.devicePixelRatio,
+        builder: (bytes) => Image.memory(bytes),
       );
+    }
     return Center(
       child: AspectRatio(
         aspectRatio: entry.aspectRatio,
