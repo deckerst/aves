@@ -1,9 +1,8 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
-import 'package:aves/utils/date_utils.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/blurred.dart';
-import 'package:aves/widgets/fullscreen/overlay_top.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 

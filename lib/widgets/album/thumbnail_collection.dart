@@ -3,7 +3,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/sections.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/fullscreen/image_page.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';

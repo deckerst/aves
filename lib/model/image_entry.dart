@@ -4,7 +4,7 @@ import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/utils/date_utils.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:path/path.dart';

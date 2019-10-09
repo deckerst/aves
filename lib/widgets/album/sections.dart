@@ -1,4 +1,4 @@
-import 'package:aves/utils/date_utils.dart';
+import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/outlined_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
