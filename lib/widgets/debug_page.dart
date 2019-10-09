@@ -5,6 +5,7 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class DebugPage extends StatefulWidget {
   final List<ImageEntry> entries;
@@ -75,6 +76,16 @@ class DebugPageState extends State<DebugPage> {
               if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
               return Text('DB address rows: ${snapshot.data.length}');
             },
+          ),
+          Divider(),
+          Text('Time dilation'),
+          Slider(
+            value: timeDilation,
+            onChanged: (v) => setState(() => timeDilation = v),
+            min: 1.0,
+            max: 10.0,
+            divisions: 9,
+            label: '$timeDilation',
           ),
         ],
       ),
