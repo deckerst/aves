@@ -14,6 +14,10 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
+  // initialize binding/plugins to configure Skia before `runApp`
+  WidgetsFlutterBinding.ensureInitialized();
+  // configure Skia cache to prevent zoomed images becoming black, cf https://github.com/flutter/flutter/issues/36191
+  SystemChannels.skia.invokeMethod('Skia.setResourceCacheMaxBytes', 512 * (1 << 20));
   runApp(AvesApp());
 }
 
