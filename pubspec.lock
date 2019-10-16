@@ -203,7 +203,7 @@ packages:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.6.0"
   printing:
     dependency: "direct main"
     description:
@@ -231,7 +231,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.3+4"
+    version: "0.5.3+5"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -334,7 +334,7 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.2+3"
+    version: "0.10.2+4"
   xml:
     dependency: transitive
     description:
