@@ -110,6 +110,7 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
 
     private void edit(String title, Uri uri, String mimeType) {
         Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.setDataAndType(uri, mimeType);
         context.startActivity(Intent.createChooser(intent, title));
     }
