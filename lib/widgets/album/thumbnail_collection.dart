@@ -63,6 +63,7 @@ class ThumbnailCollectionContent extends StatelessWidget {
             if (appBar != null) appBar,
             ...sectionKeys.map((sectionKey) {
               Widget sliver = SectionSliver(
+                key: UniqueKey(),
                 collection: collection,
                 sections: _sections,
                 sectionKey: sectionKey,
