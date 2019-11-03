@@ -42,8 +42,12 @@ class AllCollectionPage extends StatelessWidget {
                   child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
                 ),
                 PopupMenuItem(
-                  value: AlbumAction.groupByDate,
-                  child: MenuRow(text: 'Group by date', checked: collection.groupFactor == GroupFactor.date),
+                  value: AlbumAction.groupByMonth,
+                  child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
+                ),
+                PopupMenuItem(
+                  value: AlbumAction.groupByDay,
+                  child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
                 ),
                 PopupMenuDivider(),
               ],
@@ -69,9 +73,13 @@ class AllCollectionPage extends StatelessWidget {
         settings.collectionGroupFactor = GroupFactor.album;
         collection.group(GroupFactor.album);
         break;
-      case AlbumAction.groupByDate:
-        settings.collectionGroupFactor = GroupFactor.date;
-        collection.group(GroupFactor.date);
+      case AlbumAction.groupByMonth:
+        settings.collectionGroupFactor = GroupFactor.month;
+        collection.group(GroupFactor.month);
+        break;
+      case AlbumAction.groupByDay:
+        settings.collectionGroupFactor = GroupFactor.day;
+        collection.group(GroupFactor.day);
         break;
       case AlbumAction.sortByDate:
         settings.collectionSortFactor = SortFactor.date;
@@ -96,4 +104,4 @@ class AllCollectionPage extends StatelessWidget {
   }
 }
 
-enum AlbumAction { debug, groupByAlbum, groupByDate, sortByDate, sortBySize }
+enum AlbumAction { debug, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize }

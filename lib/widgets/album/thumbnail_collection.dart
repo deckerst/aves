@@ -184,8 +184,11 @@ class SectionHeader extends StatelessWidget {
             title: collection.getUniqueAlbumName(sectionKey, sections.keys.cast<String>()),
           );
           break;
-        case GroupFactor.date:
+        case GroupFactor.month:
           header = MonthSectionHeader(date: sectionKey);
+          break;
+        case GroupFactor.day:
+          header = DaySectionHeader(date: sectionKey);
           break;
       }
     }

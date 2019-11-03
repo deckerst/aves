@@ -6,6 +6,8 @@ bool isAtSameDayAs(DateTime d1, DateTime d2) => isAtSameMonthAs(d1, d2) && d1.da
 
 bool isToday(DateTime d) => isAtSameDayAs(d, DateTime.now());
 
+bool isYesterday(DateTime d) => isAtSameDayAs(d, DateTime.now().subtract(Duration(days: 1)));
+
 bool isThisMonth(DateTime d) => isAtSameMonthAs(d, DateTime.now());
 
 bool isThisYear(DateTime d) => isAtSameYearAs(d, DateTime.now());

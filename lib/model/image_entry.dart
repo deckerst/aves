@@ -125,6 +125,11 @@ class ImageEntry {
     return d == null ? null : DateTime(d.year, d.month);
   }
 
+  DateTime get dayTaken {
+    final d = bestDate;
+    return d == null ? null : DateTime(d.year, d.month, d.day);
+  }
+
   String get durationText => formatDuration(Duration(milliseconds: durationMillis));
 
   bool get hasGps => isCatalogued && catalogMetadata.latitude != null;

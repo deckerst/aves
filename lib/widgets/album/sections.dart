@@ -15,6 +15,7 @@ class DaySectionHeader extends StatelessWidget {
 
   static formatDate(DateTime date) {
     if (isToday(date)) return 'Today';
+    if (isYesterday(date)) return 'Yesterday';
     if (isThisYear(date)) return md.format(date);
     return ymd.format(date);
   }
