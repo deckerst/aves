@@ -63,7 +63,9 @@ class ThumbnailCollectionContent extends StatelessWidget {
             if (appBar != null) appBar,
             ...sectionKeys.map((sectionKey) {
               Widget sliver = SectionSliver(
-                key: UniqueKey(),
+                // need key to prevent section header mismatch
+                // but it should not be unique key, otherwise sections are rebuilt when changing page
+                key: ValueKey(sectionKey),
                 collection: collection,
                 sections: _sections,
                 sectionKey: sectionKey,
