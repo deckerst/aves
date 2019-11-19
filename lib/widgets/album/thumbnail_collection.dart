@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/sections.dart';
@@ -23,6 +25,7 @@ class ThumbnailCollection extends AnimatedWidget {
     return ThumbnailCollectionContent(
       collection: collection,
       appBar: appBar,
+      screenWidth: MediaQuery.of(context).size.width,
     );
   }
 }
@@ -30,14 +33,16 @@ class ThumbnailCollection extends AnimatedWidget {
 class ThumbnailCollectionContent extends StatelessWidget {
   final ImageCollection collection;
   final Widget appBar;
+  final double screenWidth;
 
   final Map<dynamic, List<ImageEntry>> _sections;
   final ScrollController _scrollController = ScrollController();
 
   ThumbnailCollectionContent({
     Key key,
-    this.collection,
-    this.appBar,
+    @required this.collection,
+    @required this.appBar,
+    @required this.screenWidth,
   })  : _sections = collection.sections,
         super(key: key);
 
@@ -69,6 +74,7 @@ class ThumbnailCollectionContent extends StatelessWidget {
                 collection: collection,
                 sections: _sections,
                 sectionKey: sectionKey,
+                screenWidth: screenWidth,
               );
               if (sectionKey == sectionKeys.last) {
                 sliver = SliverPadding(
@@ -94,12 +100,14 @@ class SectionSliver extends StatelessWidget {
   final ImageCollection collection;
   final Map<dynamic, List<ImageEntry>> sections;
   final dynamic sectionKey;
+  final double screenWidth;
 
   const SectionSliver({
     Key key,
     @required this.collection,
     @required this.sections,
     @required this.sectionKey,
+    @required this.screenWidth,
   }) : super(key: key);
 
   @override
@@ -113,28 +121,29 @@ class SectionSliver extends StatelessWidget {
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
+          // TODO TLAD find out why thumbnails are rebuilt when config change (show/hide status bar)
           (sliverContext, index) {
             final sectionEntries = sections[sectionKey];
             if (index >= sectionEntries.length) return null;
             final entry = sectionEntries[index];
-            final mediaQuery = MediaQuery.of(sliverContext);
             return GestureDetector(
               onTap: () => _showFullscreen(sliverContext, entry),
               child: Thumbnail(
                 entry: entry,
-                extent: mediaQuery.size.width / columnCount,
-                devicePixelRatio: mediaQuery.devicePixelRatio,
+                extent: screenWidth / columnCount,
+                devicePixelRatio: window.devicePixelRatio,
               ),
             );
           },
           childCount: sections[sectionKey].length,
           addAutomaticKeepAlives: false,
-          addRepaintBoundaries: false,
+          addRepaintBoundaries: true,
         ),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount,
         ),
       ),
+      overlapsContent: false,
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
@@ -16,7 +18,7 @@ class AllCollectionDrawer extends StatelessWidget {
     final tags = collection.sortedTags;
     return Drawer(
       child: ListView(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding: EdgeInsets.only(bottom: window.viewInsets.bottom),
         children: [
           DrawerHeader(
             child: SafeArea(

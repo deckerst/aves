@@ -27,15 +27,30 @@ class Thumbnail extends StatelessWidget {
       builder: (bytes) {
         return Hero(
           tag: entry.uri,
-          child: LayoutBuilder(builder: (context, constraints) {
-            final dim = min(constraints.maxWidth, constraints.maxHeight);
-            return Image.memory(
-              bytes,
-              width: dim,
-              height: dim,
-              fit: BoxFit.cover,
-            );
-          }),
+          flightShuttleBuilder: (
+            BuildContext flightContext,
+            Animation<double> animation,
+            HeroFlightDirection flightDirection,
+            BuildContext fromHeroContext,
+            BuildContext toHeroContext,
+          ) {
+            // use LayoutBuilder only during hero animation
+            return LayoutBuilder(builder: (context, constraints) {
+              final dim = min(constraints.maxWidth, constraints.maxHeight);
+              return Image.memory(
+                bytes,
+                width: dim,
+                height: dim,
+                fit: BoxFit.cover,
+              );
+            });
+          },
+          child: Image.memory(
+            bytes,
+            width: extent,
+            height: extent,
+            fit: BoxFit.cover,
+          ),
         );
       },
     );

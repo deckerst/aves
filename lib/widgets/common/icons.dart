@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -104,7 +106,7 @@ class IconUtils {
       return AppIcon(
         packageName: packageName,
         size: IconTheme.of(context).size,
-        devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+        devicePixelRatio: window.devicePixelRatio,
       );
     }
     return null;

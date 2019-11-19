@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:screen/screen.dart';
 
 void main() {
   // initialize binding/plugins to configure Skia before `runApp`
@@ -60,6 +61,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     imageCache.maximumSizeBytes = 100 * 1024 * 1024;
     setup();
+    Screen.keepOn(true);
   }
 
   setup() async {

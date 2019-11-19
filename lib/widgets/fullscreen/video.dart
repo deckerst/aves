@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/image_preview.dart';
@@ -62,7 +63,7 @@ class AvesVideoState extends State<AvesVideo> {
         entry: entry,
         width: width,
         height: width / entry.aspectRatio,
-        devicePixelRatio: mediaQuery.devicePixelRatio,
+        devicePixelRatio: window.devicePixelRatio,
         builder: (bytes) => Image.memory(bytes),
       );
     }

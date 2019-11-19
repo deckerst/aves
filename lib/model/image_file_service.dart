@@ -17,6 +17,7 @@ class ImageFileService {
 
   static Future<Uint8List> getImageBytes(ImageEntry entry, int width, int height) async {
     if (width > 0 && height > 0) {
+//      debugPrint('getImageBytes width=$width path=${entry.path}');
       try {
         final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
           'entry': entry.toMap(),

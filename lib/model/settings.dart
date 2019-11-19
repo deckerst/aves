@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:aves/model/image_collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
@@ -19,15 +22,35 @@ class Settings {
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
 
+  // state
+  static const windowMetricsKey = 'window_metrics';
+
   init() async {
     prefs = await SharedPreferences.getInstance();
+    // TODO TLAD try this as an alternative to MediaQuery, in order to rebuild only on specific property change
+//    window.onMetricsChanged = onMetricsChanged;
   }
 
-  void addListener(SettingsCallback listener) => _listeners.add(listener);
+  WindowMetrics _metrics;
 
-  void removeListener(SettingsCallback listener) => _listeners.remove(listener);
+  onMetricsChanged() {
+    final newValue = WindowMetrics(
+      devicePixelRatio: window.devicePixelRatio,
+      physicalSize: window.physicalSize,
+      viewInsets: window.viewInsets,
+      viewPadding: window.viewPadding,
+      systemGestureInsets: window.systemGestureInsets,
+      padding: window.padding,
+    );
+    notifyListeners(windowMetricsKey, _metrics, newValue);
+    _metrics = newValue;
+  }
 
-  void notifyListeners(String key, dynamic oldValue, dynamic newValue) {
+  addListener(SettingsCallback listener) => _listeners.add(listener);
+
+  removeListener(SettingsCallback listener) => _listeners.remove(listener);
+
+  notifyListeners(String key, dynamic oldValue, dynamic newValue) {
     debugPrint('$runtimeType notifyListeners key=$key, old=$oldValue, new=$newValue');
     if (_listeners != null) {
       final List<SettingsCallback> localListeners = _listeners.toList();
@@ -94,4 +117,22 @@ class Settings {
       notifyListeners(key, oldValue, newValue);
     }
   }
+}
+
+class WindowMetrics {
+  final double devicePixelRatio;
+  final Size physicalSize;
+  final WindowPadding viewInsets;
+  final WindowPadding viewPadding;
+  final WindowPadding systemGestureInsets;
+  final WindowPadding padding;
+
+  const WindowMetrics({
+    this.devicePixelRatio,
+    this.physicalSize,
+    this.viewInsets,
+    this.viewPadding,
+    this.systemGestureInsets,
+    this.padding,
+  });
 }

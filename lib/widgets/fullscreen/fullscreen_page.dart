@@ -10,9 +10,9 @@ import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
 import 'package:aves/widgets/fullscreen/overlay/video.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:screen/screen.dart';
 import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
 
@@ -122,15 +122,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       showInfo: () => goToVerticalPage(1),
     );
     initVideoController();
-
-    Screen.keepOn(true);
     initOverlay();
   }
 
   initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after hero animation is complete
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(Duration(milliseconds: (300 * timeDilation).toInt()));
     onOverlayVisibleChange();
   }
 
@@ -150,7 +148,6 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           goToVerticalPage(0);
           return Future.value(false);
         }
-        Screen.keepOn(false);
         SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
         return Future.value(true);
       },
