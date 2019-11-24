@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/blurred.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final innerPadding = EdgeInsets.all(8.0);
+    final innerPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
     final mediaQuery = MediaQuery.of(context);
     final viewInsets = widget.viewInsets ?? mediaQuery.viewInsets;
     final viewPadding = widget.viewPadding ?? mediaQuery.viewPadding;
@@ -97,7 +98,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   final String position;
   final double maxWidth;
 
-  static const double interRowPadding = 4.0;
+  static const double interRowPadding = 2.0;
   static const double iconPadding = 8.0;
   static const double iconSize = 16.0;
   static const double subRowMinWidth = 300.0;
@@ -120,13 +121,15 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
           )
         ],
       ),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             width: maxWidth,
-            child: Text('$position – ${entry.title}', overflow: TextOverflow.ellipsis),
+            child: Text('$position – ${entry.title}', strutStyle: Constants.overflowStrutStyle),
           ),
           if (entry.hasGps)
             Container(
@@ -163,29 +166,31 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   }
 
   Widget _buildLocationRow() {
-    String text;
+    String location;
     if (entry.isLocated) {
-      text = entry.shortAddress;
+      location = entry.shortAddress;
     } else if (entry.hasGps) {
-      text = toDMS(entry.latLng).join(', ');
+      location = toDMS(entry.latLng).join(', ');
     }
     return Row(
       children: [
         Icon(Icons.place, size: iconSize),
         SizedBox(width: iconPadding),
-        Expanded(child: Text(text, overflow: TextOverflow.ellipsis)),
+        Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }
 
   Widget _buildDateRow() {
     final date = entry.bestDate;
+    final dateText = '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}';
+    final resolution = '${entry.width} × ${entry.height}';
     return Row(
       children: [
         Icon(Icons.calendar_today, size: iconSize),
         SizedBox(width: iconPadding),
-        Expanded(flex: 3, child: Text('${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}')),
-        Expanded(flex: 2, child: Text('${entry.width} × ${entry.height}')),
+        Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }
@@ -195,10 +200,10 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
       children: [
         Icon(Icons.camera, size: iconSize),
         SizedBox(width: iconPadding),
-        Expanded(child: Text(details.aperture)),
-        Expanded(child: Text(details.exposureTime)),
-        Expanded(child: Text(details.focalLength)),
-        Expanded(child: Text(details.iso)),
+        Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.focalLength, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.iso, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }
