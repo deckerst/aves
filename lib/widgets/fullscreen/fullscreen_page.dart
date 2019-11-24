@@ -28,41 +28,9 @@ class FullscreenPage extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: FullscreenBody(
-        collection: collection,
-        initialUri: initialUri,
-      ),
-      resizeToAvoidBottomInset: false,
-//        Hero(
-//          tag: uri,
-//          child: Stack(
-//            children: [
-//              Center(
-//                child: widget.thumbnail == null
-//                    ? CircularProgressIndicator()
-//                    : Image.memory(
-//                        widget.thumbnail,
-//                        width: requestWidth,
-//                        height: requestHeight,
-//                        fit: BoxFit.contain,
-//                      ),
-//              ),
-//              Center(
-//                child: FadeInImage(
-//                  placeholder: MemoryImage(kTransparentImage),
-//                  image: FileImage(File(path)),
-//                  fadeOutDuration: Duration(milliseconds: 1),
-//                  fadeInDuration: Duration(milliseconds: 200),
-//                  width: requestWidth,
-//                  height: requestHeight,
-//                  fit: BoxFit.contain,
-//                ),
-//              ),
-//            ],
-//          ),
-//        ),
+    return FullscreenBody(
+      collection: collection,
+      initialUri: initialUri,
     );
   }
 }
@@ -83,7 +51,7 @@ class FullscreenBody extends StatefulWidget {
 
 class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProviderStateMixin {
   bool _isInitialScale = true;
-  int _currentHorizontalPage, _currentVerticalPage = 0;
+  int _currentHorizontalPage, _currentVerticalPage = imagePage;
   PageController _horizontalPager, _verticalPager;
   ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   AnimationController _overlayAnimationController;
@@ -96,6 +64,10 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   ImageCollection get collection => widget.collection;
 
   List<ImageEntry> get entries => widget.collection.sortedEntries;
+
+  static const transitionPage = 0;
+  static const imagePage = 1;
+  static const infoPage = 2;
 
   @override
   void initState() {
@@ -119,7 +91,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _overlayVisible.addListener(onOverlayVisibleChange);
     _actionDelegate = FullscreenActionDelegate(
       collection: collection,
-      showInfo: () => goToVerticalPage(1),
+      showInfo: () => goToVerticalPage(infoPage),
     );
     initVideoController();
     initOverlay();
@@ -144,11 +116,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     return WillPopScope(
       onWillPop: () {
-        if (_currentVerticalPage == 1) {
-          goToVerticalPage(0);
+        if (_currentVerticalPage == infoPage) {
+          goToVerticalPage(imagePage);
           return Future.value(false);
         }
-        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+        _onLeave();
         return Future.value(true);
       },
       child: Stack(
@@ -157,19 +129,23 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
             scrollDirection: Axis.vertical,
             controller: _verticalPager,
             physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
-            onPageChanged: (page) => setState(() => _currentVerticalPage = page),
+            onPageChanged: _onVerticalPageChanged,
             children: [
-              ImagePage(
-                collection: collection,
-                pageController: _horizontalPager,
-                onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                onPageChanged: onHorizontalPageChanged,
-                onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
-                videoControllers: _videoControllers,
+              SizedBox(),
+              Container(
+                color: Colors.black,
+                child: ImagePage(
+                  collection: collection,
+                  pageController: _horizontalPager,
+                  onTap: () => _overlayVisible.value = !_overlayVisible.value,
+                  onPageChanged: onHorizontalPageChanged,
+                  onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
+                  videoControllers: _videoControllers,
+                ),
               ),
               NotificationListener(
                 onNotification: (notification) {
-                  if (notification is BackUpNotification) goToVerticalPage(0);
+                  if (notification is BackUpNotification) goToVerticalPage(imagePage);
                   return false;
                 },
                 child: InfoPage(collection: collection, entry: entry),
@@ -183,7 +159,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   List<Widget> _buildOverlay(ImageEntry entry) {
-    if (entry == null || _currentVerticalPage != 0) return [];
+    if (entry == null || _currentVerticalPage != imagePage) return [];
     final videoController = entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2 : null;
     return [
       FullscreenTopOverlay(
@@ -229,15 +205,29 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
   }
 
+  _onVerticalPageChanged(page) {
+    setState(() => _currentVerticalPage = page);
+    if (_currentVerticalPage == transitionPage) {
+      _onLeave();
+      Navigator.pop(context);
+    }
+  }
+
+  _onLeave() => _showSystemUI();
+
+  _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
+  _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
+
   onOverlayVisibleChange() async {
     if (_overlayVisible.value) {
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      _showSystemUI();
       _overlayAnimationController.forward();
     } else {
       final mediaQuery = MediaQuery.of(context);
       _frozenViewInsets = mediaQuery.viewInsets;
       _frozenViewPadding = mediaQuery.viewPadding;
-      SystemChrome.setEnabledSystemUIOverlays([]);
+      _hideSystemUI();
       await _overlayAnimationController.reverse();
       _frozenViewInsets = null;
       _frozenViewPadding = null;

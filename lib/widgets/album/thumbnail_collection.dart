@@ -147,14 +147,15 @@ class SectionSliver extends StatelessWidget {
     );
   }
 
-  Future _showFullscreen(BuildContext context, ImageEntry entry) {
-    return Navigator.push(
+  _showFullscreen(BuildContext context, ImageEntry entry) {
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => FullscreenPage(
           collection: collection,
           initialUri: entry.uri,
         ),
+        fullscreenDialog: true,
       ),
     );
   }

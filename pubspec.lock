@@ -100,7 +100,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.4"
+    version: "0.15.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -119,7 +119,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.21+8"
+    version: "0.5.21+12"
   image:
     dependency: transitive
     description:
@@ -203,7 +203,7 @@ packages:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.0"
+    version: "0.9.0"
   printing:
     dependency: "direct main"
     description:
@@ -231,7 +231,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4+3"
+    version: "0.5.4+5"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -278,7 +278,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0+1"
+    version: "2.1.0+2"
   term_glyph:
     dependency: transitive
     description:
@@ -334,7 +334,7 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.2+5"
+    version: "0.10.3+1"
   xml:
     dependency: transitive
     description:
@@ -344,4 +344,4 @@ packages:
     version: "3.5.0"
 sdks:
   dart: ">=2.5.0 <3.0.0"
-  flutter: ">=1.9.1 <2.0.0"
+  flutter: ">=1.9.1+hotfix.5 <2.0.0"

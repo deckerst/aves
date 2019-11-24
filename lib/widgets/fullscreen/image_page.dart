@@ -73,6 +73,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
       loadingChild: Center(
         child: CircularProgressIndicator(),
       ),
+      backgroundDecoration: BoxDecoration(color: Colors.transparent),
       pageController: widget.pageController,
       onPageChanged: widget.onPageChanged,
       scaleStateChangedCallback: widget.onScaleChanged,
