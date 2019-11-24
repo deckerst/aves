@@ -65,7 +65,15 @@ class ImageMap extends StatefulWidget {
 }
 
 class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
-  GoogleMapController controller;
+  GoogleMapController _controller;
+
+  @override
+  void didUpdateWidget(ImageMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.latLng != oldWidget.latLng && _controller != null) {
+      _controller.moveCamera(CameraUpdate.newLatLng(widget.latLng));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +93,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
                   target: widget.latLng,
                   zoom: widget.initialZoom,
                 ),
-                onMapCreated: (controller) => setState(() => this.controller = controller),
+                onMapCreated: (controller) => setState(() => this._controller = controller),
                 rotateGesturesEnabled: false,
                 scrollGesturesEnabled: false,
                 zoomGesturesEnabled: false,
@@ -106,12 +114,12 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
         Column(children: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: controller == null ? null : () => zoomBy(1),
+            onPressed: _controller == null ? null : () => _zoomBy(1),
             tooltip: 'Zoom in',
           ),
           IconButton(
             icon: Icon(Icons.remove),
-            onPressed: controller == null ? null : () => zoomBy(-1),
+            onPressed: _controller == null ? null : () => _zoomBy(-1),
             tooltip: 'Zoom out',
           ),
           IconButton(
@@ -124,9 +132,9 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  zoomBy(double amount) {
+  _zoomBy(double amount) {
     settings.infoMapZoom += amount;
-    controller.animateCamera(CameraUpdate.zoomBy(amount));
+    _controller.animateCamera(CameraUpdate.zoomBy(amount));
   }
 
   @override
