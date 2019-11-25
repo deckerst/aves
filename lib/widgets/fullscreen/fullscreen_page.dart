@@ -28,9 +28,13 @@ class FullscreenPage extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FullscreenBody(
-      collection: collection,
-      initialUri: initialUri,
+    return Scaffold(
+      body: FullscreenBody(
+        collection: collection,
+        initialUri: initialUri,
+      ),
+      backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: false,
     );
   }
 }

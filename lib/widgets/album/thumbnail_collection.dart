@@ -155,7 +155,6 @@ class SectionSliver extends StatelessWidget {
           collection: collection,
           initialUri: entry.uri,
         ),
-        fullscreenDialog: true,
       ),
     );
   }
