@@ -50,10 +50,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
                   )
                 : SizedBox(),
             childSize: MediaQuery.of(galleryContext).size,
-            heroAttributes: PhotoViewHeroAttributes(
-              tag: entry.uri,
-              transitionOnUserGestures: true,
-            ),
+            // no hero as most videos fullscreen image is different from its thumbnail
             minScale: PhotoViewComputedScale.contained,
             initialScale: PhotoViewComputedScale.contained,
             onTapUp: (tapContext, details, value) => widget.onTap?.call(),
