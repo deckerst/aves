@@ -7,7 +7,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.10"
+    version: "2.0.11"
   args:
     dependency: transitive
     description:
@@ -21,7 +21,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -106,6 +106,11 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_plugins:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   geocoder:
     dependency: "direct main"
     description:
@@ -119,7 +124,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.21+12"
+    version: "0.5.21+15"
   image:
     dependency: transitive
     description:
@@ -140,14 +145,14 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.5"
+    version: "0.12.6"
   meta:
     dependency: transitive
     description:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.8"
   path:
     dependency: "direct main"
     description:
@@ -175,7 +180,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.24"
+    version: "1.3.25"
   pedantic:
     dependency: transitive
     description:
@@ -210,7 +215,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.8"
+    version: "3.0.0"
   quiver:
     dependency: transitive
     description:
@@ -231,7 +236,28 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4+5"
+    version: "0.5.6"
+  shared_preferences_macos:
+    dependency: transitive
+    description:
+      name: shared_preferences_macos
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
+  shared_preferences_platform_interface:
+    dependency: transitive
+    description:
+      name: shared_preferences_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
+  shared_preferences_web:
+    dependency: transitive
+    description:
+      name: shared_preferences_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -250,7 +276,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7+2"
+    version: "1.1.8"
   stack_trace:
     dependency: transitive
     description:
@@ -278,7 +304,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0+2"
+    version: "2.1.1"
   term_glyph:
     dependency: transitive
     description:
@@ -292,7 +318,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5"
+    version: "0.2.11"
   transparent_image:
     dependency: "direct main"
     description:
@@ -334,7 +360,21 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.3+1"
+    version: "0.10.5"
+  video_player_platform_interface:
+    dependency: transitive
+    description:
+      name: video_player_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
+  video_player_web:
+    dependency: transitive
+    description:
+      name: video_player_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   xml:
     dependency: transitive
     description:
@@ -344,4 +384,4 @@ packages:
     version: "3.5.0"
 sdks:
   dart: ">=2.5.0 <3.0.0"
-  flutter: ">=1.9.1+hotfix.5 <2.0.0"
+  flutter: ">=1.12.13+hotfix.4 <2.0.0"
