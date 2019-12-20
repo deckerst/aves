@@ -29,8 +29,10 @@ dependencies:
   geocoder:
   google_maps_flutter:
   intl:
+  logger:
   path:
   pdf:
+  pedantic:
   permission_handler:
   photo_view:
   printing:

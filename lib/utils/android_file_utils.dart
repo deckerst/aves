@@ -7,7 +7,7 @@ class AndroidFileUtils {
 
   AndroidFileUtils._private();
 
-  init() async {
+  void init() {
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
     externalStorage = '/storage/emulated/0';
     dcimPath = join(externalStorage, 'DCIM');

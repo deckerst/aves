@@ -25,7 +25,7 @@ class Settings {
   // state
   static const windowMetricsKey = 'window_metrics';
 
-  init() async {
+  Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
     // TODO TLAD try this as an alternative to MediaQuery, in order to rebuild only on specific property change
 //    window.onMetricsChanged = onMetricsChanged;
@@ -33,7 +33,7 @@ class Settings {
 
   WindowMetrics _metrics;
 
-  onMetricsChanged() {
+  void onMetricsChanged() {
     final newValue = WindowMetrics(
       devicePixelRatio: window.devicePixelRatio,
       physicalSize: window.physicalSize,
@@ -46,11 +46,11 @@ class Settings {
     _metrics = newValue;
   }
 
-  addListener(SettingsCallback listener) => _listeners.add(listener);
+  void addListener(SettingsCallback listener) => _listeners.add(listener);
 
-  removeListener(SettingsCallback listener) => _listeners.remove(listener);
+  void removeListener(SettingsCallback listener) => _listeners.remove(listener);
 
-  notifyListeners(String key, dynamic oldValue, dynamic newValue) {
+  void notifyListeners(String key, dynamic oldValue, dynamic newValue) {
     debugPrint('$runtimeType notifyListeners key=$key, old=$oldValue, new=$newValue');
     if (_listeners != null) {
       final List<SettingsCallback> localListeners = _listeners.toList();
@@ -96,7 +96,7 @@ class Settings {
     return defaultValue;
   }
 
-  setAndNotify(String key, dynamic newValue) {
+  void setAndNotify(String key, dynamic newValue) {
     var oldValue = prefs.get(key);
     if (newValue == null) {
       prefs.remove(key);

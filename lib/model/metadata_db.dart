@@ -15,7 +15,7 @@ class MetadataDb {
 
   MetadataDb._private();
 
-  init() async {
+  Future<void> init() async {
     debugPrint('$runtimeType init');
     _database = openDatabase(
       await path,
@@ -27,14 +27,14 @@ class MetadataDb {
     );
   }
 
-  reset() async {
+  Future<void> reset() async {
     debugPrint('$runtimeType reset');
-    (await _database).close();
-    deleteDatabase(await path);
+    await (await _database).close();
+    await deleteDatabase(await path);
     await init();
   }
 
-  clearMetadataEntries() async {
+  Future<void> clearMetadataEntries() async {
     final db = await _database;
     final count = await db.delete(metadataTable, where: '1');
     debugPrint('$runtimeType clearMetadataEntries deleted $count entries');
@@ -49,7 +49,7 @@ class MetadataDb {
     return metadataEntries;
   }
 
-  saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
+  Future<void> saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
     if (metadataEntries == null || metadataEntries.isEmpty) return;
     final start = DateTime.now();
     final db = await _database;
@@ -63,7 +63,7 @@ class MetadataDb {
     debugPrint('$runtimeType saveMetadata complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
   }
 
-  clearAddresses() async {
+  Future<void> clearAddresses() async {
     final db = await _database;
     final count = await db.delete(addressTable, where: '1');
     debugPrint('$runtimeType clearAddresses deleted $count entries');
@@ -78,7 +78,7 @@ class MetadataDb {
     return addresses;
   }
 
-  saveAddresses(Iterable<AddressDetails> addresses) async {
+  Future<void> saveAddresses(Iterable<AddressDetails> addresses) async {
     if (addresses == null || addresses.isEmpty) return;
     final start = DateTime.now();
     final db = await _database;

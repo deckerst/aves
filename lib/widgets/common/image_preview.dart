@@ -66,7 +66,7 @@ class ImagePreviewState extends State<ImagePreview> {
         future: _byteLoader,
         builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
           final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
-          return bytes.length > 0 ? widget.builder(bytes) : Icon(Icons.error);
+          return bytes.isNotEmpty ? widget.builder(bytes) : Icon(Icons.error);
         });
   }
 }

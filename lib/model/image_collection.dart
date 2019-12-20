@@ -32,17 +32,17 @@ class ImageCollection with ChangeNotifier {
 
   List<ImageEntry> get sortedEntries => List.unmodifiable(sections.entries.expand((e) => e.value));
 
-  sort(SortFactor sortFactor) {
+  void sort(SortFactor sortFactor) {
     this.sortFactor = sortFactor;
     updateSections();
   }
 
-  group(GroupFactor groupFactor) {
+  void group(GroupFactor groupFactor) {
     this.groupFactor = groupFactor;
     updateSections();
   }
 
-  updateSections() {
+  void updateSections() {
     _applySort();
     switch (sortFactor) {
       case SortFactor.date:
@@ -65,7 +65,7 @@ class ImageCollection with ChangeNotifier {
     notifyListeners();
   }
 
-  _applySort() {
+  void _applySort() {
     switch (sortFactor) {
       case SortFactor.date:
         _rawEntries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
@@ -76,7 +76,7 @@ class ImageCollection with ChangeNotifier {
     }
   }
 
-  add(ImageEntry entry) => _rawEntries.add(entry);
+  void add(ImageEntry entry) => _rawEntries.add(entry);
 
   Future<bool> delete(ImageEntry entry) async {
     final success = await ImageFileService.delete(entry);
@@ -87,7 +87,7 @@ class ImageCollection with ChangeNotifier {
     return success;
   }
 
-  updateAlbums() {
+  void updateAlbums() {
     Set<String> albums = _rawEntries.map((entry) => entry.directory).toSet();
     List<String> sorted = albums.toList()
       ..sort((a, b) {
@@ -98,19 +98,19 @@ class ImageCollection with ChangeNotifier {
     sortedAlbums = List.unmodifiable(sorted);
   }
 
-  updateTags() {
+  void updateTags() {
     Set<String> tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
     List<String> sorted = tags.toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(sorted);
   }
 
-  onMetadataChanged() {
+  void onMetadataChanged() {
     // metadata dates impact sorting and grouping
     updateSections();
     updateTags();
   }
 
-  loadCatalogMetadata() async {
+  Future<void> loadCatalogMetadata() async {
     final start = DateTime.now();
     final saved = await metadataDb.loadMetadataEntries();
     _rawEntries.forEach((entry) {
@@ -123,7 +123,7 @@ class ImageCollection with ChangeNotifier {
     debugPrint('$runtimeType loadCatalogMetadata complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
   }
 
-  loadAddresses() async {
+  Future<void> loadAddresses() async {
     final start = DateTime.now();
     final saved = await metadataDb.loadAddresses();
     _rawEntries.forEach((entry) {
@@ -135,7 +135,7 @@ class ImageCollection with ChangeNotifier {
     debugPrint('$runtimeType loadAddresses complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
   }
 
-  catalogEntries() async {
+  Future<void> catalogEntries() async {
     final start = DateTime.now();
     final uncataloguedEntries = _rawEntries.where((entry) => !entry.isCatalogued).toList();
     final newMetadata = List<CatalogMetadata>();
@@ -143,12 +143,12 @@ class ImageCollection with ChangeNotifier {
       await entry.catalog();
       newMetadata.add(entry.catalogMetadata);
     });
-    metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+    await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
     onMetadataChanged();
     debugPrint('$runtimeType catalogEntries complete in ${DateTime.now().difference(start).inSeconds}s with ${newMetadata.length} new entries');
   }
 
-  locateEntries() async {
+  Future<void> locateEntries() async {
     final start = DateTime.now();
     final unlocatedEntries = _rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
     final newAddresses = List<AddressDetails>();
@@ -156,11 +156,11 @@ class ImageCollection with ChangeNotifier {
       await entry.locate();
       newAddresses.add(entry.addressDetails);
       if (newAddresses.length >= 50) {
-        metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+        await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
         newAddresses.clear();
       }
     });
-    metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+    await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
     debugPrint('$runtimeType locateEntries complete in ${DateTime.now().difference(start).inSeconds}s');
   }
 

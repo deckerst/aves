@@ -11,14 +11,20 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screen/screen.dart';
 
+final stopwatch = Stopwatch()..start();
+
 void main() {
+  debugPrint('main start, elapsed=${stopwatch.elapsed}');
   // initialize binding/plugins to configure Skia before `runApp`
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized(); // 220ms
+//  debugPrint('main WidgetsFlutterBinding.ensureInitialized done, elapsed=${stopwatch.elapsed}');
   // configure Skia cache to prevent zoomed images becoming black, cf https://github.com/flutter/flutter/issues/36191
-  SystemChannels.skia.invokeMethod('Skia.setResourceCacheMaxBytes', 512 * (1 << 20));
+  SystemChannels.skia.invokeMethod('Skia.setResourceCacheMaxBytes', 512 * (1 << 20)); // <20ms
+//  debugPrint('main Skia.setResourceCacheMaxBytes done, elapsed=${stopwatch.elapsed}');
   runApp(AvesApp());
 }
 
@@ -64,42 +70,55 @@ class _HomePageState extends State<HomePage> {
     Screen.keepOn(true);
   }
 
-  setup() async {
-    final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+  Future<void> setup() async {
+    debugPrint('$runtimeType setup start, elapsed=${stopwatch.elapsed}');
+    // TODO reduce permission check time
+    final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]); // 350ms
     if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
-      SystemNavigator.pop();
+      unawaited(SystemNavigator.pop());
       return;
     }
+//    debugPrint('$runtimeType setup permission check done, elapsed=${stopwatch.elapsed}');
 
-    await androidFileUtils.init();
-    await IconUtils.init();
-    await settings.init();
+    androidFileUtils.init();
+//    debugPrint('$runtimeType setup androidFileUtils.init done, elapsed=${stopwatch.elapsed}');
+    // TODO notify when icons are ready for drawer and section header refresh
+    unawaited(IconUtils.init()); // 170ms
+//    debugPrint('$runtimeType setup IconUtils.init done, elapsed=${stopwatch.elapsed}');
+    await settings.init(); // <20ms
     localMediaCollection.groupFactor = settings.collectionGroupFactor;
     localMediaCollection.sortFactor = settings.collectionSortFactor;
+    debugPrint('$runtimeType setup settings.init done, elapsed=${stopwatch.elapsed}');
 
-    await metadataDb.init();
-    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    await metadataDb.init(); // <20ms
+    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
     final catalogTimeZone = settings.catalogTimeZone;
     if (currentTimeZone != catalogTimeZone) {
       // clear catalog metadata to get correct date/times when moving to a different time zone
+      debugPrint('$runtimeType clear catalog metadata to get correct date/times');
       await metadataDb.clearMetadataEntries();
       settings.catalogTimeZone = currentTimeZone;
     }
+//    debugPrint('$runtimeType setup metadataDb.init done, elapsed=${stopwatch.elapsed}');
 
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => localMediaCollection.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
-            debugPrint('mediastore stream done');
-            localMediaCollection.updateSections();
-            localMediaCollection.updateAlbums();
-            await localMediaCollection.loadCatalogMetadata();
-            await localMediaCollection.catalogEntries();
-            await localMediaCollection.loadAddresses();
-            await localMediaCollection.locateEntries();
+            debugPrint('$runtimeType mediastore stream done, elapsed=${stopwatch.elapsed}');
+            localMediaCollection.updateSections(); // <50ms
+            // TODO reduce setup time until here
+            localMediaCollection.updateAlbums(); // <50ms
+            await localMediaCollection.loadCatalogMetadata(); // 650ms
+            await localMediaCollection.catalogEntries(); // <50ms
+            await localMediaCollection.loadAddresses(); // 350ms
+            await localMediaCollection.locateEntries(); // <50ms
+            debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
           },
-          onError: (error) => debugPrint('mediastore stream error=$error'),
+          onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),
         );
-    await ImageFileService.getImageEntries();
+//    debugPrint('$runtimeType setup fetch images, elapsed=${stopwatch.elapsed}');
+    // TODO split image fetch AND/OR cache fetch across sessions
+    await ImageFileService.getImageEntries(); // 460ms
   }
 
   @override

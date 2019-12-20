@@ -88,9 +88,9 @@ class OverlayIcon extends StatelessWidget {
 }
 
 class IconUtils {
-  static Map appNameMap;
+  static Map appNameMap = {};
 
-  static init() async {
+  static Future<void> init() async {
     appNameMap = await AndroidAppService.getAppNames();
   }
 

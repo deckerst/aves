@@ -36,7 +36,7 @@ class AppIconState extends State<AppIcon> {
       future: _byteLoader,
       builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
         final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
-        return bytes.length > 0
+        return bytes.isNotEmpty
             ? Image.memory(
                 bytes,
                 width: widget.size,

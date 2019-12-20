@@ -5,12 +5,12 @@ import 'package:tuple/tuple.dart';
 
 // adapted from Mike Mitterer's dart-latlong library
 String _decimal2sexagesimal(final double dec) {
-  double _round(final double value, {final int decimals: 6}) => (value * math.pow(10, decimals)).round() / math.pow(10, decimals);
+  double _round(final double value, {final int decimals = 6}) => (value * math.pow(10, decimals)).round() / math.pow(10, decimals);
 
   List<int> _split(final double value) {
     // NumberFormat is necessary to create digit after comma if the value
     // has no decimal point (only necessary for browser)
-    final List<String> tmp = new NumberFormat('0.0#####').format(_round(value, decimals: 10)).split('.');
+    final List<String> tmp = NumberFormat('0.0#####').format(_round(value, decimals: 10)).split('.');
     return <int>[int.parse(tmp[0]).abs(), int.parse(tmp[1])];
   }
 

@@ -6,6 +6,7 @@ import 'package:aves/utils/android_app_service.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pdf;
+import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
 
 enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share }
@@ -19,7 +20,7 @@ class FullscreenActionDelegate {
     @required this.showInfo,
   });
 
-  onActionSelected(BuildContext context, ImageEntry entry, FullscreenAction action) {
+  void onActionSelected(BuildContext context, ImageEntry entry, FullscreenAction action) {
     switch (action) {
       case FullscreenAction.delete:
         _showDeleteDialog(context, entry);
@@ -57,7 +58,7 @@ class FullscreenActionDelegate {
     }
   }
 
-  _showFeedback(BuildContext context, String message) {
+  void _showFeedback(BuildContext context, String message) {
     Flushbar(
       message: message,
       margin: EdgeInsets.all(8),
@@ -70,25 +71,25 @@ class FullscreenActionDelegate {
     )..show(context);
   }
 
-  _print(ImageEntry entry) async {
+  Future<void> _print(ImageEntry entry) async {
     final doc = pdf.Document(title: entry.title);
     final image = await pdfImageFromImageProvider(
       pdf: doc.document,
       image: FileImage(File(entry.path)),
     );
     doc.addPage(pdf.Page(build: (context) => pdf.Center(child: pdf.Image(image)))); // Page
-    Printing.layoutPdf(
+    unawaited(Printing.layoutPdf(
       onLayout: (format) => doc.save(),
       name: entry.title,
-    );
+    ));
   }
 
-  _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
+  Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
     final success = await entry.rotate(clockwise: clockwise);
     _showFeedback(context, success ? 'Done!' : 'Failed');
   }
 
-  _showDeleteDialog(BuildContext context, ImageEntry entry) async {
+  Future<void> _showDeleteDialog(BuildContext context, ImageEntry entry) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -115,7 +116,7 @@ class FullscreenActionDelegate {
     }
   }
 
-  _showRenameDialog(BuildContext context, ImageEntry entry) async {
+  Future<void> _showRenameDialog(BuildContext context, ImageEntry entry) async {
     final currentName = entry.title;
     final controller = TextEditingController(text: currentName);
     final newName = await showDialog<String>(

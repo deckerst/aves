@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class MetadataService {
-  static const platform = const MethodChannel('deckers.thibault/aves/metadata');
+  static const platform = MethodChannel('deckers.thibault/aves/metadata');
 
   // return Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   static Future<Map> getAllMetadata(ImageEntry entry) async {

@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class ImageFileService {
-  static const platform = const MethodChannel('deckers.thibault/aves/image');
+  static const platform = MethodChannel('deckers.thibault/aves/image');
 
-  static getImageEntries() async {
+  static Future<void> getImageEntries() async {
     try {
       await platform.invokeMethod('getImageEntries');
     } on PlatformException catch (e) {
@@ -32,7 +32,7 @@ class ImageFileService {
     return Uint8List(0);
   }
 
-  static cancelGetImageBytes(String uri) async {
+  static Future<void> cancelGetImageBytes(String uri) async {
     try {
       await platform.invokeMethod('cancelGetImageBytes', <String, dynamic>{
         'uri': uri,

@@ -65,11 +65,11 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
     super.dispose();
   }
 
-  registerWidget(VideoControlOverlay widget) {
+  void registerWidget(VideoControlOverlay widget) {
     widget.controller.addListener(_onValueChange);
   }
 
-  unregisterWidget(VideoControlOverlay widget) {
+  void unregisterWidget(VideoControlOverlay widget) {
     widget.controller.removeListener(_onValueChange);
   }
 
@@ -108,8 +108,8 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                         icon: AnimatedIcons.play_pause,
                         progress: _playPauseAnimation,
                       ),
-                      onPressed: () => _playPause(),
-                      tooltip: 'Play',
+                      onPressed: _playPause,
+                      tooltip: value.isPlaying ? 'Pause' : 'Play',
                     ),
                   ),
                 ],
@@ -118,7 +118,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
     );
   }
 
-  SizeTransition _buildProgressBar() {
+  Widget _buildProgressBar() {
     final progressBarBorderRadius = 123.0;
     return SizeTransition(
       sizeFactor: scale,
@@ -166,22 +166,22 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
     );
   }
 
-  _onValueChange() {
+  void _onValueChange() {
     setState(() {});
     updatePlayPauseIcon();
   }
 
-  _playPause() async {
+  Future<void> _playPause() async {
     if (value.isPlaying) {
-      controller.pause();
+      await controller.pause();
     } else {
       if (!value.initialized) await controller.initialize();
-      controller.play();
+      await controller.play();
     }
     setState(() {});
   }
 
-  updatePlayPauseIcon() {
+  void updatePlayPauseIcon() {
     final isPlaying = value.isPlaying;
     final status = _playPauseAnimation.status;
     if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
@@ -191,7 +191,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
     }
   }
 
-  _seek(Offset globalPosition) {
+  void _seek(Offset globalPosition) {
     final keyContext = _progressBarKey.currentContext;
     final RenderBox box = keyContext.findRenderObject();
     final localPosition = box.globalToLocal(globalPosition);

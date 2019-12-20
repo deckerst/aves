@@ -30,7 +30,7 @@ class ImageEntry {
   CatalogMetadata catalogMetadata;
   AddressDetails addressDetails;
 
-  AChangeNotifier imageChangeNotifier = new AChangeNotifier(), metadataChangeNotifier = new AChangeNotifier(), addressChangeNotifier = new AChangeNotifier();
+  final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   ImageEntry({
     this.uri,
@@ -84,7 +84,7 @@ class ImageEntry {
     };
   }
 
-  dispose() {
+  void dispose() {
     imageChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
@@ -142,13 +142,13 @@ class ImageEntry {
 
   List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
-  catalog() async {
+  Future<void> catalog() async {
     if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
     metadataChangeNotifier.notifyListeners();
   }
 
-  locate() async {
+  Future<void> locate() async {
     if (isLocated) return;
 
     await catalog();
@@ -159,7 +159,7 @@ class ImageEntry {
     final coordinates = Coordinates(latitude, longitude);
     try {
       final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      if (addresses != null && addresses.length > 0) {
+      if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         addressDetails = AddressDetails(
           contentId: contentId,
