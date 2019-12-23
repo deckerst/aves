@@ -16,6 +16,7 @@ version: 1.0.0+1
 dependencies:
   flutter:
     sdk: flutter
+  after_init:
   collection:
   draggable_scrollbar:
     git:
@@ -36,6 +37,7 @@ dependencies:
   permission_handler:
   photo_view:
   printing:
+  provider:
   screen:
   shared_preferences:
   sqflite:
