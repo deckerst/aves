@@ -1,6 +1,7 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
+import 'package:aves/widgets/common/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 
 class FilteredCollectionPage extends StatelessWidget {
@@ -14,15 +15,17 @@ class FilteredCollectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ThumbnailCollection(
-        collection: collection,
-        appBar: SliverAppBar(
-          title: Text(title),
-          floating: true,
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        body: ThumbnailCollection(
+          collection: collection,
+          appBar: SliverAppBar(
+            title: Text(title),
+            floating: true,
+          ),
         ),
+        resizeToAvoidBottomInset: false,
       ),
-      resizeToAvoidBottomInset: false,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
@@ -73,7 +74,9 @@ class _HomePageState extends State<HomePage> {
   Future<void> setup() async {
     debugPrint('$runtimeType setup start, elapsed=${stopwatch.elapsed}');
     // TODO reduce permission check time
-    final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]); // 350ms
+    final permissions = await PermissionHandler().requestPermissions([
+      PermissionGroup.storage
+    ]); // 350ms
     if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
       unawaited(SystemNavigator.pop());
       return;
@@ -123,12 +126,14 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
-      appBar: FakeAppBar(),
-      body: AllCollectionPage(collection: localMediaCollection),
-      drawer: AllCollectionDrawer(collection: localMediaCollection),
-      resizeToAvoidBottomInset: false,
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
+        appBar: FakeAppBar(),
+        body: AllCollectionPage(collection: localMediaCollection),
+        drawer: AllCollectionDrawer(collection: localMediaCollection),
+        resizeToAvoidBottomInset: false,
+      ),
     );
   }
 }

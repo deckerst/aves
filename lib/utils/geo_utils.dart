@@ -11,7 +11,10 @@ String _decimal2sexagesimal(final double dec) {
     // NumberFormat is necessary to create digit after comma if the value
     // has no decimal point (only necessary for browser)
     final List<String> tmp = NumberFormat('0.0#####').format(_round(value, decimals: 10)).split('.');
-    return <int>[int.parse(tmp[0]).abs(), int.parse(tmp[1])];
+    return <int>[
+      int.parse(tmp[0]).abs(),
+      int.parse(tmp[1])
+    ];
   }
 
   final List<int> parts = _split(dec);
@@ -34,5 +37,8 @@ List<String> toDMS(Tuple2<double, double> latLng) {
   if (latLng == null) return [];
   final lat = latLng.item1;
   final lng = latLng.item2;
-  return ['${_decimal2sexagesimal(lat)} ${lat < 0 ? 'S' : 'N'}', '${_decimal2sexagesimal(lng)} ${lng < 0 ? 'W' : 'E'}'];
+  return [
+    '${_decimal2sexagesimal(lat)} ${lat < 0 ? 'S' : 'N'}',
+    '${_decimal2sexagesimal(lng)} ${lng < 0 ? 'W' : 'E'}'
+  ];
 }

@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MetadataSection extends StatefulWidget {
   final ImageEntry entry;
@@ -37,50 +38,53 @@ class MetadataSectionState extends State<MetadataSection> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _metadataLoader,
-      builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-        if (snapshot.hasError) return Text(snapshot.error);
-        if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-        final metadataMap = snapshot.data.cast<String, Map>();
-        final directoryNames = metadataMap.keys.toList()..sort();
+    return Selector<MediaQueryData, double>(
+      selector: (c, mq) => mq.size.width,
+      builder: (c, mqWidth, child) => FutureBuilder(
+        future: _metadataLoader,
+        builder: (futureContext, AsyncSnapshot<Map> snapshot) {
+          if (snapshot.hasError) return Text(snapshot.error);
+          if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+          final metadataMap = snapshot.data.cast<String, Map>();
+          final directoryNames = metadataMap.keys.toList()..sort();
 
-        Widget content;
-        if (MediaQuery.of(context).size.width > 400) {
-          final first = <String>[], second = <String>[];
-          var firstItemCount = 0, secondItemCount = 0;
-          var firstIndex = 0, secondIndex = directoryNames.length - 1;
-          while (firstIndex <= secondIndex) {
-            if (firstItemCount <= secondItemCount) {
-              final directoryName = directoryNames[firstIndex++];
-              first.add(directoryName);
-              firstItemCount += 2 + metadataMap[directoryName].length;
-            } else {
-              final directoryName = directoryNames[secondIndex--];
-              second.insert(0, directoryName);
-              secondItemCount += 2 + metadataMap[directoryName].length;
+          Widget content;
+          if (mqWidth > 400) {
+            final first = <String>[], second = <String>[];
+            var firstItemCount = 0, secondItemCount = 0;
+            var firstIndex = 0, secondIndex = directoryNames.length - 1;
+            while (firstIndex <= secondIndex) {
+              if (firstItemCount <= secondItemCount) {
+                final directoryName = directoryNames[firstIndex++];
+                first.add(directoryName);
+                firstItemCount += 2 + metadataMap[directoryName].length;
+              } else {
+                final directoryName = directoryNames[secondIndex--];
+                second.insert(0, directoryName);
+                secondItemCount += 2 + metadataMap[directoryName].length;
+              }
             }
+            content = Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: getMetadataColumn(metadataMap, first)),
+                SizedBox(width: 8),
+                Expanded(child: getMetadataColumn(metadataMap, second)),
+              ],
+            );
+          } else {
+            content = getMetadataColumn(metadataMap, directoryNames);
           }
-          content = Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(child: getMetadataColumn(metadataMap, first)),
-              SizedBox(width: 8),
-              Expanded(child: getMetadataColumn(metadataMap, second)),
+              SectionRow('Metadata'),
+              content,
             ],
           );
-        } else {
-          content = getMetadataColumn(metadataMap, directoryNames);
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SectionRow('Metadata'),
-            content,
-          ],
-        );
-      },
+        },
+      ),
     );
   }
 

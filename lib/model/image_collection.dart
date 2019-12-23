@@ -59,7 +59,9 @@ class ImageCollection with ChangeNotifier {
         }
         break;
       case SortFactor.size:
-        sections = Map.fromEntries([MapEntry('All', _rawEntries)]);
+        sections = Map.fromEntries([
+          MapEntry('All', _rawEntries)
+        ]);
         break;
     }
     notifyListeners();

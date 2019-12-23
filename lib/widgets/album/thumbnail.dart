@@ -8,13 +8,11 @@ import 'package:flutter/material.dart';
 class Thumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
-  final double devicePixelRatio;
 
   const Thumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
-    @required this.devicePixelRatio,
   }) : super(key: key);
 
   @override
@@ -23,7 +21,6 @@ class Thumbnail extends StatelessWidget {
       entry: entry,
       width: extent,
       height: extent,
-      devicePixelRatio: devicePixelRatio,
       builder: (bytes) {
         return Hero(
           tag: entry.uri,

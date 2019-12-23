@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/sections.dart';
@@ -9,6 +7,7 @@ import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:provider/provider.dart';
 
 class ThumbnailCollection extends AnimatedWidget {
   final ImageCollection collection;
@@ -22,10 +21,13 @@ class ThumbnailCollection extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ThumbnailCollectionContent(
-      collection: collection,
-      appBar: appBar,
-      screenWidth: MediaQuery.of(context).size.width,
+    return Selector<MediaQueryData, double>(
+      selector: (c, mq) => mq.size.width,
+      builder: (c, mqWidth, child) => ThumbnailCollectionContent(
+        collection: collection,
+        appBar: appBar,
+        screenWidth: mqWidth,
+      ),
     );
   }
 }
@@ -48,7 +50,6 @@ class ThumbnailCollectionContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     final sectionKeys = _sections.keys.toList();
     double topPadding = 0;
     if (appBar != null) {
@@ -61,35 +62,39 @@ class ThumbnailCollectionContent extends StatelessWidget {
     }
 
     return SafeArea(
-      child: DraggableScrollbar.arrows(
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            if (appBar != null) appBar,
-            ...sectionKeys.map((sectionKey) {
-              Widget sliver = SectionSliver(
-                // need key to prevent section header mismatch
-                // but it should not be unique key, otherwise sections are rebuilt when changing page
-                key: ValueKey(sectionKey),
-                collection: collection,
-                sections: _sections,
-                sectionKey: sectionKey,
-                screenWidth: screenWidth,
-              );
-              if (sectionKey == sectionKeys.last) {
-                sliver = SliverPadding(
-                  padding: EdgeInsets.only(bottom: bottomInsets),
-                  sliver: sliver,
+      child: Selector<MediaQueryData, double>(
+        selector: (c, mq) => mq.viewInsets.bottom,
+        builder: (c, mqViewInsetsBottom, child) => DraggableScrollbar.arrows(
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              if (appBar != null) appBar,
+              ...sectionKeys.map((sectionKey) {
+                Widget sliver = SectionSliver(
+                  // need key to prevent section header mismatch
+                  // but it should not be unique key, otherwise sections are rebuilt when changing page
+                  key: ValueKey(sectionKey),
+                  collection: collection,
+                  sections: _sections,
+                  sectionKey: sectionKey,
+                  screenWidth: screenWidth,
                 );
-              }
-              return sliver;
-            }),
-          ],
-        ),
-        controller: _scrollController,
-        padding: EdgeInsets.only(
-          top: topPadding,
-          bottom: bottomInsets,
+                if (sectionKey == sectionKeys.last) {
+                  sliver = SliverPadding(
+                    padding: EdgeInsets.only(bottom: mqViewInsetsBottom),
+                    sliver: sliver,
+                  );
+                }
+                return sliver;
+              }),
+            ],
+          ),
+          controller: _scrollController,
+          padding: EdgeInsets.only(
+            // top padding to adjust scroll thumb
+            top: topPadding,
+            bottom: mqViewInsetsBottom,
+          ),
         ),
       ),
     );
@@ -131,7 +136,6 @@ class SectionSliver extends StatelessWidget {
               child: Thumbnail(
                 entry: entry,
                 extent: screenWidth / columnCount,
-                devicePixelRatio: window.devicePixelRatio,
               ),
             );
           },

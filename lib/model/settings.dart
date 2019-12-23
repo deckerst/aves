@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:aves/model/image_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -22,28 +20,8 @@ class Settings {
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
 
-  // state
-  static const windowMetricsKey = 'window_metrics';
-
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
-    // TODO TLAD try this as an alternative to MediaQuery, in order to rebuild only on specific property change
-//    window.onMetricsChanged = onMetricsChanged;
-  }
-
-  WindowMetrics _metrics;
-
-  void onMetricsChanged() {
-    final newValue = WindowMetrics(
-      devicePixelRatio: window.devicePixelRatio,
-      physicalSize: window.physicalSize,
-      viewInsets: window.viewInsets,
-      viewPadding: window.viewPadding,
-      systemGestureInsets: window.systemGestureInsets,
-      padding: window.padding,
-    );
-    notifyListeners(windowMetricsKey, _metrics, newValue);
-    _metrics = newValue;
   }
 
   void addListener(SettingsCallback listener) => _listeners.add(listener);
@@ -117,22 +95,4 @@ class Settings {
       notifyListeners(key, oldValue, newValue);
     }
   }
-}
-
-class WindowMetrics {
-  final double devicePixelRatio;
-  final Size physicalSize;
-  final WindowPadding viewInsets;
-  final WindowPadding viewPadding;
-  final WindowPadding systemGestureInsets;
-  final WindowPadding padding;
-
-  const WindowMetrics({
-    this.devicePixelRatio,
-    this.physicalSize,
-    this.viewInsets,
-    this.viewPadding,
-    this.systemGestureInsets,
-    this.padding,
-  });
 }

@@ -9,6 +9,8 @@ import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class FullscreenBottomOverlay extends StatefulWidget {
   final List<ImageEntry> entries;
@@ -31,6 +33,8 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   Future<OverlayMetadata> _detailLoader;
   ImageEntry _lastEntry;
   OverlayMetadata _lastDetails;
+
+  static const innerPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
 
   ImageEntry get entry {
     final entries = widget.entries;
@@ -56,41 +60,54 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final innerPadding = EdgeInsets.symmetric(vertical: 4, horizontal: 8);
-    final mediaQuery = MediaQuery.of(context);
-    final viewInsets = widget.viewInsets ?? mediaQuery.viewInsets;
-    final viewPadding = widget.viewPadding ?? mediaQuery.viewPadding;
-    final overlayContentMaxWidth = mediaQuery.size.width - viewPadding.horizontal - innerPadding.horizontal;
     return IgnorePointer(
       child: BlurredRect(
-        child: Container(
-          color: Colors.black26,
-          padding: viewInsets + viewPadding.copyWith(top: 0),
-          child: Padding(
-            padding: innerPadding,
-            child: FutureBuilder(
-              future: _detailLoader,
-              builder: (futureContext, AsyncSnapshot<OverlayMetadata> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                  _lastDetails = snapshot.data;
-                  _lastEntry = entry;
-                }
-                return _lastEntry == null
-                    ? SizedBox.shrink()
-                    : _FullscreenBottomOverlayContent(
-                        entry: _lastEntry,
-                        details: _lastDetails,
-                        position: '${widget.index + 1}/${widget.entries.length}',
-                        maxWidth: overlayContentMaxWidth,
-                      );
-              },
-            ),
-          ),
+        child: Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
+          selector: (c, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
+          builder: (c, mq, child) {
+            final mqWidth = mq.item1;
+            final mqViewInsets = mq.item2;
+            final mqViewPadding = mq.item3;
+
+            final viewInsets = widget.viewInsets ?? mqViewInsets;
+            final viewPadding = widget.viewPadding ?? mqViewPadding;
+            final overlayContentMaxWidth = mqWidth - viewPadding.horizontal - innerPadding.horizontal;
+
+            return Container(
+              color: Colors.black26,
+              padding: viewInsets + viewPadding.copyWith(top: 0),
+              child: Padding(
+                padding: innerPadding,
+                child: FutureBuilder(
+                  future: _detailLoader,
+                  builder: (futureContext, AsyncSnapshot<OverlayMetadata> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                      _lastDetails = snapshot.data;
+                      _lastEntry = entry;
+                    }
+                    return _lastEntry == null
+                        ? SizedBox.shrink()
+                        : _FullscreenBottomOverlayContent(
+                            entry: _lastEntry,
+                            details: _lastDetails,
+                            position: '${widget.index + 1}/${widget.entries.length}',
+                            maxWidth: overlayContentMaxWidth,
+                          );
+                  },
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 }
+
+const double _iconPadding = 8.0;
+const double _iconSize = 16.0;
+const double _interRowPadding = 2.0;
+const double _subRowMinWidth = 300.0;
 
 class _FullscreenBottomOverlayContent extends StatelessWidget {
   final ImageEntry entry;
@@ -98,23 +115,18 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   final String position;
   final double maxWidth;
 
-  static const double interRowPadding = 2.0;
-  static const double iconPadding = 8.0;
-  static const double iconSize = 16.0;
-  static const double subRowMinWidth = 300.0;
-
-  _FullscreenBottomOverlayContent({this.entry, this.details, this.position, this.maxWidth});
+  _FullscreenBottomOverlayContent({
+    this.entry,
+    this.details,
+    this.position,
+    this.maxWidth,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // use MediaQuery instead of unreliable OrientationBuilder
-    final orientation = MediaQuery.of(context).orientation;
-    final twoColumns = orientation == Orientation.landscape && maxWidth / 2 > subRowMinWidth;
-    final subRowWidth = twoColumns ? min(subRowMinWidth, maxWidth / 2) : maxWidth;
-    final hasShootingDetails = details != null && !details.isEmpty;
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.body1.copyWith(
-        shadows: [
+        shadows: const [
           Shadow(
             color: Colors.black87,
             offset: Offset(0.5, 1.0),
@@ -123,49 +135,64 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
       ),
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: maxWidth,
-            child: Text('$position – ${entry.title}', strutStyle: Constants.overflowStrutStyle),
-          ),
-          if (entry.hasGps)
-            Container(
-              padding: EdgeInsets.only(top: interRowPadding),
-              width: subRowWidth,
-              child: _buildLocationRow(),
-            ),
-          if (twoColumns)
-            Padding(
-              padding: EdgeInsets.only(top: interRowPadding),
-              child: Row(
-                children: [
-                  Container(width: subRowWidth, child: _buildDateRow()),
-                  if (hasShootingDetails) Container(width: subRowWidth, child: _buildShootingRow()),
-                ],
+      child: Selector<MediaQueryData, Orientation>(
+        selector: (c, mq) => mq.orientation,
+        builder: (c, orientation, child) {
+          final twoColumns = orientation == Orientation.landscape && maxWidth / 2 > _subRowMinWidth;
+          final subRowWidth = twoColumns ? min(_subRowMinWidth, maxWidth / 2) : maxWidth;
+          final hasShootingDetails = details != null && !details.isEmpty;
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: maxWidth,
+                child: Text('$position – ${entry.title}', strutStyle: Constants.overflowStrutStyle),
               ),
-            )
-          else ...[
-            Container(
-              padding: EdgeInsets.only(top: interRowPadding),
-              width: subRowWidth,
-              child: _buildDateRow(),
-            ),
-            if (hasShootingDetails)
-              Container(
-                padding: EdgeInsets.only(top: interRowPadding),
-                width: subRowWidth,
-                child: _buildShootingRow(),
-              ),
-          ],
-        ],
+              if (entry.hasGps)
+                Container(
+                  padding: const EdgeInsets.only(top: _interRowPadding),
+                  width: subRowWidth,
+                  child: _LocationRow(entry),
+                ),
+              if (twoColumns)
+                Padding(
+                  padding: const EdgeInsets.only(top: _interRowPadding),
+                  child: Row(
+                    children: [
+                      Container(width: subRowWidth, child: _DateRow(entry)),
+                      if (hasShootingDetails) Container(width: subRowWidth, child: _ShootingRow(details)),
+                    ],
+                  ),
+                )
+              else ...[
+                Container(
+                  padding: const EdgeInsets.only(top: _interRowPadding),
+                  width: subRowWidth,
+                  child: _DateRow(entry),
+                ),
+                if (hasShootingDetails)
+                  Container(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    width: subRowWidth,
+                    child: _ShootingRow(details),
+                  ),
+              ],
+            ],
+          );
+        },
       ),
     );
   }
+}
 
-  Widget _buildLocationRow() {
+class _LocationRow extends StatelessWidget {
+  final ImageEntry entry;
+
+  const _LocationRow(this.entry);
+
+  @override
+  Widget build(BuildContext context) {
     String location;
     if (entry.isLocated) {
       location = entry.shortAddress;
@@ -174,32 +201,46 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
     }
     return Row(
       children: [
-        Icon(Icons.place, size: iconSize),
-        SizedBox(width: iconPadding),
+        const Icon(Icons.place, size: _iconSize),
+        const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }
+}
 
-  Widget _buildDateRow() {
+class _DateRow extends StatelessWidget {
+  final ImageEntry entry;
+
+  const _DateRow(this.entry);
+
+  @override
+  Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}';
     final resolution = '${entry.width} × ${entry.height}';
     return Row(
       children: [
-        Icon(Icons.calendar_today, size: iconSize),
-        SizedBox(width: iconPadding),
+        const Icon(Icons.calendar_today, size: _iconSize),
+        const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }
+}
 
-  Widget _buildShootingRow() {
+class _ShootingRow extends StatelessWidget {
+  final OverlayMetadata details;
+
+  const _ShootingRow(this.details);
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.camera, size: iconSize),
-        SizedBox(width: iconPadding),
+        const Icon(Icons.camera, size: _iconSize),
+        const SizedBox(width: _iconPadding),
         Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.focalLength, strutStyle: Constants.overflowStrutStyle)),

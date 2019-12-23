@@ -4,6 +4,8 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/blurred.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoControlOverlay extends StatefulWidget {
@@ -75,46 +77,55 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final viewInsets = widget.viewInsets ?? mediaQuery.viewInsets;
-    final viewPadding = widget.viewPadding ?? mediaQuery.viewPadding;
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
-    return Padding(
-      padding: safePadding,
-      child: SizedBox(
-        width: mediaQuery.size.width - safePadding.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: value.hasError
-              ? [
-                  OverlayButton(
-                    scale: scale,
-                    child: IconButton(
-                      icon: Icon(Icons.open_in_new),
-                      onPressed: () => AndroidAppService.open(entry.uri, entry.mimeType),
-                      tooltip: 'Open',
-                    ),
-                  ),
-                ]
-              : [
-                  Expanded(
-                    child: _buildProgressBar(),
-                  ),
-                  SizedBox(width: 8),
-                  OverlayButton(
-                    scale: scale,
-                    child: IconButton(
-                      icon: AnimatedIcon(
-                        icon: AnimatedIcons.play_pause,
-                        progress: _playPauseAnimation,
+    return Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
+      selector: (c, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
+      builder: (c, mq, child) {
+        final mqWidth = mq.item1;
+        final mqViewInsets = mq.item2;
+        final mqViewPadding = mq.item3;
+
+        final viewInsets = widget.viewInsets ?? mqViewInsets;
+        final viewPadding = widget.viewPadding ?? mqViewPadding;
+        final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
+
+        return Padding(
+          padding: safePadding,
+          child: SizedBox(
+            width: mqWidth - safePadding.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: value.hasError
+                  ? [
+                      OverlayButton(
+                        scale: scale,
+                        child: IconButton(
+                          icon: Icon(Icons.open_in_new),
+                          onPressed: () => AndroidAppService.open(entry.uri, entry.mimeType),
+                          tooltip: 'Open',
+                        ),
                       ),
-                      onPressed: _playPause,
-                      tooltip: value.isPlaying ? 'Pause' : 'Play',
-                    ),
-                  ),
-                ],
-        ),
-      ),
+                    ]
+                  : [
+                      Expanded(
+                        child: _buildProgressBar(),
+                      ),
+                      SizedBox(width: 8),
+                      OverlayButton(
+                        scale: scale,
+                        child: IconButton(
+                          icon: AnimatedIcon(
+                            icon: AnimatedIcons.play_pause,
+                            progress: _playPauseAnimation,
+                          ),
+                          onPressed: _playPause,
+                          tooltip: value.isPlaying ? 'Pause' : 'Play',
+                        ),
+                      ),
+                    ],
+            ),
+          ),
+        );
+      },
     );
   }
 

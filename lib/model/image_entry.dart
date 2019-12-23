@@ -181,7 +181,11 @@ class ImageEntry {
     // admin area examples: Seoul, Geneva, null
     // locality examples: Mapo-gu, Geneva, Annecy
     return LinkedHashSet.of(
-      [addressDetails.countryName, addressDetails.adminArea, addressDetails.locality],
+      [
+        addressDetails.countryName,
+        addressDetails.adminArea,
+        addressDetails.locality
+      ],
     ).where((part) => part != null && part.isNotEmpty).join(', ');
   }
 

@@ -1,13 +1,15 @@
 import 'dart:typed_data';
 
+import 'package:after_init/after_init.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ImagePreview extends StatefulWidget {
   final ImageEntry entry;
-  final double width, height, devicePixelRatio;
+  final double width, height;
   final Widget Function(Uint8List bytes) builder;
 
   const ImagePreview({
@@ -15,7 +17,6 @@ class ImagePreview extends StatefulWidget {
     @required this.entry,
     @required this.width,
     @required this.height,
-    @required this.devicePixelRatio,
     @required this.builder,
   }) : super(key: key);
 
@@ -23,9 +24,10 @@ class ImagePreview extends StatefulWidget {
   State<StatefulWidget> createState() => ImagePreviewState();
 }
 
-class ImagePreviewState extends State<ImagePreview> {
+class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
   Future<Uint8List> _byteLoader;
   Listenable _entryChangeNotifier;
+  double _devicePixelRatio;
 
   ImageEntry get entry => widget.entry;
 
@@ -34,8 +36,16 @@ class ImagePreviewState extends State<ImagePreview> {
   @override
   void initState() {
     super.initState();
-    _entryChangeNotifier = Listenable.merge([entry.imageChangeNotifier, entry.metadataChangeNotifier]);
+    _entryChangeNotifier = Listenable.merge([
+      entry.imageChangeNotifier,
+      entry.metadataChangeNotifier
+    ]);
     _entryChangeNotifier.addListener(onEntryChange);
+  }
+
+  @override
+  void didInitState() {
+    _devicePixelRatio = Provider.of<MediaQueryData>(context, listen: false).devicePixelRatio;
     initByteLoader();
   }
 
@@ -47,8 +57,8 @@ class ImagePreviewState extends State<ImagePreview> {
   }
 
   initByteLoader() {
-    final width = (widget.width * widget.devicePixelRatio).round();
-    final height = (widget.height * widget.devicePixelRatio).round();
+    final width = (widget.width * _devicePixelRatio).round();
+    final height = (widget.height * _devicePixelRatio).round();
     _byteLoader = ImageFileService.getImageBytes(widget.entry, width, height);
   }
 

@@ -1,10 +1,13 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class InfoPage extends StatefulWidget {
   final ImageCollection collection;
@@ -33,44 +36,51 @@ class InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    // use MediaQuery instead of unreliable OrientationBuilder
-    final orientation = MediaQuery.of(context).orientation;
-    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_upward),
-          onPressed: () => BackUpNotification().dispatch(context),
-          tooltip: 'Back to image',
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_upward),
+            onPressed: () => BackUpNotification().dispatch(context),
+            tooltip: 'Back to image',
+          ),
+          title: const Text('Info'),
         ),
-        title: Text('Info'),
-      ),
-      body: SafeArea(
-        child: NotificationListener(
-          onNotification: _handleTopScroll,
-          child: ListView(
-            padding: EdgeInsets.all(8.0) + EdgeInsets.only(bottom: bottomInsets),
-            children: [
-              if (orientation == Orientation.landscape && entry.hasGps)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: SafeArea(
+          child: NotificationListener(
+            onNotification: _handleTopScroll,
+            child: Selector<MediaQueryData, Tuple2<Orientation, double>>(
+              selector: (c, mq) => Tuple2(mq.orientation, mq.viewInsets.bottom),
+              builder: (c, mq, child) {
+                final mqOrientation = mq.item1;
+                final mqViewInsetsBottom = mq.item2;
+
+                return ListView(
+                  padding: const EdgeInsets.all(8.0) + EdgeInsets.only(bottom: mqViewInsetsBottom),
                   children: [
-                    Expanded(child: BasicSection(entry: entry)),
-                    SizedBox(width: 8),
-                    Expanded(child: LocationSection(entry: entry, showTitle: false)),
+                    if (mqOrientation == Orientation.landscape && entry.hasGps)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: BasicSection(entry: entry)),
+                          const SizedBox(width: 8),
+                          Expanded(child: LocationSection(entry: entry, showTitle: false)),
+                        ],
+                      )
+                    else ...[
+                      BasicSection(entry: entry),
+                      LocationSection(entry: entry, showTitle: true),
+                    ],
+                    XmpTagSection(collection: widget.collection, entry: entry),
+                    MetadataSection(entry: entry),
                   ],
-                )
-              else ...[
-                BasicSection(entry: entry),
-                LocationSection(entry: entry, showTitle: true),
-              ],
-              XmpTagSection(collection: widget.collection, entry: entry),
-              MetadataSection(entry: entry),
-            ],
+                );
+              },
+            ),
           ),
         ),
+        resizeToAvoidBottomInset: false,
       ),
-      resizeToAvoidBottomInset: false,
     );
   }
 
@@ -104,9 +114,9 @@ class SectionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: Divider(color: Colors.white70)),
+        const Expanded(child: Divider(color: Colors.white70)),
         Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Text(
             title,
             style: TextStyle(
@@ -115,7 +125,7 @@ class SectionRow extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(child: Divider(color: Colors.white70)),
+        const Expanded(child: Divider(color: Colors.white70)),
       ],
     );
   }
@@ -129,7 +139,7 @@ class InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: RichText(
         text: TextSpan(
           style: TextStyle(fontFamily: 'Concourse'),

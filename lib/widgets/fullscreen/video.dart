@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/image_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class AvesVideo extends StatefulWidget {
@@ -57,14 +58,17 @@ class AvesVideoState extends State<AvesVideo> {
   Widget build(BuildContext context) {
     if (value == null) return SizedBox();
     if (value.hasError) {
-      final mediaQuery = MediaQuery.of(context);
-      final width = min<double>(mediaQuery.size.width, entry.width.toDouble());
-      return ImagePreview(
-        entry: entry,
-        width: width,
-        height: width / entry.aspectRatio,
-        devicePixelRatio: window.devicePixelRatio,
-        builder: (bytes) => Image.memory(bytes),
+      return Selector<MediaQueryData, double>(
+        selector: (c, mq) => mq.size.width,
+        builder: (c, mqWidth, child) {
+          final width = min<double>(mqWidth, entry.width.toDouble());
+          return ImagePreview(
+            entry: entry,
+            width: width,
+            height: width / entry.aspectRatio,
+            builder: (bytes) => Image.memory(bytes),
+          );
+        },
       );
     }
     return Center(

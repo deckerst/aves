@@ -13,7 +13,12 @@ class LocationSection extends AnimatedWidget {
     Key key,
     @required this.entry,
     @required this.showTitle,
-  }) : super(key: key, listenable: Listenable.merge([entry.metadataChangeNotifier, entry.addressChangeNotifier]));
+  }) : super(
+            key: key,
+            listenable: Listenable.merge([
+              entry.metadataChangeNotifier,
+              entry.addressChangeNotifier
+            ]));
 
   @override
   Widget build(BuildContext context) {

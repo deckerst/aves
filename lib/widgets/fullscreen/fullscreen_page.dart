@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
 
@@ -28,13 +30,15 @@ class FullscreenPage extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FullscreenBody(
-        collection: collection,
-        initialUri: initialUri,
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        body: FullscreenBody(
+          collection: collection,
+          initialUri: initialUri,
+        ),
+        backgroundColor: Colors.black,
+        resizeToAvoidBottomInset: false,
       ),
-      backgroundColor: Colors.black,
-      resizeToAvoidBottomInset: false,
     );
   }
 }
@@ -92,25 +96,25 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuart,
     ));
-    _overlayVisible.addListener(onOverlayVisibleChange);
+    _overlayVisible.addListener(_onOverlayVisibleChange);
     _actionDelegate = FullscreenActionDelegate(
       collection: collection,
-      showInfo: () => goToVerticalPage(infoPage),
+      showInfo: () => _goToVerticalPage(infoPage),
     );
-    initVideoController();
-    initOverlay();
+    _initVideoController();
+    _initOverlay();
   }
 
-  initOverlay() async {
+  _initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after hero animation is complete
     await Future.delayed(Duration(milliseconds: (300 * timeDilation).toInt()));
-    onOverlayVisibleChange();
+    await _onOverlayVisibleChange();
   }
 
   @override
   void dispose() {
-    _overlayVisible.removeListener(onOverlayVisibleChange);
+    _overlayVisible.removeListener(_onOverlayVisibleChange);
     _videoControllers.forEach((kv) => kv.item2.dispose());
     super.dispose();
   }
@@ -121,7 +125,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage == infoPage) {
-          goToVerticalPage(imagePage);
+          _goToVerticalPage(imagePage);
           return Future.value(false);
         }
         _onLeave();
@@ -142,14 +146,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                   collection: collection,
                   pageController: _horizontalPager,
                   onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                  onPageChanged: onHorizontalPageChanged,
+                  onPageChanged: _onHorizontalPageChanged,
                   onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
                   videoControllers: _videoControllers,
                 ),
               ),
               NotificationListener(
                 onNotification: (notification) {
-                  if (notification is BackUpNotification) goToVerticalPage(imagePage);
+                  if (notification is BackUpNotification) _goToVerticalPage(imagePage);
                   return false;
                 },
                 child: InfoPage(collection: collection, entry: entry),
@@ -201,7 +205,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     ];
   }
 
-  goToVerticalPage(int page) {
+  Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
       duration: Duration(milliseconds: 350),
@@ -209,7 +213,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
   }
 
-  _onVerticalPageChanged(page) {
+  void _onVerticalPageChanged(page) {
     setState(() => _currentVerticalPage = page);
     if (_currentVerticalPage == transitionPage) {
       _onLeave();
@@ -217,20 +221,22 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     }
   }
 
-  _onLeave() => _showSystemUI();
+  void _onLeave() => _showSystemUI();
 
-  _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
-  _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
+  void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
 
-  onOverlayVisibleChange() async {
+  Future<void> _onOverlayVisibleChange() async {
     if (_overlayVisible.value) {
       _showSystemUI();
       _overlayAnimationController.forward();
     } else {
-      final mediaQuery = MediaQuery.of(context);
-      _frozenViewInsets = mediaQuery.viewInsets;
-      _frozenViewPadding = mediaQuery.viewPadding;
+      final mediaQuery = Provider.of<MediaQueryData>(context, listen: false);
+      setState(() {
+        _frozenViewInsets = mediaQuery.viewInsets;
+        _frozenViewPadding = mediaQuery.viewPadding;
+      });
       _hideSystemUI();
       await _overlayAnimationController.reverse();
       _frozenViewInsets = null;
@@ -238,16 +244,16 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     }
   }
 
-  onHorizontalPageChanged(int page) {
+  void _onHorizontalPageChanged(int page) {
     _currentHorizontalPage = page;
-    pauseVideoControllers();
-    initVideoController();
+    _pauseVideoControllers();
+    _initVideoController();
     setState(() {});
   }
 
-  pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
+  void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
 
-  initVideoController() {
+  void _initVideoController() {
     final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (entry == null || !entry.isVideo) return;
 

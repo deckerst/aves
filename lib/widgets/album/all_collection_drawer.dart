@@ -52,10 +52,26 @@ class AllCollectionDrawer extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(children: [Icon(Icons.photo_library), SizedBox(width: 4), Text('${collection.imageCount}')]),
-                      Row(children: [Icon(Icons.video_library), SizedBox(width: 4), Text('${collection.videoCount}')]),
-                      Row(children: [Icon(Icons.photo_album), SizedBox(width: 4), Text('${collection.albumCount}')]),
-                      Row(children: [Icon(Icons.label), SizedBox(width: 4), Text('${collection.tagCount}')]),
+                      Row(children: [
+                        Icon(Icons.photo_library),
+                        SizedBox(width: 4),
+                        Text('${collection.imageCount}')
+                      ]),
+                      Row(children: [
+                        Icon(Icons.video_library),
+                        SizedBox(width: 4),
+                        Text('${collection.videoCount}')
+                      ]),
+                      Row(children: [
+                        Icon(Icons.photo_album),
+                        SizedBox(width: 4),
+                        Text('${collection.albumCount}')
+                      ]),
+                      Row(children: [
+                        Icon(Icons.label),
+                        SizedBox(width: 4),
+                        Text('${collection.tagCount}')
+                      ]),
                     ],
                   ),
                 ],
