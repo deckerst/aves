@@ -25,7 +25,7 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 28 // latest (or latest-1 if the sources of latest SDK are unavailable)
+    compileSdkVersion 29 // latest (or latest-1 if the sources of latest SDK are unavailable)
 
     lintOptions {
         disable 'InvalidPackage'
@@ -34,7 +34,7 @@ android {
     defaultConfig {
         applicationId "deckers.thibault.aves"
         minSdkVersion 24
-        targetSdkVersion 28 // same as compileSdkVersion
+        targetSdkVersion 29 // same as compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
