@@ -63,7 +63,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   PageController _horizontalPager, _verticalPager;
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   AnimationController _overlayAnimationController;
-  Animation<double> _topOverlayScale;
+  Animation<double> _topOverlayScale, _bottomOverlayScale;
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   FullscreenActionDelegate _actionDelegate;
@@ -90,11 +90,17 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
     _topOverlayScale = CurvedAnimation(
       parent: _overlayAnimationController,
-      curve: Curves.easeOutQuart,
+      // a little bounce at the top
+      curve: Curves.easeOutBack,
+    );
+    _bottomOverlayScale = CurvedAnimation(
+      parent: _overlayAnimationController,
+      // no bounce at the bottom, to avoid video controller displacement
+      curve: Curves.easeOutQuad,
     );
     _bottomOverlayOffset = Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(CurvedAnimation(
       parent: _overlayAnimationController,
-      curve: Curves.easeOutQuart,
+      curve: Curves.easeOutQuad,
     ));
     _overlayVisible.addListener(_onOverlayVisibleChange);
     _actionDelegate = FullscreenActionDelegate(
@@ -114,6 +120,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   @override
   void dispose() {
+    _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _videoControllers.forEach((kv) => kv.item2.dispose());
     super.dispose();
@@ -174,7 +181,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                             VideoControlOverlay(
                               entry: entry,
                               controller: videoController,
-                              scale: _topOverlayScale,
+                              scale: _bottomOverlayScale,
                               viewInsets: _frozenViewInsets,
                               viewPadding: _frozenViewPadding,
                             ),
