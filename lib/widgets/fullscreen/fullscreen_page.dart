@@ -58,7 +58,6 @@ class FullscreenBody extends StatefulWidget {
 }
 
 class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProviderStateMixin {
-  bool _isInitialScale = true;
   int _currentHorizontalPage, _currentVerticalPage = imagePage;
   PageController _horizontalPager, _verticalPager;
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
@@ -122,6 +121,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   @override
   Widget build(BuildContext context) {
     final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
+    final showOverlay = entry != null && _currentVerticalPage == imagePage;
+    final videoController = showOverlay && entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2 : null;
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage == infoPage) {
@@ -133,76 +134,52 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       },
       child: Stack(
         children: [
-          PageView(
-            scrollDirection: Axis.vertical,
-            controller: _verticalPager,
-            physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
-            onPageChanged: _onVerticalPageChanged,
-            children: [
-              const SizedBox(),
-              Container(
-                color: Colors.black,
-                child: ImagePage(
-                  collection: collection,
-                  pageController: _horizontalPager,
-                  onTap: () => _overlayVisible.value = !_overlayVisible.value,
-                  onPageChanged: _onHorizontalPageChanged,
-                  onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
-                  videoControllers: _videoControllers,
-                ),
-              ),
-              NotificationListener(
-                onNotification: (notification) {
-                  if (notification is BackUpNotification) _goToVerticalPage(imagePage);
-                  return false;
-                },
-                child: InfoPage(collection: collection, entry: entry),
-              ),
-            ],
+          FullscreenVerticalPageView(
+            collection: collection,
+            entry: entry,
+            videoControllers: _videoControllers,
+            verticalPager: _verticalPager,
+            horizontalPager: _horizontalPager,
+            onVerticalPageChanged: _onVerticalPageChanged,
+            onHorizontalPageChanged: _onHorizontalPageChanged,
+            onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
+            onImagePageRequested: () => _goToVerticalPage(imagePage),
           ),
-          ..._buildOverlay(entry)
+          if (showOverlay) FullscreenTopOverlay(
+            entries: entries,
+            index: _currentHorizontalPage,
+            scale: _topOverlayScale,
+            viewInsets: _frozenViewInsets,
+            viewPadding: _frozenViewPadding,
+            onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
+          ),
+          if (showOverlay) Positioned(
+            bottom: 0,
+            child: Column(
+              children: [
+                if (videoController != null)
+                  VideoControlOverlay(
+                    entry: entry,
+                    controller: videoController,
+                    scale: _topOverlayScale,
+                    viewInsets: _frozenViewInsets,
+                    viewPadding: _frozenViewPadding,
+                  ),
+                SlideTransition(
+                  position: _bottomOverlayOffset,
+                  child: FullscreenBottomOverlay(
+                    entries: entries,
+                    index: _currentHorizontalPage,
+                    viewInsets: _frozenViewInsets,
+                    viewPadding: _frozenViewPadding,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  List<Widget> _buildOverlay(ImageEntry entry) {
-    if (entry == null || _currentVerticalPage != imagePage) return [];
-    final videoController = entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2 : null;
-    return [
-      FullscreenTopOverlay(
-        entries: entries,
-        index: _currentHorizontalPage,
-        scale: _topOverlayScale,
-        viewInsets: _frozenViewInsets,
-        viewPadding: _frozenViewPadding,
-        onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
-      ),
-      Positioned(
-        bottom: 0,
-        child: Column(
-          children: [
-            if (videoController != null)
-              VideoControlOverlay(
-                entry: entry,
-                controller: videoController,
-                scale: _topOverlayScale,
-                viewInsets: _frozenViewInsets,
-                viewPadding: _frozenViewPadding,
-              ),
-            SlideTransition(
-              position: _bottomOverlayOffset,
-              child: FullscreenBottomOverlay(
-                entries: entries,
-                index: _currentHorizontalPage,
-                viewInsets: _frozenViewInsets,
-                viewPadding: _frozenViewPadding,
-              ),
-            ),
-          ],
-        ),
-      )
-    ];
   }
 
   Future<void> _goToVerticalPage(int page) {
@@ -269,5 +246,64 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     while (_videoControllers.length > 3) {
       _videoControllers.removeLast().item2.dispose();
     }
+  }
+}
+
+class FullscreenVerticalPageView extends StatefulWidget {
+  final ImageCollection collection;
+  final ImageEntry entry;
+  final List<Tuple2<String, VideoPlayerController>> videoControllers;
+  final PageController horizontalPager, verticalPager;
+  final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
+  final VoidCallback onImageTap, onImagePageRequested;
+
+  const FullscreenVerticalPageView({
+    @required this.collection,
+    @required this.entry,
+    @required this.videoControllers,
+    @required this.verticalPager,
+    @required this.horizontalPager,
+    @required this.onVerticalPageChanged,
+    @required this.onHorizontalPageChanged,
+    @required this.onImageTap,
+    @required this.onImagePageRequested,
+  });
+
+  @override
+  _FullscreenVerticalPageViewState createState() => _FullscreenVerticalPageViewState();
+}
+
+class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView> {
+  bool _isInitialScale = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView(
+      scrollDirection: Axis.vertical,
+      controller: widget.verticalPager,
+      physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
+      onPageChanged: widget.onVerticalPageChanged,
+      children: [
+        const SizedBox(),
+        Container(
+          color: Colors.black,
+          child: ImagePage(
+            collection: widget.collection,
+            pageController: widget.horizontalPager,
+            onTap: widget.onImageTap,
+            onPageChanged: widget.onHorizontalPageChanged,
+            onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
+            videoControllers: widget.videoControllers,
+          ),
+        ),
+        NotificationListener(
+          onNotification: (notification) {
+            if (notification is BackUpNotification) widget.onImagePageRequested();
+            return false;
+          },
+          child: InfoPage(collection: widget.collection, entry: widget.entry),
+        ),
+      ],
+    );
   }
 }
