@@ -40,33 +40,33 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
       entry.imageChangeNotifier,
       entry.metadataChangeNotifier
     ]);
-    _entryChangeNotifier.addListener(onEntryChange);
+    _entryChangeNotifier.addListener(_onEntryChange);
   }
 
   @override
   void didInitState() {
     _devicePixelRatio = Provider.of<MediaQueryData>(context, listen: false).devicePixelRatio;
-    initByteLoader();
+    _initByteLoader();
   }
 
   @override
   void didUpdateWidget(ImagePreview old) {
     super.didUpdateWidget(old);
     if (widget.width == old.width && widget.height == old.height && uri == old.entry.uri && widget.entry.width == old.entry.width && widget.entry.height == old.entry.height && widget.entry.orientationDegrees == old.entry.orientationDegrees) return;
-    initByteLoader();
+    _initByteLoader();
   }
 
-  initByteLoader() {
+  void _initByteLoader() {
     final width = (widget.width * _devicePixelRatio).round();
     final height = (widget.height * _devicePixelRatio).round();
     _byteLoader = ImageFileService.getImageBytes(widget.entry, width, height);
   }
 
-  onEntryChange() => setState(() => initByteLoader());
+  void _onEntryChange() => setState(() => _initByteLoader());
 
   @override
   void dispose() {
-    _entryChangeNotifier.removeListener(onEntryChange);
+    _entryChangeNotifier.removeListener(_onEntryChange);
     super.dispose();
   }
 

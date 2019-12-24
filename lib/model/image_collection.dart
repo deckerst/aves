@@ -8,11 +8,11 @@ import 'package:path/path.dart';
 
 class ImageCollection with ChangeNotifier {
   final List<ImageEntry> _rawEntries;
-  Map<dynamic, List<ImageEntry>> sections = Map();
+  Map<dynamic, List<ImageEntry>> sections = {};
   GroupFactor groupFactor = GroupFactor.month;
   SortFactor sortFactor = SortFactor.date;
-  List<String> sortedAlbums = List.unmodifiable(Iterable.empty());
-  List<String> sortedTags = List.unmodifiable(Iterable.empty());
+  List<String> sortedAlbums = List.unmodifiable(const Iterable.empty());
+  List<String> sortedTags = List.unmodifiable(const Iterable.empty());
 
   ImageCollection({
     @required List<ImageEntry> entries,
@@ -140,7 +140,7 @@ class ImageCollection with ChangeNotifier {
   Future<void> catalogEntries() async {
     final start = DateTime.now();
     final uncataloguedEntries = _rawEntries.where((entry) => !entry.isCatalogued).toList();
-    final newMetadata = List<CatalogMetadata>();
+    final newMetadata = <CatalogMetadata>[];
     await Future.forEach<ImageEntry>(uncataloguedEntries, (entry) async {
       await entry.catalog();
       newMetadata.add(entry.catalogMetadata);
@@ -153,7 +153,7 @@ class ImageCollection with ChangeNotifier {
   Future<void> locateEntries() async {
     final start = DateTime.now();
     final unlocatedEntries = _rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
-    final newAddresses = List<AddressDetails>();
+    final newAddresses = <AddressDetails>[];
     await Future.forEach<ImageEntry>(unlocatedEntries, (entry) async {
       await entry.locate();
       newAddresses.add(entry.addressDetails);

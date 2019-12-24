@@ -23,16 +23,16 @@ class MetadataSectionState extends State<MetadataSection> {
   @override
   void initState() {
     super.initState();
-    initMetadataLoader();
+    _initMetadataLoader();
   }
 
   @override
   void didUpdateWidget(MetadataSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    initMetadataLoader();
+    _initMetadataLoader();
   }
 
-  initMetadataLoader() async {
+  Future<void> _initMetadataLoader() async {
     _metadataLoader = MetadataService.getAllMetadata(widget.entry);
   }
 
@@ -43,9 +43,9 @@ class MetadataSectionState extends State<MetadataSection> {
       builder: (c, mqWidth, child) => FutureBuilder(
         future: _metadataLoader,
         builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-          if (snapshot.hasError) return Text(snapshot.error);
-          if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
           final metadataMap = snapshot.data.cast<String, Map>();
+          if (snapshot.hasError) return Text(snapshot.error.toString());
+          if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
           final directoryNames = metadataMap.keys.toList()..sort();
 
           Widget content;
@@ -68,7 +68,7 @@ class MetadataSectionState extends State<MetadataSection> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: getMetadataColumn(metadataMap, first)),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(child: getMetadataColumn(metadataMap, second)),
               ],
             );
@@ -79,7 +79,7 @@ class MetadataSectionState extends State<MetadataSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SectionRow('Metadata'),
+              const SectionRow('Metadata'),
               content,
             ],
           );
@@ -98,19 +98,19 @@ class MetadataSectionState extends State<MetadataSection> {
           return [
             if (directoryName.isNotEmpty)
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 4.0),
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Text(directoryName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontFamily: 'Concourse Caps',
                     )),
               ),
             ...tagKeys.map((tagKey) {
               final value = directory[tagKey] as String;
-              if (value == null || value.isEmpty) return SizedBox.shrink();
+              if (value == null || value.isEmpty) return const SizedBox.shrink();
               return InfoRow(tagKey, value.length > maxValueLength ? '${value.substring(0, maxValueLength)}…' : value);
             }),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ];
         }),
       ],

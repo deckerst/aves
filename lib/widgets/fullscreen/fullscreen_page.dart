@@ -61,13 +61,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   bool _isInitialScale = true;
   int _currentHorizontalPage, _currentVerticalPage = imagePage;
   PageController _horizontalPager, _verticalPager;
-  ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
+  final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   AnimationController _overlayAnimationController;
   Animation<double> _topOverlayScale;
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   FullscreenActionDelegate _actionDelegate;
-  List<Tuple2<String, VideoPlayerController>> _videoControllers = List();
+  final List<Tuple2<String, VideoPlayerController>> _videoControllers = [];
 
   ImageCollection get collection => widget.collection;
 
@@ -85,14 +85,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage);
     _overlayAnimationController = AnimationController(
-      duration: Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     _topOverlayScale = CurvedAnimation(
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuart,
     );
-    _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(
+    _bottomOverlayOffset = Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(CurvedAnimation(
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuart,
     ));
@@ -105,7 +105,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _initOverlay();
   }
 
-  _initOverlay() async {
+  Future<void> _initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after hero animation is complete
     await Future.delayed(Duration(milliseconds: (300 * timeDilation).toInt()));
@@ -136,10 +136,10 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           PageView(
             scrollDirection: Axis.vertical,
             controller: _verticalPager,
-            physics: _isInitialScale ? PageScrollPhysics() : NeverScrollableScrollPhysics(),
+            physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
             onPageChanged: _onVerticalPageChanged,
             children: [
-              SizedBox(),
+              const SizedBox(),
               Container(
                 color: Colors.black,
                 child: ImagePage(
@@ -208,12 +208,12 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
-      duration: Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 350),
       curve: Curves.easeInOut,
     );
   }
 
-  void _onVerticalPageChanged(page) {
+  void _onVerticalPageChanged(int page) {
     setState(() => _currentVerticalPage = page);
     if (_currentVerticalPage == transitionPage) {
       _onLeave();

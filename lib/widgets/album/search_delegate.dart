@@ -43,14 +43,14 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   @override
   Widget buildResults(BuildContext context) {
     if (query.isEmpty) {
       showSuggestions(context);
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final lowerQuery = query.toLowerCase();
     final matches = collection.sortedEntries.where((entry) => entry.search(lowerQuery)).toList();

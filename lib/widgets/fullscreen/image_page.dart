@@ -51,7 +51,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
                       entry: entry,
                       controller: videoController,
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
               childSize: mqSize,
               // no hero as most videos fullscreen image is different from its thumbnail
               minScale: PhotoViewComputedScale.contained,
@@ -70,14 +70,14 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
             onTapUp: (tapContext, details, value) => widget.onTap?.call(),
           );
         },
-        loadingChild: Center(
+        loadingChild: const Center(
           child: CircularProgressIndicator(),
         ),
         backgroundDecoration: BoxDecoration(color: Colors.transparent),
         pageController: widget.pageController,
         onPageChanged: widget.onPageChanged,
         scaleStateChangedCallback: widget.onScaleChanged,
-        scrollPhysics: BouncingScrollPhysics(),
+        scrollPhysics: const BouncingScrollPhysics(),
       ),
     );
   }

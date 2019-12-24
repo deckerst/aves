@@ -61,14 +61,14 @@ class FullscreenActionDelegate {
   void _showFeedback(BuildContext context, String message) {
     Flushbar(
       message: message,
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       borderRadius: 8,
       borderColor: Colors.white30,
       borderWidth: 0.5,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       flushbarPosition: FlushbarPosition.TOP,
-      animationDuration: Duration(milliseconds: 600),
-    )..show(context);
+      animationDuration: const Duration(milliseconds: 600),
+    ).show(context);
   }
 
   Future<void> _print(ImageEntry entry) async {
@@ -94,15 +94,15 @@ class FullscreenActionDelegate {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text('Are you sure?'),
+          content: const Text('Are you sure?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('CANCEL'),
+              child: const Text('CANCEL'),
             ),
             FlatButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('DELETE'),
+              child: const Text('DELETE'),
             ),
           ],
         );
@@ -130,11 +130,11 @@ class FullscreenActionDelegate {
             actions: [
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('CANCEL'),
+                child: const Text('CANCEL'),
               ),
               FlatButton(
                 onPressed: () => Navigator.pop(context, controller.text),
-                child: Text('APPLY'),
+                child: const Text('APPLY'),
               ),
             ],
           );

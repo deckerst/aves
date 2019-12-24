@@ -17,7 +17,7 @@ class MetadataService {
     } on PlatformException catch (e) {
       debugPrint('getAllMetadata failed with exception=${e.message}');
     }
-    return Map();
+    return {};
   }
 
   static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry) async {

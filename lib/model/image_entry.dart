@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
@@ -50,19 +48,19 @@ class ImageEntry {
 
   factory ImageEntry.fromMap(Map map) {
     return ImageEntry(
-      uri: map['uri'],
-      path: map['path'],
-      contentId: map['contentId'],
-      mimeType: map['mimeType'],
-      width: map['width'],
-      height: map['height'],
-      orientationDegrees: map['orientationDegrees'],
-      sizeBytes: map['sizeBytes'],
-      title: map['title'],
-      dateModifiedSecs: map['dateModifiedSecs'],
-      sourceDateTakenMillis: map['sourceDateTakenMillis'],
-      bucketDisplayName: map['bucketDisplayName'],
-      durationMillis: map['durationMillis'],
+      uri: map['uri'] as String,
+      path: map['path'] as String,
+      contentId: map['contentId'] as int,
+      mimeType: map['mimeType'] as String,
+      width: map['width'] as int,
+      height: map['height'] as int,
+      orientationDegrees: map['orientationDegrees'] as int,
+      sizeBytes: map['sizeBytes'] as int,
+      title: map['title'] as String,
+      dateModifiedSecs: map['dateModifiedSecs'] as int,
+      sourceDateTakenMillis: map['sourceDateTakenMillis'] as int,
+      bucketDisplayName: map['bucketDisplayName'] as String,
+      durationMillis: map['durationMillis'] as int,
     );
   }
 
@@ -180,13 +178,11 @@ class ImageEntry {
 
     // admin area examples: Seoul, Geneva, null
     // locality examples: Mapo-gu, Geneva, Annecy
-    return LinkedHashSet.of(
-      [
-        addressDetails.countryName,
-        addressDetails.adminArea,
-        addressDetails.locality
-      ],
-    ).where((part) => part != null && part.isNotEmpty).join(', ');
+    return {
+      addressDetails.countryName,
+      addressDetails.adminArea,
+      addressDetails.locality
+    }.where((part) => part != null && part.isNotEmpty).join(', ');
   }
 
   bool search(String query) {
@@ -203,13 +199,13 @@ class ImageEntry {
     if (newFields.isEmpty) return false;
 
     final uri = newFields['uri'];
-    if (uri != null) this.uri = uri;
+    if (uri is String) this.uri = uri;
     final path = newFields['path'];
-    if (path != null) this.path = path;
+    if (path is String) this.path = path;
     final contentId = newFields['contentId'];
-    if (contentId != null) this.contentId = contentId;
+    if (contentId is int) this.contentId = contentId;
     final title = newFields['title'];
-    if (title != null) this.title = title;
+    if (title is String) this.title = title;
     metadataChangeNotifier.notifyListeners();
     return true;
   }
@@ -223,11 +219,11 @@ class ImageEntry {
     if (newFields.isEmpty) return false;
 
     final width = newFields['width'];
-    if (width != null) this.width = width;
+    if (width is int) this.width = width;
     final height = newFields['height'];
-    if (height != null) this.height = height;
+    if (height is int) this.height = height;
     final orientationDegrees = newFields['orientationDegrees'];
-    if (orientationDegrees != null) this.orientationDegrees = orientationDegrees;
+    if (orientationDegrees is int) this.orientationDegrees = orientationDegrees;
     imageChangeNotifier.notifyListeners();
     return true;
   }

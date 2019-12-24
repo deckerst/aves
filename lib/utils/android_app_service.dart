@@ -13,7 +13,7 @@ class AndroidAppService {
     } on PlatformException catch (e) {
       debugPrint('getAppNames failed with exception=${e.message}');
     }
-    return Map();
+    return {};
   }
 
   static Future<Uint8List> getAppIcon(String packageName, int size) async {

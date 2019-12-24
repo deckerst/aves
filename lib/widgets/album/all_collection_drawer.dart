@@ -21,6 +21,9 @@ class AllCollectionDrawer extends StatelessWidget {
         padding: EdgeInsets.only(bottom: window.viewInsets.bottom),
         children: [
           DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).accentColor,
+            ),
             child: SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,18 +31,18 @@ class AllCollectionDrawer extends StatelessWidget {
                   Row(
                     children: [
                       CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 44,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 6.0),
+                          padding: const EdgeInsets.only(top: 6.0),
                           child: SvgPicture.asset(
                             'assets/aves_logo.svg',
                             width: 64,
                           ),
                         ),
-                        backgroundColor: Colors.white,
-                        radius: 44,
                       ),
-                      SizedBox(width: 16),
-                      Text(
+                      const SizedBox(width: 16),
+                      const Text(
                         'Aves',
                         style: TextStyle(
                           fontSize: 44,
@@ -48,37 +51,34 @@ class AllCollectionDrawer extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(children: [
                         Icon(Icons.photo_library),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text('${collection.imageCount}')
                       ]),
                       Row(children: [
                         Icon(Icons.video_library),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text('${collection.videoCount}')
                       ]),
                       Row(children: [
                         Icon(Icons.photo_album),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text('${collection.albumCount}')
                       ]),
                       Row(children: [
                         Icon(Icons.label),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text('${collection.tagCount}')
                       ]),
                     ],
                   ),
                 ],
               ),
-            ),
-            decoration: BoxDecoration(
-              color: Theme.of(context).accentColor,
             ),
           ),
           _buildFilteredCollectionNavTile(
@@ -87,14 +87,14 @@ class AllCollectionDrawer extends StatelessWidget {
             title: 'Videos',
             filter: (entry) => entry.isVideo,
           ),
-          Divider(),
+          const Divider(),
           ...albums.map((album) => _buildFilteredCollectionNavTile(
                 context: context,
                 leading: IconUtils.getAlbumIcon(context, album) ?? Icon(Icons.photo_album),
                 title: collection.getUniqueAlbumName(album, albums),
                 filter: (entry) => entry.directory == album,
               )),
-          Divider(),
+          const Divider(),
           ...tags.map((tag) => _buildFilteredCollectionNavTile(
                 context: context,
                 leading: Icon(Icons.label),
@@ -106,7 +106,7 @@ class AllCollectionDrawer extends StatelessWidget {
     );
   }
 
-  _buildFilteredCollectionNavTile({BuildContext context, Widget leading, String title, bool Function(ImageEntry) filter}) {
+  Widget _buildFilteredCollectionNavTile({BuildContext context, Widget leading, String title, bool Function(ImageEntry) filter}) {
     return SafeArea(
       top: false,
       bottom: false,

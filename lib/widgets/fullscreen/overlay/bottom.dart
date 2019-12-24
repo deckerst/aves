@@ -45,16 +45,16 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   @override
   void initState() {
     super.initState();
-    initDetailLoader();
+    _initDetailLoader();
   }
 
   @override
   void didUpdateWidget(FullscreenBottomOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    initDetailLoader();
+    _initDetailLoader();
   }
 
-  initDetailLoader() {
+  void _initDetailLoader() {
     _detailLoader = MetadataService.getOverlayMetadata(entry);
   }
 
@@ -86,7 +86,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                       _lastEntry = entry;
                     }
                     return _lastEntry == null
-                        ? SizedBox.shrink()
+                        ? const SizedBox.shrink()
                         : _FullscreenBottomOverlayContent(
                             entry: _lastEntry,
                             details: _lastDetails,
@@ -115,7 +115,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   final String position;
   final double maxWidth;
 
-  _FullscreenBottomOverlayContent({
+  const _FullscreenBottomOverlayContent({
     this.entry,
     this.details,
     this.position,

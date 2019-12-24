@@ -61,10 +61,10 @@ class OverlayIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(1),
+      margin: const EdgeInsets.all(1),
       padding: text != null ? EdgeInsets.only(right: iconSize / 4) : null,
       decoration: BoxDecoration(
-        color: Color(0xBB000000),
+        color: const Color(0xBB000000),
         borderRadius: BorderRadius.all(
           Radius.circular(iconSize),
         ),
@@ -78,7 +78,7 @@ class OverlayIcon extends StatelessWidget {
             size: iconSize,
           ),
           if (text != null) ...[
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
             Text(text),
           ]
         ],

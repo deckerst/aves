@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationSection extends AnimatedWidget {
   final ImageEntry entry;
-  final showTitle;
+  final bool showTitle;
 
   LocationSection({
     Key key,
@@ -23,12 +23,12 @@ class LocationSection extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     return !entry.hasGps
-        ? SizedBox.shrink()
+        ? const SizedBox.shrink()
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (showTitle)
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(bottom: 8),
                   child: SectionRow('Location'),
                 ),
@@ -43,7 +43,7 @@ class LocationSection extends AnimatedWidget {
               ),
               if (entry.isLocated)
                 Padding(
-                  padding: EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.only(top: 8),
                   child: InfoRow('Address', entry.addressDetails.addressLine),
                 ),
             ],
@@ -90,7 +90,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
           child: SizedBox(
             height: 200,
             child: ClipRRect(
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(16),
               ),
               child: GoogleMap(
@@ -104,18 +104,18 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
                 zoomGesturesEnabled: false,
                 tiltGesturesEnabled: false,
                 myLocationButtonEnabled: false,
-                markers: [
+                markers: {
                   Marker(
                     markerId: MarkerId(widget.markerId),
                     icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
                     position: widget.latLng,
                   )
-                ].toSet(),
+                },
               ),
             ),
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Column(children: [
           IconButton(
             icon: Icon(Icons.add),
@@ -137,7 +137,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  _zoomBy(double amount) {
+  void _zoomBy(double amount) {
     settings.infoMapZoom += amount;
     _controller.animateCamera(CameraUpdate.zoomBy(amount));
   }

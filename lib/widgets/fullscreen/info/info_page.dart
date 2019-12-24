@@ -119,7 +119,7 @@ class SectionRow extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontFamily: 'Concourse Caps',
             ),
@@ -142,9 +142,9 @@ class InfoRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: RichText(
         text: TextSpan(
-          style: TextStyle(fontFamily: 'Concourse'),
+          style: const TextStyle(fontFamily: 'Concourse'),
           children: [
-            TextSpan(text: '$label    ', style: TextStyle(color: Colors.white70)),
+            TextSpan(text: '$label    ', style: const TextStyle(color: Colors.white70)),
             TextSpan(text: value),
           ],
         ),

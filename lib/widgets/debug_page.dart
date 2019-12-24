@@ -39,48 +39,48 @@ class DebugPageState extends State<DebugPage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Info'),
+          title: const Text('Info'),
         ),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Paths'),
+            const Text('Paths'),
             Text('DCIM path: ${androidFileUtils.dcimPath}'),
             Text('pictures path: ${androidFileUtils.picturesPath}'),
-            Divider(),
-            Text('Settings'),
+            const Divider(),
+            const Text('Settings'),
             Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
             Text('collectionSortFactor: ${settings.collectionSortFactor}'),
             Text('infoMapZoom: ${settings.infoMapZoom}'),
-            Divider(),
+            const Divider(),
             Text('Entries: ${entries.length}'),
             ...byMimeTypes.keys.map((mimeType) => Text('- $mimeType: ${byMimeTypes[mimeType].length}')),
             Text('Catalogued: ${catalogued.length}'),
             Text('With GPS: ${withGps.length}'),
             Text('With address: ${located.length}'),
-            Divider(),
+            const Divider(),
             RaisedButton(
               onPressed: () => metadataDb.reset(),
-              child: Text('Reset DB'),
+              child: const Text('Reset DB'),
             ),
             FutureBuilder(
               future: _dbMetadataLoader,
               builder: (futureContext, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
-                if (snapshot.hasError) return Text(snapshot.error);
-                if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                if (snapshot.hasError) return Text(snapshot.error.toString());
+                if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 return Text('DB metadata rows: ${snapshot.data.length}');
               },
             ),
             FutureBuilder(
               future: _dbAddressLoader,
               builder: (futureContext, AsyncSnapshot<List<AddressDetails>> snapshot) {
-                if (snapshot.hasError) return Text(snapshot.error);
-                if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                if (snapshot.hasError) return Text(snapshot.error.toString());
+                if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 return Text('DB address rows: ${snapshot.data.length}');
               },
             ),
-            Divider(),
-            Text('Time dilation'),
+            const Divider(),
+            const Text('Time dilation'),
             Slider(
               value: timeDilation,
               onChanged: (v) => setState(() => timeDilation = v),

@@ -46,32 +46,32 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   void initState() {
     super.initState();
     _playPauseAnimation = AnimationController(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
-    registerWidget(widget);
+    _registerWidget(widget);
     _onValueChange();
   }
 
   @override
   void didUpdateWidget(VideoControlOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    unregisterWidget(oldWidget);
-    registerWidget(widget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
   }
 
   @override
   void dispose() {
-    unregisterWidget(widget);
+    _unregisterWidget(widget);
     _playPauseAnimation.dispose();
     super.dispose();
   }
 
-  void registerWidget(VideoControlOverlay widget) {
+  void _registerWidget(VideoControlOverlay widget) {
     widget.controller.addListener(_onValueChange);
   }
 
-  void unregisterWidget(VideoControlOverlay widget) {
+  void _unregisterWidget(VideoControlOverlay widget) {
     widget.controller.removeListener(_onValueChange);
   }
 
@@ -86,7 +86,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
         final viewInsets = widget.viewInsets ?? mqViewInsets;
         final viewPadding = widget.viewPadding ?? mqViewPadding;
-        final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
+        final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
 
         return Padding(
           padding: safePadding,
@@ -109,7 +109,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                       Expanded(
                         child: _buildProgressBar(),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       OverlayButton(
                         scale: scale,
                         child: IconButton(
@@ -130,7 +130,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   }
 
   Widget _buildProgressBar() {
-    final progressBarBorderRadius = 123.0;
+    const progressBarBorderRadius = 123.0;
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect(
@@ -150,11 +150,11 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
             if (_playingOnDragStart) controller.play();
           },
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16) + const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: Colors.black26,
               border: Border.all(color: Colors.white30, width: 0.5),
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(progressBarBorderRadius),
               ),
             ),
@@ -164,7 +164,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                 Row(
                   children: [
                     Text(formatDuration(value.position ?? Duration.zero)),
-                    Spacer(),
+                    const Spacer(),
                     Text(formatDuration(value.duration ?? Duration.zero)),
                   ],
                 ),

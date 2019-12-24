@@ -5,12 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
 
-typedef void SettingsCallback(String key, dynamic oldValue, dynamic newValue);
+typedef SettingsCallback = void Function(String key, dynamic oldValue, dynamic newValue);
 
 class Settings {
   static SharedPreferences prefs;
 
-  ObserverList<SettingsCallback> _listeners = ObserverList<SettingsCallback>();
+  final ObserverList<SettingsCallback> _listeners = ObserverList<SettingsCallback>();
 
   Settings._private();
 
@@ -32,7 +32,7 @@ class Settings {
     debugPrint('$runtimeType notifyListeners key=$key, old=$oldValue, new=$newValue');
     if (_listeners != null) {
       final List<SettingsCallback> localListeners = _listeners.toList();
-      for (SettingsCallback listener in localListeners) {
+      for (final listener in localListeners) {
         try {
           if (_listeners.contains(listener)) {
             listener(key, oldValue, newValue);
@@ -66,7 +66,7 @@ class Settings {
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
     final valueString = prefs.getString(key);
-    for (T element in values) {
+    for (final element in values) {
       if (element.toString() == valueString) {
         return element;
       }

@@ -42,7 +42,7 @@ class AppIconState extends State<AppIcon> {
                 width: widget.size,
                 height: widget.size,
               )
-            : SizedBox.shrink();
+            : const SizedBox.shrink();
       },
     );
   }

@@ -16,10 +16,10 @@ import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screen/screen.dart';
 
-final stopwatch = Stopwatch()..start();
+final _stopwatch = Stopwatch()..start();
 
 void main() {
-  debugPrint('main start, elapsed=${stopwatch.elapsed}');
+  debugPrint('main start, elapsed=${_stopwatch.elapsed}');
   // initialize binding/plugins to configure Skia before `runApp`
   WidgetsFlutterBinding.ensureInitialized(); // 220ms
 //  debugPrint('main WidgetsFlutterBinding.ensureInitialized done, elapsed=${stopwatch.elapsed}');
@@ -61,7 +61,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
-  ImageCollection localMediaCollection = ImageCollection(entries: List());
+  ImageCollection localMediaCollection = ImageCollection(entries: []);
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> setup() async {
-    debugPrint('$runtimeType setup start, elapsed=${stopwatch.elapsed}');
+    debugPrint('$runtimeType setup start, elapsed=${_stopwatch.elapsed}');
     // TODO reduce permission check time
     final permissions = await PermissionHandler().requestPermissions([
       PermissionGroup.storage
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
     await settings.init(); // <20ms
     localMediaCollection.groupFactor = settings.collectionGroupFactor;
     localMediaCollection.sortFactor = settings.collectionSortFactor;
-    debugPrint('$runtimeType setup settings.init done, elapsed=${stopwatch.elapsed}');
+    debugPrint('$runtimeType setup settings.init done, elapsed=${_stopwatch.elapsed}');
 
     await metadataDb.init(); // <20ms
     final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => localMediaCollection.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
-            debugPrint('$runtimeType mediastore stream done, elapsed=${stopwatch.elapsed}');
+            debugPrint('$runtimeType mediastore stream done, elapsed=${_stopwatch.elapsed}');
             localMediaCollection.updateSections(); // <50ms
             // TODO reduce setup time until here
             localMediaCollection.updateAlbums(); // <50ms
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
             await localMediaCollection.catalogEntries(); // <50ms
             await localMediaCollection.loadAddresses(); // 350ms
             await localMediaCollection.locateEntries(); // <50ms
-            debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
+            debugPrint('$runtimeType setup end, elapsed=${_stopwatch.elapsed}');
           },
           onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),
         );

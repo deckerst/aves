@@ -10,8 +10,8 @@ class MetadataDb {
 
   Future<String> get path async => join(await getDatabasesPath(), 'metadata.db');
 
-  static final metadataTable = 'metadata';
-  static final addressTable = 'address';
+  static const metadataTable = 'metadata';
+  static const addressTable = 'address';
 
   MetadataDb._private();
 

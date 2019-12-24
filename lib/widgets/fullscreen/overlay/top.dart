@@ -28,14 +28,14 @@ class FullscreenTopOverlay extends StatelessWidget {
     return SafeArea(
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             OverlayButton(
               scale: scale,
-              child: BackButton(),
+              child: const BackButton(),
             ),
-            Spacer(),
+            const Spacer(),
             OverlayButton(
               scale: scale,
               child: IconButton(
@@ -44,7 +44,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                 tooltip: 'Share',
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             OverlayButton(
               scale: scale,
               child: IconButton(
@@ -53,7 +53,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                 tooltip: 'Delete',
               ),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             OverlayButton(
               scale: scale,
               child: PopupMenuButton<FullscreenAction>(
@@ -81,21 +81,21 @@ class FullscreenTopOverlay extends StatelessWidget {
                       value: FullscreenAction.print,
                       child: MenuRow(text: 'Print', icon: Icons.print),
                     ),
-                  PopupMenuDivider(),
-                  PopupMenuItem(
+                  const PopupMenuDivider(),
+                  const PopupMenuItem(
                     value: FullscreenAction.edit,
                     child: Text('Edit with…'),
                   ),
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: FullscreenAction.open,
                     child: Text('Open with…'),
                   ),
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: FullscreenAction.setAs,
                     child: Text('Set as…'),
                   ),
                   if (entry.hasGps)
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       value: FullscreenAction.openMap,
                       child: Text('Show on map…'),
                     ),

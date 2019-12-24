@@ -29,34 +29,34 @@ class AvesVideoState extends State<AvesVideo> {
   @override
   void initState() {
     super.initState();
-    registerWidget(widget);
+    _registerWidget(widget);
     _onValueChange();
   }
 
   @override
   void didUpdateWidget(AvesVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    unregisterWidget(oldWidget);
-    registerWidget(widget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
   }
 
   @override
   void dispose() {
-    unregisterWidget(widget);
+    _unregisterWidget(widget);
     super.dispose();
   }
 
-  registerWidget(AvesVideo widget) {
+  void _registerWidget(AvesVideo widget) {
     widget.controller.addListener(_onValueChange);
   }
 
-  unregisterWidget(AvesVideo widget) {
+  void _unregisterWidget(AvesVideo widget) {
     widget.controller.removeListener(_onValueChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (value == null) return SizedBox();
+    if (value == null) return const SizedBox();
     if (value.hasError) {
       return Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.size.width,
@@ -79,12 +79,12 @@ class AvesVideoState extends State<AvesVideo> {
     );
   }
 
-  _onValueChange() {
-    if (!value.isPlaying && value.position == value.duration) goToBeginning();
+  void _onValueChange() {
+    if (!value.isPlaying && value.position == value.duration) _goToStart();
     setState(() {});
   }
 
-  goToBeginning() async {
+  Future<void> _goToStart() async {
     await widget.controller.seekTo(Duration.zero);
     await widget.controller.pause();
   }

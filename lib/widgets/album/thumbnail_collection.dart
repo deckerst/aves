@@ -13,7 +13,7 @@ class ThumbnailCollection extends AnimatedWidget {
   final ImageCollection collection;
   final Widget appBar;
 
-  ThumbnailCollection({
+  const ThumbnailCollection({
     Key key,
     this.collection,
     this.appBar,
@@ -65,6 +65,12 @@ class ThumbnailCollectionContent extends StatelessWidget {
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.viewInsets.bottom,
         builder: (c, mqViewInsetsBottom, child) => DraggableScrollbar.arrows(
+          controller: _scrollController,
+          padding: EdgeInsets.only(
+            // top padding to adjust scroll thumb
+            top: topPadding,
+            bottom: mqViewInsetsBottom,
+          ),
           child: CustomScrollView(
             controller: _scrollController,
             slivers: [
@@ -89,12 +95,6 @@ class ThumbnailCollectionContent extends StatelessWidget {
               }),
             ],
           ),
-          controller: _scrollController,
-          padding: EdgeInsets.only(
-            // top padding to adjust scroll thumb
-            top: topPadding,
-            bottom: mqViewInsetsBottom,
-          ),
         ),
       ),
     );
@@ -117,7 +117,7 @@ class SectionSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final columnCount = 4;
+    const columnCount = 4;
     return SliverStickyHeader(
       header: SectionHeader(
         collection: collection,
@@ -143,7 +143,7 @@ class SectionSliver extends StatelessWidget {
           addAutomaticKeepAlives: false,
           addRepaintBoundaries: true,
         ),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount,
         ),
       ),
@@ -151,7 +151,7 @@ class SectionSliver extends StatelessWidget {
     );
   }
 
-  _showFullscreen(BuildContext context, ImageEntry entry) {
+  void _showFullscreen(BuildContext context, ImageEntry entry) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -178,11 +178,11 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget header = SizedBox.shrink();
+    Widget header = const SizedBox.shrink();
     if (collection.sortFactor == SortFactor.date) {
       switch (collection.groupFactor) {
         case GroupFactor.album:
-          Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey);
+          Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey as String);
           if (albumIcon != null) {
             albumIcon = Material(
               type: MaterialType.circle,
@@ -194,14 +194,14 @@ class SectionHeader extends StatelessWidget {
           }
           header = TitleSectionHeader(
             leading: albumIcon,
-            title: collection.getUniqueAlbumName(sectionKey, sections.keys.cast<String>()),
+            title: collection.getUniqueAlbumName(sectionKey as String, sections.keys.cast<String>()),
           );
           break;
         case GroupFactor.month:
-          header = MonthSectionHeader(date: sectionKey);
+          header = MonthSectionHeader(date: sectionKey as DateTime);
           break;
         case GroupFactor.day:
-          header = DaySectionHeader(date: sectionKey);
+          header = DaySectionHeader(date: sectionKey as DateTime);
           break;
       }
     }

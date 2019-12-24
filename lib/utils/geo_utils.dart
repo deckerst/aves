@@ -27,7 +27,7 @@ String _decimal2sexagesimal(final double dec) {
   final List<int> minParts = _split(min);
   final int minFractionalPart = minParts[1];
 
-  final double sec = (double.parse('0.$minFractionalPart') * 60);
+  final double sec = double.parse('0.$minFractionalPart') * 60;
 
   return '$deg° ${min.floor()}′ ${_round(sec, decimals: 2).toStringAsFixed(2)}″';
 }

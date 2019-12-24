@@ -16,7 +16,7 @@ class AllCollectionPage extends StatelessWidget {
     return ThumbnailCollection(
       collection: collection,
       appBar: SliverAppBar(
-        title: Text('All'),
+        title: const Text('All'),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -35,7 +35,7 @@ class AllCollectionPage extends StatelessWidget {
                 value: AlbumAction.sortBySize,
                 child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
               ),
-              PopupMenuDivider(),
+              const PopupMenuDivider(),
               if (collection.sortFactor == SortFactor.date) ...[
                 PopupMenuItem(
                   value: AlbumAction.groupByAlbum,
@@ -49,14 +49,14 @@ class AllCollectionPage extends StatelessWidget {
                   value: AlbumAction.groupByDay,
                   child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
                 ),
-                PopupMenuDivider(),
+                const PopupMenuDivider(),
               ],
               PopupMenuItem(
                 value: AlbumAction.debug,
                 child: MenuRow(text: 'Debug', icon: Icons.whatshot),
               ),
             ],
-            onSelected: (action) => onActionSelected(context, action),
+            onSelected: (action) => _onActionSelected(context, action),
           ),
         ],
         floating: true,
@@ -64,7 +64,7 @@ class AllCollectionPage extends StatelessWidget {
     );
   }
 
-  onActionSelected(BuildContext context, AlbumAction action) {
+  void _onActionSelected(BuildContext context, AlbumAction action) {
     switch (action) {
       case AlbumAction.debug:
         goToDebug(context);

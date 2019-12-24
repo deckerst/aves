@@ -65,7 +65,7 @@ class ImageFileService {
     } on PlatformException catch (e) {
       debugPrint('rename failed with exception=${e.message}');
     }
-    return Map();
+    return {};
   }
 
   static Future<Map> rotate(ImageEntry entry, {@required bool clockwise}) async {
@@ -79,6 +79,6 @@ class ImageFileService {
     } on PlatformException catch (e) {
       debugPrint('rotate failed with exception=${e.message}');
     }
-    return Map();
+    return {};
   }
 }

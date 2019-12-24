@@ -3,3 +3,10 @@ include: package:pedantic/analysis_options.yaml
 analyzer:
   exclude:
     - lib/generated_plugin_registrant.dart
+
+linter:
+  rules:
+    - always_declare_return_types
+    - prefer_const_constructors
+    - prefer_const_constructors_in_immutables
+    - prefer_const_declarations

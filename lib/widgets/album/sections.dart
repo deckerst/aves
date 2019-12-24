@@ -7,13 +7,13 @@ class DaySectionHeader extends StatelessWidget {
   final String text;
 
   DaySectionHeader({Key key, DateTime date})
-      : text = formatDate(date),
+      : text = _formatDate(date),
         super(key: key);
 
   static DateFormat md = DateFormat.MMMMd();
   static DateFormat ymd = DateFormat.yMMMMd();
 
-  static formatDate(DateTime date) {
+  static String _formatDate(DateTime date) {
     if (isToday(date)) return 'Today';
     if (isYesterday(date)) return 'Yesterday';
     if (isThisYear(date)) return md.format(date);
@@ -30,13 +30,13 @@ class MonthSectionHeader extends StatelessWidget {
   final String text;
 
   MonthSectionHeader({Key key, DateTime date})
-      : text = formatDate(date),
+      : text = _formatDate(date),
         super(key: key);
 
   static DateFormat m = DateFormat.MMMM();
   static DateFormat ym = DateFormat.yMMMM();
 
-  static formatDate(DateTime date) {
+  static String _formatDate(DateTime date) {
     if (isThisMonth(date)) return 'This month';
     if (isThisYear(date)) return m.format(date);
     return ym.format(date);
@@ -64,7 +64,7 @@ class TitleSectionHeader extends StatelessWidget {
         fontFamily: 'Concourse Caps',
         shadows: [
           Shadow(
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             blurRadius: 3,
             color: Colors.grey[900],
           ),
@@ -74,12 +74,12 @@ class TitleSectionHeader extends StatelessWidget {
       outlineWidth: 2,
     );
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: leading != null
           ? Row(
               children: [
                 leading,
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 text,
               ],
             )

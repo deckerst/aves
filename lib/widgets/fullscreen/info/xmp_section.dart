@@ -18,15 +18,15 @@ class XmpTagSection extends AnimatedWidget {
   Widget build(BuildContext context) {
     final tags = entry.xmpSubjects;
     return tags.isEmpty
-        ? SizedBox.shrink()
+        ? const SizedBox.shrink()
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionRow('XMP Tags'),
+              const SectionRow('XMP Tags'),
               Wrap(
                 children: tags
                     .map((tag) => Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: ActionChip(
                             label: Text(tag),
                             onPressed: () => Navigator.push(
