@@ -71,7 +71,13 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
           );
         },
         loadingChild: const Center(
-          child: CircularProgressIndicator(),
+          child: SizedBox(
+            width: 64,
+            height: 64,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          ),
         ),
         backgroundDecoration: BoxDecoration(color: Colors.transparent),
         pageController: widget.pageController,
