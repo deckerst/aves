@@ -43,9 +43,9 @@ class MetadataSectionState extends State<MetadataSection> {
       builder: (c, mqWidth, child) => FutureBuilder(
         future: _metadataLoader,
         builder: (futureContext, AsyncSnapshot<Map> snapshot) {
-          final metadataMap = snapshot.data.cast<String, Map>();
           if (snapshot.hasError) return Text(snapshot.error.toString());
           if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+          final metadataMap = snapshot.data.cast<String, Map>();
           final directoryNames = metadataMap.keys.toList()..sort();
 
           Widget content;

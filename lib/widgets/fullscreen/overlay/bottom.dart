@@ -133,7 +133,8 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
           )
         ],
       ),
-      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+      overflow: TextOverflow.fade,
       maxLines: 1,
       child: Selector<MediaQueryData, Orientation>(
         selector: (c, mq) => mq.orientation,

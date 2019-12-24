@@ -6,6 +6,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/app_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
   final ImageEntry entry;
@@ -103,10 +104,13 @@ class IconUtils {
     final parts = albumDirectory.split(separator);
     if (albumDirectory.startsWith(androidFileUtils.externalStorage) && appNameMap.keys.contains(parts.last)) {
       final packageName = appNameMap[parts.last];
-      return AppIcon(
-        packageName: packageName,
-        size: IconTheme.of(context).size,
-        devicePixelRatio: window.devicePixelRatio,
+      return Selector<MediaQueryData, double>(
+        selector: (c, mq) => mq.devicePixelRatio,
+        builder: (c, devicePixelRatio, child) => AppIcon(
+          packageName: packageName,
+          size: IconTheme.of(context).size,
+          devicePixelRatio: devicePixelRatio,
+        ),
       );
     }
     return null;
