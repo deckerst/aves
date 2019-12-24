@@ -20,12 +20,6 @@ final _stopwatch = Stopwatch()..start();
 
 void main() {
   debugPrint('main start, elapsed=${_stopwatch.elapsed}');
-  // initialize binding/plugins to configure Skia before `runApp`
-  WidgetsFlutterBinding.ensureInitialized(); // 220ms
-//  debugPrint('main WidgetsFlutterBinding.ensureInitialized done, elapsed=${stopwatch.elapsed}');
-  // configure Skia cache to prevent zoomed images becoming black, cf https://github.com/flutter/flutter/issues/36191
-  SystemChannels.skia.invokeMethod('Skia.setResourceCacheMaxBytes', 512 * (1 << 20)); // <20ms
-//  debugPrint('main Skia.setResourceCacheMaxBytes done, elapsed=${stopwatch.elapsed}');
   runApp(AvesApp());
 }
 
@@ -66,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    imageCache.maximumSizeBytes = 100 * 1024 * 1024;
+    imageCache.maximumSizeBytes = 512 * (1 << 20);
     setup();
     Screen.keepOn(true);
   }
