@@ -18,6 +18,7 @@ class Thumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final image = ImagePreview(
+      key: ValueKey(entry.uri),
       entry: entry,
       width: extent,
       height: extent,
@@ -51,7 +52,6 @@ class Thumbnail extends StatelessWidget {
         );
       },
     );
-    final icons = _buildOverlayIcons();
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -59,43 +59,53 @@ class Thumbnail extends StatelessWidget {
           width: 0.5,
         ),
       ),
-      child: icons != null
-          ? Stack(
-              alignment: AlignmentDirectional.bottomStart,
-              children: [
-                image,
-                icons,
-              ],
-            )
-          : image,
+      child: Stack(
+        alignment: AlignmentDirectional.bottomStart,
+        children: [
+          image,
+          _ThumbnailOverlay(
+            entry: entry,
+            extent: extent,
+          ),
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildOverlayIcons() {
+class _ThumbnailOverlay extends StatelessWidget {
+  final ImageEntry entry;
+  final double extent;
+
+  const _ThumbnailOverlay({
+    Key key,
+    @required this.entry,
+    @required this.extent,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final fontSize = min(14.0, (extent / 8).roundToDouble());
     final iconSize = fontSize * 2;
-    final icons = [
-      if (entry.hasGps) GpsIcon(iconSize: iconSize),
-      if (entry.isGif)
-        GifIcon(iconSize: iconSize)
-      else if (entry.isVideo)
-        VideoIcon(
-          entry: entry,
-          iconSize: iconSize,
-        ),
-    ];
-    return icons.isNotEmpty
-        ? DefaultTextStyle(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (entry.hasGps) GpsIcon(iconSize: iconSize),
+        if (entry.isGif)
+          GifIcon(iconSize: iconSize)
+        else if (entry.isVideo)
+          DefaultTextStyle(
             style: TextStyle(
               color: Colors.grey[200],
               fontSize: fontSize,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: icons,
+            child: VideoIcon(
+              entry: entry,
+              iconSize: iconSize,
             ),
-          )
-        : null;
+          ),
+      ],
+    );
   }
 }
