@@ -1,10 +1,15 @@
 package deckers.thibault.aves.channelhandlers;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Size;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
@@ -59,50 +64,98 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     @Override
     protected Result doInBackground(Params... params) {
         Params p = params[0];
-        ImageEntry entry = p.entry;
-        byte[] data = null;
+        Bitmap bitmap = null;
         if (!this.isCancelled()) {
-            // add signature to ignore cache for images which got modified but kept the same URI
-            Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
-            RequestOptions options = new RequestOptions()
-                    .signature(signature)
-                    .override(p.width, p.height);
-
-            FutureTarget<Bitmap> target;
-            if (entry.isVideo()) {
-                options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-                target = Glide.with(activity)
-                        .asBitmap()
-                        .apply(options)
-                        .load(new VideoThumbnail(activity, entry.getUri()))
-                        .signature(signature)
-                        .submit(p.width, p.height);
-            } else {
-                target = Glide.with(activity)
-                        .asBitmap()
-                        .apply(options)
-                        .load(entry.getUri())
-                        .signature(signature)
-                        .submit(p.width, p.height);
-            }
-
-            try {
-                Bitmap bmp = target.get();
-                if (bmp != null) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                    data = stream.toByteArray();
-                }
-            } catch (InterruptedException e) {
-                Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " interrupted");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Glide.with(activity).clear(target);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                bitmap = getBytesByResolverThumbnail(p);
+//            } else {
+            bitmap = getBytesByMediaStoreThumbnail(p);
+//                bitmap = getBytesByGlide(p);
+//            }
         } else {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " cancelled");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + p.entry.getUri() + " cancelled");
+        }
+        byte[] data = null;
+        if (bitmap != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+            // Bitmap.CompressFormat.PNG is slower than JPEG
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+            data = stream.toByteArray();
         }
         return new Result(p, data);
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    private Bitmap getBytesByResolverThumbnail(Params params) {
+        ImageEntry entry = params.entry;
+        int width = params.width;
+        int height = params.height;
+
+        ContentResolver resolver = activity.getContentResolver();
+        try {
+            return resolver.loadThumbnail(entry.getUri(), new Size(width, height), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Bitmap getBytesByMediaStoreThumbnail(Params params) {
+        ImageEntry entry = params.entry;
+        long contentId = entry.getContentId();
+
+        ContentResolver resolver = activity.getContentResolver();
+        try {
+            if (entry.isVideo()) {
+                return MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null);
+            } else {
+                return MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Bitmap getBytesByGlide(Params params) {
+        ImageEntry entry = params.entry;
+        int width = params.width;
+        int height = params.height;
+
+        // add signature to ignore cache for images which got modified but kept the same URI
+        Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
+        RequestOptions options = new RequestOptions()
+                .signature(signature)
+                .override(width, height);
+
+        FutureTarget<Bitmap> target;
+        if (entry.isVideo()) {
+            options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+            target = Glide.with(activity)
+                    .asBitmap()
+                    .apply(options)
+                    .load(new VideoThumbnail(activity, entry.getUri()))
+                    .signature(signature)
+                    .submit(width, height);
+        } else {
+            target = Glide.with(activity)
+                    .asBitmap()
+                    .apply(options)
+                    .load(entry.getUri())
+                    .signature(signature)
+                    .submit(width, height);
+        }
+
+        try {
+            return target.get();
+        } catch (InterruptedException e) {
+            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " interrupted");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Glide.with(activity).clear(target);
+        return null;
     }
 
     @Override

@@ -76,7 +76,14 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
         future: _byteLoader,
         builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
           final bytes = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : kTransparentImage;
-          return bytes.isNotEmpty ? widget.builder(bytes) : Icon(Icons.error);
+          return bytes.isNotEmpty
+              ? widget.builder(bytes)
+              : Center(
+                  child: Icon(
+                    Icons.error,
+                    color: Colors.blueGrey,
+                  ),
+                );
         });
   }
 }

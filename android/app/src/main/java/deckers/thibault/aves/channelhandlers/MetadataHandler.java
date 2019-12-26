@@ -109,9 +109,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         } catch (ImageProcessingException e) {
             getAllVideoMetadataFallback(call, result);
         } catch (FileNotFoundException e) {
-            result.error("getAllMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
+            result.error("getAllMetadata-filenotfound", "failed to get metadata for path=" + path, e.getMessage());
         } catch (Exception e) {
-            result.error("getAllMetadata-exception", "failed to get metadata for path=" + path, e);
+            result.error("getAllMetadata-exception", "failed to get metadata for path=" + path, e.getMessage());
         }
     }
 
@@ -144,7 +144,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
             result.success(metadataMap);
         } catch (Exception e) {
-            result.error("getAllVideoMetadataFallback-exception", "failed to get metadata for path=" + path, e);
+            result.error("getAllVideoMetadataFallback-exception", "failed to get metadata for path=" + path, e.getMessage());
         }
     }
 
@@ -233,16 +233,16 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                         }
                     }
                 } catch (Exception e) {
-                    result.error("getCatalogMetadata-exception", "failed to get video metadata for path=" + path, e);
+                    result.error("getCatalogMetadata-exception", "failed to get video metadata for path=" + path, e.getMessage());
                 }
             }
             result.success(metadataMap);
         } catch (ImageProcessingException e) {
-            result.error("getCatalogMetadata-imageprocessing", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
+            result.error("getCatalogMetadata-imageprocessing", "failed to get metadata for path=" + path, e.getMessage());
         } catch (FileNotFoundException e) {
-            result.error("getCatalogMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
+            result.error("getCatalogMetadata-filenotfound", "failed to get metadata for path=" + path, e.getMessage());
         } catch (Exception e) {
-            result.error("getCatalogMetadata-exception", "failed to get metadata for path=" + path, e);
+            result.error("getCatalogMetadata-exception", "failed to get metadata for path=" + path, e.getMessage());
         }
     }
 
@@ -274,11 +274,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
             result.success(metadataMap);
         } catch (ImageProcessingException e) {
-            result.error("getOverlayMetadata-imageprocessing", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
+            result.error("getOverlayMetadata-imageprocessing", "failed to get metadata for path=" + path, e.getMessage());
         } catch (FileNotFoundException e) {
-            result.error("getOverlayMetadata-filenotfound", "failed to get metadata for path=" + path + " (" + e.getMessage() + ")", null);
+            result.error("getOverlayMetadata-filenotfound", "failed to get metadata for path=" + path, e.getMessage());
         } catch (Exception e) {
-            result.error("getOverlayMetadata-exception", "failed to get metadata for path=" + path, e);
+            result.error("getOverlayMetadata-exception", "failed to get metadata for path=" + path, e.getMessage());
         }
     }
 }

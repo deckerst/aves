@@ -87,6 +87,10 @@ public class ImageEntry {
         return uri;
     }
 
+    public long getContentId() {
+        return contentId;
+    }
+
     @Nullable
     public String getPath() {
         return path;

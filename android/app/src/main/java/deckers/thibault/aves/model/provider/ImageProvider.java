@@ -194,6 +194,11 @@ public abstract class ImageProvider {
         }
 
         Bitmap originalImage = BitmapFactory.decodeFile(path);
+        if (originalImage == null) {
+            Log.e(LOG_TAG, "failed to decode image at path=" + path);
+            callback.onFailure();
+            return;
+        }
         Matrix matrix = new Matrix();
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();
@@ -207,14 +212,14 @@ public abstract class ImageProvider {
                 ParcelFileDescriptor pfd = activity.getContentResolver().openFileDescriptor(uri, "rw");
                 if (pfd != null) fd = pfd.getFileDescriptor();
             } catch (FileNotFoundException e) {
-                Log.w(LOG_TAG, "failed to get file descriptor for document at uri=" + path, e);
+                Log.e(LOG_TAG, "failed to get file descriptor for document at uri=" + path, e);
             }
             if (fd != null) {
                 try (FileOutputStream fos = new FileOutputStream(fd)) {
                     rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
                     rotated = true;
                 } catch (IOException e) {
-                    Log.w(LOG_TAG, "failed to save rotated image to document at uri=" + path, e);
+                    Log.e(LOG_TAG, "failed to save rotated image to document at uri=" + path, e);
                 }
             }
         } else {
@@ -222,7 +227,7 @@ public abstract class ImageProvider {
                 rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
                 rotated = true;
             } catch (IOException e) {
-                Log.w(LOG_TAG, "failed to save rotated image to path=" + path, e);
+                Log.e(LOG_TAG, "failed to save rotated image to path=" + path, e);
             }
         }
         if (!rotated) {
