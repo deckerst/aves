@@ -36,7 +36,7 @@ class FullscreenPage extends AnimatedWidget {
           collection: collection,
           initialUri: initialUri,
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         resizeToAvoidBottomInset: false,
       ),
     );
@@ -298,6 +298,38 @@ class FullscreenVerticalPageView extends StatefulWidget {
 
 class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView> {
   bool _isInitialScale = true;
+  Color _background = Colors.black;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(FullscreenVerticalPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _unregisterWidget(widget);
+  }
+
+  void _registerWidget(FullscreenVerticalPageView widget) {
+    widget.verticalPager.addListener(_onVerticalPageControllerChange);
+  }
+
+  void _unregisterWidget(FullscreenVerticalPageView widget) {
+    widget.verticalPager.removeListener(_onVerticalPageControllerChange);
+  }
+
+  void _onVerticalPageControllerChange() {
+    setState(() => _background = _background.withOpacity(min(1.0, widget.verticalPager.page)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -307,9 +339,12 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
       physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
       onPageChanged: widget.onVerticalPageChanged,
       children: [
-        const SizedBox(),
         Container(
-          color: Colors.black,
+          color: _background,
+          child: const SizedBox(),
+        ),
+        Container(
+          color: _background,
           child: ImagePage(
             collection: widget.collection,
             pageController: widget.horizontalPager,

@@ -157,26 +157,26 @@ class SectionSliver extends StatelessWidget {
   }
 
   void _showFullscreen(BuildContext context, ImageEntry entry) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FullscreenPage(
-          collection: collection,
-          initialUri: entry.uri,
-        ),
-      ),
-    );
-    // TODO TLAD consider the following to have transparency while popping fullscreen by drag down
 //    Navigator.push(
 //      context,
-//      PageRouteBuilder(
-//        opaque: false,
-//        pageBuilder: (BuildContext context, _, __) => FullscreenPage(
+//      MaterialPageRoute(
+//        builder: (context) => FullscreenPage(
 //          collection: collection,
 //          initialUri: entry.uri,
 //        ),
 //      ),
 //    );
+    // TODO TLAD consider the following to have transparency while popping fullscreen by drag down
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        opaque: false,
+        pageBuilder: (BuildContext context, _, __) => FullscreenPage(
+          collection: collection,
+          initialUri: entry.uri,
+        ),
+      ),
+    );
   }
 }
 
