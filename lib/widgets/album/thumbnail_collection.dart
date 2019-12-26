@@ -17,16 +17,9 @@ class ThumbnailCollection extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<MediaQueryData, double>(
-      selector: (c, mq) => mq.size.width,
-      builder: (c, mqWidth, child) {
-        debugPrint('$runtimeType builder mqWidth=$mqWidth');
-        return ThumbnailCollectionContent(
-          collection: collection,
-          appBar: appBar,
-          screenWidth: mqWidth,
-        );
-      },
+    return ThumbnailCollectionContent(
+      collection: collection,
+      appBar: appBar,
     );
   }
 }
@@ -34,7 +27,6 @@ class ThumbnailCollection extends AnimatedWidget {
 class ThumbnailCollectionContent extends StatelessWidget {
   final ImageCollection collection;
   final Widget appBar;
-  final double screenWidth;
 
   final Map<dynamic, List<ImageEntry>> _sections;
   final ScrollController _scrollController = ScrollController();
@@ -43,7 +35,6 @@ class ThumbnailCollectionContent extends StatelessWidget {
     Key key,
     @required this.collection,
     @required this.appBar,
-    @required this.screenWidth,
   })  : _sections = collection.sections,
         super(key: key);
 
@@ -82,7 +73,6 @@ class ThumbnailCollectionContent extends StatelessWidget {
                   collection: collection,
                   sections: _sections,
                   sectionKey: sectionKey,
-                  screenWidth: screenWidth,
                 );
                 if (sectionKey == sectionKeys.last) {
                   sliver = SliverPadding(

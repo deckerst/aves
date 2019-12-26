@@ -2,7 +2,6 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
-import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/media_store_collection_provider.dart';
@@ -83,9 +82,9 @@ class _HomePageState extends State<HomePage> {
     return MediaQueryDataProvider(
       child: FutureBuilder(
           future: _appSetup,
-          builder: (futureContext, AsyncSnapshot<void> snapshot) {
+          builder: (context, AsyncSnapshot<void> snapshot) {
             if (snapshot.hasError) return const Icon(Icons.error);
-            if (snapshot.connectionState != ConnectionState.done) return const CircularProgressIndicator();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             debugPrint('$runtimeType FutureBuilder builder');
             return const MediaStoreCollectionPage();
           }),
@@ -99,12 +98,10 @@ class MediaStoreCollectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint('$runtimeType build');
-    return MediaStoreCollectionProvider(
+    return const MediaStoreCollectionProvider(
       child: Scaffold(
-        // fake app bar so that content is safe from status bar, even though we use a SliverAppBar
-        appBar: FakeAppBar(),
-        body: const AllCollectionPage(),
-        drawer: const AllCollectionDrawer(),
+        body: AllCollectionPage(),
+        drawer: AllCollectionDrawer(),
         resizeToAvoidBottomInset: false,
       ),
     );

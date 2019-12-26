@@ -41,7 +41,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) => PhotoViewGallery.builder(
         itemCount: entries.length,
-        builder: (galleryContext, index) {
+        builder: (context, index) {
           final entry = entries[index];
           if (entry.isVideo) {
             final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2;

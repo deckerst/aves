@@ -18,7 +18,6 @@ class Thumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final image = ImagePreview(
-      key: ValueKey(entry.uri),
       entry: entry,
       width: extent,
       height: extent,

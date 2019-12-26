@@ -7,19 +7,18 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:provider/provider.dart';
 
 class SectionSliver extends StatelessWidget {
   final ImageCollection collection;
   final Map<dynamic, List<ImageEntry>> sections;
   final dynamic sectionKey;
-  final double screenWidth;
 
   const SectionSliver({
     Key key,
     @required this.collection,
     @required this.sections,
     @required this.sectionKey,
-    @required this.screenWidth,
   }) : super(key: key);
 
   @override
@@ -35,16 +34,21 @@ class SectionSliver extends StatelessWidget {
         delegate: SliverChildBuilderDelegate(
           // TODO TLAD find out why thumbnails are rebuilt (with `initState`) when:
           // - config change (show/hide status bar)
-          // - navigating away/back
-          (sliverContext, index) {
+          (context, index) {
             final sectionEntries = sections[sectionKey];
             if (index >= sectionEntries.length) return null;
             final entry = sectionEntries[index];
             return GestureDetector(
-              onTap: () => _showFullscreen(sliverContext, entry),
-              child: Thumbnail(
-                entry: entry,
-                extent: screenWidth / columnCount,
+              key: ValueKey(entry.uri),
+              onTap: () => _showFullscreen(context, entry),
+              child: Selector<MediaQueryData, double>(
+                selector: (c, mq) => mq.size.width,
+                builder: (c, mqWidth, child) {
+                  return Thumbnail(
+                    entry: entry,
+                    extent: mqWidth / columnCount,
+                  );
+                },
               ),
             );
           },
@@ -52,6 +56,7 @@ class SectionSliver extends StatelessWidget {
           addAutomaticKeepAlives: false,
           addRepaintBoundaries: true,
         ),
+        // TODO TLAD custom SliverGridDelegate / SliverGridLayout to lerp between columnCount
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: columnCount,
         ),

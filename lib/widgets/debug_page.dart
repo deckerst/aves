@@ -65,7 +65,7 @@ class DebugPageState extends State<DebugPage> {
             ),
             FutureBuilder(
               future: _dbMetadataLoader,
-              builder: (futureContext, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
+              builder: (context, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
                 if (snapshot.hasError) return Text(snapshot.error.toString());
                 if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 return Text('DB metadata rows: ${snapshot.data.length}');
@@ -73,7 +73,7 @@ class DebugPageState extends State<DebugPage> {
             ),
             FutureBuilder(
               future: _dbAddressLoader,
-              builder: (futureContext, AsyncSnapshot<List<AddressDetails>> snapshot) {
+              builder: (context, AsyncSnapshot<List<AddressDetails>> snapshot) {
                 if (snapshot.hasError) return Text(snapshot.error.toString());
                 if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 return Text('DB address rows: ${snapshot.data.length}');

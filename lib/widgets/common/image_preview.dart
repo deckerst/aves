@@ -52,6 +52,7 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
 
   @override
   void didUpdateWidget(ImagePreview old) {
+//    debugPrint('$runtimeType didUpdateWidget from=${old.entry.path} to=${entry.path}');
     super.didUpdateWidget(old);
     if (widget.width == old.width && widget.height == old.height && uri == old.entry.uri && widget.entry.width == old.entry.width && widget.entry.height == old.entry.height && widget.entry.orientationDegrees == old.entry.orientationDegrees) return;
     _initByteLoader();
@@ -67,12 +68,14 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
 
   @override
   void dispose() {
+//    debugPrint('$runtimeType dispose path=${entry.path}');
     _entryChangeNotifier.removeListener(_onEntryChange);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+//    debugPrint('$runtimeType build path=${entry.path}');
     return FutureBuilder(
         future: _byteLoader,
         builder: (futureContext, AsyncSnapshot<Uint8List> snapshot) {
