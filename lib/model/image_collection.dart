@@ -64,6 +64,7 @@ class ImageCollection with ChangeNotifier {
         ]);
         break;
     }
+    debugPrint('$runtimeType updateSections');
     notifyListeners();
   }
 

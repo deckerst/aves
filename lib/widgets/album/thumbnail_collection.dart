@@ -23,11 +23,14 @@ class ThumbnailCollection extends AnimatedWidget {
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
       selector: (c, mq) => mq.size.width,
-      builder: (c, mqWidth, child) => ThumbnailCollectionContent(
-        collection: collection,
-        appBar: appBar,
-        screenWidth: mqWidth,
-      ),
+      builder: (c, mqWidth, child) {
+        debugPrint('$runtimeType builder mqWidth=$mqWidth');
+        return ThumbnailCollectionContent(
+          collection: collection,
+          appBar: appBar,
+          screenWidth: mqWidth,
+        );
+      },
     );
   }
 }
@@ -126,7 +129,9 @@ class SectionSliver extends StatelessWidget {
       ),
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
-          // TODO TLAD find out why thumbnails are rebuilt when config change (show/hide status bar)
+          // TODO TLAD find out why thumbnails are rebuilt (with `initState`) when:
+          // - config change (show/hide status bar)
+          // - navigating away/back
           (sliverContext, index) {
             final sectionEntries = sections[sectionKey];
             if (index >= sectionEntries.length) return null;
@@ -161,6 +166,17 @@ class SectionSliver extends StatelessWidget {
         ),
       ),
     );
+    // TODO TLAD consider the following to have transparency while popping fullscreen by drag down
+//    Navigator.push(
+//      context,
+//      PageRouteBuilder(
+//        opaque: false,
+//        pageBuilder: (BuildContext context, _, __) => FullscreenPage(
+//          collection: collection,
+//          initialUri: entry.uri,
+//        ),
+//      ),
+//    );
   }
 }
 

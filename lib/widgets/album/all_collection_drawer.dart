@@ -9,12 +9,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class AllCollectionDrawer extends StatelessWidget {
-  final ImageCollection collection;
-
-  const AllCollectionDrawer({Key key, this.collection}) : super(key: key);
+  const AllCollectionDrawer();
 
   @override
   Widget build(BuildContext context) {
+    final collection = Provider.of<ImageCollection>(context);
     final albums = collection.sortedAlbums;
     final tags = collection.sortedTags;
     return Drawer(

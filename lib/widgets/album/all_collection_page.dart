@@ -5,14 +5,15 @@ import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/debug_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AllCollectionPage extends StatelessWidget {
-  final ImageCollection collection;
-
-  const AllCollectionPage({Key key, this.collection}) : super(key: key);
+  const AllCollectionPage();
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('$runtimeType build');
+    final collection = Provider.of<ImageCollection>(context);
     return ThumbnailCollection(
       collection: collection,
       appBar: SliverAppBar(
@@ -56,7 +57,7 @@ class AllCollectionPage extends StatelessWidget {
                 child: MenuRow(text: 'Debug', icon: Icons.whatshot),
               ),
             ],
-            onSelected: (action) => _onActionSelected(context, action),
+            onSelected: (action) => _onActionSelected(context, collection, action),
           ),
         ],
         floating: true,
@@ -64,10 +65,10 @@ class AllCollectionPage extends StatelessWidget {
     );
   }
 
-  void _onActionSelected(BuildContext context, AlbumAction action) {
+  void _onActionSelected(BuildContext context, ImageCollection collection, AlbumAction action) {
     switch (action) {
       case AlbumAction.debug:
-        goToDebug(context);
+        _goToDebug(context, collection);
         break;
       case AlbumAction.groupByAlbum:
         settings.collectionGroupFactor = GroupFactor.album;
@@ -92,7 +93,7 @@ class AllCollectionPage extends StatelessWidget {
     }
   }
 
-  Future goToDebug(BuildContext context) {
+  Future _goToDebug(BuildContext context, ImageCollection collection) {
     return Navigator.push(
       context,
       MaterialPageRoute(
