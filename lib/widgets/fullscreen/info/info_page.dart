@@ -1,6 +1,6 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';

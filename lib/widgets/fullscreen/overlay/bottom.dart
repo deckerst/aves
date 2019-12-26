@@ -6,7 +6,7 @@ import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/geo_utils.dart';
-import 'package:aves/widgets/common/blurred.dart';
+import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

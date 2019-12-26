@@ -13,7 +13,7 @@ String _decimal2sexagesimal(final double dec) {
     final List<String> tmp = NumberFormat('0.0#####').format(_round(value, decimals: 10)).split('.');
     return <int>[
       int.parse(tmp[0]).abs(),
-      int.parse(tmp[1])
+      int.parse(tmp[1]),
     ];
   }
 
@@ -39,6 +39,6 @@ List<String> toDMS(Tuple2<double, double> latLng) {
   final lng = latLng.item2;
   return [
     '${_decimal2sexagesimal(lat)} ${lat < 0 ? 'S' : 'N'}',
-    '${_decimal2sexagesimal(lng)} ${lng < 0 ? 'W' : 'E'}'
+    '${_decimal2sexagesimal(lng)} ${lng < 0 ? 'W' : 'E'}',
   ];
 }

@@ -4,8 +4,8 @@ import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/fake_app_bar.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/media_query_data_provider.dart';
-import 'package:aves/widgets/common/media_store_collection_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/media_store_collection_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedantic/pedantic.dart';
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     // TODO reduce permission check time
     // TODO TLAD ask android.permission.ACCESS_MEDIA_LOCATION (unredacted EXIF with scoped storage)
     final permissions = await PermissionHandler().requestPermissions([
-      PermissionGroup.storage
+      PermissionGroup.storage,
     ]); // 350ms
     if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
       unawaited(SystemNavigator.pop());

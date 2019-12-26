@@ -1,7 +1,7 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/blurred.dart';
+import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

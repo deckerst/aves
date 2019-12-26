@@ -39,7 +39,7 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
     super.initState();
     _entryChangeNotifier = Listenable.merge([
       entry.imageChangeNotifier,
-      entry.metadataChangeNotifier
+      entry.metadataChangeNotifier,
     ]);
     _entryChangeNotifier.addListener(_onEntryChange);
   }

@@ -60,22 +60,22 @@ class AllCollectionDrawer extends StatelessWidget {
                         Row(children: [
                           Icon(Icons.photo_library),
                           const SizedBox(width: 4),
-                          Text('${collection.imageCount}')
+                          Text('${collection.imageCount}'),
                         ]),
                         Row(children: [
                           Icon(Icons.video_library),
                           const SizedBox(width: 4),
-                          Text('${collection.videoCount}')
+                          Text('${collection.videoCount}'),
                         ]),
                         Row(children: [
                           Icon(Icons.photo_album),
                           const SizedBox(width: 4),
-                          Text('${collection.albumCount}')
+                          Text('${collection.albumCount}'),
                         ]),
                         Row(children: [
                           Icon(Icons.label),
                           const SizedBox(width: 4),
-                          Text('${collection.tagCount}')
+                          Text('${collection.tagCount}'),
                         ]),
                       ],
                     ),

@@ -37,7 +37,7 @@ class BasicSection extends StatelessWidget {
     if (rotation != null) InfoRow('Rotation', '$rotation°');
     return [
       InfoRow('Duration', entry.durationText),
-      if (rotation != null) InfoRow('Rotation', '$rotation°')
+      if (rotation != null) InfoRow('Rotation', '$rotation°'),
     ];
   }
 }

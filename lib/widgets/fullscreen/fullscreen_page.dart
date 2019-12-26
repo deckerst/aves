@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -298,7 +298,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
 
 class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView> {
   bool _isInitialScale = true;
-  Color _background = Colors.black;
+  ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
 
   @override
   void initState() {
@@ -328,24 +328,25 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   void _onVerticalPageControllerChange() {
-    setState(() => _background = _background.withOpacity(min(1.0, widget.verticalPager.page)));
+    _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(min(1.0, widget.verticalPager.page));
   }
 
   @override
   Widget build(BuildContext context) {
-    return PageView(
-      scrollDirection: Axis.vertical,
-      controller: widget.verticalPager,
-      physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
-      onPageChanged: widget.onVerticalPageChanged,
-      children: [
-        Container(
-          color: _background,
-          child: const SizedBox(),
-        ),
-        Container(
-          color: _background,
-          child: ImagePage(
+    return ValueListenableBuilder(
+      valueListenable: _backgroundColorNotifier,
+      builder: (context, backgroundColor, child) => Container(
+        color: backgroundColor,
+        child: child,
+      ),
+      child: PageView(
+        scrollDirection: Axis.vertical,
+        controller: widget.verticalPager,
+        physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
+        onPageChanged: widget.onVerticalPageChanged,
+        children: [
+          const SizedBox(),
+          ImagePage(
             collection: widget.collection,
             pageController: widget.horizontalPager,
             onTap: widget.onImageTap,
@@ -353,15 +354,15 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
             onScaleChanged: (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial),
             videoControllers: widget.videoControllers,
           ),
-        ),
-        NotificationListener(
-          onNotification: (notification) {
-            if (notification is BackUpNotification) widget.onImagePageRequested();
-            return false;
-          },
-          child: InfoPage(collection: widget.collection, entry: widget.entry),
-        ),
-      ],
+          NotificationListener(
+            onNotification: (notification) {
+              if (notification is BackUpNotification) widget.onImagePageRequested();
+              return false;
+            },
+            child: InfoPage(collection: widget.collection, entry: widget.entry),
+          ),
+        ],
+      ),
     );
   }
 }

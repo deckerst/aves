@@ -181,7 +181,7 @@ class ImageEntry {
     return {
       addressDetails.countryName,
       addressDetails.adminArea,
-      addressDetails.locality
+      addressDetails.locality,
     }.where((part) => part != null && part.isNotEmpty).join(', ');
   }
 

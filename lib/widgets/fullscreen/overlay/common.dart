@@ -1,4 +1,4 @@
-import 'package:aves/widgets/common/blurred.dart';
+import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
 
 class OverlayButton extends StatelessWidget {
