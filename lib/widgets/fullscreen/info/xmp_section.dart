@@ -24,25 +24,29 @@ class XmpTagSection extends AnimatedWidget {
             children: [
               const SectionRow('XMP Tags'),
               Wrap(
-                children: tags
-                    .map((tag) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ActionChip(
-                            label: Text(tag),
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FilteredCollectionPage(
-                                  collection: collection,
-                                  filter: (entry) => entry.xmpSubjects.contains(tag),
-                                  title: tag,
-                                ),
-                              ),
-                            ),
-                            backgroundColor: Theme.of(context).accentColor,
-                          ),
-                        ))
-                    .toList(),
+                spacing: 8,
+                children: tags.map((tag) {
+                  final borderColor = Theme.of(context).accentColor;
+                  return OutlineButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FilteredCollectionPage(
+                          collection: collection,
+                          filter: (entry) => entry.xmpSubjects.contains(tag),
+                          title: tag,
+                        ),
+                      ),
+                    ),
+                    borderSide: BorderSide(
+                      color: borderColor,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(42),
+                    ),
+                    child: Text(tag),
+                  );
+                }).toList(),
               ),
             ],
           );
