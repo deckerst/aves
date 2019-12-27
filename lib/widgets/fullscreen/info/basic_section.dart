@@ -26,7 +26,7 @@ class BasicSection extends StatelessWidget {
         if (entry.isVideo) ..._buildVideoRows(),
         InfoRow('Resolution', resolutionText),
         InfoRow('Size', formatFilesize(entry.sizeBytes)),
-        InfoRow('Uri', entry.uri),
+        InfoRow('URI', entry.uri),
         InfoRow('Path', entry.path),
       ],
     );
@@ -34,7 +34,6 @@ class BasicSection extends StatelessWidget {
 
   List<Widget> _buildVideoRows() {
     final rotation = entry.catalogMetadata?.videoRotation;
-    if (rotation != null) InfoRow('Rotation', '$rotation°');
     return [
       InfoRow('Duration', entry.durationText),
       if (rotation != null) InfoRow('Rotation', '$rotation°'),
