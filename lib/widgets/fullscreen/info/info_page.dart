@@ -1,5 +1,6 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/coma_divider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
@@ -114,7 +115,7 @@ class SectionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Expanded(child: Divider(color: Colors.white70)),
+        const Expanded(child: ComaDivider(alignment: Alignment.centerRight)),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
@@ -125,7 +126,7 @@ class SectionRow extends StatelessWidget {
             ),
           ),
         ),
-        const Expanded(child: Divider(color: Colors.white70)),
+        const Expanded(child: ComaDivider(alignment: Alignment.centerLeft)),
       ],
     );
   }
