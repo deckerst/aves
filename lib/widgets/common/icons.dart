@@ -1,11 +1,9 @@
 import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/app_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
@@ -89,30 +87,27 @@ class OverlayIcon extends StatelessWidget {
 }
 
 class IconUtils {
-  static Map appNameMap = {};
-
-  static Future<void> init() async {
-    appNameMap = await AndroidAppService.getAppNames();
-  }
-
   static Widget getAlbumIcon(BuildContext context, String albumDirectory) {
-    if (albumDirectory == null) return null;
-    if (androidFileUtils.isCameraPath(albumDirectory)) return Icon(Icons.photo_camera);
-    if (androidFileUtils.isScreenshotsPath(albumDirectory)) return Icon(Icons.smartphone);
-    if (androidFileUtils.isDownloadPath(albumDirectory)) return Icon(Icons.file_download);
-
-    final parts = albumDirectory.split(separator);
-    if (albumDirectory.startsWith(androidFileUtils.externalStorage) && appNameMap.keys.contains(parts.last)) {
-      final packageName = appNameMap[parts.last];
-      return Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.devicePixelRatio,
-        builder: (c, devicePixelRatio, child) => AppIcon(
-          packageName: packageName,
-          size: IconTheme.of(context).size,
-          devicePixelRatio: devicePixelRatio,
-        ),
-      );
+    switch (androidFileUtils.getAlbumType(albumDirectory)) {
+      case AlbumType.Camera:
+        return Icon(Icons.photo_camera);
+      case AlbumType.Screenshots:
+      case AlbumType.ScreenRecordings:
+        return Icon(Icons.smartphone);
+      case AlbumType.Download:
+        return Icon(Icons.file_download);
+      case AlbumType.App:
+        return Selector<MediaQueryData, double>(
+          selector: (c, mq) => mq.devicePixelRatio,
+          builder: (c, devicePixelRatio, child) => AppIcon(
+            packageName: androidFileUtils.getAlbumAppPackageName(albumDirectory),
+            size: IconTheme.of(context).size,
+            devicePixelRatio: devicePixelRatio,
+          ),
+        );
+      case AlbumType.Default:
+      default:
+        return null;
     }
-    return null;
   }
 }

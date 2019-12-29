@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,41 @@ class AllCollectionDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final collection = Provider.of<ImageCollection>(context);
-    final albums = collection.sortedAlbums;
     final tags = collection.sortedTags;
+    final regularAlbums = [], appAlbums = [], specialAlbums = [];
+    for (var album in collection.sortedAlbums) {
+      switch (androidFileUtils.getAlbumType(album)) {
+        case AlbumType.Default:
+          regularAlbums.add(album);
+          break;
+        case AlbumType.App:
+          appAlbums.add(album);
+          break;
+        default:
+          specialAlbums.add(album);
+          break;
+      }
+    }
+
+    final videoEntry = _FilteredCollectionNavTile(
+      collection: collection,
+      leading: const Icon(Icons.video_library),
+      title: 'Videos',
+      filter: (entry) => entry.isVideo,
+    );
+    final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
+          collection: collection,
+          leading: IconUtils.getAlbumIcon(context, album) ?? const Icon(Icons.photo_album),
+          title: collection.getUniqueAlbumName(album, collection.sortedAlbums),
+          filter: (entry) => entry.directory == album,
+        );
+    final buildTagEntry = (tag) => _FilteredCollectionNavTile(
+          collection: collection,
+          leading: const Icon(Icons.label),
+          title: tag,
+          filter: (entry) => entry.xmpSubjects.contains(tag),
+        );
+
     return Drawer(
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.viewInsets.bottom,
@@ -58,22 +92,22 @@ class AllCollectionDrawer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(children: [
-                          Icon(Icons.photo_library),
+                          const Icon(Icons.photo_library),
                           const SizedBox(width: 4),
                           Text('${collection.imageCount}'),
                         ]),
                         Row(children: [
-                          Icon(Icons.video_library),
+                          const Icon(Icons.video_library),
                           const SizedBox(width: 4),
                           Text('${collection.videoCount}'),
                         ]),
                         Row(children: [
-                          Icon(Icons.photo_album),
+                          const Icon(Icons.photo_album),
                           const SizedBox(width: 4),
                           Text('${collection.albumCount}'),
                         ]),
                         Row(children: [
-                          Icon(Icons.label),
+                          const Icon(Icons.label),
                           const SizedBox(width: 4),
                           Text('${collection.tagCount}'),
                         ]),
@@ -83,26 +117,23 @@ class AllCollectionDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            _FilteredCollectionNavTile(
-              collection: collection,
-              leading: Icon(Icons.video_library),
-              title: 'Videos',
-              filter: (entry) => entry.isVideo,
-            ),
-            const Divider(),
-            ...albums.map((album) => _FilteredCollectionNavTile(
-                  collection: collection,
-                  leading: IconUtils.getAlbumIcon(context, album) ?? Icon(Icons.photo_album),
-                  title: collection.getUniqueAlbumName(album, albums),
-                  filter: (entry) => entry.directory == album,
-                )),
-            const Divider(),
-            ...tags.map((tag) => _FilteredCollectionNavTile(
-                  collection: collection,
-                  leading: Icon(Icons.label),
-                  title: tag,
-                  filter: (entry) => entry.xmpSubjects.contains(tag),
-                )),
+            videoEntry,
+            if (specialAlbums.isNotEmpty) ...[
+              const Divider(),
+              ...specialAlbums.map(buildAlbumEntry),
+            ],
+            if (appAlbums.isNotEmpty) ...[
+              const Divider(),
+              ...appAlbums.map(buildAlbumEntry),
+            ],
+            if (regularAlbums.isNotEmpty) ...[
+              const Divider(),
+              ...regularAlbums.map(buildAlbumEntry),
+            ],
+            if (tags.isNotEmpty) ...[
+              const Divider(),
+              ...tags.map(buildTagEntry),
+            ],
           ],
         ),
       ),

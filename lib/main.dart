@@ -2,7 +2,6 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
-import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/media_store_collection_provider.dart';
 import 'package:flutter/material.dart';
@@ -70,9 +69,8 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    androidFileUtils.init();
     // TODO notify when icons are ready for drawer and section header refresh
-    unawaited(IconUtils.init()); // 170ms
+    await androidFileUtils.init(); // 170ms
 
     await settings.init(); // <20ms
   }
