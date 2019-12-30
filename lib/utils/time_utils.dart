@@ -1,17 +1,3 @@
-bool isAtSameYearAs(DateTime d1, DateTime d2) => d1 != null && d2 != null && d1.year == d2.year;
-
-bool isAtSameMonthAs(DateTime d1, DateTime d2) => isAtSameYearAs(d1, d2) && d1.month == d2.month;
-
-bool isAtSameDayAs(DateTime d1, DateTime d2) => isAtSameMonthAs(d1, d2) && d1.day == d2.day;
-
-bool isToday(DateTime d) => isAtSameDayAs(d, DateTime.now());
-
-bool isYesterday(DateTime d) => isAtSameDayAs(d, DateTime.now().subtract(const Duration(days: 1)));
-
-bool isThisMonth(DateTime d) => isAtSameMonthAs(d, DateTime.now());
-
-bool isThisYear(DateTime d) => isAtSameYearAs(d, DateTime.now());
-
 String formatDuration(Duration d) {
   String twoDigits(int n) {
     if (n >= 10) return '$n';
@@ -23,4 +9,20 @@ String formatDuration(Duration d) {
 
   String twoDigitMinutes = twoDigits(d.inMinutes.remainder(Duration.minutesPerHour));
   return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
+}
+
+extension ExtraDateTime on DateTime {
+  bool isAtSameYearAs(DateTime other) => this != null && other != null && this.year == other.year;
+
+  bool isAtSameMonthAs(DateTime other) => isAtSameYearAs(other) && this.month == other.month;
+
+  bool isAtSameDayAs(DateTime other) => isAtSameMonthAs(other) && this.day == other.day;
+
+  bool get isToday => isAtSameDayAs(DateTime.now());
+
+  bool get isYesterday => isAtSameDayAs(DateTime.now().subtract(const Duration(days: 1)));
+
+  bool get isThisMonth => isAtSameMonthAs(DateTime.now());
+
+  bool get isThisYear => isAtSameYearAs(DateTime.now());
 }

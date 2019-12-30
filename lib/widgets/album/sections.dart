@@ -14,9 +14,9 @@ class DaySectionHeader extends StatelessWidget {
   static DateFormat ymd = DateFormat.yMMMMd();
 
   static String _formatDate(DateTime date) {
-    if (isToday(date)) return 'Today';
-    if (isYesterday(date)) return 'Yesterday';
-    if (isThisYear(date)) return md.format(date);
+    if (date.isToday) return 'Today';
+    if (date.isYesterday) return 'Yesterday';
+    if (date.isThisYear) return md.format(date);
     return ymd.format(date);
   }
 
@@ -37,8 +37,8 @@ class MonthSectionHeader extends StatelessWidget {
   static DateFormat ym = DateFormat.yMMMM();
 
   static String _formatDate(DateTime date) {
-    if (isThisMonth(date)) return 'This month';
-    if (isThisYear(date)) return m.format(date);
+    if (date.isThisMonth) return 'This month';
+    if (date.isThisYear) return m.format(date);
     return ym.format(date);
   }
 
