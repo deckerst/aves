@@ -4,6 +4,7 @@ import 'package:after_init/after_init.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -84,7 +85,7 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
               ? widget.builder(bytes)
               : Center(
                   child: Icon(
-                    Icons.error,
+                    OMIcons.error,
                     color: Colors.blueGrey,
                   ),
                 );

@@ -7,6 +7,7 @@ import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -41,7 +42,7 @@ class InfoPageState extends State<InfoPage> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_upward),
+            icon: const Icon(OMIcons.arrowUpward),
             onPressed: () => BackUpNotification().dispatch(context),
             tooltip: 'Back to image',
           ),

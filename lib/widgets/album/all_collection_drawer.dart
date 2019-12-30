@@ -7,6 +7,7 @@ import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class AllCollectionDrawer extends StatelessWidget {
@@ -33,19 +34,19 @@ class AllCollectionDrawer extends StatelessWidget {
 
     final videoEntry = _FilteredCollectionNavTile(
       collection: collection,
-      leading: const Icon(Icons.video_library),
+      leading: const Icon(OMIcons.videoLibrary),
       title: 'Videos',
       filter: (entry) => entry.isVideo,
     );
     final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
           collection: collection,
-          leading: IconUtils.getAlbumIcon(context, album) ?? const Icon(Icons.photo_album),
+          leading: IconUtils.getAlbumIcon(context, album) ?? const Icon(OMIcons.photoAlbum),
           title: collection.getUniqueAlbumName(album, collection.sortedAlbums),
           filter: (entry) => entry.directory == album,
         );
     final buildTagEntry = (tag) => _FilteredCollectionNavTile(
           collection: collection,
-          leading: const Icon(Icons.label),
+          leading: const Icon(OMIcons.label),
           title: tag,
           filter: (entry) => entry.xmpSubjects.contains(tag),
         );
@@ -92,22 +93,22 @@ class AllCollectionDrawer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(children: [
-                          const Icon(Icons.photo_library),
+                          const Icon(OMIcons.photoLibrary),
                           const SizedBox(width: 4),
                           Text('${collection.imageCount}'),
                         ]),
                         Row(children: [
-                          const Icon(Icons.video_library),
+                          const Icon(OMIcons.videoLibrary),
                           const SizedBox(width: 4),
                           Text('${collection.videoCount}'),
                         ]),
                         Row(children: [
-                          const Icon(Icons.photo_album),
+                          const Icon(OMIcons.photoAlbum),
                           const SizedBox(width: 4),
                           Text('${collection.albumCount}'),
                         ]),
                         Row(children: [
-                          const Icon(Icons.label),
+                          const Icon(OMIcons.label),
                           const SizedBox(width: 4),
                           Text('${collection.tagCount}'),
                         ]),

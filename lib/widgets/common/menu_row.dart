@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 
 class MenuRow extends StatelessWidget {
   final String text;
@@ -19,7 +20,7 @@ class MenuRow extends StatelessWidget {
         if (checked != null) ...[
           Opacity(
             opacity: checked ? 1 : 0,
-            child: Icon(Icons.done),
+            child: Icon(OMIcons.done),
           ),
           const SizedBox(width: 8),
         ],

@@ -6,6 +6,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/media_store_collection_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screen/screen.dart';
@@ -81,7 +82,7 @@ class _HomePageState extends State<HomePage> {
       child: FutureBuilder(
           future: _appSetup,
           builder: (context, AsyncSnapshot<void> snapshot) {
-            if (snapshot.hasError) return const Icon(Icons.error);
+            if (snapshot.hasError) return const Icon(OMIcons.error);
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             debugPrint('$runtimeType FutureBuilder builder');
             return const MediaStoreCollectionPage();

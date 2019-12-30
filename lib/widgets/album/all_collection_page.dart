@@ -5,6 +5,7 @@ import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/debug_page.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class AllCollectionPage extends StatelessWidget {
@@ -20,7 +21,7 @@ class AllCollectionPage extends StatelessWidget {
         title: const Text('All'),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(OMIcons.search),
             onPressed: () => showSearch(
               context: context,
               delegate: ImageSearchDelegate(collection),
@@ -54,7 +55,7 @@ class AllCollectionPage extends StatelessWidget {
               ],
               PopupMenuItem(
                 value: AlbumAction.debug,
-                child: MenuRow(text: 'Debug', icon: Icons.whatshot),
+                child: MenuRow(text: 'Debug', icon: OMIcons.whatshot),
               ),
             ],
             onSelected: (action) => _onActionSelected(context, collection, action),

@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/app_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
@@ -15,7 +16,7 @@ class VideoIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: Icons.play_circle_outline,
+      icon: OMIcons.playCircleOutline,
       iconSize: iconSize,
       text: entry.durationText,
     );
@@ -30,7 +31,7 @@ class GifIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: Icons.gif,
+      icon: OMIcons.gif,
       iconSize: iconSize,
     );
   }
@@ -44,7 +45,7 @@ class GpsIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: Icons.place,
+      icon: OMIcons.place,
       iconSize: iconSize,
     );
   }
@@ -90,10 +91,10 @@ class IconUtils {
   static Widget getAlbumIcon(BuildContext context, String albumDirectory) {
     switch (androidFileUtils.getAlbumType(albumDirectory)) {
       case AlbumType.Camera:
-        return Icon(Icons.photo_camera);
+        return Icon(OMIcons.photoCamera);
       case AlbumType.Screenshots:
       case AlbumType.ScreenRecordings:
-        return Icon(Icons.smartphone);
+        return Icon(OMIcons.smartphone);
       case AlbumType.Download:
         return Icon(Icons.file_download);
       case AlbumType.App:

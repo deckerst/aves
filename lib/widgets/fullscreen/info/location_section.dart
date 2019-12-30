@@ -4,6 +4,7 @@ import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 
 class LocationSection extends AnimatedWidget {
   final ImageEntry entry;
@@ -118,17 +119,17 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
         const SizedBox(width: 8),
         Column(children: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(OMIcons.add),
             onPressed: _controller == null ? null : () => _zoomBy(1),
             tooltip: 'Zoom in',
           ),
           IconButton(
-            icon: Icon(Icons.remove),
+            icon: Icon(OMIcons.remove),
             onPressed: _controller == null ? null : () => _zoomBy(-1),
             tooltip: 'Zoom out',
           ),
           IconButton(
-            icon: Icon(Icons.open_in_new),
+            icon: Icon(OMIcons.openInNew),
             onPressed: () => AndroidAppService.openMap(widget.geoUri),
             tooltip: 'Show on map...',
           ),

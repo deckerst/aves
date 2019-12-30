@@ -3,6 +3,7 @@ import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 
 class FullscreenTopOverlay extends StatelessWidget {
   final List<ImageEntry> entries;
@@ -39,7 +40,7 @@ class FullscreenTopOverlay extends StatelessWidget {
             OverlayButton(
               scale: scale,
               child: IconButton(
-                icon: Icon(Icons.share),
+                icon: Icon(OMIcons.share),
                 onPressed: () => onActionSelected?.call(FullscreenAction.share),
                 tooltip: 'Share',
               ),
@@ -48,7 +49,7 @@ class FullscreenTopOverlay extends StatelessWidget {
             OverlayButton(
               scale: scale,
               child: IconButton(
-                icon: Icon(Icons.delete_outline),
+                icon: Icon(OMIcons.delete),
                 onPressed: () => onActionSelected?.call(FullscreenAction.delete),
                 tooltip: 'Delete',
               ),
@@ -60,26 +61,26 @@ class FullscreenTopOverlay extends StatelessWidget {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: FullscreenAction.info,
-                    child: MenuRow(text: 'Info', icon: Icons.info_outline),
+                    child: MenuRow(text: 'Info', icon: OMIcons.info),
                   ),
                   PopupMenuItem(
                     value: FullscreenAction.rename,
-                    child: MenuRow(text: 'Rename', icon: Icons.title),
+                    child: MenuRow(text: 'Rename', icon: OMIcons.title),
                   ),
                   if (entry.canRotate)
                     PopupMenuItem(
                       value: FullscreenAction.rotateCCW,
-                      child: MenuRow(text: 'Rotate left', icon: Icons.rotate_left),
+                      child: MenuRow(text: 'Rotate left', icon: OMIcons.rotateLeft),
                     ),
                   if (entry.canRotate)
                     PopupMenuItem(
                       value: FullscreenAction.rotateCW,
-                      child: MenuRow(text: 'Rotate right', icon: Icons.rotate_right),
+                      child: MenuRow(text: 'Rotate right', icon: OMIcons.rotateRight),
                     ),
                   if (entry.canPrint)
                     PopupMenuItem(
                       value: FullscreenAction.print,
-                      child: MenuRow(text: 'Print', icon: Icons.print),
+                      child: MenuRow(text: 'Print', icon: OMIcons.print),
                     ),
                   const PopupMenuDivider(),
                   const PopupMenuItem(

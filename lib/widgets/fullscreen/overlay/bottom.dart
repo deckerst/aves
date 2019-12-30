@@ -9,6 +9,7 @@ import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -202,7 +203,7 @@ class _LocationRow extends StatelessWidget {
     }
     return Row(
       children: [
-        const Icon(Icons.place, size: _iconSize),
+        const Icon(OMIcons.place, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -222,7 +223,7 @@ class _DateRow extends StatelessWidget {
     final resolution = '${entry.width} × ${entry.height}';
     return Row(
       children: [
-        const Icon(Icons.calendar_today, size: _iconSize),
+        const Icon(OMIcons.calendarToday, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
@@ -240,7 +241,7 @@ class _ShootingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.camera, size: _iconSize),
+        const Icon(OMIcons.camera, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),

@@ -3,6 +3,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 
 class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
   final ImageCollection collection;
@@ -32,7 +33,7 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       if (query.isNotEmpty)
         IconButton(
           tooltip: 'Clear',
-          icon: Icon(Icons.clear),
+          icon: Icon(OMIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);
@@ -78,14 +79,18 @@ class _EmptyContent extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: const [
           Icon(
-            Icons.photo,
+            OMIcons.photo,
             size: 64,
             color: color,
           ),
           SizedBox(height: 16),
           Text(
             'No match',
-            style: TextStyle(color: color),
+            style: TextStyle(
+              color: color,
+              fontSize: 22,
+              fontFamily: 'Concourse',
+            ),
           ),
         ],
       ),
