@@ -5,11 +5,11 @@ import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 
-class XmpTagSection extends AnimatedWidget {
+class XmpTagSectionSliver extends AnimatedWidget {
   final ImageCollection collection;
   final ImageEntry entry;
 
-  XmpTagSection({
+  XmpTagSectionSliver({
     Key key,
     @required this.collection,
     @required this.entry,
@@ -18,29 +18,30 @@ class XmpTagSection extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final tags = entry.xmpSubjects;
-    return tags.isEmpty
-        ? const SizedBox.shrink()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SectionRow('XMP Tags'),
-              Wrap(
-                spacing: 8,
-                children: tags
-                    .map((tag) => OutlineButton(
-                          onPressed: () => _goToTag(context, tag),
-                          borderSide: BorderSide(
-                            color: stringToColor(tag),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(42),
-                          ),
-                          child: Text(tag),
-                        ))
-                    .toList(),
-              ),
-            ],
-          );
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        tags.isEmpty
+            ? []
+            : [
+                const SectionRow('XMP Tags'),
+                Wrap(
+                  spacing: 8,
+                  children: tags
+                      .map((tag) => OutlineButton(
+                            onPressed: () => _goToTag(context, tag),
+                            borderSide: BorderSide(
+                              color: stringToColor(tag),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(42),
+                            ),
+                            child: Text(tag),
+                          ))
+                      .toList(),
+                ),
+              ],
+      ),
+    );
   }
 
   void _goToTag(BuildContext context, String tag) {

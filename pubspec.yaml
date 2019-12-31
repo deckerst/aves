@@ -23,6 +23,7 @@ dependencies:
       url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   flushbar:
   flutter_native_timezone:
+  flutter_staggered_grid_view:
   flutter_sticky_header:
     git:
       url: git://github.com/deckerst/flutter_sticky_header.git

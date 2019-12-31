@@ -51,31 +51,47 @@ class InfoPageState extends State<InfoPage> {
         body: SafeArea(
           child: NotificationListener(
             onNotification: _handleTopScroll,
-            child: Selector<MediaQueryData, Tuple2<Orientation, double>>(
-              selector: (c, mq) => Tuple2(mq.orientation, mq.viewInsets.bottom),
+            child: Selector<MediaQueryData, Tuple2<double, double>>(
+              selector: (c, mq) => Tuple2(mq.size.width, mq.viewInsets.bottom),
               builder: (c, mq, child) {
-                final mqOrientation = mq.item1;
+                final mqWidth = mq.item1;
                 final mqViewInsetsBottom = mq.item2;
+                final split = mqWidth > 400;
 
-                return ListView(
-                  padding: const EdgeInsets.all(8.0) + EdgeInsets.only(bottom: mqViewInsetsBottom),
-                  children: [
-                    if (mqOrientation == Orientation.landscape && entry.hasGps)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: BasicSection(entry: entry)),
-                          const SizedBox(width: 8),
-                          Expanded(child: LocationSection(entry: entry, showTitle: false)),
-                        ],
-                      )
-                    else ...[
-                      BasicSection(entry: entry),
-                      LocationSection(entry: entry, showTitle: true),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: CustomScrollView(
+                    slivers: [
+                      const SliverPadding(
+                        padding: EdgeInsets.only(top: 8),
+                      ),
+                      if (split && entry.hasGps)
+                        SliverToBoxAdapter(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(child: BasicSection(entry: entry)),
+                              const SizedBox(width: 8),
+                              Expanded(child: LocationSection(entry: entry, showTitle: false)),
+                            ],
+                          ),
+                        )
+                      else
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              BasicSection(entry: entry),
+                              LocationSection(entry: entry, showTitle: true),
+                            ],
+                          ),
+                        ),
+                      XmpTagSectionSliver(collection: widget.collection, entry: entry),
+                      MetadataSectionSliver(entry: entry, columnCount: split ? 2 : 1),
+                      SliverPadding(
+                        padding: EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
+                      ),
                     ],
-                    XmpTagSection(collection: widget.collection, entry: entry),
-                    MetadataSection(entry: entry),
-                  ],
+                  ),
                 );
               },
             ),
