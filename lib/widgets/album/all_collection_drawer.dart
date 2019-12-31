@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,10 @@ class AllCollectionDrawer extends StatelessWidget {
         );
     final buildTagEntry = (tag) => _FilteredCollectionNavTile(
           collection: collection,
-          leading: const Icon(OMIcons.label),
+          leading: Icon(
+            OMIcons.label,
+            color: stringToColor(tag),
+          ),
           title: tag,
           filter: (entry) => entry.xmpSubjects.contains(tag),
         );
