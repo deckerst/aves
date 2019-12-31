@@ -4,6 +4,7 @@ import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:provider/provider.dart';
 
 class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
   final ImageCollection collection;
@@ -59,12 +60,13 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       return _EmptyContent();
     }
     return MediaQueryDataProvider(
-      child: ThumbnailCollection(
-        collection: ImageCollection(
+      child: ChangeNotifierProvider<ImageCollection>.value(
+        value: ImageCollection(
           entries: matches,
           groupFactor: collection.groupFactor,
           sortFactor: collection.sortFactor,
         ),
+        child: ThumbnailCollection(),
       ),
     );
   }

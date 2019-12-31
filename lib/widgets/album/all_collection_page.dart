@@ -14,55 +14,61 @@ class AllCollectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint('$runtimeType build');
-    final collection = Provider.of<ImageCollection>(context);
     return ThumbnailCollection(
-      collection: collection,
-      appBar: SliverAppBar(
-        title: const Text('All'),
-        actions: [
-          IconButton(
-            icon: Icon(OMIcons.search),
-            onPressed: () => showSearch(
-              context: context,
-              delegate: ImageSearchDelegate(collection),
-            ),
+      appBar: _AllCollectionAppBar(),
+    );
+  }
+}
+
+class _AllCollectionAppBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final collection = Provider.of<ImageCollection>(context);
+    return SliverAppBar(
+      title: const Text('All'),
+      actions: [
+        IconButton(
+          icon: Icon(OMIcons.search),
+          onPressed: () => showSearch(
+            context: context,
+            delegate: ImageSearchDelegate(collection),
           ),
-          PopupMenuButton<AlbumAction>(
-            itemBuilder: (context) => [
+        ),
+        PopupMenuButton<AlbumAction>(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: AlbumAction.sortByDate,
+              child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
+            ),
+            PopupMenuItem(
+              value: AlbumAction.sortBySize,
+              child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
+            ),
+            const PopupMenuDivider(),
+            if (collection.sortFactor == SortFactor.date) ...[
               PopupMenuItem(
-                value: AlbumAction.sortByDate,
-                child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
+                value: AlbumAction.groupByAlbum,
+                child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
               ),
               PopupMenuItem(
-                value: AlbumAction.sortBySize,
-                child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
+                value: AlbumAction.groupByMonth,
+                child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
+              ),
+              PopupMenuItem(
+                value: AlbumAction.groupByDay,
+                child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
               ),
               const PopupMenuDivider(),
-              if (collection.sortFactor == SortFactor.date) ...[
-                PopupMenuItem(
-                  value: AlbumAction.groupByAlbum,
-                  child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
-                ),
-                PopupMenuItem(
-                  value: AlbumAction.groupByMonth,
-                  child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
-                ),
-                PopupMenuItem(
-                  value: AlbumAction.groupByDay,
-                  child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
-                ),
-                const PopupMenuDivider(),
-              ],
-              PopupMenuItem(
-                value: AlbumAction.debug,
-                child: MenuRow(text: 'Debug', icon: OMIcons.whatshot),
-              ),
             ],
-            onSelected: (action) => _onActionSelected(context, collection, action),
-          ),
-        ],
-        floating: true,
-      ),
+            PopupMenuItem(
+              value: AlbumAction.debug,
+              child: MenuRow(text: 'Debug', icon: OMIcons.whatshot),
+            ),
+          ],
+          onSelected: (action) => _onActionSelected(context, collection, action),
+        ),
+      ],
+      floating: true,
     );
   }
 

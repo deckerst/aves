@@ -18,8 +18,6 @@ class MetadataSection extends StatefulWidget {
 class MetadataSectionState extends State<MetadataSection> {
   Future<Map> _metadataLoader;
 
-  static const int maxValueLength = 140;
-
   @override
   void initState() {
     super.initState();
@@ -46,49 +44,71 @@ class MetadataSectionState extends State<MetadataSection> {
           if (snapshot.hasError) return Text(snapshot.error.toString());
           if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
           final metadataMap = snapshot.data.cast<String, Map>();
-          final directoryNames = metadataMap.keys.toList()..sort();
-
-          Widget content;
-          if (mqWidth > 400) {
-            final first = <String>[], second = <String>[];
-            var firstItemCount = 0, secondItemCount = 0;
-            var firstIndex = 0, secondIndex = directoryNames.length - 1;
-            while (firstIndex <= secondIndex) {
-              if (firstItemCount <= secondItemCount) {
-                final directoryName = directoryNames[firstIndex++];
-                first.add(directoryName);
-                firstItemCount += 2 + metadataMap[directoryName].length;
-              } else {
-                final directoryName = directoryNames[secondIndex--];
-                second.insert(0, directoryName);
-                secondItemCount += 2 + metadataMap[directoryName].length;
-              }
-            }
-            content = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: getMetadataColumn(metadataMap, first)),
-                const SizedBox(width: 8),
-                Expanded(child: getMetadataColumn(metadataMap, second)),
-              ],
-            );
-          } else {
-            content = getMetadataColumn(metadataMap, directoryNames);
-          }
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SectionRow('Metadata'),
-              content,
+              _MetadataSectionContent(
+                metadataMap: metadataMap,
+                split: mqWidth > 400,
+              ),
             ],
           );
         },
       ),
     );
   }
+}
 
-  Widget getMetadataColumn(Map<String, Map> metadataMap, Iterable<String> directoryNames) {
+class _MetadataSectionContent extends StatelessWidget {
+  final Map<String, Map> metadataMap;
+  final List<String> directoryNames;
+  final bool split;
+
+  _MetadataSectionContent({@required this.metadataMap, @required this.split}) : directoryNames = metadataMap.keys.toList()..sort();
+
+  @override
+  Widget build(BuildContext context) {
+    if (split) {
+      final first = <String>[], second = <String>[];
+      var firstItemCount = 0, secondItemCount = 0;
+      var firstIndex = 0, secondIndex = directoryNames.length - 1;
+      while (firstIndex <= secondIndex) {
+        if (firstItemCount <= secondItemCount) {
+          final directoryName = directoryNames[firstIndex++];
+          first.add(directoryName);
+          firstItemCount += 2 + metadataMap[directoryName].length;
+        } else {
+          final directoryName = directoryNames[secondIndex--];
+          second.insert(0, directoryName);
+          secondItemCount += 2 + metadataMap[directoryName].length;
+        }
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: _MetadataColumn(metadataMap: metadataMap, directoryNames: first)),
+          const SizedBox(width: 8),
+          Expanded(child: _MetadataColumn(metadataMap: metadataMap, directoryNames: second)),
+        ],
+      );
+    } else {
+      return _MetadataColumn(metadataMap: metadataMap, directoryNames: directoryNames);
+    }
+  }
+}
+
+class _MetadataColumn extends StatelessWidget {
+  final Map<String, Map> metadataMap;
+  final List<String> directoryNames;
+
+  const _MetadataColumn({@required this.metadataMap, @required this.directoryNames});
+
+  static const int maxValueLength = 140;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

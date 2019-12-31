@@ -10,12 +10,25 @@ import 'package:provider/provider.dart';
 
 final _stopwatch = Stopwatch()..start();
 
-class MediaStoreCollectionProvider extends StatelessWidget {
+class MediaStoreCollectionProvider extends StatefulWidget {
   final Widget child;
+
+  const MediaStoreCollectionProvider({@required this.child});
+
+  @override
+  _MediaStoreCollectionProviderState createState() => _MediaStoreCollectionProviderState();
+}
+
+class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvider> {
+  Future<ImageCollection> collectionFuture;
 
   static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
-  const MediaStoreCollectionProvider({@required this.child});
+  @override
+  void initState() {
+    super.initState();
+    collectionFuture = _create();
+  }
 
   Future<ImageCollection> _create() async {
     debugPrint('$runtimeType _create, elapsed=${_stopwatch.elapsed}');
@@ -57,10 +70,15 @@ class MediaStoreCollectionProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureProvider<ImageCollection>(
-      create: (context) => _create(),
-      initialData: ImageCollection(entries: []),
-      child: child,
+    return FutureBuilder(
+      future: collectionFuture,
+      builder: (futureContext, AsyncSnapshot<ImageCollection> snapshot) {
+        final collection = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : ImageCollection(entries: []);
+        return ChangeNotifierProvider<ImageCollection>.value(
+          value: collection,
+          child: widget.child,
+        );
+      },
     );
   }
 }
