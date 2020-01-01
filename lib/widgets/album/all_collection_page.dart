@@ -20,59 +20,77 @@ class AllCollectionPage extends StatelessWidget {
   }
 }
 
-class _AllCollectionAppBar extends StatelessWidget {
+class _AllCollectionAppBar extends SliverAppBar {
+  _AllCollectionAppBar()
+      : super(
+          title: const Text('All'),
+          actions: _buildActions(),
+          floating: true,
+        );
+
   @override
   Widget build(BuildContext context) {
-    final collection = Provider.of<ImageCollection>(context);
     return SliverAppBar(
       title: const Text('All'),
-      actions: [
-        IconButton(
-          icon: Icon(OMIcons.search),
-          onPressed: () => showSearch(
-            context: context,
-            delegate: ImageSearchDelegate(collection),
-          ),
-        ),
-        PopupMenuButton<AlbumAction>(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: AlbumAction.sortByDate,
-              child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
-            ),
-            PopupMenuItem(
-              value: AlbumAction.sortBySize,
-              child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
-            ),
-            const PopupMenuDivider(),
-            if (collection.sortFactor == SortFactor.date) ...[
-              PopupMenuItem(
-                value: AlbumAction.groupByAlbum,
-                child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
-              ),
-              PopupMenuItem(
-                value: AlbumAction.groupByMonth,
-                child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
-              ),
-              PopupMenuItem(
-                value: AlbumAction.groupByDay,
-                child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
-              ),
-              const PopupMenuDivider(),
-            ],
-            PopupMenuItem(
-              value: AlbumAction.debug,
-              child: MenuRow(text: 'Debug', icon: OMIcons.whatshot),
-            ),
-          ],
-          onSelected: (action) => _onActionSelected(context, collection, action),
-        ),
-      ],
+      actions: _buildActions(),
       floating: true,
     );
   }
 
-  void _onActionSelected(BuildContext context, ImageCollection collection, AlbumAction action) {
+  static List<Widget> _buildActions() {
+    return [
+      Builder(
+        builder: (context) => Consumer<ImageCollection>(
+          builder: (context, collection, child) => IconButton(
+            icon: Icon(OMIcons.search),
+            onPressed: () => showSearch(
+              context: context,
+              delegate: ImageSearchDelegate(collection),
+            ),
+          ),
+        ),
+      ),
+      Builder(
+        builder: (context) => Consumer<ImageCollection>(
+          builder: (context, collection, child) => PopupMenuButton<AlbumAction>(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: AlbumAction.sortByDate,
+                child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
+              ),
+              PopupMenuItem(
+                value: AlbumAction.sortBySize,
+                child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
+              ),
+              const PopupMenuDivider(),
+              if (collection.sortFactor == SortFactor.date) ...[
+                PopupMenuItem(
+                  value: AlbumAction.groupByAlbum,
+                  child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
+                ),
+                PopupMenuItem(
+                  value: AlbumAction.groupByMonth,
+                  child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
+                ),
+                PopupMenuItem(
+                  value: AlbumAction.groupByDay,
+                  child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
+                ),
+                const PopupMenuDivider(),
+              ],
+              PopupMenuItem(
+                value: AlbumAction.debug,
+                child: MenuRow(text: 'Debug', icon: OMIcons.whatshot),
+              ),
+            ],
+            onSelected: (action) => _onActionSelected(context, collection, action),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  static void _onActionSelected(BuildContext context, ImageCollection collection, AlbumAction action) {
     switch (action) {
       case AlbumAction.debug:
         _goToDebug(context, collection);
@@ -100,7 +118,7 @@ class _AllCollectionAppBar extends StatelessWidget {
     }
   }
 
-  Future _goToDebug(BuildContext context, ImageCollection collection) {
+  static Future _goToDebug(BuildContext context, ImageCollection collection) {
     return Navigator.push(
       context,
       MaterialPageRoute(
