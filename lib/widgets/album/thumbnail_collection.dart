@@ -34,11 +34,7 @@ class ThumbnailCollection extends StatelessWidget {
       slivers: [
         if (appBar != null) appBar,
         ...sectionKeys.map((sectionKey) => SectionSliver(
-              // need key to prevent section header mismatch
-              // but it should not be unique key, otherwise sections are rebuilt when changing page
-              key: ValueKey(sectionKey),
               collection: collection,
-              sections: sections,
               sectionKey: sectionKey,
             )),
         SliverToBoxAdapter(
@@ -59,7 +55,7 @@ class ThumbnailCollection extends StatelessWidget {
           return DraggableScrollbar.arrows(
             controller: _scrollController,
             padding: EdgeInsets.only(
-              // top padding to adjust scroll thumb
+              // padding to get scroll thumb below app bar, above nav bar
               top: topPadding,
               bottom: mqViewInsetsBottom,
             ),

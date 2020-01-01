@@ -8,7 +8,7 @@ import 'package:path/path.dart';
 
 class ImageCollection with ChangeNotifier {
   final List<ImageEntry> _rawEntries;
-  Map<dynamic, List<ImageEntry>> sections = {};
+  Map<dynamic, List<ImageEntry>> sections = Map.unmodifiable({});
   GroupFactor groupFactor = GroupFactor.month;
   SortFactor sortFactor = SortFactor.date;
   List<String> sortedAlbums = List.unmodifiable(const Iterable.empty());
@@ -48,23 +48,22 @@ class ImageCollection with ChangeNotifier {
       case SortFactor.date:
         switch (groupFactor) {
           case GroupFactor.album:
-            sections = groupBy(_rawEntries, (entry) => entry.directory);
+            sections = Map.unmodifiable(groupBy(_rawEntries, (entry) => entry.directory));
             break;
           case GroupFactor.month:
-            sections = groupBy(_rawEntries, (entry) => entry.monthTaken);
+            sections = Map.unmodifiable(groupBy(_rawEntries, (entry) => entry.monthTaken));
             break;
           case GroupFactor.day:
-            sections = groupBy(_rawEntries, (entry) => entry.dayTaken);
+            sections = Map.unmodifiable(groupBy(_rawEntries, (entry) => entry.dayTaken));
             break;
         }
         break;
       case SortFactor.size:
-        sections = Map.fromEntries([
-          MapEntry('All', _rawEntries),
-        ]);
+        sections = Map.unmodifiable(Map.fromEntries([
+          MapEntry(null, _rawEntries),
+        ]));
         break;
     }
-    debugPrint('$runtimeType updateSections notifyListeners');
     notifyListeners();
   }
 
