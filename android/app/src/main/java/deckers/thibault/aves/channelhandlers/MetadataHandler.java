@@ -153,7 +153,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         String mimeType = call.argument("mimeType");
         try (InputStream is = new FileInputStream(path)) {
             Map<String, Object> metadataMap = new HashMap<>();
-            if (!Constants.MIME_MP2TS.equalsIgnoreCase(mimeType)) {
+            if (!Constants.MIME_MP2T.equalsIgnoreCase(mimeType)) {
                 Metadata metadata = ImageMetadataReader.readMetadata(is);
 
                 // EXIF Sub-IFD

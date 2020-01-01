@@ -13,7 +13,7 @@ public class Constants {
     public static final String MIME_GIF = "image/gif";
     public static final String MIME_JPEG = "image/jpeg";
     public static final String MIME_PNG = "image/png";
-    public static final String MIME_MP2TS = "video/mp2ts";
+    public static final String MIME_MP2T = "video/mp2t"; // .m2ts
     public static final String MIME_VIDEO = "video";
 
     // video metadata keys, from android.media.MediaMetadataRetriever
