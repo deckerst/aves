@@ -41,17 +41,17 @@ class MetadataDb {
   }
 
   Future<List<CatalogMetadata>> loadMetadataEntries() async {
-    final start = DateTime.now();
+//    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(metadataTable);
     final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
-    debugPrint('$runtimeType loadMetadataEntries complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
+//    debugPrint('$runtimeType loadMetadataEntries complete in ${stopwatch.elapsed.inMilliseconds}ms with ${metadataEntries.length} entries');
     return metadataEntries;
   }
 
   Future<void> saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
     if (metadataEntries == null || metadataEntries.isEmpty) return;
-    final start = DateTime.now();
+    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
     metadataEntries.where((metadata) => metadata != null).forEach((metadata) => batch.insert(
@@ -60,7 +60,7 @@ class MetadataDb {
           conflictAlgorithm: ConflictAlgorithm.replace,
         ));
     await batch.commit(noResult: true);
-    debugPrint('$runtimeType saveMetadata complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${metadataEntries.length} entries');
+    debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms with ${metadataEntries.length} entries');
   }
 
   Future<void> clearAddresses() async {
@@ -70,17 +70,17 @@ class MetadataDb {
   }
 
   Future<List<AddressDetails>> loadAddresses() async {
-    final start = DateTime.now();
+//    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(addressTable);
     final addresses = maps.map((map) => AddressDetails.fromMap(map)).toList();
-    debugPrint('$runtimeType loadAddresses complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${addresses.length} entries');
+//    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${addresses.length} entries');
     return addresses;
   }
 
   Future<void> saveAddresses(Iterable<AddressDetails> addresses) async {
     if (addresses == null || addresses.isEmpty) return;
-    final start = DateTime.now();
+    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
     addresses.where((address) => address != null).forEach((address) => batch.insert(
@@ -89,6 +89,6 @@ class MetadataDb {
           conflictAlgorithm: ConflictAlgorithm.replace,
         ));
     await batch.commit(noResult: true);
-    debugPrint('$runtimeType saveAddresses complete in ${DateTime.now().difference(start).inMilliseconds}ms with ${addresses.length} entries');
+    debugPrint('$runtimeType saveAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${addresses.length} entries');
   }
 }

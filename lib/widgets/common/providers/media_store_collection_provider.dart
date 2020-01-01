@@ -8,8 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:provider/provider.dart';
 
-final _stopwatch = Stopwatch()..start();
-
 class MediaStoreCollectionProvider extends StatefulWidget {
   final Widget child;
 
@@ -31,7 +29,7 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
   }
 
   Future<ImageCollection> _create() async {
-    debugPrint('$runtimeType _create, elapsed=${_stopwatch.elapsed}');
+    final stopwatch = Stopwatch()..start();
     final mediaStoreCollection = ImageCollection(entries: []);
     mediaStoreCollection.groupFactor = settings.collectionGroupFactor;
     mediaStoreCollection.sortFactor = settings.collectionSortFactor;
@@ -49,7 +47,7 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => mediaStoreCollection.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
-            debugPrint('$runtimeType mediastore stream done, elapsed=${_stopwatch.elapsed}');
+            debugPrint('$runtimeType stream complete in ${stopwatch.elapsed.inMilliseconds}ms');
             mediaStoreCollection.updateSections(); // <50ms
             // TODO reduce setup time until here
             mediaStoreCollection.updateAlbums(); // <50ms
@@ -57,7 +55,7 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
             await mediaStoreCollection.catalogEntries(); // <50ms
             await mediaStoreCollection.loadAddresses(); // 350ms
             await mediaStoreCollection.locateEntries(); // <50ms
-            debugPrint('$runtimeType setup end, elapsed=${_stopwatch.elapsed}');
+            debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
           },
           onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),
         );

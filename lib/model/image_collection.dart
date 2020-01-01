@@ -19,7 +19,7 @@ class ImageCollection with ChangeNotifier {
     this.groupFactor,
     this.sortFactor,
   }) : _rawEntries = entries {
-    updateSections();
+    if (_rawEntries.isNotEmpty) updateSections();
   }
 
   int get imageCount => _rawEntries.where((entry) => !entry.isVideo).length;
@@ -64,7 +64,7 @@ class ImageCollection with ChangeNotifier {
         ]);
         break;
     }
-    debugPrint('$runtimeType updateSections');
+    debugPrint('$runtimeType updateSections notifyListeners');
     notifyListeners();
   }
 
@@ -114,7 +114,7 @@ class ImageCollection with ChangeNotifier {
   }
 
   Future<void> loadCatalogMetadata() async {
-    final start = DateTime.now();
+    final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
     _rawEntries.forEach((entry) {
       final contentId = entry.contentId;
@@ -122,12 +122,12 @@ class ImageCollection with ChangeNotifier {
         entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
       }
     });
+    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms with ${saved.length} saved entries');
     onMetadataChanged();
-    debugPrint('$runtimeType loadCatalogMetadata complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
   }
 
   Future<void> loadAddresses() async {
-    final start = DateTime.now();
+    final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadAddresses();
     _rawEntries.forEach((entry) {
       final contentId = entry.contentId;
@@ -135,36 +135,44 @@ class ImageCollection with ChangeNotifier {
         entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
       }
     });
-    debugPrint('$runtimeType loadAddresses complete in ${DateTime.now().difference(start).inSeconds}s with ${saved.length} saved entries');
+    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${saved.length} saved entries');
   }
 
   Future<void> catalogEntries() async {
-    final start = DateTime.now();
+    final stopwatch = Stopwatch()..start();
     final uncataloguedEntries = _rawEntries.where((entry) => !entry.isCatalogued).toList();
+    if (uncataloguedEntries.isEmpty) return;
+
     final newMetadata = <CatalogMetadata>[];
     await Future.forEach<ImageEntry>(uncataloguedEntries, (entry) async {
       await entry.catalog();
-      newMetadata.add(entry.catalogMetadata);
+      if (entry.isCatalogued) {
+        newMetadata.add(entry.catalogMetadata);
+      }
     });
+    if (newMetadata.isEmpty) return;
+
     await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
     onMetadataChanged();
-    debugPrint('$runtimeType catalogEntries complete in ${DateTime.now().difference(start).inSeconds}s with ${newMetadata.length} new entries');
+    debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s with ${newMetadata.length} new entries');
   }
 
   Future<void> locateEntries() async {
-    final start = DateTime.now();
+    final stopwatch = Stopwatch()..start();
     final unlocatedEntries = _rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
     final newAddresses = <AddressDetails>[];
     await Future.forEach<ImageEntry>(unlocatedEntries, (entry) async {
       await entry.locate();
-      newAddresses.add(entry.addressDetails);
-      if (newAddresses.length >= 50) {
-        await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
-        newAddresses.clear();
+      if (entry.isLocated) {
+        newAddresses.add(entry.addressDetails);
+        if (newAddresses.length >= 50) {
+          await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+          newAddresses.clear();
+        }
       }
     });
     await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
-    debugPrint('$runtimeType locateEntries complete in ${DateTime.now().difference(start).inSeconds}s');
+    debugPrint('$runtimeType locateEntries complete in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 
   ImageCollection filter(bool Function(ImageEntry) filter) {

@@ -143,7 +143,9 @@ class ImageEntry {
   Future<void> catalog() async {
     if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
-    metadataChangeNotifier.notifyListeners();
+    if (catalogMetadata != null) {
+      metadataChangeNotifier.notifyListeners();
+    }
   }
 
   Future<void> locate() async {
@@ -169,7 +171,7 @@ class ImageEntry {
         addressChangeNotifier.notifyListeners();
       }
     } catch (exception) {
-      debugPrint('$runtimeType addAddressToMetadata failed with exception=$exception');
+      debugPrint('$runtimeType addAddressToMetadata failed with path=$path coordinates=$coordinates exception=$exception');
     }
   }
 
