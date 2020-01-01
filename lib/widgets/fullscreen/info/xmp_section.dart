@@ -9,6 +9,8 @@ class XmpTagSectionSliver extends AnimatedWidget {
   final ImageCollection collection;
   final ImageEntry entry;
 
+  static const double buttonBorderWidth = 2;
+
   XmpTagSectionSliver({
     Key key,
     @required this.collection,
@@ -24,20 +26,24 @@ class XmpTagSectionSliver extends AnimatedWidget {
             ? []
             : [
                 const SectionRow('XMP Tags'),
-                Wrap(
-                  spacing: 8,
-                  children: tags
-                      .map((tag) => OutlineButton(
-                            onPressed: () => _goToTag(context, tag),
-                            borderSide: BorderSide(
-                              color: stringToColor(tag),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(42),
-                            ),
-                            child: Text(tag),
-                          ))
-                      .toList(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: buttonBorderWidth / 2),
+                  child: Wrap(
+                    spacing: 8,
+                    children: tags
+                        .map((tag) => OutlineButton(
+                              onPressed: () => _goToTag(context, tag),
+                              borderSide: BorderSide(
+                                color: stringToColor(tag),
+                                width: buttonBorderWidth,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(42),
+                              ),
+                              child: Text(tag),
+                            ))
+                        .toList(),
+                  ),
                 ),
               ],
       ),
