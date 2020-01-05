@@ -101,7 +101,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                         scale: scale,
                         child: IconButton(
                           icon: Icon(OMIcons.openInNew),
-                          onPressed: () => AndroidAppService.open(entry.uri, entry.mimeType),
+                          onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                           tooltip: 'Open',
                         ),
                       ),

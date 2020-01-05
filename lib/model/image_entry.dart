@@ -95,6 +95,8 @@ class ImageEntry {
 
   String get filename => basenameWithoutExtension(path);
 
+  String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
+
   bool get isGif => mimeType == MimeTypes.MIME_GIF;
 
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);

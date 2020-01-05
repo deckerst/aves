@@ -35,7 +35,7 @@ class FullscreenActionDelegate {
         _showRenameDialog(context, entry);
         break;
       case FullscreenAction.open:
-        AndroidAppService.open(entry.uri, entry.mimeType);
+        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
         break;
       case FullscreenAction.openMap:
         AndroidAppService.openMap(entry.geoUri);
