@@ -36,7 +36,7 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
 
   @override
   void initState() {
-//    debugPrint('$runtimeType initState path=${entry.path}');
+    debugPrint('$runtimeType initState path=${entry.path}');
     super.initState();
     _entryChangeNotifier = Listenable.merge([
       entry.imageChangeNotifier,
