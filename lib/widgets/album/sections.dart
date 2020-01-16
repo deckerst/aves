@@ -54,36 +54,38 @@ class TitleSectionHeader extends StatelessWidget {
 
   const TitleSectionHeader({Key key, this.leading, this.title}) : super(key: key);
 
+  static const leadingDimension = 32.0;
+  static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
+  static const textStyle = TextStyle(
+    color: Color(0xFFEEEEEE),
+    fontSize: 20,
+    fontFamily: 'Concourse Caps',
+    shadows: [
+      Shadow(
+        offset: Offset(0, 2),
+        blurRadius: 3,
+        color: Color(0xFF212121),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
-    final text = OutlinedText(
-      title,
-      style: TextStyle(
-        color: Colors.grey[200],
-        fontSize: 20,
-        fontFamily: 'Concourse Caps',
-        shadows: [
-          Shadow(
-            offset: const Offset(0, 2),
-            blurRadius: 3,
-            color: Colors.grey[900],
-          ),
-        ],
-      ),
-      outlineColor: Colors.black87,
-      outlineWidth: 2,
-    );
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(16),
-      child: leading != null
-          ? Row(
-              children: [
-                leading,
-                const SizedBox(width: 8),
-                text,
-              ],
-            )
-          : text,
+      child: OutlinedText(
+        leadingBuilder: leading != null
+            ? (context, isShadow) => Container(
+                  padding: leadingPadding,
+                  width: leadingDimension,
+                  height: leadingDimension,
+                  child: isShadow ? null : leading,
+                )
+            : null,
+        text: title,
+        style: textStyle,
+        outlineWidth: 2,
+      ),
     );
   }
 }
