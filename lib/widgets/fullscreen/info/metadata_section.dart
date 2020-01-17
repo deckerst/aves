@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/color_utils.dart';
+import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -112,7 +113,7 @@ class _Directory extends StatelessWidget {
       children: [
         if (directoryName.isNotEmpty)
           Container(
-            decoration: _DirectoryTitleDecoration(
+            decoration: HighlightDecoration(
               color: stringToColor(directoryName),
             ),
             margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -140,16 +141,4 @@ class _Directory extends StatelessWidget {
       ],
     );
   }
-}
-
-class _DirectoryTitleDecoration extends BoxDecoration {
-  _DirectoryTitleDecoration({@required Color color})
-      : super(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            stops: [0, .4, .4],
-            colors: [color, color, Colors.transparent],
-          ),
-        );
 }
