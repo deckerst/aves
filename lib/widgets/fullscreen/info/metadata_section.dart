@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:tuple/tuple.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
   final ImageEntry entry;
@@ -24,10 +25,14 @@ class MetadataSectionSliver extends StatefulWidget {
 }
 
 class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
-  Map _metadata;
+  List<_MetadataDirectory> _metadata = [];
   String _loadedMetadataUri;
 
+  int get columnCount => widget.columnCount;
+
   bool get isVisible => widget.visibleNotifier.value;
+
+  static const int maxValueLength = 140;
 
   @override
   void initState() {
@@ -61,31 +66,51 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final directoryNames = (_metadata?.keys?.toList() ?? [])..sort();
-    return SliverStaggeredGrid.countBuilder(
-      crossAxisCount: widget.columnCount,
-      staggeredTileBuilder: (index) => StaggeredTile.fit(index == 0 ? widget.columnCount : 1),
-      itemBuilder: (context, index) {
-        return index == 0
-            ? const SectionRow('Metadata')
-            : _Directory(
-                metadataMap: _metadata,
-                directoryName: directoryNames[index - 1],
-              );
-      },
-      itemCount: directoryNames.isEmpty ? 0 : directoryNames.length + 1,
-      mainAxisSpacing: 0,
-      crossAxisSpacing: 8,
-    );
+
+    final itemCount = _metadata.isEmpty ? 0 : _metadata.length + 1;
+    final itemBuilder = (context, index) => index == 0 ? const SectionRow('Metadata') : _DirectoryWidget(_metadata[index - 1]);
+
+    // SliverStaggeredGrid is not as efficient as SliverList when there is only one column
+    return columnCount == 1
+        ? SliverList(
+            delegate: SliverChildBuilderDelegate(
+              itemBuilder,
+              childCount: itemCount,
+            ),
+          )
+        : SliverStaggeredGrid.countBuilder(
+            crossAxisCount: columnCount,
+            staggeredTileBuilder: (index) => StaggeredTile.fit(index == 0 ? columnCount : 1),
+            itemBuilder: itemBuilder,
+            itemCount: itemCount,
+            mainAxisSpacing: 0,
+            crossAxisSpacing: 8,
+          );
   }
 
   Future<void> _getMetadata() async {
     if (_loadedMetadataUri == widget.entry.uri) return;
     if (isVisible) {
-      _metadata = await MetadataService.getAllMetadata(widget.entry);
+      final rawMetadata = await MetadataService.getAllMetadata(widget.entry) ?? {};
+      _metadata = rawMetadata.entries.map((kv) {
+        final String directoryName = kv.key as String ?? '';
+        final Map rawTags = kv.value as Map ?? {};
+        final List<Tuple2<String, String>> tags = rawTags.entries
+            .map((kv) {
+              final value = kv.value as String ?? '';
+              if (value.isEmpty) return null;
+              final tagName = kv.key as String ?? '';
+              return Tuple2(tagName, value.length > maxValueLength ? '${value.substring(0, maxValueLength)}…' : value);
+            })
+            .where((tag) => tag != null)
+            .toList()
+              ..sort((a, b) => a.item1.compareTo(b.item1));
+        return _MetadataDirectory(directoryName, tags);
+      }).toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
       _loadedMetadataUri = widget.entry.uri;
     } else {
-      _metadata = null;
+      _metadata = [];
       _loadedMetadataUri = null;
     }
     if (mounted) setState(() {});
@@ -95,50 +120,60 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   bool get wantKeepAlive => true;
 }
 
-class _Directory extends StatelessWidget {
-  final Map metadataMap;
-  final String directoryName;
+class _DirectoryWidget extends StatelessWidget {
+  final _MetadataDirectory directory;
 
-  static const int maxValueLength = 140;
-
-  const _Directory({@required this.metadataMap, @required this.directoryName});
+  const _DirectoryWidget(this.directory);
 
   @override
   Widget build(BuildContext context) {
-    final directory = metadataMap[directoryName];
-    final tagKeys = directory.keys.toList()..sort();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (directoryName.isNotEmpty)
-          Container(
-            decoration: HighlightDecoration(
-              color: stringToColor(directoryName),
-            ),
-            margin: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Text(
-              directoryName,
-              style: const TextStyle(
-                shadows: [
-                  Shadow(
-                    color: Colors.black,
-                    offset: Offset(1, 1),
-                    blurRadius: 2,
-                  )
-                ],
-                fontSize: 18,
-                fontFamily: 'Concourse Caps',
-              ),
-            ),
-          ),
-        ...tagKeys.map((tagKey) {
-          final value = directory[tagKey] as String;
-          if (value == null || value.isEmpty) return const SizedBox.shrink();
-          return InfoRow(tagKey, value.length > maxValueLength ? '${value.substring(0, maxValueLength)}…' : value);
-        }),
+        if (directory.name.isNotEmpty) _DirectoryTitle(directory.name),
+        ...directory.tags.map((tag) => InfoRow(tag.item1, tag.item2)),
         const SizedBox(height: 16),
       ],
     );
   }
+}
+
+class _DirectoryTitle extends StatelessWidget {
+  final String name;
+
+  const _DirectoryTitle(this.name);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        decoration: HighlightDecoration(
+          color: stringToColor(name),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Text(
+          name,
+          style: const TextStyle(
+            shadows: [
+              Shadow(
+                color: Colors.black,
+                offset: Offset(1, 1),
+                blurRadius: 2,
+              )
+            ],
+            fontSize: 18,
+            fontFamily: 'Concourse Caps',
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MetadataDirectory {
+  final String name;
+  final List<Tuple2<String, String>> tags;
+
+  const _MetadataDirectory(this.name, this.tags);
 }
