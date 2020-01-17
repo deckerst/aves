@@ -7,6 +7,7 @@ import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -28,6 +29,7 @@ class InfoPage extends StatefulWidget {
 }
 
 class InfoPageState extends State<InfoPage> {
+  ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
   ImageEntry get entry => widget.entry;
@@ -44,14 +46,6 @@ class InfoPageState extends State<InfoPage> {
 
     return MediaQueryDataProvider(
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(OMIcons.arrowUpward),
-            onPressed: () => BackUpNotification().dispatch(context),
-            tooltip: 'Back to image',
-          ),
-          title: const Text('Info'),
-        ),
         body: SafeArea(
           child: NotificationListener(
             onNotification: _handleTopScroll,
@@ -63,7 +57,17 @@ class InfoPageState extends State<InfoPage> {
                 final split = mqWidth > 400;
 
                 return CustomScrollView(
+                  controller: _scrollController,
                   slivers: [
+                    SliverAppBar(
+                      leading: IconButton(
+                        icon: const Icon(OMIcons.arrowUpward),
+                        onPressed: _goToImage,
+                        tooltip: 'Back to image',
+                      ),
+                      title: const Text('Info'),
+                      floating: true,
+                    ),
                     const SliverPadding(
                       padding: EdgeInsets.only(top: 8),
                     ),
@@ -130,13 +134,22 @@ class InfoPageState extends State<InfoPage> {
           _scrollStartFromTop = false;
         } else if (notification is OverscrollNotification) {
           if (notification.overscroll < 0) {
-            BackUpNotification().dispatch(context);
+            _goToImage();
             _scrollStartFromTop = false;
           }
         }
       }
     }
     return false;
+  }
+
+  void _goToImage() {
+    BackUpNotification().dispatch(context);
+    _scrollController.animateTo(
+      0,
+      duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+      curve: Curves.easeInOut,
+    );
   }
 }
 

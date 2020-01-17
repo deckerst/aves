@@ -208,7 +208,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
-      duration: const Duration(milliseconds: 350),
+      duration: Duration(milliseconds: (300 * timeDilation).toInt()),
       curve: Curves.easeInOut,
     );
   }
