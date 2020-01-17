@@ -10,34 +10,56 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 class MetadataSectionSliver extends StatefulWidget {
   final ImageEntry entry;
   final int columnCount;
+  final ValueNotifier<bool> visibleNotifier;
 
   const MetadataSectionSliver({
     @required this.entry,
     @required this.columnCount,
+    this.visibleNotifier,
   });
 
   @override
   State<StatefulWidget> createState() => _MetadataSectionSliverState();
 }
 
-class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
+class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
   Map _metadata;
+  String _loadedMetadataUri;
+
+  bool get isVisible => widget.visibleNotifier.value;
 
   @override
   void initState() {
     super.initState();
+    _registerWidget(widget);
     _getMetadata();
   }
 
   @override
   void didUpdateWidget(MetadataSectionSliver oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
     _getMetadata();
   }
 
   @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(MetadataSectionSliver widget) {
+    widget.visibleNotifier.addListener(_getMetadata);
+  }
+
+  void _unregisterWidget(MetadataSectionSliver widget) {
+    widget.visibleNotifier.removeListener(_getMetadata);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    debugPrint('$runtimeType build');
+    super.build(context);
     final directoryNames = (_metadata?.keys?.toList() ?? [])..sort();
     return SliverStaggeredGrid.countBuilder(
       crossAxisCount: widget.columnCount,
@@ -57,10 +79,19 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   Future<void> _getMetadata() async {
-    debugPrint('$runtimeType _getMetadata');
-    _metadata = await MetadataService.getAllMetadata(widget.entry);
+    if (_loadedMetadataUri == widget.entry.uri) return;
+    if (isVisible) {
+      _metadata = await MetadataService.getAllMetadata(widget.entry);
+      _loadedMetadataUri = widget.entry.uri;
+    } else {
+      _metadata = null;
+      _loadedMetadataUri = null;
+    }
     if (mounted) setState(() {});
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _Directory extends StatelessWidget {

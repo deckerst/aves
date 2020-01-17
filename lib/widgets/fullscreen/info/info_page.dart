@@ -14,11 +14,13 @@ import 'package:tuple/tuple.dart';
 class InfoPage extends StatefulWidget {
   final ImageCollection collection;
   final ImageEntry entry;
+  final ValueNotifier<bool> visibleNotifier;
 
   const InfoPage({
     Key key,
     @required this.collection,
     @required this.entry,
+    this.visibleNotifier,
   }) : super(key: key);
 
   @override
@@ -97,7 +99,11 @@ class InfoPageState extends State<InfoPage> {
                     ),
                     SliverPadding(
                       padding: horizontalPadding,
-                      sliver: MetadataSectionSliver(entry: entry, columnCount: split ? 2 : 1),
+                      sliver: MetadataSectionSliver(
+                        entry: entry,
+                        columnCount: split ? 2 : 1,
+                        visibleNotifier: widget.visibleNotifier,
+                      ),
                     ),
                     SliverPadding(
                       padding: EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),

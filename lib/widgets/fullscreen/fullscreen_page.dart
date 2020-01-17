@@ -299,6 +299,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
 class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView> {
   bool _isInitialScale = true;
   ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
+  ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
 
   @override
   void initState() {
@@ -343,8 +344,12 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
         physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
-        onPageChanged: widget.onVerticalPageChanged,
+        onPageChanged: (page) {
+          widget.onVerticalPageChanged(page);
+          _infoPageVisibleNotifier.value = page == FullscreenBodyState.infoPage;
+        },
         children: [
+          // fake page for opacity transition between collection and fullscreen views
           const SizedBox(),
           ImagePage(
             collection: widget.collection,
@@ -359,7 +364,11 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               if (notification is BackUpNotification) widget.onImagePageRequested();
               return false;
             },
-            child: InfoPage(collection: widget.collection, entry: widget.entry),
+            child: InfoPage(
+              collection: widget.collection,
+              entry: widget.entry,
+              visibleNotifier: _infoPageVisibleNotifier,
+            ),
           ),
         ],
       ),
