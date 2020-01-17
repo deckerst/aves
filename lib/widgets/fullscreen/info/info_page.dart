@@ -38,6 +38,8 @@ class InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
+
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
@@ -58,15 +60,15 @@ class InfoPageState extends State<InfoPage> {
                 final mqViewInsetsBottom = mq.item2;
                 final split = mqWidth > 400;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: CustomScrollView(
-                    slivers: [
-                      const SliverPadding(
-                        padding: EdgeInsets.only(top: 8),
-                      ),
-                      if (split && entry.hasGps)
-                        SliverToBoxAdapter(
+                return CustomScrollView(
+                  slivers: [
+                    const SliverPadding(
+                      padding: EdgeInsets.only(top: 8),
+                    ),
+                    if (split && entry.hasGps)
+                      SliverPadding(
+                        padding: horizontalPadding,
+                        sliver: SliverToBoxAdapter(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -75,9 +77,12 @@ class InfoPageState extends State<InfoPage> {
                               Expanded(child: LocationSection(entry: entry, showTitle: false)),
                             ],
                           ),
-                        )
-                      else
-                        SliverList(
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: horizontalPadding,
+                        sliver: SliverList(
                           delegate: SliverChildListDelegate(
                             [
                               BasicSection(entry: entry),
@@ -85,13 +90,19 @@ class InfoPageState extends State<InfoPage> {
                             ],
                           ),
                         ),
-                      XmpTagSectionSliver(collection: widget.collection, entry: entry),
-                      MetadataSectionSliver(entry: entry, columnCount: split ? 2 : 1),
-                      SliverPadding(
-                        padding: EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
                       ),
-                    ],
-                  ),
+                    SliverPadding(
+                      padding: horizontalPadding,
+                      sliver: XmpTagSectionSliver(collection: widget.collection, entry: entry),
+                    ),
+                    SliverPadding(
+                      padding: horizontalPadding,
+                      sliver: MetadataSectionSliver(entry: entry, columnCount: split ? 2 : 1),
+                    ),
+                    SliverPadding(
+                      padding: EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
+                    ),
+                  ],
                 );
               },
             ),
