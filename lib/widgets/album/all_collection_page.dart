@@ -28,15 +28,6 @@ class _AllCollectionAppBar extends SliverAppBar {
           floating: true,
         );
 
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      title: const Text('All'),
-      actions: _buildActions(),
-      floating: true,
-    );
-  }
-
   static List<Widget> _buildActions() {
     return [
       Builder(
