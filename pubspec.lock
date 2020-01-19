@@ -121,7 +121,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.0"
+    version: "0.16.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -243,7 +243,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0+hotfix.2"
   petitparser:
     dependency: transitive
     description:
@@ -264,14 +264,14 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.2"
+    version: "3.1.0"
   provider:
     dependency: "direct main"
     description:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   qr:
     dependency: transitive
     description:
@@ -423,7 +423,7 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.5+1"
+    version: "0.10.5+2"
   video_player_platform_interface:
     dependency: transitive
     description:
