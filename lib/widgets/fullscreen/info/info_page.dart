@@ -80,7 +80,13 @@ class InfoPageState extends State<InfoPage> {
                             children: [
                               Expanded(child: BasicSection(entry: entry)),
                               const SizedBox(width: 8),
-                              Expanded(child: LocationSection(entry: entry, showTitle: false)),
+                              Expanded(
+                                child: LocationSection(
+                                  entry: entry,
+                                  showTitle: false,
+                                  visibleNotifier: widget.visibleNotifier,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -92,7 +98,11 @@ class InfoPageState extends State<InfoPage> {
                           delegate: SliverChildListDelegate(
                             [
                               BasicSection(entry: entry),
-                              LocationSection(entry: entry, showTitle: true),
+                              LocationSection(
+                                entry: entry,
+                                showTitle: true,
+                                visibleNotifier: widget.visibleNotifier,
+                              ),
                             ],
                           ),
                         ),

@@ -17,7 +17,7 @@ class MetadataSectionSliver extends StatefulWidget {
   const MetadataSectionSliver({
     @required this.entry,
     @required this.columnCount,
-    this.visibleNotifier,
+    @required this.visibleNotifier,
   });
 
   @override

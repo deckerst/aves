@@ -6,50 +6,94 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
-class LocationSection extends AnimatedWidget {
+class LocationSection extends StatefulWidget {
   final ImageEntry entry;
   final bool showTitle;
+  final ValueNotifier<bool> visibleNotifier;
 
-  LocationSection({
+  const LocationSection({
     Key key,
     @required this.entry,
     @required this.showTitle,
-  }) : super(
-            key: key,
-            listenable: Listenable.merge([
-              entry.metadataChangeNotifier,
-              entry.addressChangeNotifier,
-            ]));
+    @required this.visibleNotifier,
+  }) : super(key: key);
+
+  @override
+  _LocationSectionState createState() => _LocationSectionState();
+}
+
+class _LocationSectionState extends State<LocationSection> {
+  String _loadedUri;
+
+  ImageEntry get entry => widget.entry;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(LocationSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(LocationSection widget) {
+    entry.metadataChangeNotifier.addListener(_handleChange);
+    entry.addressChangeNotifier.addListener(_handleChange);
+    widget.visibleNotifier.addListener(_handleChange);
+  }
+
+  void _unregisterWidget(LocationSection widget) {
+    entry.metadataChangeNotifier.removeListener(_handleChange);
+    entry.addressChangeNotifier.removeListener(_handleChange);
+    widget.visibleNotifier.removeListener(_handleChange);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return !entry.hasGps
-        ? const SizedBox.shrink()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (showTitle)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: SectionRow('Location'),
-                ),
-              ImageMap(
-                markerId: entry.path,
-                latLng: LatLng(
-                  entry.latLng.item1,
-                  entry.latLng.item2,
-                ),
-                geoUri: entry.geoUri,
-                initialZoom: settings.infoMapZoom,
-              ),
-              if (entry.isLocated)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: InfoRow('Address', entry.addressDetails.addressLine),
-                ),
-            ],
-          );
+    final showMap = (_loadedUri == entry.uri) || (entry.hasGps && widget.visibleNotifier.value);
+    if (showMap) {
+      _loadedUri = entry.uri;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.showTitle)
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: SectionRow('Location'),
+            ),
+          ImageMap(
+            markerId: entry.path,
+            latLng: LatLng(
+              entry.latLng.item1,
+              entry.latLng.item2,
+            ),
+            geoUri: entry.geoUri,
+            initialZoom: settings.infoMapZoom,
+          ),
+          if (entry.isLocated)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: InfoRow('Address', entry.addressDetails.addressLine),
+            ),
+        ],
+      );
+    } else {
+      _loadedUri = null;
+      return const SizedBox.shrink();
+    }
   }
+
+  void _handleChange() => setState(() {});
 }
 
 class ImageMap extends StatefulWidget {
