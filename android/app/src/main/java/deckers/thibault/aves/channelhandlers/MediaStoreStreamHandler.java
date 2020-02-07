@@ -3,6 +3,8 @@ package deckers.thibault.aves.channelhandlers;
 import android.app.Activity;
 import android.util.Log;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -29,9 +31,11 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
 
     void fetchAll(Activity activity) {
         Log.d(LOG_TAG, "fetchAll start");
-        Stream<ImageEntry> stream = new MediaStoreImageProvider().fetchAll(activity);
+        Instant start = Instant.now();
+        Stream<ImageEntry> stream = new MediaStoreImageProvider().fetchAll(activity); // 100ms
         stream.map(ImageEntry::toMap)
-                .forEach(entry -> eventSink.success(entry));
+                .forEach(entry -> eventSink.success(entry)); // 250ms
         eventSink.endOfStream();
+        Log.d(LOG_TAG, "fetchAll complete in " + Duration.between(start, Instant.now()).toMillis() + "ms");
     }
 }
