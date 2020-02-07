@@ -95,36 +95,49 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget header = const SizedBox.shrink();
-    if (collection.sortFactor == SortFactor.date) {
-      switch (collection.groupFactor) {
-        case GroupFactor.album:
-          Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey as String);
-          if (albumIcon != null) {
-            albumIcon = Material(
-              type: MaterialType.circle,
-              elevation: 3,
-              color: Colors.transparent,
-              shadowColor: Colors.black,
-              child: albumIcon,
-            );
+    switch (collection.sortFactor) {
+      case SortFactor.date:
+        if (collection.sortFactor == SortFactor.date) {
+          switch (collection.groupFactor) {
+            case GroupFactor.album:
+              header = _buildAlbumSectionHeader(context);
+              break;
+            case GroupFactor.month:
+              header = MonthSectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
+              break;
+            case GroupFactor.day:
+              header = DaySectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
+              break;
           }
-          var title = collection.getUniqueAlbumName(sectionKey as String, sections.keys.cast<String>());
-          header = TitleSectionHeader(
-            key: ValueKey(title),
-            leading: albumIcon,
-            title: title,
-          );
-          break;
-        case GroupFactor.month:
-          header = MonthSectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
-          break;
-        case GroupFactor.day:
-          header = DaySectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
-          break;
-      }
+        }
+        break;
+      case SortFactor.size:
+        break;
+      case SortFactor.name:
+        header = _buildAlbumSectionHeader(context);
+        break;
     }
     return IgnorePointer(
       child: header,
+    );
+  }
+
+  Widget _buildAlbumSectionHeader(BuildContext context) {
+    Widget albumIcon = IconUtils.getAlbumIcon(context, sectionKey as String);
+    if (albumIcon != null) {
+      albumIcon = Material(
+        type: MaterialType.circle,
+        elevation: 3,
+        color: Colors.transparent,
+        shadowColor: Colors.black,
+        child: albumIcon,
+      );
+    }
+    var title = collection.getUniqueAlbumName(sectionKey as String, sections.keys.cast<String>());
+    return TitleSectionHeader(
+      key: ValueKey(title),
+      leading: albumIcon,
+      title: title,
     );
   }
 }

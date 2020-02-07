@@ -63,6 +63,9 @@ class ImageCollection with ChangeNotifier {
           MapEntry(null, _rawEntries),
         ]));
         break;
+      case SortFactor.name:
+        sections = Map.unmodifiable(groupBy(_rawEntries, (entry) => entry.directory));
+        break;
     }
     notifyListeners();
   }
@@ -74,6 +77,9 @@ class ImageCollection with ChangeNotifier {
         break;
       case SortFactor.size:
         _rawEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
+        break;
+      case SortFactor.name:
+        _rawEntries.sort((a, b) => a.path.compareTo(b.path));
         break;
     }
   }
@@ -194,6 +200,6 @@ class ImageCollection with ChangeNotifier {
   }
 }
 
-enum SortFactor { date, size }
+enum SortFactor { date, size, name }
 
 enum GroupFactor { album, month, day }

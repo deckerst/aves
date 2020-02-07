@@ -53,6 +53,10 @@ class _AllCollectionAppBar extends SliverAppBar {
                 value: AlbumAction.sortBySize,
                 child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
               ),
+              PopupMenuItem(
+                value: AlbumAction.sortByName,
+                child: MenuRow(text: 'Sort by name', checked: collection.sortFactor == SortFactor.name),
+              ),
               const PopupMenuDivider(),
               if (collection.sortFactor == SortFactor.date) ...[
                 PopupMenuItem(
@@ -106,6 +110,10 @@ class _AllCollectionAppBar extends SliverAppBar {
         settings.collectionSortFactor = SortFactor.size;
         collection.sort(SortFactor.size);
         break;
+      case AlbumAction.sortByName:
+        settings.collectionSortFactor = SortFactor.name;
+        collection.sort(SortFactor.name);
+        break;
     }
   }
 
@@ -121,4 +129,4 @@ class _AllCollectionAppBar extends SliverAppBar {
   }
 }
 
-enum AlbumAction { debug, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize }
+enum AlbumAction { debug, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
