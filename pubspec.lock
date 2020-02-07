@@ -152,7 +152,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.22"
+    version: "0.5.22+1"
   image:
     dependency: transitive
     description:
@@ -278,7 +278,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.2"
+    version: "4.0.3"
   qr:
     dependency: transitive
     description:
