@@ -16,7 +16,8 @@ class AndroidFileUtils {
     dcimPath = join(externalStorage, 'DCIM');
     downloadPath = join(externalStorage, 'Download');
     picturesPath = join(externalStorage, 'Pictures');
-    appNameMap = await AndroidAppService.getAppNames();
+    appNameMap = await AndroidAppService.getAppNames()
+      ..addAll({'KakaoTalkDownload': 'com.kakao.talk'});
   }
 
   bool isCameraPath(String path) => path != null && path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));
