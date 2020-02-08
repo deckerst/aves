@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -64,7 +66,14 @@ class ImageCollection with ChangeNotifier {
         ]));
         break;
       case SortFactor.name:
-        sections = Map.unmodifiable(groupBy(_rawEntries, (entry) => entry.directory));
+        final byAlbum = groupBy(_rawEntries, (ImageEntry entry) => entry.directory);
+        final albums = byAlbum.keys.toSet();
+        final compare = (a, b) {
+          final ua = getUniqueAlbumName(a, albums);
+          final ub = getUniqueAlbumName(b, albums);
+          return compareAsciiUpperCase(ua, ub);
+        };
+        sections = Map.unmodifiable(SplayTreeMap.from(byAlbum, compare));
         break;
     }
     notifyListeners();
@@ -79,7 +88,7 @@ class ImageCollection with ChangeNotifier {
         _rawEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
         break;
       case SortFactor.name:
-        _rawEntries.sort((a, b) => a.path.compareTo(b.path));
+        _rawEntries.sort((a, b) => compareAsciiUpperCase(a.title, b.title));
         break;
     }
   }
@@ -96,8 +105,8 @@ class ImageCollection with ChangeNotifier {
   }
 
   void updateAlbums() {
-    Set<String> albums = _rawEntries.map((entry) => entry.directory).toSet();
-    List<String> sorted = albums.toList()
+    final albums = _rawEntries.map((entry) => entry.directory).toSet();
+    final sorted = albums.toList()
       ..sort((a, b) {
         final ua = getUniqueAlbumName(a, albums);
         final ub = getUniqueAlbumName(b, albums);
@@ -107,8 +116,8 @@ class ImageCollection with ChangeNotifier {
   }
 
   void updateTags() {
-    Set<String> tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
-    List<String> sorted = tags.toList()..sort(compareAsciiUpperCase);
+    final tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
+    final sorted = tags.toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(sorted);
   }
 
