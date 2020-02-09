@@ -52,7 +52,10 @@ class ThumbnailCollection extends StatelessWidget {
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.viewInsets.bottom,
         builder: (c, mqViewInsetsBottom, child) {
-          return DraggableScrollbar.arrows(
+          return DraggableScrollbar(
+            heightScrollThumb: 48,
+            backgroundColor: Colors.white,
+            scrollThumbBuilder: _thumbArrowBuilder(false),
             controller: _scrollController,
             padding: EdgeInsets.only(
               // padding to get scroll thumb below app bar, above nav bar
@@ -64,5 +67,48 @@ class ThumbnailCollection extends StatelessWidget {
         },
       ),
     );
+  }
+
+  static ScrollThumbBuilder _thumbArrowBuilder(bool alwaysVisibleScrollThumb) {
+    return (
+      Color backgroundColor,
+      Animation<double> thumbAnimation,
+      Animation<double> labelAnimation,
+      double height, {
+      Widget labelText,
+    }) {
+      final scrollThumb = Container(
+        decoration: BoxDecoration(
+          color: Colors.black26,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(12.0),
+          ),
+        ),
+        margin: const EdgeInsets.only(right: .5),
+        padding: const EdgeInsets.all(2),
+        child: ClipPath(
+          child: Container(
+            height: height,
+            width: 20.0,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(12.0),
+              ),
+            ),
+          ),
+          clipper: ArrowClipper(),
+        ),
+      );
+
+      return DraggableScrollbar.buildScrollThumbAndLabel(
+        scrollThumb: scrollThumb,
+        backgroundColor: backgroundColor,
+        thumbAnimation: thumbAnimation,
+        labelAnimation: labelAnimation,
+        labelText: labelText,
+        alwaysVisibleScrollThumb: alwaysVisibleScrollThumb,
+      );
+    };
   }
 }
