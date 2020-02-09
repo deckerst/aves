@@ -1,6 +1,7 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
+import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -63,6 +64,12 @@ class _LocationSectionState extends State<LocationSection> {
     final showMap = (_loadedUri == entry.uri) || (entry.hasGps && widget.visibleNotifier.value);
     if (showMap) {
       _loadedUri = entry.uri;
+      String location;
+      if (entry.isLocated) {
+        location = entry.addressDetails.addressLine;
+      } else if (entry.hasGps) {
+        location = toDMS(entry.latLng).join(', ');
+      }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -80,10 +87,10 @@ class _LocationSectionState extends State<LocationSection> {
             geoUri: entry.geoUri,
             initialZoom: settings.infoMapZoom,
           ),
-          if (entry.isLocated)
+          if (location.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: InfoRow('Address', entry.addressDetails.addressLine),
+              child: InfoRow('Address', location),
             ),
         ],
       );
