@@ -152,7 +152,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.22+1"
+    version: "0.5.23+1"
   image:
     dependency: transitive
     description:
@@ -264,7 +264,7 @@ packages:
       name: photo_view
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.1"
+    version: "0.9.2"
   printing:
     dependency: "direct main"
     description:
@@ -278,7 +278,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.3"
+    version: "4.0.4"
   qr:
     dependency: transitive
     description:
@@ -313,7 +313,7 @@ packages:
       name: shared_preferences_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+4"
+    version: "0.0.1+5"
   shared_preferences_platform_interface:
     dependency: transitive
     description:
@@ -430,7 +430,7 @@ packages:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.6"
+    version: "0.10.7"
   video_player_platform_interface:
     dependency: transitive
     description:

@@ -26,7 +26,7 @@ class AvesApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.grey[900],
         appBarTheme: AppBarTheme(
           textTheme: TextTheme(
-            title: TextStyle(
+            headline6: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               fontFamily: 'Concourse Caps',

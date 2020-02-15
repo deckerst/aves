@@ -67,7 +67,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
           filterQuality: FilterQuality.low,
         );
       },
-      loadingChild: const Center(
+      loadingBuilder: (context, event) => const Center(
         child: SizedBox(
           width: 64,
           height: 64,

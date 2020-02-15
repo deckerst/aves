@@ -126,7 +126,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle(
-      style: Theme.of(context).textTheme.body1.copyWith(
+      style: Theme.of(context).textTheme.bodyText2.copyWith(
         shadows: const [
           Shadow(
             color: Colors.black87,
