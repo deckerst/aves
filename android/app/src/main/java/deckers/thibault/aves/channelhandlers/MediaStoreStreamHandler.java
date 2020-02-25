@@ -32,9 +32,7 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     void fetchAll(Activity activity) {
         Log.d(LOG_TAG, "fetchAll start");
         Instant start = Instant.now();
-        Stream<ImageEntry> stream = new MediaStoreImageProvider().fetchAll(activity); // 100ms
-        stream.map(ImageEntry::toMap)
-                .forEach(entry -> eventSink.success(entry)); // 250ms
+        new MediaStoreImageProvider().fetchAll(activity, eventSink); // 350ms
         eventSink.endOfStream();
         Log.d(LOG_TAG, "fetchAll complete in " + Duration.between(start, Instant.now()).toMillis() + "ms");
     }

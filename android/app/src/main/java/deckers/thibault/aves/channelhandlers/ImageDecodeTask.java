@@ -19,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.function.Consumer;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
@@ -66,12 +67,11 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         Params p = params[0];
         Bitmap bitmap = null;
         if (!this.isCancelled()) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                bitmap = getBytesByResolverThumbnail(p);
-//            } else {
-            bitmap = getBytesByMediaStoreThumbnail(p);
-//                bitmap = getBytesByGlide(p);
-//            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                bitmap = getThumbnailBytesByResolver(p);
+            } else {
+                bitmap = getThumbnailBytesByMediaStore(p);
+            }
         } else {
             Log.d(LOG_TAG, "getImageBytes with uri=" + p.entry.getUri() + " cancelled");
         }
@@ -87,7 +87,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
-    private Bitmap getBytesByResolverThumbnail(Params params) {
+    private Bitmap getThumbnailBytesByResolver(Params params) {
         ImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
@@ -95,13 +95,13 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         ContentResolver resolver = activity.getContentResolver();
         try {
             return resolver.loadThumbnail(entry.getUri(), new Size(width, height), null);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "failed to load thumbnail for uri=" + entry.getUri(), e);
         }
         return null;
     }
 
-    private Bitmap getBytesByMediaStoreThumbnail(Params params) {
+    private Bitmap getThumbnailBytesByMediaStore(Params params) {
         ImageEntry entry = params.entry;
         long contentId = entry.getContentId();
 
@@ -113,12 +113,12 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                 return MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "failed to get thumbnail for uri=" + entry.getUri(), e);
         }
         return null;
     }
 
-    private Bitmap getBytesByGlide(Params params) {
+    private Bitmap getImageBytesByGlide(Params params) {
         ImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;

@@ -1,6 +1,7 @@
 package deckers.thibault.aves.model.provider;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -10,6 +11,7 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -31,6 +33,8 @@ import deckers.thibault.aves.utils.Utils;
 
 public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
+
+    private static Uri FILES_URI = MediaStore.Files.getContentUri("external");
 
     public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
         callback.onFailure();
@@ -87,7 +91,7 @@ public abstract class ImageProvider {
                     if (cursor != null) {
                         if (cursor.moveToNext()) {
                             long contentId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
-                            Uri itemUri = ContentUris.withAppendedId(MediaStoreImageProvider.FILES_URI, contentId);
+                            Uri itemUri = ContentUris.withAppendedId(FILES_URI, contentId);
                             newFields.put("uri", itemUri.toString());
                             newFields.put("contentId", contentId);
                             newFields.put("path", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)));
@@ -168,15 +172,28 @@ public abstract class ImageProvider {
         }
 
         // update fields in media store
-        ContentValues values = new ContentValues();
         int orientationDegrees = MetadataHelper.getOrientationDegreesForExifCode(newOrientationCode);
-        values.put(MediaStore.Images.Media.ORIENTATION, orientationDegrees);
-        if (activity.getContentResolver().update(uri, values, null, null) > 0) {
+        Map<String, Object> newFields = new HashMap<>();
+        newFields.put("orientationDegrees", orientationDegrees);
+
+        ContentResolver contentResolver = activity.getContentResolver();
+        ContentValues values = new ContentValues();
+        // from Android Q, media store update needs to be flagged IS_PENDING first
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+            contentResolver.update(uri, values, null, null);
+            values.clear();
+            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
+        }
+        values.put(MediaStore.MediaColumns.ORIENTATION, orientationDegrees);
+        int updatedRowCount = contentResolver.update(uri, values, null, null);
+        if (updatedRowCount > 0) {
             MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> {
-                Map<String, Object> newFields = new HashMap<>();
-                newFields.put("orientationDegrees", orientationDegrees);
                 callback.onSuccess(newFields);
             });
+        } else {
+            Log.w(LOG_TAG, "failed to update fields in MediaStore for uri=" + uri);
+            callback.onSuccess(newFields);
         }
     }
 
@@ -238,16 +255,29 @@ public abstract class ImageProvider {
         // update fields in media store
         @SuppressWarnings("SuspiciousNameCombination") int rotatedWidth = originalHeight;
         @SuppressWarnings("SuspiciousNameCombination") int rotatedHeight = originalWidth;
+        Map<String, Object> newFields = new HashMap<>();
+        newFields.put("width", rotatedWidth);
+        newFields.put("height", rotatedHeight);
+
+        ContentResolver contentResolver = activity.getContentResolver();
         ContentValues values = new ContentValues();
+        // from Android Q, media store update needs to be flagged IS_PENDING first
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+            contentResolver.update(uri, values, null, null);
+            values.clear();
+            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
+        }
         values.put(MediaStore.MediaColumns.WIDTH, rotatedWidth);
         values.put(MediaStore.MediaColumns.HEIGHT, rotatedHeight);
-        if (activity.getContentResolver().update(uri, values, null, null) > 0) {
+        int updatedRowCount = contentResolver.update(uri, values, null, null);
+        if (updatedRowCount > 0) {
             MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> {
-                Map<String, Object> newFields = new HashMap<>();
-                newFields.put("width", rotatedWidth);
-                newFields.put("height", rotatedHeight);
                 callback.onSuccess(newFields);
             });
+        } else {
+            Log.w(LOG_TAG, "failed to update fields in MediaStore for uri=" + uri);
+            callback.onSuccess(newFields);
         }
     }
 
