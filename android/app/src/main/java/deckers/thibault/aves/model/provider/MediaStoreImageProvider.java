@@ -7,9 +7,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.stream.Stream;
 
-import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
@@ -66,30 +66,30 @@ public class MediaStoreImageProvider extends ImageProvider {
                 while (cursor.moveToNext()) {
                     long contentId = cursor.getLong(idColumn);
                     Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
-                    ImageEntry imageEntry = new ImageEntry(
-                            itemUri,
-                            cursor.getString(pathColumn),
-                            contentId,
-                            cursor.getString(mimeTypeColumn),
-                            cursor.getInt(widthColumn),
-                            cursor.getInt(heightColumn),
-                            cursor.getInt(orientationColumn),
-                            cursor.getLong(sizeColumn),
-                            cursor.getString(titleColumn),
-                            cursor.getLong(dateModifiedColumn),
-                            cursor.getLong(dateTakenColumn),
-                            cursor.getString(bucketDisplayNameColumn),
-                            durationColumn != -1 ? cursor.getLong(durationColumn) : 0
-                    );
+                    int width = cursor.getInt(widthColumn);
                     // TODO TLAD sanitize mimeType
                     // problem: some images were added as image/jpeg, but they're actually image/png
                     // possible solution:
                     // 1) check that MediaStore mimeType matches expected mimeType from file path extension
                     // 2) extract actual mimeType with metadata-extractor
                     // 3) update MediaStore
-                    if (imageEntry.getWidth() > 0) {
-                        // TODO TLAD avoid creating ImageEntry to convert it right after
-                        entrySink.success(ImageEntry.toMap(imageEntry));
+                    if (width > 0) {
+                        entrySink.success(
+                                new HashMap<String, Object>() {{
+                                    put("uri", itemUri.toString());
+                                    put("path", cursor.getString(pathColumn));
+                                    put("contentId", contentId);
+                                    put("mimeType", cursor.getString(mimeTypeColumn));
+                                    put("width", width);
+                                    put("height", cursor.getInt(heightColumn));
+                                    put("orientationDegrees", cursor.getInt(orientationColumn));
+                                    put("sizeBytes", cursor.getLong(sizeColumn));
+                                    put("title", cursor.getString(titleColumn));
+                                    put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
+                                    put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
+                                    put("bucketDisplayName", cursor.getString(bucketDisplayNameColumn));
+                                    put("durationMillis", durationColumn != -1 ? cursor.getLong(durationColumn) : 0);
+                                }});
 //                    } else {
 //                        // some images are incorrectly registered in the MediaStore,
 //                        // they are valid but miss some attributes, such as width, height, orientation

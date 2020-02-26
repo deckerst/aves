@@ -5,7 +5,6 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import deckers.thibault.aves.utils.Constants;
@@ -22,65 +21,23 @@ public class ImageEntry {
     private long dateModifiedSecs, sourceDateTakenMillis;
     private long durationMillis;
 
-    public ImageEntry(Uri uri, String mimeType) {
-        this.contentId = -1;
-        this.uri = uri;
-        this.mimeType = mimeType;
-    }
-
     // uri: content provider uri
     // path: FileUtils.getPathFromUri(activity, itemUri) is useful (for Download, File, etc.) but is slower than directly using `MediaStore.MediaColumns.DATA` from the MediaStore query
-    public ImageEntry(Uri uri, String path, long id, String mimeType, int width, int height, int orientationDegrees, long sizeBytes,
-                      String title, long dateModifiedSecs, long dateTakenMillis, String bucketDisplayName, long durationMillis) {
-        this.uri = uri;
-        this.path = path;
-        this.contentId = id;
-        this.mimeType = mimeType;
-        this.width = width;
-        this.height = height;
-        this.orientationDegrees = orientationDegrees;
-        this.sizeBytes = sizeBytes;
-        this.title = title;
-        this.dateModifiedSecs = dateModifiedSecs;
-        this.sourceDateTakenMillis = dateTakenMillis;
-        this.bucketDisplayName = bucketDisplayName;
-        this.durationMillis = durationMillis;
-    }
 
     public ImageEntry(Map map) {
-        this(
-                Uri.parse((String) map.get("uri")),
-                (String) map.get("path"),
-                toLong(map.get("contentId")),
-                (String) map.get("mimeType"),
-                (int) map.get("width"),
-                (int) map.get("height"),
-                (int) map.get("orientationDegrees"),
-                toLong(map.get("sizeBytes")),
-                (String) map.get("title"),
-                toLong(map.get("dateModifiedSecs")),
-                toLong(map.get("sourceDateTakenMillis")),
-                (String) map.get("bucketDisplayName"),
-                toLong(map.get("durationMillis"))
-        );
-    }
-
-    public static Map toMap(ImageEntry entry) {
-        return new HashMap<String, Object>() {{
-            put("uri", entry.uri.toString());
-            put("path", entry.path);
-            put("contentId", entry.contentId);
-            put("mimeType", entry.mimeType);
-            put("width", entry.width);
-            put("height", entry.height);
-            put("orientationDegrees", entry.orientationDegrees);
-            put("sizeBytes", entry.sizeBytes);
-            put("title", entry.title);
-            put("dateModifiedSecs", entry.dateModifiedSecs);
-            put("sourceDateTakenMillis", entry.sourceDateTakenMillis);
-            put("bucketDisplayName", entry.bucketDisplayName);
-            put("durationMillis", entry.durationMillis);
-        }};
+        this.uri = Uri.parse((String) map.get("uri"));
+        this.path = (String) map.get("path");
+        this.contentId = toLong(map.get("contentId"));
+        this.mimeType = (String) map.get("mimeType");
+        this.width = (int) map.get("width");
+        this.height = (int) map.get("height");
+        this.orientationDegrees = (int) map.get("orientationDegrees");
+        this.sizeBytes = toLong(map.get("sizeBytes"));
+        this.title = (String) map.get("title");
+        this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));
+        this.sourceDateTakenMillis = toLong(map.get("sourceDateTakenMillis"));
+        this.bucketDisplayName = (String) map.get("bucketDisplayName");
+        this.durationMillis = toLong(map.get("durationMillis"));
     }
 
     public Uri getUri() {
