@@ -322,14 +322,22 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   void _registerWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.addListener(_onVerticalPageControllerChange);
+    widget.entry.imageChangeNotifier.addListener(_onImageChange);
   }
 
   void _unregisterWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.removeListener(_onVerticalPageControllerChange);
+    widget.entry.imageChangeNotifier.removeListener(_onImageChange);
   }
 
   void _onVerticalPageControllerChange() {
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(min(1.0, widget.verticalPager.page));
+  }
+
+  void _onImageChange() async {
+    await FileImage(File(widget.entry.path)).evict();
+    // rebuild to refresh the Image inside ImagePage
+    setState(() {});
   }
 
   @override

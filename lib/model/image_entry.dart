@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:path/path.dart';
 import 'package:tuple/tuple.dart';
@@ -232,8 +229,6 @@ class ImageEntry {
     final orientationDegrees = newFields['orientationDegrees'];
     if (orientationDegrees is int) this.orientationDegrees = orientationDegrees;
 
-    // TODO TLAD move cache eviction out of ImageEntry and into ImagePage together with `imageChangeNotifier` handling
-    await FileImage(File(this.path)).evict();
     imageChangeNotifier.notifyListeners();
     return true;
   }

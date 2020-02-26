@@ -86,7 +86,7 @@ class FullscreenActionDelegate {
 
   Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
     final success = await entry.rotate(clockwise: clockwise);
-    _showFeedback(context, success ? 'Done!' : 'Failed');
+    if (!success) _showFeedback(context, 'Failed');
   }
 
   Future<void> _showDeleteDialog(BuildContext context, ImageEntry entry) async {
