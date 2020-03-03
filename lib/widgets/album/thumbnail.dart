@@ -19,8 +19,9 @@ class Thumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = ImagePreview(
       entry: entry,
-      width: extent,
-      height: extent,
+      // TODO TLAD smarter sizing, but shouldn't only depend on `extent` so that it doesn't reload during gridview scaling
+      width: 50,
+      height: 50,
       builder: (bytes) {
         return Hero(
           tag: entry.uri,

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 class ThumbnailCollection extends StatelessWidget {
   final Widget appBar;
   final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<double> _columnCountNotifier = ValueNotifier(4);
 
   ThumbnailCollection({
     Key key,
@@ -29,40 +32,45 @@ class ThumbnailCollection extends StatelessWidget {
       }
     }
 
-    final scrollView = CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        if (appBar != null) appBar,
-        ...sectionKeys.map((sectionKey) => SectionSliver(
-              collection: collection,
-              sectionKey: sectionKey,
-            )),
-        SliverToBoxAdapter(
-          child: Selector<MediaQueryData, double>(
-            selector: (c, mq) => mq.viewInsets.bottom,
-            builder: (c, mqViewInsetsBottom, child) {
-              return SizedBox(height: mqViewInsetsBottom);
-            },
-          ),
-        ),
-      ],
-    );
-
     return SafeArea(
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.viewInsets.bottom,
         builder: (c, mqViewInsetsBottom, child) {
-          return DraggableScrollbar(
-            heightScrollThumb: 48,
-            backgroundColor: Colors.white,
-            scrollThumbBuilder: _thumbArrowBuilder(false),
-            controller: _scrollController,
-            padding: EdgeInsets.only(
-              // padding to get scroll thumb below app bar, above nav bar
-              top: topPadding,
-              bottom: mqViewInsetsBottom,
+          return ValueListenableBuilder(
+            valueListenable: _columnCountNotifier,
+            builder: (context, columnCount, child) => GridScaleGestureDetector(
+              columnCountNotifier: _columnCountNotifier,
+              child: DraggableScrollbar(
+                heightScrollThumb: 48,
+                backgroundColor: Colors.white,
+                scrollThumbBuilder: _thumbArrowBuilder(false),
+                controller: _scrollController,
+                padding: EdgeInsets.only(
+                  // padding to get scroll thumb below app bar, above nav bar
+                  top: topPadding,
+                  bottom: mqViewInsetsBottom,
+                ),
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    if (appBar != null) appBar,
+                    ...sectionKeys.map((sectionKey) => SectionSliver(
+                          collection: collection,
+                          sectionKey: sectionKey,
+                          columnCount: columnCount,
+                        )),
+                    SliverToBoxAdapter(
+                      child: Selector<MediaQueryData, double>(
+                        selector: (c, mq) => mq.viewInsets.bottom,
+                        builder: (c, mqViewInsetsBottom, child) {
+                          return SizedBox(height: mqViewInsetsBottom);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            child: scrollView,
           );
         },
       ),
@@ -110,5 +118,43 @@ class ThumbnailCollection extends StatelessWidget {
         alwaysVisibleScrollThumb: alwaysVisibleScrollThumb,
       );
     };
+  }
+}
+
+class GridScaleGestureDetector extends StatefulWidget {
+  final ValueNotifier<double> columnCountNotifier;
+  final Widget child;
+
+  const GridScaleGestureDetector({
+    @required this.columnCountNotifier,
+    @required this.child,
+  });
+
+  @override
+  _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState();
+}
+
+class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
+  double _start;
+
+  ValueNotifier<double> get countNotifier => widget.columnCountNotifier;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onScaleStart: (details) => _start = countNotifier.value,
+      onScaleUpdate: (details) {
+        final s = details.scale;
+        _updateColumnCount(s <= 1 ? lerpDouble(_start * 2, _start, s) : lerpDouble(_start, _start / 2, s / 6));
+      },
+      onScaleEnd: (details) {
+        _updateColumnCount(countNotifier.value.roundToDouble());
+      },
+      child: widget.child,
+    );
+  }
+
+  void _updateColumnCount(double count) {
+    countNotifier.value = count.clamp(2.0, 8.0);
   }
 }

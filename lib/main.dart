@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     final permissions = await PermissionHandler().requestPermissions([
       PermissionGroup.storage,
       // unredacted EXIF with scoped storage (Android 10+)
-      PermissionGroup.access_media_location,
+      PermissionGroup.accessMediaLocation,
     ]); // 350ms
     if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
       unawaited(SystemNavigator.pop());
