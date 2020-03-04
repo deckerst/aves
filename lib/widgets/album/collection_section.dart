@@ -39,9 +39,12 @@ class SectionSliver extends StatelessWidget {
             child: Selector<MediaQueryData, double>(
               selector: (c, mq) => mq.size.width,
               builder: (c, mqWidth, child) {
-                return Thumbnail(
-                  entry: entry,
-                  extent: mqWidth / columnCount,
+                return MetaData(
+                  metaData: ThumbnailMetadata(index, entry),
+                  child: Thumbnail(
+                    entry: entry,
+                    extent: mqWidth / columnCount,
+                  ),
                 );
               },
             ),
@@ -78,6 +81,14 @@ class SectionSliver extends StatelessWidget {
       ),
     );
   }
+}
+
+// metadata to identify entry from RenderObject hit test during collection scaling
+class ThumbnailMetadata {
+  final int index;
+  final ImageEntry entry;
+
+  const ThumbnailMetadata(this.index, this.entry);
 }
 
 class SectionHeader extends StatelessWidget {

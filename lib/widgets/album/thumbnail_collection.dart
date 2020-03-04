@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:aves/model/image_collection.dart';
+import 'package:aves/widgets/album/collection_scaling.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ class ThumbnailCollection extends StatelessWidget {
   final Widget appBar;
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<double> _columnCountNotifier = ValueNotifier(4);
+  final GlobalKey _scrollableKey = GlobalKey();
 
   ThumbnailCollection({
     Key key,
@@ -36,11 +36,12 @@ class ThumbnailCollection extends StatelessWidget {
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.viewInsets.bottom,
         builder: (c, mqViewInsetsBottom, child) {
-          return ValueListenableBuilder(
-            valueListenable: _columnCountNotifier,
-            builder: (context, columnCount, child) => GridScaleGestureDetector(
-              columnCountNotifier: _columnCountNotifier,
-              child: DraggableScrollbar(
+          return GridScaleGestureDetector(
+            scrollableKey: _scrollableKey,
+            columnCountNotifier: _columnCountNotifier,
+            child: ValueListenableBuilder(
+              valueListenable: _columnCountNotifier,
+              builder: (context, columnCount, child) => DraggableScrollbar(
                 heightScrollThumb: 48,
                 backgroundColor: Colors.white,
                 scrollThumbBuilder: _thumbArrowBuilder(false),
@@ -51,6 +52,7 @@ class ThumbnailCollection extends StatelessWidget {
                   bottom: mqViewInsetsBottom,
                 ),
                 child: CustomScrollView(
+                  key: _scrollableKey,
                   controller: _scrollController,
                   slivers: [
                     if (appBar != null) appBar,
@@ -118,43 +120,5 @@ class ThumbnailCollection extends StatelessWidget {
         alwaysVisibleScrollThumb: alwaysVisibleScrollThumb,
       );
     };
-  }
-}
-
-class GridScaleGestureDetector extends StatefulWidget {
-  final ValueNotifier<double> columnCountNotifier;
-  final Widget child;
-
-  const GridScaleGestureDetector({
-    @required this.columnCountNotifier,
-    @required this.child,
-  });
-
-  @override
-  _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState();
-}
-
-class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
-  double _start;
-
-  ValueNotifier<double> get countNotifier => widget.columnCountNotifier;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onScaleStart: (details) => _start = countNotifier.value,
-      onScaleUpdate: (details) {
-        final s = details.scale;
-        _updateColumnCount(s <= 1 ? lerpDouble(_start * 2, _start, s) : lerpDouble(_start, _start / 2, s / 6));
-      },
-      onScaleEnd: (details) {
-        _updateColumnCount(countNotifier.value.roundToDouble());
-      },
-      child: widget.child,
-    );
-  }
-
-  void _updateColumnCount(double count) {
-    countNotifier.value = count.clamp(2.0, 8.0);
   }
 }
