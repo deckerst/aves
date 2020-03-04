@@ -93,11 +93,12 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         // scroll to show the focal point thumbnail at its new position
         final sliverClosure = _renderSliver;
         final viewportClosure = _renderViewport;
+        final index = _metadata.index;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final scrollableContext = widget.scrollableKey.currentContext;
           final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
           final newExtent = gridSize.width / newColumnCount;
-          final row = _metadata.index ~/ newColumnCount;
+          final row = index ~/ newColumnCount;
           // `Scrollable.ensureVisible` only works on already rendered objects
           // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
           final scrollOffset = viewportClosure.scrollOffsetOf(sliverClosure, (row + 1) * newExtent - gridSize.height / 2);
@@ -127,12 +128,20 @@ class ScaleOverlay extends StatefulWidget {
 }
 
 class _ScaleOverlayState extends State<ScaleOverlay> {
+  bool _init = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _init = true));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: IgnorePointer(
         child: AnimatedContainer(
-          color: Colors.black54,
+          color: _init ? Colors.black54 : Colors.transparent,
           duration: const Duration(milliseconds: 300),
           child: ValueListenableBuilder(
             valueListenable: widget.scaledCountNotifier,

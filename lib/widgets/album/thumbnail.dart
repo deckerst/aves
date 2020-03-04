@@ -85,7 +85,7 @@ class _ThumbnailOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = min(14.0, (extent / 8).roundToDouble());
+    final fontSize = min(14.0, (extent / 8));
     final iconSize = fontSize * 2;
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
