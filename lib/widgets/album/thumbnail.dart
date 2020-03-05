@@ -9,6 +9,9 @@ class Thumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
 
+  static final Color borderColor = Colors.grey.shade700;
+  static const double  borderWidth = .5;
+
   const Thumbnail({
     Key key,
     @required this.entry,
@@ -55,10 +58,12 @@ class Thumbnail extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey.shade700,
-          width: 0.5,
+          color: borderColor,
+          width: borderWidth,
         ),
       ),
+      width: extent,
+      height: extent,
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: [

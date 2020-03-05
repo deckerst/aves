@@ -1,4 +1,5 @@
-import 'dart:ui';
+import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/collection_section.dart';
@@ -63,7 +64,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
           builder: (context) {
             return ScaleOverlay(
               imageEntry: _metadata.entry,
-              thumbnailCenter: thumbnailCenter,
+              center: thumbnailCenter,
               gridWidth: gridWidth,
               scaledCountNotifier: _scaledCountNotifier,
             );
@@ -74,7 +75,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
       onScaleUpdate: (details) {
         if (_scaledCountNotifier == null) return;
         final s = details.scale;
-        _scaledCountNotifier.value = (s <= 1 ? lerpDouble(_start * 2, _start, s) : lerpDouble(_start, _start / 2, s / 6)).clamp(columnCountMin, columnCountMax);
+        _scaledCountNotifier.value = (s <= 1 ? ui.lerpDouble(_start * 2, _start, s) : ui.lerpDouble(_start, _start / 2, s / 6)).clamp(columnCountMin, columnCountMax);
       },
       onScaleEnd: (details) {
         if (_overlayEntry != null) {
@@ -102,7 +103,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
           // `Scrollable.ensureVisible` only works on already rendered objects
           // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
           final scrollOffset = viewportClosure.scrollOffsetOf(sliverClosure, (row + 1) * newExtent - gridSize.height / 2);
-          viewportClosure.offset.jumpTo(scrollOffset);
+          viewportClosure.offset.jumpTo(scrollOffset.clamp(0, double.infinity));
         });
       },
       child: widget.child,
@@ -112,13 +113,13 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
 
 class ScaleOverlay extends StatefulWidget {
   final ImageEntry imageEntry;
-  final Offset thumbnailCenter;
+  final Offset center;
   final double gridWidth;
   final ValueNotifier<double> scaledCountNotifier;
 
   const ScaleOverlay({
     @required this.imageEntry,
-    @required this.thumbnailCenter,
+    @required this.center,
     @required this.gridWidth,
     @required this.scaledCountNotifier,
   });
@@ -129,6 +130,10 @@ class ScaleOverlay extends StatefulWidget {
 
 class _ScaleOverlayState extends State<ScaleOverlay> {
   bool _init = false;
+
+  Offset get center => widget.center;
+
+  double get gridWidth => widget.gridWidth;
 
   @override
   void initState() {
@@ -141,23 +146,58 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
     return MediaQueryDataProvider(
       child: IgnorePointer(
         child: AnimatedContainer(
-          color: _init ? Colors.black54 : Colors.transparent,
+          decoration: _init
+              ? BoxDecoration(
+                  gradient: RadialGradient(
+                    center: FractionalOffset.fromOffsetAndSize(center, MediaQuery.of(context).size),
+                    radius: 1,
+                    colors: [
+                      Colors.black,
+                      Colors.black54,
+                    ],
+                  ),
+                )
+              : const BoxDecoration(
+                  // provide dummy gradient to lerp to the other one during animation
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
           duration: const Duration(milliseconds: 300),
           child: ValueListenableBuilder(
             valueListenable: widget.scaledCountNotifier,
             builder: (context, columnCount, child) {
-              final extent = widget.gridWidth / columnCount;
-              return Stack(
-                children: [
-                  Positioned(
-                    left: widget.thumbnailCenter.dx - extent / 2,
-                    top: widget.thumbnailCenter.dy - extent / 2,
-                    child: Thumbnail(
-                      entry: widget.imageEntry,
-                      extent: extent,
+              final extent = gridWidth / columnCount;
+
+              // keep scaled thumbnail within the screen
+              var dx = .0;
+              if (center.dx - extent / 2 < 0) {
+                dx = extent / 2 - center.dx;
+              } else if (center.dx + extent / 2 > gridWidth) {
+                dx = gridWidth - (center.dx + extent / 2);
+              }
+              final clampedCenter = center.translate(dx, 0);
+
+              return CustomPaint(
+                painter: GridPainter(
+                  center: clampedCenter,
+                  extent: extent,
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: clampedCenter.dx - extent / 2,
+                      top: clampedCenter.dy - extent / 2,
+                      child: Thumbnail(
+                        entry: widget.imageEntry,
+                        extent: extent,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -165,4 +205,40 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
       ),
     );
   }
+}
+
+class GridPainter extends CustomPainter {
+  final Offset center;
+  final double extent;
+
+  const GridPainter({
+    @required this.center,
+    @required this.extent,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..strokeWidth = Thumbnail.borderWidth
+      ..shader = ui.Gradient.radial(
+        center,
+        size.width / 2,
+        [
+          Thumbnail.borderColor,
+          Colors.transparent,
+        ],
+        [
+          min(.5, 2 * extent / size.width),
+          1,
+        ],
+      );
+    final topLeft = center.translate(-extent / 2, -extent / 2);
+    for (int i = -1; i <= 2; i++) {
+      canvas.drawLine(Offset(0, topLeft.dy + extent * i), Offset(size.width, topLeft.dy + extent * i), paint);
+      canvas.drawLine(Offset(topLeft.dx + extent * i, 0), Offset(topLeft.dx + extent * i, size.height), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
