@@ -11,7 +11,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
-  final ValueNotifier<double> columnCountNotifier;
+  final ValueNotifier<int> columnCountNotifier;
   final Widget child;
 
   const GridScaleGestureDetector({
@@ -25,14 +25,14 @@ class GridScaleGestureDetector extends StatefulWidget {
 }
 
 class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
-  double _start;
+  int _start;
   ValueNotifier<double> _scaledCountNotifier;
   OverlayEntry _overlayEntry;
   ThumbnailMetadata _metadata;
   RenderSliver _renderSliver;
   RenderViewport _renderViewport;
 
-  ValueNotifier<double> get countNotifier => widget.columnCountNotifier;
+  ValueNotifier<int> get countNotifier => widget.columnCountNotifier;
 
   static const columnCountMin = 2.0;
   static const columnCountMax = 8.0;
@@ -55,7 +55,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
         _start = countNotifier.value;
-        _scaledCountNotifier = ValueNotifier(_start);
+        _scaledCountNotifier = ValueNotifier(_start.toDouble());
 
         final gridWidth = scrollableBox.size.width;
         final halfExtent = gridWidth / _start / 2;
@@ -84,7 +84,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         }
         if (_scaledCountNotifier == null) return;
 
-        final newColumnCount = _scaledCountNotifier.value.roundToDouble();
+        final newColumnCount = _scaledCountNotifier.value.round();
         _scaledCountNotifier = null;
         if (newColumnCount == countNotifier.value) return;
 

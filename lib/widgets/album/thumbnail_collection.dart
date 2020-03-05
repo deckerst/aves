@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 class ThumbnailCollection extends StatelessWidget {
   final Widget appBar;
   final ScrollController _scrollController = ScrollController();
-  final ValueNotifier<double> _columnCountNotifier = ValueNotifier(4);
+  final ValueNotifier<int> _columnCountNotifier = ValueNotifier(4);
   final GlobalKey _scrollableKey = GlobalKey();
 
   ThumbnailCollection({

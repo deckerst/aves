@@ -1,7 +1,6 @@
 import 'package:aves/model/image_collection.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/sections.dart';
-import 'package:aves/widgets/album/sliver_transition_grid_delegate.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/album/transparent_material_page_route.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -13,7 +12,7 @@ import 'package:provider/provider.dart';
 class SectionSliver extends StatelessWidget {
   final ImageCollection collection;
   final dynamic sectionKey;
-  final double columnCount;
+  final int columnCount;
 
   const SectionSliver({
     Key key,
@@ -54,7 +53,7 @@ class SectionSliver extends StatelessWidget {
         addAutomaticKeepAlives: false,
         addRepaintBoundaries: true,
       ),
-      gridDelegate: SliverTransitionGridDelegateWithCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: columnCount,
       ),
     );
