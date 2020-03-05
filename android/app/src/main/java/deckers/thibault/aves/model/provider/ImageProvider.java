@@ -2,7 +2,6 @@ package deckers.thibault.aves.model.provider;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,8 +32,6 @@ import deckers.thibault.aves.utils.Utils;
 
 public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
-
-    private static Uri FILES_URI = MediaStore.Files.getContentUri("external");
 
     public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
         callback.onFailure();
@@ -81,18 +78,17 @@ public abstract class ImageProvider {
         }
 
         MediaScannerConnection.scanFile(activity, new String[]{oldPath}, new String[]{mimeType}, null);
-        MediaScannerConnection.scanFile(activity, new String[]{newFile.getPath()}, new String[]{mimeType}, (newPath, uri) -> {
-            Log.d(LOG_TAG, "onScanCompleted with newPath=" + newPath + ", uri=" + uri);
-            if (uri != null) {
+        MediaScannerConnection.scanFile(activity, new String[]{newFile.getPath()}, new String[]{mimeType}, (newPath, newUri) -> {
+            Log.d(LOG_TAG, "onScanCompleted with newPath=" + newPath + ", newUri=" + newUri);
+            if (newUri != null) {
                 // we retrieve updated fields as the renamed file became a new entry in the Media Store
                 String[] projection = {MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.TITLE};
                 try {
-                    Cursor cursor = activity.getContentResolver().query(uri, projection, null, null, null);
+                    Cursor cursor = activity.getContentResolver().query(newUri, projection, null, null, null);
                     if (cursor != null) {
                         if (cursor.moveToNext()) {
                             long contentId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
-                            Uri itemUri = ContentUris.withAppendedId(FILES_URI, contentId);
-                            newFields.put("uri", itemUri.toString());
+                            newFields.put("uri", newUri.toString());
                             newFields.put("contentId", contentId);
                             newFields.put("path", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)));
                             newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
