@@ -75,7 +75,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
       onScaleUpdate: (details) {
         if (_scaledCountNotifier == null) return;
         final s = details.scale;
-        _scaledCountNotifier.value = (s <= 1 ? ui.lerpDouble(_start * 2, _start, s) : ui.lerpDouble(_start, _start / 2, s / 6)).clamp(columnCountMin, columnCountMax);
+        _scaledCountNotifier.value = (_start / s).clamp(columnCountMin, columnCountMax);
       },
       onScaleEnd: (details) {
         if (_overlayEntry != null) {
@@ -103,7 +103,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
           // `Scrollable.ensureVisible` only works on already rendered objects
           // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
           final scrollOffset = viewportClosure.scrollOffsetOf(sliverClosure, (row + 1) * newExtent - gridSize.height / 2);
-          viewportClosure.offset.jumpTo(scrollOffset.clamp(0, double.infinity));
+          viewportClosure.offset.jumpTo(scrollOffset.clamp(.0, double.infinity));
         });
       },
       child: widget.child,
@@ -166,7 +166,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     ],
                   ),
                 ),
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 200),
           child: ValueListenableBuilder(
             valueListenable: widget.scaledCountNotifier,
             builder: (context, columnCount, child) {
