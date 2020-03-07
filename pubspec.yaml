@@ -21,6 +21,7 @@ dependencies:
   draggable_scrollbar:
     git:
       url: git://github.com/deckerst/flutter-draggable-scrollbar.git
+  event_bus:
   flushbar:
   flutter_native_timezone:
   flutter_staggered_grid_view:

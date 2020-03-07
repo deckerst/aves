@@ -1,4 +1,4 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/coma_divider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class InfoPage extends StatefulWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final ImageEntry entry;
   final ValueNotifier<bool> visibleNotifier;
 

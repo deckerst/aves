@@ -1,4 +1,5 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_filters.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -7,7 +8,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
-  final ImageCollection collection;
+  final CollectionLens collection;
 
   ImageSearchDelegate(this.collection);
 
@@ -54,19 +55,17 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       showSuggestions(context);
       return const SizedBox.shrink();
     }
-    final lowerQuery = query.toLowerCase();
-    final matches = collection.sortedEntries.where((entry) => entry.search(lowerQuery)).toList();
-    if (matches.isEmpty) {
-      return _EmptyContent();
-    }
     return MediaQueryDataProvider(
-      child: ChangeNotifierProvider<ImageCollection>.value(
-        value: ImageCollection(
-          entries: matches,
+      child: ChangeNotifierProvider<CollectionLens>.value(
+        value: CollectionLens(
+          source: collection.source,
+          filters: [MetadataFilter(query.toLowerCase())],
           groupFactor: collection.groupFactor,
           sortFactor: collection.sortFactor,
         ),
-        child: ThumbnailCollection(),
+        child: ThumbnailCollection(
+          emptyBuilder: (context) => _EmptyContent(),
+        ),
       ),
     );
   }
@@ -76,7 +75,8 @@ class _EmptyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color(0xFF607D8B);
-    return Center(
+    return Align(
+      alignment: const FractionalOffset(.5, .4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [

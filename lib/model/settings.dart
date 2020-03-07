@@ -1,4 +1,4 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';

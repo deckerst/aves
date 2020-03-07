@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
@@ -19,7 +19,7 @@ import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
 
 class FullscreenPage extends AnimatedWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final String initialUri;
 
   const FullscreenPage({
@@ -44,7 +44,7 @@ class FullscreenPage extends AnimatedWidget {
 }
 
 class FullscreenBody extends StatefulWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final String initialUri;
 
   const FullscreenBody({
@@ -69,7 +69,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   FullscreenActionDelegate _actionDelegate;
   final List<Tuple2<String, VideoPlayerController>> _videoControllers = [];
 
-  ImageCollection get collection => widget.collection;
+  CollectionLens get collection => widget.collection;
 
   List<ImageEntry> get entries => widget.collection.sortedEntries;
 
@@ -273,7 +273,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 }
 
 class FullscreenVerticalPageView extends StatefulWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final ImageEntry entry;
   final List<Tuple2<String, VideoPlayerController>> videoControllers;
   final PageController horizontalPager, verticalPager;

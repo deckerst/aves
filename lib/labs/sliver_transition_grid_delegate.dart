@@ -164,7 +164,7 @@ class SliverTransitionGridTileLayout extends SliverGridLayout {
 
     if (t != 0) {
       final index = childCount - 1;
-      var maxScrollOffset = lerpDouble(_getScrollOffset(index, floor), _getScrollOffset(index, ceil), t) + current.mainAxisStride;
+      final maxScrollOffset = lerpDouble(_getScrollOffset(index, floor), _getScrollOffset(index, ceil), t) + current.mainAxisStride;
       return maxScrollOffset;
     }
 

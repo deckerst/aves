@@ -1,4 +1,5 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/sections.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:provider/provider.dart';
 
 class SectionSliver extends StatelessWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final dynamic sectionKey;
   final int columnCount;
 
@@ -91,7 +92,7 @@ class ThumbnailMetadata {
 }
 
 class SectionHeader extends StatelessWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final Map<dynamic, List<ImageEntry>> sections;
   final dynamic sectionKey;
 
@@ -143,7 +144,7 @@ class SectionHeader extends StatelessWidget {
         child: albumIcon,
       );
     }
-    var title = collection.getUniqueAlbumName(sectionKey as String, sections.keys.cast<String>());
+    final title = CollectionSource.getUniqueAlbumName(sectionKey as String, sections.keys.cast<String>());
     return TitleSectionHeader(
       key: ValueKey(title),
       leading: albumIcon,

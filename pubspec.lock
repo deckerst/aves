@@ -80,6 +80,13 @@ packages:
       url: "git://github.com/deckerst/flutter-draggable-scrollbar.git"
     source: git
     version: "0.0.4"
+  event_bus:
+    dependency: "direct main"
+    description:
+      name: event_bus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.1"
   flushbar:
     dependency: "direct main"
     description:

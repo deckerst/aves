@@ -1,4 +1,5 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_filters.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
@@ -6,7 +7,7 @@ import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 
 class XmpTagSectionSliver extends AnimatedWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final ImageEntry entry;
 
   static const double buttonBorderWidth = 2;
@@ -56,7 +57,7 @@ class XmpTagSectionSliver extends AnimatedWidget {
       MaterialPageRoute(
         builder: (context) => FilteredCollectionPage(
           collection: collection,
-          filter: (entry) => entry.xmpSubjects.contains(tag),
+          filter: TagFilter(tag),
           title: tag,
         ),
       ),

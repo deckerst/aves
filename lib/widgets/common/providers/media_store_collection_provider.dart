@@ -1,4 +1,5 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -18,7 +19,7 @@ class MediaStoreCollectionProvider extends StatefulWidget {
 }
 
 class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvider> {
-  Future<ImageCollection> collectionFuture;
+  Future<CollectionLens> collectionFuture;
 
   static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
@@ -28,11 +29,14 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
     collectionFuture = _create();
   }
 
-  Future<ImageCollection> _create() async {
+  Future<CollectionLens> _create() async {
     final stopwatch = Stopwatch()..start();
-    final mediaStoreCollection = ImageCollection(entries: []);
-    mediaStoreCollection.groupFactor = settings.collectionGroupFactor;
-    mediaStoreCollection.sortFactor = settings.collectionSortFactor;
+    final mediaStoreSource = CollectionSource();
+    final mediaStoreBaseLens = CollectionLens(
+      source: mediaStoreSource,
+      groupFactor: settings.collectionGroupFactor,
+      sortFactor: settings.collectionSortFactor,
+    );
 
     await metadataDb.init(); // <20ms
     final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
@@ -44,17 +48,18 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
       settings.catalogTimeZone = currentTimeZone;
     }
 
+    final allEntries = List<ImageEntry>();
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
-          (entryMap) => mediaStoreCollection.add(ImageEntry.fromMap(entryMap)),
+          (entryMap) => allEntries.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {
             debugPrint('$runtimeType stream complete in ${stopwatch.elapsed.inMilliseconds}ms');
-            mediaStoreCollection.updateSections(); // <50ms
+            mediaStoreSource.addAll(allEntries);
             // TODO reduce setup time until here
-            mediaStoreCollection.updateAlbums(); // <50ms
-            await mediaStoreCollection.loadCatalogMetadata(); // 650ms
-            await mediaStoreCollection.catalogEntries(); // <50ms
-            await mediaStoreCollection.loadAddresses(); // 350ms
-            await mediaStoreCollection.locateEntries(); // <50ms
+            mediaStoreSource.updateAlbums(); // <50ms
+            await mediaStoreSource.loadCatalogMetadata(); // 650ms
+            await mediaStoreSource.catalogEntries(); // <50ms
+            await mediaStoreSource.loadAddresses(); // 350ms
+            await mediaStoreSource.locateEntries(); // <50ms
             debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
           },
           onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),
@@ -63,16 +68,16 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
     // TODO split image fetch AND/OR cache fetch across sessions
     await ImageFileService.getImageEntries(); // 460ms
 
-    return mediaStoreCollection;
+    return mediaStoreBaseLens;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: collectionFuture,
-      builder: (futureContext, AsyncSnapshot<ImageCollection> snapshot) {
-        final collection = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : ImageCollection(entries: []);
-        return ChangeNotifierProvider<ImageCollection>.value(
+      builder: (futureContext, AsyncSnapshot<CollectionLens> snapshot) {
+        final collection = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : CollectionLens.empty();
+        return ChangeNotifierProvider<CollectionLens>.value(
           value: collection,
           child: widget.child,
         );

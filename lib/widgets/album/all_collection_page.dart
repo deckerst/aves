@@ -1,4 +1,4 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/album/search_delegate.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
@@ -31,7 +31,7 @@ class _AllCollectionAppBar extends SliverAppBar {
   static List<Widget> _buildActions() {
     return [
       Builder(
-        builder: (context) => Consumer<ImageCollection>(
+        builder: (context) => Consumer<CollectionLens>(
           builder: (context, collection, child) => IconButton(
             icon: Icon(OMIcons.search),
             onPressed: () => showSearch(
@@ -42,7 +42,7 @@ class _AllCollectionAppBar extends SliverAppBar {
         ),
       ),
       Builder(
-        builder: (context) => Consumer<ImageCollection>(
+        builder: (context) => Consumer<CollectionLens>(
           builder: (context, collection, child) => PopupMenuButton<AlbumAction>(
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -85,7 +85,7 @@ class _AllCollectionAppBar extends SliverAppBar {
     ];
   }
 
-  static void _onActionSelected(BuildContext context, ImageCollection collection, AlbumAction action) {
+  static void _onActionSelected(BuildContext context, CollectionLens collection, AlbumAction action) {
     switch (action) {
       case AlbumAction.debug:
         _goToDebug(context, collection);
@@ -117,7 +117,7 @@ class _AllCollectionAppBar extends SliverAppBar {
     }
   }
 
-  static Future _goToDebug(BuildContext context, ImageCollection collection) {
+  static Future _goToDebug(BuildContext context, CollectionLens collection) {
     return Navigator.push(
       context,
       MaterialPageRoute(

@@ -10,7 +10,7 @@ class Thumbnail extends StatelessWidget {
   final double extent;
 
   static final Color borderColor = Colors.grey.shade700;
-  static const double  borderWidth = .5;
+  static const double borderWidth = .5;
 
   const Thumbnail({
     Key key,

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/video.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
 
 class ImagePage extends StatefulWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final PageController pageController;
   final VoidCallback onTap;
   final ValueChanged<int> onPageChanged;

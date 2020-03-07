@@ -1,4 +1,4 @@
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/widgets/album/collection_scaling.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 class ThumbnailCollection extends StatelessWidget {
   final Widget appBar;
+  final WidgetBuilder emptyBuilder;
+
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<int> _columnCountNotifier = ValueNotifier(4);
   final GlobalKey _scrollableKey = GlobalKey();
@@ -14,11 +16,12 @@ class ThumbnailCollection extends StatelessWidget {
   ThumbnailCollection({
     Key key,
     this.appBar,
+    this.emptyBuilder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final collection = Provider.of<ImageCollection>(context);
+    final collection = Provider.of<CollectionLens>(context);
     final sections = collection.sections;
     final sectionKeys = sections.keys.toList();
 
@@ -56,6 +59,12 @@ class ThumbnailCollection extends StatelessWidget {
                   controller: _scrollController,
                   slivers: [
                     if (appBar != null) appBar,
+                    if (collection.isEmpty && emptyBuilder != null)
+                      SliverFillViewport(
+                        delegate: SliverChildListDelegate(
+                          [emptyBuilder(context)],
+                        ),
+                      ),
                     ...sectionKeys.map((sectionKey) => SectionSliver(
                           collection: collection,
                           sectionKey: sectionKey,

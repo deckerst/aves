@@ -1,7 +1,8 @@
 import 'dart:ui';
 
-import 'package:aves/model/image_collection.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/collection_filters.dart';
+import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
@@ -16,10 +17,11 @@ class AllCollectionDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final collection = Provider.of<ImageCollection>(context);
-    final tags = collection.sortedTags;
+    final collection = Provider.of<CollectionLens>(context);
+    final source = collection.source;
+    final tags = source.sortedTags;
     final regularAlbums = [], appAlbums = [], specialAlbums = [];
-    for (var album in collection.sortedAlbums) {
+    for (var album in source.sortedAlbums) {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.Default:
           regularAlbums.add(album);
@@ -37,13 +39,13 @@ class AllCollectionDrawer extends StatelessWidget {
       collection: collection,
       leading: const Icon(OMIcons.videoLibrary),
       title: 'Videos',
-      filter: (entry) => entry.isVideo,
+      filter: VideoFilter(),
     );
     final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
           collection: collection,
           leading: IconUtils.getAlbumIcon(context, album) ?? const Icon(OMIcons.photoAlbum),
-          title: collection.getUniqueAlbumName(album, collection.sortedAlbums),
-          filter: (entry) => entry.directory == album,
+          title: CollectionSource.getUniqueAlbumName(album, source.sortedAlbums),
+          filter: AlbumFilter(album),
         );
     final buildTagEntry = (tag) => _FilteredCollectionNavTile(
           collection: collection,
@@ -52,7 +54,7 @@ class AllCollectionDrawer extends StatelessWidget {
             color: stringToColor(tag),
           ),
           title: tag,
-          filter: (entry) => entry.xmpSubjects.contains(tag),
+          filter: TagFilter(tag),
         );
 
     return Drawer(
@@ -109,12 +111,12 @@ class AllCollectionDrawer extends StatelessWidget {
                         Row(children: [
                           const Icon(OMIcons.photoAlbum),
                           const SizedBox(width: 4),
-                          Text('${collection.albumCount}'),
+                          Text('${source.albumCount}'),
                         ]),
                         Row(children: [
                           const Icon(OMIcons.label),
                           const SizedBox(width: 4),
-                          Text('${collection.tagCount}'),
+                          Text('${source.tagCount}'),
                         ]),
                       ],
                     ),
@@ -147,10 +149,10 @@ class AllCollectionDrawer extends StatelessWidget {
 }
 
 class _FilteredCollectionNavTile extends StatelessWidget {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final Widget leading;
   final String title;
-  final bool Function(ImageEntry) filter;
+  final CollectionFilter filter;
 
   const _FilteredCollectionNavTile({
     @required this.collection,

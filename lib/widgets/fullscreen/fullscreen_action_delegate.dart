@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aves/model/image_collection.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:flushbar/flushbar.dart';
@@ -12,7 +12,7 @@ import 'package:printing/printing.dart';
 enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share }
 
 class FullscreenActionDelegate {
-  final ImageCollection collection;
+  final CollectionLens collection;
   final VoidCallback showInfo;
 
   FullscreenActionDelegate({
@@ -109,7 +109,7 @@ class FullscreenActionDelegate {
       },
     );
     if (confirmed == null || !confirmed) return;
-    if (!await collection.delete(entry)) {
+    if (!await collection.source.delete(entry)) {
       _showFeedback(context, 'Failed');
     } else if (collection.sortedEntries.isEmpty) {
       Navigator.pop(context);
