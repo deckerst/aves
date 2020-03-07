@@ -10,8 +10,6 @@ class XmpTagSectionSliver extends AnimatedWidget {
   final CollectionLens collection;
   final ImageEntry entry;
 
-  static const double buttonBorderWidth = 2;
-
   XmpTagSectionSliver({
     Key key,
     @required this.collection,
@@ -28,20 +26,13 @@ class XmpTagSectionSliver extends AnimatedWidget {
             : [
                 const SectionRow('XMP Tags'),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: buttonBorderWidth / 2),
+                  padding: const EdgeInsets.symmetric(horizontal: TagButton.buttonBorderWidth / 2),
                   child: Wrap(
                     spacing: 8,
                     children: tags
-                        .map((tag) => OutlineButton(
+                        .map((tag) => TagButton(
+                              tag: tag,
                               onPressed: () => _goToTag(context, tag),
-                              borderSide: BorderSide(
-                                color: stringToColor(tag),
-                                width: buttonBorderWidth,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(42),
-                              ),
-                              child: Text(tag),
                             ))
                         .toList(),
                   ),
@@ -61,6 +52,33 @@ class XmpTagSectionSliver extends AnimatedWidget {
           title: tag,
         ),
       ),
+    );
+  }
+}
+
+class TagButton extends StatelessWidget {
+  final String tag;
+  final VoidCallback onPressed;
+
+  const TagButton({
+    @required this.tag,
+    @required this.onPressed,
+  });
+
+  static const double buttonBorderWidth = 2;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlineButton(
+      onPressed: onPressed,
+      borderSide: BorderSide(
+        color: stringToColor(tag),
+        width: buttonBorderWidth,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(42),
+      ),
+      child: Text(tag),
     );
   }
 }
