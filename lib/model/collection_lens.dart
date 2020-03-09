@@ -64,6 +64,8 @@ class CollectionLens with ChangeNotifier {
 
   List<ImageEntry> get sortedEntries => List.unmodifiable(sections.entries.expand((e) => e.value));
 
+  Object heroTag(ImageEntry entry) => '$hashCode${entry.uri}';
+
   void sort(SortFactor sortFactor) {
     this.sortFactor = sortFactor;
     updateSections();

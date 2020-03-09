@@ -44,6 +44,7 @@ class SectionSliver extends StatelessWidget {
                   child: Thumbnail(
                     entry: entry,
                     extent: mqWidth / columnCount,
+                    heroTag: collection.heroTag(entry),
                   ),
                 );
               },

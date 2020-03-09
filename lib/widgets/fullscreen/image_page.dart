@@ -80,7 +80,7 @@ class ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin
             ),
             backgroundDecoration: backgroundDecoration,
             heroAttributes: PhotoViewHeroAttributes(
-              tag: entry.uri,
+              tag: widget.collection.heroTag(entry),
               transitionOnUserGestures: true,
             ),
             scaleStateChangedCallback: scaleStateChangedCallback,

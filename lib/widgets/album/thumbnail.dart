@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 class Thumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
+  final Object heroTag;
 
   static final Color borderColor = Colors.grey.shade700;
   static const double borderWidth = .5;
@@ -16,6 +17,7 @@ class Thumbnail extends StatelessWidget {
     Key key,
     @required this.entry,
     @required this.extent,
+    this.heroTag,
   }) : super(key: key);
 
   @override
@@ -26,33 +28,36 @@ class Thumbnail extends StatelessWidget {
       width: 50,
       height: 50,
       builder: (bytes) {
-        return Hero(
-          tag: entry.uri,
-          flightShuttleBuilder: (
-            BuildContext flightContext,
-            Animation<double> animation,
-            HeroFlightDirection flightDirection,
-            BuildContext fromHeroContext,
-            BuildContext toHeroContext,
-          ) {
-            // use LayoutBuilder only during hero animation
-            return LayoutBuilder(builder: (context, constraints) {
-              final dim = min(constraints.maxWidth, constraints.maxHeight);
-              return Image.memory(
-                bytes,
-                width: dim,
-                height: dim,
-                fit: BoxFit.cover,
-              );
-            });
-          },
-          child: Image.memory(
-            bytes,
-            width: extent,
-            height: extent,
-            fit: BoxFit.cover,
-          ),
+        final image = Image.memory(
+          bytes,
+          width: extent,
+          height: extent,
+          fit: BoxFit.cover,
         );
+        return heroTag == null
+            ? image
+            : Hero(
+                tag: heroTag,
+                flightShuttleBuilder: (
+                  BuildContext flightContext,
+                  Animation<double> animation,
+                  HeroFlightDirection flightDirection,
+                  BuildContext fromHeroContext,
+                  BuildContext toHeroContext,
+                ) {
+                  // use LayoutBuilder only during hero animation
+                  return LayoutBuilder(builder: (context, constraints) {
+                    final dim = min(constraints.maxWidth, constraints.maxHeight);
+                    return Image.memory(
+                      bytes,
+                      width: dim,
+                      height: dim,
+                      fit: BoxFit.cover,
+                    );
+                  });
+                },
+                child: image,
+              );
       },
     );
     return Container(
