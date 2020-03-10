@@ -26,10 +26,10 @@ class CollectionLens with ChangeNotifier {
   })  : this.filters = filters ?? [],
         this.groupFactor = groupFactor ?? GroupFactor.month,
         this.sortFactor = sortFactor ?? SortFactor.date {
-    _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onSourceChanged()));
-    _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onSourceChanged()));
+    _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));
+    _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entry)));
     _subscriptions.add(source.eventBus.on<MetadataChangedEvent>().listen((e) => onMetadataChanged()));
-    onSourceChanged();
+    onEntryAdded();
   }
 
   factory CollectionLens.empty() {
@@ -68,27 +68,46 @@ class CollectionLens with ChangeNotifier {
 
   void sort(SortFactor sortFactor) {
     this.sortFactor = sortFactor;
-    updateSections();
+    _applySort();
+    _applyGroup();
   }
 
   void group(GroupFactor groupFactor) {
     this.groupFactor = groupFactor;
-    updateSections();
+    _applyGroup();
   }
 
-  void updateSections() {
-    _applySort();
+  void _applyFilters() {
+    final rawEntries = source.entries;
+    _filteredEntries = List.of(filters.isEmpty ? rawEntries : rawEntries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
+  }
+
+  void _applySort() {
+    switch (sortFactor) {
+      case SortFactor.date:
+        _filteredEntries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
+        break;
+      case SortFactor.size:
+        _filteredEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
+        break;
+      case SortFactor.name:
+        _filteredEntries.sort((a, b) => compareAsciiUpperCase(a.title, b.title));
+        break;
+    }
+  }
+
+  void _applyGroup() {
     switch (sortFactor) {
       case SortFactor.date:
         switch (groupFactor) {
           case GroupFactor.album:
-            sections = Map.unmodifiable(groupBy(_filteredEntries, (entry) => entry.directory));
+            sections = Map.unmodifiable(groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory));
             break;
           case GroupFactor.month:
-            sections = Map.unmodifiable(groupBy(_filteredEntries, (entry) => entry.monthTaken));
+            sections = Map.unmodifiable(groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.monthTaken));
             break;
           case GroupFactor.day:
-            sections = Map.unmodifiable(groupBy(_filteredEntries, (entry) => entry.dayTaken));
+            sections = Map.unmodifiable(groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.dayTaken));
             break;
         }
         break;
@@ -111,46 +130,24 @@ class CollectionLens with ChangeNotifier {
     notifyListeners();
   }
 
-  void _applySort() {
-    switch (sortFactor) {
-      case SortFactor.date:
-        _filteredEntries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
-        break;
-      case SortFactor.size:
-        _filteredEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
-        break;
-      case SortFactor.name:
-        _filteredEntries.sort((a, b) => compareAsciiUpperCase(a.title, b.title));
-        break;
-    }
-  }
-
-//  void add(ImageEntry entry) => _rawEntries.add(entry);
-//
-//  Future<bool> delete(ImageEntry entry) async {
-//    final success = await ImageFileService.delete(entry);
-//    if (success) {
-//      _rawEntries.remove(entry);
-//      updateSections();
-//    }
-//    return success;
-//  }
-
-  void onSourceChanged() {
+  void onEntryAdded() {
     _applyFilters();
-    updateSections();
+    _applySort();
+    _applyGroup();
   }
 
-  void _applyFilters() {
-    final rawEntries = source.entries;
-    _filteredEntries = List.of(filters.isEmpty ? rawEntries : rawEntries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
-    updateSections();
+  void onEntryRemoved(ImageEntry entry) {
+    // do not apply sort/group as section order change would surprise the user while browsing
+    _filteredEntries.remove(entry);
+    sections.forEach((key, entries) => entries.remove(entry));
+    notifyListeners();
   }
 
   void onMetadataChanged() {
     _applyFilters();
     // metadata dates impact sorting and grouping
-    updateSections();
+    _applySort();
+    _applyGroup();
   }
 }
 
