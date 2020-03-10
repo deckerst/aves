@@ -44,17 +44,8 @@ class ThumbnailCollection extends StatelessWidget {
             columnCountNotifier: _columnCountNotifier,
             child: ValueListenableBuilder(
               valueListenable: _columnCountNotifier,
-              builder: (context, columnCount, child) => DraggableScrollbar(
-                heightScrollThumb: 48,
-                backgroundColor: Colors.white,
-                scrollThumbBuilder: _thumbArrowBuilder(false),
-                controller: _scrollController,
-                padding: EdgeInsets.only(
-                  // padding to get scroll thumb below app bar, above nav bar
-                  top: topPadding,
-                  bottom: mqViewInsetsBottom,
-                ),
-                child: CustomScrollView(
+              builder: (context, columnCount, child) {
+                final scrollView = CustomScrollView(
                   key: _scrollableKey,
                   controller: _scrollController,
                   slivers: [
@@ -79,8 +70,21 @@ class ThumbnailCollection extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-              ),
+                );
+
+                return DraggableScrollbar(
+                  heightScrollThumb: 48,
+                  backgroundColor: Colors.white,
+                  scrollThumbBuilder: _thumbArrowBuilder(false),
+                  controller: _scrollController,
+                  padding: EdgeInsets.only(
+                    // padding to get scroll thumb below app bar, above nav bar
+                    top: topPadding,
+                    bottom: mqViewInsetsBottom,
+                  ),
+                  child: scrollView,
+                );
+              },
             ),
           );
         },
@@ -103,11 +107,11 @@ class ThumbnailCollection extends StatelessWidget {
             Radius.circular(12.0),
           ),
         ),
+        height: height,
         margin: const EdgeInsets.only(right: .5),
         padding: const EdgeInsets.all(2),
         child: ClipPath(
           child: Container(
-            height: height,
             width: 20.0,
             decoration: BoxDecoration(
               color: backgroundColor,
