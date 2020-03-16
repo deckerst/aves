@@ -29,6 +29,11 @@ class VideoFilter extends CollectionFilter {
   bool filter(ImageEntry entry) => entry.isVideo;
 }
 
+class GifFilter extends CollectionFilter {
+  @override
+  bool filter(ImageEntry entry) => entry.isGif;
+}
+
 class MetadataFilter extends CollectionFilter {
   final String value;
 

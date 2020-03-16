@@ -84,6 +84,12 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
       ),
     );
 
+    final gifEntry = _FilteredCollectionNavTile(
+      collection: collection,
+      leading: const Icon(OMIcons.gif),
+      title: 'GIFs',
+      filter: GifFilter(),
+    );
     final videoEntry = _FilteredCollectionNavTile(
       collection: collection,
       leading: const Icon(OMIcons.videoLibrary),
@@ -139,6 +145,7 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
               child: Column(
                 children: [
                   header,
+                  gifEntry,
                   videoEntry,
                   if (specialAlbums.isNotEmpty) ...[
                     const Divider(),
