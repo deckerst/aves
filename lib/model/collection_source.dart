@@ -1,5 +1,4 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:collection/collection.dart';
@@ -121,7 +120,7 @@ class CollectionSource {
   }
 
   Future<bool> delete(ImageEntry entry) async {
-    final success = await ImageFileService.delete(entry);
+    final success = await entry.delete();
     if (success) {
       _rawEntries.remove(entry);
       eventBus.fire(EntryRemovedEvent(entry));

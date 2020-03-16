@@ -20,6 +20,8 @@ class FullscreenActionDelegate {
     @required this.showInfo,
   });
 
+  bool get hasCollection => collection != null;
+
   void onActionSelected(BuildContext context, ImageEntry entry, FullscreenAction action) {
     switch (action) {
       case FullscreenAction.delete:
@@ -109,10 +111,14 @@ class FullscreenActionDelegate {
       },
     );
     if (confirmed == null || !confirmed) return;
-    if (!await collection.source.delete(entry)) {
-      _showFeedback(context, 'Failed');
-    } else if (collection.sortedEntries.isEmpty) {
-      Navigator.pop(context);
+    if (hasCollection) {
+      if (!await collection.source.delete(entry)) {
+        _showFeedback(context, 'Failed');
+      } else if (collection.sortedEntries.isEmpty) {
+        Navigator.pop(context);
+      }
+    } else if (await entry.delete()) {
+      exit(0);
     }
   }
 

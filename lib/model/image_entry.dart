@@ -103,6 +103,10 @@ class ImageEntry {
 
   bool get isCatalogued => catalogMetadata != null;
 
+  bool get canPrint => !isVideo;
+
+  bool get canRotate => mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG;
+
   double get aspectRatio {
     if (width == 0 || height == 0) return 1;
     if (isVideo && isCatalogued) {
@@ -214,10 +218,6 @@ class ImageEntry {
     return true;
   }
 
-  bool get canPrint => !isVideo;
-
-  bool get canRotate => mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG;
-
   Future<bool> rotate({@required bool clockwise}) async {
     final newFields = await ImageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
@@ -232,4 +232,6 @@ class ImageEntry {
     imageChangeNotifier.notifyListeners();
     return true;
   }
+
+  Future<bool> delete() => ImageFileService.delete(this);
 }
