@@ -157,7 +157,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.only(top: _interRowPadding),
                   width: subRowWidth,
-                  child: _LocationRow(entry),
+                  child: _LocationRow(entry: entry),
                 ),
               if (twoColumns)
                 Padding(
@@ -190,10 +190,13 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
   }
 }
 
-class _LocationRow extends StatelessWidget {
+class _LocationRow extends AnimatedWidget {
   final ImageEntry entry;
 
-  const _LocationRow(this.entry);
+  _LocationRow({
+    Key key,
+    this.entry,
+  }) : super(key: key, listenable: entry.addressChangeNotifier);
 
   @override
   Widget build(BuildContext context) {

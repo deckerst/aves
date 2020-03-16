@@ -85,6 +85,9 @@ class _HomePageState extends State<HomePage> {
     final sharedExtra = await ViewerService.getSharedEntry();
     if (sharedExtra != null) {
       _sharedEntry = await ImageFileService.getImageEntry(sharedExtra['uri'], sharedExtra['mimeType']);
+      // cataloging is essential for geolocation and video rotation
+      await _sharedEntry.catalog();
+      unawaited(_sharedEntry.locate());
     }
   }
 
