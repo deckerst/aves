@@ -15,19 +15,19 @@ class BasicSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
-    final dateText = '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}';
-    final resolutionText = '${entry.width} × ${entry.height}${(entry.isVideo || entry.isGif) ? '' : ' (${entry.megaPixels} MP)'}';
+    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}' : '?';
+    final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${(entry.isVideo || entry.isGif || entry.megaPixels == null) ? '' : ' (${entry.megaPixels} MP)'}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InfoRow('Title', entry.title),
+        InfoRow('Title', entry.title ?? '?'),
         InfoRow('Date', dateText),
         if (entry.isVideo) ..._buildVideoRows(),
         InfoRow('Resolution', resolutionText),
-        InfoRow('Size', formatFilesize(entry.sizeBytes)),
-        InfoRow('URI', entry.uri),
-        InfoRow('Path', entry.path),
+        InfoRow('Size', entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : '?'),
+        InfoRow('URI', entry.uri ?? '?'),
+        InfoRow('Path', entry.path ?? '?'),
       ],
     );
   }

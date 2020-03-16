@@ -33,6 +33,10 @@ import deckers.thibault.aves.utils.Utils;
 public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
 
+    public void fetchSingle(final Activity activity, final Uri uri, final String mimeType, final ImageOpCallback callback) {
+        callback.onFailure();
+    }
+
     public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
         callback.onFailure();
     }

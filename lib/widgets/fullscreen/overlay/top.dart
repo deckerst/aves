@@ -34,7 +34,7 @@ class FullscreenTopOverlay extends StatelessWidget {
           children: [
             OverlayButton(
               scale: scale,
-              child: const BackButton(),
+              child: ModalRoute.of(context)?.canPop ?? true ? const BackButton(): const CloseButton(),
             ),
             const Spacer(),
             OverlayButton(

@@ -5,9 +5,7 @@ import android.util.Log;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.stream.Stream;
 
-import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.EventChannel;

@@ -12,9 +12,11 @@ public class ImageProviderFactory {
         if (scheme != null) {
             switch (scheme) {
                 case ContentResolver.SCHEME_CONTENT: // content://
-                    String authority = uri.getAuthority();
-                    if (authority != null) {
-                        switch (authority) {
+                    // a URI's authority is [userinfo@]host[:port]
+                    // but we only want the host when comparing to MediaStore's "authority"
+                    String host = uri.getHost();
+                    if (host != null) {
+                        switch (host) {
                             case MediaStore.AUTHORITY:
                                 return new MediaStoreImageProvider();
 //                            case Constants.DOWNLOADS_AUTHORITY:

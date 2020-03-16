@@ -16,12 +16,14 @@ import 'package:tuple/tuple.dart';
 class FullscreenBottomOverlay extends StatefulWidget {
   final List<ImageEntry> entries;
   final int index;
+  final bool showPosition;
   final EdgeInsets viewInsets, viewPadding;
 
   const FullscreenBottomOverlay({
     Key key,
     @required this.entries,
     @required this.index,
+    @required this.showPosition,
     this.viewInsets,
     this.viewPadding,
   }) : super(key: key);
@@ -91,7 +93,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                         : _FullscreenBottomOverlayContent(
                             entry: _lastEntry,
                             details: _lastDetails,
-                            position: '${widget.index + 1}/${widget.entries.length}',
+                            position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
                             maxWidth: overlayContentMaxWidth,
                           );
                   },
@@ -149,7 +151,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
             children: [
               SizedBox(
                 width: maxWidth,
-                child: Text('$position – ${entry.title}', strutStyle: Constants.overflowStrutStyle),
+                child: Text('${position != null ? '$position – ' : ''}${entry.title ?? '?'}', strutStyle: Constants.overflowStrutStyle),
               ),
               if (entry.hasGps)
                 Container(
@@ -219,8 +221,8 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
-    final dateText = '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}';
-    final resolution = '${entry.width} × ${entry.height}';
+    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}' : '?';
+    final resolution = '${entry.width ?? '?'} × ${entry.height ?? '?'}';
     return Row(
       children: [
         const Icon(OMIcons.calendarToday, size: _iconSize),

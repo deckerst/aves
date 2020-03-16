@@ -1,9 +1,13 @@
+import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/viewer_service.dart';
 import 'package:aves/widgets/album/all_collection_drawer.dart';
 import 'package:aves/widgets/album/all_collection_page.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/media_store_collection_provider.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -47,6 +51,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  ImageEntry _sharedEntry;
   Future<void> _appSetup;
 
   @override
@@ -60,6 +65,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _setup() async {
     debugPrint('$runtimeType _setup');
+
     // TODO reduce permission check time
     final permissions = await PermissionHandler().requestPermissions([
       PermissionGroup.storage,
@@ -75,6 +81,11 @@ class _HomePageState extends State<HomePage> {
     await androidFileUtils.init(); // 170ms
 
     await settings.init(); // <20ms
+
+    final sharedExtra = await ViewerService.getSharedEntry();
+    if (sharedExtra != null) {
+      _sharedEntry = await ImageFileService.getImageEntry(sharedExtra['uri'], sharedExtra['mimeType']);
+    }
   }
 
   @override
@@ -86,7 +97,11 @@ class _HomePageState extends State<HomePage> {
             if (snapshot.hasError) return const Icon(OMIcons.error);
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             debugPrint('$runtimeType FutureBuilder builder');
-            return const MediaStoreCollectionPage();
+            return _sharedEntry != null
+                ? SingleFullscreenPage(
+                    entry: _sharedEntry,
+                  )
+                : const MediaStoreCollectionPage();
           }),
     );
   }

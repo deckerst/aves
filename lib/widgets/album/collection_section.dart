@@ -75,9 +75,9 @@ class SectionSliver extends StatelessWidget {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        pageBuilder: (context, _, __) => FullscreenPage(
+        pageBuilder: (context, _, __) => MultiFullscreenPage(
           collection: collection,
-          initialUri: entry.uri,
+          initialEntry: entry,
         ),
       ),
     );

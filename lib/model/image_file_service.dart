@@ -15,6 +15,20 @@ class ImageFileService {
     }
   }
 
+  static Future<ImageEntry> getImageEntry(String uri, String mimeType) async {
+    debugPrint('getImageEntry for uri=$uri, mimeType=$mimeType');
+    try {
+      final result = await platform.invokeMethod('getImageEntry', <String, dynamic>{
+        'uri': uri,
+        'mimeType': mimeType,
+      }) as Map;
+      return ImageEntry.fromMap(result);
+    } on PlatformException catch (e) {
+      debugPrint('getImageEntry failed with exception=${e.message}');
+    }
+    return null;
+  }
+
   static Future<Uint8List> getImageBytes(ImageEntry entry, int width, int height) async {
     if (width > 0 && height > 0) {
 //      debugPrint('getImageBytes width=$width path=${entry.path}');

@@ -35,6 +35,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 mediaStoreStreamHandler.fetchAll(activity);
                 result.success(null);
                 break;
+            case "getImageEntry":
+                getImageEntry(call, result);
+                break;
             case "getImageBytes":
                 getImageBytes(call, result);
                 break;
@@ -72,6 +75,34 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         String uri = call.argument("uri");
         imageDecodeTaskManager.cancel(uri);
         result.success(null);
+    }
+
+    private void getImageEntry(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        String uriString = call.argument("uri");
+        String mimeType = call.argument("mimeType");
+        if (uriString == null || mimeType == null) {
+            result.error("getImageEntry-args", "failed because of missing arguments", null);
+            return;
+        }
+
+        Uri uri = Uri.parse(uriString);
+        ImageProvider provider = ImageProviderFactory.getProvider(uri);
+        if (provider == null) {
+            result.error("getImageEntry-provider", "failed to find provider for uri=" + uriString, null);
+            return;
+        }
+
+        provider.fetchSingle(activity, uri, mimeType, new ImageProvider.ImageOpCallback() {
+            @Override
+            public void onSuccess(Map<String, Object> entry) {
+                result.success(entry);
+            }
+
+            @Override
+            public void onFailure() {
+                result.error("getImageEntry-failure", "failed to get entry for uri=" + uriString, null);
+            }
+        });
     }
 
     private void delete(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {

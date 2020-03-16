@@ -8,8 +8,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
@@ -38,15 +40,32 @@ public class MediaStoreImageProvider extends ImageProvider {
     }).flatMap(Stream::of).toArray(String[]::new);
 
     public void fetchAll(Activity activity, EventChannel.EventSink entrySink) {
-        fetch(activity, entrySink, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION);
-        fetch(activity, entrySink, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION);
+        fetchFrom(activity, entrySink::success, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, null, null);
+        fetchFrom(activity, entrySink::success, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, null, null);
     }
 
-    private void fetch(final Activity activity, EventChannel.EventSink entrySink, final Uri contentUri, String[] projection) {
+    @Override
+    public void fetchSingle(final Activity activity, final Uri uri, final String mimeType, final ImageOpCallback callback) {
+        long id = ContentUris.parseId(uri);
+        String selection = MediaStore.MediaColumns._ID + "=?";
+        String[] selectionArgs = new String[]{String.valueOf(id)};
+        int entryCount = 0;
+        if (mimeType.startsWith(Constants.MIME_IMAGE)) {
+            entryCount = fetchFrom(activity, callback::onSuccess, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs);
+        } else if (mimeType.startsWith(Constants.MIME_VIDEO)) {
+            entryCount = fetchFrom(activity, callback::onSuccess, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs);
+        }
+        if (entryCount == 0) {
+            callback.onFailure();
+        }
+    }
+
+    private int fetchFrom(final Activity activity, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection, String selection, String[] selectionArgs) {
         String orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
+        int entryCount = 0;
 
         try {
-            Cursor cursor = activity.getContentResolver().query(contentUri, projection, null, null, orderBy);
+            Cursor cursor = activity.getContentResolver().query(contentUri, projection, selection, selectionArgs, orderBy);
             if (cursor != null) {
                 // image & video
                 int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
@@ -74,7 +93,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                     // 2) extract actual mimeType with metadata-extractor
                     // 3) update MediaStore
                     if (width > 0) {
-                        entrySink.success(
+                        newEntryHandler.handleEntry(
                                 new HashMap<String, Object>() {{
                                     put("uri", itemUri.toString());
                                     put("path", cursor.getString(pathColumn));
@@ -90,6 +109,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                                     put("bucketDisplayName", cursor.getString(bucketDisplayNameColumn));
                                     put("durationMillis", durationColumn != -1 ? cursor.getLong(durationColumn) : 0);
                                 }});
+                        entryCount++;
 //                    } else {
 //                        // some images are incorrectly registered in the MediaStore,
 //                        // they are valid but miss some attributes, such as width, height, orientation
@@ -107,6 +127,7 @@ public class MediaStoreImageProvider extends ImageProvider {
         } catch (Exception e) {
             Log.e(LOG_TAG, "failed to get entries", e);
         }
+        return entryCount;
     }
 
     @Override
@@ -138,5 +159,9 @@ public class MediaStoreImageProvider extends ImageProvider {
         }
 
         callback.onFailure();
+    }
+
+    private interface NewEntryHandler {
+        void handleEntry(Map<String, Object> entry);
     }
 }

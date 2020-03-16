@@ -111,7 +111,7 @@ class ImageEntry {
     return width / height;
   }
 
-  int get megaPixels => (width * height / 1000000).round();
+  int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 
   DateTime get bestDate {
     if ((catalogMetadata?.dateMillis ?? 0) > 0) return DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
