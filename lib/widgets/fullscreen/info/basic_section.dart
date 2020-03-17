@@ -16,7 +16,8 @@ class BasicSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}' : '?';
-    final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${(entry.isVideo || entry.isGif || entry.megaPixels == null) ? '' : ' (${entry.megaPixels} MP)'}';
+    final showMegaPixels = !entry.isVideo && !entry.isGif && entry.megaPixels != null && entry.megaPixels > 0;
+    final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

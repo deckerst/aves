@@ -40,32 +40,37 @@ public class MediaStoreImageProvider extends ImageProvider {
     }).flatMap(Stream::of).toArray(String[]::new);
 
     public void fetchAll(Activity activity, EventChannel.EventSink entrySink) {
-        fetchFrom(activity, entrySink::success, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, null, null);
-        fetchFrom(activity, entrySink::success, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, null, null);
+        NewEntryHandler success = entrySink::success;
+        fetchFrom(activity, success, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION);
+        fetchFrom(activity, success, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION);
     }
 
     @Override
     public void fetchSingle(final Activity activity, final Uri uri, final String mimeType, final ImageOpCallback callback) {
         long id = ContentUris.parseId(uri);
-        String selection = MediaStore.MediaColumns._ID + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(id)};
         int entryCount = 0;
+        NewEntryHandler onSuccess = (entry) -> {
+            entry.put("uri", uri.toString());
+            callback.onSuccess(entry);
+        };
         if (mimeType.startsWith(Constants.MIME_IMAGE)) {
-            entryCount = fetchFrom(activity, callback::onSuccess, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, selection, selectionArgs);
+            Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+            entryCount = fetchFrom(activity, onSuccess, contentUri, IMAGE_PROJECTION);
         } else if (mimeType.startsWith(Constants.MIME_VIDEO)) {
-            entryCount = fetchFrom(activity, callback::onSuccess, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, selection, selectionArgs);
+            Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
+            entryCount = fetchFrom(activity, onSuccess, contentUri, VIDEO_PROJECTION);
         }
         if (entryCount == 0) {
             callback.onFailure();
         }
     }
 
-    private int fetchFrom(final Activity activity, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection, String selection, String[] selectionArgs) {
+    private int fetchFrom(final Activity activity, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection) {
         String orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
         int entryCount = 0;
 
         try {
-            Cursor cursor = activity.getContentResolver().query(contentUri, projection, selection, selectionArgs, orderBy);
+            Cursor cursor = activity.getContentResolver().query(contentUri, projection, null, null, orderBy);
             if (cursor != null) {
                 // image & video
                 int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
@@ -84,6 +89,7 @@ public class MediaStoreImageProvider extends ImageProvider {
 
                 while (cursor.moveToNext()) {
                     long contentId = cursor.getLong(idColumn);
+                    // this is fine if `contentUri` does not already contain the ID
                     Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
                     int width = cursor.getInt(widthColumn);
                     // TODO TLAD sanitize mimeType

@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,11 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/app";
+
+    private static final String LOG_TAG = Utils.createLogTag(AppAdapterHandler.class);
 
     private Context context;
 
@@ -27,6 +31,7 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Log.d(LOG_TAG, "onMethodCall method=" + call.method + ", arguments=" + call.arguments);
         switch (call.method) {
             case "getAppNames": {
                 result.success(getAppNames());
