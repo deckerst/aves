@@ -21,6 +21,8 @@ public class ImageProviderFactory {
                                 return new MediaStoreImageProvider();
 //                            case Constants.DOWNLOADS_AUTHORITY:
 //                                return new DownloadImageProvider();
+                            default:
+                                return new UnknownContentImageProvider();
                         }
                     }
                     return null;

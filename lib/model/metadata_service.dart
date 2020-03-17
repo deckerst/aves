@@ -12,6 +12,7 @@ class MetadataService {
       final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'path': entry.path,
+        'uri': entry.uri,
       });
       return result as Map;
     } on PlatformException catch (e) {
@@ -30,6 +31,7 @@ class MetadataService {
       final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'path': entry.path,
+        'uri': entry.uri,
       }) as Map;
       result['contentId'] = entry.contentId;
       return CatalogMetadata.fromMap(result);
@@ -45,6 +47,7 @@ class MetadataService {
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'path': entry.path,
+        'uri': entry.uri,
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {

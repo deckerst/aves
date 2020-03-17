@@ -144,6 +144,10 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
         builder: (c, orientation, child) {
           final twoColumns = orientation == Orientation.landscape && maxWidth / 2 > _subRowMinWidth;
           final subRowWidth = twoColumns ? min(_subRowMinWidth, maxWidth / 2) : maxWidth;
+          final positionTitle = [
+            if (position != null) position,
+            if (entry.title != null) entry.title,
+          ].join(' – ');
           final hasShootingDetails = details != null && !details.isEmpty;
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -151,7 +155,7 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
             children: [
               SizedBox(
                 width: maxWidth,
-                child: Text('${position != null ? '$position – ' : ''}${entry.title ?? '?'}', strutStyle: Constants.overflowStrutStyle),
+                child: Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
               ),
               if (entry.hasGps)
                 Container(
