@@ -244,6 +244,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     if (entry == null || !entry.isVideo) return;
 
     final path = entry.path;
+    if (path == null) return;
+
     var controllerEntry = _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null);
     if (controllerEntry != null) {
       _videoControllers.remove(controllerEntry);

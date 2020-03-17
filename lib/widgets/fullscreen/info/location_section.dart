@@ -79,7 +79,7 @@ class _LocationSectionState extends State<LocationSection> {
               child: SectionRow('Location'),
             ),
           ImageMap(
-            markerId: entry.path,
+            markerId: entry.uri ?? entry.path,
             latLng: LatLng(
               entry.latLng.item1,
               entry.latLng.item2,

@@ -28,7 +28,7 @@ class BasicSection extends StatelessWidget {
         InfoRow('Resolution', resolutionText),
         InfoRow('Size', entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : '?'),
         InfoRow('URI', entry.uri ?? '?'),
-        InfoRow('Path', entry.path ?? '?'),
+        if (entry.path != null) InfoRow('Path', entry.path),
       ],
     );
   }

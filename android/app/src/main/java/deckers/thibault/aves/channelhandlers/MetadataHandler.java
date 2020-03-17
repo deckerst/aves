@@ -222,7 +222,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
                     if (dateString != null) {
                         long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
-                        // some videos have an invalid default date (19040101T000000.000Z) that is before Epoch time
+                        // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
                         if (dateMillis > 0) {
                             metadataMap.put("dateMillis", dateMillis);
                         }
