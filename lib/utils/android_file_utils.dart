@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
-  String externalStorage, dcimPath, downloadPath, picturesPath;
+  String externalStorage, dcimPath, downloadPath, moviesPath, picturesPath;
 
   static Map appNameMap = {};
 
@@ -15,6 +15,7 @@ class AndroidFileUtils {
     externalStorage = '/storage/emulated/0';
     dcimPath = join(externalStorage, 'DCIM');
     downloadPath = join(externalStorage, 'Download');
+    moviesPath = join(externalStorage, 'Movies');
     picturesPath = join(externalStorage, 'Pictures');
     appNameMap = await AndroidAppService.getAppNames()
       ..addAll({'KakaoTalkDownload': 'com.kakao.talk'});
@@ -22,9 +23,9 @@ class AndroidFileUtils {
 
   bool isCameraPath(String path) => path != null && path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));
 
-  bool isScreenshotsPath(String path) => path != null && path.startsWith(dcimPath) && path.endsWith('Screenshots');
+  bool isScreenshotsPath(String path) => path != null && (path.startsWith(dcimPath) || path.startsWith(picturesPath)) && path.endsWith('Screenshots');
 
-  bool isScreenRecordingsPath(String path) => path != null && path.startsWith(dcimPath) && path.endsWith('Screen recordings');
+  bool isScreenRecordingsPath(String path) => path != null && (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('Screen recordings') || path.endsWith('ScreenRecords'));
 
   bool isDownloadPath(String path) => path == downloadPath;
 

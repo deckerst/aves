@@ -1,9 +1,11 @@
 package deckers.thibault.aves.model.provider;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -21,7 +23,8 @@ import io.flutter.plugin.common.EventChannel;
 public class MediaStoreImageProvider extends ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(MediaStoreImageProvider.class);
 
-    private static final String[] IMAGE_PROJECTION = {
+
+    private static final String[] BASE_PROJECTION = {
             MediaStore.MediaColumns._ID,
             MediaStore.MediaColumns.DATA,
             MediaStore.MediaColumns.MIME_TYPE,
@@ -29,15 +32,27 @@ public class MediaStoreImageProvider extends ImageProvider {
             MediaStore.MediaColumns.TITLE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
-            MediaStore.MediaColumns.ORIENTATION,
             MediaStore.MediaColumns.DATE_MODIFIED,
-            MediaStore.MediaColumns.DATE_TAKEN,
-            MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
     };
 
-    private static final String[] VIDEO_PROJECTION = Stream.of(IMAGE_PROJECTION, new String[]{
-            MediaStore.MediaColumns.DURATION
+    @SuppressLint("InlinedApi")
+    private static final String[] IMAGE_PROJECTION = Stream.of(BASE_PROJECTION, new String[]{
+            // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
+            MediaStore.Images.Media.DATE_TAKEN,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.ORIENTATION,
     }).flatMap(Stream::of).toArray(String[]::new);
+
+    @SuppressLint("InlinedApi")
+    private static final String[] VIDEO_PROJECTION = Stream.of(BASE_PROJECTION, new String[]{
+            // uses MediaStore.Video.Media instead of MediaStore.MediaColumns for APIs < Q
+            MediaStore.Video.Media.DATE_TAKEN,
+            MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Video.Media.DURATION,
+    }, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ?
+            new String[]{
+                    MediaStore.Video.Media.ORIENTATION,
+            } : new String[0]).flatMap(Stream::of).toArray(String[]::new);
 
     public void fetchAll(Activity activity, EventChannel.EventSink entrySink) {
         NewEntryHandler success = entrySink::success;
@@ -65,6 +80,7 @@ public class MediaStoreImageProvider extends ImageProvider {
         }
     }
 
+    @SuppressLint("InlinedApi")
     private int fetchFrom(final Activity activity, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection) {
         String orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
         int entryCount = 0;
@@ -80,10 +96,14 @@ public class MediaStoreImageProvider extends ImageProvider {
                 int titleColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE);
                 int widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH);
                 int heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT);
-                int orientationColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.ORIENTATION);
                 int dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED);
+
                 int dateTakenColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_TAKEN);
                 int bucketDisplayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
+
+                // image & video for API >= Q, only for images for API < Q
+                int orientationColumn = cursor.getColumnIndex(MediaStore.MediaColumns.ORIENTATION);
+
                 // video only
                 int durationColumn = cursor.getColumnIndex(MediaStore.MediaColumns.DURATION);
 
@@ -91,6 +111,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                     long contentId = cursor.getLong(idColumn);
                     // this is fine if `contentUri` does not already contain the ID
                     Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
+                    String path = cursor.getString(pathColumn);
                     int width = cursor.getInt(widthColumn);
                     // TODO TLAD sanitize mimeType
                     // problem: some images were added as image/jpeg, but they're actually image/png
@@ -102,12 +123,12 @@ public class MediaStoreImageProvider extends ImageProvider {
                         newEntryHandler.handleEntry(
                                 new HashMap<String, Object>() {{
                                     put("uri", itemUri.toString());
-                                    put("path", cursor.getString(pathColumn));
+                                    put("path", path);
                                     put("contentId", contentId);
                                     put("mimeType", cursor.getString(mimeTypeColumn));
                                     put("width", width);
                                     put("height", cursor.getInt(heightColumn));
-                                    put("orientationDegrees", cursor.getInt(orientationColumn));
+                                    put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
                                     put("sizeBytes", cursor.getLong(sizeColumn));
                                     put("title", cursor.getString(titleColumn));
                                     put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
@@ -116,7 +137,8 @@ public class MediaStoreImageProvider extends ImageProvider {
                                     put("durationMillis", durationColumn != -1 ? cursor.getLong(durationColumn) : 0);
                                 }});
                         entryCount++;
-//                    } else {
+                    } else {
+                        Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path);
 //                        // some images are incorrectly registered in the MediaStore,
 //                        // they are valid but miss some attributes, such as width, height, orientation
 //                        try {

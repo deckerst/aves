@@ -3,9 +3,6 @@ package deckers.thibault.aves.channelhandlers;
 import android.app.Activity;
 import android.util.Log;
 
-import java.time.Duration;
-import java.time.Instant;
-
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.EventChannel;
@@ -29,9 +26,9 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
 
     void fetchAll(Activity activity) {
         Log.d(LOG_TAG, "fetchAll start");
-        Instant start = Instant.now();
+//        Instant start = Instant.now();
         new MediaStoreImageProvider().fetchAll(activity, eventSink); // 350ms
         eventSink.endOfStream();
-        Log.d(LOG_TAG, "fetchAll complete in " + Duration.between(start, Instant.now()).toMillis() + "ms");
+//        Log.d(LOG_TAG, "fetchAll complete in " + Duration.between(start, Instant.now()).toMillis() + "ms");
     }
 }
