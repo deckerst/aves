@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -103,7 +104,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
         ImageEntry entry = params.entry;
-        long contentId = entry.getContentId();
+        long contentId = ContentUris.parseId(entry.getUri());
 
         ContentResolver resolver = activity.getContentResolver();
         try {

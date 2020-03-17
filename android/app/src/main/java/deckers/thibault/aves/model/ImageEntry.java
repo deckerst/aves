@@ -12,8 +12,7 @@ import deckers.thibault.aves.utils.Constants;
 public class ImageEntry {
     // from source
     private String path; // best effort to get local path from content providers
-    private long contentId; // should be defined for mediastore, use full URI otherwise
-    private Uri uri; // should be defined for external content, use ID for mediastore
+    private Uri uri; // content URI
     private String mimeType;
     private int width, height, orientationDegrees;
     private long sizeBytes;
@@ -27,7 +26,6 @@ public class ImageEntry {
     public ImageEntry(Map map) {
         this.uri = Uri.parse((String) map.get("uri"));
         this.path = (String) map.get("path");
-        this.contentId = toLong(map.get("contentId"));
         this.mimeType = (String) map.get("mimeType");
         this.width = (int) map.get("width");
         this.height = (int) map.get("height");
@@ -42,10 +40,6 @@ public class ImageEntry {
 
     public Uri getUri() {
         return uri;
-    }
-
-    public long getContentId() {
-        return contentId;
     }
 
     @Nullable
