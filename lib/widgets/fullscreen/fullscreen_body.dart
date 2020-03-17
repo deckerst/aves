@@ -156,7 +156,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
             valueListenable: _currentVerticalPage,
             builder: (context, page, child) {
               final showOverlay = entry != null && page == imagePage;
-              final videoController = showOverlay && entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2 : null;
+              final videoController = showOverlay && entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2 : null;
               return showOverlay
                   ? Positioned(
                       bottom: 0,
@@ -243,15 +243,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (entry == null || !entry.isVideo) return;
 
-    final path = entry.path;
-    if (path == null) return;
-
-    var controllerEntry = _videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null);
+    final uri = entry.uri;
+    var controllerEntry = _videoControllers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
     if (controllerEntry != null) {
       _videoControllers.remove(controllerEntry);
     } else {
-      final controller = VideoPlayerController.file(File(path))..initialize();
-      controllerEntry = Tuple2(path, controller);
+      final controller = VideoPlayerController.uri(uri)..initialize();
+      controllerEntry = Tuple2(uri, controller);
     }
     _videoControllers.insert(0, controllerEntry);
     while (_videoControllers.length > 3) {

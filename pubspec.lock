@@ -455,10 +455,10 @@ packages:
   video_player:
     dependency: "direct main"
     description:
-      name: video_player
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.8+1"
+      path: "../plugins/packages/video_player/video_player"
+      relative: true
+    source: path
+    version: "0.10.8+2"
   video_player_platform_interface:
     dependency: transitive
     description:

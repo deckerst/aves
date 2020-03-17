@@ -26,7 +26,7 @@ class ImageView extends StatelessWidget {
     const backgroundDecoration = BoxDecoration(color: Colors.transparent);
 
     if (entry.isVideo) {
-      final videoController = videoControllers.firstWhere((kv) => kv.item1 == entry.path, orElse: () => null)?.item2;
+      final videoController = videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
       return PhotoView.customChild(
         child: videoController != null
             ? AvesVideo(

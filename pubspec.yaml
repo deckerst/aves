@@ -47,6 +47,7 @@ dependencies:
   transparent_image:
   tuple:
   video_player:
+    path: ../plugins/packages/video_player/video_player
 
 dev_dependencies:
   flutter_test:
