@@ -7,6 +7,9 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -38,6 +41,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             case "getImageEntry":
                 getImageEntry(call, result);
                 break;
+            case "readAsBytes":
+                readAsBytes(call, result);
+                break;
             case "getImageBytes":
                 getImageBytes(call, result);
                 break;
@@ -56,6 +62,25 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             default:
                 result.notImplemented();
                 break;
+        }
+    }
+
+    private void readAsBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        String uri = call.argument("uri");
+
+        byte[] data = null;
+        try (InputStream is = activity.getContentResolver().openInputStream(Uri.parse(uri))) {
+            if (is != null) {
+                data = getBytes(is);
+            }
+        } catch (IOException ex) {
+            // ignore
+        }
+
+        if (data != null) {
+            result.success(data);
+        } else {
+            result.error("readAsBytes-null", "failed to read bytes from uri=" + uri, null);
         }
     }
 
@@ -188,5 +213,19 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", null));
             }
         });
+    }
+
+    // convenience methods
+
+    private byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 }

@@ -29,6 +29,18 @@ class ImageFileService {
     return null;
   }
 
+  static Future<Uint8List> readAsBytes(String uri) async {
+    try {
+      final result = await platform.invokeMethod('readAsBytes', <String, dynamic>{
+        'uri': uri,
+      });
+      return result as Uint8List;
+    } on PlatformException catch (e) {
+      debugPrint('readAsBytes failed with exception=${e.message}');
+    }
+    return Uint8List(0);
+  }
+
   static Future<Uint8List> getImageBytes(ImageEntry entry, int width, int height) async {
     if (width > 0 && height > 0) {
 //      debugPrint('getImageBytes width=$width path=${entry.path}');

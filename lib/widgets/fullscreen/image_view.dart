@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/fullscreen/image_uri.dart';
 import 'package:aves/widgets/fullscreen/video.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
 
@@ -48,7 +46,7 @@ class ImageView extends StatelessWidget {
     return PhotoView(
       // key includes size and orientation to refresh when the image is rotated
       key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
-      imageProvider: entry.path != null ? FileImage(File(entry.path)) : MemoryImage(kTransparentImage),
+      imageProvider: UriImage(entry.uri),
       loadingBuilder: (context, event) => const Center(
         child: SizedBox(
           width: 64,
