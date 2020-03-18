@@ -33,6 +33,7 @@ class FullscreenBody extends StatefulWidget {
 }
 
 class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProviderStateMixin {
+  ImageEntry _entry;
   int _currentHorizontalPage;
   ValueNotifier<int> _currentVerticalPage;
   PageController _horizontalPager, _verticalPager;
@@ -61,7 +62,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   @override
   void initState() {
     super.initState();
-    _currentHorizontalPage = max(0, entries.indexOf(widget.initialEntry));
+    _entry = widget.initialEntry;
+    _currentHorizontalPage = max(0, entries.indexOf(_entry));
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value);
@@ -90,13 +92,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
     _initVideoController();
     _initOverlay();
+    _registerWidget(widget);
   }
 
-  Future<void> _initOverlay() async {
-    // wait for MaterialPageRoute.transitionDuration
-    // to show overlay after hero animation is complete
-    await Future.delayed(Duration(milliseconds: (300 * timeDilation).toInt()));
-    await _onOverlayVisibleChange();
+  @override
+  void didUpdateWidget(FullscreenBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
   }
 
   @override
@@ -104,12 +107,20 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _videoControllers.forEach((kv) => kv.item2.dispose());
+    _unregisterWidget(widget);
     super.dispose();
+  }
+
+  void _registerWidget(FullscreenBody widget) {
+    widget.collection.addListener(_onCollectionChange);
+  }
+
+  void _unregisterWidget(FullscreenBody widget) {
+    widget.collection.removeListener(_onCollectionChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage.value == infoPage) {
@@ -128,7 +139,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         children: [
           FullscreenVerticalPageView(
             collection: collection,
-            entry: entry,
+            entry: _entry,
             videoControllers: _videoControllers,
             verticalPager: _verticalPager,
             horizontalPager: _horizontalPager,
@@ -140,7 +151,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           ValueListenableBuilder<int>(
             valueListenable: _currentVerticalPage,
             builder: (context, page, child) {
-              final showOverlay = entry != null && page == imagePage;
+              final showOverlay = _entry != null && page == imagePage;
               return showOverlay
                   ? FullscreenTopOverlay(
                       entries: entries,
@@ -148,7 +159,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                       scale: _topOverlayScale,
                       viewInsets: _frozenViewInsets,
                       viewPadding: _frozenViewPadding,
-                      onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
+                      onActionSelected: (action) => _actionDelegate.onActionSelected(context, _entry, action),
                     )
                   : const SizedBox.shrink();
             },
@@ -156,8 +167,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           ValueListenableBuilder<int>(
             valueListenable: _currentVerticalPage,
             builder: (context, page, child) {
-              final showOverlay = entry != null && page == imagePage;
-              final videoController = showOverlay && entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2 : null;
+              final showOverlay = _entry != null && page == imagePage;
+              final videoController = showOverlay && _entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == _entry.uri, orElse: () => null)?.item2 : null;
               return showOverlay
                   ? Positioned(
                       bottom: 0,
@@ -165,7 +176,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                         children: [
                           if (videoController != null)
                             VideoControlOverlay(
-                              entry: entry,
+                              entry: _entry,
                               controller: videoController,
                               scale: _bottomOverlayScale,
                               viewInsets: _frozenViewInsets,
@@ -208,11 +219,40 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     }
   }
 
+  void _onHorizontalPageChanged(int page) {
+    _currentHorizontalPage = page;
+    _updateEntry();
+  }
+
+  void _onCollectionChange() {
+    _updateEntry();
+  }
+
+  void _updateEntry() {
+    final newEntry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
+    if (_entry == newEntry) return;
+    _entry = newEntry;
+    _pauseVideoControllers();
+    _initVideoController();
+    setState(() {});
+  }
+
+  // system UI
+
   void _onLeave() => _showSystemUI();
 
   void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
   void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
+
+  // overlay
+
+  Future<void> _initOverlay() async {
+    // wait for MaterialPageRoute.transitionDuration
+    // to show overlay after hero animation is complete
+    await Future.delayed(Duration(milliseconds: (300 * timeDilation).toInt()));
+    await _onOverlayVisibleChange();
+  }
 
   Future<void> _onOverlayVisibleChange() async {
     if (_overlayVisible.value) {
@@ -231,20 +271,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     }
   }
 
-  void _onHorizontalPageChanged(int page) {
-    _currentHorizontalPage = page;
-    _pauseVideoControllers();
-    _initVideoController();
-    setState(() {});
-  }
+  // video controller
 
   void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
 
   void _initVideoController() {
-    final entry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
-    if (entry == null || !entry.isVideo) return;
+    if (_entry == null || !_entry.isVideo) return;
 
-    final uri = entry.uri;
+    final uri = _entry.uri;
     var controllerEntry = _videoControllers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
     if (controllerEntry != null) {
       _videoControllers.remove(controllerEntry);
@@ -323,17 +357,6 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     widget.entry.imageChangeNotifier.removeListener(_onImageChange);
   }
 
-  void _onVerticalPageControllerChange() {
-    _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(min(1.0, widget.verticalPager.page));
-  }
-
-  void _onImageChange() async {
-    await UriImage(entry.uri).evict();
-    if (entry.path != null) await FileImage(File(entry.path)).evict();
-    // rebuild to refresh the Image inside ImagePage
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final onScaleChanged = (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial);
@@ -385,5 +408,16 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         children: pages,
       ),
     );
+  }
+
+  void _onVerticalPageControllerChange() {
+    _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(min(1.0, widget.verticalPager.page));
+  }
+
+  void _onImageChange() async {
+    await UriImage(entry.uri).evict();
+    if (entry.path != null) await FileImage(File(entry.path)).evict();
+    // rebuild to refresh the Image inside ImagePage
+    setState(() {});
   }
 }
