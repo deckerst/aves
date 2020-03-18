@@ -153,10 +153,11 @@ class _FullscreenBottomOverlayContent extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: maxWidth,
-                child: Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
-              ),
+              if (positionTitle.isNotEmpty)
+                SizedBox(
+                  width: maxWidth,
+                  child: Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
+                ),
               if (entry.hasGps)
                 Container(
                   padding: const EdgeInsets.only(top: _interRowPadding),
