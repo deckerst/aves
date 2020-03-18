@@ -105,6 +105,8 @@ class ImageEntry {
 
   bool get canPrint => !isVideo;
 
+  bool get canRename => path != null;
+
   bool get canRotate => mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG;
 
   double get aspectRatio {
