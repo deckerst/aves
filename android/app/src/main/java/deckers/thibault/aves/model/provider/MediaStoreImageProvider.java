@@ -9,6 +9,16 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.jpeg.JpegDirectory;
+import com.drew.metadata.mp4.media.Mp4VideoDirectory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -19,6 +29,8 @@ import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.EventChannel;
+
+import static deckers.thibault.aves.utils.MetadataHelper.getOrientationDegreesForExifCode;
 
 public class MediaStoreImageProvider extends ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(MediaStoreImageProvider.class);
@@ -113,41 +125,70 @@ public class MediaStoreImageProvider extends ImageProvider {
                     Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
                     String path = cursor.getString(pathColumn);
                     int width = cursor.getInt(widthColumn);
-                    // TODO TLAD sanitize mimeType
-                    // problem: some images were added as image/jpeg, but they're actually image/png
-                    // possible solution:
-                    // 1) check that MediaStore mimeType matches expected mimeType from file path extension
-                    // 2) extract actual mimeType with metadata-extractor
-                    // 3) update MediaStore
-                    if (width > 0) {
-                        newEntryHandler.handleEntry(
-                                new HashMap<String, Object>() {{
-                                    put("uri", itemUri.toString());
-                                    put("path", path);
-                                    put("contentId", contentId);
-                                    put("mimeType", cursor.getString(mimeTypeColumn));
-                                    put("width", width);
-                                    put("height", cursor.getInt(heightColumn));
-                                    put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
-                                    put("sizeBytes", cursor.getLong(sizeColumn));
-                                    put("title", cursor.getString(titleColumn));
-                                    put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
-                                    put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
-                                    put("bucketDisplayName", cursor.getString(bucketDisplayNameColumn));
-                                    put("durationMillis", durationColumn != -1 ? cursor.getLong(durationColumn) : 0);
-                                }});
-                        entryCount++;
-                    } else {
+                    int height = cursor.getInt(heightColumn);
+                    int orientationDegrees = orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0;
+                    if (width <= 0 || height <= 0) {
+                        // some images are incorrectly registered in the Media Store,
+                        // they are valid but miss some attributes, such as width, height, orientation
+                        try (InputStream is = activity.getContentResolver().openInputStream(itemUri)) {
+                            Metadata metadata = ImageMetadataReader.readMetadata(is);
+
+                            // JPEG
+
+                            JpegDirectory jpegDir = metadata.getFirstDirectoryOfType(JpegDirectory.class);
+                            if (jpegDir != null) {
+                                if (jpegDir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
+                                    width = jpegDir.getInt(JpegDirectory.TAG_IMAGE_WIDTH);
+                                }
+                                if (jpegDir.containsTag(JpegDirectory.TAG_IMAGE_HEIGHT)) {
+                                    height = jpegDir.getInt(JpegDirectory.TAG_IMAGE_HEIGHT);
+                                }
+                            }
+
+                            // EXIF
+
+                            ExifIFD0Directory exifDir = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                            if (exifDir != null) {
+                                if (exifDir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                                    orientationDegrees = getOrientationDegreesForExifCode(exifDir.getInt(ExifIFD0Directory.TAG_ORIENTATION));
+                                }
+                            }
+
+                            // MP4
+
+                            Mp4VideoDirectory mp4VideoDir = metadata.getFirstDirectoryOfType(Mp4VideoDirectory.class);
+                            if (mp4VideoDir != null) {
+                                if (mp4VideoDir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
+                                    width = mp4VideoDir.getInt(Mp4VideoDirectory.TAG_WIDTH);
+                                }
+                                if (mp4VideoDir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
+                                    height = mp4VideoDir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
+                                }
+                            }
+                        } catch (IOException | ImageProcessingException | MetadataException e) {
+                            // this is probably not a real image, like "/storage/emulated/0", so we skip it
+                        }
+                    }
+                    if (width <= 0 || height <= 0) {
                         Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path);
-//                        // some images are incorrectly registered in the MediaStore,
-//                        // they are valid but miss some attributes, such as width, height, orientation
-//                        try {
-//                            imageEntry.fixMissingWidthHeightOrientation(activity);
-//                            entrySink.success(imageEntry);
-//                        } catch (IOException e) {
-//                            // this is probably not a real image, like "/storage/emulated/0", so we skip it
-//                            Log.w(LOG_TAG, "failed to compute dimensions of imageEntry=" + imageEntry);
-//                        }
+                    } else {
+                        Map<String, Object> entryMap = new HashMap<String, Object>() {{
+                            put("uri", itemUri.toString());
+                            put("path", path);
+                            put("contentId", contentId);
+                            put("mimeType", cursor.getString(mimeTypeColumn));
+                            put("sizeBytes", cursor.getLong(sizeColumn));
+                            put("title", cursor.getString(titleColumn));
+                            put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
+                            put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
+                            put("bucketDisplayName", cursor.getString(bucketDisplayNameColumn));
+                            put("durationMillis", durationColumn != -1 ? cursor.getLong(durationColumn) : 0);
+                        }};
+                        entryMap.put("width", width);
+                        entryMap.put("height", height);
+                        entryMap.put("orientationDegrees", orientationDegrees);
+                        newEntryHandler.handleEntry(entryMap);
+                        entryCount++;
                     }
                 }
                 cursor.close();

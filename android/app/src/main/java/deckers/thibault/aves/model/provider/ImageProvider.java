@@ -107,7 +107,7 @@ public abstract class ImageProvider {
                         cursor.close();
                     }
                 } catch (Exception e) {
-                    Log.w(LOG_TAG, "failed to update MediaStore after renaming entry at path=" + oldPath, e);
+                    Log.w(LOG_TAG, "failed to update Media Store after renaming entry at path=" + oldPath, e);
                     callback.onFailure();
                     return;
                 }
@@ -222,7 +222,7 @@ public abstract class ImageProvider {
                 callback.onSuccess(newFields);
             });
         } else {
-            Log.w(LOG_TAG, "failed to update fields in MediaStore for uri=" + uri);
+            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
             callback.onSuccess(newFields);
         }
     }
@@ -307,7 +307,7 @@ public abstract class ImageProvider {
                 callback.onSuccess(newFields);
             });
         } else {
-            Log.w(LOG_TAG, "failed to update fields in MediaStore for uri=" + uri);
+            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
             callback.onSuccess(newFields);
         }
     }
