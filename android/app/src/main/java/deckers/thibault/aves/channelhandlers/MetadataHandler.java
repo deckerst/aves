@@ -125,13 +125,14 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private void getAllVideoMetadataFallback(MethodCall call, MethodChannel.Result result) {
         String path = call.argument("path");
         String uri = call.argument("uri");
-        try {
-            Map<String, Map<String, String>> metadataMap = new HashMap<>();
-            Map<String, String> dirMap = new HashMap<>();
-            // unnamed fallback directory
-            metadataMap.put("", dirMap);
 
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        Map<String, Map<String, String>> metadataMap = new HashMap<>();
+        Map<String, String> dirMap = new HashMap<>();
+        // unnamed fallback directory
+        metadataMap.put("", dirMap);
+
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
             if (path != null) {
                 retriever.setDataSource(path);
             } else {
@@ -152,11 +153,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     dirMap.put(kv.getValue(), value);
                 }
             }
-            retriever.release();
-
             result.success(metadataMap);
         } catch (Exception e) {
             result.error("getAllVideoMetadataFallback-exception", "failed to get metadata for uri=" + uri + ", path=" + path, e.getMessage());
+        } finally {
+            retriever.release();
         }
     }
 
@@ -208,8 +209,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
 
             if (isVideo(call.argument("mimeType"))) {
+                MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 try {
-                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     if (path != null) {
                         retriever.setDataSource(path);
                     } else {
@@ -218,7 +219,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
                     String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
                     String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
-                    retriever.release();
 
                     if (dateString != null) {
                         long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
@@ -251,6 +251,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     }
                 } catch (Exception e) {
                     result.error("getCatalogMetadata-exception", "failed to get video metadata for uri=" + uri + ", path=" + path, e.getMessage());
+                } finally {
+                    retriever.release();
                 }
             }
             result.success(metadataMap);

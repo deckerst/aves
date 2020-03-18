@@ -3,6 +3,7 @@ package deckers.thibault.aves.model.provider;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,11 +16,17 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.file.FileTypeDirectory;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,20 +116,43 @@ public abstract class ImageProvider {
         });
     }
 
+    // file extension is unreliable
+    // `context.getContentResolver().getType()` sometimes return incorrect value
+    // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
+    // so we check with `metadata-extractor`
+    private String getMimeType(final Context context, final Uri uri) {
+        try (InputStream is = context.getContentResolver().openInputStream(uri)) {
+            Metadata metadata = ImageMetadataReader.readMetadata(is);
+            FileTypeDirectory fileTypeDir = metadata.getFirstDirectoryOfType(FileTypeDirectory.class);
+            if (fileTypeDir != null) {
+                if (fileTypeDir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                    return fileTypeDir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE);
+                }
+            }
+        } catch (IOException | ImageProcessingException e) {
+            Log.w(LOG_TAG, "failed to get mime type from metadata for uri=" + uri, e);
+        }
+        return null;
+    }
+
     public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
-        switch (mimeType) {
+        // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
+        // so we retrieve it again from the file metadata
+        String metadataMimeType = getMimeType(activity, uri);
+        switch (metadataMimeType != null ? metadataMimeType : mimeType) {
             case Constants.MIME_JPEG:
-                rotateJpeg(activity, path, uri, mimeType, clockwise, callback);
+                rotateJpeg(activity, path, uri, clockwise, callback);
                 break;
             case Constants.MIME_PNG:
-                rotatePng(activity, path, uri, mimeType, clockwise, callback);
+                rotatePng(activity, path, uri, clockwise, callback);
                 break;
             default:
                 callback.onFailure();
         }
     }
 
-    private void rotateJpeg(final Activity activity, final String path, final Uri uri, final String mimeType, boolean clockwise, final ImageOpCallback callback) {
+    private void rotateJpeg(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
+        final String mimeType = Constants.MIME_JPEG;
         String editablePath = path;
         boolean onSdCard = Env.isOnSdCard(activity, path);
         if (onSdCard) {
@@ -197,7 +227,8 @@ public abstract class ImageProvider {
         }
     }
 
-    private void rotatePng(final Activity activity, final String path, final Uri uri, final String mimeType, boolean clockwise, final ImageOpCallback callback) {
+    private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
+        final String mimeType = Constants.MIME_PNG;
         if (path == null) {
             callback.onFailure();
             return;

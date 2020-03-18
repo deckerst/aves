@@ -34,8 +34,8 @@ class UnknownContentImageProvider extends ImageProvider {
 
         // check first metadata with MediaMetadataRetriever
 
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
-            MediaMetadataRetriever retriever = new MediaMetadataRetriever();
             retriever.setDataSource(activity, uri);
 
             title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
@@ -71,9 +71,10 @@ class UnknownContentImageProvider extends ImageProvider {
             if (durationMillisString != null) {
                 durationMillis = Long.parseLong(durationMillisString);
             }
-            retriever.release();
         } catch (Exception e) {
             // ignore
+        } finally {
+            retriever.release();
         }
 
         // fallback to metadata-extractor for known types
