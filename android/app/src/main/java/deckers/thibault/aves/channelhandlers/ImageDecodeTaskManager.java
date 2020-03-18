@@ -35,7 +35,7 @@ public class ImageDecodeTaskManager {
     }
 
     void cancel(String uri) {
-        boolean removed = taskParamsQueue.removeIf(p -> uri.equals(p.entry.getUri().toString()));
+        boolean removed = taskParamsQueue.removeIf(p -> uri.equals(p.entry.uri.toString()));
         if (removed) Log.d(LOG_TAG, "cancelled uri=" + uri);
     }
 

@@ -80,8 +80,10 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private void getAllMetadata(MethodCall call, MethodChannel.Result result) {
         String path = call.argument("path");
         String uri = call.argument("uri");
+
+        Map<String, Map<String, String>> metadataMap = new HashMap<>();
+
         try (InputStream is = getInputStream(path, uri)) {
-            Map<String, Map<String, String>> metadataMap = new HashMap<>();
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (Directory dir : metadata.getDirectories()) {
                 if (dir.getTagCount() > 0) {
@@ -165,8 +167,10 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         String mimeType = call.argument("mimeType");
         String path = call.argument("path");
         String uri = call.argument("uri");
+
+        Map<String, Object> metadataMap = new HashMap<>();
+
         try (InputStream is = getInputStream(path, uri)) {
-            Map<String, Object> metadataMap = new HashMap<>();
             if (!Constants.MIME_MP2T.equalsIgnoreCase(mimeType)) {
                 Metadata metadata = ImageMetadataReader.readMetadata(is);
 
@@ -208,7 +212,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
 
-            if (isVideo(call.argument("mimeType"))) {
+            if (isVideo(mimeType)) {
                 MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                 try {
                     if (path != null) {
@@ -266,15 +270,17 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getOverlayMetadata(MethodCall call, MethodChannel.Result result) {
+        String mimeType = call.argument("mimeType");
+        String path = call.argument("path");
+        String uri = call.argument("uri");
+
         Map<String, String> metadataMap = new HashMap<>();
 
-        if (isVideo(call.argument("mimeType"))) {
+        if (isVideo(mimeType)) {
             result.success(metadataMap);
             return;
         }
 
-        String path = call.argument("path");
-        String uri = call.argument("uri");
         try (InputStream is = getInputStream(path, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);

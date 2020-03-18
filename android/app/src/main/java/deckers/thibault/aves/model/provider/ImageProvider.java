@@ -16,6 +16,9 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
@@ -40,7 +43,7 @@ import deckers.thibault.aves.utils.Utils;
 public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
 
-    public void fetchSingle(final Activity activity, final Uri uri, final String mimeType, final ImageOpCallback callback) {
+    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
         callback.onFailure();
     }
 
@@ -120,7 +123,8 @@ public abstract class ImageProvider {
     // `context.getContentResolver().getType()` sometimes return incorrect value
     // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
     // so we check with `metadata-extractor`
-    private String getMimeType(final Context context, final Uri uri) {
+    @Nullable
+    private String getMimeType(@NonNull final Context context, @NonNull final Uri uri) {
         try (InputStream is = context.getContentResolver().openInputStream(uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             FileTypeDirectory fileTypeDir = metadata.getFirstDirectoryOfType(FileTypeDirectory.class);

@@ -2,6 +2,8 @@ package deckers.thibault.aves.utils;
 
 import android.media.ExifInterface;
 
+import androidx.annotation.Nullable;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,7 +30,11 @@ public class MetadataHelper {
     }
 
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
-    public static long parseVideoMetadataDate(String dateString) {
+    public static long parseVideoMetadataDate(@Nullable String dateString) {
+        if (dateString == null) {
+            return 0;
+        }
+
         // optional sub-second
         String subSecond = null;
         Matcher subSecondMatcher = Pattern.compile("(\\d{6})(\\.\\d+)").matcher(dateString);

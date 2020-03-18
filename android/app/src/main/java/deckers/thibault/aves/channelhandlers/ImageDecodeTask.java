@@ -74,7 +74,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                 bitmap = getThumbnailBytesByMediaStore(p);
             }
         } else {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + p.entry.getUri() + " cancelled");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + p.entry.uri + " cancelled");
         }
         byte[] data = null;
         if (bitmap != null) {
@@ -95,16 +95,16 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
         ContentResolver resolver = activity.getContentResolver();
         try {
-            return resolver.loadThumbnail(entry.getUri(), new Size(width, height), null);
+            return resolver.loadThumbnail(entry.uri, new Size(width, height), null);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "failed to load thumbnail for uri=" + entry.getUri(), e);
+            Log.e(LOG_TAG, "failed to load thumbnail for uri=" + entry.uri, e);
         }
         return null;
     }
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
         ImageEntry entry = params.entry;
-        long contentId = ContentUris.parseId(entry.getUri());
+        long contentId = ContentUris.parseId(entry.uri);
 
         ContentResolver resolver = activity.getContentResolver();
         try {
@@ -114,7 +114,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                 return MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             }
         } catch (Exception e) {
-            Log.e(LOG_TAG, "failed to get thumbnail for uri=" + entry.getUri(), e);
+            Log.e(LOG_TAG, "failed to get thumbnail for uri=" + entry.uri, e);
         }
         return null;
     }
@@ -125,7 +125,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         int height = params.height;
 
         // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + entry.getDateModifiedSecs() + entry.getWidth() + entry.getOrientationDegrees());
+        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.orientationDegrees);
         RequestOptions options = new RequestOptions()
                 .signature(signature)
                 .override(width, height);
@@ -136,14 +136,14 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
-                    .load(new VideoThumbnail(activity, entry.getUri()))
+                    .load(new VideoThumbnail(activity, entry.uri))
                     .signature(signature)
                     .submit(width, height);
         } else {
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
-                    .load(entry.getUri())
+                    .load(entry.uri)
                     .signature(signature)
                     .submit(width, height);
         }
@@ -151,7 +151,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         try {
             return target.get();
         } catch (InterruptedException e) {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.getUri() + " interrupted");
+            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.uri + " interrupted");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,7 +162,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     @Override
     protected void onPostExecute(Result result) {
         MethodChannel.Result r = result.params.result;
-        String uri = result.params.entry.getUri().toString();
+        String uri = result.params.entry.uri.toString();
         result.params.complete.accept(uri);
         if (result.data != null) {
             r.success(result.data);

@@ -22,6 +22,7 @@
 package deckers.thibault.aves.utils;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -40,8 +41,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class FileUtils {
-
-    public String getPathFromUri(final Context context, final Uri uri) {
+    // useful (for Download, File, etc.) but slower
+    // than directly using `MediaStore.MediaColumns.DATA` from the MediaStore query
+    public static String getPathFromUri(final Context context, final Uri uri) {
         String path = getPathFromLocalUri(context, uri);
         if (path == null) {
             path = getPathFromRemoteUri(context, uri);
@@ -50,7 +52,7 @@ public class FileUtils {
     }
 
     @SuppressLint("NewApi")
-    private String getPathFromLocalUri(final Context context, final Uri uri) {
+    private static String getPathFromLocalUri(final Context context, final Uri uri) {
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
@@ -95,7 +97,7 @@ public class FileUtils {
 
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
-        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+        } else if (ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme())) {
 
             // Return the remote address
             if (isGooglePhotosUri(uri)) {
@@ -103,7 +105,7 @@ public class FileUtils {
             }
 
             return getDataColumn(context, uri, null, null);
-        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+        } else if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
 
