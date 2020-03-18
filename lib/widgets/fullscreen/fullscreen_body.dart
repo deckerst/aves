@@ -5,6 +5,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
+import 'package:aves/widgets/fullscreen/image_uri.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
@@ -291,6 +292,8 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   bool get hasCollection => collection != null;
 
+  ImageEntry get entry => widget.entry;
+
   @override
   void initState() {
     super.initState();
@@ -325,7 +328,8 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   void _onImageChange() async {
-    await FileImage(File(widget.entry.path)).evict();
+    await UriImage(entry.uri).evict();
+    if (entry.path != null) await FileImage(File(entry.path)).evict();
     // rebuild to refresh the Image inside ImagePage
     setState(() {});
   }
@@ -347,7 +351,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               videoControllers: widget.videoControllers,
             )
           : SingleImagePage(
-              entry: widget.entry,
+              entry: entry,
               onScaleChanged: onScaleChanged,
               onTap: widget.onImageTap,
               videoControllers: widget.videoControllers,
@@ -359,7 +363,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         },
         child: InfoPage(
           collection: collection,
-          entry: widget.entry,
+          entry: entry,
           visibleNotifier: _infoPageVisibleNotifier,
         ),
       ),
