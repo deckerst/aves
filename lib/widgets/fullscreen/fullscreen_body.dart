@@ -112,11 +112,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _registerWidget(FullscreenBody widget) {
-    widget.collection.addListener(_onCollectionChange);
+    widget.collection?.addListener(_onCollectionChange);
   }
 
   void _unregisterWidget(FullscreenBody widget) {
-    widget.collection.removeListener(_onCollectionChange);
+    widget.collection?.removeListener(_onCollectionChange);
   }
 
   @override
