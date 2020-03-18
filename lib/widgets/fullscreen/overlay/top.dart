@@ -34,7 +34,7 @@ class FullscreenTopOverlay extends StatelessWidget {
           children: [
             OverlayButton(
               scale: scale,
-              child: ModalRoute.of(context)?.canPop ?? true ? const BackButton(): const CloseButton(),
+              child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
             ),
             const Spacer(),
             OverlayButton(
@@ -63,10 +63,11 @@ class FullscreenTopOverlay extends StatelessWidget {
                     value: FullscreenAction.info,
                     child: MenuRow(text: 'Info', icon: OMIcons.info),
                   ),
-                  PopupMenuItem(
-                    value: FullscreenAction.rename,
-                    child: MenuRow(text: 'Rename', icon: OMIcons.title),
-                  ),
+                  if (entry.canRename)
+                    PopupMenuItem(
+                      value: FullscreenAction.rename,
+                      child: MenuRow(text: 'Rename', icon: OMIcons.title),
+                    ),
                   if (entry.canRotate)
                     PopupMenuItem(
                       value: FullscreenAction.rotateCCW,
