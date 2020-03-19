@@ -90,7 +90,7 @@ class _LocationSectionState extends State<LocationSection> {
           if (location.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 8),
-              child: InfoRow('Address', location),
+              child: InfoRowGroup({'Address': location}),
             ),
         ],
       );

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -19,25 +21,22 @@ class BasicSection extends StatelessWidget {
     final showMegaPixels = !entry.isVideo && !entry.isGif && entry.megaPixels != null && entry.megaPixels > 0;
     final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InfoRow('Title', entry.title ?? '?'),
-        InfoRow('Date', dateText),
-        if (entry.isVideo) ..._buildVideoRows(),
-        InfoRow('Resolution', resolutionText),
-        InfoRow('Size', entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : '?'),
-        InfoRow('URI', entry.uri ?? '?'),
-        if (entry.path != null) InfoRow('Path', entry.path),
-      ],
-    );
+    return InfoRowGroup({
+      'Title': entry.title ?? '?',
+      'Date': dateText,
+      if (entry.isVideo) ..._buildVideoRows(),
+      'Resolution': resolutionText,
+      'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : '?',
+      'URI': entry.uri ?? '?',
+      if (entry.path != null) 'Path': entry.path,
+    });
   }
 
-  List<Widget> _buildVideoRows() {
+  Map<String, String> _buildVideoRows() {
     final rotation = entry.catalogMetadata?.videoRotation;
-    return [
-      InfoRow('Duration', entry.durationText),
-      if (rotation != null) InfoRow('Rotation', '$rotation°'),
-    ];
+    return {
+      'Duration': entry.durationText,
+      if (rotation != null) 'Rotation': '$rotation°',
+    };
   }
 }

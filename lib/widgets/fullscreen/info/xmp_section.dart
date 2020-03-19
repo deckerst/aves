@@ -20,7 +20,7 @@ class XmpTagSectionSliver extends AnimatedWidget {
   Widget build(BuildContext context) {
     final tags = entry.xmpSubjects;
     return SliverList(
-      delegate: SliverChildListDelegate(
+      delegate: SliverChildListDelegate.fixed(
         tags.isEmpty
             ? []
             : [

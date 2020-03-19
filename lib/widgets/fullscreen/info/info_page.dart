@@ -44,6 +44,16 @@ class InfoPageState extends State<InfoPage> {
   Widget build(BuildContext context) {
     const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
+    final appBar = SliverAppBar(
+      leading: IconButton(
+        icon: const Icon(OMIcons.arrowUpward),
+        onPressed: _goToImage,
+        tooltip: 'Back to image',
+      ),
+      title: const Text('Info'),
+      floating: true,
+    );
+
     return MediaQueryDataProvider(
       child: Scaffold(
         body: SafeArea(
@@ -55,72 +65,56 @@ class InfoPageState extends State<InfoPage> {
                 final mqWidth = mq.item1;
                 final mqViewInsetsBottom = mq.item2;
                 final split = mqWidth > 400;
+                final locationAtTop = split && entry.hasGps;
+
+                final locationSection = LocationSection(
+                  entry: entry,
+                  showTitle: !locationAtTop,
+                  visibleNotifier: widget.visibleNotifier,
+                );
+                final basicAndLocationSliver = locationAtTop
+                    ? SliverToBoxAdapter(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(child: BasicSection(entry: entry)),
+                            const SizedBox(width: 8),
+                            Expanded(child: locationSection),
+                          ],
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildListDelegate.fixed(
+                          [
+                            BasicSection(entry: entry),
+                            locationSection,
+                          ],
+                        ),
+                      );
+                final tagSliver = XmpTagSectionSliver(
+                  collection: widget.collection,
+                  entry: entry,
+                );
+                final metadataSliver = MetadataSectionSliver(
+                  entry: entry,
+                  visibleNotifier: widget.visibleNotifier,
+                );
 
                 return CustomScrollView(
                   controller: _scrollController,
                   slivers: [
-                    SliverAppBar(
-                      leading: IconButton(
-                        icon: const Icon(OMIcons.arrowUpward),
-                        onPressed: _goToImage,
-                        tooltip: 'Back to image',
-                      ),
-                      title: const Text('Info'),
-                      floating: true,
-                    ),
-                    const SliverPadding(
-                      padding: EdgeInsets.only(top: 8),
-                    ),
-                    if (split && entry.hasGps)
-                      SliverPadding(
-                        padding: horizontalPadding,
-                        sliver: SliverToBoxAdapter(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(child: BasicSection(entry: entry)),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: LocationSection(
-                                  entry: entry,
-                                  showTitle: false,
-                                  visibleNotifier: widget.visibleNotifier,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    else
-                      SliverPadding(
-                        padding: horizontalPadding,
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              BasicSection(entry: entry),
-                              LocationSection(
-                                entry: entry,
-                                showTitle: true,
-                                visibleNotifier: widget.visibleNotifier,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                    appBar,
                     SliverPadding(
-                      padding: horizontalPadding,
-                      sliver: XmpTagSectionSliver(collection: widget.collection, entry: entry),
+                      padding: horizontalPadding + const EdgeInsets.only(top: 8),
+                      sliver: basicAndLocationSliver,
                     ),
                     SliverPadding(
                       padding: horizontalPadding,
-                      sliver: MetadataSectionSliver(
-                        entry: entry,
-                        columnCount: split ? 2 : 1,
-                        visibleNotifier: widget.visibleNotifier,
-                      ),
+                      sliver: tagSliver,
                     ),
                     SliverPadding(
-                      padding: EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
+                      padding: horizontalPadding + EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
+                      sliver: metadataSliver,
                     ),
                   ],
                 );
@@ -189,24 +183,32 @@ class SectionRow extends StatelessWidget {
   }
 }
 
-class InfoRow extends StatelessWidget {
-  final String label, value;
+class InfoRowGroup extends StatelessWidget {
+  final Map<String, String> keyValues;
 
-  const InfoRow(this.label, this.value);
+  const InfoRowGroup(this.keyValues);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: RichText(
-        text: TextSpan(
+    if (keyValues.isEmpty) return const SizedBox.shrink();
+    final lastKey = keyValues.keys.last;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SelectableText.rich(
+          TextSpan(
+            children: keyValues.entries
+                .expand(
+                  (kv) => [
+                    TextSpan(text: '${kv.key}     ', style: const TextStyle(color: Colors.white70, height: 1.7)),
+                    TextSpan(text: '${kv.value}${kv.key == lastKey ? '' : '\n'}'),
+                  ],
+                )
+                .toList(),
+          ),
           style: const TextStyle(fontFamily: 'Concourse'),
-          children: [
-            TextSpan(text: '$label    ', style: const TextStyle(color: Colors.white70)),
-            TextSpan(text: value),
-          ],
         ),
-      ),
+      ],
     );
   }
 }

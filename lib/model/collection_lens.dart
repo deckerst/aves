@@ -128,7 +128,7 @@ class CollectionLens with ChangeNotifier {
           final ub = CollectionSource.getUniqueAlbumName(b, albums);
           return compareAsciiUpperCase(ua, ub);
         };
-        sections = Map.unmodifiable(SplayTreeMap.from(byAlbum, compare));
+        sections = Map.unmodifiable(SplayTreeMap.of(byAlbum, compare));
         break;
     }
     notifyListeners();
