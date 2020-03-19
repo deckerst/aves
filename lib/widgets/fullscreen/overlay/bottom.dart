@@ -112,18 +112,19 @@ const double _iconSize = 16.0;
 const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
-class _FullscreenBottomOverlayContent extends StatelessWidget {
+class _FullscreenBottomOverlayContent extends AnimatedWidget {
   final ImageEntry entry;
   final OverlayMetadata details;
   final String position;
   final double maxWidth;
 
-  const _FullscreenBottomOverlayContent({
+  _FullscreenBottomOverlayContent({
+    Key key,
     this.entry,
     this.details,
     this.position,
     this.maxWidth,
-  });
+  }) : super(key: key, listenable: entry.metadataChangeNotifier);
 
   @override
   Widget build(BuildContext context) {
