@@ -24,7 +24,7 @@ class XmpTagSectionSliver extends AnimatedWidget {
         tags.isEmpty
             ? []
             : [
-                const SectionRow('XMP Tags'),
+                const SectionRow('Tags'),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: TagButton.buttonBorderWidth / 2),
                   child: Wrap(
@@ -43,6 +43,7 @@ class XmpTagSectionSliver extends AnimatedWidget {
   }
 
   void _goToTag(BuildContext context, String tag) {
+    if (collection == null) return;
     Navigator.push(
       context,
       MaterialPageRoute(

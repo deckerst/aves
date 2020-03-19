@@ -39,9 +39,13 @@ class CollectionLens with ChangeNotifier {
   }
 
   factory CollectionLens.from(CollectionLens lens, CollectionFilter filter) {
+    if (lens == null) return null;
     return CollectionLens(
       source: lens.source,
-      filters: [...lens.filters, filter],
+      filters: [
+        ...lens.filters,
+        if (filter != null) filter,
+      ],
       groupFactor: lens.groupFactor,
       sortFactor: lens.sortFactor,
     );
