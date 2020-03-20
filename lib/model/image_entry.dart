@@ -144,7 +144,7 @@ class ImageEntry {
 
   Tuple2<double, double> get latLng => isCatalogued ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
 
-  String get geoUri => hasGps ? 'geo:${catalogMetadata.latitude},${catalogMetadata.longitude}' : null;
+  String get geoUri => hasGps ? 'geo:${catalogMetadata.latitude},${catalogMetadata.longitude}?q=${catalogMetadata.latitude},${catalogMetadata.longitude}' : null;
 
   List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
