@@ -45,15 +45,17 @@ class FullscreenTopOverlay extends StatelessWidget {
                 tooltip: 'Share',
               ),
             ),
-            const SizedBox(width: 8),
-            OverlayButton(
-              scale: scale,
-              child: IconButton(
-                icon: Icon(OMIcons.delete),
-                onPressed: () => onActionSelected?.call(FullscreenAction.delete),
-                tooltip: 'Delete',
+            if (entry.canEdit) ...[
+              const SizedBox(width: 8),
+              OverlayButton(
+                scale: scale,
+                child: IconButton(
+                  icon: Icon(OMIcons.delete),
+                  onPressed: () => onActionSelected?.call(FullscreenAction.delete),
+                  tooltip: 'Delete',
+                ),
               ),
-            ),
+            ],
             const SizedBox(width: 8),
             OverlayButton(
               scale: scale,
@@ -63,7 +65,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                     value: FullscreenAction.info,
                     child: MenuRow(text: 'Info', icon: OMIcons.info),
                   ),
-                  if (entry.canRename)
+                  if (entry.canEdit)
                     PopupMenuItem(
                       value: FullscreenAction.rename,
                       child: MenuRow(text: 'Rename', icon: OMIcons.title),

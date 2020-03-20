@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';

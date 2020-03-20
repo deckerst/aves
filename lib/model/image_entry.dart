@@ -103,11 +103,11 @@ class ImageEntry {
 
   bool get isCatalogued => catalogMetadata != null;
 
+  bool get canEdit => path != null;
+
   bool get canPrint => !isVideo;
 
-  bool get canRename => path != null;
-
-  bool get canRotate => mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG;
+  bool get canRotate => canEdit && (mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG);
 
   double get aspectRatio {
     if (width == 0 || height == 0) return 1;
