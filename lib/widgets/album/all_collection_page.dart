@@ -4,6 +4,7 @@ import 'package:aves/widgets/album/search_delegate.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/debug_page.dart';
+import 'package:aves/widgets/stats.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
@@ -74,6 +75,10 @@ class _AllCollectionAppBar extends SliverAppBar {
                 const PopupMenuDivider(),
               ],
               PopupMenuItem(
+                value: AlbumAction.stats,
+                child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
+              ),
+              PopupMenuItem(
                 value: AlbumAction.debug,
                 child: MenuRow(text: 'Debug', icon: OMIcons.whatshot),
               ),
@@ -89,6 +94,9 @@ class _AllCollectionAppBar extends SliverAppBar {
     switch (action) {
       case AlbumAction.debug:
         _goToDebug(context, collection);
+        break;
+      case AlbumAction.stats:
+        _goToStats(context, collection);
         break;
       case AlbumAction.groupByAlbum:
         settings.collectionGroupFactor = GroupFactor.album;
@@ -127,6 +135,17 @@ class _AllCollectionAppBar extends SliverAppBar {
       ),
     );
   }
+
+  static Future _goToStats(BuildContext context, CollectionLens collection) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StatsPage(
+          collection: collection,
+        ),
+      ),
+    );
+  }
 }
 
-enum AlbumAction { debug, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
+enum AlbumAction { debug, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }

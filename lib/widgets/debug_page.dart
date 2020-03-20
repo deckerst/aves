@@ -44,10 +44,6 @@ class DebugPageState extends State<DebugPage> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Paths'),
-            Text('DCIM path: ${androidFileUtils.dcimPath}'),
-            Text('pictures path: ${androidFileUtils.picturesPath}'),
-            const Divider(),
             const Text('Settings'),
             Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
             Text('collectionSortFactor: ${settings.collectionSortFactor}'),
