@@ -65,28 +65,32 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty);
     final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty);
     return SliverList(
-      delegate: SliverChildListDelegate.fixed(
+      delegate: SliverChildListDelegate(
         [
           const SectionRow('Metadata'),
           ...directoriesWithoutTitle.map((dir) => InfoRowGroup(dir.tags)),
-          ExpansionPanelList.radio(
-            expandedHeaderPadding: EdgeInsets.zero,
-            children: directoriesWithTitle.map<ExpansionPanelRadio>((dir) {
-              return ExpansionPanelRadio(
-                value: dir.name,
-                canTapOnHeader: true,
-                headerBuilder: (BuildContext context, bool isExpanded) {
-                  return ListTile(
-                    title: _DirectoryTitle(dir.name),
-                  );
-                },
-                body: Container(
-                  alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.all(8),
-                  child: InfoRowGroup(dir.tags),
-                ),
-              );
-            }).toList(),
+          Theme(
+            data: Theme.of(context).copyWith(cardColor: Colors.grey[900]),
+            child: ExpansionPanelList.radio(
+              key: ValueKey(widget.entry.uri),
+              expandedHeaderPadding: EdgeInsets.zero,
+              children: directoriesWithTitle.map<ExpansionPanelRadio>((dir) {
+                return ExpansionPanelRadio(
+                  value: dir.name,
+                  canTapOnHeader: true,
+                  headerBuilder: (BuildContext context, bool isExpanded) {
+                    return ListTile(
+                      title: _DirectoryTitle(dir.name),
+                    );
+                  },
+                  body: Container(
+                    alignment: Alignment.topLeft,
+                    padding: const EdgeInsets.all(8),
+                    child: InfoRowGroup(dir.tags),
+                  ),
+                );
+              }).toList(),
+            ),
           )
         ],
       ),
