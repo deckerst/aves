@@ -20,7 +20,7 @@ class AllCollectionDrawer extends StatefulWidget {
 }
 
 class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
-  bool _regularAlbumsExpanded = false, _tagsExpanded = false;
+  bool _albumsExpanded = false, _tagsExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +130,63 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
     }
 
     final tags = source.sortedTags;
+    final drawerItems = [
+      header,
+      gifEntry,
+      videoEntry,
+      if (specialAlbums.isNotEmpty) ...[
+        const Divider(),
+        ...specialAlbums.map(buildAlbumEntry),
+      ],
+      if (appAlbums.isNotEmpty || regularAlbums.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(OMIcons.photoAlbum),
+            title: Row(
+              children: [
+                const Text('Albums'),
+                const Spacer(),
+                Text(
+                  '${appAlbums.length + regularAlbums.length}',
+                  style: TextStyle(
+                    color: (_albumsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _albumsExpanded = expanded),
+            children: [
+              ...appAlbums.map(buildAlbumEntry),
+              if (appAlbums.isNotEmpty && regularAlbums.isNotEmpty) const Divider(),
+              ...regularAlbums.map(buildAlbumEntry),
+            ],
+          ),
+        ),
+      if (tags.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(OMIcons.label),
+            title: Row(
+              children: [
+                const Text('Tags'),
+                const Spacer(),
+                Text(
+                  '${tags.length}',
+                  style: TextStyle(
+                    color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
+            children: tags.map(buildTagEntry).toList(),
+          ),
+        ),
+    ];
 
     return Drawer(
       child: Selector<MediaQueryData, double>(
@@ -143,63 +200,7 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
                 unselectedWidgetColor: Colors.white,
               ),
               child: Column(
-                children: [
-                  header,
-                  gifEntry,
-                  videoEntry,
-                  if (specialAlbums.isNotEmpty) ...[
-                    const Divider(),
-                    ...specialAlbums.map(buildAlbumEntry),
-                  ],
-                  if (appAlbums.isNotEmpty) ...[
-                    const Divider(),
-                    ...appAlbums.map(buildAlbumEntry),
-                  ],
-                  if (regularAlbums.isNotEmpty)
-                    SafeArea(
-                      top: false,
-                      bottom: false,
-                      child: ExpansionTile(
-                        leading: const Icon(OMIcons.photoAlbum),
-                        title: Row(
-                          children: [
-                            const Text('Albums'),
-                            const Spacer(),
-                            Text(
-                              '${regularAlbums.length}',
-                              style: TextStyle(
-                                color: (_regularAlbumsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                              ),
-                            ),
-                          ],
-                        ),
-                        onExpansionChanged: (expanded) => setState(() => _regularAlbumsExpanded = expanded),
-                        children: regularAlbums.map(buildAlbumEntry).toList(),
-                      ),
-                    ),
-                  if (tags.isNotEmpty)
-                    SafeArea(
-                      top: false,
-                      bottom: false,
-                      child: ExpansionTile(
-                        leading: const Icon(OMIcons.label),
-                        title: Row(
-                          children: [
-                            const Text('Tags'),
-                            const Spacer(),
-                            Text(
-                              '${tags.length}',
-                              style: TextStyle(
-                                color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                              ),
-                            ),
-                          ],
-                        ),
-                        onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
-                        children: tags.map(buildTagEntry).toList(),
-                      ),
-                    ),
-                ],
+                children: drawerItems,
               ),
             ),
           );
