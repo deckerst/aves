@@ -230,7 +230,7 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} at ${DateFormat.Hm().format(date)}' : '?';
+    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : '?';
     final resolution = '${entry.width ?? '?'} × ${entry.height ?? '?'}';
     return Row(
       children: [
