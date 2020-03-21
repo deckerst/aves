@@ -24,7 +24,7 @@ dependencies:
       url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   event_bus:
   flushbar:
-#   flushbar-1.9.1 cannot be built with Flutter 1.15.17
+    #   flushbar-1.9.1 cannot be built with Flutter 1.15.17
     git:
       url: https://github.com/AndreHaueisen/flushbar.git
       ref: 13c55a8
@@ -42,6 +42,7 @@ dependencies:
   path:
   pdf:
   pedantic:
+  percent_indicator:
   permission_handler:
   photo_view:
   printing:
