@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -19,22 +17,34 @@ class StatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final catalogued = entries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
-    final located = withGps.where((entry) => entry.isLocated);
     final Map<String, int> byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map((k, v) => MapEntry(k, v.length));
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Stats'),
         ),
-        body: ListView(
-          children: [
-            _buildMimePie(context, 'images', Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')))),
-            _buildMimePie(context, 'videos', Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')))),
-            const Divider(),
-            Text('Catalogued: ${catalogued.length}'),
-            Text('With GPS: ${withGps.length}'),
-            Text('With address: ${located.length}'),
-          ],
+        body: SafeArea(
+          child: ListView(
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: [
+                  _buildMimePie(context, 'images', Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')))),
+                  _buildMimePie(context, 'videos', Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')))),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    LinearProgressIndicator(value: withGps.length / entries.length),
+                    const SizedBox(height: 8),
+                    Text('${withGps.length} entries with location'),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -57,47 +67,52 @@ class StatsPage extends StatelessWidget {
       ),
     ];
 
-    final size = MediaQuery.of(context).size;
-    final circleDim = min(size.width, size.height) / 2;
-
-    return Row(
-      children: [
-        Container(
-          width: circleDim,
-          height: circleDim,
-          child: Stack(
-            children: [
-              charts.PieChart(
-                series,
-                defaultRenderer: charts.ArcRendererConfig(
-                  arcWidth: 16,
+    return LayoutBuilder(builder: (context, constraints) {
+      var mq = MediaQuery.of(context);
+      final dim = constraints.maxWidth / (mq.orientation == Orientation.portrait ? 2 : 4);
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: dim,
+            height: dim,
+            child: Stack(
+              children: [
+                charts.PieChart(
+                  series,
+                  defaultRenderer: charts.ArcRendererConfig(
+                    arcWidth: 16,
+                  ),
                 ),
-              ),
-              Center(
-                child: Text(
-                  '${byMimeTypes.values.fold(0, (prev, v) => prev + v)}\n$label',
-                  textAlign: TextAlign.center,
+                Center(
+                  child: Text(
+                    '${byMimeTypes.values.fold(0, (prev, v) => prev + v)}\n$label',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: seriesData
-                .map((kv) => Row(
-                      children: [
-                        Icon(Icons.fiber_manual_record, color: stringToColor(kv.key)),
-                        const SizedBox(width: 8),
-                        Text(kv.key),
-                        const SizedBox(width: 8),
-                        Text('${kv.value}'),
-                      ],
-                    ))
-                .toList()),
-      ],
-    );
+          SizedBox(
+            width: dim,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: seriesData
+                    .map((kv) => Row(
+                          children: [
+                            Icon(Icons.fiber_manual_record, color: stringToColor(kv.key)),
+                            const SizedBox(width: 8),
+                            Text(kv.key),
+                            const SizedBox(width: 8),
+                            Text('${kv.value}', style: const TextStyle(color: Colors.white70)),
+                          ],
+                        ))
+                    .toList()),
+          ),
+        ],
+      );
+    });
   }
 }
 
