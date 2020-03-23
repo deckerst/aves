@@ -67,7 +67,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     return SliverList(
       delegate: SliverChildListDelegate(
         [
-          const SectionRow('Metadata'),
+          if (_metadata.isNotEmpty) const SectionRow('Metadata'),
           ...directoriesWithoutTitle.map((dir) => InfoRowGroup(dir.tags)),
           Theme(
             data: Theme.of(context).copyWith(cardColor: Colors.grey[900]),

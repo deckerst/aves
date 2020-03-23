@@ -55,13 +55,13 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "getAllMetadata":
-                getAllMetadata(call, result);
+                new Thread(() -> getAllMetadata(call, new MethodResultWrapper(result))).start();
                 break;
             case "getCatalogMetadata":
-                getCatalogMetadata(call, result);
+                new Thread(() -> getCatalogMetadata(call, new MethodResultWrapper(result))).start();
                 break;
             case "getOverlayMetadata":
-                getOverlayMetadata(call, result);
+                new Thread(() -> getOverlayMetadata(call, new MethodResultWrapper(result))).start();
                 break;
             default:
                 result.notImplemented();

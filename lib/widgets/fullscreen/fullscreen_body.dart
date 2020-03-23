@@ -5,11 +5,11 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
-import 'package:aves/widgets/fullscreen/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
 import 'package:aves/widgets/fullscreen/overlay/video.dart';
+import 'package:aves/widgets/fullscreen/uri_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -169,33 +169,34 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
             builder: (context, page, child) {
               final showOverlay = _entry != null && page == imagePage;
               final videoController = showOverlay && _entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == _entry.uri, orElse: () => null)?.item2 : null;
-              return showOverlay
-                  ? Positioned(
-                      bottom: 0,
-                      child: Column(
-                        children: [
-                          if (videoController != null)
-                            VideoControlOverlay(
-                              entry: _entry,
-                              controller: videoController,
-                              scale: _bottomOverlayScale,
-                              viewInsets: _frozenViewInsets,
-                              viewPadding: _frozenViewPadding,
-                            ),
-                          SlideTransition(
-                            position: _bottomOverlayOffset,
-                            child: FullscreenBottomOverlay(
-                              entries: entries,
-                              index: _currentHorizontalPage,
-                              showPosition: hasCollection,
-                              viewInsets: _frozenViewInsets,
-                              viewPadding: _frozenViewPadding,
-                            ),
-                          ),
-                        ],
+              return Positioned(
+                bottom: 0,
+                child: Opacity(
+                  opacity: showOverlay ? 1 : 0,
+                  child: Column(
+                    children: [
+                      if (videoController != null)
+                        VideoControlOverlay(
+                          entry: _entry,
+                          controller: videoController,
+                          scale: _bottomOverlayScale,
+                          viewInsets: _frozenViewInsets,
+                          viewPadding: _frozenViewPadding,
+                        ),
+                      SlideTransition(
+                        position: _bottomOverlayOffset,
+                        child: FullscreenBottomOverlay(
+                          entries: entries,
+                          index: _currentHorizontalPage,
+                          showPosition: hasCollection,
+                          viewInsets: _frozenViewInsets,
+                          viewPadding: _frozenViewPadding,
+                        ),
                       ),
-                    )
-                  : const SizedBox.shrink();
+                    ],
+                  ),
+                ),
+              );
             },
           ),
         ],

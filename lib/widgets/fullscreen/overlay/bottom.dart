@@ -54,7 +54,9 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
   @override
   void didUpdateWidget(FullscreenBottomOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _initDetailLoader();
+    if (entry != _lastEntry) {
+      _initDetailLoader();
+    }
   }
 
   void _initDetailLoader() {
@@ -79,25 +81,26 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
             return Container(
               color: Colors.black26,
               padding: viewInsets + viewPadding.copyWith(top: 0),
-              child: Padding(
-                padding: innerPadding,
-                child: FutureBuilder(
-                  future: _detailLoader,
-                  builder: (futureContext, AsyncSnapshot<OverlayMetadata> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
-                      _lastDetails = snapshot.data;
-                      _lastEntry = entry;
-                    }
-                    return _lastEntry == null
-                        ? const SizedBox.shrink()
-                        : _FullscreenBottomOverlayContent(
+              child: FutureBuilder(
+                future: _detailLoader,
+                builder: (futureContext, AsyncSnapshot<OverlayMetadata> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
+                    _lastDetails = snapshot.data;
+                    _lastEntry = entry;
+                  }
+                  return _lastEntry == null
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          // keep padding inside `FutureBuilder` so that overlay takes no space until data is ready
+                          padding: innerPadding,
+                          child: _FullscreenBottomOverlayContent(
                             entry: _lastEntry,
                             details: _lastDetails,
                             position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
                             maxWidth: overlayContentMaxWidth,
-                          );
-                  },
-                ),
+                          ),
+                        );
+                },
               ),
             );
           },

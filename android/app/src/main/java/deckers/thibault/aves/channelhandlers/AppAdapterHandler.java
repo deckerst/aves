@@ -1,27 +1,34 @@
 package deckers.thibault.aves.channelhandlers;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Key;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
+
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
+import static com.bumptech.glide.request.RequestOptions.centerCropTransform;
+
 public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/app";
-
-    private static final String LOG_TAG = Utils.createLogTag(AppAdapterHandler.class);
 
     private Context context;
 
@@ -31,20 +38,13 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Log.d(LOG_TAG, "onMethodCall method=" + call.method + ", arguments=" + call.arguments);
         switch (call.method) {
-            case "getAppNames": {
-                result.success(getAppNames());
+            case "getAppIcon": {
+                new Thread(() -> getAppIcon(call, new MethodResultWrapper(result))).start();
                 break;
             }
-            case "getAppIcon": {
-                String packageName = call.argument("packageName");
-                Integer size = call.argument("size");
-                if (packageName == null || size == null) {
-                    result.error("getAppIcon-args", "failed because of missing arguments", null);
-                    return;
-                }
-                getAppIcon(packageName, size, result);
+            case "getAppNames": {
+                result.success(getAppNames());
                 break;
             }
             case "edit": {
@@ -109,8 +109,57 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         return nameMap;
     }
 
-    private void getAppIcon(String packageName, int size, MethodChannel.Result result) {
-        new AppIconDecodeTask().execute(new AppIconDecodeTask.Params(context, packageName, size, result));
+    private void getAppIcon(MethodCall call, MethodChannel.Result result) {
+        String packageName = call.argument("packageName");
+        Integer size = call.argument("size");
+        if (packageName == null || size == null) {
+            result.error("getAppIcon-args", "failed because of missing arguments", null);
+            return;
+        }
+
+        byte[] data = null;
+        try {
+            int iconResourceId = context.getPackageManager().getApplicationInfo(packageName, 0).icon;
+            Uri uri = new Uri.Builder()
+                    .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                    .authority(packageName)
+                    .path(String.valueOf(iconResourceId))
+                    .build();
+
+            // add signature to ignore cache for images which got modified but kept the same URI
+            Key signature = new ObjectKey(packageName + size);
+            RequestOptions options = new RequestOptions()
+                    .signature(signature)
+                    .override(size, size);
+
+            FutureTarget<Bitmap> target = Glide.with(context)
+                    .asBitmap()
+                    .apply(options)
+                    .apply(centerCropTransform())
+                    .load(uri)
+                    .signature(signature)
+                    .submit(size, size);
+
+            try {
+                Bitmap bmp = target.get();
+                if (bmp != null) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    data = stream.toByteArray();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Glide.with(context).clear(target);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (data != null) {
+            result.success(data);
+        } else {
+            result.error("getAppIcon-null", "failed to get icon for packageName=" + packageName, null);
+        }
     }
 
     private void edit(String title, Uri uri, String mimeType) {
