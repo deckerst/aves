@@ -22,7 +22,6 @@ import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
-import io.flutter.plugin.common.EventChannel;
 
 public class MediaStoreImageProvider extends ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(MediaStoreImageProvider.class);
@@ -57,10 +56,9 @@ public class MediaStoreImageProvider extends ImageProvider {
                     MediaStore.Video.Media.ORIENTATION,
             } : new String[0]).flatMap(Stream::of).toArray(String[]::new);
 
-    public void fetchAll(Activity activity, EventChannel.EventSink entrySink) {
-        NewEntryHandler success = entrySink::success;
-        fetchFrom(activity, success, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION);
-        fetchFrom(activity, success, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION);
+    public void fetchAll(Activity activity, NewEntryHandler newEntryHandler) {
+        fetchFrom(activity, newEntryHandler, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION);
+        fetchFrom(activity, newEntryHandler, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION);
     }
 
     @Override
@@ -191,7 +189,7 @@ public class MediaStoreImageProvider extends ImageProvider {
         callback.onFailure();
     }
 
-    private interface NewEntryHandler {
+    public interface NewEntryHandler {
         void handleEntry(Map<String, Object> entry);
     }
 }

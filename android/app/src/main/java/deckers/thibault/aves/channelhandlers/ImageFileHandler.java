@@ -35,29 +35,29 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "getImageEntries":
-                mediaStoreStreamHandler.fetchAll(activity);
+                new Thread(() -> mediaStoreStreamHandler.fetchAll(activity)).start();
                 result.success(null);
                 break;
             case "getImageEntry":
-                getImageEntry(call, result);
+                new Thread(() -> getImageEntry(call, new MethodResultWrapper(result))).start();
                 break;
             case "readAsBytes":
-                readAsBytes(call, result);
+                new Thread(() -> readAsBytes(call, new MethodResultWrapper(result))).start();
                 break;
             case "getImageBytes":
-                getImageBytes(call, result);
+                new Thread(() -> getImageBytes(call, new MethodResultWrapper(result))).start();
                 break;
             case "cancelGetImageBytes":
-                cancelGetImageBytes(call, result);
+                new Thread(() -> cancelGetImageBytes(call, new MethodResultWrapper(result))).start();
                 break;
             case "delete":
-                delete(call, result);
+                new Thread(() -> delete(call, new MethodResultWrapper(result))).start();
                 break;
             case "rename":
-                rename(call, result);
+                new Thread(() -> rename(call, new MethodResultWrapper(result))).start();
                 break;
             case "rotate":
-                rotate(call, result);
+                new Thread(() -> rotate(call, new MethodResultWrapper(result))).start();
                 break;
             default:
                 result.notImplemented();

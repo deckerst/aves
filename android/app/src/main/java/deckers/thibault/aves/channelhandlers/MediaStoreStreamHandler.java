@@ -1,6 +1,8 @@
 package deckers.thibault.aves.channelhandlers;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
@@ -27,8 +29,9 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     void fetchAll(Activity activity) {
         Log.d(LOG_TAG, "fetchAll start");
 //        Instant start = Instant.now();
-        new MediaStoreImageProvider().fetchAll(activity, eventSink); // 350ms
-        eventSink.endOfStream();
+        Handler handler = new Handler(Looper.getMainLooper());
+        new MediaStoreImageProvider().fetchAll(activity, (entry) -> handler.post(() -> eventSink.success(entry))); // 350ms
+        handler.post(() -> eventSink.endOfStream());
 //        Log.d(LOG_TAG, "fetchAll complete in " + Duration.between(start, Instant.now()).toMillis() + "ms");
     }
 }
