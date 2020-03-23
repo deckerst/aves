@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_preview.dart';
+import 'package:aves/widgets/fullscreen/uri_picture_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Thumbnail extends StatelessWidget {
   final ImageEntry entry;
@@ -22,44 +25,6 @@ class Thumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = ImagePreview(
-      entry: entry,
-      // TODO TLAD smarter sizing, but shouldn't only depend on `extent` so that it doesn't reload during gridview scaling
-      width: 50,
-      height: 50,
-      builder: (bytes) {
-        final image = Image.memory(
-          bytes,
-          width: extent,
-          height: extent,
-          fit: BoxFit.cover,
-        );
-        return heroTag == null
-            ? image
-            : Hero(
-                tag: heroTag,
-                flightShuttleBuilder: (
-                  BuildContext flightContext,
-                  Animation<double> animation,
-                  HeroFlightDirection flightDirection,
-                  BuildContext fromHeroContext,
-                  BuildContext toHeroContext,
-                ) {
-                  // use LayoutBuilder only during hero animation
-                  return LayoutBuilder(builder: (context, constraints) {
-                    final dim = min(constraints.maxWidth, constraints.maxHeight);
-                    return Image.memory(
-                      bytes,
-                      width: dim,
-                      height: dim,
-                      fit: BoxFit.cover,
-                    );
-                  });
-                },
-                child: image,
-              );
-      },
-    );
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -72,7 +37,7 @@ class Thumbnail extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: [
-          image,
+          entry.isSvg ? _buildVectorImage() : _buildRasterImage(),
           _ThumbnailOverlay(
             entry: entry,
             extent: extent,
@@ -80,6 +45,59 @@ class Thumbnail extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildRasterImage() {
+    return ImagePreview(
+      entry: entry,
+      // TODO TLAD smarter sizing, but shouldn't only depend on `extent` so that it doesn't reload during gridview scaling
+      width: 50,
+      height: 50,
+      builder: (bytes) {
+        final imageBuilder = (bytes, dim) => Image.memory(
+              bytes,
+              width: dim,
+              height: dim,
+              fit: BoxFit.cover,
+            );
+        return heroTag == null
+            ? imageBuilder(bytes, extent)
+            : Hero(
+                tag: heroTag,
+                flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
+                  // use LayoutBuilder only during hero animation
+                  return LayoutBuilder(builder: (context, constraints) {
+                    final dim = min(constraints.maxWidth, constraints.maxHeight);
+                    return imageBuilder(bytes, dim);
+                  });
+                },
+                child: imageBuilder(bytes, extent),
+              );
+      },
+    );
+  }
+
+  Widget _buildVectorImage() {
+    final child = Container(
+      // center `SvgPicture` inside `Container` with the thumbnail dimensions
+      // so that `SvgPicture` doesn't get aligned by the `Stack` like the overlay icons
+      width: extent,
+      height: extent,
+      child: SvgPicture(
+        UriPicture(
+          entry.uri,
+          colorFilter: Constants.svgColorFilter,
+        ),
+        width: extent,
+        height: extent,
+      ),
+    );
+    return heroTag == null
+        ? child
+        : Hero(
+            tag: heroTag,
+            child: child,
+          );
   }
 }
 

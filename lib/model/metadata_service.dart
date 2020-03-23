@@ -8,6 +8,8 @@ class MetadataService {
 
   // return Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   static Future<Map> getAllMetadata(ImageEntry entry) async {
+    if (entry.isSvg) return null;
+
     try {
       final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
@@ -22,6 +24,8 @@ class MetadataService {
   }
 
   static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry) async {
+    if (entry.isSvg) return null;
+
     try {
       // return map with:
       // 'dateMillis': date taken in milliseconds since Epoch (long)
@@ -42,6 +46,8 @@ class MetadataService {
   }
 
   static Future<OverlayMetadata> getOverlayMetadata(ImageEntry entry) async {
+    if (entry.isSvg) return null;
+
     try {
       // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{

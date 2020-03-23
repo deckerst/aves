@@ -15,7 +15,7 @@ class ContentImageProvider extends ImageProvider {
         entry.mimeType = mimeType;
         entry.fillPreCatalogMetadata(context);
 
-        if (entry.hasSize()) {
+        if (entry.hasSize() || entry.isSvg()) {
             callback.onSuccess(entry.toMap());
         } else {
             callback.onFailure();

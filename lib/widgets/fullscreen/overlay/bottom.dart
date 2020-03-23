@@ -237,7 +237,7 @@ class _DateRow extends StatelessWidget {
         const Icon(OMIcons.calendarToday, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
+        if (!entry.isSvg) Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }

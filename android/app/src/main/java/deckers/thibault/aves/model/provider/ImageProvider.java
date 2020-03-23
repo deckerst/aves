@@ -33,9 +33,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MetadataHelper;
+import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
@@ -144,10 +144,10 @@ public abstract class ImageProvider {
         // so we retrieve it again from the file metadata
         String metadataMimeType = getMimeType(activity, uri);
         switch (metadataMimeType != null ? metadataMimeType : mimeType) {
-            case Constants.MIME_JPEG:
+            case MimeTypes.JPEG:
                 rotateJpeg(activity, path, uri, clockwise, callback);
                 break;
-            case Constants.MIME_PNG:
+            case MimeTypes.PNG:
                 rotatePng(activity, path, uri, clockwise, callback);
                 break;
             default:
@@ -156,7 +156,7 @@ public abstract class ImageProvider {
     }
 
     private void rotateJpeg(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
-        final String mimeType = Constants.MIME_JPEG;
+        final String mimeType = MimeTypes.JPEG;
         String editablePath = path;
         boolean onSdCard = Env.isOnSdCard(activity, path);
         if (onSdCard) {
@@ -232,7 +232,7 @@ public abstract class ImageProvider {
     }
 
     private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
-        final String mimeType = Constants.MIME_PNG;
+        final String mimeType = MimeTypes.PNG;
         if (path == null) {
             callback.onFailure();
             return;

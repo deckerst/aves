@@ -38,7 +38,7 @@ class FileImageProvider extends ImageProvider {
         }
         entry.fillPreCatalogMetadata(context);
 
-        if (entry.hasSize()) {
+        if (entry.hasSize() || entry.isSvg()) {
             callback.onSuccess(entry.toMap());
         } else {
             callback.onFailure();

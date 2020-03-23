@@ -36,7 +36,7 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
 
   @override
   void initState() {
-    debugPrint('$runtimeType initState path=${entry.path}');
+//    debugPrint('$runtimeType initState path=${entry.path}');
     super.initState();
     _entryChangeNotifier = Listenable.merge([
       entry.imageChangeNotifier,
@@ -55,14 +55,14 @@ class ImagePreviewState extends State<ImagePreview> with AfterInitMixin {
   void didUpdateWidget(ImagePreview old) {
 //    debugPrint('$runtimeType didUpdateWidget from=${old.entry.path} to=${entry.path}');
     super.didUpdateWidget(old);
-    if (widget.width == old.width && widget.height == old.height && uri == old.entry.uri && widget.entry.width == old.entry.width && widget.entry.height == old.entry.height && widget.entry.orientationDegrees == old.entry.orientationDegrees) return;
+    if (widget.width == old.width && widget.height == old.height && uri == old.entry.uri && entry.width == old.entry.width && entry.height == old.entry.height && entry.orientationDegrees == old.entry.orientationDegrees) return;
     _initByteLoader();
   }
 
   void _initByteLoader() {
     final width = (widget.width * _devicePixelRatio).round();
     final height = (widget.height * _devicePixelRatio).round();
-    _byteLoader = ImageFileService.getImageBytes(widget.entry, width, height);
+    _byteLoader = ImageFileService.getImageBytes(entry, width, height);
   }
 
   void _onEntryChange() => setState(() => _initByteLoader());

@@ -1,7 +1,10 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/fullscreen/image_uri.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/fullscreen/uri_image_provider.dart';
+import 'package:aves/widgets/fullscreen/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/video.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 import 'package:video_player/video_player.dart';
@@ -43,26 +46,47 @@ class ImageView extends StatelessWidget {
       );
     }
 
+    final placeholderBuilder = (context) => const Center(
+          child: SizedBox(
+            width: 64,
+            height: 64,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          ),
+        );
+    final heroAttributes = heroTag != null
+        ? PhotoViewHeroAttributes(
+            tag: heroTag,
+            transitionOnUserGestures: true,
+          )
+        : null;
+
+    if (entry.isSvg) {
+      return PhotoView.customChild(
+        child: SvgPicture(
+          UriPicture(
+            entry.uri,
+            colorFilter: Constants.svgColorFilter,
+          ),
+          placeholderBuilder: placeholderBuilder,
+        ),
+        backgroundDecoration: backgroundDecoration,
+        heroAttributes: heroAttributes,
+        scaleStateChangedCallback: onScaleChanged,
+        minScale: PhotoViewComputedScale.contained,
+        initialScale: PhotoViewComputedScale.contained,
+        onTapUp: (tapContext, details, value) => onTap?.call(),
+      );
+    }
+
     return PhotoView(
       // key includes size and orientation to refresh when the image is rotated
       key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
       imageProvider: UriImage(entry.uri),
-      loadingBuilder: (context, event) => const Center(
-        child: SizedBox(
-          width: 64,
-          height: 64,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-          ),
-        ),
-      ),
+      loadingBuilder: (context, event) => placeholderBuilder(context),
       backgroundDecoration: backgroundDecoration,
-      heroAttributes: heroTag != null
-          ? PhotoViewHeroAttributes(
-              tag: heroTag,
-              transitionOnUserGestures: true,
-            )
-          : null,
+      heroAttributes: heroAttributes,
       scaleStateChangedCallback: onScaleChanged,
       minScale: PhotoViewComputedScale.contained,
       initialScale: PhotoViewComputedScale.contained,

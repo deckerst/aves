@@ -217,6 +217,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
 
     // convenience methods
 
+    // InputStream.readAllBytes is only available from Java 9+
     private byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;

@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.MetadataHelper;
+import deckers.thibault.aves.utils.MimeTypes;
 
 import static deckers.thibault.aves.utils.MetadataHelper.getOrientationDegreesForExifCode;
 
@@ -100,11 +100,15 @@ public class ImageEntry {
     }
 
     public boolean isImage() {
-        return mimeType.startsWith(Constants.MIME_IMAGE);
+        return mimeType.startsWith(MimeTypes.IMAGE);
+    }
+
+    public boolean isSvg() {
+        return mimeType.equals(MimeTypes.SVG);
     }
 
     public boolean isVideo() {
-        return mimeType.startsWith(Constants.MIME_VIDEO);
+        return mimeType.startsWith(MimeTypes.VIDEO);
     }
 
     // metadata retrieval
@@ -179,10 +183,12 @@ public class ImageEntry {
     // expects entry with: uri/path, mimeType
     // finds: width, height, orientation, date
     private void fillByMetadataExtractor(Context context) {
+        if (MimeTypes.SVG.equals(mimeType)) return;
+
         try (InputStream is = getInputStream(context)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-            if (Constants.MIME_JPEG.equals(mimeType)) {
+            if (MimeTypes.JPEG.equals(mimeType)) {
                 JpegDirectory jpegDir = metadata.getFirstDirectoryOfType(JpegDirectory.class);
                 if (jpegDir != null) {
                     if (jpegDir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
@@ -201,7 +207,7 @@ public class ImageEntry {
                         sourceDateTakenMillis = exifDir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();
                     }
                 }
-            } else if (Constants.MIME_MP4.equals(mimeType)) {
+            } else if (MimeTypes.MP4.equals(mimeType)) {
                 Mp4VideoDirectory mp4VideoDir = metadata.getFirstDirectoryOfType(Mp4VideoDirectory.class);
                 if (mp4VideoDir != null) {
                     if (mp4VideoDir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
@@ -220,6 +226,8 @@ public class ImageEntry {
     // expects entry with: uri/path
     // finds: width, height
     private void fillByBitmapDecode(Context context) {
+        if (MimeTypes.SVG.equals(mimeType)) return;
+
         try (InputStream is = getInputStream(context)) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;

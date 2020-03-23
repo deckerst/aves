@@ -99,6 +99,8 @@ class ImageEntry {
 
   bool get isGif => mimeType == MimeTypes.MIME_GIF;
 
+  bool get isSvg => mimeType == MimeTypes.MIME_SVG;
+
   bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
 
   bool get isCatalogued => catalogMetadata != null;

@@ -23,7 +23,7 @@ class BasicSection extends StatelessWidget {
       'Title': entry.title ?? '?',
       'Date': dateText,
       if (entry.isVideo) ..._buildVideoRows(),
-      'Resolution': resolutionText,
+      if (!entry.isSvg) 'Resolution': resolutionText,
       'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : '?',
       'URI': entry.uri ?? '?',
       if (entry.path != null) 'Path': entry.path,

@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.MetadataHelper;
+import deckers.thibault.aves.utils.MimeTypes;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -69,7 +70,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     }
 
     private boolean isVideo(@Nullable String mimeType) {
-        return mimeType != null && mimeType.startsWith(Constants.MIME_VIDEO);
+        return mimeType != null && mimeType.startsWith(MimeTypes.VIDEO);
     }
 
     private InputStream getInputStream(String path, String uri) throws FileNotFoundException {
@@ -171,7 +172,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         Map<String, Object> metadataMap = new HashMap<>();
 
         try (InputStream is = getInputStream(path, uri)) {
-            if (!Constants.MIME_MP2T.equalsIgnoreCase(mimeType)) {
+            if (!MimeTypes.MP2T.equals(mimeType)) {
                 Metadata metadata = ImageMetadataReader.readMetadata(is);
 
                 // EXIF Sub-IFD

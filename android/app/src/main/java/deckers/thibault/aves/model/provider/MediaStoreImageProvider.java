@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.ImageEntry;
-import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.Env;
+import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
@@ -71,10 +71,10 @@ public class MediaStoreImageProvider extends ImageProvider {
             entry.put("uri", uri.toString());
             callback.onSuccess(entry);
         };
-        if (mimeType.startsWith(Constants.MIME_IMAGE)) {
+        if (mimeType.startsWith(MimeTypes.IMAGE)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
             entryCount = fetchFrom(context, onSuccess, contentUri, IMAGE_PROJECTION);
-        } else if (mimeType.startsWith(Constants.MIME_VIDEO)) {
+        } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
             entryCount = fetchFrom(context, onSuccess, contentUri, VIDEO_PROJECTION);
         }
@@ -114,13 +114,14 @@ public class MediaStoreImageProvider extends ImageProvider {
                     // this is fine if `contentUri` does not already contain the ID
                     final Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
                     final String path = cursor.getString(pathColumn);
+                    final String mimeType = cursor.getString(mimeTypeColumn);
                     int width = cursor.getInt(widthColumn);
                     int height = cursor.getInt(heightColumn);
 
                     Map<String, Object> entryMap = new HashMap<String, Object>() {{
                         put("uri", itemUri.toString());
                         put("path", path);
-                        put("mimeType", cursor.getString(mimeTypeColumn));
+                        put("mimeType", mimeType);
                         put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
                         put("sizeBytes", cursor.getLong(sizeColumn));
                         put("title", cursor.getString(titleColumn));
@@ -134,7 +135,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                     entryMap.put("width", width);
                     entryMap.put("height", height);
 
-                    if (width <= 0 || height <= 0) {
+                    if ((width <= 0 || height <= 0) && !MimeTypes.SVG.equals(mimeType)) {
                         // some images are incorrectly registered in the Media Store,
                         // they are valid but miss some attributes, such as width, height, orientation
                         ImageEntry entry = new ImageEntry(entryMap).fillPreCatalogMetadata(context);
@@ -143,9 +144,9 @@ public class MediaStoreImageProvider extends ImageProvider {
                         height = entry.height != null ? entry.height : 0;
                     }
 
-                    if (width <= 0 || height <= 0) {
+                    if ((width <= 0 || height <= 0) && !MimeTypes.SVG.equals(mimeType)) {
                         // this is probably not a real image, like "/storage/emulated/0", so we skip it
-                        Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path);
+                        Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path + ", mimeType=" + mimeType);
                     } else {
                         newEntryHandler.handleEntry(entryMap);
                         entryCount++;
