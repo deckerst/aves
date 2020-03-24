@@ -7,6 +7,7 @@ import 'package:aves/widgets/debug_page.dart';
 import 'package:aves/widgets/stats.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class AllCollectionPage extends StatelessWidget {
@@ -90,13 +91,15 @@ class _AllCollectionAppBar extends SliverAppBar {
     ];
   }
 
-  static void _onActionSelected(BuildContext context, CollectionLens collection, AlbumAction action) {
+  static void _onActionSelected(BuildContext context, CollectionLens collection, AlbumAction action) async {
+    // wait for the popup menu to hide before proceeding with the action
+    await Future.delayed(const Duration(milliseconds: 300));
     switch (action) {
       case AlbumAction.debug:
-        _goToDebug(context, collection);
+        unawaited(_goToDebug(context, collection));
         break;
       case AlbumAction.stats:
-        _goToStats(context, collection);
+        unawaited(_goToStats(context, collection));
         break;
       case AlbumAction.groupByAlbum:
         settings.collectionGroupFactor = GroupFactor.album;

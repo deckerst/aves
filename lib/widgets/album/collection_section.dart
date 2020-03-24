@@ -25,35 +25,24 @@ class SectionSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = collection.sections;
+    final sectionEntries = sections[sectionKey];
+    final childCount = sectionEntries.length;
 
     final sliver = SliverGrid(
       delegate: SliverChildBuilderDelegate(
-        // TODO TLAD find out why thumbnails are rebuilt (with `initState`)
-        (context, index) {
-          final sectionEntries = sections[sectionKey];
-          if (index >= sectionEntries.length) return null;
-          final entry = sectionEntries[index];
-          return GestureDetector(
-            key: ValueKey(entry.uri),
-            onTap: () => _showFullscreen(context, entry),
-            child: Selector<MediaQueryData, double>(
-              selector: (c, mq) => mq.size.width,
-              builder: (c, mqWidth, child) {
-                return MetaData(
-                  metaData: ThumbnailMetadata(index, entry),
-                  child: Thumbnail(
-                    entry: entry,
-                    extent: mqWidth / columnCount,
-                    heroTag: collection.heroTag(entry),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-        childCount: sections[sectionKey].length,
+        // TODO TLAD thumbnails at the beginning of each sections are built even though they are offscreen
+        // because of `RenderSliverMultiBoxAdaptor.addInitialChild`
+        // called by `RenderSliverGrid.performLayout` (line 547)
+        (context, index) => index < childCount
+            ? GridThumbnail(
+                collection: collection,
+                index: index,
+                entry: sectionEntries[index],
+                columnCount: columnCount,
+              )
+            : null,
+        childCount: childCount,
         addAutomaticKeepAlives: false,
-        addRepaintBoundaries: true,
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: columnCount,
@@ -70,12 +59,50 @@ class SectionSliver extends StatelessWidget {
       overlapsContent: false,
     );
   }
+}
 
-  void _showFullscreen(BuildContext context, ImageEntry entry) {
+class GridThumbnail extends StatelessWidget {
+  final CollectionLens collection;
+  final int index;
+  final ImageEntry entry;
+  final int columnCount;
+  final GestureTapCallback onTap;
+
+  const GridThumbnail({
+    Key key,
+    this.collection,
+    this.index,
+    this.entry,
+    this.columnCount,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      key: ValueKey(entry.uri),
+      onTap: () => _showFullscreen(context),
+      child: Selector<MediaQueryData, double>(
+        selector: (c, mq) => mq.size.width,
+        builder: (c, mqWidth, child) {
+          return MetaData(
+            metaData: ThumbnailMetadata(index, entry),
+            child: Thumbnail(
+              entry: entry,
+              extent: mqWidth / columnCount,
+              heroTag: collection.heroTag(entry),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _showFullscreen(BuildContext context) {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        pageBuilder: (context, _, __) => MultiFullscreenPage(
+        pageBuilder: (c, a, sa) => MultiFullscreenPage(
           collection: collection,
           initialEntry: entry,
         ),

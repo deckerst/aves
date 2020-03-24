@@ -29,7 +29,6 @@ dependencies:
       url: https://github.com/AndreHaueisen/flushbar.git
       ref: 13c55a8
   flutter_native_timezone:
-  flutter_staggered_grid_view:
   flutter_sticky_header:
     git:
       url: git://github.com/deckerst/flutter_sticky_header.git
