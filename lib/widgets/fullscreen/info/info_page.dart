@@ -32,6 +32,8 @@ class InfoPageState extends State<InfoPage> {
   ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
+  CollectionLens get collection => widget.collection;
+
   ImageEntry get entry => widget.entry;
 
   @override
@@ -68,6 +70,7 @@ class InfoPageState extends State<InfoPage> {
                 final locationAtTop = split && entry.hasGps;
 
                 final locationSection = LocationSection(
+                  collection: collection,
                   entry: entry,
                   showTitle: !locationAtTop,
                   visibleNotifier: widget.visibleNotifier,
@@ -92,7 +95,7 @@ class InfoPageState extends State<InfoPage> {
                         ),
                       );
                 final tagSliver = XmpTagSectionSliver(
-                  collection: widget.collection,
+                  collection: collection,
                   entry: entry,
                 );
                 final metadataSliver = MetadataSectionSliver(

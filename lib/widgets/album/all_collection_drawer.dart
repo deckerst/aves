@@ -138,9 +138,9 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
           break;
       }
     }
-
-    final tags = source.sortedTags;
     final countries = source.sortedCountries;
+    final tags = source.sortedTags;
+
     final drawerItems = [
       header,
       gifEntry,
@@ -175,28 +175,6 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
             ],
           ),
         ),
-      if (tags.isNotEmpty)
-        SafeArea(
-          top: false,
-          bottom: false,
-          child: ExpansionTile(
-            leading: const Icon(OMIcons.label),
-            title: Row(
-              children: [
-                const Text('Tags'),
-                const Spacer(),
-                Text(
-                  '${tags.length}',
-                  style: TextStyle(
-                    color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                  ),
-                ),
-              ],
-            ),
-            onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
-            children: tags.map(buildTagEntry).toList(),
-          ),
-        ),
       if (countries.isNotEmpty)
         SafeArea(
           top: false,
@@ -217,6 +195,28 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
             ),
             onExpansionChanged: (expanded) => setState(() => _countriesExpanded = expanded),
             children: countries.map(buildCountryEntry).toList(),
+          ),
+        ),
+      if (tags.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(OMIcons.label),
+            title: Row(
+              children: [
+                const Text('Tags'),
+                const Spacer(),
+                Text(
+                  '${tags.length}',
+                  style: TextStyle(
+                    color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
+            children: tags.map(buildTagEntry).toList(),
           ),
         ),
     ];

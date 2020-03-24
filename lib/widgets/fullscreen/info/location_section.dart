@@ -1,19 +1,25 @@
+import 'package:aves/model/collection_filters.dart';
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
+import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class LocationSection extends StatefulWidget {
+  final CollectionLens collection;
   final ImageEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> visibleNotifier;
 
   const LocationSection({
     Key key,
+    @required this.collection,
     @required this.entry,
     @required this.showTitle,
     @required this.visibleNotifier,
@@ -25,6 +31,8 @@ class LocationSection extends StatefulWidget {
 
 class _LocationSectionState extends State<LocationSection> {
   String _loadedUri;
+
+  CollectionLens get collection => widget.collection;
 
   ImageEntry get entry => widget.entry;
 
@@ -64,12 +72,14 @@ class _LocationSectionState extends State<LocationSection> {
     final showMap = (_loadedUri == entry.uri) || (entry.hasGps && widget.visibleNotifier.value);
     if (showMap) {
       _loadedUri = entry.uri;
-      String location;
+      String location = '';
       if (entry.isLocated) {
         location = entry.addressDetails.addressLine;
       } else if (entry.hasGps) {
         location = toDMS(entry.latLng).join(', ');
       }
+      final country = entry.addressDetails?.countryName ?? '';
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -92,6 +102,19 @@ class _LocationSectionState extends State<LocationSection> {
               padding: const EdgeInsets.only(top: 8),
               child: InfoRowGroup({'Address': location}),
             ),
+          if (country.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: NavigationButton.buttonBorderWidth / 2) + const EdgeInsets.only(top: 8),
+              child: Wrap(
+                spacing: 8,
+                children: [
+                  NavigationButton(
+                    label: country,
+                    onPressed: () => _goToCountry(context, country),
+                  ),
+                ],
+              ),
+            ),
         ],
       );
     } else {
@@ -101,6 +124,20 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _handleChange() => setState(() {});
+
+  void _goToCountry(BuildContext context, String country) {
+    if (collection == null) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FilteredCollectionPage(
+          collection: collection,
+          filter: CountryFilter(country),
+          title: country,
+        ),
+      ),
+    );
+  }
 }
 
 class ImageMap extends StatefulWidget {
