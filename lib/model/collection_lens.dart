@@ -28,7 +28,7 @@ class CollectionLens with ChangeNotifier {
         this.sortFactor = sortFactor ?? SortFactor.date {
     _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));
     _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entry)));
-    _subscriptions.add(source.eventBus.on<MetadataChangedEvent>().listen((e) => onMetadataChanged()));
+    _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => onMetadataChanged()));
     onEntryAdded();
   }
 

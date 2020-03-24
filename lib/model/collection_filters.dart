@@ -24,6 +24,15 @@ class TagFilter extends CollectionFilter {
   bool filter(ImageEntry entry) => entry.xmpSubjects.contains(tag);
 }
 
+class CountryFilter extends CollectionFilter {
+  final String country;
+
+  const CountryFilter(this.country);
+
+  @override
+  bool filter(ImageEntry entry) => entry.isLocated && entry.addressDetails.countryName == country;
+}
+
 class VideoFilter extends CollectionFilter {
   @override
   bool filter(ImageEntry entry) => entry.isVideo;

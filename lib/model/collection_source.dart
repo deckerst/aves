@@ -12,6 +12,7 @@ class CollectionSource {
 
   List<String> sortedAlbums = List.unmodifiable(const Iterable.empty());
   List<String> sortedTags = List.unmodifiable(const Iterable.empty());
+  List<String> sortedCountries = List.unmodifiable(const Iterable.empty());
 
   List<ImageEntry> get entries => List.unmodifiable(_rawEntries);
 
@@ -35,7 +36,7 @@ class CollectionSource {
       }
     });
     debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms with ${saved.length} saved entries');
-    onMetadataChanged();
+    onCatalogMetadataChanged();
   }
 
   Future<void> loadAddresses() async {
@@ -48,6 +49,7 @@ class CollectionSource {
       }
     });
     debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${saved.length} saved entries');
+    onAddressMetadataChanged();
   }
 
   Future<void> catalogEntries() async {
@@ -65,13 +67,8 @@ class CollectionSource {
     if (newMetadata.isEmpty) return;
 
     await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
-    onMetadataChanged();
+    onCatalogMetadataChanged();
     debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s with ${newMetadata.length} new entries');
-  }
-
-  void onMetadataChanged() {
-    updateTags();
-    eventBus.fire(MetadataChangedEvent());
   }
 
   Future<void> locateEntries() async {
@@ -89,7 +86,18 @@ class CollectionSource {
       }
     });
     await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+    onAddressMetadataChanged();
     debugPrint('$runtimeType locateEntries complete in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
+  void onCatalogMetadataChanged() {
+    updateTags();
+    eventBus.fire(CatalogMetadataChangedEvent());
+  }
+
+  void onAddressMetadataChanged() {
+    updateLocations();
+    eventBus.fire(AddressMetadataChangedEvent());
   }
 
   void updateAlbums() {
@@ -104,9 +112,14 @@ class CollectionSource {
   }
 
   void updateTags() {
-    final tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet();
-    final sorted = tags.toList()..sort(compareAsciiUpperCase);
-    sortedTags = List.unmodifiable(sorted);
+    final tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
+    sortedTags = List.unmodifiable(tags);
+  }
+
+  void updateLocations() {
+    final locatedEntries = _rawEntries.where((entry) => entry.isLocated);
+    final countries = locatedEntries.map((entry) => entry.addressDetails.countryName).toSet().toList()..sort(compareAsciiUpperCase);
+    sortedCountries = List.unmodifiable(countries);
   }
 
   void add(ImageEntry entry) {
@@ -140,7 +153,9 @@ class CollectionSource {
   }
 }
 
-class MetadataChangedEvent {}
+class AddressMetadataChangedEvent {}
+
+class CatalogMetadataChangedEvent {}
 
 class EntryAddedEvent {
   final ImageEntry entry;

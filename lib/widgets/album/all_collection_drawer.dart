@@ -20,7 +20,7 @@ class AllCollectionDrawer extends StatefulWidget {
 }
 
 class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
-  bool _albumsExpanded = false, _tagsExpanded = false;
+  bool _albumsExpanded = false, _tagsExpanded = false, _countriesExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +113,16 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
           dense: true,
           filter: TagFilter(tag),
         );
+    final buildCountryEntry = (country) => _FilteredCollectionNavTile(
+          collection: collection,
+          leading: Icon(
+            OMIcons.place,
+            color: stringToColor(country),
+          ),
+          title: country,
+          dense: true,
+          filter: CountryFilter(country),
+        );
 
     final regularAlbums = [], appAlbums = [], specialAlbums = [];
     for (var album in source.sortedAlbums) {
@@ -130,6 +140,7 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
     }
 
     final tags = source.sortedTags;
+    final countries = source.sortedCountries;
     final drawerItems = [
       header,
       gifEntry,
@@ -184,6 +195,28 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
             ),
             onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
             children: tags.map(buildTagEntry).toList(),
+          ),
+        ),
+      if (countries.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(OMIcons.place),
+            title: Row(
+              children: [
+                const Text('Countries'),
+                const Spacer(),
+                Text(
+                  '${countries.length}',
+                  style: TextStyle(
+                    color: (_countriesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _countriesExpanded = expanded),
+            children: countries.map(buildCountryEntry).toList(),
           ),
         ),
     ];
