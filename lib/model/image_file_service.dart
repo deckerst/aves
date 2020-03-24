@@ -29,10 +29,11 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> readAsBytes(String uri) async {
+  static Future<Uint8List> readAsBytes(String uri, String mimeType) async {
     try {
       final result = await platform.invokeMethod('readAsBytes', <String, dynamic>{
         'uri': uri,
+        'mimeType': mimeType,
       });
       return result as Uint8List;
     } on PlatformException catch (e) {

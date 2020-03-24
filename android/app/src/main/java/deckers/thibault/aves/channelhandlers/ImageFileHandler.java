@@ -1,7 +1,11 @@
 package deckers.thibault.aves.channelhandlers;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -15,6 +19,7 @@ import java.util.Map;
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
+import deckers.thibault.aves.utils.MimeTypes;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -66,12 +71,26 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void readAsBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        String uri = call.argument("uri");
+        String mimeType = call.argument("mimeType");
+        String uriString = call.argument("uri");
 
         byte[] data = null;
-        try (InputStream is = activity.getContentResolver().openInputStream(Uri.parse(uri))) {
+        ContentResolver cr = activity.getContentResolver();
+        Uri uri = Uri.parse(uriString);
+        try (InputStream is = cr.openInputStream(uri)) {
             if (is != null) {
                 data = getBytes(is);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType))) {
+                    // as of Flutter v1.15.17, Dart Image.memory cannot decode HEIF/HEIC images
+                    // so we convert the image using Android native decoder
+                    ImageDecoder.Source source = ImageDecoder.createSource(cr, uri);
+                    Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                    // Bitmap.CompressFormat.PNG is slower than JPEG
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                    data = stream.toByteArray();
+                }
             }
         } catch (IOException ex) {
             // ignore

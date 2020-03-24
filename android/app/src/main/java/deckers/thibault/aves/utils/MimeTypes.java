@@ -3,6 +3,8 @@ package deckers.thibault.aves.utils;
 public class MimeTypes {
     public static final String IMAGE = "image";
     public static final String GIF = "image/gif";
+    public static final String HEIC = "image/heic";
+    public static final String HEIF = "image/heif";
     public static final String JPEG = "image/jpeg";
     public static final String PNG = "image/png";
     public static final String SVG = "image/svg+xml";

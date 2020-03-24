@@ -85,7 +85,8 @@ class Thumbnail extends StatelessWidget {
       height: extent,
       child: SvgPicture(
         UriPicture(
-          entry.uri,
+          uri: entry.uri,
+          mimeType: entry.mimeType,
           colorFilter: Constants.svgColorFilter,
         ),
         width: extent,

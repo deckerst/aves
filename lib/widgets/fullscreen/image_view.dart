@@ -66,7 +66,8 @@ class ImageView extends StatelessWidget {
       return PhotoView.customChild(
         child: SvgPicture(
           UriPicture(
-            entry.uri,
+            uri: entry.uri,
+            mimeType: entry.mimeType,
             colorFilter: Constants.svgColorFilter,
           ),
           placeholderBuilder: placeholderBuilder,
@@ -83,7 +84,10 @@ class ImageView extends StatelessWidget {
     return PhotoView(
       // key includes size and orientation to refresh when the image is rotated
       key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
-      imageProvider: UriImage(entry.uri),
+      imageProvider: UriImage(
+        uri: entry.uri,
+        mimeType: entry.mimeType,
+      ),
       loadingBuilder: (context, event) => placeholderBuilder(context),
       backgroundDecoration: backgroundDecoration,
       heroAttributes: heroAttributes,

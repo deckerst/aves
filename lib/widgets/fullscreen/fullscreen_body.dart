@@ -416,7 +416,10 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   void _onImageChange() async {
-    await UriImage(entry.uri).evict();
+    await UriImage(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+    ).evict();
     if (entry.path != null) await FileImage(File(entry.path)).evict();
     // rebuild to refresh the Image inside ImagePage
     setState(() {});

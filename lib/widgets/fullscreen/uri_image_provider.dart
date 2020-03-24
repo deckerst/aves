@@ -6,11 +6,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class UriImage extends ImageProvider<UriImage> {
-  const UriImage(this.uri, {this.scale = 1.0})
-      : assert(uri != null),
+  const UriImage({
+    @required this.uri,
+    @required this.mimeType,
+    this.scale = 1.0,
+  })  : assert(uri != null),
         assert(scale != null);
 
-  final String uri;
+  final String uri, mimeType;
 
   final double scale;
 
@@ -25,7 +28,7 @@ class UriImage extends ImageProvider<UriImage> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('Uri: $uri');
+        yield ErrorDescription('uri=$uri, mimeType=$mimeType');
       },
     );
   }
@@ -33,7 +36,7 @@ class UriImage extends ImageProvider<UriImage> {
   Future<ui.Codec> _loadAsync(UriImage key, DecoderCallback decode) async {
     assert(key == this);
 
-    final Uint8List bytes = await ImageFileService.readAsBytes(uri);
+    final Uint8List bytes = await ImageFileService.readAsBytes(uri, mimeType);
     if (bytes.lengthInBytes == 0) {
       return null;
     }
@@ -51,5 +54,5 @@ class UriImage extends ImageProvider<UriImage> {
   int get hashCode => hashValues(uri, scale);
 
   @override
-  String toString() => '${objectRuntimeType(this, 'UriImage')}("$uri", scale: $scale)';
+  String toString() => '${objectRuntimeType(this, 'UriImage')}(uri=$uri, mimeType=$mimeType, scale=$scale)';
 }

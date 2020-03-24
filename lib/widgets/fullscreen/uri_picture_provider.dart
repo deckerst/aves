@@ -5,11 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pedantic/pedantic.dart';
 
 class UriPicture extends PictureProvider<UriPicture> {
-  const UriPicture(this.uri, {this.colorFilter}) : assert(uri != null);
+  const UriPicture({
+    @required this.uri,
+    @required this.mimeType,
+    this.colorFilter,
+  }) : assert(uri != null);
 
-  final String uri;
+  final String uri, mimeType;
 
-  /// The [ColorFilter], if any, to use when drawing this picture.
   final ColorFilter colorFilter;
 
   @override
@@ -20,14 +23,14 @@ class UriPicture extends PictureProvider<UriPicture> {
   @override
   PictureStreamCompleter load(UriPicture key, {PictureErrorListener onError}) {
     return OneFramePictureStreamCompleter(_loadAsync(key, onError: onError), informationCollector: () sync* {
-      yield DiagnosticsProperty<String>('Uri', uri);
+      yield DiagnosticsProperty<String>('uri', uri);
     });
   }
 
   Future<PictureInfo> _loadAsync(UriPicture key, {PictureErrorListener onError}) async {
     assert(key == this);
 
-    final data = await ImageFileService.readAsBytes(uri);
+    final data = await ImageFileService.readAsBytes(uri, mimeType);
     if (data == null || data.isEmpty) {
       return null;
     }
@@ -51,5 +54,5 @@ class UriPicture extends PictureProvider<UriPicture> {
   int get hashCode => hashValues(uri, colorFilter);
 
   @override
-  String toString() => '${objectRuntimeType(this, 'UriPicture')}("$uri", colorFilter: $colorFilter)';
+  String toString() => '${objectRuntimeType(this, 'UriPicture')}(uri=$uri, mimeType=$mimeType, colorFilter=$colorFilter)';
 }
