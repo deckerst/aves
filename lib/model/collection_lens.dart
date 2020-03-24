@@ -89,7 +89,10 @@ class CollectionLens with ChangeNotifier {
   void _applySort() {
     switch (sortFactor) {
       case SortFactor.date:
-        _filteredEntries.sort((a, b) => b.bestDate.compareTo(a.bestDate));
+        _filteredEntries.sort((a, b) {
+          final c = b.bestDate.compareTo(a.bestDate);
+          return c != 0 ? c : compareAsciiUpperCase(a.title, b.title);
+        });
         break;
       case SortFactor.size:
         _filteredEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
