@@ -412,7 +412,8 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   void _onVerticalPageControllerChange() {
-    _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(min(1.0, widget.verticalPager.page));
+    final opacity = min(1.0, widget.verticalPager.page);
+    _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
   }
 
   void _onImageChange() async {
