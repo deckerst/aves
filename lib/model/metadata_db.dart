@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aves/model/image_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -25,6 +27,11 @@ class MetadataDb {
       },
       version: 1,
     );
+  }
+
+  Future<int> dbFileSize() async {
+    final file = File((await path));
+    return await file.exists() ? file.length() : 0;
   }
 
   Future<void> reset() async {

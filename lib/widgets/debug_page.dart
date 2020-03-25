@@ -2,9 +2,8 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
-import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -18,6 +17,7 @@ class DebugPage extends StatefulWidget {
 }
 
 class DebugPageState extends State<DebugPage> {
+  Future<int> _dbFileSizeLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
 
@@ -26,8 +26,7 @@ class DebugPageState extends State<DebugPage> {
   @override
   void initState() {
     super.initState();
-    _dbMetadataLoader = metadataDb.loadMetadataEntries();
-    _dbAddressLoader = metadataDb.loadAddresses();
+    _startDbReport();
   }
 
   @override
@@ -54,8 +53,19 @@ class DebugPageState extends State<DebugPage> {
             Text('With address: ${located.length}'),
             const Divider(),
             RaisedButton(
-              onPressed: () => metadataDb.reset(),
+              onPressed: () async {
+                await metadataDb.reset();
+                _startDbReport();
+              },
               child: const Text('Reset DB'),
+            ),
+            FutureBuilder(
+              future: _dbFileSizeLoader,
+              builder: (context, AsyncSnapshot<int> snapshot) {
+                if (snapshot.hasError) return Text(snapshot.error.toString());
+                if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                return Text('DB file size: ${formatFilesize(snapshot.data)}');
+              },
             ),
             FutureBuilder(
               future: _dbMetadataLoader,
@@ -87,5 +97,12 @@ class DebugPageState extends State<DebugPage> {
         ),
       ),
     );
+  }
+
+  void _startDbReport() {
+    _dbFileSizeLoader = metadataDb.dbFileSize();
+    _dbMetadataLoader = metadataDb.loadMetadataEntries();
+    _dbAddressLoader = metadataDb.loadAddresses();
+    setState(() {});
   }
 }
