@@ -4,7 +4,9 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/filtered_collection_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 
 class XmpTagSectionSliver extends AnimatedWidget {
   final CollectionLens collection;
@@ -18,13 +20,13 @@ class XmpTagSectionSliver extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tags = entry.xmpSubjects;
+    final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
     return SliverList(
       delegate: SliverChildListDelegate.fixed(
         tags.isEmpty
             ? []
             : [
-                const SectionRow('Tags'),
+                const SectionRow(OMIcons.label),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: NavigationButton.buttonBorderWidth / 2),
                   child: Wrap(

@@ -86,7 +86,7 @@ class _LocationSectionState extends State<LocationSection> {
           if (widget.showTitle)
             const Padding(
               padding: EdgeInsets.only(bottom: 8),
-              child: SectionRow('Location'),
+              child: SectionRow(OMIcons.place),
             ),
           ImageMap(
             markerId: entry.uri ?? entry.path,

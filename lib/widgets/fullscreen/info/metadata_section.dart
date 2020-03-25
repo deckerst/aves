@@ -7,6 +7,7 @@ import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
   final ImageEntry entry;
@@ -67,7 +68,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     return SliverList(
       delegate: SliverChildListDelegate(
         [
-          if (_metadata.isNotEmpty) const SectionRow('Metadata'),
+          if (_metadata.isNotEmpty) const SectionRow(OMIcons.info),
           ...directoriesWithoutTitle.map((dir) => InfoRowGroup(dir.tags)),
           Theme(
             data: Theme.of(context).copyWith(cardColor: Colors.grey[900]),

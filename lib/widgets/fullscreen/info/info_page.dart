@@ -1,10 +1,10 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/coma_divider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
+import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
 import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -161,26 +161,32 @@ class InfoPageState extends State<InfoPage> {
 }
 
 class SectionRow extends StatelessWidget {
-  final String title;
+  final IconData icon;
 
-  const SectionRow(this.title);
+  const SectionRow(this.icon);
 
   @override
   Widget build(BuildContext context) {
+    const double dim = 32;
+    final buildDivider = () => const SizedBox(
+          width: dim,
+          child: Divider(
+            thickness: NavigationButton.buttonBorderWidth,
+            color: Colors.white70,
+          ),
+        );
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Expanded(child: ComaDivider(alignment: Alignment.centerRight)),
+        buildDivider(),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontFamily: 'Concourse Caps',
-            ),
+          child: Icon(
+            icon,
+            size: dim,
           ),
         ),
-        const Expanded(child: ComaDivider(alignment: Alignment.centerLeft)),
+        buildDivider(),
       ],
     );
   }
