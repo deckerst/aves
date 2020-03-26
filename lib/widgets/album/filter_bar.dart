@@ -16,7 +16,8 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
   FilterBar(Set<CollectionFilter> filters)
       : this.filters = filters.toList()
           ..sort((a, b) {
-            return compareAsciiUpperCase(a.label, b.label);
+            final c = a.displayPriority.compareTo(b.displayPriority);
+            return c != 0 ? c : compareAsciiUpperCase(a.label, b.label);
           });
 
   @override
@@ -40,7 +41,7 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
           itemBuilder: (context, index) {
             if (index >= filters.length) return null;
             final filter = filters[index];
-            return AvesFilterChip.fromFilter(
+            return AvesFilterChip(
               filter,
               onPressed: (filter) {},
             );

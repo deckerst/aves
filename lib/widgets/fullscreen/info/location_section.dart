@@ -112,7 +112,7 @@ class _LocationSectionState extends State<LocationSection> {
               child: Wrap(
                 spacing: 8,
                 children: filters
-                    .map((filter) => AvesFilterChip.fromFilter(
+                    .map((filter) => AvesFilterChip(
                           filter,
                           onPressed: widget.onFilter,
                         ))

@@ -3,6 +3,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,7 +24,12 @@ class BasicSection extends StatelessWidget {
     final showMegaPixels = !entry.isVideo && !entry.isGif && entry.megaPixels != null && entry.megaPixels > 0;
     final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
-    final filter = entry.directory != null ? AlbumFilter(entry.directory) : null;
+    final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
+    final filters = [
+      if (entry.directory != null) AlbumFilter(entry.directory),
+      ...tags.map((tag) => TagFilter(tag)),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,13 +42,19 @@ class BasicSection extends StatelessWidget {
           'URI': entry.uri ?? '?',
           if (entry.path != null) 'Path': entry.path,
         }),
-        if (filter != null) ...[
-          const SizedBox(height: 8),
-          AvesFilterChip.fromFilter(
-            filter,
-            onPressed: onFilter,
+        if (filters.isNotEmpty != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.only(top: 8),
+            child: Wrap(
+              spacing: 8,
+              children: filters
+                  .map((filter) => AvesFilterChip(
+                        filter,
+                        onPressed: onFilter,
+                      ))
+                  .toList(),
+            ),
           ),
-        ]
       ],
     );
   }

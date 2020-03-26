@@ -59,7 +59,7 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
       child: ChangeNotifierProvider<CollectionLens>.value(
         value: CollectionLens(
           source: collection.source,
-          filters: [MetadataFilter(query.toLowerCase())],
+          filters: [QueryFilter(query.toLowerCase())],
           groupFactor: collection.groupFactor,
           sortFactor: collection.sortFactor,
         ),

@@ -5,37 +5,28 @@ import 'package:flutter/material.dart';
 typedef FilterCallback = void Function(CollectionFilter filter);
 
 class AvesFilterChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onPressed;
+  final CollectionFilter filter;
+  final FilterCallback onPressed;
 
-  const AvesFilterChip({
-    this.icon,
-    @required this.label,
-    @required this.onPressed,
-  });
-
-  factory AvesFilterChip.fromFilter(
-    CollectionFilter filter, {
-    @required FilterCallback onPressed,
-  }) =>
-      AvesFilterChip(
-        icon: filter.icon,
-        label: filter.label,
-        onPressed: onPressed != null ? () => onPressed(filter) : null,
-      );
+  String get label => filter.label;
 
   static const double buttonBorderWidth = 2;
   static const double maxChipWidth = 160;
 
+  const AvesFilterChip(
+    this.filter, {
+    @required this.onPressed,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final icon = filter.iconBuilder(context);
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: maxChipWidth),
       child: Tooltip(
         message: label,
         child: OutlineButton(
-          onPressed: onPressed,
+          onPressed: onPressed != null ? () => onPressed(filter) : null,
           borderSide: BorderSide(
             color: stringToColor(label),
             width: buttonBorderWidth,
@@ -47,7 +38,7 @@ class AvesFilterChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
-                Icon(icon),
+                icon,
                 const SizedBox(width: 8),
               ],
               Flexible(

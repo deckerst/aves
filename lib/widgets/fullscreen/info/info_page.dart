@@ -7,7 +7,6 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
-import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -97,11 +96,6 @@ class InfoPageState extends State<InfoPage> {
                           ],
                         ),
                       );
-                final tagSliver = XmpTagSectionSliver(
-                  collection: collection,
-                  entry: entry,
-                  onFilter: _goToFilteredCollection,
-                );
                 final metadataSliver = MetadataSectionSliver(
                   entry: entry,
                   visibleNotifier: widget.visibleNotifier,
@@ -114,10 +108,6 @@ class InfoPageState extends State<InfoPage> {
                     SliverPadding(
                       padding: horizontalPadding + const EdgeInsets.only(top: 8),
                       sliver: basicAndLocationSliver,
-                    ),
-                    SliverPadding(
-                      padding: horizontalPadding,
-                      sliver: tagSliver,
                     ),
                     SliverPadding(
                       padding: horizontalPadding + EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
