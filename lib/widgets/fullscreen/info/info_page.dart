@@ -1,10 +1,12 @@
+import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
-import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
 import 'package:aves/widgets/fullscreen/info/xmp_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -74,13 +76,14 @@ class InfoPageState extends State<InfoPage> {
                   entry: entry,
                   showTitle: !locationAtTop,
                   visibleNotifier: widget.visibleNotifier,
+                  onFilter: _goToFilteredCollection,
                 );
                 final basicAndLocationSliver = locationAtTop
                     ? SliverToBoxAdapter(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(child: BasicSection(entry: entry)),
+                            Expanded(child: BasicSection(entry: entry, onFilter: _goToFilteredCollection)),
                             const SizedBox(width: 8),
                             Expanded(child: locationSection),
                           ],
@@ -89,7 +92,7 @@ class InfoPageState extends State<InfoPage> {
                     : SliverList(
                         delegate: SliverChildListDelegate.fixed(
                           [
-                            BasicSection(entry: entry),
+                            BasicSection(entry: entry, onFilter: _goToFilteredCollection),
                             locationSection,
                           ],
                         ),
@@ -97,6 +100,7 @@ class InfoPageState extends State<InfoPage> {
                 final tagSliver = XmpTagSectionSliver(
                   collection: collection,
                   entry: entry,
+                  onFilter: _goToFilteredCollection,
                 );
                 final metadataSliver = MetadataSectionSliver(
                   entry: entry,
@@ -158,6 +162,16 @@ class InfoPageState extends State<InfoPage> {
       curve: Curves.easeInOut,
     );
   }
+
+  void _goToFilteredCollection(CollectionFilter filter) {
+    if (collection == null) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CollectionPage(collection.derive(filter)),
+      ),
+    );
+  }
 }
 
 class SectionRow extends StatelessWidget {
@@ -171,7 +185,7 @@ class SectionRow extends StatelessWidget {
     final buildDivider = () => const SizedBox(
           width: dim,
           child: Divider(
-            thickness: NavigationButton.buttonBorderWidth,
+            thickness: AvesFilterChip.buttonBorderWidth,
             color: Colors.white70,
           ),
         );

@@ -12,13 +12,8 @@ import 'package:provider/provider.dart';
 
 class CollectionPage extends StatelessWidget {
   final CollectionLens collection;
-  final String title;
 
-  const CollectionPage({
-    Key key,
-    @required this.collection,
-    this.title,
-  }) : super(key: key);
+  const CollectionPage(this.collection);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +25,7 @@ class CollectionPage extends StatelessWidget {
             appBar: collection.filters.isEmpty
                 ? AllCollectionAppBar()
                 : SliverAppBar(
-                    title: Text(title),
+                    title: const Text('Aves'),
                     actions: _buildActions(),
                     bottom: FilterBar(collection.filters),
                     floating: true,

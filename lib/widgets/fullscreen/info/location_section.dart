@@ -4,9 +4,8 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
-import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -16,6 +15,7 @@ class LocationSection extends StatefulWidget {
   final ImageEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> visibleNotifier;
+  final FilterCallback onFilter;
 
   const LocationSection({
     Key key,
@@ -23,6 +23,7 @@ class LocationSection extends StatefulWidget {
     @required this.entry,
     @required this.showTitle,
     @required this.visibleNotifier,
+    @required this.onFilter,
   }) : super(key: key);
 
   @override
@@ -78,7 +79,10 @@ class _LocationSectionState extends State<LocationSection> {
       } else if (entry.hasGps) {
         location = toDMS(entry.latLng).join(', ');
       }
-      final country = entry.addressDetails?.countryName ?? '';
+      final country = entry.addressDetails?.countryName;
+      final filters = [
+        if (country != null) CountryFilter(country),
+      ];
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,17 +106,17 @@ class _LocationSectionState extends State<LocationSection> {
               padding: const EdgeInsets.only(top: 8),
               child: InfoRowGroup({'Address': location}),
             ),
-          if (country.isNotEmpty)
+          if (filters.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: NavigationButton.buttonBorderWidth / 2) + const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.only(top: 8),
               child: Wrap(
                 spacing: 8,
-                children: [
-                  NavigationButton(
-                    label: country,
-                    onPressed: () => _goToCountry(context, country),
-                  ),
-                ],
+                children: filters
+                    .map((filter) => AvesFilterChip.fromFilter(
+                          filter,
+                          onPressed: widget.onFilter,
+                        ))
+                    .toList(),
               ),
             ),
         ],
@@ -124,19 +128,6 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _handleChange() => setState(() {});
-
-  void _goToCountry(BuildContext context, String country) {
-    if (collection == null) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CollectionPage(
-          collection: CollectionLens.from(collection, CountryFilter(country)),
-          title: country,
-        ),
-      ),
-    );
-  }
 }
 
 class ImageMap extends StatefulWidget {

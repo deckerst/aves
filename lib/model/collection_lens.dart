@@ -32,25 +32,6 @@ class CollectionLens with ChangeNotifier {
     onEntryAdded();
   }
 
-  factory CollectionLens.empty() {
-    return CollectionLens(
-      source: CollectionSource(),
-    );
-  }
-
-  factory CollectionLens.from(CollectionLens lens, CollectionFilter filter) {
-    if (lens == null) return null;
-    return CollectionLens(
-      source: lens.source,
-      filters: [
-        ...lens.filters,
-        if (filter != null) filter,
-      ],
-      groupFactor: lens.groupFactor,
-      sortFactor: lens.sortFactor,
-    );
-  }
-
   @override
   void dispose() {
     _subscriptions
@@ -60,7 +41,27 @@ class CollectionLens with ChangeNotifier {
     super.dispose();
   }
 
+  factory CollectionLens.empty() {
+    return CollectionLens(
+      source: CollectionSource(),
+    );
+  }
+
+  CollectionLens derive(CollectionFilter filter) {
+    return CollectionLens(
+      source: source,
+      filters: [
+        ...filters,
+        if (filter != null) filter,
+      ],
+      groupFactor: groupFactor,
+      sortFactor: sortFactor,
+    );
+  }
+
   bool get isEmpty => _filteredEntries.isEmpty;
+
+  int get entryCount => _filteredEntries.length;
 
   int get imageCount => _filteredEntries.where((entry) => !entry.isVideo).length;
 

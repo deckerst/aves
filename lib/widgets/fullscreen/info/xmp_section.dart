@@ -1,9 +1,8 @@
 import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
-import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -11,11 +10,13 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 class XmpTagSectionSliver extends AnimatedWidget {
   final CollectionLens collection;
   final ImageEntry entry;
+  final FilterCallback onFilter;
 
   XmpTagSectionSliver({
     Key key,
     @required this.collection,
     @required this.entry,
+    @required this.onFilter,
   }) : super(key: key, listenable: entry.metadataChangeNotifier);
 
   @override
@@ -28,31 +29,19 @@ class XmpTagSectionSliver extends AnimatedWidget {
             : [
                 const SectionRow(OMIcons.localOffer),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: NavigationButton.buttonBorderWidth / 2),
+                  padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.buttonBorderWidth / 2),
                   child: Wrap(
                     spacing: 8,
                     children: tags
-                        .map((tag) => NavigationButton(
-                              label: tag,
-                              onPressed: () => _goToTag(context, tag),
+                        .map((tag) => TagFilter(tag))
+                        .map((filter) => AvesFilterChip.fromFilter(
+                              filter,
+                              onPressed: onFilter,
                             ))
                         .toList(),
                   ),
                 ),
               ],
-      ),
-    );
-  }
-
-  void _goToTag(BuildContext context, String tag) {
-    if (collection == null) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CollectionPage(
-          collection: CollectionLens.from(collection, TagFilter(tag)),
-          title: tag,
-        ),
       ),
     );
   }

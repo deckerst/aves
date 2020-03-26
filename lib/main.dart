@@ -107,9 +107,7 @@ class _HomePageState extends State<HomePage> {
                   )
                 : MediaStoreCollectionProvider(
                     child: Consumer<CollectionLens>(
-                      builder: (context, collection, child) => CollectionPage(
-                        collection: collection,
-                      ),
+                      builder: (context, collection, child) => CollectionPage(collection),
                     ),
                   );
           }),

@@ -278,13 +278,10 @@ class _FilteredCollectionNavTile extends StatelessWidget {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => CollectionPage(
-                collection: CollectionLens(
-                  source: source,
-                  filters: [filter],
-                ),
-                title: title,
-              ),
+              builder: (context) => CollectionPage(CollectionLens(
+                source: source,
+                filters: [filter],
+              )),
             ),
             (route) => false,
           );
