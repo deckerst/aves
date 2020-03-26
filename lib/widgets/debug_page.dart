@@ -38,63 +38,65 @@ class DebugPageState extends State<DebugPage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Info'),
+          title: const Text('Debug'),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Settings'),
-            Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
-            Text('collectionSortFactor: ${settings.collectionSortFactor}'),
-            Text('infoMapZoom: ${settings.infoMapZoom}'),
-            const Divider(),
-            Text('Entries: ${entries.length}'),
-            Text('Catalogued: ${catalogued.length}'),
-            Text('With GPS: ${withGps.length}'),
-            Text('With address: ${located.length}'),
-            const Divider(),
-            RaisedButton(
-              onPressed: () async {
-                await metadataDb.reset();
-                _startDbReport();
-              },
-              child: const Text('Reset DB'),
-            ),
-            FutureBuilder(
-              future: _dbFileSizeLoader,
-              builder: (context, AsyncSnapshot<int> snapshot) {
-                if (snapshot.hasError) return Text(snapshot.error.toString());
-                if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                return Text('DB file size: ${formatFilesize(snapshot.data)}');
-              },
-            ),
-            FutureBuilder(
-              future: _dbMetadataLoader,
-              builder: (context, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
-                if (snapshot.hasError) return Text(snapshot.error.toString());
-                if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                return Text('DB metadata rows: ${snapshot.data.length}');
-              },
-            ),
-            FutureBuilder(
-              future: _dbAddressLoader,
-              builder: (context, AsyncSnapshot<List<AddressDetails>> snapshot) {
-                if (snapshot.hasError) return Text(snapshot.error.toString());
-                if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                return Text('DB address rows: ${snapshot.data.length}');
-              },
-            ),
-            const Divider(),
-            const Text('Time dilation'),
-            Slider(
-              value: timeDilation,
-              onChanged: (v) => setState(() => timeDilation = v),
-              min: 1.0,
-              max: 10.0,
-              divisions: 9,
-              label: '$timeDilation',
-            ),
-          ],
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(8),
+            children: [
+              const Text('Settings'),
+              Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
+              Text('collectionSortFactor: ${settings.collectionSortFactor}'),
+              Text('infoMapZoom: ${settings.infoMapZoom}'),
+              const Divider(),
+              Text('Entries: ${entries.length}'),
+              Text('Catalogued: ${catalogued.length}'),
+              Text('With GPS: ${withGps.length}'),
+              Text('With address: ${located.length}'),
+              const Divider(),
+              RaisedButton(
+                onPressed: () async {
+                  await metadataDb.reset();
+                  _startDbReport();
+                },
+                child: const Text('Reset DB'),
+              ),
+              FutureBuilder(
+                future: _dbFileSizeLoader,
+                builder: (context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  return Text('DB file size: ${formatFilesize(snapshot.data)}');
+                },
+              ),
+              FutureBuilder(
+                future: _dbMetadataLoader,
+                builder: (context, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  return Text('DB metadata rows: ${snapshot.data.length}');
+                },
+              ),
+              FutureBuilder(
+                future: _dbAddressLoader,
+                builder: (context, AsyncSnapshot<List<AddressDetails>> snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  return Text('DB address rows: ${snapshot.data.length}');
+                },
+              ),
+              const Divider(),
+              const Text('Time dilation'),
+              Slider(
+                value: timeDilation,
+                onChanged: (v) => setState(() => timeDilation = v),
+                min: 1.0,
+                max: 10.0,
+                divisions: 9,
+                label: '$timeDilation',
+              ),
+            ],
+          ),
         ),
       ),
     );

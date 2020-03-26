@@ -46,31 +46,34 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
             final label = filter.label;
             return ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: maxChipWidth),
-              child: OutlineButton(
-                onPressed: () {},
-                borderSide: BorderSide(
-                  color: stringToColor(label),
-                  width: NavigationButton.buttonBorderWidth,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(42),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (icon != null) ...[
-                      Icon(icon),
-                      const SizedBox(width: 8),
-                    ],
-                    Flexible(
-                      child: Text(
-                        label,
-                        softWrap: false,
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
+              child: Tooltip(
+                message: label,
+                child: OutlineButton(
+                  onPressed: () {},
+                  borderSide: BorderSide(
+                    color: stringToColor(label),
+                    width: NavigationButton.buttonBorderWidth,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(42),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (icon != null) ...[
+                        Icon(icon),
+                        const SizedBox(width: 8),
+                      ],
+                      Flexible(
+                        child: Text(
+                          label,
+                          softWrap: false,
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

@@ -40,7 +40,7 @@ class FullscreenTopOverlay extends StatelessWidget {
             OverlayButton(
               scale: scale,
               child: IconButton(
-                icon: Icon(OMIcons.share),
+                icon: const Icon(OMIcons.share),
                 onPressed: () => onActionSelected?.call(FullscreenAction.share),
                 tooltip: 'Share',
               ),
@@ -50,7 +50,7 @@ class FullscreenTopOverlay extends StatelessWidget {
               OverlayButton(
                 scale: scale,
                 child: IconButton(
-                  icon: Icon(OMIcons.delete),
+                  icon: const Icon(OMIcons.delete),
                   onPressed: () => onActionSelected?.call(FullscreenAction.delete),
                   tooltip: 'Delete',
                 ),
