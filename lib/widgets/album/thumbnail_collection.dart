@@ -10,7 +10,6 @@ class ThumbnailCollection extends StatelessWidget {
   final Widget appBar;
   final WidgetBuilder emptyBuilder;
 
-  final ScrollController _scrollController = ScrollController();
   final ValueNotifier<int> _columnCountNotifier = ValueNotifier(4);
   final GlobalKey _scrollableKey = GlobalKey();
 
@@ -48,7 +47,7 @@ class ThumbnailCollection extends StatelessWidget {
               builder: (context, columnCount, child) {
                 final scrollView = CustomScrollView(
                   key: _scrollableKey,
-                  controller: _scrollController,
+                  primary: true,
                   slivers: [
                     if (appBar != null) appBar,
                     if (collection.isEmpty && emptyBuilder != null)
@@ -77,7 +76,7 @@ class ThumbnailCollection extends StatelessWidget {
                   heightScrollThumb: avesScrollThumbHeight,
                   backgroundColor: Colors.white,
                   scrollThumbBuilder: avesScrollThumbBuilder(),
-                  controller: _scrollController,
+                  controller: PrimaryScrollController.of(context),
                   padding: EdgeInsets.only(
                     // padding to get scroll thumb below app bar, above nav bar
                     top: topPadding,

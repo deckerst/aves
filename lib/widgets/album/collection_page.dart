@@ -1,6 +1,7 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/widgets/album/all_collection_app_bar.dart';
 import 'package:aves/widgets/album/collection_drawer.dart';
+import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -31,6 +32,7 @@ class CollectionPage extends StatelessWidget {
                 : SliverAppBar(
                     title: Text(title),
                     actions: _buildActions(),
+                    bottom: FilterBar(collection.filters),
                     floating: true,
                   ),
           ),

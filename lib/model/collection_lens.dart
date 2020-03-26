@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
-  final List<CollectionFilter> filters;
+  final Set<CollectionFilter> filters;
   GroupFactor groupFactor;
   SortFactor sortFactor;
 
@@ -23,7 +23,7 @@ class CollectionLens with ChangeNotifier {
     List<CollectionFilter> filters,
     GroupFactor groupFactor,
     SortFactor sortFactor,
-  })  : this.filters = [if (filters != null) ...filters.where((f) => f != null)],
+  })  : this.filters = [if (filters != null) ...filters.where((f) => f != null)].toSet(),
         this.groupFactor = groupFactor ?? GroupFactor.month,
         this.sortFactor = sortFactor ?? SortFactor.date {
     _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));
