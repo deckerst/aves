@@ -1,3 +1,4 @@
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -8,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class DebugPage extends StatefulWidget {
-  final List<ImageEntry> entries;
+  final CollectionSource source;
 
-  const DebugPage({this.entries});
+  const DebugPage({this.source});
 
   @override
   State<StatefulWidget> createState() => DebugPageState();
@@ -21,7 +22,7 @@ class DebugPageState extends State<DebugPage> {
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
 
-  List<ImageEntry> get entries => widget.entries;
+  List<ImageEntry> get entries => widget.source.entries;
 
   @override
   void initState() {

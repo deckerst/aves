@@ -4,7 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
-import 'package:aves/widgets/album/filtered_collection_page.dart';
+import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/navigation_button.dart';
 import 'package:flutter/material.dart';
@@ -130,9 +130,8 @@ class _LocationSectionState extends State<LocationSection> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FilteredCollectionPage(
-          collection: collection,
-          filter: CountryFilter(country),
+        builder: (context) => CollectionPage(
+          collection: CollectionLens.from(collection, CountryFilter(country)),
           title: country,
         ),
       ),

@@ -23,7 +23,7 @@ class CollectionLens with ChangeNotifier {
     List<CollectionFilter> filters,
     GroupFactor groupFactor,
     SortFactor sortFactor,
-  })  : this.filters = filters ?? [],
+  })  : this.filters = [if (filters != null) ...filters.where((f) => f != null)],
         this.groupFactor = groupFactor ?? GroupFactor.month,
         this.sortFactor = sortFactor ?? SortFactor.date {
     _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));

@@ -1,10 +1,10 @@
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/viewer_service.dart';
-import 'package:aves/widgets/album/all_collection_drawer.dart';
-import 'package:aves/widgets/album/all_collection_page.dart';
+import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:screen/screen.dart';
 
 void main() {
@@ -104,24 +105,14 @@ class _HomePageState extends State<HomePage> {
                 ? SingleFullscreenPage(
                     entry: _sharedEntry,
                   )
-                : const MediaStoreCollectionPage();
+                : MediaStoreCollectionProvider(
+                    child: Consumer<CollectionLens>(
+                      builder: (context, collection, child) => CollectionPage(
+                        collection: collection,
+                      ),
+                    ),
+                  );
           }),
-    );
-  }
-}
-
-class MediaStoreCollectionPage extends StatelessWidget {
-  const MediaStoreCollectionPage();
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint('$runtimeType build');
-    return const MediaStoreCollectionProvider(
-      child: Scaffold(
-        body: AllCollectionPage(),
-        drawer: AllCollectionDrawer(),
-        resizeToAvoidBottomInset: false,
-      ),
     );
   }
 }

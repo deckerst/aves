@@ -5,108 +5,92 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/color_utils.dart';
-import 'package:aves/widgets/album/filtered_collection_page.dart';
+import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/debug_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
-class AllCollectionDrawer extends StatefulWidget {
-  const AllCollectionDrawer();
+class CollectionDrawer extends StatefulWidget {
+  final CollectionSource source;
+
+  const CollectionDrawer({@required this.source});
 
   @override
-  _AllCollectionDrawerState createState() => _AllCollectionDrawerState();
+  _CollectionDrawerState createState() => _CollectionDrawerState();
 }
 
-class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
+class _CollectionDrawerState extends State<CollectionDrawer> {
   bool _albumsExpanded = false, _tagsExpanded = false, _countriesExpanded = false;
+
+  CollectionSource get source => widget.source;
 
   @override
   Widget build(BuildContext context) {
-    final collection = Provider.of<CollectionLens>(context);
-    final source = collection.source;
-
-    final header = DrawerHeader(
+    final header = Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
+        border: Border(
+          bottom: Divider.createBorderSide(context),
+        ),
       ),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  radius: 44,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 6.0),
-                    child: SvgPicture.asset(
-                      'assets/aves_logo.svg',
-                      width: 64,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        color: Theme.of(context).accentColor,
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const AvesLogo(size: 64),
+                  const SizedBox(width: 16),
+                  const Text(
+                    'Aves',
+                    style: TextStyle(
+                      fontSize: 44,
+                      fontFamily: 'Concourse Caps',
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                const Text(
-                  'Aves',
-                  style: TextStyle(
-                    fontSize: 44,
-                    fontFamily: 'Concourse Caps',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(children: [
-                  const Icon(OMIcons.photoLibrary),
-                  const SizedBox(width: 4),
-                  Text('${collection.imageCount}'),
-                ]),
-                Row(children: [
-                  const Icon(OMIcons.videoLibrary),
-                  const SizedBox(width: 4),
-                  Text('${collection.videoCount}'),
-                ]),
-                Row(children: [
-                  const Icon(OMIcons.photoAlbum),
-                  const SizedBox(width: 4),
-                  Text('${source.albumCount}'),
-                ]),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
 
+    final allMediaEntry = _FilteredCollectionNavTile(
+      source: source,
+      leading: const Icon(OMIcons.photo),
+      title: 'All media',
+      filter: null,
+    );
+    final videoEntry = _FilteredCollectionNavTile(
+      source: source,
+      leading: const Icon(OMIcons.movie),
+      title: 'Videos',
+      filter: VideoFilter(),
+    );
     final gifEntry = _FilteredCollectionNavTile(
-      collection: collection,
+      source: source,
       leading: const Icon(OMIcons.gif),
       title: 'GIFs',
       filter: GifFilter(),
     );
-    final videoEntry = _FilteredCollectionNavTile(
-      collection: collection,
-      leading: const Icon(OMIcons.videoLibrary),
-      title: 'Videos',
-      filter: VideoFilter(),
-    );
     final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
-          collection: collection,
+          source: source,
           leading: IconUtils.getAlbumIcon(context, album),
           title: CollectionSource.getUniqueAlbumName(album, source.sortedAlbums),
           dense: true,
           filter: AlbumFilter(album),
         );
     final buildTagEntry = (tag) => _FilteredCollectionNavTile(
-          collection: collection,
+          source: source,
           leading: Icon(
-            OMIcons.label,
+            OMIcons.localOffer,
             color: stringToColor(tag),
           ),
           title: tag,
@@ -114,7 +98,7 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
           filter: TagFilter(tag),
         );
     final buildCountryEntry = (country) => _FilteredCollectionNavTile(
-          collection: collection,
+          source: source,
           leading: Icon(
             OMIcons.place,
             color: stringToColor(country),
@@ -141,10 +125,11 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
     final countries = source.sortedCountries;
     final tags = source.sortedTags;
 
-    final drawerItems = [
+    final drawerItems = <Widget>[
       header,
-      gifEntry,
+      allMediaEntry,
       videoEntry,
+      gifEntry,
       if (specialAlbums.isNotEmpty) ...[
         const Divider(),
         ...specialAlbums.map(buildAlbumEntry),
@@ -202,7 +187,7 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.label),
+            leading: const Icon(OMIcons.localOffer),
             title: Row(
               children: [
                 const Text('Tags'),
@@ -219,6 +204,28 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
             children: tags.map(buildTagEntry).toList(),
           ),
         ),
+      if (kDebugMode) ...[
+        const Divider(),
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ListTile(
+            leading: const Icon(OMIcons.whatshot),
+            title: const Text('Debug'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DebugPage(
+                    source: source,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     ];
 
     return Drawer(
@@ -244,14 +251,14 @@ class _AllCollectionDrawerState extends State<AllCollectionDrawer> {
 }
 
 class _FilteredCollectionNavTile extends StatelessWidget {
-  final CollectionLens collection;
+  final CollectionSource source;
   final Widget leading;
   final String title;
   final bool dense;
   final CollectionFilter filter;
 
   const _FilteredCollectionNavTile({
-    @required this.collection,
+    @required this.source,
     @required this.leading,
     @required this.title,
     bool dense,
@@ -268,16 +275,18 @@ class _FilteredCollectionNavTile extends StatelessWidget {
         title: Text(title),
         dense: dense,
         onTap: () {
-          Navigator.pop(context);
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => FilteredCollectionPage(
-                collection: collection,
-                filter: filter,
+              builder: (context) => CollectionPage(
+                collection: CollectionLens(
+                  source: source,
+                  filters: [filter],
+                ),
                 title: title,
               ),
             ),
+            (route) => false,
           );
         },
       ),

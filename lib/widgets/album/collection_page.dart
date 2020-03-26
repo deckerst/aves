@@ -1,6 +1,6 @@
-import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/widgets/album/all_collection_page.dart';
+import 'package:aves/widgets/album/all_collection_app_bar.dart';
+import 'package:aves/widgets/album/collection_drawer.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -9,30 +9,36 @@ import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
-class FilteredCollectionPage extends StatelessWidget {
+class CollectionPage extends StatelessWidget {
   final CollectionLens collection;
-  final CollectionFilter filter;
   final String title;
 
-  FilteredCollectionPage({Key key, CollectionLens collection, this.filter, this.title})
-      : this.collection = CollectionLens.from(collection, filter),
-        super(key: key);
+  const CollectionPage({
+    Key key,
+    @required this.collection,
+    this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: Scaffold(
-        body: ChangeNotifierProvider<CollectionLens>.value(
-          value: collection,
-          child: ThumbnailCollection(
-            appBar: SliverAppBar(
-              title: Text(title),
-              actions: _buildActions(),
-              floating: true,
-            ),
+      child: ChangeNotifierProvider<CollectionLens>.value(
+        value: collection,
+        child: Scaffold(
+          body: ThumbnailCollection(
+            appBar: collection.filters.isEmpty
+                ? AllCollectionAppBar()
+                : SliverAppBar(
+                    title: Text(title),
+                    actions: _buildActions(),
+                    floating: true,
+                  ),
           ),
+          drawer: CollectionDrawer(
+            source: collection.source,
+          ),
+          resizeToAvoidBottomInset: false,
         ),
-        resizeToAvoidBottomInset: false,
       ),
     );
   }
@@ -41,10 +47,10 @@ class FilteredCollectionPage extends StatelessWidget {
     return [
       Builder(
         builder: (context) => Consumer<CollectionLens>(
-          builder: (context, collection, child) => PopupMenuButton<AlbumAction>(
+          builder: (context, collection, child) => PopupMenuButton<CollectionAction>(
             itemBuilder: (context) => [
               PopupMenuItem(
-                value: AlbumAction.stats,
+                value: CollectionAction.stats,
                 child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
               ),
             ],
@@ -55,9 +61,9 @@ class FilteredCollectionPage extends StatelessWidget {
     ];
   }
 
-  static void _onActionSelected(BuildContext context, CollectionLens collection, AlbumAction action) {
+  static void _onActionSelected(BuildContext context, CollectionLens collection, CollectionAction action) {
     switch (action) {
-      case AlbumAction.stats:
+      case CollectionAction.stats:
         _goToStats(context, collection);
         break;
       default:
