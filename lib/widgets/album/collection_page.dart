@@ -3,8 +3,8 @@ import 'package:aves/widgets/album/all_collection_app_bar.dart';
 import 'package:aves/widgets/album/collection_drawer.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
+import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -27,7 +27,7 @@ class CollectionPage extends StatelessWidget {
                 : SliverAppBar(
                     title: const Text('Aves'),
                     actions: _buildActions(),
-                    bottom: FilterBar(collection.filters),
+                    bottom: FilterBar(),
                     floating: true,
                   ),
           ),

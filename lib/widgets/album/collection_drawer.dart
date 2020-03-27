@@ -82,7 +82,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     );
     final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
           source: source,
-          leading: IconUtils.getAlbumIcon(context, album),
+          leading: IconUtils.getAlbumIcon(context: context, album: album),
           title: CollectionSource.getUniqueAlbumName(album, source.sortedAlbums),
           dense: true,
           filter: AlbumFilter(album),

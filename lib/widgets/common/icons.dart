@@ -2,10 +2,9 @@ import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/common/app_icon.dart';
+import 'package:aves/widgets/common/image_providers/app_icon_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
   final ImageEntry entry;
@@ -88,23 +87,27 @@ class OverlayIcon extends StatelessWidget {
 }
 
 class IconUtils {
-  static Widget getAlbumIcon(BuildContext context, String albumDirectory) {
-    switch (androidFileUtils.getAlbumType(albumDirectory)) {
+  static Widget getAlbumIcon({
+    @required BuildContext context,
+    @required String album,
+    double size = 24,
+  }) {
+    switch (androidFileUtils.getAlbumType(album)) {
       case AlbumType.Camera:
-        return Icon(OMIcons.photoCamera);
+        return Icon(OMIcons.photoCamera, size: size);
       case AlbumType.Screenshots:
       case AlbumType.ScreenRecordings:
-        return Icon(OMIcons.smartphone);
+        return Icon(OMIcons.smartphone, size: size);
       case AlbumType.Download:
-        return Icon(Icons.file_download);
+        return Icon(Icons.file_download, size: size);
       case AlbumType.App:
-        return Selector<MediaQueryData, double>(
-          selector: (c, mq) => mq.devicePixelRatio,
-          builder: (c, devicePixelRatio, child) => AppIcon(
-            packageName: androidFileUtils.getAlbumAppPackageName(albumDirectory),
-            size: IconTheme.of(context).size,
-            devicePixelRatio: devicePixelRatio,
+        return Image(
+          image: AppIconImage(
+            packageName: androidFileUtils.getAlbumAppPackageName(album),
+            size: size,
           ),
+          width: size,
+          height: size,
         );
       case AlbumType.Default:
       default:

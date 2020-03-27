@@ -1,7 +1,7 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/fullscreen/uri_image_provider.dart';
-import 'package:aves/widgets/fullscreen/uri_picture_provider.dart';
+import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
+import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

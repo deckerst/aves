@@ -1,10 +1,16 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/image_providers/app_icon_image_provider.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path/path.dart';
 
-abstract class CollectionFilter {
+abstract class CollectionFilter implements Comparable<CollectionFilter> {
   static const List<String> collectionFilterOrder = [
     VideoFilter.type,
     GifFilter.type,
@@ -20,11 +26,19 @@ abstract class CollectionFilter {
 
   String get label;
 
-  Widget iconBuilder(BuildContext context);
+  Widget iconBuilder(BuildContext context, double size);
+
+  Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(label));
 
   String get typeKey;
 
   int get displayPriority => collectionFilterOrder.indexOf(typeKey);
+
+  @override
+  int compareTo(CollectionFilter other) {
+    final c = displayPriority.compareTo(other.displayPriority);
+    return c != 0 ? c : compareAsciiUpperCase(label, other.label);
+  }
 }
 
 class AlbumFilter extends CollectionFilter {
@@ -41,7 +55,23 @@ class AlbumFilter extends CollectionFilter {
   String get label => album.split(separator).last;
 
   @override
-  Widget iconBuilder(context) => IconUtils.getAlbumIcon(context, album) ?? Icon(OMIcons.photoAlbum);
+  Widget iconBuilder(context, size) {
+    return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? Icon(OMIcons.photoAlbum, size: size);
+  }
+
+  Future<Color> color(BuildContext context) async {
+    Color color;
+    if (androidFileUtils.getAlbumType(album) == AlbumType.App) {
+      final palette = await PaletteGenerator.fromImageProvider(
+        AppIconImage(
+          packageName: androidFileUtils.getAlbumAppPackageName(album),
+          size: 24,
+        ),
+      );
+      color = palette.dominantColor?.color;
+    }
+    return color ?? super.color(context);
+  }
 
   @override
   String get typeKey => type;
@@ -70,7 +100,7 @@ class TagFilter extends CollectionFilter {
   String get label => tag;
 
   @override
-  Widget iconBuilder(context) => Icon(OMIcons.localOffer);
+  Widget iconBuilder(context, size) => Icon(OMIcons.localOffer, size: size);
 
   @override
   String get typeKey => type;
@@ -99,7 +129,7 @@ class CountryFilter extends CollectionFilter {
   String get label => country;
 
   @override
-  Widget iconBuilder(context) => Icon(OMIcons.place);
+  Widget iconBuilder(context, size) => Icon(OMIcons.place, size: size);
 
   @override
   String get typeKey => type;
@@ -124,7 +154,7 @@ class VideoFilter extends CollectionFilter {
   String get label => 'Video';
 
   @override
-  Widget iconBuilder(context) => Icon(OMIcons.movie);
+  Widget iconBuilder(context, size) => Icon(OMIcons.movie, size: size);
 
   @override
   String get typeKey => type;
@@ -149,7 +179,7 @@ class GifFilter extends CollectionFilter {
   String get label => 'GIF';
 
   @override
-  Widget iconBuilder(context) => Icon(OMIcons.gif);
+  Widget iconBuilder(context, size) => Icon(OMIcons.gif, size: size);
 
   @override
   String get typeKey => type;
@@ -178,7 +208,7 @@ class QueryFilter extends CollectionFilter {
   String get label => '${query}';
 
   @override
-  Widget iconBuilder(context) => Icon(OMIcons.formatQuote);
+  Widget iconBuilder(context, size) => Icon(OMIcons.formatQuote, size: size);
 
   @override
   String get typeKey => type;

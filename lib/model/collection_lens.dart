@@ -52,7 +52,7 @@ class CollectionLens with ChangeNotifier {
       source: source,
       filters: [
         ...filters,
-        if (filter != null) filter,
+        filter,
       ],
       groupFactor: groupFactor,
       sortFactor: sortFactor,
@@ -70,6 +70,14 @@ class CollectionLens with ChangeNotifier {
   List<ImageEntry> get sortedEntries => List.unmodifiable(sections.entries.expand((e) => e.value));
 
   Object heroTag(ImageEntry entry) => '$hashCode${entry.uri}';
+
+  void removeFilter(CollectionFilter filter) {
+    if (!filters.contains(filter)) return;
+    filters.remove(filter);
+    _applyFilters();
+    _applySort();
+    _applyGroup();
+  }
 
   void sort(SortFactor sortFactor) {
     this.sortFactor = sortFactor;

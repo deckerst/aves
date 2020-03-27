@@ -4,9 +4,10 @@ import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DebugPage extends StatefulWidget {
   final CollectionSource source;
@@ -85,6 +86,9 @@ class DebugPageState extends State<DebugPage> {
                   return Text('DB address rows: ${snapshot.data.length}');
                 },
               ),
+              const Divider(),
+              Text('Image cache: ${imageCache.currentSize} items, ${formatFilesize(imageCache.currentSizeBytes)}'),
+              Text('SVG cache: ${PictureProvider.cacheCount} items'),
               const Divider(),
               const Text('Time dilation'),
               Slider(

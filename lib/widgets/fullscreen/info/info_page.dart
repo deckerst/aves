@@ -3,7 +3,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
@@ -155,11 +155,12 @@ class InfoPageState extends State<InfoPage> {
 
   void _goToFilteredCollection(CollectionFilter filter) {
     if (collection == null) return;
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
+      (route) => false,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
+import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pdf;
@@ -77,7 +78,7 @@ class FullscreenActionDelegate {
     final doc = pdf.Document(title: entry.title);
     final image = await pdfImageFromImageProvider(
       pdf: doc.document,
-      image: FileImage(File(entry.path)),
+      image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
     );
     doc.addPage(pdf.Page(build: (context) => pdf.Center(child: pdf.Image(image)))); // Page
     unawaited(Printing.layoutPdf(

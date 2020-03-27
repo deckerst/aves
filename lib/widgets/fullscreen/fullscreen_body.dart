@@ -3,13 +3,14 @@ import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
 import 'package:aves/widgets/fullscreen/overlay/video.dart';
-import 'package:aves/widgets/fullscreen/uri_image_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -126,14 +127,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         if (_currentVerticalPage.value == infoPage) {
           // back from info to image
           _goToVerticalPage(imagePage);
-          return Future.value(false);
+          return SynchronousFuture(false);
         }
         if (!ModalRoute.of(context).canPop) {
           // exit app when trying to pop a fullscreen page that is a viewer for a single entry
           exit(0);
         }
         _onLeave();
-        return Future.value(true);
+        return SynchronousFuture(true);
       },
       child: Stack(
         children: [

@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
-import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
