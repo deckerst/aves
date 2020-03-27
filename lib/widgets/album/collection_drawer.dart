@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/album/collection_page.dart';
@@ -281,6 +282,8 @@ class _FilteredCollectionNavTile extends StatelessWidget {
               builder: (context) => CollectionPage(CollectionLens(
                 source: source,
                 filters: [filter],
+                groupFactor: settings.collectionGroupFactor,
+                sortFactor: settings.collectionSortFactor,
               )),
             ),
             (route) => false,

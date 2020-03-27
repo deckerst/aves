@@ -49,7 +49,7 @@ class StatsPage extends StatelessWidget {
                       backgroundColor: Colors.white24,
                       progressColor: Theme.of(context).accentColor,
                       animation: true,
-                      leading: Icon(OMIcons.place),
+                      leading: const Icon(OMIcons.place),
                       // right padding to match leading, so that inside label is aligned with outside label below
                       padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(right: 24),
                       center: Text(NumberFormat.percentPattern().format(withGpsPercent)),

@@ -61,7 +61,7 @@ class FullscreenTopOverlay extends StatelessWidget {
               scale: scale,
               child: PopupMenuButton<FullscreenAction>(
                 itemBuilder: (context) => [
-                  PopupMenuItem(
+                  const PopupMenuItem(
                     value: FullscreenAction.info,
                     child: MenuRow(text: 'Info', icon: OMIcons.info),
                   ),

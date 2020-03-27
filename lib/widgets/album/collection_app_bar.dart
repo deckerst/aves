@@ -1,5 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search_delegate.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/stats.dart';
@@ -11,8 +12,9 @@ import 'package:provider/provider.dart';
 class AllCollectionAppBar extends SliverAppBar {
   AllCollectionAppBar()
       : super(
-          title: const Text('All'),
+          title: const Text('Aves'),
           actions: _buildActions(),
+          bottom: FilterBar(),
           floating: true,
         );
 

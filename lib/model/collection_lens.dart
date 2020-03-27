@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -21,8 +22,8 @@ class CollectionLens with ChangeNotifier {
   CollectionLens({
     @required this.source,
     List<CollectionFilter> filters,
-    GroupFactor groupFactor,
-    SortFactor sortFactor,
+    @required GroupFactor groupFactor,
+    @required SortFactor sortFactor,
   })  : this.filters = [if (filters != null) ...filters.where((f) => f != null)].toSet(),
         this.groupFactor = groupFactor ?? GroupFactor.month,
         this.sortFactor = sortFactor ?? SortFactor.date {
@@ -44,6 +45,8 @@ class CollectionLens with ChangeNotifier {
   factory CollectionLens.empty() {
     return CollectionLens(
       source: CollectionSource(),
+      groupFactor: settings.collectionGroupFactor,
+      sortFactor: settings.collectionSortFactor,
     );
   }
 
