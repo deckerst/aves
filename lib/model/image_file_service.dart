@@ -29,43 +29,43 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> readAsBytes(String uri, String mimeType) async {
+  static Future<Uint8List> getImage(String uri, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('readAsBytes', <String, dynamic>{
+      final result = await platform.invokeMethod('getImage', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
       return result as Uint8List;
     } on PlatformException catch (e) {
-      debugPrint('readAsBytes failed with exception=${e.message}');
+      debugPrint('getImage failed with exception=${e.message}');
     }
     return Uint8List(0);
   }
 
-  static Future<Uint8List> getImageBytes(ImageEntry entry, int width, int height) async {
+  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height) async {
     if (width > 0 && height > 0) {
-//      debugPrint('getImageBytes width=$width path=${entry.path}');
+//      debugPrint('getThumbnail width=$width path=${entry.path}');
       try {
-        final result = await platform.invokeMethod('getImageBytes', <String, dynamic>{
+        final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
           'entry': entry.toMap(),
           'width': width,
           'height': height,
         });
         return result as Uint8List;
       } on PlatformException catch (e) {
-        debugPrint('getImageBytes failed with exception=${e.message}');
+        debugPrint('getThumbnail failed with exception=${e.message}');
       }
     }
     return Uint8List(0);
   }
 
-  static Future<void> cancelGetImageBytes(String uri) async {
+  static Future<void> cancelGetThumbnail(String uri) async {
     try {
-      await platform.invokeMethod('cancelGetImageBytes', <String, dynamic>{
+      await platform.invokeMethod('cancelGetThumbnail', <String, dynamic>{
         'uri': uri,
       });
     } on PlatformException catch (e) {
-      debugPrint('cancelGetImageBytes failed with exception=${e.message}');
+      debugPrint('cancelGetThumbnail failed with exception=${e.message}');
     }
   }
 

@@ -30,7 +30,7 @@ class UriPicture extends PictureProvider<UriPicture> {
   Future<PictureInfo> _loadAsync(UriPicture key, {PictureErrorListener onError}) async {
     assert(key == this);
 
-    final data = await ImageFileService.readAsBytes(uri, mimeType);
+    final data = await ImageFileService.getImage(uri, mimeType);
     if (data == null || data.isEmpty) {
       return null;
     }

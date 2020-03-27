@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/image_preview.dart';
+import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,33 +48,31 @@ class Thumbnail extends StatelessWidget {
   }
 
   Widget _buildRasterImage() {
-    return ImagePreview(
-      entry: entry,
-      // TODO TLAD smarter sizing, but shouldn't only depend on `extent` so that it doesn't reload during gridview scaling
-      width: 50,
-      height: 50,
-      builder: (bytes) {
-        final imageBuilder = (bytes, dim) => Image.memory(
-              bytes,
-              width: dim,
-              height: dim,
-              fit: BoxFit.cover,
-            );
-        return heroTag == null
-            ? imageBuilder(bytes, extent)
-            : Hero(
-                tag: heroTag,
-                flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
-                  // use LayoutBuilder only during hero animation
-                  return LayoutBuilder(builder: (context, constraints) {
-                    final dim = min(constraints.maxWidth, constraints.maxHeight);
-                    return imageBuilder(bytes, dim);
-                  });
-                },
-                child: imageBuilder(bytes, extent),
-              );
-      },
+    final provider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
+    final image = Image(
+      image: provider,
+      width: extent,
+      height: extent,
+      fit: BoxFit.cover,
     );
+    return heroTag == null
+        ? image
+        : Hero(
+            tag: heroTag,
+            flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
+              // use LayoutBuilder only during hero animation
+              return LayoutBuilder(builder: (context, constraints) {
+                final dim = min(constraints.maxWidth, constraints.maxHeight);
+                return Image(
+                  image: provider,
+                  width: dim,
+                  height: dim,
+                  fit: BoxFit.cover,
+                );
+              });
+            },
+            child: image,
+          );
   }
 
   Widget _buildVectorImage() {

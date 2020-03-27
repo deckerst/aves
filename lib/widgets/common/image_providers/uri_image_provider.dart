@@ -36,7 +36,7 @@ class UriImage extends ImageProvider<UriImage> {
   Future<ui.Codec> _loadAsync(UriImage key, DecoderCallback decode) async {
     assert(key == this);
 
-    final Uint8List bytes = await ImageFileService.readAsBytes(uri, mimeType);
+    final Uint8List bytes = await ImageFileService.getImage(uri, mimeType);
     if (bytes.lengthInBytes == 0) {
       return null;
     }

@@ -2,7 +2,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
-import 'package:aves/widgets/fullscreen/video.dart';
+import 'package:aves/widgets/fullscreen/video_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:photo_view/photo_view.dart';
@@ -84,10 +84,7 @@ class ImageView extends StatelessWidget {
     return PhotoView(
       // key includes size and orientation to refresh when the image is rotated
       key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
-      imageProvider: UriImage(
-        uri: entry.uri,
-        mimeType: entry.mimeType,
-      ),
+      imageProvider: UriImage(uri: entry.uri, mimeType: entry.mimeType),
       loadingBuilder: (context, event) => placeholderBuilder(context),
       backgroundDecoration: backgroundDecoration,
       heroAttributes: heroAttributes,

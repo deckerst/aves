@@ -32,7 +32,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=$packageName, size=$size');
+        yield ErrorDescription('packageName=$packageName, size=$size');
       },
     );
   }

@@ -11,11 +11,18 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import deckers.thibault.aves.decoder.VideoThumbnail;
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
@@ -46,14 +53,14 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             case "getImageEntry":
                 new Thread(() -> getImageEntry(call, new MethodResultWrapper(result))).start();
                 break;
-            case "readAsBytes":
-                new Thread(() -> readAsBytes(call, new MethodResultWrapper(result))).start();
+            case "getImage":
+                new Thread(() -> getImage(call, new MethodResultWrapper(result))).start();
                 break;
-            case "getImageBytes":
-                new Thread(() -> getImageBytes(call, new MethodResultWrapper(result))).start();
+            case "getThumbnail":
+                new Thread(() -> getThumbnail(call, new MethodResultWrapper(result))).start();
                 break;
-            case "cancelGetImageBytes":
-                new Thread(() -> cancelGetImageBytes(call, new MethodResultWrapper(result))).start();
+            case "cancelGetThumbnail":
+                new Thread(() -> cancelGetThumbnail(call, new MethodResultWrapper(result))).start();
                 break;
             case "delete":
                 new Thread(() -> delete(call, new MethodResultWrapper(result))).start();
@@ -70,52 +77,78 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         }
     }
 
-    private void readAsBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+    private void getImage(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
         String uriString = call.argument("uri");
 
-        byte[] data = null;
-        ContentResolver cr = activity.getContentResolver();
         Uri uri = Uri.parse(uriString);
-        try (InputStream is = cr.openInputStream(uri)) {
-            if (is != null) {
-                data = getBytes(is);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType))) {
-                    // as of Flutter v1.15.17, Dart Image.memory cannot decode HEIF/HEIC images
-                    // so we convert the image using Android native decoder
-                    ImageDecoder.Source source = ImageDecoder.createSource(cr, uri);
-                    Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+
+        byte[] data = null;
+        if (mimeType != null && mimeType.startsWith(MimeTypes.VIDEO)) {
+            RequestOptions options = new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+            FutureTarget<Bitmap> target = Glide.with(activity)
+                    .asBitmap()
+                    .apply(options)
+                    .load(new VideoThumbnail(activity, uri))
+                    .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+            try {
+                Bitmap bitmap = target.get();
+                if (bitmap != null) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
                     // Bitmap.CompressFormat.PNG is slower than JPEG
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
                     data = stream.toByteArray();
                 }
+            } catch (Exception e) {
+                result.error("getImage-video-exception", "failed to get image from uri=" + uri, e.getMessage());
+                return;
             }
-        } catch (IOException ex) {
-            // ignore
+            Glide.with(activity).clear(target);
+        } else {
+            ContentResolver cr = activity.getContentResolver();
+            try (InputStream is = cr.openInputStream(uri)) {
+                if (is != null) {
+                    data = getBytes(is);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType))) {
+                        // as of Flutter v1.15.17, Dart Image.memory cannot decode HEIF/HEIC images
+                        // so we convert the image using Android native decoder
+                        ImageDecoder.Source source = ImageDecoder.createSource(cr, uri);
+                        Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                        // Bitmap.CompressFormat.PNG is slower than JPEG
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                        data = stream.toByteArray();
+                    }
+                }
+            } catch (IOException e) {
+                result.error("getImage-image-exception", "failed to get image from uri=" + uri, e.getMessage());
+                return;
+            }
         }
 
         if (data != null) {
             result.success(data);
         } else {
-            result.error("readAsBytes-null", "failed to read bytes from uri=" + uri, null);
+            result.error("getImage-null", "failed to get image from uri=" + uri, null);
         }
     }
 
-    private void getImageBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+    private void getThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Map entryMap = call.argument("entry");
         Integer width = call.argument("width");
         Integer height = call.argument("height");
         if (entryMap == null || width == null || height == null) {
-            result.error("getImageBytes-args", "failed because of missing arguments", null);
+            result.error("getThumbnail-args", "failed because of missing arguments", null);
             return;
         }
         ImageEntry entry = new ImageEntry(entryMap);
         imageDecodeTaskManager.fetch(result, entry, width, height);
     }
 
-    private void cancelGetImageBytes(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+    private void cancelGetThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         String uri = call.argument("uri");
         imageDecodeTaskManager.cancel(uri);
         result.success(null);

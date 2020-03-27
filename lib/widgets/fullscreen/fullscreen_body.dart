@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
@@ -418,10 +420,8 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   void _onImageChange() async {
-    await UriImage(
-      uri: entry.uri,
-      mimeType: entry.mimeType,
-    ).evict();
+    await UriImage(uri: entry.uri, mimeType: entry.mimeType).evict();
+    await ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent).evict();
     if (entry.path != null) await FileImage(File(entry.path)).evict();
     // rebuild to refresh the Image inside ImagePage
     setState(() {});

@@ -74,7 +74,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                 bitmap = getThumbnailBytesByMediaStore(p);
             }
         } else {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + p.entry.uri + " cancelled");
+            Log.d(LOG_TAG, "getThumbnail with uri=" + p.entry.uri + " cancelled");
         }
         byte[] data = null;
         if (bitmap != null) {
@@ -119,7 +119,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         return null;
     }
 
-    private Bitmap getImageBytesByGlide(Params params) {
+    private Bitmap getThumbnailByGlide(Params params) {
         ImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
@@ -151,7 +151,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         try {
             return target.get();
         } catch (InterruptedException e) {
-            Log.d(LOG_TAG, "getImageBytes with uri=" + entry.uri + " interrupted");
+            Log.d(LOG_TAG, "getThumbnail with uri=" + entry.uri + " interrupted");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -167,7 +167,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getImageBytes-null", "failed to get thumbnail for uri=" + uri, null);
+            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri, null);
         }
     }
 }

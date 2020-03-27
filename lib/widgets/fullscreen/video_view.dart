@@ -1,10 +1,8 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/image_preview.dart';
+import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class AvesVideo extends StatefulWidget {
@@ -58,17 +56,10 @@ class AvesVideoState extends State<AvesVideo> {
   Widget build(BuildContext context) {
     if (value == null) return const SizedBox();
     if (value.hasError) {
-      return Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.size.width,
-        builder: (c, mqWidth, child) {
-          final width = min<double>(mqWidth, entry.width.toDouble());
-          return ImagePreview(
-            entry: entry,
-            width: width,
-            height: width / entry.aspectRatio,
-            builder: (bytes) => Image.memory(bytes),
-          );
-        },
+      return Image(
+        image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
+        width: entry.width.toDouble(),
+        height: entry.height.toDouble(),
       );
     }
     return Center(
