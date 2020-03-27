@@ -26,6 +26,8 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String get label;
 
+  String get tooltip => label;
+
   Widget iconBuilder(BuildContext context, double size);
 
   Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(label));
@@ -44,6 +46,8 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 class AlbumFilter extends CollectionFilter {
   static const type = 'album';
 
+  static Map<String, Color> _appColors = Map();
+
   final String album;
 
   const AlbumFilter(this.album);
@@ -55,22 +59,33 @@ class AlbumFilter extends CollectionFilter {
   String get label => album.split(separator).last;
 
   @override
+  String get tooltip => album;
+
+  @override
   Widget iconBuilder(context, size) {
     return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? Icon(OMIcons.photoAlbum, size: size);
   }
 
-  Future<Color> color(BuildContext context) async {
-    Color color;
+  @override
+  Future<Color> color(BuildContext context) {
+    // do not use async/await and rely on `SynchronousFuture`
+    // to prevent rebuilding of the `FutureBuilder` listening on this future
     if (androidFileUtils.getAlbumType(album) == AlbumType.App) {
-      final palette = await PaletteGenerator.fromImageProvider(
+      if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]);
+
+      return PaletteGenerator.fromImageProvider(
         AppIconImage(
           packageName: androidFileUtils.getAlbumAppPackageName(album),
           size: 24,
         ),
-      );
-      color = palette.dominantColor?.color;
+      ).then((palette) {
+        final color = palette.dominantColor?.color ?? super.color(context);
+        _appColors[album] = color;
+        return color;
+      });
+    } else {
+      return super.color(context);
     }
-    return color ?? super.color(context);
   }
 
   @override

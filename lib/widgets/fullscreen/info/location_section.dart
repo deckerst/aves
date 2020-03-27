@@ -113,7 +113,7 @@ class _LocationSectionState extends State<LocationSection> {
                 spacing: 8,
                 children: filters
                     .map((filter) => AvesFilterChip(
-                          filter,
+                          filter: filter,
                           onPressed: widget.onFilter,
                         ))
                     .toList(),

@@ -6,7 +6,7 @@ typedef FilterCallback = void Function(CollectionFilter filter);
 
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
-  final bool clearable;
+  final bool removable;
   final FilterCallback onPressed;
 
   static const double buttonBorderWidth = 2;
@@ -14,11 +14,12 @@ class AvesFilterChip extends StatefulWidget {
   static const double iconSize = 20;
   static const double padding = 6;
 
-  const AvesFilterChip(
-    this.filter, {
-    this.clearable = false,
+  const AvesFilterChip({
+    Key key,
+    this.filter,
+    this.removable = false,
     @required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   _AvesFilterChipState createState() => _AvesFilterChipState();
@@ -28,8 +29,6 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   Future<Color> _colorFuture;
 
   CollectionFilter get filter => widget.filter;
-
-  String get label => filter.label;
 
   @override
   void initState() {
@@ -50,7 +49,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   @override
   Widget build(BuildContext context) {
     final leading = filter.iconBuilder(context, AvesFilterChip.iconSize);
-    final trailing = widget.clearable ? Icon(OMIcons.clear, size: AvesFilterChip.iconSize) : null;
+    final trailing = widget.removable ? Icon(OMIcons.clear, size: AvesFilterChip.iconSize) : null;
 
     final child = Row(
       mainAxisSize: MainAxisSize.min,
@@ -61,7 +60,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         ],
         Flexible(
           child: Text(
-            label,
+            filter.label,
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,
@@ -81,7 +80,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: AvesFilterChip.maxChipWidth),
       child: Tooltip(
-        message: label,
+        message: filter.tooltip,
         child: FutureBuilder(
           future: _colorFuture,
           builder: (context, AsyncSnapshot<Color> snapshot) {

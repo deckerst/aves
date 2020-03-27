@@ -35,8 +35,8 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
             final filter = filters[index];
             return Center(
               child: AvesFilterChip(
-                filter,
-                clearable: true,
+                filter: filter,
+                removable: true,
                 onPressed: collection.removeFilter,
               ),
             );
