@@ -143,57 +143,56 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,
-      child: Selector<MediaQueryData, Orientation>(
-        selector: (c, mq) => mq.orientation,
-        builder: (c, orientation, child) {
-          final twoColumns = orientation == Orientation.landscape && maxWidth / 2 > _subRowMinWidth;
-          final subRowWidth = twoColumns ? min(_subRowMinWidth, maxWidth / 2) : maxWidth;
-          final positionTitle = [
-            if (position != null) position,
-            if (entry.title != null) entry.title,
-          ].join(' – ');
-          final hasShootingDetails = details != null && !details.isEmpty;
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (positionTitle.isNotEmpty)
-                SizedBox(
-                  width: maxWidth,
-                  child: Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
-                ),
-              if (entry.hasGps)
-                Container(
-                  padding: const EdgeInsets.only(top: _interRowPadding),
-                  width: subRowWidth,
-                  child: _LocationRow(entry: entry),
-                ),
-              if (twoColumns)
-                Padding(
-                  padding: const EdgeInsets.only(top: _interRowPadding),
-                  child: Row(
-                    children: [
-                      Container(width: subRowWidth, child: _DateRow(entry)),
-                      if (hasShootingDetails) Container(width: subRowWidth, child: _ShootingRow(details)),
-                    ],
-                  ),
-                )
-              else ...[
-                Container(
-                  padding: const EdgeInsets.only(top: _interRowPadding),
-                  width: subRowWidth,
-                  child: _DateRow(entry),
-                ),
-                if (hasShootingDetails)
+      child: SizedBox(
+        width: maxWidth,
+        child: Selector<MediaQueryData, Orientation>(
+          selector: (c, mq) => mq.orientation,
+          builder: (c, orientation, child) {
+            final twoColumns = orientation == Orientation.landscape && maxWidth / 2 > _subRowMinWidth;
+            final subRowWidth = twoColumns ? min(_subRowMinWidth, maxWidth / 2) : maxWidth;
+            final positionTitle = [
+              if (position != null) position,
+              if (entry.title != null) entry.title,
+            ].join(' – ');
+            final hasShootingDetails = details != null && !details.isEmpty;
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (positionTitle.isNotEmpty) Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
+                if (entry.hasGps)
                   Container(
                     padding: const EdgeInsets.only(top: _interRowPadding),
                     width: subRowWidth,
-                    child: _ShootingRow(details),
+                    child: _LocationRow(entry: entry),
                   ),
+                if (twoColumns)
+                  Padding(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    child: Row(
+                      children: [
+                        Container(width: subRowWidth, child: _DateRow(entry)),
+                        if (hasShootingDetails) Container(width: subRowWidth, child: _ShootingRow(details)),
+                      ],
+                    ),
+                  )
+                else ...[
+                  Container(
+                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    width: subRowWidth,
+                    child: _DateRow(entry),
+                  ),
+                  if (hasShootingDetails)
+                    Container(
+                      padding: const EdgeInsets.only(top: _interRowPadding),
+                      width: subRowWidth,
+                      child: _ShootingRow(details),
+                    ),
+                ],
               ],
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
