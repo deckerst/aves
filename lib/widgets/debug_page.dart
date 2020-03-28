@@ -1,4 +1,5 @@
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -22,6 +23,7 @@ class DebugPageState extends State<DebugPage> {
   Future<int> _dbFileSizeLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
+  Future<List<FavouriteRow>> _dbFavouritesLoader;
 
   List<ImageEntry> get entries => widget.source.entries;
 
@@ -86,6 +88,14 @@ class DebugPageState extends State<DebugPage> {
                   return Text('DB address rows: ${snapshot.data.length}');
                 },
               ),
+              FutureBuilder(
+                future: _dbFavouritesLoader,
+                builder: (context, AsyncSnapshot<List<FavouriteRow>> snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  return Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)');
+                },
+              ),
               const Divider(),
               Text('Image cache: ${imageCache.currentSize} items, ${formatFilesize(imageCache.currentSizeBytes)}'),
               Text('SVG cache: ${PictureProvider.cacheCount} items'),
@@ -110,6 +120,7 @@ class DebugPageState extends State<DebugPage> {
     _dbFileSizeLoader = metadataDb.dbFileSize();
     _dbMetadataLoader = metadataDb.loadMetadataEntries();
     _dbAddressLoader = metadataDb.loadAddresses();
+    _dbFavouritesLoader = metadataDb.loadFavourites();
     setState(() {});
   }
 }

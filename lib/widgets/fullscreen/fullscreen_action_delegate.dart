@@ -10,7 +10,7 @@ import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
 
-enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share }
+enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite }
 
 class FullscreenActionDelegate {
   final CollectionLens collection;
@@ -25,6 +25,9 @@ class FullscreenActionDelegate {
 
   void onActionSelected(BuildContext context, ImageEntry entry, FullscreenAction action) {
     switch (action) {
+      case FullscreenAction.toggleFavourite:
+        entry.toggleFavourite();
+        break;
       case FullscreenAction.delete:
         _showDeleteDialog(context, entry);
         break;

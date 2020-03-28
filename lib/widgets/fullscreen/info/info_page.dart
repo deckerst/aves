@@ -1,5 +1,5 @@
-import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';

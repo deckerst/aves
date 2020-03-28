@@ -1,3 +1,4 @@
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_service.dart';
@@ -29,6 +30,7 @@ class ImageEntry {
   AddressDetails addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
+  final isFavouriteNotifier = ValueNotifier(false);
 
   ImageEntry({
     this.uri,
@@ -44,7 +46,9 @@ class ImageEntry {
     this.sourceDateTakenMillis,
     this.bucketDisplayName,
     this.durationMillis,
-  }) : directory = path != null ? dirname(path) : null;
+  }) : directory = path != null ? dirname(path) : null {
+    isFavouriteNotifier.value = isFavourite;
+  }
 
   factory ImageEntry.fromMap(Map map) {
     return ImageEntry(
@@ -86,6 +90,7 @@ class ImageEntry {
     imageChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
+    isFavouriteNotifier.dispose();
   }
 
   @override
@@ -96,6 +101,8 @@ class ImageEntry {
   String get filename => basenameWithoutExtension(path);
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
+
+  bool get isFavourite => favourites.isFavourite(this);
 
   bool get isGif => mimeType == MimeTypes.MIME_GIF;
 
@@ -238,4 +245,13 @@ class ImageEntry {
   }
 
   Future<bool> delete() => ImageFileService.delete(this);
+
+  void toggleFavourite() {
+    if (isFavourite) {
+      favourites.remove(this);
+    } else {
+      favourites.add(this);
+    }
+    isFavouriteNotifier.value = !isFavouriteNotifier.value;
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:aves/model/collection_filters.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 

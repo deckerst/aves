@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:collection/collection.dart';

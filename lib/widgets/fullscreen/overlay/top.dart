@@ -2,6 +2,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
@@ -37,6 +38,18 @@ class FullscreenTopOverlay extends StatelessWidget {
               child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
             ),
             const Spacer(),
+            OverlayButton(
+              scale: scale,
+              child: ValueListenableBuilder(
+                valueListenable: entry.isFavouriteNotifier,
+                builder: (context, isFavourite, child) => IconButton(
+                  icon: Icon(isFavourite ? Icons.favorite : Icons.favorite_border),
+                  onPressed: () => onActionSelected?.call(FullscreenAction.toggleFavourite),
+                  tooltip: isFavourite ? 'Remove favourite' : 'Add favourite',
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             OverlayButton(
               scale: scale,
               child: IconButton(

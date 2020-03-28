@@ -1,5 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -39,6 +40,7 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
     );
 
     await metadataDb.init(); // <20ms
+    await favourites.init();
     final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
     final catalogTimeZone = settings.catalogTimeZone;
     if (currentTimeZone != catalogTimeZone) {

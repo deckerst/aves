@@ -1,4 +1,8 @@
-import 'package:aves/model/collection_filters.dart';
+import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/video.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
@@ -25,11 +29,6 @@ class BasicSection extends StatelessWidget {
     final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
     final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
-    final filters = [
-      if (entry.directory != null) AlbumFilter(entry.directory),
-      ...tags.map((tag) => TagFilter(tag)),
-    ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,19 +41,31 @@ class BasicSection extends StatelessWidget {
           'URI': entry.uri ?? '?',
           if (entry.path != null) 'Path': entry.path,
         }),
-        if (filters.isNotEmpty != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.only(top: 8),
-            child: Wrap(
-              spacing: 8,
-              children: filters
-                  .map((filter) => AvesFilterChip(
-                        filter: filter,
-                        onPressed: onFilter,
-                      ))
-                  .toList(),
-            ),
-          ),
+        ValueListenableBuilder(
+          valueListenable: entry.isFavouriteNotifier,
+          builder: (context, isFavourite, child) {
+            final filters = [
+              if (entry.isVideo) VideoFilter(),
+              if (entry.isGif) GifFilter(),
+              if (isFavourite) FavouriteFilter(),
+              if (entry.directory != null) AlbumFilter(entry.directory),
+              ...tags.map((tag) => TagFilter(tag)),
+            ]..sort();
+            if (filters.isEmpty) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.only(top: 8),
+              child: Wrap(
+                spacing: 8,
+                children: filters
+                    .map((filter) => AvesFilterChip(
+                          filter: filter,
+                          onPressed: onFilter,
+                        ))
+                    .toList(),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

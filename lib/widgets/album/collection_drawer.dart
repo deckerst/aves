@@ -1,8 +1,14 @@
 import 'dart:ui';
 
-import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/country.dart';
+import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/video.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -81,6 +87,12 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       title: 'GIFs',
       filter: GifFilter(),
     );
+    final favouriteEntry = _FilteredCollectionNavTile(
+      source: source,
+      leading: const Icon(OMIcons.favoriteBorder),
+      title: 'Favourites',
+      filter: FavouriteFilter(),
+    );
     final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
           source: source,
           leading: IconUtils.getAlbumIcon(context: context, album: album),
@@ -131,6 +143,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       allMediaEntry,
       videoEntry,
       gifEntry,
+      favouriteEntry,
       if (specialAlbums.isNotEmpty) ...[
         const Divider(),
         ...specialAlbums.map(buildAlbumEntry),

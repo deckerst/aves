@@ -1,5 +1,5 @@
-import 'package:aves/model/collection_filters.dart';
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/country.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';

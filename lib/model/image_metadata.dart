@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
 
 class CatalogMetadata {
@@ -104,5 +105,41 @@ class AddressDetails {
   @override
   String toString() {
     return 'AddressDetails{contentId=$contentId, addressLine=$addressLine, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
+  }
+}
+
+class FavouriteRow {
+  final int contentId;
+  final String path;
+
+  FavouriteRow({
+    this.contentId,
+    this.path,
+  });
+
+  factory FavouriteRow.fromMap(Map map) {
+    return FavouriteRow(
+      contentId: map['contentId'],
+      path: map['path'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'contentId': contentId,
+        'path': path,
+      };
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is FavouriteRow && other.contentId == contentId && other.path == path;
+  }
+
+  @override
+  int get hashCode => hashValues(contentId, path);
+
+  @override
+  String toString() {
+    return 'FavouriteRow{contentId=$contentId, path=$path}';
   }
 }
