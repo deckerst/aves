@@ -21,6 +21,7 @@ class ThumbnailCollection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('$runtimeType build');
     final collection = Provider.of<CollectionLens>(context);
     final sections = collection.sections;
     final sectionKeys = sections.keys.toList();
@@ -45,6 +46,7 @@ class ThumbnailCollection extends StatelessWidget {
             child: ValueListenableBuilder(
               valueListenable: _columnCountNotifier,
               builder: (context, columnCount, child) {
+                debugPrint('$runtimeType builder columnCount=$columnCount');
                 final scrollView = CustomScrollView(
                   key: _scrollableKey,
                   primary: true,

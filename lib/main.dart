@@ -94,23 +94,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: FutureBuilder(
-          future: _appSetup,
-          builder: (context, AsyncSnapshot<void> snapshot) {
-            if (snapshot.hasError) return const Icon(OMIcons.error);
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-            debugPrint('$runtimeType FutureBuilder builder');
-            return _sharedEntry != null
-                ? SingleFullscreenPage(
-                    entry: _sharedEntry,
-                  )
-                : MediaStoreCollectionProvider(
-                    child: Consumer<CollectionLens>(
-                      builder: (context, collection, child) => CollectionPage(collection),
-                    ),
-                  );
-          }),
-    );
+    return FutureBuilder(
+        future: _appSetup,
+        builder: (context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.hasError) return const Icon(OMIcons.error);
+          if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+          debugPrint('$runtimeType app setup future complete');
+          return _sharedEntry != null
+              ? SingleFullscreenPage(
+                  entry: _sharedEntry,
+                )
+              : MediaStoreCollectionProvider(
+                  child: Consumer<CollectionLens>(
+                    builder: (context, collection, child) => CollectionPage(collection),
+                  ),
+                );
+        });
   }
 }

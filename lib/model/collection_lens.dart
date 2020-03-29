@@ -74,9 +74,19 @@ class CollectionLens with ChangeNotifier {
 
   Object heroTag(ImageEntry entry) => '$hashCode${entry.uri}';
 
+  void addFilter(CollectionFilter filter) {
+    if (filters.contains(filter)) return;
+    filters.add(filter);
+    onFilterChanged();
+  }
+
   void removeFilter(CollectionFilter filter) {
     if (!filters.contains(filter)) return;
     filters.remove(filter);
+    onFilterChanged();
+  }
+
+  void onFilterChanged() {
     _applyFilters();
     _applySort();
     _applyGroup();

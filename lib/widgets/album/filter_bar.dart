@@ -6,12 +6,13 @@ import 'package:provider/provider.dart';
 class FilterBar extends StatelessWidget implements PreferredSizeWidget {
   static const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 8);
 
+  static final double preferredHeight = kMinInteractiveDimension + padding.vertical;
+
   @override
-  final Size preferredSize = Size.fromHeight(kMinInteractiveDimension + padding.vertical);
+  final Size preferredSize = Size.fromHeight(preferredHeight);
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('$runtimeType build');
     final collection = Provider.of<CollectionLens>(context);
     final filters = collection.filters.toList()..sort();
 
