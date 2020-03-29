@@ -5,7 +5,6 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/viewer_service.dart';
 import 'package:aves/widgets/album/collection_page.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';

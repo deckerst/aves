@@ -1,13 +1,19 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/country.dart';
+import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/gif.dart';
 import 'package:aves/model/filters/query.dart';
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/album/thumbnail_collection.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/video.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:provider/provider.dart';
 
-class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
+class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   final CollectionLens collection;
 
   ImageSearchDelegate(this.collection);
@@ -46,56 +52,70 @@ class ImageSearchDelegate extends SearchDelegate<ImageEntry> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return const SizedBox.shrink();
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    if (query.isEmpty) {
-      showSuggestions(context);
-      return const SizedBox.shrink();
-    }
-    return MediaQueryDataProvider(
-      child: ChangeNotifierProvider<CollectionLens>.value(
-        value: CollectionLens(
-          source: collection.source,
-          filters: [QueryFilter(query.toLowerCase())],
-          groupFactor: collection.groupFactor,
-          sortFactor: collection.sortFactor,
-        ),
-        child: ThumbnailCollection(
-          emptyBuilder: (context) => _EmptyContent(),
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    const color = Color(0xFF607D8B);
-    return Align(
-      alignment: const FractionalOffset(.5, .4),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Icon(
-            OMIcons.photo,
-            size: 64,
-            color: color,
+    final source = collection.source;
+    final upQuery = query.toUpperCase();
+    final containQuery = (String s) => s.toUpperCase().contains(upQuery);
+    return SafeArea(
+      child: ListView(
+        children: [
+          ..._buildFilterRow(
+            filters: [FavouriteFilter(), VideoFilter(), GifFilter()].where((f) => containQuery(f.label)),
           ),
-          SizedBox(height: 16),
-          Text(
-            'No match',
-            style: TextStyle(
-              color: color,
-              fontSize: 22,
-              fontFamily: 'Concourse',
-            ),
+          ..._buildFilterRow(
+            title: 'Countries',
+            filters: source.sortedCountries.where(containQuery).map((s) => CountryFilter(s)),
+          ),
+          ..._buildFilterRow(
+            title: 'Albums',
+            filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, CollectionSource.getUniqueAlbumName(s, source.sortedAlbums))).where((f) => containQuery(f.uniqueName)),
+          ),
+          ..._buildFilterRow(
+            title: 'Tags',
+            filters: source.sortedTags.where(containQuery).map((s) => TagFilter(s)),
           ),
         ],
       ),
     );
+  }
+
+  List<Widget> _buildFilterRow({String title, @required Iterable<CollectionFilter> filters}) {
+    if (filters.isEmpty) return [];
+    final filtersList = filters.toList();
+    return [
+      if (title != null && title.isNotEmpty)
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            title,
+            style: Constants.titleTextStyle,
+          ),
+        ),
+      Container(
+        height: kMinInteractiveDimension,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.symmetric(horizontal: 6),
+          itemBuilder: (context, index) {
+            if (index >= filtersList.length) return null;
+            final filter = filtersList[index];
+            return Center(
+              child: AvesFilterChip(
+                filter: filter,
+                onPressed: (filter) => close(context, filter),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => const SizedBox(width: 8),
+          itemCount: filtersList.length,
+        ),
+      ),
+    ];
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    close(context, QueryFilter(query));
+    return const SizedBox.shrink();
   }
 }

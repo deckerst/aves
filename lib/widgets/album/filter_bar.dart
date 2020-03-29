@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FilterBar extends StatelessWidget implements PreferredSizeWidget {
-  static const EdgeInsets padding = EdgeInsets.symmetric(horizontal: 8);
-
-  static final double preferredHeight = kMinInteractiveDimension + padding.vertical;
+  static final double preferredHeight = kMinInteractiveDimension;
 
   @override
   final Size preferredSize = Size.fromHeight(preferredHeight);
@@ -20,7 +18,6 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
-      padding: padding,
       height: preferredSize.height,
       child: NotificationListener<ScrollNotification>(
         // cancel notification bubbling so that the draggable scrollbar
@@ -28,9 +25,8 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
         onNotification: (notification) => true,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
-          primary: false,
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth / 2),
+          padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.symmetric(horizontal: 6),
           itemBuilder: (context, index) {
             if (index >= filters.length) return null;
             final filter = filters[index];

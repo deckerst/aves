@@ -16,13 +16,15 @@ class AlbumFilter extends CollectionFilter {
 
   final String album;
 
-  const AlbumFilter(this.album);
+  final String uniqueName;
+
+  const AlbumFilter(this.album, this.uniqueName);
 
   @override
   bool filter(ImageEntry entry) => entry.directory == album;
 
   @override
-  String get label => album.split(separator).last;
+  String get label => uniqueName ?? album.split(separator).last;
 
   @override
   String get tooltip => album;

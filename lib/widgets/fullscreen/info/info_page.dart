@@ -82,7 +82,7 @@ class InfoPageState extends State<InfoPage> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(child: BasicSection(entry: entry, onFilter: _goToFilteredCollection)),
+                            Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToFilteredCollection)),
                             const SizedBox(width: 8),
                             Expanded(child: locationSection),
                           ],
@@ -91,7 +91,7 @@ class InfoPageState extends State<InfoPage> {
                     : SliverList(
                         delegate: SliverChildListDelegate.fixed(
                           [
-                            BasicSection(entry: entry, onFilter: _goToFilteredCollection),
+                            BasicSection(entry: entry, collection: collection, onFilter: _goToFilteredCollection),
                             locationSection,
                           ],
                         ),

@@ -3,6 +3,7 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
+import 'package:aves/widgets/album/search_delegate.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/stats.dart';
 import 'package:flutter/foundation.dart';
@@ -121,9 +122,17 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         builder: (context) {
           switch (stateNotifier.value) {
             case PageState.browse:
-              return IconButton(
-                icon: Icon(OMIcons.search),
-                onPressed: () => stateNotifier.value = PageState.search,
+              return Consumer<CollectionLens>(
+                builder: (context, collection, child) => IconButton(
+                  icon: Icon(OMIcons.search),
+                  onPressed: () async {
+                    final filter = await showSearch(
+                      context: context,
+                      delegate: ImageSearchDelegate(collection),
+                    );
+                    collection.addFilter(filter);
+                  },
+                ),
               );
             case PageState.search:
               return IconButton(

@@ -1,3 +1,4 @@
+import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/fx/outlined_text.dart';
 import 'package:flutter/material.dart';
@@ -56,18 +57,6 @@ class TitleSectionHeader extends StatelessWidget {
 
   static const leadingDimension = 32.0;
   static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
-  static const textStyle = TextStyle(
-    color: Color(0xFFEEEEEE),
-    fontSize: 20,
-    fontFamily: 'Concourse Caps',
-    shadows: [
-      Shadow(
-        offset: Offset(0, 2),
-        blurRadius: 3,
-        color: Color(0xFF212121),
-      ),
-    ],
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +72,7 @@ class TitleSectionHeader extends StatelessWidget {
                 )
             : null,
         text: title,
-        style: textStyle,
+        style: Constants.titleTextStyle,
         outlineWidth: 2,
       ),
     );

@@ -14,6 +14,9 @@ class TagFilter extends CollectionFilter {
   bool filter(ImageEntry entry) => entry.xmpSubjects.contains(tag);
 
   @override
+  bool get isUnique => false;
+
+  @override
   String get label => tag;
 
   @override

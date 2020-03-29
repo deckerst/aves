@@ -26,6 +26,8 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   bool filter(ImageEntry entry);
 
+  bool get isUnique => true;
+
   String get label;
 
   String get tooltip => label;
