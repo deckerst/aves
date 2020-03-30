@@ -188,16 +188,14 @@ class StatsPage extends StatelessWidget {
                     onPressed: (filter) => _goToFilteredCollection(context, filter),
                   ),
                 ),
-                Expanded(
-                  child: LinearPercentIndicator(
-                    percent: percent,
-                    lineHeight: 16,
-                    backgroundColor: Colors.white24,
-                    progressColor: stringToColor(label),
-                    animation: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    center: Text(NumberFormat.percentPattern().format(percent)),
-                  ),
+                LinearPercentIndicator(
+                  percent: percent,
+                  lineHeight: 16,
+                  backgroundColor: Colors.white24,
+                  progressColor: stringToColor(label),
+                  animation: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  center: Text(NumberFormat.percentPattern().format(percent)),
                 ),
                 Text(
                   '${count}',

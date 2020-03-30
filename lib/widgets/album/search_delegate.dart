@@ -62,12 +62,12 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
             filters: [FavouriteFilter(), VideoFilter(), GifFilter()].where((f) => containQuery(f.label)),
           ),
           ..._buildFilterRow(
-            title: 'Countries',
-            filters: source.sortedCountries.where(containQuery).map((s) => CountryFilter(s)),
-          ),
-          ..._buildFilterRow(
             title: 'Albums',
             filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, CollectionSource.getUniqueAlbumName(s, source.sortedAlbums))).where((f) => containQuery(f.uniqueName)),
+          ),
+          ..._buildFilterRow(
+            title: 'Countries',
+            filters: source.sortedCountries.where(containQuery).map((s) => CountryFilter(s)),
           ),
           ..._buildFilterRow(
             title: 'Tags',

@@ -79,24 +79,27 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       borderRadius: BorderRadius.circular(42),
     );
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: AvesFilterChip.maxChipWidth),
-      child: Tooltip(
-        message: filter.tooltip,
-        child: FutureBuilder(
-          future: _colorFuture,
-          builder: (context, AsyncSnapshot<Color> snapshot) {
-            return OutlineButton(
-              onPressed: widget.onPressed != null ? () => widget.onPressed(filter) : null,
-              borderSide: BorderSide(
-                color: snapshot.hasData ? snapshot.data : Colors.transparent,
-                width: AvesFilterChip.buttonBorderWidth,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2),
-              shape: shape,
-              child: child,
-            );
-          },
+    return ButtonTheme(
+      minWidth: 0,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: AvesFilterChip.maxChipWidth),
+        child: Tooltip(
+          message: filter.tooltip,
+          child: FutureBuilder(
+            future: _colorFuture,
+            builder: (context, AsyncSnapshot<Color> snapshot) {
+              return OutlineButton(
+                onPressed: widget.onPressed != null ? () => widget.onPressed(filter) : null,
+                borderSide: BorderSide(
+                  color: snapshot.hasData ? snapshot.data : Colors.transparent,
+                  width: AvesFilterChip.buttonBorderWidth,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2),
+                shape: shape,
+                child: child,
+              );
+            },
+          ),
         ),
       ),
     );
