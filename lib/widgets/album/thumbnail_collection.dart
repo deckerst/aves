@@ -50,13 +50,15 @@ class ThumbnailCollection extends StatelessWidget {
                 final scrollView = CustomScrollView(
                   key: _scrollableKey,
                   primary: true,
+                  // workaround to prevent scrolling the app bar away
+                  // when there is no content and we use `SliverFillRemaining`
+                  physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
                   slivers: [
                     if (appBar != null) appBar,
                     if (collection.isEmpty && emptyBuilder != null)
-                      SliverFillViewport(
-                        delegate: SliverChildListDelegate.fixed(
-                          [emptyBuilder(context)],
-                        ),
+                      SliverFillRemaining(
+                        child: emptyBuilder(context),
+                        hasScrollBody: false,
                       ),
                     ...sectionKeys.map((sectionKey) => SectionSliver(
                           collection: collection,
