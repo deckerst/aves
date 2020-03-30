@@ -3,7 +3,7 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
-import 'package:aves/widgets/album/search_delegate.dart';
+import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/stats.dart';
 import 'package:flutter/foundation.dart';
