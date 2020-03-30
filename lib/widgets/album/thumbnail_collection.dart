@@ -47,7 +47,7 @@ class ThumbnailCollection extends StatelessWidget {
             child: ValueListenableBuilder(
               valueListenable: _columnCountNotifier,
               builder: (context, columnCount, child) {
-                debugPrint('$runtimeType builder columnCount=$columnCount');
+                debugPrint('$runtimeType builder columnCount=$columnCount entries=${collection.entryCount}');
                 final scrollView = CustomScrollView(
                   key: _scrollableKey,
                   primary: true,

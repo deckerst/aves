@@ -1,4 +1,5 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
@@ -42,10 +43,19 @@ class FullscreenTopOverlay extends StatelessWidget {
               scale: scale,
               child: ValueListenableBuilder(
                 valueListenable: entry.isFavouriteNotifier,
-                builder: (context, isFavourite, child) => IconButton(
-                  icon: Icon(isFavourite ? Icons.favorite : Icons.favorite_border),
-                  onPressed: () => onActionSelected?.call(FullscreenAction.toggleFavourite),
-                  tooltip: isFavourite ? 'Remove favourite' : 'Add favourite',
+                builder: (context, isFavourite, child) => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(isFavourite ? OMIcons.favorite : OMIcons.favoriteBorder),
+                      onPressed: () => onActionSelected?.call(FullscreenAction.toggleFavourite),
+                      tooltip: isFavourite ? 'Remove favourite' : 'Add favourite',
+                    ),
+                    Sweeper(
+                      builder: (context) => Icon(OMIcons.favoriteBorder, color: Colors.redAccent),
+                      toggledNotifier: entry.isFavouriteNotifier,
+                    ),
+                  ],
                 ),
               ),
             ),
