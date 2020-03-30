@@ -69,12 +69,17 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       valueListenable: stateNotifier,
       builder: (context, state, child) {
         debugPrint('$runtimeType builder state=$state');
-        return SliverAppBar(
-          leading: _buildAppBarLeading(),
-          title: _buildAppBarTitle(),
-          actions: _buildActions(),
-          bottom: FilterBar(),
-          floating: true,
+        return Consumer<CollectionLens>(
+          builder: (context, collection, child) => AnimatedBuilder(
+            animation: collection.filterChangeNotifier,
+            builder: (context, child) => SliverAppBar(
+              leading: _buildAppBarLeading(),
+              title: _buildAppBarTitle(),
+              actions: _buildActions(),
+              bottom: collection.filters.isNotEmpty ? FilterBar() : null,
+              floating: true,
+            ),
+          ),
         );
       },
     );

@@ -30,7 +30,7 @@ class ImageEntry {
   AddressDetails addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
-  final isFavouriteNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
 
   ImageEntry({
     this.uri,

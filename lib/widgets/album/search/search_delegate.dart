@@ -59,7 +59,6 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       child: ValueListenableBuilder<String>(
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
-            debugPrint('builder expandedSection=$expandedSection');
             return ListView(
               children: [
                 _buildFilterRow(

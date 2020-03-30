@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -13,6 +15,7 @@ class CollectionLens with ChangeNotifier {
   final Set<CollectionFilter> filters;
   GroupFactor groupFactor;
   SortFactor sortFactor;
+  final AChangeNotifier filterChangeNotifier = AChangeNotifier();
 
   List<ImageEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
@@ -63,11 +66,24 @@ class CollectionLens with ChangeNotifier {
 
   int get entryCount => _filteredEntries.length;
 
-  int get imageCount => _filteredEntries.where((entry) => !entry.isVideo).length;
+  List<ImageEntry> _sortedEntries;
 
-  int get videoCount => _filteredEntries.where((entry) => entry.isVideo).length;
+  List<ImageEntry> get sortedEntries {
+    if (_sortedEntries == null) {
+      _sortedEntries = List.unmodifiable(sections.entries.expand((e) => e.value));
+    }
+    return _sortedEntries;
+  }
 
-  List<ImageEntry> get sortedEntries => List.unmodifiable(sections.entries.expand((e) => e.value));
+  bool get showHeaders {
+    if (sortFactor == SortFactor.size) return false;
+
+    final albumSections = sortFactor == SortFactor.name || (sortFactor == SortFactor.date && groupFactor == GroupFactor.album);
+    final filterByAlbum = filters.any((f) => f is AlbumFilter);
+    if (albumSections && filterByAlbum) return false;
+
+    return true;
+  }
 
   Object heroTag(ImageEntry entry) => '$hashCode${entry.uri}';
 
@@ -90,6 +106,7 @@ class CollectionLens with ChangeNotifier {
     _applyFilters();
     _applySort();
     _applyGroup();
+    filterChangeNotifier.notifyListeners();
   }
 
   void sort(SortFactor sortFactor) {
@@ -156,6 +173,7 @@ class CollectionLens with ChangeNotifier {
         sections = Map.unmodifiable(SplayTreeMap.of(byAlbum, compare));
         break;
     }
+    _sortedEntries = null;
     notifyListeners();
   }
 

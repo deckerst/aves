@@ -25,6 +25,7 @@ class ThumbnailCollection extends StatelessWidget {
     final collection = Provider.of<CollectionLens>(context);
     final sections = collection.sections;
     final sectionKeys = sections.keys.toList();
+    final showHeaders = collection.showHeaders;
 
     double topPadding = 0;
     if (appBar != null) {
@@ -64,6 +65,7 @@ class ThumbnailCollection extends StatelessWidget {
                           collection: collection,
                           sectionKey: sectionKey,
                           columnCount: columnCount,
+                          showHeader: showHeaders,
                         )),
                     SliverToBoxAdapter(
                       child: Selector<MediaQueryData, double>(

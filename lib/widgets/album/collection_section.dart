@@ -14,12 +14,14 @@ class SectionSliver extends StatelessWidget {
   final CollectionLens collection;
   final dynamic sectionKey;
   final int columnCount;
+  final bool showHeader;
 
   const SectionSliver({
     Key key,
     @required this.collection,
     @required this.sectionKey,
     @required this.columnCount,
+    @required this.showHeader,
   }) : super(key: key);
 
   @override
@@ -49,15 +51,17 @@ class SectionSliver extends StatelessWidget {
       ),
     );
 
-    return SliverStickyHeader(
-      header: SectionHeader(
-        collection: collection,
-        sections: sections,
-        sectionKey: sectionKey,
-      ),
-      sliver: sliver,
-      overlapsContent: false,
-    );
+    return showHeader
+        ? SliverStickyHeader(
+            header: SectionHeader(
+              collection: collection,
+              sections: sections,
+              sectionKey: sectionKey,
+            ),
+            sliver: sliver,
+            overlapsContent: false,
+          )
+        : sliver;
   }
 }
 
@@ -133,7 +137,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget header = const SizedBox.shrink();
+    Widget header;
     switch (collection.sortFactor) {
       case SortFactor.date:
         if (collection.sortFactor == SortFactor.date) {
@@ -156,9 +160,11 @@ class SectionHeader extends StatelessWidget {
         header = _buildAlbumSectionHeader(context);
         break;
     }
-    return IgnorePointer(
-      child: header,
-    );
+    return header != null
+        ? IgnorePointer(
+            child: header,
+          )
+        : const SizedBox.shrink();
   }
 
   Widget _buildAlbumSectionHeader(BuildContext context) {
