@@ -205,9 +205,9 @@ class ImageEntry {
   }
 
   bool search(String query) {
-    if (title.toLowerCase().contains(query)) return true;
-    if (catalogMetadata?.xmpSubjects?.toLowerCase()?.contains(query) ?? false) return true;
-    if (isLocated && addressDetails.addressLine.toLowerCase().contains(query)) return true;
+    if (title?.toUpperCase()?.contains(query) ?? false) return true;
+    if (catalogMetadata?.xmpSubjects?.toUpperCase()?.contains(query) ?? false) return true;
+    if (addressDetails?.addressLine?.toUpperCase()?.contains(query) ?? false) return true;
     return false;
   }
 

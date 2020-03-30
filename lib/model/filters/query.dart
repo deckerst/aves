@@ -6,12 +6,12 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
-  final String query;
+  final String query, upQuery;
 
-  const QueryFilter(this.query);
+  QueryFilter(this.query) : upQuery = query.toUpperCase();
 
   @override
-  bool filter(ImageEntry entry) => entry.search(query);
+  bool filter(ImageEntry entry) => entry.search(upQuery);
 
   @override
   bool get isUnique => false;
@@ -32,5 +32,5 @@ class QueryFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => hashValues('MetadataFilter', query);
+  int get hashCode => hashValues('QueryFilter', query);
 }

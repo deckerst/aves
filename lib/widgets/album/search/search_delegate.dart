@@ -53,7 +53,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   @override
   Widget buildSuggestions(BuildContext context) {
     final source = collection.source;
-    final upQuery = query.toUpperCase();
+    final upQuery = query.trim().toUpperCase();
     final containQuery = (String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
       child: ValueListenableBuilder<String>(
@@ -98,7 +98,8 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
 
   @override
   Widget buildResults(BuildContext context) {
-    close(context, QueryFilter(query));
+    final cleanQuery = query.trim();
+    close(context, cleanQuery.isNotEmpty ? QueryFilter(cleanQuery) : null);
     return const SizedBox.shrink();
   }
 }
