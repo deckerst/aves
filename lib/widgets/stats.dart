@@ -1,6 +1,12 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/country.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
@@ -11,8 +17,19 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
   final CollectionLens collection;
+  final Map<String, int> entryCountPerCountry = Map<String, int>(), entryCountPerTag = Map<String, int>();
 
-  const StatsPage({this.collection});
+  StatsPage({this.collection}) {
+    entries.forEach((entry) {
+      final country = entry.addressDetails?.countryName;
+      if (country != null) {
+        entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
+      }
+      entry.xmpSubjects.forEach((tag) {
+        entryCountPerTag[tag] = (entryCountPerTag[tag] ?? 0) + 1;
+      });
+    });
+  }
 
   List<ImageEntry> get entries => collection.sortedEntries;
 
@@ -20,7 +37,7 @@ class StatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final catalogued = entries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
-    final withGpsPercent = withGps.length / entries.length;
+    final withGpsPercent = withGps.length / collection.entryCount;
     final Map<String, int> byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map((k, v) => MapEntry(k, v.length));
     final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
     final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
@@ -59,6 +76,8 @@ class StatsPage extends StatelessWidget {
                   ],
                 ),
               ),
+              ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => CountryFilter(s)),
+              ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
             ],
           ),
         ),
@@ -72,7 +91,10 @@ class StatsPage extends StatelessWidget {
     final sum = byMimeTypes.values.fold(0, (prev, v) => prev + v);
 
     final seriesData = byMimeTypes.entries.map((kv) => StringNumDatum(kv.key.replaceFirst(RegExp('.*/'), '').toUpperCase(), kv.value)).toList();
-    seriesData.sort((kv1, kv2) => kv2.value.compareTo(kv1.value));
+    seriesData.sort((kv1, kv2) {
+      final c = kv2.value.compareTo(kv1.value);
+      return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
+    });
 
     final series = [
       charts.Series<StringNumDatum, String>(
@@ -131,6 +153,79 @@ class StatsPage extends StatelessWidget {
         ],
       );
     });
+  }
+
+  List<Widget> _buildTopFilters(BuildContext context, String title, Map<String, int> entryCountMap, FilterBuilder filterBuilder) {
+    if (entryCountMap.isEmpty) return [];
+
+    final maxCount = collection.entryCount;
+    final sortedEntries = entryCountMap.entries.toList()
+      ..sort((kv1, kv2) {
+        final c = kv2.value.compareTo(kv1.value);
+        return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
+      });
+    return [
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(
+          title,
+          style: Constants.titleTextStyle,
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.buttonBorderWidth / 2 + 6, end: 8),
+        child: Table(
+          children: sortedEntries.take(5).map((kv) {
+            final label = kv.key;
+            final count = kv.value;
+            final percent = count / maxCount;
+            return TableRow(
+              children: [
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AvesFilterChip(
+                    filter: filterBuilder(label),
+                    onPressed: (filter) => _goToFilteredCollection(context, filter),
+                  ),
+                ),
+                Expanded(
+                  child: LinearPercentIndicator(
+                    percent: percent,
+                    lineHeight: 16,
+                    backgroundColor: Colors.white24,
+                    progressColor: stringToColor(label),
+                    animation: true,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    center: Text(NumberFormat.percentPattern().format(percent)),
+                  ),
+                ),
+                Text(
+                  '${count}',
+                  style: const TextStyle(color: Colors.white70),
+                  textAlign: TextAlign.end,
+                ),
+              ],
+            );
+          }).toList(),
+          columnWidths: const {
+            0: IntrinsicColumnWidth(),
+            2: IntrinsicColumnWidth(),
+          },
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        ),
+      ),
+    ];
+  }
+
+  void _goToFilteredCollection(BuildContext context, CollectionFilter filter) {
+    if (collection == null) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CollectionPage(collection.derive(filter)),
+      ),
+      (route) => false,
+    );
   }
 }
 

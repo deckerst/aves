@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FilterBar extends StatelessWidget implements PreferredSizeWidget {
-  static final double preferredHeight = kMinInteractiveDimension;
+  static const double preferredHeight = kMinInteractiveDimension;
 
   @override
-  final Size preferredSize = Size.fromHeight(preferredHeight);
+  final Size preferredSize = const Size.fromHeight(preferredHeight);
 
   @override
   Widget build(BuildContext context) {
