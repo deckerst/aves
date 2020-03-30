@@ -1,5 +1,5 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/filters/country.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
@@ -74,15 +74,17 @@ class _LocationSectionState extends State<LocationSection> {
     if (showMap) {
       _loadedUri = entry.uri;
       String location = '';
+      final List<LocationFilter> filters = [];
       if (entry.isLocated) {
-        location = entry.addressDetails.addressLine;
+        final address = entry.addressDetails;
+        location = address.addressLine;
+        final country = address.countryName;
+        if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, country));
+        final city = address.city;
+        if (city != null && city.isNotEmpty) filters.add(LocationFilter(LocationLevel.city, city));
       } else if (entry.hasGps) {
         location = toDMS(entry.latLng).join(', ');
       }
-      final country = entry.addressDetails?.countryName;
-      final filters = [
-        if (country != null) CountryFilter(country),
-      ];
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

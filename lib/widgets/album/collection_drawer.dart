@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/filters/country.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/gif.dart';
@@ -31,7 +31,7 @@ class CollectionDrawer extends StatefulWidget {
 }
 
 class _CollectionDrawerState extends State<CollectionDrawer> {
-  bool _albumsExpanded = false, _tagsExpanded = false, _countriesExpanded = false;
+  bool _albumsExpanded = false, _citiesExpanded = false, _countriesExpanded = false, _tagsExpanded = false;
 
   CollectionSource get source => widget.source;
 
@@ -110,15 +110,15 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           dense: true,
           filter: TagFilter(tag),
         );
-    final buildCountryEntry = (country) => _FilteredCollectionNavTile(
+    final buildLocationEntry = (level, location) => _FilteredCollectionNavTile(
           source: source,
           leading: Icon(
             OMIcons.place,
-            color: stringToColor(country),
+            color: stringToColor(location),
           ),
-          title: country,
+          title: location,
           dense: true,
-          filter: CountryFilter(country),
+          filter: LocationFilter(level, location),
         );
 
     final regularAlbums = [], appAlbums = [], specialAlbums = [];
@@ -135,6 +135,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           break;
       }
     }
+    final cities = source.sortedCities;
     final countries = source.sortedCountries;
     final tags = source.sortedTags;
 
@@ -174,6 +175,28 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
             ],
           ),
         ),
+      if (cities.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(OMIcons.place),
+            title: Row(
+              children: [
+                const Text('Cities'),
+                const Spacer(),
+                Text(
+                  '${cities.length}',
+                  style: TextStyle(
+                    color: (_citiesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _citiesExpanded = expanded),
+            children: cities.map((s) => buildLocationEntry(LocationLevel.city, s)).toList(),
+          ),
+        ),
       if (countries.isNotEmpty)
         SafeArea(
           top: false,
@@ -193,7 +216,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
               ],
             ),
             onExpansionChanged: (expanded) => setState(() => _countriesExpanded = expanded),
-            children: countries.map(buildCountryEntry).toList(),
+            children: countries.map((s) => buildLocationEntry(LocationLevel.country, s)).toList(),
           ),
         ),
       if (tags.isNotEmpty)

@@ -1,6 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/filters/country.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -17,13 +17,20 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
   final CollectionLens collection;
-  final Map<String, int> entryCountPerCountry = Map<String, int>(), entryCountPerTag = Map<String, int>();
+  final Map<String, int> entryCountPerCity = Map(), entryCountPerCountry = Map(), entryCountPerTag = Map();
 
   StatsPage({this.collection}) {
     entries.forEach((entry) {
-      final country = entry.addressDetails?.countryName;
-      if (country != null) {
-        entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
+      if (entry.isLocated) {
+        final address = entry.addressDetails;
+        final city = address.city;
+        if (city != null && city.isNotEmpty) {
+          entryCountPerCity[city] = (entryCountPerCity[city] ?? 0) + 1;
+        }
+        final country = address.countryName;
+        if (country != null && country.isNotEmpty) {
+          entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
+        }
       }
       entry.xmpSubjects.forEach((tag) {
         entryCountPerTag[tag] = (entryCountPerTag[tag] ?? 0) + 1;
@@ -76,7 +83,8 @@ class StatsPage extends StatelessWidget {
                   ],
                 ),
               ),
-              ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => CountryFilter(s)),
+              ..._buildTopFilters(context, 'Top cities', entryCountPerCity, (s) => LocationFilter(LocationLevel.city, s)),
+              ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
               ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
             ],
           ),

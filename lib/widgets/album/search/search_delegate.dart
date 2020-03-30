@@ -1,10 +1,10 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/filters/country.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/video.dart';
@@ -73,8 +73,13 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
                 ),
                 _buildFilterRow(
                   context: context,
+                  title: 'Cities',
+                  filters: source.sortedCities.where(containQuery).map((s) => LocationFilter(LocationLevel.city, s)),
+                ),
+                _buildFilterRow(
+                  context: context,
                   title: 'Countries',
-                  filters: source.sortedCountries.where(containQuery).map((s) => CountryFilter(s)),
+                  filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)),
                 ),
                 _buildFilterRow(
                   context: context,

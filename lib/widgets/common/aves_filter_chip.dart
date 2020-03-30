@@ -58,7 +58,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       children: [
         if (leading != null) ...[
           leading,
-          const SizedBox(width: AvesFilterChip.padding * 1.6),
+          const SizedBox(width: AvesFilterChip.padding),
         ],
         Flexible(
           child: Text(

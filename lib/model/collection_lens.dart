@@ -21,7 +21,7 @@ class CollectionLens with ChangeNotifier {
 
   CollectionLens({
     @required this.source,
-    List<CollectionFilter> filters,
+    Iterable<CollectionFilter> filters,
     @required GroupFactor groupFactor,
     @required SortFactor sortFactor,
   })  : this.filters = [if (filters != null) ...filters.where((f) => f != null)].toSet(),
@@ -53,13 +53,10 @@ class CollectionLens with ChangeNotifier {
   CollectionLens derive(CollectionFilter filter) {
     return CollectionLens(
       source: source,
-      filters: [
-        ...filters,
-        filter,
-      ],
+      filters: filters,
       groupFactor: groupFactor,
       sortFactor: sortFactor,
-    );
+    )..addFilter(filter);
   }
 
   bool get isEmpty => _filteredEntries.isEmpty;

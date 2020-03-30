@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/filters/country.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/video.dart';
@@ -18,7 +18,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
     VideoFilter.type,
     GifFilter.type,
     AlbumFilter.type,
-    CountryFilter.type,
+    LocationFilter.type,
     TagFilter.type,
   ];
 
