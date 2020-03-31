@@ -160,6 +160,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                       entries: entries,
                       index: _currentHorizontalPage,
                       scale: _topOverlayScale,
+                      canToggleFavourite: hasCollection,
                       viewInsets: _frozenViewInsets,
                       viewPadding: _frozenViewPadding,
                       onActionSelected: (action) => _actionDelegate.onActionSelected(context, _entry, action),

@@ -13,6 +13,7 @@ class FullscreenTopOverlay extends StatelessWidget {
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
   final Function(FullscreenAction value) onActionSelected;
+  final bool canToggleFavourite;
 
   ImageEntry get entry => entries[index];
 
@@ -21,6 +22,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     @required this.entries,
     @required this.index,
     @required this.scale,
+    this.canToggleFavourite = false,
     this.viewInsets,
     this.viewPadding,
     this.onActionSelected,
@@ -28,6 +30,32 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO TLAD adapt count according to available width and portrait/landscape
+    const recentActionCount = 3;
+    final recentActions = [
+      FullscreenAction.toggleFavourite,
+      FullscreenAction.share,
+      FullscreenAction.delete,
+      FullscreenAction.info,
+      FullscreenAction.rename,
+    ].take(recentActionCount).where(_canDo);
+    final inAppActions = [
+      FullscreenAction.info,
+      FullscreenAction.toggleFavourite,
+      FullscreenAction.share,
+      FullscreenAction.delete,
+      FullscreenAction.rename,
+      FullscreenAction.rotateCCW,
+      FullscreenAction.rotateCW,
+      FullscreenAction.print,
+    ].where((action) => !recentActions.contains(action)).where(_canDo);
+    final externalAppActions = [
+      FullscreenAction.edit,
+      FullscreenAction.open,
+      FullscreenAction.setAs,
+      FullscreenAction.openMap,
+    ].where(_canDo);
+
     return SafeArea(
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
@@ -39,93 +67,14 @@ class FullscreenTopOverlay extends StatelessWidget {
               child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
             ),
             const Spacer(),
-            OverlayButton(
-              scale: scale,
-              child: ValueListenableBuilder<bool>(
-                valueListenable: entry.isFavouriteNotifier,
-                builder: (context, isFavourite, child) => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    IconButton(
-                      icon: Icon(isFavourite ? OMIcons.favorite : OMIcons.favoriteBorder),
-                      onPressed: () => onActionSelected?.call(FullscreenAction.toggleFavourite),
-                      tooltip: isFavourite ? 'Remove favourite' : 'Add favourite',
-                    ),
-                    Sweeper(
-                      builder: (context) => Icon(OMIcons.favoriteBorder, color: Colors.redAccent),
-                      toggledNotifier: entry.isFavouriteNotifier,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            OverlayButton(
-              scale: scale,
-              child: IconButton(
-                icon: const Icon(OMIcons.share),
-                onPressed: () => onActionSelected?.call(FullscreenAction.share),
-                tooltip: 'Share',
-              ),
-            ),
-            if (entry.canEdit) ...[
-              const SizedBox(width: 8),
-              OverlayButton(
-                scale: scale,
-                child: IconButton(
-                  icon: const Icon(OMIcons.delete),
-                  onPressed: () => onActionSelected?.call(FullscreenAction.delete),
-                  tooltip: 'Delete',
-                ),
-              ),
-            ],
-            const SizedBox(width: 8),
+            ...recentActions.map(_buildOverlayButton),
             OverlayButton(
               scale: scale,
               child: PopupMenuButton<FullscreenAction>(
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: FullscreenAction.info,
-                    child: MenuRow(text: 'Info', icon: OMIcons.info),
-                  ),
-                  if (entry.canEdit)
-                    PopupMenuItem(
-                      value: FullscreenAction.rename,
-                      child: MenuRow(text: 'Rename', icon: OMIcons.title),
-                    ),
-                  if (entry.canRotate)
-                    PopupMenuItem(
-                      value: FullscreenAction.rotateCCW,
-                      child: MenuRow(text: 'Rotate left', icon: OMIcons.rotateLeft),
-                    ),
-                  if (entry.canRotate)
-                    PopupMenuItem(
-                      value: FullscreenAction.rotateCW,
-                      child: MenuRow(text: 'Rotate right', icon: OMIcons.rotateRight),
-                    ),
-                  if (entry.canPrint)
-                    PopupMenuItem(
-                      value: FullscreenAction.print,
-                      child: MenuRow(text: 'Print', icon: OMIcons.print),
-                    ),
+                  ...inAppActions.map(_buildPopupMenuItem),
                   const PopupMenuDivider(),
-                  const PopupMenuItem(
-                    value: FullscreenAction.edit,
-                    child: Text('Edit with…'),
-                  ),
-                  const PopupMenuItem(
-                    value: FullscreenAction.open,
-                    child: Text('Open with…'),
-                  ),
-                  const PopupMenuItem(
-                    value: FullscreenAction.setAs,
-                    child: Text('Set as…'),
-                  ),
-                  if (entry.hasGps)
-                    const PopupMenuItem(
-                      value: FullscreenAction.openMap,
-                      child: Text('Show on map…'),
-                    ),
+                  ...externalAppActions.map(_buildPopupMenuItem),
                 ],
                 onSelected: onActionSelected,
               ),
@@ -133,6 +82,157 @@ class FullscreenTopOverlay extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  bool _canDo(FullscreenAction action) {
+    switch (action) {
+      case FullscreenAction.toggleFavourite:
+        return canToggleFavourite;
+      case FullscreenAction.delete:
+      case FullscreenAction.rename:
+        return entry.canEdit;
+      case FullscreenAction.rotateCCW:
+      case FullscreenAction.rotateCW:
+        return entry.canRotate;
+      case FullscreenAction.print:
+        return entry.canPrint;
+      case FullscreenAction.openMap:
+        return entry.hasGps;
+      case FullscreenAction.share:
+      case FullscreenAction.info:
+      case FullscreenAction.open:
+      case FullscreenAction.edit:
+      case FullscreenAction.setAs:
+        return true;
+    }
+    return false;
+  }
+
+  Widget _buildOverlayButton(FullscreenAction action) {
+    Widget child;
+    final onPressed = () => onActionSelected?.call(action);
+    switch (action) {
+      case FullscreenAction.toggleFavourite:
+        child = ValueListenableBuilder<bool>(
+          valueListenable: entry.isFavouriteNotifier,
+          builder: (context, isFavourite, child) => Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: Icon(isFavourite ? OMIcons.favorite : OMIcons.favoriteBorder),
+                onPressed: onPressed,
+                tooltip: isFavourite ? 'Remove from favourites' : 'Add to favourites',
+              ),
+              Sweeper(
+                builder: (context) => Icon(OMIcons.favoriteBorder, color: Colors.redAccent),
+                toggledNotifier: entry.isFavouriteNotifier,
+              ),
+            ],
+          ),
+        );
+        break;
+      case FullscreenAction.share:
+        child = IconButton(
+          icon: const Icon(OMIcons.share),
+          onPressed: onPressed,
+          tooltip: 'Share',
+        );
+        break;
+      case FullscreenAction.delete:
+        child = IconButton(
+          icon: const Icon(OMIcons.delete),
+          onPressed: onPressed,
+          tooltip: 'Delete',
+        );
+        break;
+      case FullscreenAction.info:
+        child = IconButton(
+          icon: const Icon(OMIcons.info),
+          onPressed: onPressed,
+          tooltip: 'Info',
+        );
+        break;
+      case FullscreenAction.rename:
+        child = IconButton(
+          icon: const Icon(OMIcons.title),
+          onPressed: onPressed,
+          tooltip: 'Rename',
+        );
+        break;
+      case FullscreenAction.rotateCCW:
+      case FullscreenAction.rotateCW:
+      case FullscreenAction.print:
+      case FullscreenAction.openMap:
+      case FullscreenAction.open:
+      case FullscreenAction.edit:
+      case FullscreenAction.setAs:
+        break;
+    }
+    return child != null
+        ? Padding(
+            padding: const EdgeInsetsDirectional.only(end: 8),
+            child: OverlayButton(
+              scale: scale,
+              child: child,
+            ),
+          )
+        : const SizedBox.shrink();
+  }
+
+  PopupMenuEntry<FullscreenAction> _buildPopupMenuItem(FullscreenAction action) {
+    Widget child;
+    switch (action) {
+      // in app actions
+      case FullscreenAction.info:
+        child = const MenuRow(text: 'Info', icon: OMIcons.info);
+        break;
+      case FullscreenAction.toggleFavourite:
+        child = entry.isFavouriteNotifier.value
+            ? const MenuRow(
+                text: 'Remove from favourites',
+                icon: OMIcons.favorite,
+              )
+            : const MenuRow(
+                text: 'Add to favourites',
+                icon: OMIcons.favoriteBorder,
+              );
+        break;
+      case FullscreenAction.share:
+        child = const MenuRow(text: 'Share', icon: OMIcons.share);
+        break;
+      case FullscreenAction.delete:
+        child = const MenuRow(text: 'Delete', icon: OMIcons.delete);
+        break;
+      case FullscreenAction.rename:
+        child = const MenuRow(text: 'Rename', icon: OMIcons.title);
+        break;
+      case FullscreenAction.rotateCCW:
+        child = const MenuRow(text: 'Rotate left', icon: OMIcons.rotateLeft);
+        break;
+      case FullscreenAction.rotateCW:
+        child = const MenuRow(text: 'Rotate right', icon: OMIcons.rotateRight);
+        break;
+      case FullscreenAction.print:
+        child = const MenuRow(text: 'Print', icon: OMIcons.print);
+        break;
+      // external app actions
+      case FullscreenAction.edit:
+        child = const Text('Edit with…');
+        break;
+      case FullscreenAction.open:
+        child = const Text('Open with…');
+        break;
+      case FullscreenAction.setAs:
+        child = const Text('Set as…');
+        break;
+      case FullscreenAction.openMap:
+        child = const Text('Show on map…');
+        break;
+    }
+    return PopupMenuItem(
+      value: action,
+      child: child,
     );
   }
 }
