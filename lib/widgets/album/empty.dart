@@ -6,7 +6,7 @@ class EmptyContent extends StatelessWidget {
   Widget build(BuildContext context) {
     const color = Color(0xFF607D8B);
     return Align(
-      alignment: const FractionalOffset(.5, .3),
+      alignment: const FractionalOffset(.5, .35),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: const [

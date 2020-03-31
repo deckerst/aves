@@ -48,6 +48,13 @@ class DebugPageState extends State<DebugPage> {
             padding: const EdgeInsets.all(8),
             children: [
               const Text('Settings'),
+              RaisedButton(
+                onPressed: () async {
+                  await settings.reset();
+                  setState(() {});
+                },
+                child: const Text('Reset settings'),
+              ),
               Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
               Text('collectionSortFactor: ${settings.collectionSortFactor}'),
               Text('infoMapZoom: ${settings.infoMapZoom}'),

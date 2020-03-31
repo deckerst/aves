@@ -24,6 +24,10 @@ class Settings {
     prefs = await SharedPreferences.getInstance();
   }
 
+  Future<void> reset() {
+    return prefs.clear();
+  }
+
   void addListener(SettingsCallback listener) => _listeners.add(listener);
 
   void removeListener(SettingsCallback listener) => _listeners.remove(listener);
