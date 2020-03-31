@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -19,6 +21,10 @@ class StatsPage extends StatelessWidget {
   final CollectionLens collection;
   final Map<String, int> entryCountPerCity = Map(), entryCountPerCountry = Map(), entryCountPerTag = Map();
 
+  List<ImageEntry> get entries => collection.sortedEntries;
+
+  static const mimeDonutMinWidth = 124.0;
+
   StatsPage({this.collection}) {
     entries.forEach((entry) {
       if (entry.isLocated) {
@@ -37,8 +43,6 @@ class StatsPage extends StatelessWidget {
       });
     });
   }
-
-  List<ImageEntry> get entries => collection.sortedEntries;
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +63,8 @@ class StatsPage extends StatelessWidget {
               Wrap(
                 alignment: WrapAlignment.center,
                 children: [
-                  _buildMimePie(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
-                  _buildMimePie(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
+                  _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
+                  _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
                 ],
               ),
               Padding(
@@ -93,7 +97,7 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMimePie(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
+  Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
     if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold(0, (prev, v) => prev + v);
@@ -116,50 +120,70 @@ class StatsPage extends StatelessWidget {
     ];
 
     return LayoutBuilder(builder: (context, constraints) {
-      var mq = MediaQuery.of(context);
-      final dim = constraints.maxWidth / (mq.orientation == Orientation.portrait ? 2 : 4);
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: dim,
-            height: dim,
-            child: Stack(
-              children: [
-                charts.PieChart(
-                  series,
-                  defaultRenderer: charts.ArcRendererConfig(
-                    arcWidth: 16,
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    '${sum}\n${label(sum)}',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
+      final mq = MediaQuery.of(context);
+      final availableWidth = constraints.maxWidth;
+      final double dim = max(mimeDonutMinWidth, availableWidth / (mq.orientation == Orientation.landscape && availableWidth > 4 * mimeDonutMinWidth ? 4 : 2));
+
+      final donut = Container(
+        width: dim,
+        height: dim,
+        child: Stack(
+          children: [
+            charts.PieChart(
+              series,
+              defaultRenderer: charts.ArcRendererConfig(
+                arcWidth: 16,
+              ),
             ),
-          ),
-          SizedBox(
-            width: dim,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: seriesData
-                    .map((kv) => Row(
-                          children: [
-                            Icon(Icons.fiber_manual_record, color: stringToColor(kv.key)),
-                            const SizedBox(width: 8),
-                            Text(kv.key),
-                            const SizedBox(width: 8),
-                            Text('${kv.value}', style: const TextStyle(color: Colors.white70)),
-                          ],
-                        ))
-                    .toList()),
-          ),
-        ],
+            Center(
+              child: Text(
+                '${sum}\n${label(sum)}',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       );
+      final legend = SizedBox(
+        width: dim,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: seriesData
+              .map((kv) => RichText(
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(end: 8),
+                            child: Icon(Icons.fiber_manual_record, color: stringToColor(kv.key)),
+                          ),
+                        ),
+                        TextSpan(text: '${kv.key}   '),
+                        TextSpan(text: '${kv.value}', style: const TextStyle(color: Colors.white70)),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        ),
+      );
+      final children = [
+        donut,
+        legend,
+      ];
+      return availableWidth > mimeDonutMinWidth * 2
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            )
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            );
     });
   }
 
