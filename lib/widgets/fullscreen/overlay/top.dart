@@ -41,7 +41,7 @@ class FullscreenTopOverlay extends StatelessWidget {
             const Spacer(),
             OverlayButton(
               scale: scale,
-              child: ValueListenableBuilder(
+              child: ValueListenableBuilder<bool>(
                 valueListenable: entry.isFavouriteNotifier,
                 builder: (context, isFavourite, child) => Stack(
                   alignment: Alignment.center,

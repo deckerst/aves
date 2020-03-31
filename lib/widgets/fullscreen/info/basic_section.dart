@@ -45,7 +45,7 @@ class BasicSection extends StatelessWidget {
           'URI': entry.uri ?? '?',
           if (entry.path != null) 'Path': entry.path,
         }),
-        ValueListenableBuilder(
+        ValueListenableBuilder<bool>(
           valueListenable: entry.isFavouriteNotifier,
           builder: (context, isFavourite, child) {
             final album = entry.directory;

@@ -395,7 +395,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         ),
       ),
     ];
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<Color>(
       valueListenable: _backgroundColorNotifier,
       builder: (context, backgroundColor, child) => Container(
         color: backgroundColor,

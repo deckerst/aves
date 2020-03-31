@@ -57,14 +57,14 @@ class _LocationSectionState extends State<LocationSection> {
   }
 
   void _registerWidget(LocationSection widget) {
-    entry.metadataChangeNotifier.addListener(_handleChange);
-    entry.addressChangeNotifier.addListener(_handleChange);
+    widget.entry.metadataChangeNotifier.addListener(_handleChange);
+    widget.entry.addressChangeNotifier.addListener(_handleChange);
     widget.visibleNotifier.addListener(_handleChange);
   }
 
   void _unregisterWidget(LocationSection widget) {
-    entry.metadataChangeNotifier.removeListener(_handleChange);
-    entry.addressChangeNotifier.removeListener(_handleChange);
+    widget.entry.metadataChangeNotifier.removeListener(_handleChange);
+    widget.entry.addressChangeNotifier.removeListener(_handleChange);
     widget.visibleNotifier.removeListener(_handleChange);
   }
 

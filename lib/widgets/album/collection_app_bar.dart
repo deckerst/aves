@@ -1,6 +1,7 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
@@ -12,13 +13,17 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
-class CollectionAppBar extends StatefulWidget implements PreferredSizeWidget {
+class CollectionAppBar extends StatefulWidget {
   final ValueNotifier<PageState> stateNotifier;
+  final ValueNotifier<double> appBarHeightNotifier;
+  final CollectionLens collection;
 
-  @override
-  final Size preferredSize = Size.fromHeight(kToolbarHeight + FilterBar.preferredHeight);
-
-  CollectionAppBar({this.stateNotifier});
+  const CollectionAppBar({
+    Key key,
+    @required this.stateNotifier,
+    @required this.appBarHeightNotifier,
+    @required this.collection,
+  }) : super(key: key);
 
   @override
   _CollectionAppBarState createState() => _CollectionAppBarState();
@@ -31,6 +36,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   ValueNotifier<PageState> get stateNotifier => widget.stateNotifier;
 
+  CollectionLens get collection => widget.collection;
+
+  bool get hasFilters => collection.filters.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +48,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       vsync: this,
     );
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeight());
   }
 
   @override
@@ -56,11 +66,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _registerWidget(CollectionAppBar widget) {
-    stateNotifier.addListener(_onStateChange);
+    widget.stateNotifier.addListener(_onStateChange);
+    widget.collection.filterChangeNotifier.addListener(_updateHeight);
   }
 
   void _unregisterWidget(CollectionAppBar widget) {
-    stateNotifier.removeListener(_onStateChange);
+    widget.stateNotifier.removeListener(_onStateChange);
+    widget.collection.filterChangeNotifier.removeListener(_updateHeight);
   }
 
   @override
@@ -69,16 +81,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       valueListenable: stateNotifier,
       builder: (context, state, child) {
         debugPrint('$runtimeType builder state=$state');
-        return Consumer<CollectionLens>(
-          builder: (context, collection, child) => AnimatedBuilder(
-            animation: collection.filterChangeNotifier,
-            builder: (context, child) => SliverAppBar(
-              leading: _buildAppBarLeading(),
-              title: _buildAppBarTitle(),
-              actions: _buildActions(),
-              bottom: collection.filters.isNotEmpty ? FilterBar() : null,
-              floating: true,
-            ),
+        return AnimatedBuilder(
+          animation: collection.filterChangeNotifier,
+          builder: (context, child) => SliverAppBar(
+            leading: _buildAppBarLeading(),
+            title: _buildAppBarTitle(),
+            actions: _buildActions(),
+            bottom: hasFilters ? FilterBar() : null,
+            floating: true,
           ),
         );
       },
@@ -127,17 +137,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         builder: (context) {
           switch (stateNotifier.value) {
             case PageState.browse:
-              return Consumer<CollectionLens>(
-                builder: (context, collection, child) => IconButton(
-                  icon: Icon(OMIcons.search),
-                  onPressed: () async {
-                    final filter = await showSearch(
-                      context: context,
-                      delegate: ImageSearchDelegate(collection),
-                    );
-                    collection.addFilter(filter);
-                  },
-                ),
+              return IconButton(
+                icon: Icon(OMIcons.search),
+                onPressed: () async {
+                  final filter = await showSearch(
+                    context: context,
+                    delegate: ImageSearchDelegate(collection),
+                  );
+                  collection.addFilter(filter);
+                },
               );
             case PageState.search:
               return IconButton(
@@ -149,55 +157,53 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         },
       ),
       Builder(
-        builder: (context) => Consumer<CollectionLens>(
-          builder: (context, collection, child) => PopupMenuButton<CollectionAction>(
-            itemBuilder: (context) => [
+        builder: (context) => PopupMenuButton<CollectionAction>(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: CollectionAction.sortByDate,
+              child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
+            ),
+            PopupMenuItem(
+              value: CollectionAction.sortBySize,
+              child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
+            ),
+            PopupMenuItem(
+              value: CollectionAction.sortByName,
+              child: MenuRow(text: 'Sort by name', checked: collection.sortFactor == SortFactor.name),
+            ),
+            const PopupMenuDivider(),
+            if (collection.sortFactor == SortFactor.date) ...[
               PopupMenuItem(
-                value: CollectionAction.sortByDate,
-                child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
+                value: CollectionAction.groupByAlbum,
+                child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
               ),
               PopupMenuItem(
-                value: CollectionAction.sortBySize,
-                child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
+                value: CollectionAction.groupByMonth,
+                child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
               ),
               PopupMenuItem(
-                value: CollectionAction.sortByName,
-                child: MenuRow(text: 'Sort by name', checked: collection.sortFactor == SortFactor.name),
+                value: CollectionAction.groupByDay,
+                child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
               ),
               const PopupMenuDivider(),
-              if (collection.sortFactor == SortFactor.date) ...[
-                PopupMenuItem(
-                  value: CollectionAction.groupByAlbum,
-                  child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.groupByMonth,
-                  child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.groupByDay,
-                  child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
-                ),
-                const PopupMenuDivider(),
-              ],
-              PopupMenuItem(
-                value: CollectionAction.stats,
-                child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
-              ),
             ],
-            onSelected: (action) => _onActionSelected(collection, action),
-          ),
+            PopupMenuItem(
+              value: CollectionAction.stats,
+              child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
+            ),
+          ],
+          onSelected: _onActionSelected,
         ),
       ),
     ];
   }
 
-  void _onActionSelected(CollectionLens collection, CollectionAction action) async {
+  void _onActionSelected(CollectionAction action) async {
     // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(Constants.popupMenuTransitionDuration);
     switch (action) {
       case CollectionAction.stats:
-        unawaited(_goToStats(collection));
+        unawaited(_goToStats());
         break;
       case CollectionAction.groupByAlbum:
         settings.collectionGroupFactor = GroupFactor.album;
@@ -226,7 +232,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  Future<void> _goToStats(CollectionLens collection) {
+  Future<void> _goToStats() {
     return Navigator.push(
       context,
       MaterialPageRoute(
@@ -244,6 +250,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       _browseToSearchAnimation.reverse();
       _searchFieldController.clear();
     }
+  }
+
+  void _updateHeight() {
+    widget.appBarHeightNotifier.value = kToolbarHeight + (hasFilters ? FilterBar.preferredHeight : 0);
   }
 }
 

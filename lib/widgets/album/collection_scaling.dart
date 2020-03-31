@@ -167,7 +167,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                   ),
                 ),
           duration: const Duration(milliseconds: 200),
-          child: ValueListenableBuilder(
+          child: ValueListenableBuilder<double>(
             valueListenable: widget.scaledCountNotifier,
             builder: (context, columnCount, child) {
               final extent = gridWidth / columnCount;
