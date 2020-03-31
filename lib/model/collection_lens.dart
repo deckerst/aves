@@ -70,7 +70,7 @@ class CollectionLens with ChangeNotifier {
 
   List<ImageEntry> get sortedEntries {
     if (_sortedEntries == null) {
-      _sortedEntries = List.unmodifiable(sections.entries.expand((e) => e.value));
+      _sortedEntries = List.of(sections.entries.expand((e) => e.value));
     }
     return _sortedEntries;
   }
@@ -186,6 +186,7 @@ class CollectionLens with ChangeNotifier {
   void onEntryRemoved(ImageEntry entry) {
     // do not apply sort/group as section order change would surprise the user while browsing
     _filteredEntries.remove(entry);
+    _sortedEntries?.remove(entry);
     sections.forEach((key, entries) => entries.remove(entry));
     notifyListeners();
   }
