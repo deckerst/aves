@@ -26,6 +26,9 @@ class FullscreenActions {
   static Tuple2<String, IconData> getTextIcon(FullscreenAction action) {
     switch (action) {
       // in app actions
+      case FullscreenAction.toggleFavourite:
+        // different data depending on toggle state
+        return null;
       case FullscreenAction.delete:
         return const Tuple2('Delete', OMIcons.delete);
       case FullscreenAction.info:

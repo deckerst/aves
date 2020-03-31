@@ -1,5 +1,4 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +19,6 @@ class Settings {
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
-  static const mostRecentFullscreenActionsKey = 'most_recent_fullscreen_actions';
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -61,17 +59,6 @@ class Settings {
   SortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SortFactor.date, SortFactor.values);
 
   set collectionSortFactor(SortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
-
-  List<FullscreenAction> get mostRecentFullscreenActions => getEnumListOrDefault(
-      mostRecentFullscreenActionsKey,
-      [
-        FullscreenAction.toggleFavourite,
-        FullscreenAction.share,
-        FullscreenAction.delete,
-      ],
-      FullscreenAction.values);
-
-  set mostRecentFullscreenActions(List<FullscreenAction> newValue) => setAndNotify(mostRecentFullscreenActionsKey, newValue.map((v) => v.toString()).toList());
 
   // convenience methods
 

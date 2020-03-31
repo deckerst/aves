@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
@@ -27,8 +26,6 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   static const int portraitActionCount = 2;
 
-  static const List<FullscreenAction> possibleOverlayActions = FullscreenActions.inApp;
-
   const FullscreenTopOverlay({
     Key key,
     @required this.entries,
@@ -53,10 +50,14 @@ class FullscreenTopOverlay extends StatelessWidget {
             return LayoutBuilder(
               builder: (context, constraints) {
                 final availableCount = (constraints.maxWidth / (kMinInteractiveDimension + padding)).floor() - 2;
-                final recentActionCount = min(targetCount, availableCount);
+                final quickActionCount = min(targetCount, availableCount);
 
-                final recentActions = settings.mostRecentFullscreenActions.where(_canDo).take(recentActionCount);
-                final inAppActions = FullscreenActions.inApp.where((action) => !recentActions.contains(action)).where(_canDo);
+                final quickActions = [
+                  FullscreenAction.toggleFavourite,
+                  FullscreenAction.share,
+                  FullscreenAction.delete,
+                ].where(_canDo).take(quickActionCount);
+                final inAppActions = FullscreenActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo);
                 final externalAppActions = FullscreenActions.externalApp.where(_canDo);
 
                 return Row(
@@ -66,7 +67,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                       child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
                     ),
                     const Spacer(),
-                    ...recentActions.map(_buildOverlayButton),
+                    ...quickActions.map(_buildOverlayButton),
                     OverlayButton(
                       scale: scale,
                       child: PopupMenuButton<FullscreenAction>(
@@ -75,12 +76,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                           const PopupMenuDivider(),
                           ...externalAppActions.map(_buildPopupMenuItem),
                         ],
-                        onSelected: (action) {
-                          if (possibleOverlayActions.contains(action)) {
-                            settings.mostRecentFullscreenActions = [action, ...settings.mostRecentFullscreenActions].take(landscapeActionCount).toList();
-                          }
-                          onActionSelected?.call(action);
-                        },
+                        onSelected: onActionSelected,
                       ),
                     ),
                   ],
