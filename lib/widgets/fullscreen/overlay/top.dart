@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/menu_row.dart';
@@ -6,6 +8,7 @@ import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:provider/provider.dart';
 
 class FullscreenTopOverlay extends StatelessWidget {
   final List<ImageEntry> entries;
@@ -16,6 +19,8 @@ class FullscreenTopOverlay extends StatelessWidget {
   final bool canToggleFavourite;
 
   ImageEntry get entry => entries[index];
+
+  static const double padding = 8;
 
   const FullscreenTopOverlay({
     Key key,
@@ -30,56 +35,67 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO TLAD adapt count according to available width and portrait/landscape
-    const recentActionCount = 3;
-    final recentActions = [
-      FullscreenAction.toggleFavourite,
-      FullscreenAction.share,
-      FullscreenAction.delete,
-      FullscreenAction.info,
-      FullscreenAction.rename,
-    ].take(recentActionCount).where(_canDo);
-    final inAppActions = [
-      FullscreenAction.info,
-      FullscreenAction.toggleFavourite,
-      FullscreenAction.share,
-      FullscreenAction.delete,
-      FullscreenAction.rename,
-      FullscreenAction.rotateCCW,
-      FullscreenAction.rotateCW,
-      FullscreenAction.print,
-    ].where((action) => !recentActions.contains(action)).where(_canDo);
-    final externalAppActions = [
-      FullscreenAction.edit,
-      FullscreenAction.open,
-      FullscreenAction.setAs,
-      FullscreenAction.openMap,
-    ].where(_canDo);
-
     return SafeArea(
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            OverlayButton(
-              scale: scale,
-              child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
-            ),
-            const Spacer(),
-            ...recentActions.map(_buildOverlayButton),
-            OverlayButton(
-              scale: scale,
-              child: PopupMenuButton<FullscreenAction>(
-                itemBuilder: (context) => [
-                  ...inAppActions.map(_buildPopupMenuItem),
-                  const PopupMenuDivider(),
-                  ...externalAppActions.map(_buildPopupMenuItem),
-                ],
-                onSelected: onActionSelected,
-              ),
-            ),
-          ],
+        padding: const EdgeInsets.all(padding),
+        child: Selector<MediaQueryData, Orientation>(
+          selector: (c, mq) => mq.orientation,
+          builder: (c, orientation, child) {
+            final targetCount = orientation == Orientation.landscape ? 3 : 2;
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final availableCount = (constraints.maxWidth / (kMinInteractiveDimension + padding)).floor() - 2;
+                final recentActionCount = min(targetCount, availableCount);
+
+                final recentActions = [
+                  FullscreenAction.toggleFavourite,
+                  FullscreenAction.share,
+                  FullscreenAction.delete,
+                  FullscreenAction.info,
+                  FullscreenAction.rename,
+                ].where(_canDo).take(recentActionCount);
+                final inAppActions = [
+                  FullscreenAction.info,
+                  FullscreenAction.toggleFavourite,
+                  FullscreenAction.share,
+                  FullscreenAction.delete,
+                  FullscreenAction.rename,
+                  FullscreenAction.rotateCCW,
+                  FullscreenAction.rotateCW,
+                  FullscreenAction.print,
+                ].where((action) => !recentActions.contains(action)).where(_canDo);
+                final externalAppActions = [
+                  FullscreenAction.edit,
+                  FullscreenAction.open,
+                  FullscreenAction.setAs,
+                  FullscreenAction.openMap,
+                ].where(_canDo);
+
+                return Row(
+                  children: [
+                    OverlayButton(
+                      scale: scale,
+                      child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
+                    ),
+                    const Spacer(),
+                    ...recentActions.map(_buildOverlayButton),
+                    OverlayButton(
+                      scale: scale,
+                      child: PopupMenuButton<FullscreenAction>(
+                        itemBuilder: (context) => [
+                          ...inAppActions.map(_buildPopupMenuItem),
+                          const PopupMenuDivider(),
+                          ...externalAppActions.map(_buildPopupMenuItem),
+                        ],
+                        onSelected: onActionSelected,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -171,7 +187,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     }
     return child != null
         ? Padding(
-            padding: const EdgeInsetsDirectional.only(end: 8),
+            padding: const EdgeInsetsDirectional.only(end: padding),
             child: OverlayButton(
               scale: scale,
               child: child,
