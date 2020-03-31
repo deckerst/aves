@@ -144,7 +144,7 @@ class CollectionSource {
   }
 
   static String getUniqueAlbumName(String album, Iterable<String> albums) {
-    final otherAlbums = albums.where((item) => item != album);
+    final otherAlbums = albums?.where((item) => item != album) ?? [];
     final parts = album.split(separator);
     int partCount = 0;
     String testName;
