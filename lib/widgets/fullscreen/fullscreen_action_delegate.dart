@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_file_service.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
@@ -77,16 +80,39 @@ class FullscreenActionDelegate {
   }
 
   Future<void> _print(ImageEntry entry) async {
-    final doc = pdf.Document(title: entry.title);
-    final image = await pdfImageFromImageProvider(
-      pdf: doc.document,
-      image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
-    );
-    doc.addPage(pdf.Page(build: (context) => pdf.Center(child: pdf.Image(image)))); // Page
-    unawaited(Printing.layoutPdf(
-      onLayout: (format) => doc.save(),
-      name: entry.title,
-    ));
+    final uri = entry.uri;
+    final mimeType = entry.mimeType;
+    final documentName = entry.title ?? 'Aves';
+    final doc = pdf.Document(title: documentName);
+
+    PdfImage pdfImage;
+    if (entry.isSvg) {
+      final bytes = await ImageFileService.getImage(uri, mimeType);
+      if (bytes != null && bytes.isNotEmpty) {
+        final svgRoot = await svg.fromSvgBytes(bytes, uri);
+        final viewBox = svgRoot.viewport.viewBox;
+        // 1000 is arbitrary, but large enough to look ok in the print preview
+        final targetSize = viewBox * 1000 / viewBox.longestSide;
+        final picture = svgRoot.toPicture(size: targetSize);
+        final uiImage = await picture.toImage(targetSize.width.ceil(), targetSize.height.ceil());
+        pdfImage = await pdfImageFromImage(
+          pdf: doc.document,
+          image: uiImage,
+        );
+      }
+    } else {
+      pdfImage = await pdfImageFromImageProvider(
+        pdf: doc.document,
+        image: UriImage(uri: uri, mimeType: mimeType),
+      );
+    }
+    if (pdfImage != null) {
+      doc.addPage(pdf.Page(build: (context) => pdf.Center(child: pdf.Image(pdfImage)))); // Page
+      unawaited(Printing.layoutPdf(
+        onLayout: (format) => doc.save(),
+        name: documentName,
+      ));
+    }
   }
 
   Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
