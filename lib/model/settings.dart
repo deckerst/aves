@@ -1,4 +1,5 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,7 @@ class Settings {
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
+  static const mostRecentFullscreenActionsKey = 'most_recent_fullscreen_actions';
 
   Future<void> init() async {
     prefs = await SharedPreferences.getInstance();
@@ -60,6 +62,17 @@ class Settings {
 
   set collectionSortFactor(SortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
+  List<FullscreenAction> get mostRecentFullscreenActions => getEnumListOrDefault(
+      mostRecentFullscreenActionsKey,
+      [
+        FullscreenAction.toggleFavourite,
+        FullscreenAction.share,
+        FullscreenAction.delete,
+      ],
+      FullscreenAction.values);
+
+  set mostRecentFullscreenActions(List<FullscreenAction> newValue) => setAndNotify(mostRecentFullscreenActionsKey, newValue.map((v) => v.toString()).toList());
+
   // convenience methods
 
   bool getBoolOrDefault(String key, bool defaultValue) => prefs.getKeys().contains(key) ? prefs.getBool(key) : defaultValue;
@@ -74,6 +87,10 @@ class Settings {
     return defaultValue;
   }
 
+  List<T> getEnumListOrDefault<T>(String key, List<T> defaultValue, Iterable<T> values) {
+    return prefs.getStringList(key)?.map((s) => values.firstWhere((el) => el.toString() == s, orElse: () => null))?.where((el) => el != null)?.toList() ?? defaultValue;
+  }
+
   void setAndNotify(String key, dynamic newValue) {
     var oldValue = prefs.get(key);
     if (newValue == null) {
@@ -81,6 +98,9 @@ class Settings {
     } else if (newValue is String) {
       oldValue = prefs.getString(key);
       prefs.setString(key, newValue);
+    } else if (newValue is List<String>) {
+      oldValue = prefs.getStringList(key);
+      prefs.setStringList(key, newValue);
     } else if (newValue is int) {
       oldValue = prefs.getInt(key);
       prefs.setInt(key, newValue);

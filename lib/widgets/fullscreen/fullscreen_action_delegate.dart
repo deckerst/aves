@@ -4,13 +4,12 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
-
-enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite }
 
 class FullscreenActionDelegate {
   final CollectionLens collection;

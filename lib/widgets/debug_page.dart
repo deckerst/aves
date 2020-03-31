@@ -51,6 +51,7 @@ class DebugPageState extends State<DebugPage> {
               Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
               Text('collectionSortFactor: ${settings.collectionSortFactor}'),
               Text('infoMapZoom: ${settings.infoMapZoom}'),
+              Text('mostRecentFullscreenActions: ${settings.mostRecentFullscreenActions}'),
               const Divider(),
               Text('Entries: ${entries.length}'),
               Text('Catalogued: ${catalogued.length}'),

@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,12 @@ class FullscreenTopOverlay extends StatelessWidget {
   ImageEntry get entry => entries[index];
 
   static const double padding = 8;
+
+  static const int landscapeActionCount = 3;
+
+  static const int portraitActionCount = 2;
+
+  static const List<FullscreenAction> possibleOverlayActions = FullscreenActions.inApp;
 
   const FullscreenTopOverlay({
     Key key,
@@ -42,35 +49,15 @@ class FullscreenTopOverlay extends StatelessWidget {
         child: Selector<MediaQueryData, Orientation>(
           selector: (c, mq) => mq.orientation,
           builder: (c, orientation, child) {
-            final targetCount = orientation == Orientation.landscape ? 3 : 2;
+            final targetCount = orientation == Orientation.landscape ? landscapeActionCount : portraitActionCount;
             return LayoutBuilder(
               builder: (context, constraints) {
                 final availableCount = (constraints.maxWidth / (kMinInteractiveDimension + padding)).floor() - 2;
                 final recentActionCount = min(targetCount, availableCount);
 
-                final recentActions = [
-                  FullscreenAction.toggleFavourite,
-                  FullscreenAction.share,
-                  FullscreenAction.delete,
-                  FullscreenAction.info,
-                  FullscreenAction.rename,
-                ].where(_canDo).take(recentActionCount);
-                final inAppActions = [
-                  FullscreenAction.info,
-                  FullscreenAction.toggleFavourite,
-                  FullscreenAction.share,
-                  FullscreenAction.delete,
-                  FullscreenAction.rename,
-                  FullscreenAction.rotateCCW,
-                  FullscreenAction.rotateCW,
-                  FullscreenAction.print,
-                ].where((action) => !recentActions.contains(action)).where(_canDo);
-                final externalAppActions = [
-                  FullscreenAction.edit,
-                  FullscreenAction.open,
-                  FullscreenAction.setAs,
-                  FullscreenAction.openMap,
-                ].where(_canDo);
+                final recentActions = settings.mostRecentFullscreenActions.where(_canDo).take(recentActionCount);
+                final inAppActions = FullscreenActions.inApp.where((action) => !recentActions.contains(action)).where(_canDo);
+                final externalAppActions = FullscreenActions.externalApp.where(_canDo);
 
                 return Row(
                   children: [
@@ -88,7 +75,12 @@ class FullscreenTopOverlay extends StatelessWidget {
                           const PopupMenuDivider(),
                           ...externalAppActions.map(_buildPopupMenuItem),
                         ],
-                        onSelected: onActionSelected,
+                        onSelected: (action) {
+                          if (possibleOverlayActions.contains(action)) {
+                            settings.mostRecentFullscreenActions = [action, ...settings.mostRecentFullscreenActions].take(landscapeActionCount).toList();
+                          }
+                          onActionSelected?.call(action);
+                        },
                       ),
                     ),
                   ],
@@ -148,37 +140,20 @@ class FullscreenTopOverlay extends StatelessWidget {
           ),
         );
         break;
-      case FullscreenAction.share:
-        child = IconButton(
-          icon: const Icon(OMIcons.share),
-          onPressed: onPressed,
-          tooltip: 'Share',
-        );
-        break;
-      case FullscreenAction.delete:
-        child = IconButton(
-          icon: const Icon(OMIcons.delete),
-          onPressed: onPressed,
-          tooltip: 'Delete',
-        );
-        break;
       case FullscreenAction.info:
-        child = IconButton(
-          icon: const Icon(OMIcons.info),
-          onPressed: onPressed,
-          tooltip: 'Info',
-        );
-        break;
+      case FullscreenAction.share:
+      case FullscreenAction.delete:
       case FullscreenAction.rename:
-        child = IconButton(
-          icon: const Icon(OMIcons.title),
-          onPressed: onPressed,
-          tooltip: 'Rename',
-        );
-        break;
       case FullscreenAction.rotateCCW:
       case FullscreenAction.rotateCW:
       case FullscreenAction.print:
+        final textIcon = FullscreenActions.getTextIcon(action);
+        child = IconButton(
+          icon: Icon(textIcon.item2),
+          onPressed: onPressed,
+          tooltip: textIcon.item1,
+        );
+        break;
       case FullscreenAction.openMap:
       case FullscreenAction.open:
       case FullscreenAction.edit:
@@ -200,9 +175,6 @@ class FullscreenTopOverlay extends StatelessWidget {
     Widget child;
     switch (action) {
       // in app actions
-      case FullscreenAction.info:
-        child = const MenuRow(text: 'Info', icon: OMIcons.info);
-        break;
       case FullscreenAction.toggleFavourite:
         child = entry.isFavouriteNotifier.value
             ? const MenuRow(
@@ -214,36 +186,23 @@ class FullscreenTopOverlay extends StatelessWidget {
                 icon: OMIcons.favoriteBorder,
               );
         break;
+      case FullscreenAction.info:
       case FullscreenAction.share:
-        child = const MenuRow(text: 'Share', icon: OMIcons.share);
-        break;
       case FullscreenAction.delete:
-        child = const MenuRow(text: 'Delete', icon: OMIcons.delete);
-        break;
       case FullscreenAction.rename:
-        child = const MenuRow(text: 'Rename', icon: OMIcons.title);
-        break;
       case FullscreenAction.rotateCCW:
-        child = const MenuRow(text: 'Rotate left', icon: OMIcons.rotateLeft);
-        break;
       case FullscreenAction.rotateCW:
-        child = const MenuRow(text: 'Rotate right', icon: OMIcons.rotateRight);
-        break;
       case FullscreenAction.print:
-        child = const MenuRow(text: 'Print', icon: OMIcons.print);
+        final textIcon = FullscreenActions.getTextIcon(action);
+        child = MenuRow(text: textIcon.item1, icon: textIcon.item2);
         break;
       // external app actions
       case FullscreenAction.edit:
-        child = const Text('Edit with…');
-        break;
       case FullscreenAction.open:
-        child = const Text('Open with…');
-        break;
       case FullscreenAction.setAs:
-        child = const Text('Set as…');
-        break;
       case FullscreenAction.openMap:
-        child = const Text('Show on map…');
+        final textIcon = FullscreenActions.getTextIcon(action);
+        child = Text(textIcon.item1);
         break;
     }
     return PopupMenuItem(
