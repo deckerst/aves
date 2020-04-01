@@ -6,6 +6,7 @@ import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/map_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -168,31 +169,34 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
     return Row(
       children: [
         Expanded(
-          child: SizedBox(
-            height: 200,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(16),
-              ),
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: widget.latLng,
-                  zoom: widget.initialZoom,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(16),
+            ),
+            child: Container(
+              color: Colors.white70,
+              height: 200,
+              child: GoogleMapInitializer(
+                builder: (context) => GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: widget.latLng,
+                    zoom: widget.initialZoom,
+                  ),
+                  onMapCreated: (controller) => setState(() => _controller = controller),
+                  rotateGesturesEnabled: false,
+                  scrollGesturesEnabled: false,
+                  zoomGesturesEnabled: false,
+                  tiltGesturesEnabled: false,
+                  myLocationEnabled: false,
+                  myLocationButtonEnabled: false,
+                  markers: {
+                    Marker(
+                      markerId: MarkerId(widget.markerId),
+                      icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
+                      position: widget.latLng,
+                    )
+                  },
                 ),
-                onMapCreated: (controller) => setState(() => _controller = controller),
-                rotateGesturesEnabled: false,
-                scrollGesturesEnabled: false,
-                zoomGesturesEnabled: false,
-                tiltGesturesEnabled: false,
-                myLocationEnabled: false,
-                myLocationButtonEnabled: false,
-                markers: {
-                  Marker(
-                    markerId: MarkerId(widget.markerId),
-                    icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
-                    position: widget.latLng,
-                  )
-                },
               ),
             ),
           ),

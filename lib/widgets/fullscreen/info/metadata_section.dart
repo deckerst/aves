@@ -6,6 +6,7 @@ import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
@@ -63,37 +64,36 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   Widget build(BuildContext context) {
     super.build(context);
 
-    final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty);
-    final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty);
+    if (_metadata.isEmpty) return const SliverToBoxAdapter(child: SizedBox.shrink());
+
+    final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty).toList();
+    final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty).toList();
+    final untitledDirectoryCount = directoriesWithoutTitle.length;
     return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          if (_metadata.isNotEmpty) const SectionRow(OMIcons.info),
-          ...directoriesWithoutTitle.map((dir) => InfoRowGroup(dir.tags)),
-          Theme(
-            data: Theme.of(context).copyWith(cardColor: Colors.grey[900]),
-            child: ExpansionPanelList.radio(
-              key: ValueKey(widget.entry.uri),
-              expandedHeaderPadding: EdgeInsets.zero,
-              children: directoriesWithTitle.map<ExpansionPanelRadio>((dir) {
-                return ExpansionPanelRadio(
-                  value: dir.name,
-                  canTapOnHeader: true,
-                  headerBuilder: (BuildContext context, bool isExpanded) {
-                    return ListTile(
-                      title: _DirectoryTitle(dir.name),
-                    );
-                  },
-                  body: Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.all(8),
-                    child: InfoRowGroup(dir.tags),
-                  ),
-                );
-              }).toList(),
-            ),
-          )
-        ],
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index == 0) {
+            return const SectionRow(OMIcons.info);
+          }
+          if (index < untitledDirectoryCount + 1) {
+            final dir = directoriesWithoutTitle[index - 1];
+            return InfoRowGroup(dir.tags);
+          }
+          final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
+          return ExpansionTileCard(
+            title: _DirectoryTitle(dir.name),
+            children: [
+              const Divider(thickness: 1.0, height: 1.0),
+              Container(
+                alignment: Alignment.topLeft,
+                padding: const EdgeInsets.all(8),
+                child: InfoRowGroup(dir.tags),
+              ),
+            ],
+            baseColor: Colors.grey[900],
+          );
+        },
+        childCount: 1 + _metadata.length,
       ),
     );
   }
@@ -143,6 +143,7 @@ class _DirectoryTitle extends StatelessWidget {
         child: Text(
           name,
           style: const TextStyle(
+            color: Colors.white,
             shadows: [
               Shadow(
                 color: Colors.black,
@@ -153,6 +154,9 @@ class _DirectoryTitle extends StatelessWidget {
             fontSize: 18,
             fontFamily: 'Concourse Caps',
           ),
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
         ),
       ),
     );
