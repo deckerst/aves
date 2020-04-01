@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,7 +192,16 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
 
     private void share(String title, Uri uri, String mimeType) {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
+            String path = uri.getPath();
+            if (path == null) return;
+            String applicationId = context.getApplicationContext().getPackageName();
+            Uri apkUri = FileProvider.getUriForFile(context, applicationId + ".fileprovider", new File(path));
+            intent.putExtra(Intent.EXTRA_STREAM, apkUri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+        }
         intent.setType(mimeType);
         context.startActivity(Intent.createChooser(intent, title));
     }

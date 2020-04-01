@@ -41,6 +41,16 @@
                 android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
                 android:value="false" />
         </activity>
+        <!-- file provider to share files having a file:// URI -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="deckers.thibault.aves.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDf-1dN6JivrQGKSmxAdxERLM2egOvzGWs" />
