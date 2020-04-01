@@ -5,7 +5,7 @@ import 'package:aves/model/metadata_db.dart';
 final FavouriteRepo favourites = FavouriteRepo._private();
 
 class FavouriteRepo {
-  List<FavouriteRow> _rows = List();
+  List<FavouriteRow> _rows = [];
 
   FavouriteRepo._private();
 

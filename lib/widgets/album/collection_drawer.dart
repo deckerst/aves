@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/video.dart';
 import 'package:aves/model/settings.dart';
@@ -300,7 +300,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
     @required this.title,
     bool dense,
     @required this.filter,
-  }) : this.dense = dense ?? false;
+  }) : dense = dense ?? false;
 
   @override
   Widget build(BuildContext context) {

@@ -67,12 +67,12 @@ class _HomePageState extends State<HomePage> {
     debugPrint('$runtimeType _setup');
 
     // TODO reduce permission check time
-    final permissions = await PermissionHandler().requestPermissions([
-      PermissionGroup.storage,
+    final permissions = await [
+      Permission.storage,
       // unredacted EXIF with scoped storage (Android 10+)
-      PermissionGroup.accessMediaLocation,
-    ]); // 350ms
-    if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
+      Permission.accessMediaLocation,
+    ].request(); // 350ms
+    if (permissions[Permission.storage] != PermissionStatus.granted) {
       unawaited(SystemNavigator.pop());
       return;
     }

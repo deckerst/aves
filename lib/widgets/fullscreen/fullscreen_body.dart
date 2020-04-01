@@ -324,8 +324,8 @@ class FullscreenVerticalPageView extends StatefulWidget {
 
 class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView> {
   bool _isInitialScale = true;
-  ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
-  ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
+  final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
+  final ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
 
   CollectionLens get collection => widget.collection;
 

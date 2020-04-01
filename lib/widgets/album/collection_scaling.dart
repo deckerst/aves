@@ -233,7 +233,7 @@ class GridPainter extends CustomPainter {
         ],
       );
     final topLeft = center.translate(-extent / 2, -extent / 2);
-    for (int i = -1; i <= 2; i++) {
+    for (var i = -1; i <= 2; i++) {
       canvas.drawLine(Offset(0, topLeft.dy + extent * i), Offset(size.width, topLeft.dy + extent * i), paint);
       canvas.drawLine(Offset(topLeft.dx + extent * i, 0), Offset(topLeft.dx + extent * i, size.height), paint);
     }

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/model/image_entry.dart';
@@ -45,7 +44,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
     final dimPixels = (extent * key.devicePixelRatio).round();
-    final Uint8List bytes = await ImageFileService.getThumbnail(key.entry, dimPixels, dimPixels);
+    final bytes = await ImageFileService.getThumbnail(key.entry, dimPixels, dimPixels);
     if (bytes.lengthInBytes == 0) {
       return null;
     }

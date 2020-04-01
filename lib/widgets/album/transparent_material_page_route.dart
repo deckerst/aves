@@ -10,7 +10,7 @@ class TransparentMaterialPageRoute<T> extends PageRouteBuilder<T> {
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-    final PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
+    final theme = Theme.of(context).pageTransitionsTheme;
     return theme.buildTransitions<T>(this, context, animation, secondaryAnimation, child);
   }
 }

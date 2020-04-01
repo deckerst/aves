@@ -10,24 +10,24 @@ String _decimal2sexagesimal(final double dec) {
   List<int> _split(final double value) {
     // NumberFormat is necessary to create digit after comma if the value
     // has no decimal point (only necessary for browser)
-    final List<String> tmp = NumberFormat('0.0#####').format(_round(value, decimals: 10)).split('.');
+    final tmp = NumberFormat('0.0#####').format(_round(value, decimals: 10)).split('.');
     return <int>[
       int.parse(tmp[0]).abs(),
       int.parse(tmp[1]),
     ];
   }
 
-  final List<int> parts = _split(dec);
-  final int integerPart = parts[0];
-  final int fractionalPart = parts[1];
+  final parts = _split(dec);
+  final integerPart = parts[0];
+  final fractionalPart = parts[1];
 
-  final int deg = integerPart;
-  final double min = double.parse('0.$fractionalPart') * 60;
+  final deg = integerPart;
+  final min = double.parse('0.$fractionalPart') * 60;
 
-  final List<int> minParts = _split(min);
-  final int minFractionalPart = minParts[1];
+  final minParts = _split(min);
+  final minFractionalPart = minParts[1];
 
-  final double sec = double.parse('0.$minFractionalPart') * 60;
+  final sec = double.parse('0.$minFractionalPart') * 60;
 
   return '$deg° ${min.floor()}′ ${_round(sec, decimals: 2).toStringAsFixed(2)}″';
 }

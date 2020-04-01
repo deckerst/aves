@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/model/image_file_service.dart';
@@ -36,7 +35,7 @@ class UriImage extends ImageProvider<UriImage> {
   Future<ui.Codec> _loadAsync(UriImage key, DecoderCallback decode) async {
     assert(key == this);
 
-    final Uint8List bytes = await ImageFileService.getImage(uri, mimeType);
+    final bytes = await ImageFileService.getImage(uri, mimeType);
     if (bytes.lengthInBytes == 0) {
       return null;
     }

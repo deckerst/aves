@@ -73,8 +73,8 @@ class _LocationSectionState extends State<LocationSection> {
     final showMap = (_loadedUri == entry.uri) || (entry.hasGps && widget.visibleNotifier.value);
     if (showMap) {
       _loadedUri = entry.uri;
-      String location = '';
-      final List<LocationFilter> filters = [];
+      var location = '';
+      final filters = <LocationFilter>[];
       if (entry.isLocated) {
         final address = entry.addressDetails;
         location = address.addressLine;
@@ -179,7 +179,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
                   target: widget.latLng,
                   zoom: widget.initialZoom,
                 ),
-                onMapCreated: (controller) => setState(() => this._controller = controller),
+                onMapCreated: (controller) => setState(() => _controller = controller),
                 rotateGesturesEnabled: false,
                 scrollGesturesEnabled: false,
                 zoomGesturesEnabled: false,

@@ -50,7 +50,7 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
       settings.catalogTimeZone = currentTimeZone;
     }
 
-    final allEntries = List<ImageEntry>();
+    final allEntries = <ImageEntry>[];
     eventChannel.receiveBroadcastStream().cast<Map>().listen(
           (entryMap) => allEntries.add(ImageEntry.fromMap(entryMap)),
           onDone: () async {

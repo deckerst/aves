@@ -168,7 +168,7 @@ class SectionHeader extends StatelessWidget {
   }
 
   Widget _buildAlbumSectionHeader(BuildContext context) {
-    Widget albumIcon = IconUtils.getAlbumIcon(context: context, album: sectionKey as String);
+    var albumIcon = IconUtils.getAlbumIcon(context: context, album: sectionKey as String);
     if (albumIcon != null) {
       albumIcon = Material(
         type: MaterialType.circle,

@@ -1,5 +1,5 @@
 String formatFilesize(int size, {int round = 2}) {
-  int divider = 1024;
+  var divider = 1024;
 
   if (size < divider) return '$size B';
 

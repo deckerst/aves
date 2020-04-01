@@ -30,7 +30,7 @@ class InfoPage extends StatefulWidget {
 }
 
 class InfoPageState extends State<InfoPage> {
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
   CollectionLens get collection => widget.collection;
@@ -172,7 +172,7 @@ class SectionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double dim = 32;
+    const dim = 32.0;
     final buildDivider = () => const SizedBox(
           width: dim,
           child: Divider(

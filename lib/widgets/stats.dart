@@ -20,7 +20,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
   final CollectionLens collection;
-  final Map<String, int> entryCountPerCity = Map(), entryCountPerCountry = Map(), entryCountPerTag = Map();
+  final Map<String, int> entryCountPerCity = {}, entryCountPerCountry = {}, entryCountPerTag = {};
 
   List<ImageEntry> get entries => collection.sortedEntries;
 
@@ -54,7 +54,7 @@ class StatsPage extends StatelessWidget {
       final catalogued = entries.where((entry) => entry.isCatalogued);
       final withGps = catalogued.where((entry) => entry.hasGps);
       final withGpsPercent = withGps.length / collection.entryCount;
-      final Map<String, int> byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map((k, v) => MapEntry(k, v.length));
+      final byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
       child = ListView(
@@ -127,9 +127,8 @@ class StatsPage extends StatelessWidget {
     ];
 
     return LayoutBuilder(builder: (context, constraints) {
-      final mq = MediaQuery.of(context);
       final availableWidth = constraints.maxWidth;
-      final double dim = max(mimeDonutMinWidth, availableWidth / (availableWidth > 4 * mimeDonutMinWidth ? 4 : 2));
+      final dim = max(mimeDonutMinWidth, availableWidth / (availableWidth > 4 * mimeDonutMinWidth ? 4 : 2));
 
       final donut = Container(
         width: dim,

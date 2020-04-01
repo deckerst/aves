@@ -12,7 +12,7 @@ import 'package:path/path.dart';
 class AlbumFilter extends CollectionFilter {
   static const type = 'album';
 
-  static Map<String, Color> _appColors = Map();
+  static final Map<String, Color> _appColors = {};
 
   final String album;
 

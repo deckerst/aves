@@ -27,9 +27,9 @@ class CollectionLens with ChangeNotifier {
     Iterable<CollectionFilter> filters,
     @required GroupFactor groupFactor,
     @required SortFactor sortFactor,
-  })  : this.filters = [if (filters != null) ...filters.where((f) => f != null)].toSet(),
-        this.groupFactor = groupFactor ?? GroupFactor.month,
-        this.sortFactor = sortFactor ?? SortFactor.date {
+  })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
+        groupFactor = groupFactor ?? GroupFactor.month,
+        sortFactor = sortFactor ?? SortFactor.date {
     _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));
     _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entry)));
     _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => onMetadataChanged()));
@@ -69,9 +69,7 @@ class CollectionLens with ChangeNotifier {
   List<ImageEntry> _sortedEntries;
 
   List<ImageEntry> get sortedEntries {
-    if (_sortedEntries == null) {
-      _sortedEntries = List.of(sections.entries.expand((e) => e.value));
-    }
+    _sortedEntries ??= List.of(sections.entries.expand((e) => e.value));
     return _sortedEntries;
   }
 

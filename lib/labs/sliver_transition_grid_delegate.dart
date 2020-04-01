@@ -40,9 +40,9 @@ class SliverTransitionGridDelegateWithCrossAxisCount extends SliverGridDelegate 
   }
 
   SliverTransitionGridTileLayoutSettings _buildSettings(SliverConstraints constraints, double crossAxisCount) {
-    final double usableCrossAxisExtent = constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1);
-    final double childCrossAxisExtent = usableCrossAxisExtent / crossAxisCount;
-    final double childMainAxisExtent = childCrossAxisExtent / childAspectRatio;
+    final usableCrossAxisExtent = constraints.crossAxisExtent - crossAxisSpacing * (crossAxisCount - 1);
+    final childCrossAxisExtent = usableCrossAxisExtent / crossAxisCount;
+    final childMainAxisExtent = childCrossAxisExtent / childAspectRatio;
     final current = SliverTransitionGridTileLayoutSettings(
       crossAxisCount: crossAxisCount,
       mainAxisStride: childMainAxisExtent + mainAxisSpacing,
@@ -129,7 +129,7 @@ class SliverTransitionGridTileLayout extends SliverGridLayout {
   int getMaxChildIndexForScrollOffset(double scrollOffset) {
     final settings = t == 0 ? current : floor;
     if (settings.mainAxisStride > 0.0) {
-      final int mainAxisCount = (scrollOffset / settings.mainAxisStride).ceil();
+      final mainAxisCount = (scrollOffset / settings.mainAxisStride).ceil();
       final index = math.max(0, settings.crossAxisCount * mainAxisCount - 1).ceil();
       return index;
     }
@@ -141,7 +141,7 @@ class SliverTransitionGridTileLayout extends SliverGridLayout {
   }
 
   double _getCrossAxisOffset(int index, SliverTransitionGridTileLayoutSettings settings) {
-    final double crossAxisStart = (index % settings.crossAxisCount) * settings.crossAxisStride;
+    final crossAxisStart = (index % settings.crossAxisCount) * settings.crossAxisStride;
     if (reverseCrossAxis) {
       return settings.crossAxisCount * settings.crossAxisStride - crossAxisStart - settings.childCrossAxisExtent - (settings.crossAxisStride - settings.childCrossAxisExtent);
     }
@@ -168,8 +168,8 @@ class SliverTransitionGridTileLayout extends SliverGridLayout {
       return maxScrollOffset;
     }
 
-    final int mainAxisCount = ((childCount - 1) ~/ current.crossAxisCount) + 1;
-    final double mainAxisSpacing = current.mainAxisStride - current.childMainAxisExtent;
+    final mainAxisCount = ((childCount - 1) ~/ current.crossAxisCount) + 1;
+    final mainAxisSpacing = current.mainAxisStride - current.childMainAxisExtent;
     final maxScrollOffset = current.mainAxisStride * mainAxisCount - mainAxisSpacing;
     return maxScrollOffset;
   }

@@ -35,7 +35,7 @@ class Settings {
   void notifyListeners(String key, dynamic oldValue, dynamic newValue) {
     debugPrint('$runtimeType notifyListeners key=$key, old=$oldValue, new=$newValue');
     if (_listeners != null) {
-      final List<SettingsCallback> localListeners = _listeners.toList();
+      final localListeners = _listeners.toList();
       for (final listener in localListeners) {
         try {
           if (_listeners.contains(listener)) {

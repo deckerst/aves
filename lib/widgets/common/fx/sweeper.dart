@@ -121,11 +121,10 @@ class _SweepClipPath extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    Path path = Path();
-    path.moveTo(size.width / 2, size.height / 2);
-    path.addArc(Rect.fromLTWH(0, 0, size.width, size.height), startAngle, sweepAngle);
-    path.lineTo(size.width / 2, size.height / 2);
-    return path;
+    return Path()
+      ..moveTo(size.width / 2, size.height / 2)
+      ..addArc(Rect.fromLTWH(0, 0, size.width, size.height), startAngle, sweepAngle)
+      ..lineTo(size.width / 2, size.height / 2);
   }
 
   @override

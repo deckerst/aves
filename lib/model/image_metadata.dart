@@ -16,8 +16,8 @@ class CatalogMetadata {
     double longitude,
   })  
   // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
-  : this.latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
-        this.longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
+  : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
+        longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
 
   factory CatalogMetadata.fromMap(Map map) {
     return CatalogMetadata(
@@ -53,7 +53,7 @@ class OverlayMetadata {
     this.exposureTime,
     this.focalLength,
     this.iso,
-  }) : this.aperture = aperture.replaceFirst('f', 'ƒ');
+  }) : aperture = aperture.replaceFirst('f', 'ƒ');
 
   factory OverlayMetadata.fromMap(Map map) {
     return OverlayMetadata(

@@ -119,7 +119,7 @@ class CollectionSource {
 
   void updateLocations() {
     final locations = _rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails);
-    final lister = (String f(AddressDetails a)) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
+    final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
     sortedCountries = lister((address) => address.countryName);
     sortedCities = lister((address) => address.city);
   }
@@ -146,7 +146,7 @@ class CollectionSource {
   static String getUniqueAlbumName(String album, Iterable<String> albums) {
     final otherAlbums = albums?.where((item) => item != album) ?? [];
     final parts = album.split(separator);
-    int partCount = 0;
+    var partCount = 0;
     String testName;
     do {
       testName = separator + parts.skip(parts.length - ++partCount).join(separator);
