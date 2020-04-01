@@ -8,6 +8,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -46,52 +47,58 @@ class StatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final catalogued = entries.where((entry) => entry.isCatalogued);
-    final withGps = catalogued.where((entry) => entry.hasGps);
-    final withGpsPercent = withGps.length / collection.entryCount;
-    final Map<String, int> byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map((k, v) => MapEntry(k, v.length));
-    final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
-    final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
+    Widget child;
+    if (collection.isEmpty) {
+      child = EmptyContent();
+    } else {
+      final catalogued = entries.where((entry) => entry.isCatalogued);
+      final withGps = catalogued.where((entry) => entry.hasGps);
+      final withGpsPercent = withGps.length / collection.entryCount;
+      final Map<String, int> byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map((k, v) => MapEntry(k, v.length));
+      final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
+      final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
+      child = ListView(
+        children: [
+          Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
+              _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                LinearPercentIndicator(
+                  percent: withGpsPercent,
+                  lineHeight: 16,
+                  backgroundColor: Colors.white24,
+                  progressColor: Theme.of(context).accentColor,
+                  animation: true,
+                  leading: const Icon(OMIcons.place),
+                  // right padding to match leading, so that inside label is aligned with outside label below
+                  padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(right: 24),
+                  center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
+                ),
+                const SizedBox(height: 8),
+                Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
+              ],
+            ),
+          ),
+          ..._buildTopFilters(context, 'Top cities', entryCountPerCity, (s) => LocationFilter(LocationLevel.city, s)),
+          ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
+          ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
+        ],
+      );
+    }
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Stats'),
         ),
         body: SafeArea(
-          child: ListView(
-            children: [
-              Wrap(
-                alignment: WrapAlignment.center,
-                children: [
-                  _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
-                  _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    LinearPercentIndicator(
-                      percent: withGpsPercent,
-                      lineHeight: 16,
-                      backgroundColor: Colors.white24,
-                      progressColor: Theme.of(context).accentColor,
-                      animation: true,
-                      leading: const Icon(OMIcons.place),
-                      // right padding to match leading, so that inside label is aligned with outside label below
-                      padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(right: 24),
-                      center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
-                    ),
-                    const SizedBox(height: 8),
-                    Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
-                  ],
-                ),
-              ),
-              ..._buildTopFilters(context, 'Top cities', entryCountPerCity, (s) => LocationFilter(LocationLevel.city, s)),
-              ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
-              ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
-            ],
-          ),
+          child: child,
         ),
       ),
     );
@@ -122,7 +129,7 @@ class StatsPage extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final mq = MediaQuery.of(context);
       final availableWidth = constraints.maxWidth;
-      final double dim = max(mimeDonutMinWidth, availableWidth / (mq.orientation == Orientation.landscape && availableWidth > 4 * mimeDonutMinWidth ? 4 : 2));
+      final double dim = max(mimeDonutMinWidth, availableWidth / (availableWidth > 4 * mimeDonutMinWidth ? 4 : 2));
 
       final donut = Container(
         width: dim,

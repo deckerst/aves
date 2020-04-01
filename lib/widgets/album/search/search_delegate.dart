@@ -103,7 +103,12 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   @override
   Widget buildResults(BuildContext context) {
     final cleanQuery = query.trim();
-    close(context, cleanQuery.isNotEmpty ? QueryFilter(cleanQuery) : null);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // `buildResults` is called in the build phase,
+      // so we post the call that will filter the collection
+      // and possibly trigger a rebuild here
+      close(context, cleanQuery.isNotEmpty ? QueryFilter(cleanQuery) : null);
+    });
     return const SizedBox.shrink();
   }
 }
