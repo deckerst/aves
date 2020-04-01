@@ -143,11 +143,10 @@ class FullscreenTopOverlay extends StatelessWidget {
       case FullscreenAction.rotateCCW:
       case FullscreenAction.rotateCW:
       case FullscreenAction.print:
-        final textIcon = FullscreenActions.getTextIcon(action);
         child = IconButton(
-          icon: Icon(textIcon.item2),
+          icon: Icon(action.getIcon()),
           onPressed: onPressed,
-          tooltip: textIcon.item1,
+          tooltip: action.getText(),
         );
         break;
       case FullscreenAction.openMap:
@@ -189,16 +188,14 @@ class FullscreenTopOverlay extends StatelessWidget {
       case FullscreenAction.rotateCCW:
       case FullscreenAction.rotateCW:
       case FullscreenAction.print:
-        final textIcon = FullscreenActions.getTextIcon(action);
-        child = MenuRow(text: textIcon.item1, icon: textIcon.item2);
+        child = MenuRow(text: action.getText(), icon: action.getIcon());
         break;
       // external app actions
       case FullscreenAction.edit:
       case FullscreenAction.open:
       case FullscreenAction.setAs:
       case FullscreenAction.openMap:
-        final textIcon = FullscreenActions.getTextIcon(action);
-        child = Text(textIcon.item1);
+        child = Text(action.getText());
         break;
     }
     return PopupMenuItem(

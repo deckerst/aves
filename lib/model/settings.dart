@@ -8,7 +8,7 @@ final Settings settings = Settings._private();
 typedef SettingsCallback = void Function(String key, dynamic oldValue, dynamic newValue);
 
 class Settings {
-  static SharedPreferences prefs;
+  static SharedPreferences _prefs;
 
   final ObserverList<SettingsCallback> _listeners = ObserverList<SettingsCallback>();
 
@@ -21,11 +21,11 @@ class Settings {
   static const catalogTimeZoneKey = 'catalog_time_zone';
 
   Future<void> init() async {
-    prefs = await SharedPreferences.getInstance();
+    _prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> reset() {
-    return prefs.clear();
+    return _prefs.clear();
   }
 
   void addListener(SettingsCallback listener) => _listeners.add(listener);
@@ -48,11 +48,11 @@ class Settings {
     }
   }
 
-  double get infoMapZoom => prefs.getDouble(infoMapZoomKey) ?? 12;
+  double get infoMapZoom => _prefs.getDouble(infoMapZoomKey) ?? 12;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
-  String get catalogTimeZone => prefs.getString(catalogTimeZoneKey) ?? '';
+  String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
@@ -66,10 +66,10 @@ class Settings {
 
   // convenience methods
 
-  bool getBoolOrDefault(String key, bool defaultValue) => prefs.getKeys().contains(key) ? prefs.getBool(key) : defaultValue;
+  bool getBoolOrDefault(String key, bool defaultValue) => _prefs.getKeys().contains(key) ? _prefs.getBool(key) : defaultValue;
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
-    final valueString = prefs.getString(key);
+    final valueString = _prefs.getString(key);
     for (final element in values) {
       if (element.toString() == valueString) {
         return element;
@@ -79,28 +79,28 @@ class Settings {
   }
 
   List<T> getEnumListOrDefault<T>(String key, List<T> defaultValue, Iterable<T> values) {
-    return prefs.getStringList(key)?.map((s) => values.firstWhere((el) => el.toString() == s, orElse: () => null))?.where((el) => el != null)?.toList() ?? defaultValue;
+    return _prefs.getStringList(key)?.map((s) => values.firstWhere((el) => el.toString() == s, orElse: () => null))?.where((el) => el != null)?.toList() ?? defaultValue;
   }
 
   void setAndNotify(String key, dynamic newValue) {
-    var oldValue = prefs.get(key);
+    var oldValue = _prefs.get(key);
     if (newValue == null) {
-      prefs.remove(key);
+      _prefs.remove(key);
     } else if (newValue is String) {
-      oldValue = prefs.getString(key);
-      prefs.setString(key, newValue);
+      oldValue = _prefs.getString(key);
+      _prefs.setString(key, newValue);
     } else if (newValue is List<String>) {
-      oldValue = prefs.getStringList(key);
-      prefs.setStringList(key, newValue);
+      oldValue = _prefs.getStringList(key);
+      _prefs.setStringList(key, newValue);
     } else if (newValue is int) {
-      oldValue = prefs.getInt(key);
-      prefs.setInt(key, newValue);
+      oldValue = _prefs.getInt(key);
+      _prefs.setInt(key, newValue);
     } else if (newValue is double) {
-      oldValue = prefs.getDouble(key);
-      prefs.setDouble(key, newValue);
+      oldValue = _prefs.getDouble(key);
+      _prefs.setDouble(key, newValue);
     } else if (newValue is bool) {
-      oldValue = prefs.getBool(key);
-      prefs.setBool(key, newValue);
+      oldValue = _prefs.getBool(key);
+      _prefs.setBool(key, newValue);
     }
     if (oldValue != newValue) {
       notifyListeners(key, oldValue, newValue);

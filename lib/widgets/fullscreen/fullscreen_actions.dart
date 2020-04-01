@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:tuple/tuple.dart';
 
 enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite }
 
@@ -22,36 +21,68 @@ class FullscreenActions {
     FullscreenAction.setAs,
     FullscreenAction.openMap,
   ];
+}
 
-  static Tuple2<String, IconData> getTextIcon(FullscreenAction action) {
-    switch (action) {
+extension ExtraFullscreenAction on FullscreenAction {
+  String getText() {
+    switch (this) {
       // in app actions
       case FullscreenAction.toggleFavourite:
         // different data depending on toggle state
         return null;
       case FullscreenAction.delete:
-        return const Tuple2('Delete', OMIcons.delete);
+        return 'Delete';
       case FullscreenAction.info:
-        return const Tuple2('Info', OMIcons.info);
+        return 'Info';
       case FullscreenAction.rename:
-        return const Tuple2('Rename', OMIcons.title);
+        return 'Rename';
       case FullscreenAction.rotateCCW:
-        return const Tuple2('Rotate left', OMIcons.rotateLeft);
+        return 'Rotate left';
       case FullscreenAction.rotateCW:
-        return const Tuple2('Rotate right', OMIcons.rotateRight);
+        return 'Rotate right';
       case FullscreenAction.print:
-        return const Tuple2('Print', OMIcons.print);
+        return 'Print';
       case FullscreenAction.share:
-        return const Tuple2('Share', OMIcons.share);
+        return 'Share';
       // external app actions
       case FullscreenAction.edit:
-        return const Tuple2('Edit with…', null);
+        return 'Edit with…';
       case FullscreenAction.open:
-        return const Tuple2('Open with…', null);
+        return 'Open with…';
       case FullscreenAction.setAs:
-        return const Tuple2('Set as…', null);
+        return 'Set as…';
       case FullscreenAction.openMap:
-        return const Tuple2('Show on map…', null);
+        return 'Show on map…';
+    }
+    return null;
+  }
+
+  IconData getIcon() {
+    switch (this) {
+      // in app actions
+      case FullscreenAction.toggleFavourite:
+        // different data depending on toggle state
+        return null;
+      case FullscreenAction.delete:
+        return OMIcons.delete;
+      case FullscreenAction.info:
+        return OMIcons.info;
+      case FullscreenAction.rename:
+        return OMIcons.title;
+      case FullscreenAction.rotateCCW:
+        return OMIcons.rotateLeft;
+      case FullscreenAction.rotateCW:
+        return OMIcons.rotateRight;
+      case FullscreenAction.print:
+        return OMIcons.print;
+      case FullscreenAction.share:
+        return OMIcons.share;
+      // external app actions
+      case FullscreenAction.edit:
+      case FullscreenAction.open:
+      case FullscreenAction.setAs:
+      case FullscreenAction.openMap:
+        return null;
     }
     return null;
   }
