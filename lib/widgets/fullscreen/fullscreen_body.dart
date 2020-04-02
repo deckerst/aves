@@ -54,7 +54,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   List<ImageEntry> get entries => hasCollection ? collection.sortedEntries : [widget.initialEntry];
 
-  List<String> get pages => hasCollection ? ['transition', 'image', 'info'] : ['image', 'info'];
+  List<String> get pages => ['transition', 'image', 'info'];
 
   int get transitionPage => pages.indexOf('transition');
 
@@ -130,10 +130,6 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           // back from info to image
           _goToVerticalPage(imagePage);
           return SynchronousFuture(false);
-        }
-        if (!ModalRoute.of(context).canPop) {
-          // exit app when trying to pop a fullscreen page that is a viewer for a single entry
-          exit(0);
         }
         _onLeave();
         return SynchronousFuture(true);
@@ -242,9 +238,15 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     setState(() {});
   }
 
-  // system UI
+  void _onLeave() {
+    if (!ModalRoute.of(context).canPop) {
+      // exit app when trying to pop a fullscreen page that is a viewer for a single entry
+      exit(0);
+    }
+    _showSystemUI();
+  }
 
-  void _onLeave() => _showSystemUI();
+  // system UI
 
   void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
@@ -367,8 +369,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     final onScaleChanged = (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial);
     final pages = [
       // fake page for opacity transition between collection and fullscreen views
-      if (hasCollection)
-        const SizedBox(),
+      const SizedBox(),
       hasCollection
           ? MultiImagePage(
               collection: collection,
