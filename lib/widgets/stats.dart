@@ -49,7 +49,7 @@ class StatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child;
     if (collection.isEmpty) {
-      child = EmptyContent();
+      child = const EmptyContent();
     } else {
       final catalogued = entries.where((entry) => entry.isCatalogued);
       final withGps = catalogued.where((entry) => entry.hasGps);

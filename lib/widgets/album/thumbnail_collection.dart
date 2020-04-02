@@ -1,4 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/favourite.dart';
+import 'package:aves/model/filters/video.dart';
 import 'package:aves/widgets/album/collection_app_bar.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/collection_scaling.dart';
@@ -7,6 +9,7 @@ import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class ThumbnailCollection extends StatelessWidget {
@@ -54,7 +57,7 @@ class ThumbnailCollection extends StatelessWidget {
                     ),
                     if (collection.isEmpty)
                       SliverFillRemaining(
-                        child: EmptyContent(),
+                        child: _buildEmptyCollectionPlaceholder(collection),
                         hasScrollBody: false,
                       ),
                     ...sectionKeys.map((sectionKey) => SectionSliver(
@@ -98,5 +101,18 @@ class ThumbnailCollection extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _buildEmptyCollectionPlaceholder(CollectionLens collection) {
+    return collection.filters.any((filter) => filter is FavouriteFilter)
+        ? const EmptyContent(
+            icon: OMIcons.favoriteBorder,
+            text: 'No favourite!',
+          )
+        : collection.filters.any((filter) => filter is VideoFilter)
+            ? const EmptyContent(
+                icon: OMIcons.movie,
+              )
+            : const EmptyContent();
   }
 }
