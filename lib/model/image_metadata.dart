@@ -3,7 +3,7 @@ import 'package:geocoder/model.dart';
 
 class CatalogMetadata {
   final int contentId, dateMillis, videoRotation;
-  final String xmpSubjects;
+  final String xmpSubjects, xmpTitleDescription;
   final double latitude, longitude;
   Address address;
 
@@ -12,6 +12,7 @@ class CatalogMetadata {
     this.dateMillis,
     this.videoRotation,
     this.xmpSubjects,
+    this.xmpTitleDescription,
     double latitude,
     double longitude,
   })  
@@ -25,6 +26,7 @@ class CatalogMetadata {
       dateMillis: map['dateMillis'] ?? 0,
       videoRotation: map['videoRotation'] ?? 0,
       xmpSubjects: map['xmpSubjects'] ?? '',
+      xmpTitleDescription: map['xmpTitleDescription'] ?? '',
       latitude: map['latitude'],
       longitude: map['longitude'],
     );
@@ -35,13 +37,14 @@ class CatalogMetadata {
         'dateMillis': dateMillis,
         'videoRotation': videoRotation,
         'xmpSubjects': xmpSubjects,
+        'xmpTitleDescription': xmpTitleDescription,
         'latitude': latitude,
         'longitude': longitude,
       };
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects}';
+    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

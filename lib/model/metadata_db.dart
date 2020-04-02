@@ -23,7 +23,7 @@ class MetadataDb {
     _database = openDatabase(
       await path,
       onCreate: (db, version) async {
-        await db.execute('CREATE TABLE $metadataTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, latitude REAL, longitude REAL)');
+        await db.execute('CREATE TABLE $metadataTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, xmpTitleDescription TEXT, latitude REAL, longitude REAL)');
         await db.execute('CREATE TABLE $addressTable(contentId INTEGER PRIMARY KEY, addressLine TEXT, countryName TEXT, adminArea TEXT, locality TEXT)');
         await db.execute('CREATE TABLE $favouriteTable(contentId INTEGER PRIMARY KEY, path TEXT)');
       },

@@ -21,7 +21,7 @@ class ImageEntry {
   int height;
   int orientationDegrees;
   final int sizeBytes;
-  String title;
+  String sourceTitle;
   final int dateModifiedSecs;
   final int sourceDateTakenMillis;
   final String bucketDisplayName;
@@ -41,7 +41,7 @@ class ImageEntry {
     this.height,
     this.orientationDegrees,
     this.sizeBytes,
-    this.title,
+    this.sourceTitle,
     this.dateModifiedSecs,
     this.sourceDateTakenMillis,
     this.bucketDisplayName,
@@ -60,7 +60,7 @@ class ImageEntry {
       height: map['height'] as int,
       orientationDegrees: map['orientationDegrees'] as int,
       sizeBytes: map['sizeBytes'] as int,
-      title: map['title'] as String,
+      sourceTitle: map['title'] as String,
       dateModifiedSecs: map['dateModifiedSecs'] as int,
       sourceDateTakenMillis: map['sourceDateTakenMillis'] as int,
       bucketDisplayName: map['bucketDisplayName'] as String,
@@ -78,7 +78,7 @@ class ImageEntry {
       'height': height,
       'orientationDegrees': orientationDegrees,
       'sizeBytes': sizeBytes,
-      'title': title,
+      'title': sourceTitle,
       'dateModifiedSecs': dateModifiedSecs,
       'sourceDateTakenMillis': sourceDateTakenMillis,
       'bucketDisplayName': bucketDisplayName,
@@ -157,6 +157,11 @@ class ImageEntry {
 
   List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
+  String get title {
+    if (catalogMetadata != null && catalogMetadata.xmpTitleDescription.isNotEmpty) return catalogMetadata.xmpTitleDescription;
+    return sourceTitle;
+  }
+
   Future<void> catalog() async {
     if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
@@ -223,8 +228,8 @@ class ImageEntry {
     if (path is String) this.path = path;
     final contentId = newFields['contentId'];
     if (contentId is int) this.contentId = contentId;
-    final title = newFields['title'];
-    if (title is String) this.title = title;
+    final sourceTitle = newFields['sourceTitle'];
+    if (sourceTitle is String) this.sourceTitle = sourceTitle;
     metadataChangeNotifier.notifyListeners();
     return true;
   }

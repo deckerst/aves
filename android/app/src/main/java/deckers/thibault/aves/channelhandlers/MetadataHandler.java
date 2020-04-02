@@ -43,6 +43,10 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private static final String XMP_DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/";
     private static final String XMP_SUBJECT_PROP_NAME = "dc:subject";
+    private static final String XMP_TITLE_PROP_NAME = "dc:title";
+    private static final String XMP_DESCRIPTION_PROP_NAME = "dc:description";
+    private static final String XMP_GENERIC_LANG = "";
+    private static final String XMP_SPECIFIC_LANG = "en-US";
     private static final Pattern videoLocationPattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+)/?");
 
     private Context context;
@@ -206,6 +210,13 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                                 sb.append(";").append(item.getValue());
                             }
                             metadataMap.put("xmpSubjects", sb.toString());
+                        }
+                        if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_TITLE_PROP_NAME)) {
+                            XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, XMP_TITLE_PROP_NAME, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
+                            metadataMap.put("xmpTitleDescription", item.getValue());
+                        } else if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME)) {
+                            XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
+                            metadataMap.put("xmpTitleDescription", item.getValue());
                         }
                     } catch (XMPException e) {
                         e.printStackTrace();
