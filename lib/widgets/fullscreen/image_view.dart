@@ -1,5 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
@@ -28,6 +29,8 @@ class ImageView extends StatelessWidget {
   Widget build(BuildContext context) {
     const backgroundDecoration = BoxDecoration(color: Colors.transparent);
 
+    // no hero for videos, as a typical video first frame is different from its thumbnail
+
     if (entry.isVideo) {
       final videoController = videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
       return PhotoView.customChild(
@@ -38,7 +41,6 @@ class ImageView extends StatelessWidget {
               )
             : const SizedBox(),
         backgroundDecoration: backgroundDecoration,
-        // no hero as most videos fullscreen image is different from its thumbnail
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,
         initialScale: PhotoViewComputedScale.contained,
@@ -46,53 +48,61 @@ class ImageView extends StatelessWidget {
       );
     }
 
-    final placeholderBuilder = (context) => const Center(
-          child: SizedBox(
-            width: 64,
-            height: 64,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          ),
-        );
-    final heroAttributes = heroTag != null
-        ? PhotoViewHeroAttributes(
-            tag: heroTag,
-            transitionOnUserGestures: true,
-          )
-        : null;
+    // if the hero tag is defined in the `loadingBuilder` and also set by the `heroAttributes`,
+    // the route transition becomes visible if the final is loaded before the hero animation is done.
 
+    // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
+    // there's a black frame between the hero animation and the final image, even when it's cached.
+
+    final loadingBuilder = (context) => Image(
+          image: ThumbnailProvider(
+            entry: entry,
+            extent: Constants.thumbnailCacheExtent,
+          ),
+          fit: BoxFit.contain,
+        );
+
+    Widget child;
     if (entry.isSvg) {
-      return PhotoView.customChild(
+      child = PhotoView.customChild(
         child: SvgPicture(
           UriPicture(
             uri: entry.uri,
             mimeType: entry.mimeType,
             colorFilter: Constants.svgColorFilter,
           ),
-          placeholderBuilder: placeholderBuilder,
+          placeholderBuilder: loadingBuilder,
         ),
         backgroundDecoration: backgroundDecoration,
-        heroAttributes: heroAttributes,
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,
         initialScale: PhotoViewComputedScale.contained,
         onTapUp: (tapContext, details, value) => onTap?.call(),
       );
+    } else {
+      child = PhotoView(
+        // key includes size and orientation to refresh when the image is rotated
+        key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
+        imageProvider: UriImage(
+          uri: entry.uri,
+          mimeType: entry.mimeType,
+        ),
+        loadingBuilder: (context, event) => loadingBuilder(context),
+        backgroundDecoration: backgroundDecoration,
+        scaleStateChangedCallback: onScaleChanged,
+        minScale: PhotoViewComputedScale.contained,
+        initialScale: PhotoViewComputedScale.contained,
+        onTapUp: (tapContext, details, value) => onTap?.call(),
+        filterQuality: FilterQuality.low,
+      );
     }
 
-    return PhotoView(
-      // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
-      imageProvider: UriImage(uri: entry.uri, mimeType: entry.mimeType),
-      loadingBuilder: (context, event) => placeholderBuilder(context),
-      backgroundDecoration: backgroundDecoration,
-      heroAttributes: heroAttributes,
-      scaleStateChangedCallback: onScaleChanged,
-      minScale: PhotoViewComputedScale.contained,
-      initialScale: PhotoViewComputedScale.contained,
-      onTapUp: (tapContext, details, value) => onTap?.call(),
-      filterQuality: FilterQuality.low,
-    );
+    return heroTag != null
+        ? Hero(
+            tag: heroTag,
+            transitionOnUserGestures: true,
+            child: child,
+          )
+        : child;
   }
 }

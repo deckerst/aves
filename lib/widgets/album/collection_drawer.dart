@@ -249,17 +249,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           child: ListTile(
             leading: const Icon(OMIcons.whatshot),
             title: const Text('Debug'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DebugPage(
-                    source: source,
-                  ),
-                ),
-              );
-            },
+            onTap: () => _goToDebug(context),
           ),
         ),
       ],
@@ -282,6 +272,18 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _goToDebug(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DebugPage(
+          source: source,
+        ),
       ),
     );
   }
@@ -311,21 +313,23 @@ class _FilteredCollectionNavTile extends StatelessWidget {
         leading: leading,
         title: Text(title),
         dense: dense,
-        onTap: () {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CollectionPage(CollectionLens(
-                source: source,
-                filters: [filter],
-                groupFactor: settings.collectionGroupFactor,
-                sortFactor: settings.collectionSortFactor,
-              )),
-            ),
-            (route) => false,
-          );
-        },
+        onTap: () => _goToCollection(context),
       ),
+    );
+  }
+
+  void _goToCollection(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CollectionPage(CollectionLens(
+          source: source,
+          filters: [filter],
+          groupFactor: settings.collectionGroupFactor,
+          sortFactor: settings.collectionSortFactor,
+        )),
+      ),
+      (route) => false,
     );
   }
 }

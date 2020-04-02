@@ -223,7 +223,7 @@ class StatsPage extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: AvesFilterChip(
                     filter: filterBuilder(label),
-                    onPressed: (filter) => _goToFilteredCollection(context, filter),
+                    onPressed: (filter) => _goToCollection(context, filter),
                   ),
                 ),
                 LinearPercentIndicator(
@@ -253,7 +253,7 @@ class StatsPage extends StatelessWidget {
     ];
   }
 
-  void _goToFilteredCollection(BuildContext context, CollectionFilter filter) {
+  void _goToCollection(BuildContext context, CollectionFilter filter) {
     if (collection == null) return;
     Navigator.pushAndRemoveUntil(
       context,

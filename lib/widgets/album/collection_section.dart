@@ -85,7 +85,7 @@ class GridThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       key: ValueKey(entry.uri),
-      onTap: () => _showFullscreen(context),
+      onTap: () => _goToFullscreen(context),
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.size.width,
         builder: (c, mqWidth, child) {
@@ -102,7 +102,7 @@ class GridThumbnail extends StatelessWidget {
     );
   }
 
-  void _showFullscreen(BuildContext context) {
+  void _goToFullscreen(BuildContext context) {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(

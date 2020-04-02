@@ -75,14 +75,14 @@ class InfoPageState extends State<InfoPage> {
                   entry: entry,
                   showTitle: !locationAtTop,
                   visibleNotifier: widget.visibleNotifier,
-                  onFilter: _goToFilteredCollection,
+                  onFilter: _goToCollection,
                 );
                 final basicAndLocationSliver = locationAtTop
                     ? SliverToBoxAdapter(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToFilteredCollection)),
+                            Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
                             const SizedBox(width: 8),
                             Expanded(child: locationSection),
                           ],
@@ -91,7 +91,7 @@ class InfoPageState extends State<InfoPage> {
                     : SliverList(
                         delegate: SliverChildListDelegate.fixed(
                           [
-                            BasicSection(entry: entry, collection: collection, onFilter: _goToFilteredCollection),
+                            BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
                             locationSection,
                           ],
                         ),
@@ -153,7 +153,7 @@ class InfoPageState extends State<InfoPage> {
     );
   }
 
-  void _goToFilteredCollection(CollectionFilter filter) {
+  void _goToCollection(CollectionFilter filter) {
     if (collection == null) return;
     Navigator.pushAndRemoveUntil(
       context,

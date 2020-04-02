@@ -5,6 +5,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
+import 'package:aves/widgets/common/transition_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -59,17 +60,11 @@ class Thumbnail extends StatelessWidget {
         ? image
         : Hero(
             tag: heroTag,
-            flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
-              // use LayoutBuilder only during hero animation
-              return LayoutBuilder(builder: (context, constraints) {
-                final dim = min(constraints.maxWidth, constraints.maxHeight);
-                return Image(
-                  image: provider,
-                  width: dim,
-                  height: dim,
-                  fit: BoxFit.cover,
-                );
-              });
+            flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+              return TransitionImage(
+                image: provider,
+                animation: animation,
+              );
             },
             child: image,
           );

@@ -5,6 +5,7 @@ import 'package:aves/model/metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:path/path.dart';
 import 'package:tuple/tuple.dart';
@@ -118,13 +119,14 @@ class ImageEntry {
 
   bool get canRotate => canEdit && (mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG);
 
-  double get aspectRatio {
+  bool get rotated => ((isVideo && isCatalogued) ? catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
+
+  double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
-    if (isVideo && isCatalogued) {
-      if (catalogMetadata.videoRotation % 180 == 90) return height / width;
-    }
-    return width / height;
+    return rotated ? height / width : width / height;
   }
+
+  Size get displaySize => rotated ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 

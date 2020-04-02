@@ -64,7 +64,7 @@ class AvesVideoState extends State<AvesVideo> {
     }
     return Center(
       child: AspectRatio(
-        aspectRatio: entry.aspectRatio,
+        aspectRatio: entry.displayAspectRatio,
         child: VideoPlayer(widget.controller),
       ),
     );
