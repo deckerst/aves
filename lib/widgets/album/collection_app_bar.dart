@@ -84,6 +84,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         return AnimatedBuilder(
           animation: collection.filterChangeNotifier,
           builder: (context, child) => SliverAppBar(
+            titleSpacing: 0,
             leading: _buildAppBarLeading(),
             title: _buildAppBarTitle(),
             actions: _buildActions(),
@@ -121,7 +122,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Widget _buildAppBarTitle() {
     switch (stateNotifier.value) {
       case PageState.browse:
-        return const Text('Aves');
+        return GestureDetector(
+          onTap: _goToSearch,
+          // use a `Container` with a dummy color to make it expand
+          // so that we can also detect taps around the title `Text`
+          child: Container(
+            alignment: AlignmentDirectional.centerStart,
+            padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
+            color: Colors.transparent,
+            height: kToolbarHeight,
+            child: const Text('Aves'),
+          ),
+        );
       case PageState.search:
         return SearchField(
           stateNotifier: stateNotifier,
@@ -139,13 +151,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             case PageState.browse:
               return IconButton(
                 icon: Icon(OMIcons.search),
-                onPressed: () async {
-                  final filter = await showSearch(
-                    context: context,
-                    delegate: ImageSearchDelegate(collection),
-                  );
-                  collection.addFilter(filter);
-                },
+                onPressed: _goToSearch,
               );
             case PageState.search:
               return IconButton(
@@ -230,6 +236,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         collection.sort(SortFactor.name);
         break;
     }
+  }
+
+  Future<void> _goToSearch() async {
+    final filter = await showSearch(
+      context: context,
+      delegate: ImageSearchDelegate(collection),
+    );
+    collection.addFilter(filter);
   }
 
   Future<void> _goToStats() {
