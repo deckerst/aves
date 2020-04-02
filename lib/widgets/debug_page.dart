@@ -49,10 +49,7 @@ class DebugPageState extends State<DebugPage> {
             children: [
               const Text('Settings'),
               RaisedButton(
-                onPressed: () async {
-                  await settings.reset();
-                  setState(() {});
-                },
+                onPressed: () => settings.reset().then((_) => setState(() {})),
                 child: const Text('Reset settings'),
               ),
               Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
@@ -133,8 +130,32 @@ class DebugPageState extends State<DebugPage> {
                 },
               ),
               const Divider(),
-              Text('Image cache: ${imageCache.currentSize} items, ${formatFilesize(imageCache.currentSizeBytes)}'),
-              Text('SVG cache: ${PictureProvider.cacheCount} items'),
+              Row(
+                children: [
+                  Text('Image cache: ${imageCache.currentSize} items, ${formatFilesize(imageCache.currentSizeBytes)}'),
+                  const Spacer(),
+                  RaisedButton(
+                    onPressed: () {
+                      imageCache.clear();
+                      setState(() {});
+                    },
+                    child: const Text('Clear'),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text('SVG cache: ${PictureProvider.cacheCount} items'),
+                  const Spacer(),
+                  RaisedButton(
+                    onPressed: () {
+                      PictureProvider.clearCache();
+                      setState(() {});
+                    },
+                    child: const Text('Clear'),
+                  ),
+                ],
+              ),
               const Divider(),
               const Text('Time dilation'),
               Slider(

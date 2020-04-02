@@ -107,7 +107,7 @@ class ThumbnailCollection extends StatelessWidget {
     return collection.filters.any((filter) => filter is FavouriteFilter)
         ? const EmptyContent(
             icon: OMIcons.favoriteBorder,
-            text: 'No favourite!',
+            text: 'No favourites!',
           )
         : collection.filters.any((filter) => filter is VideoFilter)
             ? const EmptyContent(
