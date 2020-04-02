@@ -28,4 +28,9 @@ class FavouriteRepo {
     await metadataDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
   }
+
+  Future<void> clear() async {
+    await metadataDb.clearFavourites();
+    _rows.clear();
+  }
 }

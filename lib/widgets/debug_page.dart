@@ -64,19 +64,21 @@ class DebugPageState extends State<DebugPage> {
               Text('With GPS: ${withGps.length}'),
               Text('With address: ${located.length}'),
               const Divider(),
-              RaisedButton(
-                onPressed: () async {
-                  await metadataDb.reset();
-                  _startDbReport();
-                },
-                child: const Text('Reset DB'),
-              ),
               FutureBuilder(
                 future: _dbFileSizeLoader,
                 builder: (context, AsyncSnapshot<int> snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
                   if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                  return Text('DB file size: ${formatFilesize(snapshot.data)}');
+                  return Row(
+                    children: [
+                      Text('DB file size: ${formatFilesize(snapshot.data)}'),
+                      const Spacer(),
+                      RaisedButton(
+                        onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
+                        child: const Text('Reset DB'),
+                      ),
+                    ],
+                  );
                 },
               ),
               FutureBuilder(
@@ -84,7 +86,16 @@ class DebugPageState extends State<DebugPage> {
                 builder: (context, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
                   if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                  return Text('DB metadata rows: ${snapshot.data.length}');
+                  return Row(
+                    children: [
+                      Text('DB metadata rows: ${snapshot.data.length}'),
+                      const Spacer(),
+                      RaisedButton(
+                        onPressed: () => metadataDb.clearMetadataEntries().then((_) => _startDbReport()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
                 },
               ),
               FutureBuilder(
@@ -92,7 +103,16 @@ class DebugPageState extends State<DebugPage> {
                 builder: (context, AsyncSnapshot<List<AddressDetails>> snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
                   if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                  return Text('DB address rows: ${snapshot.data.length}');
+                  return Row(
+                    children: [
+                      Text('DB address rows: ${snapshot.data.length}'),
+                      const Spacer(),
+                      RaisedButton(
+                        onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
                 },
               ),
               FutureBuilder(
@@ -100,7 +120,16 @@ class DebugPageState extends State<DebugPage> {
                 builder: (context, AsyncSnapshot<List<FavouriteRow>> snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
                   if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-                  return Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)');
+                  return Row(
+                    children: [
+                      Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)'),
+                      const Spacer(),
+                      RaisedButton(
+                        onPressed: () => favourites.clear().then((_) => _startDbReport()),
+                        child: const Text('Clear'),
+                      ),
+                    ],
+                  );
                 },
               ),
               const Divider(),
