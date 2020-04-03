@@ -54,7 +54,7 @@ class ImageView extends StatelessWidget {
     // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
     // there's a black frame between the hero animation and the final image, even when it's cached.
 
-    final loadingBuilder = (context) => Center(
+    final thumbnailLoadingBuilder = (context) => Center(
           child: AspectRatio(
             // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
             aspectRatio: entry.displayAspectRatio,
@@ -77,7 +77,7 @@ class ImageView extends StatelessWidget {
             mimeType: entry.mimeType,
             colorFilter: Constants.svgColorFilter,
           ),
-          placeholderBuilder: loadingBuilder,
+          placeholderBuilder: thumbnailLoadingBuilder,
         ),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
@@ -86,14 +86,21 @@ class ImageView extends StatelessWidget {
         onTapUp: (tapContext, details, value) => onTap?.call(),
       );
     } else {
+      final uriImage = UriImage(
+        uri: entry.uri,
+        mimeType: entry.mimeType,
+      );
       child = PhotoView(
         // key includes size and orientation to refresh when the image is rotated
         key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
-        imageProvider: UriImage(
-          uri: entry.uri,
-          mimeType: entry.mimeType,
-        ),
-        loadingBuilder: (context, event) => loadingBuilder(context),
+        imageProvider: uriImage,
+        // when the full image is ready, we use it in the `loadingBuilder`
+        // we still provide a `loadingBuilder` in that case to avoid a black frame after hero animation
+        loadingBuilder: (context, event) => imageCache.statusForKey(uriImage).keepAlive
+            ? Image(
+                image: uriImage,
+              )
+            : thumbnailLoadingBuilder(context),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,

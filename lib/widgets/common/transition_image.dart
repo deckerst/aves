@@ -159,6 +159,8 @@ class _TransitionImagePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (image == null) return;
+
     final paint = Paint()
       ..isAntiAlias = false
       ..filterQuality = FilterQuality.low;

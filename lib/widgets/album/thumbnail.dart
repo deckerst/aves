@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
+import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/common/transition_image.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +50,9 @@ class Thumbnail extends StatelessWidget {
   }
 
   Widget _buildRasterImage() {
-    final provider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
+    final thumbnailProvider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
     final image = Image(
-      image: provider,
+      image: thumbnailProvider,
       width: extent,
       height: extent,
       fit: BoxFit.cover,
@@ -61,8 +62,18 @@ class Thumbnail extends StatelessWidget {
         : Hero(
             tag: heroTag,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+              ImageProvider heroImageProvider = thumbnailProvider;
+              if (!entry.isVideo && !entry.isSvg) {
+                final imageProvider = UriImage(
+                  uri: entry.uri,
+                  mimeType: entry.mimeType,
+                );
+                if (imageCache.statusForKey(imageProvider).keepAlive) {
+                  heroImageProvider = imageProvider;
+                }
+              }
               return TransitionImage(
-                image: provider,
+                image: heroImageProvider,
                 animation: animation,
               );
             },
