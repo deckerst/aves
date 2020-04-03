@@ -54,12 +54,18 @@ class ImageView extends StatelessWidget {
     // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
     // there's a black frame between the hero animation and the final image, even when it's cached.
 
-    final loadingBuilder = (context) => Image(
-          image: ThumbnailProvider(
-            entry: entry,
-            extent: Constants.thumbnailCacheExtent,
+    final loadingBuilder = (context) => Center(
+          child: AspectRatio(
+            // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
+            aspectRatio: entry.displayAspectRatio,
+            child: Image(
+              image: ThumbnailProvider(
+                entry: entry,
+                extent: Constants.thumbnailCacheExtent,
+              ),
+              fit: BoxFit.fill,
+            ),
           ),
-          fit: BoxFit.contain,
         );
 
     Widget child;
