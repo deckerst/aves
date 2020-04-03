@@ -9,7 +9,7 @@ class ViewerService {
       // return nullable map with: 'uri' 'mimeType'
       return await platform.invokeMethod('getSharedEntry') as Map;
     } on PlatformException catch (e) {
-      debugPrint('getSharedEntry failed with exception=${e.message}');
+      debugPrint('getSharedEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }

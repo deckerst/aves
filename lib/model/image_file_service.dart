@@ -11,7 +11,7 @@ class ImageFileService {
     try {
       await platform.invokeMethod('getImageEntries');
     } on PlatformException catch (e) {
-      debugPrint('getImageEntries failed with exception=${e.message}');
+      debugPrint('getImageEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 
@@ -24,7 +24,7 @@ class ImageFileService {
       }) as Map;
       return ImageEntry.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getImageEntry failed with exception=${e.message}');
+      debugPrint('getImageEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }
@@ -37,7 +37,7 @@ class ImageFileService {
       });
       return result as Uint8List;
     } on PlatformException catch (e) {
-      debugPrint('getImage failed with exception=${e.message}');
+      debugPrint('getImage failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return Uint8List(0);
   }
@@ -53,7 +53,7 @@ class ImageFileService {
         });
         return result as Uint8List;
       } on PlatformException catch (e) {
-        debugPrint('getThumbnail failed with exception=${e.message}');
+        debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       }
     }
     return Uint8List(0);
@@ -65,7 +65,7 @@ class ImageFileService {
         'uri': uri,
       });
     } on PlatformException catch (e) {
-      debugPrint('cancelGetThumbnail failed with exception=${e.message}');
+      debugPrint('cancelGetThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 
@@ -76,7 +76,7 @@ class ImageFileService {
       });
       return true;
     } on PlatformException catch (e) {
-      debugPrint('delete failed with exception=${e.message}');
+      debugPrint('delete failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return false;
   }
@@ -90,7 +90,7 @@ class ImageFileService {
       }) as Map;
       return result;
     } on PlatformException catch (e) {
-      debugPrint('rename failed with exception=${e.message}');
+      debugPrint('rename failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }
@@ -104,7 +104,7 @@ class ImageFileService {
       }) as Map;
       return result;
     } on PlatformException catch (e) {
-      debugPrint('rotate failed with exception=${e.message}');
+      debugPrint('rotate failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }

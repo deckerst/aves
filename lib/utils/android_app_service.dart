@@ -11,7 +11,7 @@ class AndroidAppService {
       final result = await platform.invokeMethod('getAppNames');
       return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getAppNames failed with exception=${e.message}');
+      debugPrint('getAppNames failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return {};
   }
@@ -24,7 +24,7 @@ class AndroidAppService {
       });
       return result as Uint8List;
     } on PlatformException catch (e) {
-      debugPrint('getAppIcon failed with exception=${e.message}');
+      debugPrint('getAppIcon failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return Uint8List(0);
   }
@@ -37,7 +37,7 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
     } on PlatformException catch (e) {
-      debugPrint('edit failed with exception=${e.message}');
+      debugPrint('edit failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 
@@ -49,7 +49,7 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
     } on PlatformException catch (e) {
-      debugPrint('open failed with exception=${e.message}');
+      debugPrint('open failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 
@@ -60,7 +60,7 @@ class AndroidAppService {
         'geoUri': geoUri,
       });
     } on PlatformException catch (e) {
-      debugPrint('openMap failed with exception=${e.message}');
+      debugPrint('openMap failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 
@@ -72,7 +72,7 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
     } on PlatformException catch (e) {
-      debugPrint('setAs failed with exception=${e.message}');
+      debugPrint('setAs failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 
@@ -84,7 +84,7 @@ class AndroidAppService {
         'mimeType': mimeType,
       });
     } on PlatformException catch (e) {
-      debugPrint('share failed with exception=${e.message}');
+      debugPrint('share failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 }

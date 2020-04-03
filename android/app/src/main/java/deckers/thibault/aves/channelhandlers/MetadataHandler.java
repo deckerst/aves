@@ -211,12 +211,23 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                             }
                             metadataMap.put("xmpSubjects", sb.toString());
                         }
+
+                        // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                        String titleDescription = null;
                         if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_TITLE_PROP_NAME)) {
                             XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, XMP_TITLE_PROP_NAME, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
-                            metadataMap.put("xmpTitleDescription", item.getValue());
-                        } else if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME)) {
+                            if (item != null) {
+                                titleDescription = item.getValue();
+                            }
+                        }
+                        if (titleDescription == null && xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME)) {
                             XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
-                            metadataMap.put("xmpTitleDescription", item.getValue());
+                            if (item != null) {
+                                titleDescription = item.getValue();
+                            }
+                        }
+                        if (titleDescription != null) {
+                            metadataMap.put("xmpTitleDescription", titleDescription);
                         }
                     } catch (XMPException e) {
                         e.printStackTrace();

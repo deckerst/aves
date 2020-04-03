@@ -18,7 +18,7 @@ class MetadataService {
       });
       return result as Map;
     } on PlatformException catch (e) {
-      debugPrint('getAllMetadata failed with exception=${e.message}');
+      debugPrint('getAllMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }
@@ -41,7 +41,7 @@ class MetadataService {
       result['contentId'] = entry.contentId;
       return CatalogMetadata.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getCatalogMetadata failed with exception=${e.message}');
+      debugPrint('getCatalogMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }
@@ -58,7 +58,7 @@ class MetadataService {
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getOverlayMetadata failed with exception=${e.message}');
+      debugPrint('getOverlayMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }
