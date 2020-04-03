@@ -169,33 +169,38 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
     return Row(
       children: [
         Expanded(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(16),
-            ),
-            child: Container(
-              color: Colors.white70,
-              height: 200,
-              child: GoogleMapInitializer(
-                builder: (context) => GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: widget.latLng,
-                    zoom: widget.initialZoom,
+          child: GestureDetector(
+            // absorb scale gesture here to prevent scrolling
+            // and triggering by mistake a move to the image page above
+            onScaleStart: (d) {},
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(16),
+              ),
+              child: Container(
+                color: Colors.white70,
+                height: 200,
+                child: GoogleMapInitializer(
+                  builder: (context) => GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: widget.latLng,
+                      zoom: widget.initialZoom,
+                    ),
+                    onMapCreated: (controller) => setState(() => _controller = controller),
+                    rotateGesturesEnabled: false,
+                    scrollGesturesEnabled: false,
+                    zoomGesturesEnabled: false,
+                    tiltGesturesEnabled: false,
+                    myLocationEnabled: false,
+                    myLocationButtonEnabled: false,
+                    markers: {
+                      Marker(
+                        markerId: MarkerId(widget.markerId),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
+                        position: widget.latLng,
+                      )
+                    },
                   ),
-                  onMapCreated: (controller) => setState(() => _controller = controller),
-                  rotateGesturesEnabled: false,
-                  scrollGesturesEnabled: false,
-                  zoomGesturesEnabled: false,
-                  tiltGesturesEnabled: false,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
-                  markers: {
-                    Marker(
-                      markerId: MarkerId(widget.markerId),
-                      icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
-                      position: widget.latLng,
-                    )
-                  },
                 ),
               ),
             ),
