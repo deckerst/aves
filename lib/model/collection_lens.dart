@@ -83,7 +83,7 @@ class CollectionLens with ChangeNotifier {
     return true;
   }
 
-  Object heroTag(ImageEntry entry) => '$hashCode${entry.uri}';
+  Object heroTag(ImageEntry entry) => entry.uri;
 
   void addFilter(CollectionFilter filter) {
     if (filter == null || filters.contains(filter)) return;
