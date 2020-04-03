@@ -273,8 +273,10 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       });
       _hideSystemUI();
       await _overlayAnimationController.reverse();
-      _frozenViewInsets = null;
-      _frozenViewPadding = null;
+      setState(() {
+        _frozenViewInsets = null;
+        _frozenViewPadding = null;
+      });
     }
   }
 
