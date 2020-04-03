@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
@@ -40,6 +41,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   int _currentHorizontalPage;
   ValueNotifier<int> _currentVerticalPage;
   PageController _horizontalPager, _verticalPager;
+  final AChangeNotifier _verticalScrollNotifier = AChangeNotifier();
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   AnimationController _overlayAnimationController;
   Animation<double> _topOverlayScale, _bottomOverlayScale;
@@ -69,7 +71,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _currentHorizontalPage = max(0, entries.indexOf(_entry));
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
-    _verticalPager = PageController(initialPage: _currentVerticalPage.value);
+    _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
@@ -110,6 +112,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _videoControllers.forEach((kv) => kv.item2.dispose());
+    _verticalPager.removeListener(_onVerticalPageControllerChange);
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -124,6 +127,76 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   @override
   Widget build(BuildContext context) {
+    final topOverlay = ValueListenableBuilder<int>(
+      valueListenable: _currentVerticalPage,
+      builder: (context, page, child) {
+        final showOverlay = _entry != null && page == imagePage;
+        return showOverlay
+            ? FullscreenTopOverlay(
+                entries: entries,
+                index: _currentHorizontalPage,
+                scale: _topOverlayScale,
+                canToggleFavourite: hasCollection,
+                viewInsets: _frozenViewInsets,
+                viewPadding: _frozenViewPadding,
+                onActionSelected: (action) => _actionDelegate.onActionSelected(context, _entry, action),
+              )
+            : const SizedBox.shrink();
+      },
+    );
+
+    final videoController = _entry != null && _entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == _entry.uri, orElse: () => null)?.item2 : null;
+    Widget bottomOverlay = Column(
+      children: [
+        if (videoController != null)
+          VideoControlOverlay(
+            entry: _entry,
+            controller: videoController,
+            scale: _bottomOverlayScale,
+            viewInsets: _frozenViewInsets,
+            viewPadding: _frozenViewPadding,
+          ),
+        SlideTransition(
+          position: _bottomOverlayOffset,
+          child: FullscreenBottomOverlay(
+            entries: entries,
+            index: _currentHorizontalPage,
+            showPosition: hasCollection,
+            viewInsets: _frozenViewInsets,
+            viewPadding: _frozenViewPadding,
+          ),
+        ),
+      ],
+    );
+    bottomOverlay = ValueListenableBuilder<double>(
+      valueListenable: _overlayAnimationController,
+      builder: (context, animation, child) {
+        return Visibility(
+          visible: _entry != null && _overlayAnimationController.status != AnimationStatus.dismissed,
+          child: child,
+        );
+      },
+      child: bottomOverlay,
+    );
+
+    bottomOverlay = Selector<MediaQueryData, double>(
+      selector: (c, mq) => mq.size.height,
+      builder: (c, mqHeight, child) {
+        // when orientation change, the `PageController` offset is not updated right away
+        // and it does not trigger its listeners when it does, so we force a refresh in the next frame
+        WidgetsBinding.instance.addPostFrameCallback((_) => _onVerticalPageControllerChange());
+        return AnimatedBuilder(
+          animation: _verticalScrollNotifier,
+          builder: (context, child) => Positioned(
+            bottom: (_verticalPager.offset ?? 0) - mqHeight,
+            child: child,
+          ),
+          child: child,
+        );
+      },
+      child: bottomOverlay,
+    );
+
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage.value == infoPage) {
@@ -147,61 +220,15 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
             onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
             onImagePageRequested: () => _goToVerticalPage(imagePage),
           ),
-          ValueListenableBuilder<int>(
-            valueListenable: _currentVerticalPage,
-            builder: (context, page, child) {
-              final showOverlay = _entry != null && page == imagePage;
-              return showOverlay
-                  ? FullscreenTopOverlay(
-                      entries: entries,
-                      index: _currentHorizontalPage,
-                      scale: _topOverlayScale,
-                      canToggleFavourite: hasCollection,
-                      viewInsets: _frozenViewInsets,
-                      viewPadding: _frozenViewPadding,
-                      onActionSelected: (action) => _actionDelegate.onActionSelected(context, _entry, action),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-          ValueListenableBuilder<int>(
-            valueListenable: _currentVerticalPage,
-            builder: (context, page, child) {
-              final showOverlay = _entry != null && page == imagePage;
-              final videoController = showOverlay && _entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == _entry.uri, orElse: () => null)?.item2 : null;
-              return Positioned(
-                bottom: 0,
-                child: Opacity(
-                  opacity: showOverlay ? 1 : 0,
-                  child: Column(
-                    children: [
-                      if (videoController != null)
-                        VideoControlOverlay(
-                          entry: _entry,
-                          controller: videoController,
-                          scale: _bottomOverlayScale,
-                          viewInsets: _frozenViewInsets,
-                          viewPadding: _frozenViewPadding,
-                        ),
-                      SlideTransition(
-                        position: _bottomOverlayOffset,
-                        child: FullscreenBottomOverlay(
-                          entries: entries,
-                          index: _currentHorizontalPage,
-                          showPosition: hasCollection,
-                          viewInsets: _frozenViewInsets,
-                          viewPadding: _frozenViewPadding,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+          topOverlay,
+          bottomOverlay,
         ],
       ),
     );
+  }
+
+  void _onVerticalPageControllerChange() {
+    _verticalScrollNotifier.notifyListeners();
   }
 
   Future<void> _goToVerticalPage(int page) {
