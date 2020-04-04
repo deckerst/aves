@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -111,7 +112,14 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             if (entry.isVideo()) {
                 return MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null);
             } else {
-                return MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+                // from Android Q, returned thumbnail is already rotated according to EXIF orientation
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null && entry.orientationDegrees != 0) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(entry.orientationDegrees);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                }
+                return bitmap;
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "failed to get thumbnail for uri=" + entry.uri, e);
