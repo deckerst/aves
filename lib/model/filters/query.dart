@@ -6,12 +6,18 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
-  final String query, upQuery;
+  final String query;
+  bool Function(ImageEntry) _filter;
 
-  QueryFilter(this.query) : upQuery = query.toUpperCase();
+  QueryFilter(this.query) {
+    var upQuery = query.toUpperCase();
+    final not = upQuery.startsWith('-');
+    if (not) upQuery = upQuery.substring(1);
+    _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
+  }
 
   @override
-  bool filter(ImageEntry entry) => entry.search(upQuery);
+  bool filter(ImageEntry entry) => _filter(entry);
 
   @override
   bool get isUnique => false;
