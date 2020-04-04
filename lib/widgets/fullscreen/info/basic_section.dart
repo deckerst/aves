@@ -2,10 +2,10 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/filters/video.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -50,8 +50,8 @@ class BasicSection extends StatelessWidget {
           builder: (context, isFavourite, child) {
             final album = entry.directory;
             final filters = [
-              if (entry.isVideo) VideoFilter(),
-              if (entry.isGif) GifFilter(),
+              if (entry.isVideo) MimeFilter(MimeTypes.MIME_VIDEO),
+              if (entry.isGif) MimeFilter(MimeTypes.MIME_GIF),
               if (isFavourite) FavouriteFilter(),
               if (album != null) AlbumFilter(album, CollectionSource.getUniqueAlbumName(album, collection?.source?.sortedAlbums)),
               ...tags.map((tag) => TagFilter(tag)),

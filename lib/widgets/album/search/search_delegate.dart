@@ -3,11 +3,11 @@ import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/gif.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/filters/video.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/search/expandable_filter_row.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -63,7 +63,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
               children: [
                 _buildFilterRow(
                   context: context,
-                  filters: [FavouriteFilter(), VideoFilter(), GifFilter()].where((f) => containQuery(f.label)),
+                  filters: [FavouriteFilter(), MimeFilter(MimeTypes.MIME_VIDEO), MimeFilter(MimeTypes.MIME_GIF), MimeFilter(MimeTypes.MIME_SVG)].where((f) => containQuery(f.label)),
                 ),
                 _buildFilterRow(
                   context: context,

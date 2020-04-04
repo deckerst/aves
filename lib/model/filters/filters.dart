@@ -1,10 +1,9 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/gif.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/filters/video.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:collection/collection.dart';
@@ -15,8 +14,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
   static const List<String> collectionFilterOrder = [
     QueryFilter.type,
     FavouriteFilter.type,
-    VideoFilter.type,
-    GifFilter.type,
+    MimeFilter.type,
     AlbumFilter.type,
     LocationFilter.type,
     TagFilter.type,

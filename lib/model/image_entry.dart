@@ -109,7 +109,7 @@ class ImageEntry {
 
   bool get isSvg => mimeType == MimeTypes.MIME_SVG;
 
-  bool get isVideo => mimeType.startsWith(MimeTypes.MIME_VIDEO);
+  bool get isVideo => mimeType.startsWith('video');
 
   bool get isCatalogued => catalogMetadata != null;
 

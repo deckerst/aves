@@ -5,10 +5,10 @@ import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/gif.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/filters/video.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -79,13 +79,13 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       source: source,
       leading: const Icon(OMIcons.movie),
       title: 'Videos',
-      filter: VideoFilter(),
+      filter: MimeFilter(MimeTypes.MIME_VIDEO),
     );
     final gifEntry = _FilteredCollectionNavTile(
       source: source,
       leading: const Icon(OMIcons.gif),
       title: 'GIFs',
-      filter: GifFilter(),
+      filter: MimeFilter(MimeTypes.MIME_GIF),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,

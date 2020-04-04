@@ -1,6 +1,7 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/favourite.dart';
-import 'package:aves/model/filters/video.dart';
+import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/collection_app_bar.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/collection_scaling.dart';
@@ -109,7 +110,7 @@ class ThumbnailCollection extends StatelessWidget {
             icon: OMIcons.favoriteBorder,
             text: 'No favourites!',
           )
-        : collection.filters.any((filter) => filter is VideoFilter)
+        : collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.MIME_VIDEO)
             ? const EmptyContent(
                 icon: OMIcons.movie,
               )
