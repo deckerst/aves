@@ -51,7 +51,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
-        _renderSliver = firstOf<RenderSliverStickyHeader>(result);
+        _renderSliver = firstOf<RenderSliverStickyHeader>(result) ?? firstOf<RenderSliverGrid>(result);
         _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
         _start = countNotifier.value;
