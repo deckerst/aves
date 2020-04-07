@@ -8,37 +8,26 @@ import 'package:aves/model/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:provider/provider.dart';
 
-class MediaStoreCollectionProvider extends StatefulWidget {
-  final Widget child;
+class MediaStoreSource {
+  CollectionSource _source;
+  CollectionLens _baseLens;
 
-  const MediaStoreCollectionProvider({@required this.child});
+  CollectionLens get collection => _baseLens;
 
-  @override
-  _MediaStoreCollectionProviderState createState() => _MediaStoreCollectionProviderState();
-}
+  static const EventChannel _eventChannel = EventChannel('deckers.thibault/aves/mediastore');
 
-class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvider> {
-  Future<CollectionLens> collectionFuture;
-
-  static const EventChannel eventChannel = EventChannel('deckers.thibault/aves/mediastore');
-
-  @override
-  void initState() {
-    super.initState();
-    collectionFuture = _create();
-  }
-
-  Future<CollectionLens> _create() async {
-    final stopwatch = Stopwatch()..start();
-    final mediaStoreSource = CollectionSource();
-    final mediaStoreBaseLens = CollectionLens(
-      source: mediaStoreSource,
+  MediaStoreSource() {
+    _source = CollectionSource();
+    _baseLens = CollectionLens(
+      source: _source,
       groupFactor: settings.collectionGroupFactor,
       sortFactor: settings.collectionSortFactor,
     );
+  }
 
+  Future<void> fetch() async {
+    final stopwatch = Stopwatch()..start();
     await metadataDb.init(); // <20ms
     await favourites.init();
     final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
@@ -51,39 +40,31 @@ class _MediaStoreCollectionProviderState extends State<MediaStoreCollectionProvi
     }
 
     final allEntries = <ImageEntry>[];
-    eventChannel.receiveBroadcastStream().cast<Map>().listen(
-          (entryMap) => allEntries.add(ImageEntry.fromMap(entryMap)),
-          onDone: () async {
-            debugPrint('$runtimeType stream complete in ${stopwatch.elapsed.inMilliseconds}ms');
-            mediaStoreSource.addAll(allEntries);
-            // TODO reduce setup time until here
-            mediaStoreSource.updateAlbums(); // <50ms
-            await mediaStoreSource.loadCatalogMetadata(); // 650ms
-            await mediaStoreSource.catalogEntries(); // <50ms
-            await mediaStoreSource.loadAddresses(); // 350ms
-            await mediaStoreSource.locateEntries(); // <50ms
-            debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
-          },
-          onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),
-        );
+    _eventChannel.receiveBroadcastStream().cast<Map>().listen(
+      (entryMap) {
+        allEntries.add(ImageEntry.fromMap(entryMap));
+        if (allEntries.length >= 100) {
+          _source.addAll(allEntries);
+          allEntries.clear();
+//          debugPrint('$runtimeType streamed ${_source.entries.length} entries at ${stopwatch.elapsed.inMilliseconds}ms');
+        }
+      },
+      onDone: () async {
+        debugPrint('$runtimeType stream complete at ${stopwatch.elapsed.inMilliseconds}ms');
+        _source.addAll(allEntries);
+        // TODO reduce setup time until here
+        _source.updateAlbums(); // <50ms
+        await _source.loadCatalogMetadata(); // 650ms
+        await _source.catalogEntries(); // <50ms
+        await _source.loadAddresses(); // 350ms
+        await _source.locateEntries(); // <50ms
+        debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
+      },
+      onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),
+    );
 
     // TODO split image fetch AND/OR cache fetch across sessions
+    debugPrint('$runtimeType stream start at ${stopwatch.elapsed.inMilliseconds}ms');
     await ImageFileService.getImageEntries(); // 460ms
-
-    return mediaStoreBaseLens;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: collectionFuture,
-      builder: (futureContext, AsyncSnapshot<CollectionLens> snapshot) {
-        final collection = (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) ? snapshot.data : CollectionLens.empty();
-        return ChangeNotifierProvider<CollectionLens>.value(
-          value: collection,
-          child: widget.child,
-        );
-      },
-    );
   }
 }

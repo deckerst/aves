@@ -1,4 +1,3 @@
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/settings.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
 import 'package:screen/screen.dart';
 
 void main() {
@@ -51,6 +49,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  MediaStoreSource _mediaStore;
   ImageEntry _sharedEntry;
   Future<void> _appSetup;
 
@@ -88,6 +87,9 @@ class _HomePageState extends State<HomePage> {
       // cataloging is essential for geolocation and video rotation
       await _sharedEntry.catalog();
       unawaited(_sharedEntry.locate());
+    } else {
+      _mediaStore = MediaStoreSource();
+      unawaited(_mediaStore.fetch());
     }
   }
 
@@ -103,11 +105,7 @@ class _HomePageState extends State<HomePage> {
               ? SingleFullscreenPage(
                   entry: _sharedEntry,
                 )
-              : MediaStoreCollectionProvider(
-                  child: Consumer<CollectionLens>(
-                    builder: (context, collection, child) => CollectionPage(collection),
-                  ),
-                );
+              : CollectionPage(_mediaStore.collection);
         });
   }
 }

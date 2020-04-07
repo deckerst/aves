@@ -86,18 +86,18 @@ class GridThumbnail extends StatelessWidget {
     return GestureDetector(
       key: ValueKey(entry.uri),
       onTap: () => _goToFullscreen(context),
-      child: Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.size.width,
-        builder: (c, mqWidth, child) {
-          return MetaData(
-            metaData: ThumbnailMetadata(index, entry),
-            child: Thumbnail(
+      child: MetaData(
+        metaData: ThumbnailMetadata(index, entry),
+        child: Selector<MediaQueryData, double>(
+          selector: (c, mq) => mq.size.width,
+          builder: (c, mqWidth, child) {
+            return Thumbnail(
               entry: entry,
               extent: mqWidth / columnCount,
               heroTag: collection.heroTag(entry),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -82,7 +82,7 @@ class FullscreenActionDelegate {
   Future<void> _print(ImageEntry entry) async {
     final uri = entry.uri;
     final mimeType = entry.mimeType;
-    final documentName = entry.title ?? 'Aves';
+    final documentName = entry.bestTitle ?? 'Aves';
     final doc = pdf.Document(title: documentName);
 
     PdfImage pdfImage;
@@ -152,7 +152,7 @@ class FullscreenActionDelegate {
   }
 
   Future<void> _showRenameDialog(BuildContext context, ImageEntry entry) async {
-    final currentName = entry.title;
+    final currentName = entry.bestTitle;
     final controller = TextEditingController(text: currentName);
     final newName = await showDialog<String>(
         context: context,

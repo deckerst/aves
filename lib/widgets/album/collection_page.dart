@@ -15,7 +15,6 @@ class CollectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('$runtimeType build');
     return MediaQueryDataProvider(
       child: ChangeNotifierProvider<CollectionLens>.value(
         value: collection,

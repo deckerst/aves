@@ -37,7 +37,7 @@ class BasicSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InfoRowGroup({
-          'Title': entry.title ?? '?',
+          'Title': entry.bestTitle ?? '?',
           'Date': dateText,
           if (entry.isVideo) ..._buildVideoRows(),
           if (!entry.isSvg) 'Resolution': resolutionText,

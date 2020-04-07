@@ -130,11 +130,19 @@ class ImageEntry {
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 
+  DateTime _bestDate;
+
   DateTime get bestDate {
-    if ((catalogMetadata?.dateMillis ?? 0) > 0) return DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
-    if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) return DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
-    if (dateModifiedSecs != null && dateModifiedSecs > 0) return DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
-    return null;
+    if (_bestDate == null) {
+      if ((catalogMetadata?.dateMillis ?? 0) > 0) {
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
+      } else if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) {
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
+      } else if (dateModifiedSecs != null && dateModifiedSecs > 0) {
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
+      }
+    }
+    return _bestDate;
   }
 
   DateTime get monthTaken {
@@ -159,14 +167,18 @@ class ImageEntry {
 
   List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
-  String get title {
-    if (catalogMetadata != null && catalogMetadata.xmpTitleDescription.isNotEmpty) return catalogMetadata.xmpTitleDescription;
-    return sourceTitle;
+  String _bestTitle;
+
+  String get bestTitle {
+    _bestTitle ??= (catalogMetadata != null && catalogMetadata.xmpTitleDescription.isNotEmpty) ? catalogMetadata.xmpTitleDescription : sourceTitle;
+    return _bestTitle;
   }
 
   Future<void> catalog() async {
     if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
+    _bestDate = null;
+    _bestTitle = null;
     if (catalogMetadata != null) {
       metadataChangeNotifier.notifyListeners();
     }
@@ -212,7 +224,7 @@ class ImageEntry {
   }
 
   bool search(String query) {
-    if (title?.toUpperCase()?.contains(query) ?? false) return true;
+    if (bestTitle?.toUpperCase()?.contains(query) ?? false) return true;
     if (catalogMetadata?.xmpSubjects?.toUpperCase()?.contains(query) ?? false) return true;
     if (addressDetails?.addressLine?.toUpperCase()?.contains(query) ?? false) return true;
     return false;
@@ -232,6 +244,7 @@ class ImageEntry {
     if (contentId is int) this.contentId = contentId;
     final sourceTitle = newFields['sourceTitle'];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
+    _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
     return true;
   }

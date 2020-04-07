@@ -152,7 +152,7 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
             final subRowWidth = twoColumns ? min(_subRowMinWidth, maxWidth / 2) : maxWidth;
             final positionTitle = [
               if (position != null) position,
-              if (entry.title != null) entry.title,
+              if (entry.bestTitle != null) entry.bestTitle,
             ].join(' – ');
             final hasShootingDetails = details != null && !details.isEmpty;
             return Column(

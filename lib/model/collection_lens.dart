@@ -128,14 +128,14 @@ class CollectionLens with ChangeNotifier {
       case SortFactor.date:
         _filteredEntries.sort((a, b) {
           final c = b.bestDate.compareTo(a.bestDate);
-          return c != 0 ? c : compareAsciiUpperCase(a.title, b.title);
+          return c != 0 ? c : compareAsciiUpperCase(a.bestTitle, b.bestTitle);
         });
         break;
       case SortFactor.size:
         _filteredEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
         break;
       case SortFactor.name:
-        _filteredEntries.sort((a, b) => compareAsciiUpperCase(a.title, b.title));
+        _filteredEntries.sort((a, b) => compareAsciiUpperCase(a.bestTitle, b.bestTitle));
         break;
     }
   }
