@@ -155,7 +155,12 @@ class ImageEntry {
     return d == null ? null : DateTime(d.year, d.month, d.day);
   }
 
-  String get durationText => formatDuration(Duration(milliseconds: durationMillis));
+  String _durationText;
+
+  String get durationText {
+    _durationText ??= formatDuration(Duration(milliseconds: durationMillis));
+    return _durationText;
+  }
 
   bool get hasGps => isCatalogued && _catalogMetadata.latitude != null;
 

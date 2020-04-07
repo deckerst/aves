@@ -17,6 +17,7 @@ import com.drew.metadata.MetadataException;
 import com.drew.metadata.avi.AviDirectory;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.jpeg.JpegDirectory;
+import com.drew.metadata.mp4.Mp4Directory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 
 import java.io.File;
@@ -96,11 +97,15 @@ public class ImageEntry {
         return width != null && width > 0 && height != null && height > 0;
     }
 
+    private boolean hasDuration() {
+        return durationMillis != null && durationMillis > 0;
+    }
+
     public String getFilename() {
         return path == null ? null : new File(path).getName();
     }
 
-    public boolean isImage() {
+    private boolean isImage() {
         return mimeType.startsWith(MimeTypes.IMAGE);
     }
 
@@ -123,7 +128,7 @@ public class ImageEntry {
     // finds: width, height, orientation/rotation, date, title, duration
     public ImageEntry fillPreCatalogMetadata(Context context) {
         fillByMediaMetadataRetriever(context);
-        if (hasSize()) return this;
+        if (hasSize() && (!isVideo() || hasDuration())) return this;
         fillByMetadataExtractor(context);
         if (hasSize()) return this;
         fillByBitmapDecode(context);
@@ -218,6 +223,12 @@ public class ImageEntry {
                         height = mp4VideoDir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
                     }
                 }
+                Mp4Directory mp4Dir = metadata.getFirstDirectoryOfType(Mp4Directory.class);
+                if (mp4Dir != null) {
+                    if (mp4Dir.containsTag(Mp4Directory.TAG_DURATION)) {
+                        durationMillis = mp4Dir.getLong(Mp4Directory.TAG_DURATION);
+                    }
+                }
             } else if (MimeTypes.AVI.equals(mimeType)) {
                 AviDirectory aviDir = metadata.getFirstDirectoryOfType(AviDirectory.class);
                 if (aviDir != null) {
@@ -226,6 +237,9 @@ public class ImageEntry {
                     }
                     if (aviDir.containsTag(AviDirectory.TAG_HEIGHT)) {
                         height = aviDir.getInt(AviDirectory.TAG_HEIGHT);
+                    }
+                    if (aviDir.containsTag(AviDirectory.TAG_DURATION)) {
+                        durationMillis = aviDir.getLong(AviDirectory.TAG_DURATION);
                     }
                 }
             }

@@ -86,6 +86,8 @@ public class MediaStoreImageProvider extends ImageProvider {
         String orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
         int entryCount = 0;
 
+        final boolean needDuration = projection == VIDEO_PROJECTION;
+
         try {
             Cursor cursor = context.getContentResolver().query(contentUri, projection, null, null, orderBy);
             if (cursor != null) {
@@ -115,6 +117,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                     final String mimeType = cursor.getString(mimeTypeColumn);
                     int width = cursor.getInt(widthColumn);
                     int height = cursor.getInt(heightColumn);
+                    long durationMillis = durationColumn != -1 ? cursor.getLong(durationColumn) : 0;
 
                     Map<String, Object> entryMap = new HashMap<String, Object>() {{
                         put("uri", itemUri.toString());
@@ -126,14 +129,14 @@ public class MediaStoreImageProvider extends ImageProvider {
                         put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
                         put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
                         put("bucketDisplayName", cursor.getString(bucketDisplayNameColumn));
-                        put("durationMillis", durationColumn != -1 ? cursor.getLong(durationColumn) : 0);
                         // only for map export
                         put("contentId", contentId);
                     }};
                     entryMap.put("width", width);
                     entryMap.put("height", height);
+                    entryMap.put("durationMillis", durationMillis);
 
-                    if ((width <= 0 || height <= 0) && !MimeTypes.SVG.equals(mimeType)) {
+                    if (((width <= 0 || height <= 0) && needSize(mimeType)) || (durationMillis == 0 && needDuration)) {
                         // some images are incorrectly registered in the Media Store,
                         // they are valid but miss some attributes, such as width, height, orientation
                         ImageEntry entry = new ImageEntry(entryMap).fillPreCatalogMetadata(context);
@@ -142,7 +145,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                         height = entry.height != null ? entry.height : 0;
                     }
 
-                    if ((width <= 0 || height <= 0) && !MimeTypes.SVG.equals(mimeType)) {
+                    if ((width <= 0 || height <= 0) && needSize(mimeType)) {
                         // this is probably not a real image, like "/storage/emulated/0", so we skip it
                         Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path + ", mimeType=" + mimeType);
                     } else {
@@ -156,6 +159,10 @@ public class MediaStoreImageProvider extends ImageProvider {
             Log.e(LOG_TAG, "failed to get entries", e);
         }
         return entryCount;
+    }
+
+    private boolean needSize(String mimeType) {
+        return !MimeTypes.SVG.equals(mimeType);
     }
 
     @Override
