@@ -241,7 +241,8 @@ public class ImageEntry {
 
     // convenience method
 
-    private static long toLong(Object o) {
+    private static Long toLong(Object o) {
+        if (o == null) return null;
         if (o instanceof Integer) return Long.valueOf((Integer) o);
         return (long) o;
     }
