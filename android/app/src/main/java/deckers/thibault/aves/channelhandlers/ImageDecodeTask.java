@@ -98,7 +98,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         try {
             return resolver.loadThumbnail(entry.uri, new Size(width, height), null);
         } catch (IOException e) {
-            Log.e(LOG_TAG, "failed to load thumbnail for uri=" + entry.uri, e);
+            Log.e(LOG_TAG, "failed to load thumbnail for uri=" + entry.uri + ", path=" + entry.path + ", width=" + width + ", height=" + height, e);
         }
         return null;
     }

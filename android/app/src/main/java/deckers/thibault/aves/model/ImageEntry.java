@@ -14,6 +14,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
+import com.drew.metadata.avi.AviDirectory;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.jpeg.JpegDirectory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
@@ -215,6 +216,16 @@ public class ImageEntry {
                     }
                     if (mp4VideoDir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
                         height = mp4VideoDir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
+                    }
+                }
+            } else if (MimeTypes.AVI.equals(mimeType)) {
+                AviDirectory aviDir = metadata.getFirstDirectoryOfType(AviDirectory.class);
+                if (aviDir != null) {
+                    if (aviDir.containsTag(AviDirectory.TAG_WIDTH)) {
+                        width = aviDir.getInt(AviDirectory.TAG_WIDTH);
+                    }
+                    if (aviDir.containsTag(AviDirectory.TAG_HEIGHT)) {
+                        height = aviDir.getInt(AviDirectory.TAG_HEIGHT);
                     }
                 }
             }
