@@ -79,13 +79,13 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       source: source,
       leading: const Icon(OMIcons.movie),
       title: 'Videos',
-      filter: MimeFilter(MimeTypes.MIME_VIDEO),
+      filter: MimeFilter(MimeTypes.ANY_VIDEO),
     );
     final gifEntry = _FilteredCollectionNavTile(
       source: source,
       leading: const Icon(OMIcons.gif),
       title: 'GIFs',
-      filter: MimeFilter(MimeTypes.MIME_GIF),
+      filter: MimeFilter(MimeTypes.GIF),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,

@@ -50,8 +50,8 @@ class BasicSection extends StatelessWidget {
           builder: (context, isFavourite, child) {
             final album = entry.directory;
             final filters = [
-              if (entry.isVideo) MimeFilter(MimeTypes.MIME_VIDEO),
-              if (entry.isGif) MimeFilter(MimeTypes.MIME_GIF),
+              if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
+              if (entry.isGif) MimeFilter(MimeTypes.GIF),
               if (isFavourite) FavouriteFilter(),
               if (album != null) AlbumFilter(album, CollectionSource.getUniqueAlbumName(album, collection?.source?.sortedAlbums)),
               ...tags.map((tag) => TagFilter(tag)),

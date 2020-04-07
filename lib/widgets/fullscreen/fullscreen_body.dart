@@ -319,6 +319,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     if (controllerEntry != null) {
       _videoControllers.remove(controllerEntry);
     } else {
+      // unsupported by video_player 0.10.8+2 (backed by ExoPlayer): AVI
       final controller = VideoPlayerController.uri(uri)..initialize();
       controllerEntry = Tuple2(uri, controller);
     }

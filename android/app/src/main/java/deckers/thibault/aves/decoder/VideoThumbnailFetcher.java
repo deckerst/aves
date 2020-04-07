@@ -31,9 +31,11 @@ class VideoThumbnailFetcher implements DataFetcher<InputStream> {
             } else {
                 // not ideal: bitmap -> byte[] -> bitmap
                 // but simple fallback and we cache result
-                Bitmap bitmap = retriever.getFrameAtTime();
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                Bitmap bitmap = retriever.getFrameAtTime();
+                if (bitmap != null) {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                }
                 callback.onDataReady(new ByteArrayInputStream(bos.toByteArray()));
             }
         } catch (Exception ex) {

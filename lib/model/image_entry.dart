@@ -105,9 +105,9 @@ class ImageEntry {
 
   bool get isFavourite => favourites.isFavourite(this);
 
-  bool get isGif => mimeType == MimeTypes.MIME_GIF;
+  bool get isGif => mimeType == MimeTypes.GIF;
 
-  bool get isSvg => mimeType == MimeTypes.MIME_SVG;
+  bool get isSvg => mimeType == MimeTypes.SVG;
 
   bool get isVideo => mimeType.startsWith('video');
 
@@ -117,7 +117,7 @@ class ImageEntry {
 
   bool get canPrint => !isVideo;
 
-  bool get canRotate => canEdit && (mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG);
+  bool get canRotate => canEdit && (mimeType == MimeTypes.JPEG || mimeType == MimeTypes.PNG);
 
   bool get rotated => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
 

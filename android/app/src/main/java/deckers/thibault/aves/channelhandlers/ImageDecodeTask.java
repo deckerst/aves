@@ -22,6 +22,7 @@ import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
@@ -69,10 +70,28 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         Params p = params[0];
         Bitmap bitmap = null;
         if (!this.isCancelled()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                bitmap = getThumbnailBytesByResolver(p);
-            } else {
-                bitmap = getThumbnailBytesByMediaStore(p);
+            Exception exception = null;
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    bitmap = getThumbnailBytesByResolver(p);
+                } else {
+                    bitmap = getThumbnailBytesByMediaStore(p);
+                }
+            } catch (Exception e) {
+                exception = e;
+            }
+
+            // fallback if the native methods failed
+            try {
+                if (bitmap == null) {
+                    bitmap = getThumbnailByGlide(p);
+                }
+            } catch (Exception e) {
+                exception = e;
+            }
+
+            if (bitmap == null) {
+                Log.e(LOG_TAG, "failed to load thumbnail for uri=" + p.entry.uri + ", path=" + p.entry.path, exception);
             }
         } else {
             Log.d(LOG_TAG, "getThumbnail with uri=" + p.entry.uri + " cancelled");
@@ -89,18 +108,13 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
-    private Bitmap getThumbnailBytesByResolver(Params params) {
+    private Bitmap getThumbnailBytesByResolver(Params params) throws IOException {
         ImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
 
         ContentResolver resolver = activity.getContentResolver();
-        try {
-            return resolver.loadThumbnail(entry.uri, new Size(width, height), null);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "failed to load thumbnail for uri=" + entry.uri + ", path=" + entry.path + ", width=" + width + ", height=" + height, e);
-        }
-        return null;
+        return resolver.loadThumbnail(entry.uri, new Size(width, height), null);
     }
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
@@ -108,26 +122,21 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         long contentId = ContentUris.parseId(entry.uri);
 
         ContentResolver resolver = activity.getContentResolver();
-        try {
-            if (entry.isVideo()) {
-                return MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null);
-            } else {
-                Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
-                // from Android Q, returned thumbnail is already rotated according to EXIF orientation
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null && entry.orientationDegrees != 0) {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(entry.orientationDegrees);
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                }
-                return bitmap;
+        if (entry.isVideo()) {
+            return MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null);
+        } else {
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            // from Android Q, returned thumbnail is already rotated according to EXIF orientation
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null && entry.orientationDegrees != 0) {
+                Matrix matrix = new Matrix();
+                matrix.postRotate(entry.orientationDegrees);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
             }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "failed to get thumbnail for uri=" + entry.uri, e);
+            return bitmap;
         }
-        return null;
     }
 
-    private Bitmap getThumbnailByGlide(Params params) {
+    private Bitmap getThumbnailByGlide(Params params) throws ExecutionException, InterruptedException {
         ImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
@@ -158,13 +167,9 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
         try {
             return target.get();
-        } catch (InterruptedException e) {
-            Log.d(LOG_TAG, "getThumbnail with uri=" + entry.uri + " interrupted");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            Glide.with(activity).clear(target);
         }
-        Glide.with(activity).clear(target);
-        return null;
     }
 
     @Override

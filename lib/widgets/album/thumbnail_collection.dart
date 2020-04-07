@@ -114,7 +114,7 @@ class ThumbnailCollection extends StatelessWidget {
             icon: OMIcons.favoriteBorder,
             text: 'No favourites!',
           )
-        : collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.MIME_VIDEO)
+        : collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)
             ? const EmptyContent(
                 icon: OMIcons.movie,
               )

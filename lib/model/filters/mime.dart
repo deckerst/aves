@@ -24,9 +24,9 @@ class MimeFilter extends CollectionFilter {
       _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
       _filter = (entry) => entry.mimeType == lowMime;
-      if (lowMime == MimeTypes.MIME_GIF) {
+      if (lowMime == MimeTypes.GIF) {
         _icon = OMIcons.gif;
-      } else if (lowMime == MimeTypes.MIME_SVG) {
+      } else if (lowMime == MimeTypes.SVG) {
         _label = 'SVG';
       }
       _label ??= lowMime.split('/')[1].toUpperCase();
