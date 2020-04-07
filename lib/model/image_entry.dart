@@ -27,8 +27,8 @@ class ImageEntry {
   final int sourceDateTakenMillis;
   final String bucketDisplayName;
   final int durationMillis;
-  CatalogMetadata catalogMetadata;
-  AddressDetails addressDetails;
+  CatalogMetadata _catalogMetadata;
+  AddressDetails _addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
   final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
@@ -111,7 +111,7 @@ class ImageEntry {
 
   bool get isVideo => mimeType.startsWith('video');
 
-  bool get isCatalogued => catalogMetadata != null;
+  bool get isCatalogued => _catalogMetadata != null;
 
   bool get canEdit => path != null;
 
@@ -119,7 +119,7 @@ class ImageEntry {
 
   bool get canRotate => canEdit && (mimeType == MimeTypes.MIME_JPEG || mimeType == MimeTypes.MIME_PNG);
 
-  bool get rotated => ((isVideo && isCatalogued) ? catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
+  bool get rotated => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
@@ -134,8 +134,8 @@ class ImageEntry {
 
   DateTime get bestDate {
     if (_bestDate == null) {
-      if ((catalogMetadata?.dateMillis ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(catalogMetadata.dateMillis);
+      if ((_catalogMetadata?.dateMillis ?? 0) > 0) {
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogMetadata.dateMillis);
       } else if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) {
         _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
       } else if (dateModifiedSecs != null && dateModifiedSecs > 0) {
@@ -157,39 +157,52 @@ class ImageEntry {
 
   String get durationText => formatDuration(Duration(milliseconds: durationMillis));
 
-  bool get hasGps => isCatalogued && catalogMetadata.latitude != null;
+  bool get hasGps => isCatalogued && _catalogMetadata.latitude != null;
 
-  bool get isLocated => addressDetails != null;
+  bool get isLocated => _addressDetails != null;
 
-  Tuple2<double, double> get latLng => isCatalogued ? Tuple2(catalogMetadata.latitude, catalogMetadata.longitude) : null;
+  Tuple2<double, double> get latLng => isCatalogued ? Tuple2(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
-  String get geoUri => hasGps ? 'geo:${catalogMetadata.latitude},${catalogMetadata.longitude}?q=${catalogMetadata.latitude},${catalogMetadata.longitude}' : null;
+  String get geoUri => hasGps ? 'geo:${_catalogMetadata.latitude},${_catalogMetadata.longitude}?q=${_catalogMetadata.latitude},${_catalogMetadata.longitude}' : null;
 
-  List<String> get xmpSubjects => catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
+  List<String> get xmpSubjects => _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
   String _bestTitle;
 
   String get bestTitle {
-    _bestTitle ??= (catalogMetadata != null && catalogMetadata.xmpTitleDescription.isNotEmpty) ? catalogMetadata.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= (_catalogMetadata != null && _catalogMetadata.xmpTitleDescription.isNotEmpty) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
     return _bestTitle;
+  }
+
+  CatalogMetadata get catalogMetadata => _catalogMetadata;
+
+  set catalogMetadata(CatalogMetadata newMetadata) {
+    _catalogMetadata = newMetadata;
+    _bestDate = null;
+    _bestTitle = null;
+    if (_catalogMetadata != null) {
+      metadataChangeNotifier.notifyListeners();
+    }
   }
 
   Future<void> catalog() async {
     if (isCatalogued) return;
     catalogMetadata = await MetadataService.getCatalogMetadata(this);
-    _bestDate = null;
-    _bestTitle = null;
-    if (catalogMetadata != null) {
-      metadataChangeNotifier.notifyListeners();
-    }
+  }
+
+  AddressDetails get addressDetails => _addressDetails;
+
+  set addressDetails(AddressDetails newAddress) {
+    _addressDetails = newAddress;
+    addressChangeNotifier.notifyListeners();
   }
 
   Future<void> locate() async {
     if (isLocated) return;
 
     await catalog();
-    final latitude = catalogMetadata?.latitude;
-    final longitude = catalogMetadata?.longitude;
+    final latitude = _catalogMetadata?.latitude;
+    final longitude = _catalogMetadata?.longitude;
     if (latitude == null || longitude == null) return;
 
     final coordinates = Coordinates(latitude, longitude);
@@ -204,7 +217,6 @@ class ImageEntry {
           adminArea: address.adminArea,
           locality: address.locality,
         );
-        addressChangeNotifier.notifyListeners();
       }
     } catch (exception) {
       debugPrint('$runtimeType addAddressToMetadata failed with path=$path coordinates=$coordinates exception=$exception');
@@ -217,16 +229,16 @@ class ImageEntry {
     // admin area examples: Seoul, Geneva, null
     // locality examples: Mapo-gu, Geneva, Annecy
     return {
-      addressDetails.countryName,
-      addressDetails.adminArea,
-      addressDetails.locality,
+      _addressDetails.countryName,
+      _addressDetails.adminArea,
+      _addressDetails.locality,
     }.where((part) => part != null && part.isNotEmpty).join(', ');
   }
 
   bool search(String query) {
     if (bestTitle?.toUpperCase()?.contains(query) ?? false) return true;
-    if (catalogMetadata?.xmpSubjects?.toUpperCase()?.contains(query) ?? false) return true;
-    if (addressDetails?.addressLine?.toUpperCase()?.contains(query) ?? false) return true;
+    if (_catalogMetadata?.xmpSubjects?.toUpperCase()?.contains(query) ?? false) return true;
+    if (_addressDetails?.addressLine?.toUpperCase()?.contains(query) ?? false) return true;
     return false;
   }
 
