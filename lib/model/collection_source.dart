@@ -27,16 +27,22 @@ class CollectionSource {
     List<ImageEntry> entries,
   }) : _rawEntries = entries ?? [];
 
+  final List<DateMetadata> savedDates = [];
+
+  Future<void> loadDates() async {
+    final stopwatch = Stopwatch()..start();
+    savedDates.addAll(await metadataDb.loadDates());
+    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${savedDates.length} saved entries');
+  }
+
   Future<void> loadCatalogMetadata() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
     _rawEntries.forEach((entry) {
       final contentId = entry.contentId;
-      if (contentId != null) {
-        entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
-      }
+      entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
     });
-    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms with ${saved.length} saved entries');
+    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} saved entries');
     onCatalogMetadataChanged();
   }
 
@@ -45,11 +51,9 @@ class CollectionSource {
     final saved = await metadataDb.loadAddresses();
     _rawEntries.forEach((entry) {
       final contentId = entry.contentId;
-      if (contentId != null) {
-        entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
-      }
+      entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
     });
-    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${saved.length} saved entries');
+    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} saved entries');
     onAddressMetadataChanged();
   }
 
@@ -124,12 +128,11 @@ class CollectionSource {
     sortedCities = lister((address) => address.city);
   }
 
-  void add(ImageEntry entry) {
-    _rawEntries.add(entry);
-    eventBus.fire(EntryAddedEvent(entry));
-  }
-
   void addAll(Iterable<ImageEntry> entries) {
+    entries.forEach((entry) {
+      final contentId = entry.contentId;
+      entry.catalogDateMillis = savedDates.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null)?.dateMillis;
+    });
     _rawEntries.addAll(entries);
     eventBus.fire(const EntryAddedEvent());
   }

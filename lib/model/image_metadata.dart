@@ -1,6 +1,32 @@
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
 
+class DateMetadata {
+  final int contentId, dateMillis;
+
+  DateMetadata({
+    this.contentId,
+    this.dateMillis,
+  });
+
+  factory DateMetadata.fromMap(Map map) {
+    return DateMetadata(
+      contentId: map['contentId'],
+      dateMillis: map['dateMillis'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'contentId': contentId,
+        'dateMillis': dateMillis,
+      };
+
+  @override
+  String toString() {
+    return 'DateMetadata{contentId=$contentId, dateMillis=$dateMillis}';
+  }
+}
+
 class CatalogMetadata {
   final int contentId, dateMillis, videoRotation;
   final String xmpSubjects, xmpTitleDescription;

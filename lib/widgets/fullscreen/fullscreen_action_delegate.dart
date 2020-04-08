@@ -5,6 +5,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_file_service.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
+import 'package:aves/widgets/fullscreen/debug.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,9 @@ class FullscreenActionDelegate {
         break;
       case FullscreenAction.share:
         AndroidAppService.share(entry.uri, entry.mimeType);
+        break;
+      case FullscreenAction.debug:
+        _goToDebug(context, entry);
         break;
     }
   }
@@ -176,5 +180,14 @@ class FullscreenActionDelegate {
         });
     if (newName == null || newName.isEmpty) return;
     _showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
+  }
+
+  void _goToDebug(BuildContext context, ImageEntry entry) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullscreenDebugPage(entry: entry),
+      ),
+    );
   }
 }

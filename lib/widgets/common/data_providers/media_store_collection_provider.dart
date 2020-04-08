@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/favourite_repo.dart';
@@ -35,15 +37,20 @@ class MediaStoreSource {
     if (currentTimeZone != catalogTimeZone) {
       // clear catalog metadata to get correct date/times when moving to a different time zone
       debugPrint('$runtimeType clear catalog metadata to get correct date/times');
+      await metadataDb.clearDates();
       await metadataDb.clearMetadataEntries();
       settings.catalogTimeZone = currentTimeZone;
     }
+    await _source.loadDates(); // 100ms for 5400 entries
 
+    var refreshCount = 10;
+    const refreshCountMax = 1000;
     final allEntries = <ImageEntry>[];
     _eventChannel.receiveBroadcastStream().cast<Map>().listen(
       (entryMap) {
         allEntries.add(ImageEntry.fromMap(entryMap));
-        if (allEntries.length >= 100) {
+        if (allEntries.length >= refreshCount) {
+          refreshCount = min(refreshCount * 10, refreshCountMax);
           _source.addAll(allEntries);
           allEntries.clear();
 //          debugPrint('$runtimeType streamed ${_source.entries.length} entries at ${stopwatch.elapsed.inMilliseconds}ms');
@@ -54,7 +61,7 @@ class MediaStoreSource {
         _source.addAll(allEntries);
         // TODO reduce setup time until here
         _source.updateAlbums(); // <50ms
-        await _source.loadCatalogMetadata(); // 650ms
+        await _source.loadCatalogMetadata(); // 400ms for 5400 entries
         await _source.catalogEntries(); // <50ms
         await _source.loadAddresses(); // 350ms
         await _source.locateEntries(); // <50ms

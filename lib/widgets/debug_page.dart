@@ -21,6 +21,7 @@ class DebugPage extends StatefulWidget {
 
 class DebugPageState extends State<DebugPage> {
   Future<int> _dbFileSizeLoader;
+  Future<List<DateMetadata>> _dbDateLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
   Future<List<FavouriteRow>> _dbFavouritesLoader;
@@ -73,6 +74,23 @@ class DebugPageState extends State<DebugPage> {
                       RaisedButton(
                         onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
                         child: const Text('Reset DB'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              FutureBuilder(
+                future: _dbDateLoader,
+                builder: (context, AsyncSnapshot<List<DateMetadata>> snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  return Row(
+                    children: [
+                      Text('DB date rows: ${snapshot.data.length}'),
+                      const Spacer(),
+                      RaisedButton(
+                        onPressed: () => metadataDb.clearDates().then((_) => _startDbReport()),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );
@@ -175,6 +193,7 @@ class DebugPageState extends State<DebugPage> {
 
   void _startDbReport() {
     _dbFileSizeLoader = metadataDb.dbFileSize();
+    _dbDateLoader = metadataDb.loadDates();
     _dbMetadataLoader = metadataDb.loadMetadataEntries();
     _dbAddressLoader = metadataDb.loadAddresses();
     _dbFavouritesLoader = metadataDb.loadFavourites();

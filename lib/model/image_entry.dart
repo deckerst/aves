@@ -27,6 +27,7 @@ class ImageEntry {
   final int sourceDateTakenMillis;
   final String bucketDisplayName;
   final int durationMillis;
+  int _catalogDateMillis;
   CatalogMetadata _catalogMetadata;
   AddressDetails _addressDetails;
 
@@ -134,11 +135,11 @@ class ImageEntry {
 
   DateTime get bestDate {
     if (_bestDate == null) {
-      if ((_catalogMetadata?.dateMillis ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogMetadata.dateMillis);
-      } else if (sourceDateTakenMillis != null && sourceDateTakenMillis > 0) {
+      if ((_catalogDateMillis ?? 0) > 0) {
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogDateMillis);
+      } else if ((sourceDateTakenMillis ?? 0) > 0) {
         _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
-      } else if (dateModifiedSecs != null && dateModifiedSecs > 0) {
+      } else if ((dateModifiedSecs ?? 0) > 0) {
         _bestDate = DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
       }
     }
@@ -181,13 +182,17 @@ class ImageEntry {
 
   CatalogMetadata get catalogMetadata => _catalogMetadata;
 
-  set catalogMetadata(CatalogMetadata newMetadata) {
-    _catalogMetadata = newMetadata;
+  set catalogDateMillis(int dateMillis) {
+    _catalogDateMillis = dateMillis;
     _bestDate = null;
+  }
+
+  set catalogMetadata(CatalogMetadata newMetadata) {
+    if (newMetadata == null) return;
+    catalogDateMillis = newMetadata.dateMillis;
+    _catalogMetadata = newMetadata;
     _bestTitle = null;
-    if (_catalogMetadata != null) {
-      metadataChangeNotifier.notifyListeners();
-    }
+    metadataChangeNotifier.notifyListeners();
   }
 
   Future<void> catalog() async {

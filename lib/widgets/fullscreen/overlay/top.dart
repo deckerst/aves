@@ -75,6 +75,10 @@ class FullscreenTopOverlay extends StatelessWidget {
                           ...inAppActions.map(_buildPopupMenuItem),
                           const PopupMenuDivider(),
                           ...externalAppActions.map(_buildPopupMenuItem),
+                          if (kDebugMode) ...[
+                            const PopupMenuDivider(),
+                            _buildPopupMenuItem(FullscreenAction.debug),
+                          ]
                         ],
                         onSelected: onActionSelected,
                       ),
@@ -109,6 +113,8 @@ class FullscreenTopOverlay extends StatelessWidget {
       case FullscreenAction.edit:
       case FullscreenAction.setAs:
         return true;
+      case FullscreenAction.debug:
+        return kDebugMode;
     }
     return false;
   }
@@ -153,6 +159,7 @@ class FullscreenTopOverlay extends StatelessWidget {
       case FullscreenAction.open:
       case FullscreenAction.edit:
       case FullscreenAction.setAs:
+      case FullscreenAction.debug:
         break;
     }
     return child != null
@@ -188,6 +195,7 @@ class FullscreenTopOverlay extends StatelessWidget {
       case FullscreenAction.rotateCCW:
       case FullscreenAction.rotateCW:
       case FullscreenAction.print:
+      case FullscreenAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());
         break;
       // external app actions

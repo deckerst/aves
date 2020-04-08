@@ -27,7 +27,7 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     }
 
     void fetchAll(Activity activity) {
-        Log.d(LOG_TAG, "fetchAll start");
+//        Log.d(LOG_TAG, "fetchAll start");
 //        Instant start = Instant.now();
         Handler handler = new Handler(Looper.getMainLooper());
         new MediaStoreImageProvider().fetchAll(activity, (entry) -> handler.post(() -> eventSink.success(entry))); // 350ms

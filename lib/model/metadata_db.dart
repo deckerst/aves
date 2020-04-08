@@ -12,6 +12,7 @@ class MetadataDb {
 
   Future<String> get path async => join(await getDatabasesPath(), 'metadata.db');
 
+  static const dateTakenTable = 'dateTaken';
   static const metadataTable = 'metadata';
   static const addressTable = 'address';
   static const favouriteTable = 'favourites';
@@ -23,6 +24,7 @@ class MetadataDb {
     _database = openDatabase(
       await path,
       onCreate: (db, version) async {
+        await db.execute('CREATE TABLE $dateTakenTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER)');
         await db.execute('CREATE TABLE $metadataTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, xmpTitleDescription TEXT, latitude REAL, longitude REAL)');
         await db.execute('CREATE TABLE $addressTable(contentId INTEGER PRIMARY KEY, addressLine TEXT, countryName TEXT, adminArea TEXT, locality TEXT)');
         await db.execute('CREATE TABLE $favouriteTable(contentId INTEGER PRIMARY KEY, path TEXT)');
@@ -43,6 +45,25 @@ class MetadataDb {
     await init();
   }
 
+  // date taken
+
+  Future<void> clearDates() async {
+    final db = await _database;
+    final count = await db.delete(dateTakenTable, where: '1');
+    debugPrint('$runtimeType clearDates deleted $count entries');
+  }
+
+  Future<List<DateMetadata>> loadDates() async {
+//    final stopwatch = Stopwatch()..start();
+    final db = await _database;
+    final maps = await db.query(dateTakenTable);
+    final metadataEntries = maps.map((map) => DateMetadata.fromMap(map)).toList();
+//    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
+    return metadataEntries;
+  }
+
+  // catalog metadata
+
   Future<void> clearMetadataEntries() async {
     final db = await _database;
     final count = await db.delete(metadataTable, where: '1');
@@ -54,7 +75,7 @@ class MetadataDb {
     final db = await _database;
     final maps = await db.query(metadataTable);
     final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadMetadataEntries complete in ${stopwatch.elapsed.inMilliseconds}ms with ${metadataEntries.length} entries');
+//    debugPrint('$runtimeType loadMetadataEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
     return metadataEntries;
   }
 
@@ -63,14 +84,25 @@ class MetadataDb {
     final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
-    metadataEntries.where((metadata) => metadata != null).forEach((metadata) => batch.insert(
-          metadataTable,
-          metadata.toMap(),
+    metadataEntries.where((metadata) => metadata != null).forEach((metadata) {
+      if (metadata.dateMillis != 0) {
+        batch.insert(
+          dateTakenTable,
+          DateMetadata(contentId: metadata.contentId, dateMillis: metadata.dateMillis).toMap(),
           conflictAlgorithm: ConflictAlgorithm.replace,
-        ));
+        );
+      }
+      batch.insert(
+        metadataTable,
+        metadata.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
     await batch.commit(noResult: true);
-    debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms with ${metadataEntries.length} entries');
+    debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
   }
+
+  // address
 
   Future<void> clearAddresses() async {
     final db = await _database;
@@ -83,7 +115,7 @@ class MetadataDb {
     final db = await _database;
     final maps = await db.query(addressTable);
     final addresses = maps.map((map) => AddressDetails.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${addresses.length} entries');
+//    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${addresses.length} entries');
     return addresses;
   }
 
@@ -98,7 +130,7 @@ class MetadataDb {
           conflictAlgorithm: ConflictAlgorithm.replace,
         ));
     await batch.commit(noResult: true);
-    debugPrint('$runtimeType saveAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms with ${addresses.length} entries');
+    debugPrint('$runtimeType saveAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${addresses.length} entries');
   }
 
   // favourites
@@ -114,7 +146,7 @@ class MetadataDb {
     final db = await _database;
     final maps = await db.query(favouriteTable);
     final favouriteRows = maps.map((map) => FavouriteRow.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms with ${favouriteRows.length} entries');
+//    debugPrint('$runtimeType loadFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
     return favouriteRows;
   }
 
@@ -129,7 +161,7 @@ class MetadataDb {
           conflictAlgorithm: ConflictAlgorithm.replace,
         ));
     await batch.commit(noResult: true);
-//    debugPrint('$runtimeType addFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms with ${favouriteRows.length} entries');
+//    debugPrint('$runtimeType addFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
   }
 
   Future<void> removeFavourites(Iterable<FavouriteRow> favouriteRows) async {
@@ -147,6 +179,6 @@ class MetadataDb {
           whereArgs: [id],
         ));
     await batch.commit(noResult: true);
-//    debugPrint('$runtimeType removeFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms with ${favouriteRows.length} entries');
+//    debugPrint('$runtimeType removeFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
   }
 }

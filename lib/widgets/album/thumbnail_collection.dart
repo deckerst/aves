@@ -33,7 +33,7 @@ class ThumbnailCollection extends StatelessWidget {
         builder: (c, mqViewInsetsBottom, child) {
           return Consumer<CollectionLens>(
             builder: (context, collection, child) {
-              debugPrint('$runtimeType collection builder entries=${collection.entryCount}');
+//              debugPrint('$runtimeType collection builder entries=${collection.entryCount}');
               final sectionKeys = collection.sections.keys.toList();
               final showHeaders = collection.showHeaders;
               return GridScaleGestureDetector(

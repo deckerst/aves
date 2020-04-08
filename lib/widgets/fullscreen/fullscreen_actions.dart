@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
-enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite }
+enum FullscreenAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite, debug }
 
 class FullscreenActions {
   static const inApp = [
@@ -53,6 +53,8 @@ extension ExtraFullscreenAction on FullscreenAction {
         return 'Set as…';
       case FullscreenAction.openMap:
         return 'Show on map…';
+      case FullscreenAction.debug:
+        return 'Debug';
     }
     return null;
   }
@@ -83,6 +85,8 @@ extension ExtraFullscreenAction on FullscreenAction {
       case FullscreenAction.setAs:
       case FullscreenAction.openMap:
         return null;
+      case FullscreenAction.debug:
+        return OMIcons.whatshot;
     }
     return null;
   }

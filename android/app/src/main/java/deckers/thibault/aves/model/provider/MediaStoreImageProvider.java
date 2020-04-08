@@ -150,6 +150,9 @@ public class MediaStoreImageProvider extends ImageProvider {
                         Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path + ", mimeType=" + mimeType);
                     } else {
                         newEntryHandler.handleEntry(entryMap);
+                        if (entryCount % 30 == 0) {
+                            Thread.sleep(10);
+                        }
                         entryCount++;
                     }
                 }

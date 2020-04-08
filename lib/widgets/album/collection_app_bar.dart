@@ -80,7 +80,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return ValueListenableBuilder<PageState>(
       valueListenable: stateNotifier,
       builder: (context, state, child) {
-        debugPrint('$runtimeType builder state=$state');
         return AnimatedBuilder(
           animation: collection.filterChangeNotifier,
           builder: (context, child) => SliverAppBar(
