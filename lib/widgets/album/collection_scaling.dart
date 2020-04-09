@@ -4,19 +4,25 @@ import 'dart:ui' as ui;
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
+import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:tuple/tuple.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
-  final ValueNotifier<int> columnCountNotifier;
+  final ValueNotifier<double> extentNotifier;
+  final Size mqSize;
+  final EdgeInsets mqPadding;
   final Widget child;
 
   const GridScaleGestureDetector({
     this.scrollableKey,
-    @required this.columnCountNotifier,
+    @required this.extentNotifier,
+    @required this.mqSize,
+    @required this.mqPadding,
     @required this.child,
   });
 
@@ -25,17 +31,21 @@ class GridScaleGestureDetector extends StatefulWidget {
 }
 
 class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
-  int _start;
-  ValueNotifier<double> _scaledCountNotifier;
+  Tuple2<double, double> _extentMinMax;
+  double _startExtent;
+  ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ThumbnailMetadata _metadata;
   RenderSliver _renderSliver;
   RenderViewport _renderViewport;
 
-  ValueNotifier<int> get countNotifier => widget.columnCountNotifier;
+  ValueNotifier<double> get tileExtentNotifier => widget.extentNotifier;
 
-  static const columnCountMin = 2.0;
-  static const columnCountMax = 8.0;
+  @override
+  void initState() {
+    super.initState();
+    _extentMinMax = TileExtentManager.extentBoundsForSize(widget.mqSize);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +64,12 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         _renderSliver = firstOf<RenderSliverStickyHeader>(result) ?? firstOf<RenderSliverGrid>(result);
         _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
-        _start = countNotifier.value;
-        _scaledCountNotifier = ValueNotifier(_start.toDouble());
+        _startExtent = tileExtentNotifier.value;
+        _scaledExtentNotifier = ValueNotifier(_startExtent);
 
+        // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
-        final halfExtent = gridWidth / _start / 2;
+        final halfExtent = _startExtent / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
           builder: (context) {
@@ -66,30 +77,34 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
               imageEntry: _metadata.entry,
               center: thumbnailCenter,
               gridWidth: gridWidth,
-              scaledCountNotifier: _scaledCountNotifier,
+              scaledExtentNotifier: _scaledExtentNotifier,
             );
           },
         );
         Overlay.of(scrollableContext).insert(_overlayEntry);
       },
       onScaleUpdate: (details) {
-        if (_scaledCountNotifier == null) return;
+        if (_scaledExtentNotifier == null) return;
         final s = details.scale;
-        _scaledCountNotifier.value = (_start / s).clamp(columnCountMin, columnCountMax);
+        _scaledExtentNotifier.value = (_startExtent * s).clamp(_extentMinMax.item1, _extentMinMax.item2);
       },
       onScaleEnd: (details) {
         if (_overlayEntry != null) {
           _overlayEntry.remove();
           _overlayEntry = null;
         }
-        if (_scaledCountNotifier == null) return;
+        if (_scaledExtentNotifier == null) return;
 
-        final newColumnCount = _scaledCountNotifier.value.round();
-        _scaledCountNotifier = null;
-        if (newColumnCount == countNotifier.value) return;
-
-        // update grid layout
-        countNotifier.value = newColumnCount;
+        final oldExtent = tileExtentNotifier.value;
+        // sanitize and update grid layout if necessary
+        final newExtent = TileExtentManager.applyTileExtent(
+          widget.mqSize,
+          widget.mqPadding,
+          tileExtentNotifier,
+          newExtent: _scaledExtentNotifier.value,
+        );
+        _scaledExtentNotifier = null;
+        if (newExtent == oldExtent) return;
 
         // scroll to show the focal point thumbnail at its new position
         final sliverClosure = _renderSliver;
@@ -98,7 +113,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final scrollableContext = widget.scrollableKey.currentContext;
           final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
-          final newExtent = gridSize.width / newColumnCount;
+          final newColumnCount = gridSize.width / newExtent;
           final row = index ~/ newColumnCount;
           // `Scrollable.ensureVisible` only works on already rendered objects
           // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
@@ -115,13 +130,13 @@ class ScaleOverlay extends StatefulWidget {
   final ImageEntry imageEntry;
   final Offset center;
   final double gridWidth;
-  final ValueNotifier<double> scaledCountNotifier;
+  final ValueNotifier<double> scaledExtentNotifier;
 
   const ScaleOverlay({
     @required this.imageEntry,
     @required this.center,
     @required this.gridWidth,
-    @required this.scaledCountNotifier,
+    @required this.scaledExtentNotifier,
   });
 
   @override
@@ -168,16 +183,16 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                 ),
           duration: const Duration(milliseconds: 200),
           child: ValueListenableBuilder<double>(
-            valueListenable: widget.scaledCountNotifier,
-            builder: (context, columnCount, child) {
-              final extent = gridWidth / columnCount;
-
+            valueListenable: widget.scaledExtentNotifier,
+            builder: (context, extent, child) {
               // keep scaled thumbnail within the screen
+              final xMin = MediaQuery.of(context).padding.left;
+              final xMax = xMin + gridWidth;
               var dx = .0;
-              if (center.dx - extent / 2 < 0) {
-                dx = extent / 2 - center.dx;
-              } else if (center.dx + extent / 2 > gridWidth) {
-                dx = gridWidth - (center.dx + extent / 2);
+              if (center.dx - extent / 2 < xMin) {
+                dx = xMin - (center.dx - extent / 2);
+              } else if (center.dx + extent / 2 > xMax) {
+                dx = xMax - (center.dx + extent / 2);
               }
               final clampedCenter = center.translate(dx, 0);
 

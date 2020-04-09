@@ -17,6 +17,7 @@ class Settings {
   // preferences
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
+  static const collectionTileExtentKey = 'collection_tile_extent';
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
 
@@ -63,6 +64,10 @@ class Settings {
   SortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SortFactor.date, SortFactor.values);
 
   set collectionSortFactor(SortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+
+  double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
+
+  set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
 
   // convenience methods
 

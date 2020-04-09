@@ -8,19 +8,18 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:provider/provider.dart';
 
 class SectionSliver extends StatelessWidget {
   final CollectionLens collection;
   final dynamic sectionKey;
-  final int columnCount;
+  final double tileExtent;
   final bool showHeader;
 
   const SectionSliver({
     Key key,
     @required this.collection,
     @required this.sectionKey,
-    @required this.columnCount,
+    @required this.tileExtent,
     @required this.showHeader,
   }) : super(key: key);
 
@@ -40,14 +39,14 @@ class SectionSliver extends StatelessWidget {
                 collection: collection,
                 index: index,
                 entry: sectionEntries[index],
-                columnCount: columnCount,
+                tileExtent: tileExtent,
               )
             : null,
         childCount: childCount,
         addAutomaticKeepAlives: false,
       ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: columnCount,
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: tileExtent,
       ),
     );
 
@@ -69,7 +68,7 @@ class GridThumbnail extends StatelessWidget {
   final CollectionLens collection;
   final int index;
   final ImageEntry entry;
-  final int columnCount;
+  final double tileExtent;
   final GestureTapCallback onTap;
 
   const GridThumbnail({
@@ -77,7 +76,7 @@ class GridThumbnail extends StatelessWidget {
     this.collection,
     this.index,
     this.entry,
-    this.columnCount,
+    this.tileExtent,
     this.onTap,
   }) : super(key: key);
 
@@ -88,15 +87,10 @@ class GridThumbnail extends StatelessWidget {
       onTap: () => _goToFullscreen(context),
       child: MetaData(
         metaData: ThumbnailMetadata(index, entry),
-        child: Selector<MediaQueryData, double>(
-          selector: (c, mq) => mq.size.width,
-          builder: (c, mqWidth, child) {
-            return Thumbnail(
-              entry: entry,
-              extent: mqWidth / columnCount,
-              heroTag: collection.heroTag(entry),
-            );
-          },
+        child: Thumbnail(
+          entry: entry,
+          extent: tileExtent,
+          heroTag: collection.heroTag(entry),
         ),
       ),
     );

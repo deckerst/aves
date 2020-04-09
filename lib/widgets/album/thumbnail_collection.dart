@@ -7,17 +7,19 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/collection_scaling.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<PageState> stateNotifier;
 
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final ValueNotifier<int> _columnCountNotifier = ValueNotifier(4);
+  final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
   final GlobalKey _scrollableKey = GlobalKey();
 
   ThumbnailCollection({
@@ -28,9 +30,13 @@ class ThumbnailCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.viewInsets.bottom,
-        builder: (c, mqViewInsetsBottom, child) {
+      child: Selector<MediaQueryData, Tuple3<Size, EdgeInsets, double>>(
+        selector: (c, mq) => Tuple3(mq.size, mq.padding, mq.viewInsets.bottom),
+        builder: (c, mq, child) {
+          final mqSize = mq.item1;
+          final mqPadding = mq.item2;
+          final mqViewInsetsBottom = mq.item3;
+          TileExtentManager.applyTileExtent(mqSize, mqPadding, _tileExtentNotifier);
           return Consumer<CollectionLens>(
             builder: (context, collection, child) {
 //              debugPrint('$runtimeType collection builder entries=${collection.entryCount}');
@@ -38,11 +44,13 @@ class ThumbnailCollection extends StatelessWidget {
               final showHeaders = collection.showHeaders;
               return GridScaleGestureDetector(
                 scrollableKey: _scrollableKey,
-                columnCountNotifier: _columnCountNotifier,
-                child: ValueListenableBuilder<int>(
-                  valueListenable: _columnCountNotifier,
-                  builder: (context, columnCount, child) {
-                    debugPrint('$runtimeType columnCount builder entries=${collection.entryCount} columnCount=$columnCount');
+                extentNotifier: _tileExtentNotifier,
+                mqSize: mqSize,
+                mqPadding: mqPadding,
+                child: ValueListenableBuilder<double>(
+                  valueListenable: _tileExtentNotifier,
+                  builder: (context, tileExtent, child) {
+                    debugPrint('$runtimeType tileExtent builder entries=${collection.entryCount} tileExtent=$tileExtent');
                     final scrollView = CustomScrollView(
                       key: _scrollableKey,
                       primary: true,
@@ -63,7 +71,7 @@ class ThumbnailCollection extends StatelessWidget {
                         ...sectionKeys.map((sectionKey) => SectionSliver(
                               collection: collection,
                               sectionKey: sectionKey,
-                              columnCount: columnCount,
+                              tileExtent: tileExtent,
                               showHeader: showHeaders,
                             )),
                         SliverToBoxAdapter(

@@ -48,13 +48,19 @@ class DebugPageState extends State<DebugPage> {
           child: ListView(
             padding: const EdgeInsets.all(8),
             children: [
-              const Text('Settings'),
-              RaisedButton(
-                onPressed: () => settings.reset().then((_) => setState(() {})),
-                child: const Text('Reset settings'),
+              Row(
+                children: [
+                  const Text('Settings'),
+                  const Spacer(),
+                  RaisedButton(
+                    onPressed: () => settings.reset().then((_) => setState(() {})),
+                    child: const Text('Reset'),
+                  ),
+                ],
               ),
               Text('collectionGroupFactor: ${settings.collectionGroupFactor}'),
               Text('collectionSortFactor: ${settings.collectionSortFactor}'),
+              Text('collectionTileExtent: ${settings.collectionTileExtent}'),
               Text('infoMapZoom: ${settings.infoMapZoom}'),
               const Divider(),
               Text('Entries: ${entries.length}'),
@@ -73,7 +79,7 @@ class DebugPageState extends State<DebugPage> {
                       const Spacer(),
                       RaisedButton(
                         onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
-                        child: const Text('Reset DB'),
+                        child: const Text('Reset'),
                       ),
                     ],
                   );
