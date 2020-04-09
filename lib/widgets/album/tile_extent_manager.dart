@@ -1,11 +1,12 @@
+import 'dart:math';
+
 import 'package:aves/model/settings.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tuple/tuple.dart';
 
 class TileExtentManager {
-  static const columnCountMin = 2;
-  static const columnCountDefault = 4;
-  static const columnCountMax = 8;
+  static const int columnCountMin = 2;
+  static const int columnCountDefault = 4;
+  static const double tileExtentMin = 46.0;
 
   static double applyTileExtent(Size mqSize, EdgeInsets mqPadding, ValueNotifier<double> extentNotifier, {double newExtent}) {
     final availableWidth = mqSize.width - mqPadding.horizontal;
@@ -19,9 +20,8 @@ class TileExtentManager {
     if ((newExtent ?? 0) == 0) {
       numColumns = columnCountDefault;
     } else {
-      final minMax = extentBoundsForSize(mqSize);
-      newExtent = newExtent.clamp(minMax.item1, minMax.item2);
-      numColumns = (availableWidth / newExtent).round().clamp(columnCountMin, columnCountMax);
+      newExtent = newExtent.clamp(tileExtentMin, extentMaxForSize(mqSize));
+      numColumns = max(columnCountMin, (availableWidth / newExtent).round());
     }
     newExtent = availableWidth / numColumns;
     if (extentNotifier.value != newExtent) {
@@ -31,9 +31,7 @@ class TileExtentManager {
     return newExtent;
   }
 
-  static Tuple2<double, double> extentBoundsForSize(Size mqSize) {
-    final min = mqSize.shortestSide / columnCountMax;
-    final max = mqSize.shortestSide / columnCountMin;
-    return Tuple2(min, max);
+  static double extentMaxForSize(Size mqSize) {
+    return mqSize.shortestSide / columnCountMin;
   }
 }

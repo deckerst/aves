@@ -9,7 +9,6 @@ import 'package:aves/widgets/common/data_providers/media_query_data_provider.dar
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:tuple/tuple.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
@@ -31,8 +30,7 @@ class GridScaleGestureDetector extends StatefulWidget {
 }
 
 class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
-  Tuple2<double, double> _extentMinMax;
-  double _startExtent;
+  double _startExtent, _extentMin, _extentMax;
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ThumbnailMetadata _metadata;
@@ -40,12 +38,6 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
   RenderViewport _renderViewport;
 
   ValueNotifier<double> get tileExtentNotifier => widget.extentNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    _extentMinMax = TileExtentManager.extentBoundsForSize(widget.mqSize);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +61,8 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
 
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
+        _extentMin = gridWidth / (gridWidth / TileExtentManager.tileExtentMin).round();
+        _extentMax = gridWidth / (gridWidth / TileExtentManager.extentMaxForSize(widget.mqSize)).round();
         final halfExtent = _startExtent / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
@@ -86,7 +80,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
       onScaleUpdate: (details) {
         if (_scaledExtentNotifier == null) return;
         final s = details.scale;
-        _scaledExtentNotifier.value = (_startExtent * s).clamp(_extentMinMax.item1, _extentMinMax.item2);
+        _scaledExtentNotifier.value = (_startExtent * s).clamp(_extentMin, _extentMax);
       },
       onScaleEnd: (details) {
         if (_overlayEntry != null) {
