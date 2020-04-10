@@ -52,7 +52,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
-        _renderSliver = firstOf<RenderSliverList>(result);
+        _renderSliver = firstOf<RenderSliver>(result);
         _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
         _startExtent = tileExtentNotifier.value;
@@ -99,6 +99,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         _scaledExtentNotifier = null;
         if (newExtent == oldExtent) return;
 
+        // TODO TLAD fix scroll to specific thumbnail with custom SliverList
         // scroll to show the focal point thumbnail at its new position
         final sliverClosure = _renderSliver;
         final viewportClosure = _renderViewport;

@@ -20,6 +20,7 @@ class TileExtentManager {
     if ((newExtent ?? 0) == 0) {
       numColumns = columnCountDefault;
     } else {
+      debugPrint('TODO TLAD tileExtentMin=$tileExtentMin mqSize=$mqSize');
       newExtent = newExtent.clamp(tileExtentMin, extentMaxForSize(mqSize));
       numColumns = max(columnCountMin, (availableWidth / newExtent).round());
     }
