@@ -8,7 +8,6 @@ import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
@@ -53,7 +52,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
-        _renderSliver = firstOf<RenderSliverStickyHeader>(result) ?? firstOf<RenderSliverGrid>(result);
+        _renderSliver = firstOf<RenderSliverList>(result);
         _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
         _startExtent = tileExtentNotifier.value;
