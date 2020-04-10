@@ -1,5 +1,4 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -53,7 +52,7 @@ class BasicSection extends StatelessWidget {
               if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
               if (entry.isGif) MimeFilter(MimeTypes.GIF),
               if (isFavourite) FavouriteFilter(),
-              if (album != null) AlbumFilter(album, CollectionSource.getUniqueAlbumName(album, collection?.source?.sortedAlbums)),
+              if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
               ...tags.map((tag) => TagFilter(tag)),
             ]..sort();
             if (filters.isEmpty) return const SizedBox.shrink();

@@ -1,5 +1,4 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -68,7 +67,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
                 _buildFilterRow(
                   context: context,
                   title: 'Albums',
-                  filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, CollectionSource.getUniqueAlbumName(s, source.sortedAlbums))).where((f) => containQuery(f.uniqueName)),
+                  filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName)),
                 ),
                 _buildFilterRow(
                   context: context,

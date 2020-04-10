@@ -1,6 +1,5 @@
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/fx/outlined_text.dart';
+import 'package:aves/widgets/album/grid/header_generic.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -46,35 +45,5 @@ class MonthSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TitleSectionHeader(title: text);
-  }
-}
-
-class TitleSectionHeader extends StatelessWidget {
-  final Widget leading;
-  final String title;
-
-  const TitleSectionHeader({Key key, this.leading, this.title}) : super(key: key);
-
-  static const leadingDimension = 32.0;
-  static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: OutlinedText(
-        leadingBuilder: leading != null
-            ? (context, isShadow) => Container(
-                  padding: leadingPadding,
-                  width: leadingDimension,
-                  height: leadingDimension,
-                  child: isShadow ? null : leading,
-                )
-            : null,
-        text: title,
-        style: Constants.titleTextStyle,
-        outlineWidth: 2,
-      ),
-    );
   }
 }

@@ -5,8 +5,8 @@ import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings.dart';
@@ -96,9 +96,9 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
           source: source,
           leading: IconUtils.getAlbumIcon(context: context, album: album),
-          title: CollectionSource.getUniqueAlbumName(album, source.sortedAlbums),
+          title: source.getUniqueAlbumName(album),
           dense: true,
-          filter: AlbumFilter(album, CollectionSource.getUniqueAlbumName(album, source.sortedAlbums)),
+          filter: AlbumFilter(album, source.getUniqueAlbumName(album)),
         );
     final buildTagEntry = (tag) => _FilteredCollectionNavTile(
           source: source,

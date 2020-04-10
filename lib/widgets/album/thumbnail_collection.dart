@@ -5,8 +5,8 @@ import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/collection_app_bar.dart';
 import 'package:aves/widgets/album/collection_list_sliver.dart';
 import 'package:aves/widgets/album/collection_page.dart';
-import 'package:aves/widgets/album/collection_scaling.dart';
 import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/album/grid/scaling.dart';
 import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
@@ -71,7 +71,8 @@ class ThumbnailCollection extends StatelessWidget {
                             : CollectionListSliver(
                                 collection: collection,
                                 showHeader: showHeaders,
-                                columnCount: (mqSize.width / tileExtent).round(),
+                                // TODO TLAD get more precise width, considering MediaQuery padding
+                                scrollableWidth: mqSize.width,
                                 tileExtent: tileExtent,
                               ),
                         SliverToBoxAdapter(
