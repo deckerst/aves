@@ -7,62 +7,6 @@ import 'package:aves/widgets/album/transparent_material_page_route.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-
-class SectionSliver extends StatelessWidget {
-  final CollectionLens collection;
-  final dynamic sectionKey;
-  final double tileExtent;
-  final bool showHeader;
-
-  const SectionSliver({
-    Key key,
-    @required this.collection,
-    @required this.sectionKey,
-    @required this.tileExtent,
-    @required this.showHeader,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final sections = collection.sections;
-    final sectionEntries = sections[sectionKey];
-    final childCount = sectionEntries.length;
-
-    final sliver = SliverGrid(
-      delegate: SliverChildBuilderDelegate(
-        // TODO TLAD thumbnails at the beginning of each sections are built even though they are offscreen
-        // because of `RenderSliverMultiBoxAdaptor.addInitialChild`
-        // called by `RenderSliverGrid.performLayout` (line 547)
-        (context, index) => index < childCount
-            ? GridThumbnail(
-                collection: collection,
-                index: index,
-                entry: sectionEntries[index],
-                tileExtent: tileExtent,
-              )
-            : null,
-        childCount: childCount,
-        addAutomaticKeepAlives: false,
-      ),
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: tileExtent,
-      ),
-    );
-
-    return showHeader
-        ? SliverStickyHeader(
-            header: SectionHeader(
-              collection: collection,
-              sections: sections,
-              sectionKey: sectionKey,
-            ),
-            sliver: sliver,
-            overlapsContent: false,
-          )
-        : sliver;
-  }
-}
 
 class GridThumbnail extends StatelessWidget {
   final CollectionLens collection;

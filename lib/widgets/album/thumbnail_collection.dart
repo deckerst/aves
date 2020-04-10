@@ -3,9 +3,9 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/collection_app_bar.dart';
+import 'package:aves/widgets/album/collection_list_sliver.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/collection_scaling.dart';
-import 'package:aves/widgets/album/collection_section.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
@@ -63,17 +63,17 @@ class ThumbnailCollection extends StatelessWidget {
                           appBarHeightNotifier: _appBarHeightNotifier,
                           collection: collection,
                         ),
-                        if (collection.isEmpty)
-                          SliverFillRemaining(
-                            child: _buildEmptyCollectionPlaceholder(collection),
-                            hasScrollBody: false,
-                          ),
-                        ...sectionKeys.map((sectionKey) => SectionSliver(
-                              collection: collection,
-                              sectionKey: sectionKey,
-                              tileExtent: tileExtent,
-                              showHeader: showHeaders,
-                            )),
+                        collection.isEmpty
+                            ? SliverFillRemaining(
+                                child: _buildEmptyCollectionPlaceholder(collection),
+                                hasScrollBody: false,
+                              )
+                            : CollectionListSliver(
+                                collection: collection,
+                                showHeader: showHeaders,
+                                columnCount: (mqSize.width / tileExtent).round(),
+                                tileExtent: tileExtent,
+                              ),
                         SliverToBoxAdapter(
                           child: Selector<MediaQueryData, double>(
                             selector: (c, mq) => mq.viewInsets.bottom,
