@@ -71,8 +71,7 @@ class ThumbnailCollection extends StatelessWidget {
                             : CollectionListSliver(
                                 collection: collection,
                                 showHeader: showHeaders,
-                                // TODO TLAD get more precise width, considering MediaQuery padding
-                                scrollableWidth: mqSize.width,
+                                scrollableWidth: mqSize.width - mqPadding.horizontal,
                                 tileExtent: tileExtent,
                               ),
                         SliverToBoxAdapter(
