@@ -26,6 +26,7 @@ class MetadataSectionSliver extends StatefulWidget {
 class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
   List<_MetadataDirectory> _metadata = [];
   String _loadedMetadataUri;
+  final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
 
   bool get isVisible => widget.visibleNotifier.value;
 
@@ -81,6 +82,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           }
           final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
           return ExpansionTileCard(
+            value: dir.name,
+            expandedNotifier: _expandedDirectoryNotifier,
             title: _DirectoryTitle(dir.name),
             children: [
               const Divider(thickness: 1.0, height: 1.0),
@@ -91,6 +94,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
               ),
             ],
             baseColor: Colors.grey[900],
+            expandedColor: Colors.grey[850],
           );
         },
         childCount: 1 + _metadata.length,
@@ -119,6 +123,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       _metadata = [];
       _loadedMetadataUri = null;
     }
+    _expandedDirectoryNotifier.value = null;
     if (mounted) setState(() {});
   }
 

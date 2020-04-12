@@ -104,9 +104,11 @@ packages:
   expansion_tile_card:
     dependency: "direct main"
     description:
-      name: expansion_tile_card
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: edb6b11bb448fc2f30e566a20605b37093503176
+      url: "git://github.com/deckerst/expansion_tile_card.git"
+    source: git
     version: "1.0.3"
   flushbar:
     dependency: "direct main"

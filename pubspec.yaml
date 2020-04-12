@@ -20,10 +20,14 @@ dependencies:
   charts_flutter:
   collection:
   draggable_scrollbar:
+#    path: ../flutter-draggable-scrollbar
     git:
       url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   event_bus:
   expansion_tile_card:
+#    path: ../expansion_tile_card
+    git:
+      url: git://github.com/deckerst/expansion_tile_card.git
   flushbar:
     #   flushbar-1.9.1 cannot be built with Flutter 1.15.17
     git:
