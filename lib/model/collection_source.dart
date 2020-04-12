@@ -124,7 +124,7 @@ class CollectionSource {
   void updateLocations() {
     final locations = _rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails);
     final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
-    sortedCountries = lister((address) => address.countryName);
+    sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
     sortedCities = lister((address) => address.city);
   }
 

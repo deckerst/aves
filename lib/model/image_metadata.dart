@@ -103,13 +103,14 @@ class OverlayMetadata {
 
 class AddressDetails {
   final int contentId;
-  final String addressLine, countryName, adminArea, locality;
+  final String addressLine, countryCode, countryName, adminArea, locality;
 
   String get city => locality != null && locality.isNotEmpty ? locality : adminArea;
 
   AddressDetails({
     this.contentId,
     this.addressLine,
+    this.countryCode,
     this.countryName,
     this.adminArea,
     this.locality,
@@ -119,6 +120,7 @@ class AddressDetails {
     return AddressDetails(
       contentId: map['contentId'],
       addressLine: map['addressLine'] ?? '',
+      countryCode: map['countryCode'] ?? '',
       countryName: map['countryName'] ?? '',
       adminArea: map['adminArea'] ?? '',
       locality: map['locality'] ?? '',
@@ -128,6 +130,7 @@ class AddressDetails {
   Map<String, dynamic> toMap() => {
         'contentId': contentId,
         'addressLine': addressLine,
+        'countryCode': countryCode,
         'countryName': countryName,
         'adminArea': adminArea,
         'locality': locality,
@@ -135,7 +138,7 @@ class AddressDetails {
 
   @override
   String toString() {
-    return 'AddressDetails{contentId=$contentId, addressLine=$addressLine, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
+    return 'AddressDetails{contentId=$contentId, addressLine=$addressLine, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
   }
 }
 

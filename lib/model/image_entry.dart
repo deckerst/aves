@@ -223,6 +223,7 @@ class ImageEntry {
         addressDetails = AddressDetails(
           contentId: contentId,
           addressLine: address.addressLine,
+          countryCode: address.countryCode,
           countryName: address.countryName,
           adminArea: address.adminArea,
           locality: address.locality,

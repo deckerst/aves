@@ -92,6 +92,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                     if (data != null)
                       InfoRowGroup({
                         'dateMillis': '${data.addressLine}',
+                        'countryCode': '${data.countryCode}',
                         'countryName': '${data.countryName}',
                         'adminArea': '${data.adminArea}',
                         'locality': '${data.locality}',

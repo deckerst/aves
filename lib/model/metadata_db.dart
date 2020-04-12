@@ -26,7 +26,7 @@ class MetadataDb {
       onCreate: (db, version) async {
         await db.execute('CREATE TABLE $dateTakenTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER)');
         await db.execute('CREATE TABLE $metadataTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, xmpTitleDescription TEXT, latitude REAL, longitude REAL)');
-        await db.execute('CREATE TABLE $addressTable(contentId INTEGER PRIMARY KEY, addressLine TEXT, countryName TEXT, adminArea TEXT, locality TEXT)');
+        await db.execute('CREATE TABLE $addressTable(contentId INTEGER PRIMARY KEY, addressLine TEXT, countryCode TEXT, countryName TEXT, adminArea TEXT, locality TEXT)');
         await db.execute('CREATE TABLE $favouriteTable(contentId INTEGER PRIMARY KEY, path TEXT)');
       },
       version: 1,

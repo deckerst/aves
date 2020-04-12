@@ -93,14 +93,14 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
-    final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
+    final buildAlbumEntry = (String album) => _FilteredCollectionNavTile(
           source: source,
           leading: IconUtils.getAlbumIcon(context: context, album: album),
           title: source.getUniqueAlbumName(album),
           dense: true,
           filter: AlbumFilter(album, source.getUniqueAlbumName(album)),
         );
-    final buildTagEntry = (tag) => _FilteredCollectionNavTile(
+    final buildTagEntry = (String tag) => _FilteredCollectionNavTile(
           source: source,
           leading: Icon(
             OMIcons.localOffer,
@@ -110,18 +110,36 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           dense: true,
           filter: TagFilter(tag),
         );
-    final buildLocationEntry = (level, location) => _FilteredCollectionNavTile(
-          source: source,
-          leading: Icon(
-            OMIcons.place,
-            color: stringToColor(location),
-          ),
-          title: location,
-          dense: true,
-          filter: LocationFilter(level, location),
-        );
+    final buildLocationEntry = (LocationLevel level, String location) {
+      String title;
+      String flag;
+      if (level == LocationLevel.country) {
+        final split = location.split(';');
+        String countryCode;
+        if (split.isNotEmpty) title = split[0];
+        if (split.length > 1) countryCode = split[1];
+        flag = LocationFilter.countryCodeToFlag(countryCode);
+      } else {
+        title = location;
+      }
+      return _FilteredCollectionNavTile(
+        source: source,
+        leading: flag != null
+            ? Text(
+                flag,
+                style: TextStyle(fontSize: IconTheme.of(context).size),
+              )
+            : Icon(
+                OMIcons.place,
+                color: stringToColor(title),
+              ),
+        title: title,
+        dense: true,
+        filter: LocationFilter(level, location),
+      );
+    };
 
-    final regularAlbums = [], appAlbums = [], specialAlbums = [];
+    final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
     for (var album in source.sortedAlbums) {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.Default:

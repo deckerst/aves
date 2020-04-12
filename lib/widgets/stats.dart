@@ -34,8 +34,9 @@ class StatsPage extends StatelessWidget {
         if (city != null && city.isNotEmpty) {
           entryCountPerCity[city] = (entryCountPerCity[city] ?? 0) + 1;
         }
-        final country = address.countryName;
+        var country = address.countryName;
         if (country != null && country.isNotEmpty) {
+          country += ';${address.countryCode}';
           entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
         }
       }
@@ -193,7 +194,12 @@ class StatsPage extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildTopFilters(BuildContext context, String title, Map<String, int> entryCountMap, FilterBuilder filterBuilder) {
+  List<Widget> _buildTopFilters(
+    BuildContext context,
+    String title,
+    Map<String, int> entryCountMap,
+    CollectionFilter Function(String key) filterBuilder,
+  ) {
     if (entryCountMap.isEmpty) return [];
 
     final maxCount = collection.entryCount;
@@ -214,7 +220,8 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.buttonBorderWidth / 2 + 6, end: 8),
         child: Table(
           children: sortedEntries.take(5).map((kv) {
-            final label = kv.key;
+            final filter = filterBuilder(kv.key);
+            final label = filter.label;
             final count = kv.value;
             final percent = count / maxCount;
             return TableRow(
@@ -222,7 +229,7 @@ class StatsPage extends StatelessWidget {
                 Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: AvesFilterChip(
-                    filter: filterBuilder(label),
+                    filter: filter,
                     onPressed: (filter) => _goToCollection(context, filter),
                   ),
                 ),

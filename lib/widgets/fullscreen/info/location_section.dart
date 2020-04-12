@@ -80,7 +80,7 @@ class _LocationSectionState extends State<LocationSection> {
         final address = entry.addressDetails;
         location = address.addressLine;
         final country = address.countryName;
-        if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, country));
+        if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country;${address.countryCode}'));
         final city = address.city;
         if (city != null && city.isNotEmpty) filters.add(LocationFilter(LocationLevel.city, city));
       } else if (entry.hasGps) {
