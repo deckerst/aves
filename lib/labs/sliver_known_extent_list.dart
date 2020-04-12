@@ -53,7 +53,7 @@ class RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
   }
 
   int getMinChildIndexForScrollOffset(double scrollOffset) {
-    return sectionAtOffset(scrollOffset).getMinChildIndexForScrollOffset(scrollOffset);
+    return sectionAtOffset(scrollOffset)?.getMinChildIndexForScrollOffset(scrollOffset) ?? 0;
   }
 
   int getMaxChildIndexForScrollOffset(double scrollOffset) {
