@@ -6,13 +6,26 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
+  static final exactRegex = RegExp('^"(.*)"\$');
+
   final String query;
   bool Function(ImageEntry) _filter;
 
   QueryFilter(this.query) {
     var upQuery = query.toUpperCase();
+
+    // allow NOT queries starting with `-`
     final not = upQuery.startsWith('-');
-    if (not) upQuery = upQuery.substring(1);
+    if (not) {
+      upQuery = upQuery.substring(1);
+    }
+
+    // allow untrimmed queries wrapped with `"..."`
+    final matches = exactRegex.allMatches(upQuery);
+    if (matches.length == 1) {
+      upQuery = matches.elementAt(0).group(1);
+    }
+
     _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
   }
 

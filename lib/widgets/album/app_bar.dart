@@ -290,9 +290,9 @@ class SearchField extends StatelessWidget {
       ),
       autofocus: true,
       onSubmitted: (query) {
-        query = query.trim();
-        if (query.isNotEmpty) {
-          collection.addFilter(QueryFilter(query));
+        final cleanQuery = query.trim();
+        if (cleanQuery.isNotEmpty) {
+          collection.addFilter(QueryFilter(cleanQuery));
         }
         stateNotifier.value = PageState.browse;
       },
