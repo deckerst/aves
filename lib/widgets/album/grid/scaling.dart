@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/album/collection_section.dart';
+import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';

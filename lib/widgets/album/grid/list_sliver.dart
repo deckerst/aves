@@ -1,9 +1,13 @@
 import 'dart:math';
 
-import 'package:aves/labs/sliver_known_extent_list.dart';
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/widgets/album/collection_section.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
+import 'package:aves/widgets/album/grid/list_known_extent.dart';
+import 'package:aves/widgets/album/grid/list_section_layout.dart';
+import 'package:aves/widgets/album/thumbnail.dart';
+import 'package:aves/widgets/album/transparent_material_page_route.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -106,43 +110,55 @@ class CollectionListSliver extends StatelessWidget {
   }
 }
 
-class SectionLayout {
-  final dynamic sectionKey;
-  final int firstIndex, lastIndex;
-  final double minOffset, maxOffset;
-  final double headerExtent, tileExtent;
-  final IndexedWidgetBuilder builder;
+class GridThumbnail extends StatelessWidget {
+  final CollectionLens collection;
+  final int index;
+  final ImageEntry entry;
+  final double tileExtent;
+  final GestureTapCallback onTap;
 
-  const SectionLayout({
-    @required this.sectionKey,
-    @required this.firstIndex,
-    @required this.lastIndex,
-    @required this.minOffset,
-    @required this.maxOffset,
-    @required this.headerExtent,
-    @required this.tileExtent,
-    @required this.builder,
-  });
+  const GridThumbnail({
+    Key key,
+    this.collection,
+    this.index,
+    this.entry,
+    this.tileExtent,
+    this.onTap,
+  }) : super(key: key);
 
-  bool hasChild(int index) => firstIndex <= index && index <= lastIndex;
-
-  bool hasChildAtOffset(double scrollOffset) => minOffset <= scrollOffset && scrollOffset <= maxOffset;
-
-  double indexToLayoutOffset(int index) {
-    return minOffset + (index == firstIndex ? 0 : headerExtent + (index - firstIndex - 1) * tileExtent);
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      key: ValueKey(entry.uri),
+      onTap: () => _goToFullscreen(context),
+      child: MetaData(
+        metaData: ThumbnailMetadata(index, entry),
+        child: Thumbnail(
+          entry: entry,
+          extent: tileExtent,
+          heroTag: collection.heroTag(entry),
+        ),
+      ),
+    );
   }
 
-  double indexToMaxScrollOffset(int index) {
-    return minOffset + headerExtent + (index - firstIndex) * tileExtent;
+  void _goToFullscreen(BuildContext context) {
+    Navigator.push(
+      context,
+      TransparentMaterialPageRoute(
+        pageBuilder: (c, a, sa) => MultiFullscreenPage(
+          collection: collection,
+          initialEntry: entry,
+        ),
+      ),
+    );
   }
+}
 
-  int getMinChildIndexForScrollOffset(double scrollOffset) {
-    scrollOffset -= minOffset + headerExtent;
-    return firstIndex + (scrollOffset < 0 ? 0 : (scrollOffset / tileExtent).floor());
-  }
+// metadata to identify entry from RenderObject hit test during collection scaling
+class ThumbnailMetadata {
+  final int index;
+  final ImageEntry entry;
 
-  int getMaxChildIndexForScrollOffset(double scrollOffset) {
-    scrollOffset -= minOffset + headerExtent;
-    return firstIndex + (scrollOffset < 0 ? 0 : (scrollOffset / tileExtent).ceil() - 1);
-  }
+  const ThumbnailMetadata(this.index, this.entry);
 }
