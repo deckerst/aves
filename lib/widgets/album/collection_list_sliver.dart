@@ -29,13 +29,15 @@ class CollectionListSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sectionLayouts = <SectionLayout>[];
-    final sectionKeys = collection.sections.keys.toList();
+    final source = collection.source;
+    final sections = collection.sections;
+    final sectionKeys = sections.keys.toList();
     var currentIndex = 0, currentOffset = 0.0;
     sectionKeys.forEach((sectionKey) {
-      final sectionEntryCount = collection.sections[sectionKey].length;
+      final sectionEntryCount = sections[sectionKey].length;
       final sectionChildCount = 1 + (sectionEntryCount / columnCount).ceil();
 
-      final headerExtent = showHeader ? SectionHeader.computeHeaderExtent(collection, sectionKey, scrollableWidth) : 0.0;
+      final headerExtent = showHeader ? SectionHeader.computeHeaderHeight(source, sectionKey, scrollableWidth) : 0.0;
 
       final sectionFirstIndex = currentIndex;
       currentIndex += sectionChildCount;
@@ -59,13 +61,13 @@ class CollectionListSliver extends StatelessWidget {
             if (listIndex == 0) {
               return SectionHeader(
                 collection: collection,
-                sections: collection.sections,
+                sections: sections,
                 sectionKey: sectionKey,
               );
             }
             listIndex--;
 
-            final section = collection.sections[sectionKey];
+            final section = sections[sectionKey];
             final minEntryIndex = listIndex * columnCount;
             final maxEntryIndex = min(sectionEntryCount, minEntryIndex + columnCount);
             final children = <Widget>[];

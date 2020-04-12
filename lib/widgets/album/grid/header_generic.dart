@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/grid/header_album.dart';
 import 'package:aves/widgets/album/grid/header_date.dart';
@@ -64,16 +66,26 @@ class SectionHeader extends StatelessWidget {
   }
 
   // TODO TLAD cache header extent computation?
-  static double computeHeaderExtent(CollectionLens collection, dynamic sectionKey, double scrollableWidth) {
+  static double computeHeaderHeight(CollectionSource source, dynamic sectionKey, double scrollableWidth) {
     var headerExtent = 0.0;
     if (sectionKey is String) {
       // only compute height for album headers, as they're the only likely ones to split on multiple lines
-      final text = collection.source.getUniqueAlbumName(sectionKey);
+      final hasIcon = androidFileUtils.getAlbumType(sectionKey) != AlbumType.Default;
+      final text = source.getUniqueAlbumName(sectionKey);
       final maxWidth = scrollableWidth - TitleSectionHeader.padding.horizontal;
       final para = RenderParagraph(
         TextSpan(
-          text: text,
-          style: Constants.titleTextStyle,
+          children: [
+            if (hasIcon)
+              // `RenderParagraph` fails to lay out `WidgetSpan` offscreen as of Flutter v1.17.0
+              // so we use a hair space times a magic number to match leading width
+              // 23 hair spaces match a width of 40.0
+              TextSpan(text: '\u200A' * 23),
+            TextSpan(
+              text: text,
+              style: Constants.titleTextStyle,
+            ),
+          ],
         ),
         textDirection: TextDirection.ltr,
       )..layout(BoxConstraints(maxWidth: maxWidth), parentUsesSize: true);
