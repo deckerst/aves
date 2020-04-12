@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:aves/labs/sliver_known_extent_list.dart';
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_section.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
 import 'package:flutter/material.dart';
@@ -31,21 +30,12 @@ class CollectionListSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     final sectionLayouts = <SectionLayout>[];
     final sectionKeys = collection.sections.keys.toList();
-    final headerPadding = TitleSectionHeader.padding;
     var currentIndex = 0, currentOffset = 0.0;
     sectionKeys.forEach((sectionKey) {
       final sectionEntryCount = collection.sections[sectionKey].length;
       final sectionChildCount = 1 + (sectionEntryCount / columnCount).ceil();
 
-      var headerExtent = 0.0;
-      if (showHeader) {
-        // only compute height for album headers, as they're the only likely ones to split on multiple lines
-        if (sectionKey is String) {
-          final text = collection.source.getUniqueAlbumName(sectionKey);
-          headerExtent = SectionLayout.computeHeaderExtent(text, scrollableWidth - headerPadding.horizontal);
-        }
-        headerExtent = max(headerExtent, TitleSectionHeader.leadingDimension) + headerPadding.vertical;
-      }
+      final headerExtent = showHeader ? SectionHeader.computeHeaderExtent(collection, sectionKey, scrollableWidth) : 0.0;
 
       final sectionFirstIndex = currentIndex;
       currentIndex += sectionChildCount;
@@ -66,16 +56,14 @@ class CollectionListSliver extends StatelessWidget {
           tileExtent: tileExtent,
           builder: (context, listIndex) {
             listIndex -= sectionFirstIndex;
-            if (showHeader) {
-              if (listIndex == 0) {
-                return SectionHeader(
-                  collection: collection,
-                  sections: collection.sections,
-                  sectionKey: sectionKey,
-                );
-              }
-              listIndex--;
+            if (listIndex == 0) {
+              return SectionHeader(
+                collection: collection,
+                sections: collection.sections,
+                sectionKey: sectionKey,
+              );
             }
+            listIndex--;
 
             final section = collection.sections[sectionKey];
             final minEntryIndex = listIndex * columnCount;
@@ -152,17 +140,5 @@ class SectionLayout {
   int getMaxChildIndexForScrollOffset(double scrollOffset) {
     scrollOffset -= minOffset + headerExtent;
     return firstIndex + (scrollOffset < 0 ? 0 : (scrollOffset / tileExtent).ceil() - 1);
-  }
-
-  // TODO TLAD cache header extent computation?
-  static double computeHeaderExtent(String text, double scrollableWidth) {
-    final para = RenderParagraph(
-      TextSpan(
-        text: text,
-        style: Constants.titleTextStyle,
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout(BoxConstraints(maxWidth: scrollableWidth), parentUsesSize: true);
-    return para.getMaxIntrinsicHeight(scrollableWidth);
   }
 }

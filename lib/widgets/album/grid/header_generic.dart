@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
@@ -6,6 +8,7 @@ import 'package:aves/widgets/album/grid/header_date.dart';
 import 'package:aves/widgets/common/fx/outlined_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class SectionHeader extends StatelessWidget {
   final CollectionLens collection;
@@ -58,6 +61,26 @@ class SectionHeader extends StatelessWidget {
       folderPath: folderPath,
       albumName: collection.source.getUniqueAlbumName(folderPath),
     );
+  }
+
+  // TODO TLAD cache header extent computation?
+  static double computeHeaderExtent(CollectionLens collection, dynamic sectionKey, double scrollableWidth) {
+    var headerExtent = 0.0;
+    if (sectionKey is String) {
+      // only compute height for album headers, as they're the only likely ones to split on multiple lines
+      final text = collection.source.getUniqueAlbumName(sectionKey);
+      final maxWidth = scrollableWidth - TitleSectionHeader.padding.horizontal;
+      final para = RenderParagraph(
+        TextSpan(
+          text: text,
+          style: Constants.titleTextStyle,
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(BoxConstraints(maxWidth: maxWidth), parentUsesSize: true);
+      headerExtent = para.getMaxIntrinsicHeight(maxWidth);
+    }
+    headerExtent = max(headerExtent, TitleSectionHeader.leadingDimension) + TitleSectionHeader.padding.vertical;
+    return headerExtent;
   }
 }
 
