@@ -59,11 +59,13 @@ class CollectionListSliver extends StatelessWidget {
           builder: (context, listIndex) {
             listIndex -= sectionFirstIndex;
             if (listIndex == 0) {
-              return SectionHeader(
-                collection: collection,
-                sections: sections,
-                sectionKey: sectionKey,
-              );
+              return showHeader
+                  ? SectionHeader(
+                      collection: collection,
+                      sections: sections,
+                      sectionKey: sectionKey,
+                    )
+                  : const SizedBox.shrink();
             }
             listIndex--;
 
