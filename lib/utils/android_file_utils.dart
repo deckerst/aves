@@ -32,6 +32,10 @@ class AndroidFileUtils {
 
   bool isDownloadPath(String path) => path == downloadPath;
 
+  StorageVolume getStorageVolume(String path) => storageVolumes.firstWhere((v) => path.startsWith(v.path), orElse: () => null);
+
+  bool isOnSD(String path) => getStorageVolume(path).isRemovable;
+
   AlbumType getAlbumType(String albumDirectory) {
     if (albumDirectory != null) {
       if (androidFileUtils.isCameraPath(albumDirectory)) return AlbumType.Camera;

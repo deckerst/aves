@@ -70,17 +70,19 @@ class SectionHeader extends StatelessWidget {
     var headerExtent = 0.0;
     if (sectionKey is String) {
       // only compute height for album headers, as they're the only likely ones to split on multiple lines
-      final hasIcon = androidFileUtils.getAlbumType(sectionKey) != AlbumType.Default;
+      final hasLeading = androidFileUtils.getAlbumType(sectionKey) != AlbumType.Default;
+      final hasTrailing = androidFileUtils.isOnSD(sectionKey);
       final text = source.getUniqueAlbumName(sectionKey);
       final maxWidth = scrollableWidth - TitleSectionHeader.padding.horizontal;
       final para = RenderParagraph(
         TextSpan(
           children: [
-            if (hasIcon)
+            if (hasLeading)
               // `RenderParagraph` fails to lay out `WidgetSpan` offscreen as of Flutter v1.17.0
               // so we use a hair space times a magic number to match leading width
-              // 23 hair spaces match a width of 40.0
-              TextSpan(text: '\u200A' * 23),
+              TextSpan(text: '\u200A' * 23), // 23 hair spaces match a width of 40.0
+            if (hasTrailing)
+              TextSpan(text: '\u200A' * 17),
             TextSpan(
               text: text,
               style: Constants.titleTextStyle,
@@ -97,13 +99,19 @@ class SectionHeader extends StatelessWidget {
 }
 
 class TitleSectionHeader extends StatelessWidget {
-  final Widget leading;
+  final Widget leading, trailing;
   final String title;
 
-  const TitleSectionHeader({Key key, this.leading, this.title}) : super(key: key);
+  const TitleSectionHeader({
+    Key key,
+    this.leading,
+    this.title,
+    this.trailing,
+  }) : super(key: key);
 
   static const leadingDimension = 32.0;
   static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
+  static const trailingPadding = EdgeInsets.only(left: 8, bottom: 4);
   static const padding = EdgeInsets.all(16);
 
   @override
@@ -122,6 +130,12 @@ class TitleSectionHeader extends StatelessWidget {
                 )
             : null,
         text: title,
+        trailingBuilder: trailing != null
+            ? (context, isShadow) => Container(
+                  padding: trailingPadding,
+                  child: isShadow ? null : trailing,
+                )
+            : null,
         style: Constants.titleTextStyle,
         outlineWidth: 2,
       ),

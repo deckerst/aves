@@ -93,13 +93,23 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
-    final buildAlbumEntry = (String album) => _FilteredCollectionNavTile(
-          source: source,
-          leading: IconUtils.getAlbumIcon(context: context, album: album),
-          title: source.getUniqueAlbumName(album),
-          dense: true,
-          filter: AlbumFilter(album, source.getUniqueAlbumName(album)),
-        );
+    final buildAlbumEntry = (String album) {
+      final uniqueName = source.getUniqueAlbumName(album);
+      return _FilteredCollectionNavTile(
+        source: source,
+        leading: IconUtils.getAlbumIcon(context: context, album: album),
+        title: uniqueName,
+        trailing: androidFileUtils.isOnSD(album)
+            ? const Icon(
+                OMIcons.sdStorage,
+                size: 16,
+                color: Colors.grey,
+              )
+            : null,
+        dense: true,
+        filter: AlbumFilter(album, uniqueName),
+      );
+    };
     final buildTagEntry = (String tag) => _FilteredCollectionNavTile(
           source: source,
           leading: Icon(
@@ -311,6 +321,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
   final CollectionSource source;
   final Widget leading;
   final String title;
+  final Widget trailing;
   final bool dense;
   final CollectionFilter filter;
 
@@ -318,6 +329,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
     @required this.source,
     @required this.leading,
     @required this.title,
+    this.trailing,
     bool dense,
     @required this.filter,
   }) : dense = dense ?? false;
@@ -330,6 +342,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
       child: ListTile(
         leading: leading,
         title: Text(title),
+        trailing: trailing,
         dense: dense,
         onTap: () => _goToCollection(context),
       ),

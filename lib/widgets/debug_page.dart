@@ -50,7 +50,7 @@ class DebugPageState extends State<DebugPage> {
             padding: const EdgeInsets.all(8),
             children: [
               const Text('Storage'),
-              ...AndroidFileUtils.storageVolumes.map((v) => Text('${v.description}: ${v.path} (removable: ${v.isRemovable}))')),
+              ...AndroidFileUtils.storageVolumes.map((v) => Text('${v.description}: ${v.path} (removable: ${v.isRemovable})')),
               const Divider(),
               Row(
                 children: [
