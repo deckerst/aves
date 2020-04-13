@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import deckers.thibault.aves.channelhandlers.AppAdapterHandler;
+import deckers.thibault.aves.channelhandlers.FileAdapterHandler;
 import deckers.thibault.aves.channelhandlers.ImageFileHandler;
 import deckers.thibault.aves.channelhandlers.MediaStoreStreamHandler;
 import deckers.thibault.aves.channelhandlers.MetadataHandler;
@@ -39,6 +40,7 @@ public class MainActivity extends FlutterActivity {
         MediaStoreStreamHandler mediaStoreStreamHandler = new MediaStoreStreamHandler();
 
         FlutterView messenger = getFlutterView();
+        new MethodChannel(messenger, FileAdapterHandler.CHANNEL).setMethodCallHandler(new FileAdapterHandler(this));
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
         new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this, mediaStoreStreamHandler));
         new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));

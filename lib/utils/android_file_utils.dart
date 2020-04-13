@@ -1,4 +1,5 @@
 import 'package:aves/utils/android_app_service.dart';
+import 'package:aves/utils/android_file_service.dart';
 import 'package:path/path.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
@@ -6,11 +7,13 @@ final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 class AndroidFileUtils {
   String externalStorage, dcimPath, downloadPath, moviesPath, picturesPath;
 
+  static List<StorageVolume> storageVolumes = [];
   static Map appNameMap = {};
 
   AndroidFileUtils._private();
 
   Future<void> init() async {
+    storageVolumes = (await AndroidFileService.getStorageVolumes()).map((map) => StorageVolume.fromMap(map)).toList();
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
     externalStorage = '/storage/emulated/0';
     dcimPath = join(externalStorage, 'DCIM');
@@ -55,4 +58,29 @@ enum AlbumType {
   Download,
   ScreenRecordings,
   Screenshots,
+}
+
+class StorageVolume {
+  final String description, path, state;
+  final bool isEmulated, isPrimary, isRemovable;
+
+  const StorageVolume({
+    this.description,
+    this.isEmulated,
+    this.isPrimary,
+    this.isRemovable,
+    this.path,
+    this.state,
+  });
+
+  factory StorageVolume.fromMap(Map map) {
+    return StorageVolume(
+      description: map['description'] ?? '',
+      isEmulated: map['isEmulated'] ?? false,
+      isPrimary: map['isPrimary'] ?? false,
+      isRemovable: map['isRemovable'] ?? false,
+      path: map['path'] ?? '',
+      state: map['string'] ?? '',
+    );
+  }
 }

@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,9 @@ class DebugPageState extends State<DebugPage> {
           child: ListView(
             padding: const EdgeInsets.all(8),
             children: [
+              const Text('Storage'),
+              ...AndroidFileUtils.storageVolumes.map((v) => Text('${v.description}: ${v.path} (removable: ${v.isRemovable}))')),
+              const Divider(),
               Row(
                 children: [
                   const Text('Settings'),
