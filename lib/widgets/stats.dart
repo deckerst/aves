@@ -20,7 +20,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
   final CollectionLens collection;
-  final Map<String, int> entryCountPerCity = {}, entryCountPerCountry = {}, entryCountPerTag = {};
+  final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
   List<ImageEntry> get entries => collection.sortedEntries;
 
@@ -30,14 +30,14 @@ class StatsPage extends StatelessWidget {
     entries.forEach((entry) {
       if (entry.isLocated) {
         final address = entry.addressDetails;
-        final city = address.city;
-        if (city != null && city.isNotEmpty) {
-          entryCountPerCity[city] = (entryCountPerCity[city] ?? 0) + 1;
-        }
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {
           country += ';${address.countryCode}';
           entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
+        }
+        final place = address.place;
+        if (place != null && place.isNotEmpty) {
+          entryCountPerPlace[place] = (entryCountPerPlace[place] ?? 0) + 1;
         }
       }
       entry.xmpSubjects.forEach((tag) {
@@ -87,8 +87,8 @@ class StatsPage extends StatelessWidget {
               ],
             ),
           ),
-          ..._buildTopFilters(context, 'Top cities', entryCountPerCity, (s) => LocationFilter(LocationLevel.city, s)),
           ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
+          ..._buildTopFilters(context, 'Top places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
           ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
         ],
       );

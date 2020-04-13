@@ -12,8 +12,8 @@ class CollectionSource {
   final EventBus _eventBus = EventBus();
 
   List<String> sortedAlbums = List.unmodifiable(const Iterable.empty());
-  List<String> sortedCities = List.unmodifiable(const Iterable.empty());
   List<String> sortedCountries = List.unmodifiable(const Iterable.empty());
+  List<String> sortedPlaces = List.unmodifiable(const Iterable.empty());
   List<String> sortedTags = List.unmodifiable(const Iterable.empty());
 
   List<ImageEntry> get entries => List.unmodifiable(_rawEntries);
@@ -125,7 +125,7 @@ class CollectionSource {
     final locations = _rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails);
     final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
     sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
-    sortedCities = lister((address) => address.city);
+    sortedPlaces = lister((address) => address.place);
   }
 
   void addAll(Iterable<ImageEntry> entries) {

@@ -17,7 +17,7 @@ class LocationFilter extends CollectionFilter {
   }
 
   @override
-  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryName == _location) || (level == LocationLevel.city && entry.addressDetails.city == _location));
+  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryName == _location) || (level == LocationLevel.place && entry.addressDetails.place == _location));
 
   @override
   String get label => _location;
@@ -50,4 +50,4 @@ class LocationFilter extends CollectionFilter {
   }
 }
 
-enum LocationLevel { city, country }
+enum LocationLevel { place, country }

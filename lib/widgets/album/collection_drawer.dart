@@ -31,7 +31,7 @@ class CollectionDrawer extends StatefulWidget {
 }
 
 class _CollectionDrawerState extends State<CollectionDrawer> {
-  bool _albumsExpanded = false, _citiesExpanded = false, _countriesExpanded = false, _tagsExpanded = false;
+  bool _albumsExpanded = false, _placesExpanded = false, _countriesExpanded = false, _tagsExpanded = false;
 
   CollectionSource get source => widget.source;
 
@@ -153,8 +153,8 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           break;
       }
     }
-    final cities = source.sortedCities;
     final countries = source.sortedCountries;
+    final places = source.sortedPlaces;
     final tags = source.sortedTags;
 
     final drawerItems = <Widget>[
@@ -193,28 +193,6 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
             ],
           ),
         ),
-      if (cities.isNotEmpty)
-        SafeArea(
-          top: false,
-          bottom: false,
-          child: ExpansionTile(
-            leading: const Icon(AIcons.location),
-            title: Row(
-              children: [
-                const Text('Cities'),
-                const Spacer(),
-                Text(
-                  '${cities.length}',
-                  style: TextStyle(
-                    color: (_citiesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                  ),
-                ),
-              ],
-            ),
-            onExpansionChanged: (expanded) => setState(() => _citiesExpanded = expanded),
-            children: cities.map((s) => buildLocationEntry(LocationLevel.city, s)).toList(),
-          ),
-        ),
       if (countries.isNotEmpty)
         SafeArea(
           top: false,
@@ -235,6 +213,28 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
             ),
             onExpansionChanged: (expanded) => setState(() => _countriesExpanded = expanded),
             children: countries.map((s) => buildLocationEntry(LocationLevel.country, s)).toList(),
+          ),
+        ),
+      if (places.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(AIcons.location),
+            title: Row(
+              children: [
+                const Text('Places'),
+                const Spacer(),
+                Text(
+                  '${places.length}',
+                  style: TextStyle(
+                    color: (_placesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _placesExpanded = expanded),
+            children: places.map((s) => buildLocationEntry(LocationLevel.place, s)).toList(),
           ),
         ),
       if (tags.isNotEmpty)

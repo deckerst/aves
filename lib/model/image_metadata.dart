@@ -110,7 +110,7 @@ class AddressDetails {
   final int contentId;
   final String addressLine, countryCode, countryName, adminArea, locality;
 
-  String get city => locality != null && locality.isNotEmpty ? locality : adminArea;
+  String get place => locality != null && locality.isNotEmpty ? locality : adminArea;
 
   AddressDetails({
     this.contentId,

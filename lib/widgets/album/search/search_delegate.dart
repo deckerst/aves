@@ -71,13 +71,13 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
                 ),
                 _buildFilterRow(
                   context: context,
-                  title: 'Cities',
-                  filters: source.sortedCities.where(containQuery).map((s) => LocationFilter(LocationLevel.city, s)),
+                  title: 'Countries',
+                  filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)),
                 ),
                 _buildFilterRow(
                   context: context,
-                  title: 'Countries',
-                  filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)),
+                  title: 'Places',
+                  filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)),
                 ),
                 _buildFilterRow(
                   context: context,
