@@ -29,6 +29,7 @@ class DateMetadata {
 
 class CatalogMetadata {
   final int contentId, dateMillis, videoRotation;
+  final bool isAnimated;
   final String xmpSubjects, xmpTitleDescription;
   final double latitude, longitude;
   Address address;
@@ -36,6 +37,7 @@ class CatalogMetadata {
   CatalogMetadata({
     this.contentId,
     this.dateMillis,
+    this.isAnimated,
     this.videoRotation,
     this.xmpSubjects,
     this.xmpTitleDescription,
@@ -46,10 +48,12 @@ class CatalogMetadata {
   : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
         longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
 
-  factory CatalogMetadata.fromMap(Map map) {
+  factory CatalogMetadata.fromMap(Map map, {bool boolAsInteger = false}) {
+    final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
     return CatalogMetadata(
       contentId: map['contentId'],
       dateMillis: map['dateMillis'] ?? 0,
+      isAnimated: boolAsInteger ? isAnimated != 0 : isAnimated,
       videoRotation: map['videoRotation'] ?? 0,
       xmpSubjects: map['xmpSubjects'] ?? '',
       xmpTitleDescription: map['xmpTitleDescription'] ?? '',
@@ -58,9 +62,10 @@ class CatalogMetadata {
     );
   }
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap({bool boolAsInteger = false}) => {
         'contentId': contentId,
         'dateMillis': dateMillis,
+        'isAnimated': boolAsInteger ? (isAnimated ? 1 : 0) : isAnimated,
         'videoRotation': videoRotation,
         'xmpSubjects': xmpSubjects,
         'xmpTitleDescription': xmpTitleDescription,
@@ -70,7 +75,7 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, isAnimated=$isAnimated, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

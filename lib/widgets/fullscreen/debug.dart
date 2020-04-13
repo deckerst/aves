@@ -68,6 +68,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                     if (data != null)
                       InfoRowGroup({
                         'dateMillis': '${data.dateMillis}',
+                        'isAnimated': '${data.isAnimated}',
                         'videoRotation': '${data.videoRotation}',
                         'latitude': '${data.latitude}',
                         'longitude': '${data.longitude}',
@@ -91,7 +92,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                     Text('DB address:${data == null ? ' no row' : ''}'),
                     if (data != null)
                       InfoRowGroup({
-                        'dateMillis': '${data.addressLine}',
+                        'addressLine': '${data.addressLine}',
                         'countryCode': '${data.countryCode}',
                         'countryName': '${data.countryName}',
                         'adminArea': '${data.adminArea}',
@@ -101,6 +102,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                 );
               },
             ),
+            const Divider(),
+            Text('Catalog metadata: ${widget.entry.catalogMetadata}'),
           ],
         ),
       ),

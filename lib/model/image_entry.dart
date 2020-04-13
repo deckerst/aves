@@ -106,13 +106,16 @@ class ImageEntry {
 
   bool get isFavourite => favourites.isFavourite(this);
 
-  bool get isGif => mimeType == MimeTypes.GIF;
-
   bool get isSvg => mimeType == MimeTypes.SVG;
+
+  // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
+  bool get isPhoto => [MimeTypes.HEIC, MimeTypes.HEIF, MimeTypes.JPEG].contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');
 
   bool get isCatalogued => _catalogMetadata != null;
+
+  bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
   bool get canEdit => path != null;
 

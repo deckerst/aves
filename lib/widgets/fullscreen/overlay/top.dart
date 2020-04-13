@@ -2,12 +2,12 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class FullscreenTopOverlay extends StatelessWidget {
@@ -130,12 +130,12 @@ class FullscreenTopOverlay extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               IconButton(
-                icon: Icon(isFavourite ? OMIcons.favorite : OMIcons.favoriteBorder),
+                icon: Icon(isFavourite ? AIcons.favouriteActive : AIcons.favourite),
                 onPressed: onPressed,
                 tooltip: isFavourite ? 'Remove from favourites' : 'Add to favourites',
               ),
               Sweeper(
-                builder: (context) => Icon(OMIcons.favoriteBorder, color: Colors.redAccent),
+                builder: (context) => Icon(AIcons.favourite, color: Colors.redAccent),
                 toggledNotifier: entry.isFavouriteNotifier,
               ),
             ],
@@ -181,11 +181,11 @@ class FullscreenTopOverlay extends StatelessWidget {
         child = entry.isFavouriteNotifier.value
             ? const MenuRow(
                 text: 'Remove from favourites',
-                icon: OMIcons.favorite,
+                icon: AIcons.favouriteActive,
               )
             : const MenuRow(
                 text: 'Add to favourites',
-                icon: OMIcons.favoriteBorder,
+                icon: AIcons.favourite,
               );
         break;
       case FullscreenAction.info:

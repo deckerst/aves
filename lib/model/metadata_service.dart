@@ -29,8 +29,10 @@ class MetadataService {
     try {
       // return map with:
       // 'dateMillis': date taken in milliseconds since Epoch (long)
+      // 'isAnimated': animated gif/webp (bool)
       // 'latitude': latitude (double)
       // 'longitude': longitude (double)
+      // 'videoRotation': video rotation degrees (int)
       // 'xmpSubjects': ';' separated XMP subjects (string)
       // 'xmpTitleDescription': XMP title or XMP description (string)
       final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{

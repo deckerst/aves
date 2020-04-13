@@ -19,8 +19,11 @@ import com.drew.lang.GeoLocation;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
+import com.drew.metadata.gif.GifAnimationDirectory;
+import com.drew.metadata.webp.WebpDirectory;
 import com.drew.metadata.xmp.XmpDirectory;
 
 import java.io.FileInputStream;
@@ -41,13 +44,30 @@ import io.flutter.plugin.common.MethodChannel;
 public class MetadataHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/metadata";
 
+    // catalog metadata
+    private static final String KEY_DATE_MILLIS = "dateMillis";
+    private static final String KEY_IS_ANIMATED = "isAnimated";
+    private static final String KEY_LATITUDE = "latitude";
+    private static final String KEY_LONGITUDE = "longitude";
+    private static final String KEY_VIDEO_ROTATION = "videoRotation";
+    private static final String KEY_XMP_SUBJECTS = "xmpSubjects";
+    private static final String KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription";
+
+    // overlay metadata
+    private static final String KEY_APERTURE = "aperture";
+    private static final String KEY_EXPOSURE_TIME = "exposureTime";
+    private static final String KEY_FOCAL_LENGTH = "focalLength";
+    private static final String KEY_ISO = "iso";
+
+    // XMP
     private static final String XMP_DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/";
     private static final String XMP_SUBJECT_PROP_NAME = "dc:subject";
     private static final String XMP_TITLE_PROP_NAME = "dc:title";
     private static final String XMP_DESCRIPTION_PROP_NAME = "dc:description";
     private static final String XMP_GENERIC_LANG = "";
     private static final String XMP_SPECIFIC_LANG = "en-US";
-    private static final Pattern videoLocationPattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+)/?");
+
+    private static final Pattern VIDEO_LOCATION_PATTERN = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+)/?");
 
     private Context context;
 
@@ -179,12 +199,10 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             if (!MimeTypes.MP2T.equals(mimeType)) {
                 Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-                // EXIF Sub-IFD
-                ExifSubIFDDirectory exifSubDir = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-                if (exifSubDir != null) {
-                    if (exifSubDir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
-                        metadataMap.put("dateMillis", exifSubDir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL, null, TimeZone.getDefault()).getTime());
-                    }
+                // EXIF
+                putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifSubIFDDirectory.class, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                    putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifIFD0Directory.class, ExifIFD0Directory.TAG_DATETIME);
                 }
 
                 // GPS
@@ -192,8 +210,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 if (gpsDir != null) {
                     GeoLocation geoLocation = gpsDir.getGeoLocation();
                     if (geoLocation != null) {
-                        metadataMap.put("latitude", geoLocation.getLatitude());
-                        metadataMap.put("longitude", geoLocation.getLongitude());
+                        metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
+                        metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
                     }
                 }
 
@@ -209,28 +227,27 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                                 XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
                                 sb.append(";").append(item.getValue());
                             }
-                            metadataMap.put("xmpSubjects", sb.toString());
+                            metadataMap.put(KEY_XMP_SUBJECTS, sb.toString());
                         }
 
-                        // double check retrieved items as the property sometimes is reported to exist but it is actually null
-                        String titleDescription = null;
-                        if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_TITLE_PROP_NAME)) {
-                            XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, XMP_TITLE_PROP_NAME, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
-                            if (item != null) {
-                                titleDescription = item.getValue();
-                            }
-                        }
-                        if (titleDescription == null && xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME)) {
-                            XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, XMP_DESCRIPTION_PROP_NAME, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
-                            if (item != null) {
-                                titleDescription = item.getValue();
-                            }
-                        }
-                        if (titleDescription != null) {
-                            metadataMap.put("xmpTitleDescription", titleDescription);
+                        putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_TITLE_PROP_NAME);
+                        if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
+                            putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_DESCRIPTION_PROP_NAME);
                         }
                     } catch (XMPException e) {
                         e.printStackTrace();
+                    }
+                }
+
+                // Animated GIF & WEBP
+                if (MimeTypes.GIF.equals(mimeType)) {
+                    metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
+                } else if (MimeTypes.WEBP.equals(mimeType)) {
+                    WebpDirectory webpDir = metadata.getFirstDirectoryOfType(WebpDirectory.class);
+                    if (webpDir != null) {
+                        if (webpDir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
+                            metadataMap.put(KEY_IS_ANIMATED, webpDir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
+                        }
                     }
                 }
             }
@@ -251,14 +268,14 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                         long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
                         // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
                         if (dateMillis > 0) {
-                            metadataMap.put("dateMillis", dateMillis);
+                            metadataMap.put(KEY_DATE_MILLIS, dateMillis);
                         }
                     }
                     if (rotationString != null) {
-                        metadataMap.put("videoRotation", Integer.parseInt(rotationString));
+                        metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
                     }
                     if (locationString != null) {
-                        Matcher locationMatcher = videoLocationPattern.matcher(locationString);
+                        Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
                         if (locationMatcher.find() && locationMatcher.groupCount() == 2) {
                             String latitudeString = locationMatcher.group(1);
                             String longitudeString = locationMatcher.group(2);
@@ -267,8 +284,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                                     double latitude = Double.parseDouble(latitudeString);
                                     double longitude = Double.parseDouble(longitudeString);
                                     if (latitude != 0 && longitude != 0) {
-                                        metadataMap.put("latitude", latitude);
-                                        metadataMap.put("longitude", longitude);
+                                        metadataMap.put(KEY_LATITUDE, latitude);
+                                        metadataMap.put(KEY_LONGITUDE, longitude);
                                     }
                                 } catch (NumberFormatException ex) {
                                     // ignore
@@ -297,7 +314,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         String path = call.argument("path");
         String uri = call.argument("uri");
 
-        Map<String, String> metadataMap = new HashMap<>();
+        Map<String, Object> metadataMap = new HashMap<>();
 
         if (isVideo(mimeType)) {
             result.success(metadataMap);
@@ -308,17 +325,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
             if (directory != null) {
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_FNUMBER)) {
-                    metadataMap.put("aperture", directory.getDescription(ExifSubIFDDirectory.TAG_FNUMBER));
-                }
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_EXPOSURE_TIME)) {
-                    metadataMap.put("exposureTime", directory.getString(ExifSubIFDDirectory.TAG_EXPOSURE_TIME));
-                }
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_FOCAL_LENGTH)) {
-                    metadataMap.put("focalLength", directory.getDescription(ExifSubIFDDirectory.TAG_FOCAL_LENGTH));
-                }
+                putDescriptionFromTag(metadataMap, KEY_APERTURE, directory, ExifSubIFDDirectory.TAG_FNUMBER);
+                putStringFromTag(metadataMap, KEY_EXPOSURE_TIME, directory, ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
+                putDescriptionFromTag(metadataMap, KEY_FOCAL_LENGTH, directory, ExifSubIFDDirectory.TAG_FOCAL_LENGTH);
                 if (directory.containsTag(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT)) {
-                    metadataMap.put("iso", "ISO" + directory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
+                    metadataMap.put(KEY_ISO, "ISO" + directory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
                 }
             }
             result.success(metadataMap);
@@ -328,6 +339,43 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             result.error("getOverlayMetadata-filenotfound", "failed to get metadata for uri=" + uri + ", path=" + path, e.getMessage());
         } catch (Exception e) {
             result.error("getOverlayMetadata-exception", "failed to get metadata for uri=" + uri + ", path=" + path, e.getMessage());
+        }
+    }
+
+    // convenience methods
+
+    private static <T extends Directory> void putDateFromDirectoryTag(Map<String, Object> metadataMap, String key, Metadata metadata, Class<T> dirClass, int tag) {
+        Directory dir = metadata.getFirstDirectoryOfType(dirClass);
+        if (dir != null) {
+            putDateFromTag(metadataMap, key, dir, tag);
+        }
+    }
+
+    private static void putDateFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
+        if (dir.containsTag(tag)) {
+            metadataMap.put(key, dir.getDate(tag, null, TimeZone.getDefault()).getTime());
+        }
+    }
+
+    private static void putDescriptionFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
+        if (dir.containsTag(tag)) {
+            metadataMap.put(key, dir.getDescription(tag));
+        }
+    }
+
+    private static void putStringFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
+        if (dir.containsTag(tag)) {
+            metadataMap.put(key, dir.getString(tag));
+        }
+    }
+
+    private static void putLocalizedTextFromXmp(Map<String, Object> metadataMap, String key, XMPMeta xmpMeta, String propName) throws XMPException {
+        if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, propName)) {
+            XMPProperty item = xmpMeta.getLocalizedText(XMP_DC_SCHEMA_NS, propName, XMP_GENERIC_LANG, XMP_SPECIFIC_LANG);
+            // double check retrieved items as the property sometimes is reported to exist but it is actually null
+            if (item != null) {
+                metadataMap.put(key, item.getValue());
+            }
         }
     }
 }

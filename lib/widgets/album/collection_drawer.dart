@@ -77,19 +77,19 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     );
     final videoEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.movie),
+      leading: const Icon(AIcons.video),
       title: 'Videos',
       filter: MimeFilter(MimeTypes.ANY_VIDEO),
     );
-    final gifEntry = _FilteredCollectionNavTile(
+    final animatedEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.gif),
-      title: 'GIFs',
-      filter: MimeFilter(MimeTypes.GIF),
+      leading: const Icon(AIcons.animated),
+      title: 'Animated',
+      filter: MimeFilter(MimeFilter.animated),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.favoriteBorder),
+      leading: const Icon(AIcons.favourite),
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
@@ -103,7 +103,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     final buildTagEntry = (String tag) => _FilteredCollectionNavTile(
           source: source,
           leading: Icon(
-            OMIcons.localOffer,
+            AIcons.tag,
             color: stringToColor(tag),
           ),
           title: tag,
@@ -130,7 +130,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
                 style: TextStyle(fontSize: IconTheme.of(context).size),
               )
             : Icon(
-                OMIcons.place,
+                AIcons.location,
                 color: stringToColor(title),
               ),
         title: title,
@@ -161,7 +161,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       header,
       allMediaEntry,
       videoEntry,
-      gifEntry,
+      animatedEntry,
       favouriteEntry,
       if (specialAlbums.isNotEmpty) ...[
         const Divider(),
@@ -198,7 +198,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.place),
+            leading: const Icon(AIcons.location),
             title: Row(
               children: [
                 const Text('Cities'),
@@ -220,7 +220,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.place),
+            leading: const Icon(AIcons.location),
             title: Row(
               children: [
                 const Text('Countries'),
@@ -242,7 +242,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.localOffer),
+            leading: const Icon(AIcons.tag),
             title: Row(
               children: [
                 const Text('Tags'),

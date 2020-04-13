@@ -125,8 +125,8 @@ class _ThumbnailOverlay extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (entry.hasGps) GpsIcon(iconSize: iconSize),
-        if (entry.isGif)
-          GifIcon(iconSize: iconSize)
+        if (entry.isAnimated)
+          AnimatedImageIcon(iconSize: iconSize)
         else if (entry.isVideo)
           DefaultTextStyle(
             style: TextStyle(

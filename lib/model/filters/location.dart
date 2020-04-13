@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/widgets.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class LocationFilter extends CollectionFilter {
   static const type = 'country';
@@ -26,7 +26,7 @@ class LocationFilter extends CollectionFilter {
   Widget iconBuilder(context, size) {
     final flag = countryCodeToFlag(_countryCode);
     if (flag != null) return Text(flag, style: TextStyle(fontSize: size));
-    return Icon(OMIcons.place, size: size);
+    return Icon(AIcons.location, size: size);
   }
 
   @override

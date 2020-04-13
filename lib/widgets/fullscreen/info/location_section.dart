@@ -5,6 +5,7 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/map_initializer.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,7 @@ class _LocationSectionState extends State<LocationSection> {
           if (widget.showTitle)
             const Padding(
               padding: EdgeInsets.only(bottom: 8),
-              child: SectionRow(OMIcons.place),
+              child: SectionRow(AIcons.location),
             ),
           ImageMap(
             markerId: entry.uri ?? entry.path,

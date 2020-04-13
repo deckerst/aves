@@ -11,11 +11,11 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
@@ -77,7 +77,7 @@ class StatsPage extends StatelessWidget {
                   backgroundColor: Colors.white24,
                   progressColor: Theme.of(context).accentColor,
                   animation: true,
-                  leading: const Icon(OMIcons.place),
+                  leading: const Icon(AIcons.location),
                   // right padding to match leading, so that inside label is aligned with outside label below
                   padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(right: 24),
                   center: Text(NumberFormat.percentPattern().format(withGpsPercent)),

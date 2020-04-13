@@ -8,10 +8,10 @@ import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/scaling.dart';
 import 'package:aves/widgets/album/tile_extent_manager.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -40,7 +40,6 @@ class ThumbnailCollection extends StatelessWidget {
           return Consumer<CollectionLens>(
             builder: (context, collection, child) {
 //              debugPrint('$runtimeType collection builder entries=${collection.entryCount}');
-              final sectionKeys = collection.sections.keys.toList();
               final showHeaders = collection.showHeaders;
               return GridScaleGestureDetector(
                 scrollableKey: _scrollableKey,
@@ -119,12 +118,12 @@ class ThumbnailCollection extends StatelessWidget {
   Widget _buildEmptyCollectionPlaceholder(CollectionLens collection) {
     return collection.filters.any((filter) => filter is FavouriteFilter)
         ? const EmptyContent(
-            icon: OMIcons.favoriteBorder,
+            icon: AIcons.favourite,
             text: 'No favourites!',
           )
         : collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)
             ? const EmptyContent(
-                icon: OMIcons.movie,
+                icon: AIcons.video,
               )
             : const EmptyContent();
   }
