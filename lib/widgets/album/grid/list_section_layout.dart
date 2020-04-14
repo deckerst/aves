@@ -1,18 +1,18 @@
 import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SectionedListLayoutProvider extends StatelessWidget {
-  final Widget child;
-
   final CollectionLens collection;
   final int columnCount;
   final double scrollableWidth;
   final double tileExtent;
+  final Widget child;
 
   SectionedListLayoutProvider({
     @required this.collection,
@@ -64,7 +64,12 @@ class SectionedListLayoutProvider extends StatelessWidget {
         ),
       );
     });
-    return SectionedListLayout(sectionLayouts);
+    return SectionedListLayout(
+      collection: collection,
+      columnCount: columnCount,
+      tileExtent: tileExtent,
+      sectionLayouts: sectionLayouts,
+    );
   }
 
   Widget _buildInSection(int sectionChildIndex, CollectionLens collection, dynamic sectionKey) {
@@ -100,9 +105,37 @@ class SectionedListLayoutProvider extends StatelessWidget {
 }
 
 class SectionedListLayout {
+  final CollectionLens collection;
+  final int columnCount;
+  final double tileExtent;
   final List<SectionLayout> sectionLayouts;
 
-  const SectionedListLayout(this.sectionLayouts);
+  const SectionedListLayout({
+    @required this.collection,
+    @required this.columnCount,
+    @required this.tileExtent,
+    @required this.sectionLayouts,
+  });
+
+  Rect getTileRect(ImageEntry entry) {
+    final section = collection.sections.entries.firstWhere((kv) => kv.value.contains(entry), orElse: () => null);
+    if (section == null) return null;
+
+    final sectionKey = section.key;
+    final sectionLayout = sectionLayouts.firstWhere((sl) => sl.sectionKey == sectionKey, orElse: () => null);
+    if (sectionLayout == null) return null;
+
+    final showHeaders = collection.showHeaders;
+    final sectionEntryIndex = section.value.indexOf(entry);
+    final column = sectionEntryIndex % columnCount;
+    final row = (sectionEntryIndex / columnCount).floor();
+    final listIndex = sectionLayout.firstIndex + (showHeaders ? 1 : 0) + row;
+
+    final left = tileExtent * column;
+    final top = sectionLayout.indexToLayoutOffset(listIndex);
+    debugPrint('TLAD getTileRect sectionKey=$sectionKey sectionOffset=${sectionLayout.minOffset} top=$top row=$row column=$column for title=${entry.bestTitle}');
+    return Rect.fromLTWH(left, top, tileExtent, tileExtent);
+  }
 }
 
 class SectionLayout {

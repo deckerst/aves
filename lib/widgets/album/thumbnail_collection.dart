@@ -44,23 +44,23 @@ class ThumbnailCollection extends StatelessWidget {
             builder: (context, collection, child) {
               final scrollView = _buildScrollView(collection);
               final draggable = _buildDraggableScrollView(scrollView);
+              final scaler = GridScaleGestureDetector(
+                scrollableKey: _scrollableKey,
+                extentNotifier: _tileExtentNotifier,
+                mqSize: mqSize,
+                mqHorizontalPadding: mqHorizontalPadding,
+                child: draggable,
+              );
               final sectionedListLayoutProvider = ValueListenableBuilder<double>(
                 valueListenable: _tileExtentNotifier,
                 builder: (context, tileExtent, child) => SectionedListLayoutProvider(
                   collection: collection,
                   scrollableWidth: mqSize.width - mqHorizontalPadding,
                   tileExtent: tileExtent,
-                  child: draggable,
+                  child: scaler,
                 ),
               );
-              final scaler = GridScaleGestureDetector(
-                scrollableKey: _scrollableKey,
-                extentNotifier: _tileExtentNotifier,
-                mqSize: mqSize,
-                mqHorizontalPadding: mqHorizontalPadding,
-                child: sectionedListLayoutProvider,
-              );
-              return scaler;
+              return sectionedListLayoutProvider;
             },
           );
         },

@@ -2,12 +2,14 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
@@ -33,7 +35,6 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ThumbnailMetadata _metadata;
-  RenderSliver _renderSliver;
   RenderViewport _renderViewport;
 
   ValueNotifier<double> get tileExtentNotifier => widget.extentNotifier;
@@ -56,7 +57,6 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
-        _renderSliver = firstOf<RenderSliver>(result);
         _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
         _startExtent = tileExtentNotifier.value;
@@ -105,18 +105,18 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
 
         // TODO TLAD fix scroll to specific thumbnail with custom SliverList
         // scroll to show the focal point thumbnail at its new position
-        final sliverClosure = _renderSliver;
         final viewportClosure = _renderViewport;
-        final index = _metadata.index;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final scrollableContext = widget.scrollableKey.currentContext;
           final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
-          final newColumnCount = gridSize.width / newExtent;
-          final row = index ~/ newColumnCount;
+          final sectionLayout = Provider.of<SectionedListLayout>(context, listen: false);
+          final tileRect = sectionLayout.getTileRect(_metadata.entry);
+          final scrollOffset = (tileRect?.top ?? 0) - gridSize.height / 2;
+          viewportClosure.offset.jumpTo(scrollOffset.clamp(.0, double.infinity));
+          // about scrolling & offset retrieval:
           // `Scrollable.ensureVisible` only works on already rendered objects
           // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
-          final scrollOffset = viewportClosure.scrollOffsetOf(sliverClosure, (row + 1) * newExtent - gridSize.height / 2);
-          viewportClosure.offset.jumpTo(scrollOffset.clamp(.0, double.infinity));
+          // `RenderViewport.scrollOffsetOf` is a good alternative
         });
       },
       child: widget.child,
