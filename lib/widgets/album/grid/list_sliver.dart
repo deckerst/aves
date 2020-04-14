@@ -14,23 +14,19 @@ import 'package:provider/provider.dart';
 class CollectionListSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<SectionedListLayout>(
-      builder: (context, sectionedListLayout, child) {
-        final sectionLayouts = sectionedListLayout.sectionLayouts;
-        final childCount = sectionLayouts.last.lastIndex + 1;
-        return SliverKnownExtentList(
-          sectionLayouts: sectionLayouts,
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              if (index >= childCount) return null;
-              final sectionLayout = sectionLayouts.firstWhere((section) => section.hasChild(index), orElse: () => null);
-              return sectionLayout?.builder(context, index) ?? const SizedBox.shrink();
-            },
-            childCount: childCount,
-            addAutomaticKeepAlives: false,
-          ),
-        );
-      },
+    final sectionLayouts = Provider.of<SectionedListLayout>(context).sectionLayouts;
+    final childCount = sectionLayouts.isEmpty ? 0 : sectionLayouts.last.lastIndex + 1;
+    return SliverKnownExtentList(
+      sectionLayouts: sectionLayouts,
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= childCount) return null;
+          final sectionLayout = sectionLayouts.firstWhere((section) => section.hasChild(index), orElse: () => null);
+          return sectionLayout?.builder(context, index) ?? const SizedBox.shrink();
+        },
+        childCount: childCount,
+        addAutomaticKeepAlives: false,
+      ),
     );
   }
 }

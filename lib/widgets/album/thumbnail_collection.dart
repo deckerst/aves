@@ -37,6 +37,9 @@ class ThumbnailCollection extends StatelessWidget {
           final mqSize = mq.item1;
           final mqHorizontalPadding = mq.item2;
           TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
+
+          // do not replace by Provider.of<CollectionLens>
+          // so that view updates on collection filter changes
           return Consumer<CollectionLens>(
             builder: (context, collection, child) {
               final scrollView = _buildScrollView(collection);
