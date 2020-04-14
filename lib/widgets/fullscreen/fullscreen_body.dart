@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
@@ -207,28 +209,45 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         _onLeave();
         return SynchronousFuture(true);
       },
-      child: Stack(
-        children: [
-          FullscreenVerticalPageView(
-            collection: collection,
-            entry: _entry,
-            videoControllers: _videoControllers,
-            verticalPager: _verticalPager,
-            horizontalPager: _horizontalPager,
-            onVerticalPageChanged: _onVerticalPageChanged,
-            onHorizontalPageChanged: _onHorizontalPageChanged,
-            onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
-            onImagePageRequested: () => _goToVerticalPage(imagePage),
-          ),
-          topOverlay,
-          bottomOverlay,
-        ],
+      child: NotificationListener(
+        onNotification: (notification) {
+          if (notification is FilterNotification) _goToCollection(notification.filter);
+          return false;
+        },
+        child: Stack(
+          children: [
+            FullscreenVerticalPageView(
+              collection: collection,
+              entry: _entry,
+              videoControllers: _videoControllers,
+              verticalPager: _verticalPager,
+              horizontalPager: _horizontalPager,
+              onVerticalPageChanged: _onVerticalPageChanged,
+              onHorizontalPageChanged: _onHorizontalPageChanged,
+              onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
+              onImagePageRequested: () => _goToVerticalPage(imagePage),
+            ),
+            topOverlay,
+            bottomOverlay,
+          ],
+        ),
       ),
     );
   }
 
   void _onVerticalPageControllerChange() {
     _verticalScrollNotifier.notifyListeners();
+  }
+
+  void _goToCollection(CollectionFilter filter) {
+    _showSystemUI();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CollectionPage(collection.derive(filter)),
+      ),
+      (route) => false,
+    );
   }
 
   Future<void> _goToVerticalPage(int page) {
@@ -275,9 +294,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   // system UI
 
-  void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  static void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
-  void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
+  static void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
 
   // overlay
 
