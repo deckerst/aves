@@ -13,14 +13,14 @@ class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> extentNotifier;
   final Size mqSize;
-  final EdgeInsets mqPadding;
+  final double mqHorizontalPadding;
   final Widget child;
 
   const GridScaleGestureDetector({
     this.scrollableKey,
     @required this.extentNotifier,
     @required this.mqSize,
-    @required this.mqPadding,
+    @required this.mqHorizontalPadding,
     @required this.child,
   });
 
@@ -96,7 +96,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         // sanitize and update grid layout if necessary
         final newExtent = TileExtentManager.applyTileExtent(
           widget.mqSize,
-          widget.mqPadding,
+          widget.mqHorizontalPadding,
           tileExtentNotifier,
           newExtent: _scaledExtentNotifier.value,
         );

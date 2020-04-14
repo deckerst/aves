@@ -1,4 +1,109 @@
+import 'dart:math';
+
+import 'package:aves/model/collection_lens.dart';
+import 'package:aves/widgets/album/grid/header_generic.dart';
+import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class SectionedListLayoutProvider extends StatelessWidget {
+  final Widget child;
+
+  final CollectionLens collection;
+  final int columnCount;
+  final double scrollableWidth;
+  final double tileExtent;
+
+  SectionedListLayoutProvider({
+    @required this.collection,
+    @required this.scrollableWidth,
+    @required this.tileExtent,
+    @required this.child,
+  }) : columnCount = (scrollableWidth / tileExtent).round();
+
+  @override
+  Widget build(BuildContext context) {
+    return ProxyProvider0<SectionedListLayout>(
+      update: (context, __) => _updateLayouts(context),
+      child: child,
+    );
+  }
+
+  SectionedListLayout _updateLayouts(BuildContext context) {
+    debugPrint('$runtimeType _updateLayouts entries=${collection.entryCount} columnCount=$columnCount tileExtent=$tileExtent');
+    final sectionLayouts = <SectionLayout>[];
+    final showHeaders = collection.showHeaders;
+    final source = collection.source;
+    final sections = collection.sections;
+    final sectionKeys = sections.keys.toList();
+    var currentIndex = 0, currentOffset = 0.0;
+    sectionKeys.forEach((sectionKey) {
+      final sectionEntryCount = sections[sectionKey].length;
+      final sectionChildCount = 1 + (sectionEntryCount / columnCount).ceil();
+
+      final headerExtent = showHeaders ? SectionHeader.computeHeaderHeight(source, sectionKey, scrollableWidth) : 0.0;
+
+      final sectionFirstIndex = currentIndex;
+      currentIndex += sectionChildCount;
+      final sectionLastIndex = currentIndex - 1;
+
+      final sectionMinOffset = currentOffset;
+      currentOffset += headerExtent + tileExtent * (sectionChildCount - 1);
+      final sectionMaxOffset = currentOffset;
+
+      sectionLayouts.add(
+        SectionLayout(
+          sectionKey: sectionKey,
+          firstIndex: sectionFirstIndex,
+          lastIndex: sectionLastIndex,
+          minOffset: sectionMinOffset,
+          maxOffset: sectionMaxOffset,
+          headerExtent: headerExtent,
+          tileExtent: tileExtent,
+          builder: (context, listIndex) => _buildInSection(listIndex - sectionFirstIndex, collection, sectionKey),
+        ),
+      );
+    });
+    return SectionedListLayout(sectionLayouts);
+  }
+
+  Widget _buildInSection(int sectionChildIndex, CollectionLens collection, dynamic sectionKey) {
+    if (sectionChildIndex == 0) {
+      return collection.showHeaders
+          ? SectionHeader(
+              collection: collection,
+              sectionKey: sectionKey,
+            )
+          : const SizedBox.shrink();
+    }
+    sectionChildIndex--;
+
+    final section = collection.sections[sectionKey];
+    final sectionEntryCount = section.length;
+
+    final minEntryIndex = sectionChildIndex * columnCount;
+    final maxEntryIndex = min(sectionEntryCount, minEntryIndex + columnCount);
+    final children = <Widget>[];
+    for (var i = minEntryIndex; i < maxEntryIndex; i++) {
+      children.add(GridThumbnail(
+        collection: collection,
+        index: i,
+        entry: section[i],
+        tileExtent: tileExtent,
+      ));
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
+    );
+  }
+}
+
+class SectionedListLayout {
+  final List<SectionLayout> sectionLayouts;
+
+  const SectionedListLayout(this.sectionLayouts);
+}
 
 class SectionLayout {
   final dynamic sectionKey;

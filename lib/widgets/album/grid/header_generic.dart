@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/grid/header_album.dart';
@@ -14,13 +13,11 @@ import 'package:flutter/rendering.dart';
 
 class SectionHeader extends StatelessWidget {
   final CollectionLens collection;
-  final Map<dynamic, List<ImageEntry>> sections;
   final dynamic sectionKey;
 
   const SectionHeader({
     Key key,
     @required this.collection,
-    @required this.sections,
     @required this.sectionKey,
   }) : super(key: key);
 

@@ -5,6 +5,7 @@ import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/scaling.dart';
 import 'package:aves/widgets/album/tile_extent_manager.dart';
@@ -30,87 +31,92 @@ class ThumbnailCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Selector<MediaQueryData, Tuple3<Size, EdgeInsets, double>>(
-        selector: (c, mq) => Tuple3(mq.size, mq.padding, mq.viewInsets.bottom),
-        builder: (c, mq, child) {
+      child: Selector<MediaQueryData, Tuple2<Size, double>>(
+        selector: (context, mq) => Tuple2(mq.size, mq.padding.horizontal),
+        builder: (context, mq, child) {
           final mqSize = mq.item1;
-          final mqPadding = mq.item2;
-          final mqViewInsetsBottom = mq.item3;
-          TileExtentManager.applyTileExtent(mqSize, mqPadding, _tileExtentNotifier);
+          final mqHorizontalPadding = mq.item2;
+          TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
           return Consumer<CollectionLens>(
             builder: (context, collection, child) {
-//              debugPrint('$runtimeType collection builder entries=${collection.entryCount}');
-              final showHeaders = collection.showHeaders;
-              return GridScaleGestureDetector(
+              final scrollView = _buildScrollView(collection);
+              final draggable = _buildDraggableScrollView(scrollView);
+              final sectionedListLayoutProvider = ValueListenableBuilder<double>(
+                valueListenable: _tileExtentNotifier,
+                builder: (context, tileExtent, child) => SectionedListLayoutProvider(
+                  collection: collection,
+                  scrollableWidth: mqSize.width - mqHorizontalPadding,
+                  tileExtent: tileExtent,
+                  child: draggable,
+                ),
+              );
+              final scaler = GridScaleGestureDetector(
                 scrollableKey: _scrollableKey,
                 extentNotifier: _tileExtentNotifier,
                 mqSize: mqSize,
-                mqPadding: mqPadding,
-                child: ValueListenableBuilder<double>(
-                  valueListenable: _tileExtentNotifier,
-                  builder: (context, tileExtent, child) {
-                    debugPrint('$runtimeType tileExtent builder entries=${collection.entryCount} tileExtent=$tileExtent');
-                    final scrollView = CustomScrollView(
-                      key: _scrollableKey,
-                      primary: true,
-                      // workaround to prevent scrolling the app bar away
-                      // when there is no content and we use `SliverFillRemaining`
-                      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
-                      slivers: [
-                        CollectionAppBar(
-                          stateNotifier: stateNotifier,
-                          appBarHeightNotifier: _appBarHeightNotifier,
-                          collection: collection,
-                        ),
-                        collection.isEmpty
-                            ? SliverFillRemaining(
-                                child: _buildEmptyCollectionPlaceholder(collection),
-                                hasScrollBody: false,
-                              )
-                            : CollectionListSliver(
-                                collection: collection,
-                                showHeader: showHeaders,
-                                scrollableWidth: mqSize.width - mqPadding.horizontal,
-                                tileExtent: tileExtent,
-                              ),
-                        SliverToBoxAdapter(
-                          child: Selector<MediaQueryData, double>(
-                            selector: (c, mq) => mq.viewInsets.bottom,
-                            builder: (c, mqViewInsetsBottom, child) {
-                              return SizedBox(height: mqViewInsetsBottom);
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-
-                    return ValueListenableBuilder<double>(
-                      valueListenable: _appBarHeightNotifier,
-                      builder: (context, appBarHeight, child) {
-                        return DraggableScrollbar(
-                          heightScrollThumb: avesScrollThumbHeight,
-                          backgroundColor: Colors.white,
-                          scrollThumbBuilder: avesScrollThumbBuilder(
-                            height: avesScrollThumbHeight,
-                            backgroundColor: Colors.white,
-                          ),
-                          controller: PrimaryScrollController.of(context),
-                          padding: EdgeInsets.only(
-                            // padding to keep scroll thumb between app bar above and nav bar below
-                            top: appBarHeight,
-                            bottom: mqViewInsetsBottom,
-                          ),
-                          child: child,
-                        );
-                      },
-                      child: scrollView,
-                    );
-                  },
-                ),
+                mqHorizontalPadding: mqHorizontalPadding,
+                child: sectionedListLayoutProvider,
               );
+              return scaler;
             },
           );
         },
+      ),
+    );
+  }
+
+  ScrollView _buildScrollView(CollectionLens collection) {
+    return CustomScrollView(
+      key: _scrollableKey,
+      primary: true,
+      // workaround to prevent scrolling the app bar away
+      // when there is no content and we use `SliverFillRemaining`
+      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
+      slivers: [
+        CollectionAppBar(
+          stateNotifier: stateNotifier,
+          appBarHeightNotifier: _appBarHeightNotifier,
+          collection: collection,
+        ),
+        collection.isEmpty
+            ? SliverFillRemaining(
+                child: _buildEmptyCollectionPlaceholder(collection),
+                hasScrollBody: false,
+              )
+            : CollectionListSliver(),
+        SliverToBoxAdapter(
+          child: Selector<MediaQueryData, double>(
+            selector: (context, mq) => mq.viewInsets.bottom,
+            builder: (context, mqViewInsetsBottom, child) {
+              return SizedBox(height: mqViewInsetsBottom);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDraggableScrollView(ScrollView scrollView) {
+    return ValueListenableBuilder<double>(
+      valueListenable: _appBarHeightNotifier,
+      builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
+        selector: (context, mq) => mq.viewInsets.bottom,
+        builder: (context, mqViewInsetsBottom, child) => DraggableScrollbar(
+          heightScrollThumb: avesScrollThumbHeight,
+          backgroundColor: Colors.white,
+          scrollThumbBuilder: avesScrollThumbBuilder(
+            height: avesScrollThumbHeight,
+            backgroundColor: Colors.white,
+          ),
+          controller: PrimaryScrollController.of(context),
+          padding: EdgeInsets.only(
+            // padding to keep scroll thumb between app bar above and nav bar below
+            top: appBarHeight,
+            bottom: mqViewInsetsBottom,
+          ),
+          child: scrollView,
+        ),
+        child: child,
       ),
     );
   }

@@ -8,8 +8,8 @@ class TileExtentManager {
   static const int columnCountDefault = 4;
   static const double tileExtentMin = 46.0;
 
-  static double applyTileExtent(Size mqSize, EdgeInsets mqPadding, ValueNotifier<double> extentNotifier, {double newExtent}) {
-    final availableWidth = mqSize.width - mqPadding.horizontal;
+  static double applyTileExtent(Size mqSize, double mqHorizontalPadding, ValueNotifier<double> extentNotifier, {double newExtent}) {
+    final availableWidth = mqSize.width - mqHorizontalPadding;
     var numColumns;
     if ((newExtent ?? 0) == 0) {
       newExtent = extentNotifier.value;
@@ -20,7 +20,6 @@ class TileExtentManager {
     if ((newExtent ?? 0) == 0) {
       numColumns = columnCountDefault;
     } else {
-      debugPrint('TODO TLAD tileExtentMin=$tileExtentMin mqSize=$mqSize');
       newExtent = newExtent.clamp(tileExtentMin, extentMaxForSize(mqSize));
       numColumns = max(columnCountMin, (availableWidth / newExtent).round());
     }
