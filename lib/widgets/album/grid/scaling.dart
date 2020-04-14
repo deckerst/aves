@@ -41,6 +41,10 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onHorizontalDragStart: (details) {
+        // if `onHorizontalDragStart` callback is not defined,
+        // horizontal drag gestures are interpreted as scaling
+      },
       onScaleStart: (details) {
         final scrollableContext = widget.scrollableKey.currentContext;
         final RenderBox scrollableBox = scrollableContext.findRenderObject();

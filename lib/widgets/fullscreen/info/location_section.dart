@@ -171,9 +171,10 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
       children: [
         Expanded(
           child: GestureDetector(
-            // absorb scale gesture here to prevent scrolling
-            // and triggering by mistake a move to the image page above
-            onScaleStart: (d) {},
+            onScaleStart: (details) {
+              // absorb scale gesture here to prevent scrolling
+              // and triggering by mistake a move to the image page above
+            },
             child: ClipRRect(
               borderRadius: const BorderRadius.all(
                 Radius.circular(16),
