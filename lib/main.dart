@@ -1,8 +1,8 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/viewer_service.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';

@@ -1,6 +1,6 @@
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/utils/android_app_service.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

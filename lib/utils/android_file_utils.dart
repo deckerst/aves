@@ -1,5 +1,5 @@
-import 'package:aves/utils/android_app_service.dart';
-import 'package:aves/utils/android_file_service.dart';
+import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/android_file_service.dart';
 import 'package:path/path.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();

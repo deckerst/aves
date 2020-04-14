@@ -4,6 +4,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
+import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class SectionedListLayoutProvider extends StatelessWidget {
     @required this.scrollableWidth,
     @required this.tileExtent,
     @required this.child,
-  }) : columnCount = (scrollableWidth / tileExtent).round();
+  }) : columnCount = max((scrollableWidth / tileExtent).round(), TileExtentManager.columnCountMin);
 
   @override
   Widget build(BuildContext context) {

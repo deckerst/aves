@@ -2,7 +2,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
-import 'package:aves/utils/android_app_service.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';

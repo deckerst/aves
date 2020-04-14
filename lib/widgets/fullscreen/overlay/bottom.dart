@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
-import 'package:aves/model/metadata_service.dart';
+import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';

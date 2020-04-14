@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/metadata_service.dart';
+import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';

@@ -1,7 +1,8 @@
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
-import 'package:aves/model/metadata_service.dart';
+import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/service_policy.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -220,7 +221,11 @@ class ImageEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      final addresses = await servicePolicy.call(
+        () => Geocoder.local.findAddressesFromCoordinates(coordinates),
+        ServiceCallPriority.background,
+        'findAddressesFromCoordinates-$path',
+      );
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         addressDetails = AddressDetails(
