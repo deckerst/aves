@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
+import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/album/thumbnail.dart';
-import 'package:aves/widgets/album/tile_extent_manager.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

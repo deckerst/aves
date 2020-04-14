@@ -8,7 +8,7 @@ import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/scaling.dart';
-import 'package:aves/widgets/album/tile_extent_manager.dart';
+import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
