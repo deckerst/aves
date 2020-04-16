@@ -10,7 +10,7 @@ import 'package:aves/widgets/common/transition_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Thumbnail extends StatelessWidget {
+class DecoratedThumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
   final Object heroTag;
@@ -18,7 +18,7 @@ class Thumbnail extends StatelessWidget {
   static final Color borderColor = Colors.grey.shade700;
   static const double borderWidth = .5;
 
-  const Thumbnail({
+  const DecoratedThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
@@ -39,7 +39,13 @@ class Thumbnail extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: [
-          entry.isSvg ? _buildVectorImage() : _buildRasterImage(),
+          entry.isSvg
+              ? _buildVectorImage()
+              : ThumbnailRasterImage(
+                  entry: entry,
+                  extent: extent,
+                  heroTag: heroTag,
+                ),
           _ThumbnailOverlay(
             entry: entry,
             extent: extent,
@@ -47,38 +53,6 @@ class Thumbnail extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildRasterImage() {
-    final thumbnailProvider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
-    final image = Image(
-      image: thumbnailProvider,
-      width: extent,
-      height: extent,
-      fit: BoxFit.cover,
-    );
-    return heroTag == null
-        ? image
-        : Hero(
-            tag: heroTag,
-            flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-              ImageProvider heroImageProvider = thumbnailProvider;
-              if (!entry.isVideo && !entry.isSvg) {
-                final imageProvider = UriImage(
-                  uri: entry.uri,
-                  mimeType: entry.mimeType,
-                );
-                if (imageCache.statusForKey(imageProvider).keepAlive) {
-                  heroImageProvider = imageProvider;
-                }
-              }
-              return TransitionImage(
-                image: heroImageProvider,
-                animation: animation,
-              );
-            },
-            child: image,
-          );
   }
 
   Widget _buildVectorImage() {
@@ -102,6 +76,89 @@ class Thumbnail extends StatelessWidget {
         : Hero(
             tag: heroTag,
             child: child,
+          );
+  }
+}
+
+class ThumbnailRasterImage extends StatefulWidget {
+  final ImageEntry entry;
+  final double extent;
+  final Object heroTag;
+
+  const ThumbnailRasterImage({
+    Key key,
+    @required this.entry,
+    @required this.extent,
+    this.heroTag,
+  }) : super(key: key);
+
+  @override
+  _ThumbnailRasterImageState createState() => _ThumbnailRasterImageState();
+}
+
+class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
+  ThumbnailProvider _imageProvider;
+
+  ImageEntry get entry => widget.entry;
+
+  double get extent => widget.extent;
+
+  Object get heroTag => widget.heroTag;
+
+  @override
+  void initState() {
+    super.initState();
+    _initProvider();
+  }
+
+  @override
+  void didUpdateWidget(ThumbnailRasterImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entry != entry) {
+      _cancelProvider();
+      _initProvider();
+    }
+  }
+
+  @override
+  void dispose() {
+    _cancelProvider();
+    super.dispose();
+  }
+
+  void _initProvider() => _imageProvider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
+
+  void _cancelProvider() => _imageProvider?.cancel();
+
+  @override
+  Widget build(BuildContext context) {
+    final image = Image(
+      image: _imageProvider,
+      width: extent,
+      height: extent,
+      fit: BoxFit.cover,
+    );
+    return heroTag == null
+        ? image
+        : Hero(
+            tag: heroTag,
+            flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+              ImageProvider heroImageProvider = _imageProvider;
+              if (!entry.isVideo && !entry.isSvg) {
+                final imageProvider = UriImage(
+                  uri: entry.uri,
+                  mimeType: entry.mimeType,
+                );
+                if (imageCache.statusForKey(imageProvider).keepAlive) {
+                  heroImageProvider = imageProvider;
+                }
+              }
+              return TransitionImage(
+                image: heroImageProvider,
+                animation: animation,
+              );
+            },
+            child: image,
           );
   }
 }

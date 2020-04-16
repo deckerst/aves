@@ -43,7 +43,7 @@ class ImageFileService {
     return Uint8List(0);
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height) {
+  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object cancellationKey}) {
     return servicePolicy.call(
       () async {
         if (width > 0 && height > 0) {
@@ -61,19 +61,10 @@ class ImageFileService {
         }
         return Uint8List(0);
       },
-      ServiceCallPriority.asapLifo,
-      'getThumbnail-${entry.path}',
+      priority: ServiceCallPriority.asap,
+      debugLabel: 'getThumbnail-${entry.path}',
+      cancellationKey: cancellationKey,
     );
-  }
-
-  static Future<void> cancelGetThumbnail(String uri) async {
-    try {
-      await platform.invokeMethod('cancelGetThumbnail', <String, dynamic>{
-        'uri': uri,
-      });
-    } on PlatformException catch (e) {
-      debugPrint('cancelGetThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
   }
 
   static Future<bool> delete(ImageEntry entry) async {

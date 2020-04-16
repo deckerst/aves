@@ -34,12 +34,10 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/image";
 
     private Activity activity;
-    private ImageDecodeTaskManager imageDecodeTaskManager;
     private MediaStoreStreamHandler mediaStoreStreamHandler;
 
     public ImageFileHandler(Activity activity, MediaStoreStreamHandler mediaStoreStreamHandler) {
         this.activity = activity;
-        imageDecodeTaskManager = new ImageDecodeTaskManager(activity);
         this.mediaStoreStreamHandler = mediaStoreStreamHandler;
     }
 
@@ -58,9 +56,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "getThumbnail":
                 new Thread(() -> getThumbnail(call, new MethodResultWrapper(result))).start();
-                break;
-            case "cancelGetThumbnail":
-                new Thread(() -> cancelGetThumbnail(call, new MethodResultWrapper(result))).start();
                 break;
             case "delete":
                 new Thread(() -> delete(call, new MethodResultWrapper(result))).start();
@@ -145,13 +140,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             return;
         }
         ImageEntry entry = new ImageEntry(entryMap);
-        imageDecodeTaskManager.fetch(result, entry, width, height);
-    }
-
-    private void cancelGetThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        String uri = call.argument("uri");
-        imageDecodeTaskManager.cancel(uri);
-        result.success(null);
+        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, result));
     }
 
     private void getImageEntry(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
@@ -275,7 +264,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         int bufferSize = 1024;
         byte[] buffer = new byte[bufferSize];
 
-        int len = 0;
+        int len;
         while ((len = inputStream.read(buffer)) != -1) {
             byteBuffer.write(buffer, 0, len);
         }

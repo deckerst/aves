@@ -54,7 +54,7 @@ class GridThumbnail extends StatelessWidget {
       onTap: () => _goToFullscreen(context),
       child: MetaData(
         metaData: ThumbnailMetadata(index, entry),
-        child: Thumbnail(
+        child: DecoratedThumbnail(
           entry: entry,
           extent: tileExtent,
           heroTag: collection.heroTag(entry),

@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/android_app_service.dart';
@@ -38,11 +39,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
 
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
     final bytes = await AndroidAppService.getAppIcon(key.packageName, key.sizePixels);
-    if (bytes.lengthInBytes == 0) {
-      return null;
-    }
-
-    return await decode(bytes);
+    return await decode(bytes ?? Uint8List(0));
   }
 }
 

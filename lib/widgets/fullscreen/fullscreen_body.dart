@@ -399,8 +399,8 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   @override
   void dispose() {
-    super.dispose();
     _unregisterWidget(widget);
+    super.dispose();
   }
 
   void _registerWidget(FullscreenVerticalPageView widget) {

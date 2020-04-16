@@ -91,10 +91,12 @@ class SectionedListLayoutProvider extends StatelessWidget {
     final maxEntryIndex = min(sectionEntryCount, minEntryIndex + columnCount);
     final children = <Widget>[];
     for (var i = minEntryIndex; i < maxEntryIndex; i++) {
+      final entry = section[i];
       children.add(GridThumbnail(
+        key: ValueKey(entry.contentId),
         collection: collection,
         index: i,
-        entry: section[i],
+        entry: entry,
         tileExtent: tileExtent,
       ));
     }

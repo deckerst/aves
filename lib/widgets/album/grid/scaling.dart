@@ -204,7 +204,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     Positioned(
                       left: clampedCenter.dx - extent / 2,
                       top: clampedCenter.dy - extent / 2,
-                      child: Thumbnail(
+                      child: DecoratedThumbnail(
                         entry: widget.imageEntry,
                         extent: extent,
                       ),
@@ -232,12 +232,12 @@ class GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..strokeWidth = Thumbnail.borderWidth
+      ..strokeWidth = DecoratedThumbnail.borderWidth
       ..shader = ui.Gradient.radial(
         center,
         size.width / 2,
         [
-          Thumbnail.borderColor,
+          DecoratedThumbnail.borderColor,
           Colors.transparent,
         ],
         [

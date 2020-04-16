@@ -23,7 +23,6 @@ import com.bumptech.glide.signature.ObjectKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
 import deckers.thibault.aves.model.ImageEntry;
@@ -37,14 +36,12 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         ImageEntry entry;
         int width, height;
         MethodChannel.Result result;
-        Consumer<String> complete;
 
-        Params(ImageEntry entry, int width, int height, MethodChannel.Result result, Consumer<String> complete) {
+        Params(ImageEntry entry, int width, int height, MethodChannel.Result result) {
             this.entry = entry;
             this.width = width;
             this.height = height;
             this.result = result;
-            this.complete = complete;
         }
     }
 
@@ -127,10 +124,13 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         } else {
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null && entry.orientationDegrees != 0) {
-                Matrix matrix = new Matrix();
-                matrix.postRotate(entry.orientationDegrees);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
+                Integer orientationDegrees = entry.orientationDegrees;
+                if (orientationDegrees != null && orientationDegrees != 0) {
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(orientationDegrees);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                }
             }
             return bitmap;
         }
@@ -176,7 +176,6 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     protected void onPostExecute(Result result) {
         MethodChannel.Result r = result.params.result;
         String uri = result.params.entry.uri.toString();
-        result.params.complete.accept(uri);
         if (result.data != null) {
             r.success(result.data);
         } else {
