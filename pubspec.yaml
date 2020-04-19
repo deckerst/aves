@@ -27,7 +27,7 @@ version: 1.0.0+1
 # - crash when calling `seekTo` for some files (e.g. TED talk videos)
 
 # flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
-# - URI handling (from v0.3.6, `DataSource.photoManagerUrl`)
+# - URI handling (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
 # - support: AVI/XVID/MP3 video/audio, MP2T video only
 # - possible support for more formats by TODO TLAD customizing ffmpeg build?
 # - playable when only the video or audio stream is supported
