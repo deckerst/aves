@@ -3,10 +3,11 @@ import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
-import 'package:aves/model/metadata_service.dart';
+import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -216,7 +217,7 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        const Icon(OMIcons.place, size: _iconSize),
+        const Icon(AIcons.location, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -236,7 +237,7 @@ class _DateRow extends StatelessWidget {
     final resolution = '${entry.width ?? '?'} × ${entry.height ?? '?'}';
     return Row(
       children: [
-        const Icon(OMIcons.calendarToday, size: _iconSize),
+        const Icon(AIcons.date, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         if (!entry.isSvg) Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),

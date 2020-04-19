@@ -1,7 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
@@ -155,13 +154,7 @@ class InfoPageState extends State<InfoPage> {
 
   void _goToCollection(CollectionFilter filter) {
     if (collection == null) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CollectionPage(collection.derive(filter)),
-      ),
-      (route) => false,
-    );
+    FilterNotification(filter).dispatch(context);
   }
 }
 
@@ -228,3 +221,9 @@ class InfoRowGroup extends StatelessWidget {
 }
 
 class BackUpNotification extends Notification {}
+
+class FilterNotification extends Notification {
+  final CollectionFilter filter;
+
+  const FilterNotification(this.filter);
+}

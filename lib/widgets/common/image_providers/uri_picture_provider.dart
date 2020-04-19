@@ -1,4 +1,4 @@
-import 'package:aves/model/image_file_service.dart';
+import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

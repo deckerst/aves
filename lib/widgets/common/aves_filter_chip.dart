@@ -4,8 +4,6 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 
 typedef FilterCallback = void Function(CollectionFilter filter);
 
-typedef FilterBuilder = CollectionFilter Function(String label);
-
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;

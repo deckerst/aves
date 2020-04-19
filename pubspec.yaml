@@ -13,6 +13,25 @@ description: A new Flutter application.
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.0+1
 
+# video_player (as of v0.10.8+2, backed by ExoPlayer):
+# - no URI handling by default but trivial by fork
+# - support: AVI/XVID/MP3 nothing, MP2T nothing
+# - cannot support more formats
+# - playable only when both the video and audio streams are supported
+
+# fijkplayer (as of v0.7.1, backed by IJKPlayer & ffmpeg):
+# - URI handling
+# - support: AVI/XVID/MP3 audio only, MP2T video only
+# - possible support for more formats by customizing ffmpeg build,
+# - playable when only the video or audio stream is supported
+# - crash when calling `seekTo` for some files (e.g. TED talk videos)
+
+# flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
+# - URI handling (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
+# - support: AVI/XVID/MP3 video/audio, MP2T video only
+# - possible support for more formats by TODO TLAD customizing ffmpeg build?
+# - playable when only the video or audio stream is supported
+
 dependencies:
   flutter:
     sdk: flutter
@@ -20,19 +39,20 @@ dependencies:
   charts_flutter:
   collection:
   draggable_scrollbar:
-    git:
-      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
+    path: ../flutter-draggable-scrollbar
+#    git:
+#      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   event_bus:
   expansion_tile_card:
+    path: ../expansion_tile_card
+#    git:
+#      url: git://github.com/deckerst/expansion_tile_card.git
+  flutter_ijkplayer:
+    path: ../flutter_ijkplayer
+#    git:
+#      url: git://github.com/deckerst/flutter_ijkplayer.git
   flushbar:
-    #   flushbar-1.9.1 cannot be built with Flutter 1.15.17
-    git:
-      url: https://github.com/AndreHaueisen/flushbar.git
-      ref: 13c55a8
   flutter_native_timezone:
-  flutter_sticky_header:
-    git:
-      url: git://github.com/deckerst/flutter_sticky_header.git
   flutter_svg:
   geocoder:
   google_maps_flutter:
@@ -53,8 +73,7 @@ dependencies:
   sqflite:
   transparent_image:
   tuple:
-  video_player:
-    path: ../plugins/packages/video_player/video_player
+  uuid:
 
 dev_dependencies:
   flutter_test:

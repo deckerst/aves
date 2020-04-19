@@ -24,10 +24,32 @@ class MetadataDb {
     _database = openDatabase(
       await path,
       onCreate: (db, version) async {
-        await db.execute('CREATE TABLE $dateTakenTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER)');
-        await db.execute('CREATE TABLE $metadataTable(contentId INTEGER PRIMARY KEY, dateMillis INTEGER, videoRotation INTEGER, xmpSubjects TEXT, xmpTitleDescription TEXT, latitude REAL, longitude REAL)');
-        await db.execute('CREATE TABLE $addressTable(contentId INTEGER PRIMARY KEY, addressLine TEXT, countryName TEXT, adminArea TEXT, locality TEXT)');
-        await db.execute('CREATE TABLE $favouriteTable(contentId INTEGER PRIMARY KEY, path TEXT)');
+        await db.execute('CREATE TABLE $dateTakenTable('
+            'contentId INTEGER PRIMARY KEY'
+            ', dateMillis INTEGER'
+            ')');
+        await db.execute('CREATE TABLE $metadataTable('
+            'contentId INTEGER PRIMARY KEY'
+            ', dateMillis INTEGER'
+            ', isAnimated INTEGER'
+            ', videoRotation INTEGER'
+            ', xmpSubjects TEXT'
+            ', xmpTitleDescription TEXT'
+            ', latitude REAL'
+            ', longitude REAL'
+            ')');
+        await db.execute('CREATE TABLE $addressTable('
+            'contentId INTEGER PRIMARY KEY'
+            ', addressLine TEXT'
+            ', countryCode TEXT'
+            ', countryName TEXT'
+            ', adminArea TEXT'
+            ', locality TEXT'
+            ')');
+        await db.execute('CREATE TABLE $favouriteTable('
+            'contentId INTEGER PRIMARY KEY'
+            ', path TEXT'
+            ')');
       },
       version: 1,
     );
@@ -74,7 +96,7 @@ class MetadataDb {
 //    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(metadataTable);
-    final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map)).toList();
+    final metadataEntries = maps.map((map) => CatalogMetadata.fromMap(map, boolAsInteger: true)).toList();
 //    debugPrint('$runtimeType loadMetadataEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
     return metadataEntries;
   }
@@ -94,7 +116,7 @@ class MetadataDb {
       }
       batch.insert(
         metadataTable,
-        metadata.toMap(),
+        metadata.toMap(boolAsInteger: true),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     });

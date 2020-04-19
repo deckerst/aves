@@ -1,7 +1,8 @@
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_file_service.dart';
 import 'package:aves/model/image_metadata.dart';
-import 'package:aves/model/metadata_service.dart';
+import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/service_policy.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -106,13 +107,16 @@ class ImageEntry {
 
   bool get isFavourite => favourites.isFavourite(this);
 
-  bool get isGif => mimeType == MimeTypes.GIF;
-
   bool get isSvg => mimeType == MimeTypes.SVG;
+
+  // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
+  bool get isPhoto => [MimeTypes.HEIC, MimeTypes.HEIF, MimeTypes.JPEG].contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');
 
   bool get isCatalogued => _catalogMetadata != null;
+
+  bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
   bool get canEdit => path != null;
 
@@ -217,12 +221,17 @@ class ImageEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      final addresses = await servicePolicy.call(
+        () => Geocoder.local.findAddressesFromCoordinates(coordinates),
+        priority: ServiceCallPriority.background,
+        debugLabel: 'findAddressesFromCoordinates-$path',
+      );
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         addressDetails = AddressDetails(
           contentId: contentId,
           addressLine: address.addressLine,
+          countryCode: address.countryCode,
           countryName: address.countryName,
           adminArea: address.adminArea,
           locality: address.locality,

@@ -162,10 +162,9 @@ class CollectionLens with ChangeNotifier {
         break;
       case SortFactor.name:
         final byAlbum = groupBy(_filteredEntries, (ImageEntry entry) => entry.directory);
-        final albums = byAlbum.keys.toSet();
         final compare = (a, b) {
-          final ua = CollectionSource.getUniqueAlbumName(a, albums);
-          final ub = CollectionSource.getUniqueAlbumName(b, albums);
+          final ua = source.getUniqueAlbumName(a);
+          final ub = source.getUniqueAlbumName(b);
           return compareAsciiUpperCase(ua, ub);
         };
         sections = Map.unmodifiable(SplayTreeMap.of(byAlbum, compare));

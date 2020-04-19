@@ -11,16 +11,16 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
   final CollectionLens collection;
-  final Map<String, int> entryCountPerCity = {}, entryCountPerCountry = {}, entryCountPerTag = {};
+  final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
   List<ImageEntry> get entries => collection.sortedEntries;
 
@@ -30,13 +30,14 @@ class StatsPage extends StatelessWidget {
     entries.forEach((entry) {
       if (entry.isLocated) {
         final address = entry.addressDetails;
-        final city = address.city;
-        if (city != null && city.isNotEmpty) {
-          entryCountPerCity[city] = (entryCountPerCity[city] ?? 0) + 1;
-        }
-        final country = address.countryName;
+        var country = address.countryName;
         if (country != null && country.isNotEmpty) {
+          country += ';${address.countryCode}';
           entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
+        }
+        final place = address.place;
+        if (place != null && place.isNotEmpty) {
+          entryCountPerPlace[place] = (entryCountPerPlace[place] ?? 0) + 1;
         }
       }
       entry.xmpSubjects.forEach((tag) {
@@ -76,7 +77,7 @@ class StatsPage extends StatelessWidget {
                   backgroundColor: Colors.white24,
                   progressColor: Theme.of(context).accentColor,
                   animation: true,
-                  leading: const Icon(OMIcons.place),
+                  leading: const Icon(AIcons.location),
                   // right padding to match leading, so that inside label is aligned with outside label below
                   padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(right: 24),
                   center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
@@ -86,8 +87,8 @@ class StatsPage extends StatelessWidget {
               ],
             ),
           ),
-          ..._buildTopFilters(context, 'Top cities', entryCountPerCity, (s) => LocationFilter(LocationLevel.city, s)),
           ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
+          ..._buildTopFilters(context, 'Top places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
           ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
         ],
       );
@@ -193,7 +194,12 @@ class StatsPage extends StatelessWidget {
     });
   }
 
-  List<Widget> _buildTopFilters(BuildContext context, String title, Map<String, int> entryCountMap, FilterBuilder filterBuilder) {
+  List<Widget> _buildTopFilters(
+    BuildContext context,
+    String title,
+    Map<String, int> entryCountMap,
+    CollectionFilter Function(String key) filterBuilder,
+  ) {
     if (entryCountMap.isEmpty) return [];
 
     final maxCount = collection.entryCount;
@@ -214,7 +220,8 @@ class StatsPage extends StatelessWidget {
         padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.buttonBorderWidth / 2 + 6, end: 8),
         child: Table(
           children: sortedEntries.take(5).map((kv) {
-            final label = kv.key;
+            final filter = filterBuilder(kv.key);
+            final label = filter.label;
             final count = kv.value;
             final percent = count / maxCount;
             return TableRow(
@@ -222,7 +229,7 @@ class StatsPage extends StatelessWidget {
                 Align(
                   alignment: AlignmentDirectional.centerStart,
                   child: AvesFilterChip(
-                    filter: filterBuilder(label),
+                    filter: filter,
                     onPressed: (filter) => _goToCollection(context, filter),
                   ),
                 ),

@@ -1,5 +1,4 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -29,7 +28,7 @@ class BasicSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : '?';
-    final showMegaPixels = !entry.isVideo && !entry.isGif && entry.megaPixels != null && entry.megaPixels > 0;
+    final showMegaPixels = entry.isPhoto && entry.megaPixels != null && entry.megaPixels > 0;
     final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
     final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
@@ -51,9 +50,9 @@ class BasicSection extends StatelessWidget {
             final album = entry.directory;
             final filters = [
               if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
-              if (entry.isGif) MimeFilter(MimeTypes.GIF),
+              if (entry.isAnimated) MimeFilter(MimeFilter.animated),
               if (isFavourite) FavouriteFilter(),
-              if (album != null) AlbumFilter(album, CollectionSource.getUniqueAlbumName(album, collection?.source?.sortedAlbums)),
+              if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
               ...tags.map((tag) => TagFilter(tag)),
             ]..sort();
             if (filters.isEmpty) return const SizedBox.shrink();

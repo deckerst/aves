@@ -4,18 +4,18 @@ import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
-import 'package:video_player/video_player.dart';
 
 class ImageView extends StatelessWidget {
   final ImageEntry entry;
   final Object heroTag;
   final ValueChanged<PhotoViewScaleState> onScaleChanged;
   final VoidCallback onTap;
-  final List<Tuple2<String, VideoPlayerController>> videoControllers;
+  final List<Tuple2<String, IjkMediaController>> videoControllers;
 
   const ImageView({
     this.entry,

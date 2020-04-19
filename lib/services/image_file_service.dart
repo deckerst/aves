@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -42,31 +43,28 @@ class ImageFileService {
     return Uint8List(0);
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height) async {
-    if (width > 0 && height > 0) {
+  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object cancellationKey}) {
+    return servicePolicy.call(
+      () async {
+        if (width > 0 && height > 0) {
 //      debugPrint('getThumbnail width=$width path=${entry.path}');
-      try {
-        final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
-          'entry': entry.toMap(),
-          'width': width,
-          'height': height,
-        });
-        return result as Uint8List;
-      } on PlatformException catch (e) {
-        debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-      }
-    }
-    return Uint8List(0);
-  }
-
-  static Future<void> cancelGetThumbnail(String uri) async {
-    try {
-      await platform.invokeMethod('cancelGetThumbnail', <String, dynamic>{
-        'uri': uri,
-      });
-    } on PlatformException catch (e) {
-      debugPrint('cancelGetThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
+          try {
+            final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
+              'entry': entry.toMap(),
+              'width': width,
+              'height': height,
+            });
+            return result as Uint8List;
+          } on PlatformException catch (e) {
+            debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+          }
+        }
+        return Uint8List(0);
+      },
+      priority: ServiceCallPriority.asap,
+      debugLabel: 'getThumbnail-${entry.path}',
+      cancellationKey: cancellationKey,
+    );
   }
 
   static Future<bool> delete(ImageEntry entry) async {

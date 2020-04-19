@@ -8,11 +8,12 @@ import 'package:path/path.dart';
 
 class CollectionSource {
   final List<ImageEntry> _rawEntries;
+  final Set<String> _folderPaths = {};
   final EventBus _eventBus = EventBus();
 
   List<String> sortedAlbums = List.unmodifiable(const Iterable.empty());
-  List<String> sortedCities = List.unmodifiable(const Iterable.empty());
   List<String> sortedCountries = List.unmodifiable(const Iterable.empty());
+  List<String> sortedPlaces = List.unmodifiable(const Iterable.empty());
   List<String> sortedTags = List.unmodifiable(const Iterable.empty());
 
   List<ImageEntry> get entries => List.unmodifiable(_rawEntries);
@@ -106,11 +107,10 @@ class CollectionSource {
   }
 
   void updateAlbums() {
-    final albums = _rawEntries.map((entry) => entry.directory).toSet();
-    final sorted = albums.toList()
+    final sorted = _folderPaths.toList()
       ..sort((a, b) {
-        final ua = getUniqueAlbumName(a, albums);
-        final ub = getUniqueAlbumName(b, albums);
+        final ua = getUniqueAlbumName(a);
+        final ub = getUniqueAlbumName(b);
         return compareAsciiUpperCase(ua, ub);
       });
     sortedAlbums = List.unmodifiable(sorted);
@@ -124,8 +124,8 @@ class CollectionSource {
   void updateLocations() {
     final locations = _rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails);
     final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
-    sortedCountries = lister((address) => address.countryName);
-    sortedCities = lister((address) => address.city);
+    sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
+    sortedPlaces = lister((address) => address.place);
   }
 
   void addAll(Iterable<ImageEntry> entries) {
@@ -134,6 +134,7 @@ class CollectionSource {
       entry.catalogDateMillis = savedDates.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null)?.dateMillis;
     });
     _rawEntries.addAll(entries);
+    _folderPaths.addAll(_rawEntries.map((entry) => entry.directory).toSet());
     eventBus.fire(const EntryAddedEvent());
   }
 
@@ -146,8 +147,8 @@ class CollectionSource {
     return success;
   }
 
-  static String getUniqueAlbumName(String album, Iterable<String> albums) {
-    final otherAlbums = albums?.where((item) => item != album) ?? [];
+  String getUniqueAlbumName(String album) {
+    final otherAlbums = _folderPaths.where((item) => item != album);
     final parts = album.split(separator);
     var partCount = 0;
     String testName;

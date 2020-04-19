@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 typedef OutlinedWidgetBuilder = Widget Function(BuildContext context, bool isShadow);
 
 class OutlinedText extends StatelessWidget {
-  final OutlinedWidgetBuilder leadingBuilder;
+  final OutlinedWidgetBuilder leadingBuilder, trailingBuilder;
   final String text;
   final TextStyle style;
   final double outlineWidth;
   final Color outlineColor;
 
-  static const leadingAlignment = PlaceholderAlignment.middle;
+  static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
   const OutlinedText({
     Key key,
     this.leadingBuilder,
     @required this.text,
+    this.trailingBuilder,
     @required this.style,
     double outlineWidth,
     Color outlineColor,
@@ -31,7 +32,7 @@ class OutlinedText extends StatelessWidget {
             children: [
               if (leadingBuilder != null)
                 WidgetSpan(
-                  alignment: leadingAlignment,
+                  alignment: widgetSpanAlignment,
                   child: leadingBuilder(context, true),
                 ),
               TextSpan(
@@ -43,6 +44,11 @@ class OutlinedText extends StatelessWidget {
                     ..color = outlineColor,
                 ),
               ),
+              if (trailingBuilder != null)
+                WidgetSpan(
+                  alignment: widgetSpanAlignment,
+                  child: trailingBuilder(context, true),
+                ),
             ],
           ),
         ),
@@ -51,13 +57,18 @@ class OutlinedText extends StatelessWidget {
             children: [
               if (leadingBuilder != null)
                 WidgetSpan(
-                  alignment: leadingAlignment,
+                  alignment: widgetSpanAlignment,
                   child: leadingBuilder(context, false),
                 ),
               TextSpan(
                 text: text,
                 style: style,
               ),
+              if (trailingBuilder != null)
+                WidgetSpan(
+                  alignment: widgetSpanAlignment,
+                  child: trailingBuilder(context, false),
+                ),
             ],
           ),
         ),

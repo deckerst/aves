@@ -1,12 +1,15 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_file_service.dart';
+import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
-  const ThumbnailProvider({
+  ThumbnailProvider({
     @required this.entry,
     @required this.extent,
     this.scale = 1.0,
@@ -17,6 +20,8 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   final ImageEntry entry;
   final double extent;
   final double scale;
+
+  final Object _cancellationKey = Uuid();
 
   @override
   Future<ThumbnailProviderKey> obtainKey(ImageConfiguration configuration) {
@@ -33,7 +38,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   @override
   ImageStreamCompleter load(ThumbnailProviderKey key, DecoderCallback decode) {
-    return MultiFrameImageStreamCompleter(
+    return CancellableMultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
@@ -44,12 +49,14 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
     final dimPixels = (extent * key.devicePixelRatio).round();
-    final bytes = await ImageFileService.getThumbnail(key.entry, dimPixels, dimPixels);
-    if (bytes.lengthInBytes == 0) {
-      return null;
-    }
+    final bytes = await ImageFileService.getThumbnail(key.entry, dimPixels, dimPixels, cancellationKey: _cancellationKey);
+    return await decode(bytes ?? Uint8List(0));
+  }
 
-    return await decode(bytes);
+  Future<void> cancel() async {
+    if (servicePolicy.cancel(_cancellationKey)) {
+      await evict();
+    }
   }
 }
 
@@ -74,4 +81,30 @@ class ThumbnailProviderKey {
 
   @override
   int get hashCode => hashValues(entry.uri, extent, scale);
+
+  @override
+  String toString() {
+    return 'ThumbnailProviderKey{uri=${entry.uri}, extent=$extent, scale=$scale}';
+  }
+}
+
+class CancellableMultiFrameImageStreamCompleter extends MultiFrameImageStreamCompleter {
+  CancellableMultiFrameImageStreamCompleter({
+    @required Future<ui.Codec> codec,
+    @required double scale,
+    Stream<ImageChunkEvent> chunkEvents,
+    InformationCollector informationCollector,
+  }) : super(
+          codec: codec,
+          scale: scale,
+          chunkEvents: chunkEvents,
+          informationCollector: informationCollector,
+        );
+
+  @override
+  void reportError({DiagnosticsNode context, dynamic exception, StackTrace stack, informationCollector, bool silent = false}) {
+    // prevent default error reporting in case of planned cancellation
+    if (exception is CancelledException) return;
+    super.reportError(context: context, exception: exception, stack: stack, informationCollector: informationCollector, silent: silent);
+  }
 }

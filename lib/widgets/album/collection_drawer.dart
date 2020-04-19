@@ -5,8 +5,8 @@ import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings.dart';
@@ -31,7 +31,7 @@ class CollectionDrawer extends StatefulWidget {
 }
 
 class _CollectionDrawerState extends State<CollectionDrawer> {
-  bool _albumsExpanded = false, _citiesExpanded = false, _countriesExpanded = false, _tagsExpanded = false;
+  bool _albumsExpanded = false, _placesExpanded = false, _countriesExpanded = false, _tagsExpanded = false;
 
   CollectionSource get source => widget.source;
 
@@ -77,51 +77,79 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     );
     final videoEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.movie),
+      leading: const Icon(AIcons.video),
       title: 'Videos',
       filter: MimeFilter(MimeTypes.ANY_VIDEO),
     );
-    final gifEntry = _FilteredCollectionNavTile(
+    final animatedEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.gif),
-      title: 'GIFs',
-      filter: MimeFilter(MimeTypes.GIF),
+      leading: const Icon(AIcons.animated),
+      title: 'Animated',
+      filter: MimeFilter(MimeFilter.animated),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.favoriteBorder),
+      leading: const Icon(AIcons.favourite),
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
-    final buildAlbumEntry = (album) => _FilteredCollectionNavTile(
-          source: source,
-          leading: IconUtils.getAlbumIcon(context: context, album: album),
-          title: CollectionSource.getUniqueAlbumName(album, source.sortedAlbums),
-          dense: true,
-          filter: AlbumFilter(album, CollectionSource.getUniqueAlbumName(album, source.sortedAlbums)),
-        );
-    final buildTagEntry = (tag) => _FilteredCollectionNavTile(
+    final buildAlbumEntry = (String album) {
+      final uniqueName = source.getUniqueAlbumName(album);
+      return _FilteredCollectionNavTile(
+        source: source,
+        leading: IconUtils.getAlbumIcon(context: context, album: album),
+        title: uniqueName,
+        trailing: androidFileUtils.isOnSD(album)
+            ? const Icon(
+                OMIcons.sdStorage,
+                size: 16,
+                color: Colors.grey,
+              )
+            : null,
+        dense: true,
+        filter: AlbumFilter(album, uniqueName),
+      );
+    };
+    final buildTagEntry = (String tag) => _FilteredCollectionNavTile(
           source: source,
           leading: Icon(
-            OMIcons.localOffer,
+            AIcons.tag,
             color: stringToColor(tag),
           ),
           title: tag,
           dense: true,
           filter: TagFilter(tag),
         );
-    final buildLocationEntry = (level, location) => _FilteredCollectionNavTile(
-          source: source,
-          leading: Icon(
-            OMIcons.place,
-            color: stringToColor(location),
-          ),
-          title: location,
-          dense: true,
-          filter: LocationFilter(level, location),
-        );
+    final buildLocationEntry = (LocationLevel level, String location) {
+      String title;
+      String flag;
+      if (level == LocationLevel.country) {
+        final split = location.split(';');
+        String countryCode;
+        if (split.isNotEmpty) title = split[0];
+        if (split.length > 1) countryCode = split[1];
+        flag = LocationFilter.countryCodeToFlag(countryCode);
+      } else {
+        title = location;
+      }
+      return _FilteredCollectionNavTile(
+        source: source,
+        leading: flag != null
+            ? Text(
+                flag,
+                style: TextStyle(fontSize: IconTheme.of(context).size),
+              )
+            : Icon(
+                AIcons.location,
+                color: stringToColor(title),
+              ),
+        title: title,
+        dense: true,
+        filter: LocationFilter(level, location),
+      );
+    };
 
-    final regularAlbums = [], appAlbums = [], specialAlbums = [];
+    final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
     for (var album in source.sortedAlbums) {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.Default:
@@ -135,15 +163,15 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           break;
       }
     }
-    final cities = source.sortedCities;
     final countries = source.sortedCountries;
+    final places = source.sortedPlaces;
     final tags = source.sortedTags;
 
     final drawerItems = <Widget>[
       header,
       allMediaEntry,
       videoEntry,
-      gifEntry,
+      animatedEntry,
       favouriteEntry,
       if (specialAlbums.isNotEmpty) ...[
         const Divider(),
@@ -175,34 +203,12 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
             ],
           ),
         ),
-      if (cities.isNotEmpty)
-        SafeArea(
-          top: false,
-          bottom: false,
-          child: ExpansionTile(
-            leading: const Icon(OMIcons.place),
-            title: Row(
-              children: [
-                const Text('Cities'),
-                const Spacer(),
-                Text(
-                  '${cities.length}',
-                  style: TextStyle(
-                    color: (_citiesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                  ),
-                ),
-              ],
-            ),
-            onExpansionChanged: (expanded) => setState(() => _citiesExpanded = expanded),
-            children: cities.map((s) => buildLocationEntry(LocationLevel.city, s)).toList(),
-          ),
-        ),
       if (countries.isNotEmpty)
         SafeArea(
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.place),
+            leading: const Icon(AIcons.location),
             title: Row(
               children: [
                 const Text('Countries'),
@@ -219,12 +225,34 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
             children: countries.map((s) => buildLocationEntry(LocationLevel.country, s)).toList(),
           ),
         ),
+      if (places.isNotEmpty)
+        SafeArea(
+          top: false,
+          bottom: false,
+          child: ExpansionTile(
+            leading: const Icon(AIcons.location),
+            title: Row(
+              children: [
+                const Text('Places'),
+                const Spacer(),
+                Text(
+                  '${places.length}',
+                  style: TextStyle(
+                    color: (_placesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+                  ),
+                ),
+              ],
+            ),
+            onExpansionChanged: (expanded) => setState(() => _placesExpanded = expanded),
+            children: places.map((s) => buildLocationEntry(LocationLevel.place, s)).toList(),
+          ),
+        ),
       if (tags.isNotEmpty)
         SafeArea(
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.localOffer),
+            leading: const Icon(AIcons.tag),
             title: Row(
               children: [
                 const Text('Tags'),
@@ -293,6 +321,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
   final CollectionSource source;
   final Widget leading;
   final String title;
+  final Widget trailing;
   final bool dense;
   final CollectionFilter filter;
 
@@ -300,6 +329,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
     @required this.source,
     @required this.leading,
     @required this.title,
+    this.trailing,
     bool dense,
     @required this.filter,
   }) : dense = dense ?? false;
@@ -312,6 +342,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
       child: ListTile(
         leading: leading,
         title: Text(title),
+        trailing: trailing,
         dense: dense,
         onTap: () => _goToCollection(context),
       ),

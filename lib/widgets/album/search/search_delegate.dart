@@ -1,5 +1,4 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -63,22 +62,22 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
               children: [
                 _buildFilterRow(
                   context: context,
-                  filters: [FavouriteFilter(), MimeFilter(MimeTypes.ANY_VIDEO), MimeFilter(MimeTypes.GIF), MimeFilter(MimeTypes.SVG)].where((f) => containQuery(f.label)),
+                  filters: [FavouriteFilter(), MimeFilter(MimeTypes.ANY_VIDEO), MimeFilter(MimeFilter.animated), MimeFilter(MimeTypes.SVG)].where((f) => containQuery(f.label)),
                 ),
                 _buildFilterRow(
                   context: context,
                   title: 'Albums',
-                  filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, CollectionSource.getUniqueAlbumName(s, source.sortedAlbums))).where((f) => containQuery(f.uniqueName)),
-                ),
-                _buildFilterRow(
-                  context: context,
-                  title: 'Cities',
-                  filters: source.sortedCities.where(containQuery).map((s) => LocationFilter(LocationLevel.city, s)),
+                  filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName)),
                 ),
                 _buildFilterRow(
                   context: context,
                   title: 'Countries',
                   filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)),
+                ),
+                _buildFilterRow(
+                  context: context,
+                  title: 'Places',
+                  filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)),
                 ),
                 _buildFilterRow(
                   context: context,

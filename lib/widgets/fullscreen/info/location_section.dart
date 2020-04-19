@@ -2,9 +2,10 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
-import 'package:aves/utils/android_app_service.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/map_initializer.dart';
 import 'package:flutter/material.dart';
@@ -80,9 +81,9 @@ class _LocationSectionState extends State<LocationSection> {
         final address = entry.addressDetails;
         location = address.addressLine;
         final country = address.countryName;
-        if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, country));
-        final city = address.city;
-        if (city != null && city.isNotEmpty) filters.add(LocationFilter(LocationLevel.city, city));
+        if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country;${address.countryCode}'));
+        final place = address.place;
+        if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
       } else if (entry.hasGps) {
         location = toDMS(entry.latLng).join(', ');
       }
@@ -93,7 +94,7 @@ class _LocationSectionState extends State<LocationSection> {
           if (widget.showTitle)
             const Padding(
               padding: EdgeInsets.only(bottom: 8),
-              child: SectionRow(OMIcons.place),
+              child: SectionRow(AIcons.location),
             ),
           ImageMap(
             markerId: entry.uri ?? entry.path,
@@ -170,9 +171,10 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
       children: [
         Expanded(
           child: GestureDetector(
-            // absorb scale gesture here to prevent scrolling
-            // and triggering by mistake a move to the image page above
-            onScaleStart: (d) {},
+            onScaleStart: (details) {
+              // absorb scale gesture here to prevent scrolling
+              // and triggering by mistake a move to the image page above
+            },
             child: ClipRRect(
               borderRadius: const BorderRadius.all(
                 Radius.circular(16),

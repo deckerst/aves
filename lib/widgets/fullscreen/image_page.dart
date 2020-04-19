@@ -1,10 +1,10 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
-import 'package:video_player/video_player.dart';
 
 class MultiImagePage extends StatefulWidget {
   final CollectionLens collection;
@@ -12,7 +12,7 @@ class MultiImagePage extends StatefulWidget {
   final ValueChanged<int> onPageChanged;
   final ValueChanged<PhotoViewScaleState> onScaleChanged;
   final VoidCallback onTap;
-  final List<Tuple2<String, VideoPlayerController>> videoControllers;
+  final List<Tuple2<String, IjkMediaController>> videoControllers;
 
   const MultiImagePage({
     this.collection,
@@ -65,7 +65,7 @@ class SingleImagePage extends StatefulWidget {
   final ImageEntry entry;
   final ValueChanged<PhotoViewScaleState> onScaleChanged;
   final VoidCallback onTap;
-  final List<Tuple2<String, VideoPlayerController>> videoControllers;
+  final List<Tuple2<String, IjkMediaController>> videoControllers;
 
   const SingleImagePage({
     this.entry,

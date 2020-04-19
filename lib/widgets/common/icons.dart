@@ -6,6 +6,16 @@ import 'package:aves/widgets/common/image_providers/app_icon_image_provider.dart
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
+class AIcons {
+  static const IconData animated = Icons.slideshow;
+  static const IconData video = OMIcons.movie;
+  static const IconData favourite = OMIcons.favoriteBorder;
+  static const IconData favouriteActive = OMIcons.favorite;
+  static const IconData date = OMIcons.calendarToday;
+  static const IconData location = OMIcons.place;
+  static const IconData tag = OMIcons.localOffer;
+}
+
 class VideoIcon extends StatelessWidget {
   final ImageEntry entry;
   final double iconSize;
@@ -16,22 +26,23 @@ class VideoIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: OMIcons.playCircleOutline,
-      iconSize: iconSize,
+      size: iconSize,
       text: entry.durationText,
     );
   }
 }
 
-class GifIcon extends StatelessWidget {
+class AnimatedImageIcon extends StatelessWidget {
   final double iconSize;
 
-  const GifIcon({Key key, this.iconSize}) : super(key: key);
+  const AnimatedImageIcon({Key key, this.iconSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: OMIcons.gif,
-      iconSize: iconSize,
+      icon: AIcons.animated,
+      size: iconSize,
+      iconSize: iconSize * .8,
     );
   }
 }
@@ -44,44 +55,57 @@ class GpsIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: OMIcons.place,
-      iconSize: iconSize,
+      icon: AIcons.location,
+      size: iconSize,
     );
   }
 }
 
 class OverlayIcon extends StatelessWidget {
   final IconData icon;
-  final double iconSize;
+  final double size, iconSize;
   final String text;
 
-  const OverlayIcon({Key key, this.icon, this.iconSize, this.text}) : super(key: key);
+  const OverlayIcon({
+    Key key,
+    @required this.icon,
+    @required this.size,
+    double iconSize,
+    this.text,
+  })  : iconSize = iconSize ?? size,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final iconChild = SizedBox(
+      width: size,
+      height: size,
+      child: Icon(
+        icon,
+        size: iconSize,
+      ),
+    );
+
     return Container(
       margin: const EdgeInsets.all(1),
-      padding: text != null ? EdgeInsets.only(right: iconSize / 4) : null,
+      padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
         color: const Color(0xBB000000),
         borderRadius: BorderRadius.all(
-          Radius.circular(iconSize),
+          Radius.circular(size),
         ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: iconSize,
-          ),
-          if (text != null) ...[
-            const SizedBox(width: 2),
-            Text(text),
-          ]
-        ],
-      ),
+      child: text == null
+          ? iconChild
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                iconChild,
+                const SizedBox(width: 2),
+                Text(text),
+              ],
+            ),
     );
   }
 }
