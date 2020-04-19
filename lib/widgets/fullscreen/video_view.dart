@@ -1,13 +1,14 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
 class AvesVideo extends StatefulWidget {
   final ImageEntry entry;
-  final VideoPlayerController controller;
+  final IjkMediaController controller;
 
   const AvesVideo({
     Key key,
@@ -20,15 +21,16 @@ class AvesVideo extends StatefulWidget {
 }
 
 class AvesVideoState extends State<AvesVideo> {
+  final List<StreamSubscription> _subscriptions = [];
+
   ImageEntry get entry => widget.entry;
 
-  VideoPlayerValue get value => widget.controller.value;
+  IjkMediaController get controller => widget.controller;
 
   @override
   void initState() {
     super.initState();
     _registerWidget(widget);
-    _onValueChange();
   }
 
   @override
@@ -45,38 +47,78 @@ class AvesVideoState extends State<AvesVideo> {
   }
 
   void _registerWidget(AvesVideo widget) {
-    widget.controller.addListener(_onValueChange);
+    _subscriptions.add(widget.controller.playFinishStream.listen(_onPlayFinish));
   }
 
   void _unregisterWidget(AvesVideo widget) {
-    widget.controller.removeListener(_onValueChange);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
   }
+
+  bool isPlayable(IjkStatus status) => [IjkStatus.prepared, IjkStatus.playing, IjkStatus.pause, IjkStatus.complete].contains(status);
 
   @override
   Widget build(BuildContext context) {
-    if (value == null) return const SizedBox();
-    if (value.hasError) {
-      return Image(
-        image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
-        width: entry.width.toDouble(),
-        height: entry.height.toDouble(),
-      );
-    }
-    return Center(
-      child: AspectRatio(
-        aspectRatio: entry.displayAspectRatio,
-        child: VideoPlayer(widget.controller),
-      ),
-    );
+    if (controller == null) return const SizedBox();
+    return StreamBuilder<IjkStatus>(
+        stream: widget.controller.ijkStatusStream,
+        builder: (context, snapshot) {
+          final status = snapshot.data;
+          return isPlayable(status)
+              ? IjkPlayer(
+                  mediaController: controller,
+                  controllerWidgetBuilder: (controller) => const SizedBox.shrink(),
+                  statusWidgetBuilder: (context, controller, status) => const SizedBox.shrink(),
+                  textureBuilder: (context, controller, info) {
+                    var id = controller.textureId;
+                    if (id == null) {
+                      return AspectRatio(
+                        aspectRatio: entry.displayAspectRatio,
+                        child: Container(
+                          color: Colors.green,
+                        ),
+                      );
+                    }
+
+                    Widget child = Container(
+                      color: Colors.blue,
+                      child: Texture(
+                        textureId: id,
+                      ),
+                    );
+
+                    if (!controller.autoRotate) {
+                      return child;
+                    }
+
+                    final degree = entry.catalogMetadata?.videoRotation ?? 0;
+                    if (degree != 0) {
+                      child = RotatedBox(
+                        quarterTurns: degree ~/ 90,
+                        child: child,
+                      );
+                    }
+
+                    child = AspectRatio(
+                      aspectRatio: entry.displayAspectRatio,
+                      child: child,
+                    );
+
+                    return Container(
+                      child: child,
+                      alignment: Alignment.center,
+                      color: Colors.transparent,
+                    );
+                  },
+                )
+              : Image(
+                  image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
+                  width: entry.width.toDouble(),
+                  height: entry.height.toDouble(),
+                );
+        });
   }
 
-  void _onValueChange() {
-    if (!value.isPlaying && value.position == value.duration) _goToStart();
-    setState(() {});
-  }
-
-  Future<void> _goToStart() async {
-    await widget.controller.seekTo(Duration.zero);
-    await widget.controller.pause();
-  }
+  void _onPlayFinish(IjkMediaController controller) => controller.seekTo(0);
 }

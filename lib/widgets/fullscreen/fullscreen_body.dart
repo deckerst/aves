@@ -19,10 +19,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import 'package:video_player/video_player.dart';
 
 class FullscreenBody extends StatefulWidget {
   final CollectionLens collection;
@@ -50,7 +50,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   FullscreenActionDelegate _actionDelegate;
-  final List<Tuple2<String, VideoPlayerController>> _videoControllers = [];
+  final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
 
   CollectionLens get collection => widget.collection;
 
@@ -114,6 +114,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _videoControllers.forEach((kv) => kv.item2.dispose());
+    _videoControllers.clear();
     _verticalPager.removeListener(_onVerticalPageControllerChange);
     _unregisterWidget(widget);
     super.dispose();
@@ -330,7 +331,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
 
-  void _initVideoController() {
+  Future<void> _initVideoController() async {
     if (_entry == null || !_entry.isVideo) return;
 
     final uri = _entry.uri;
@@ -338,9 +339,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     if (controllerEntry != null) {
       _videoControllers.remove(controllerEntry);
     } else {
-      // unsupported by video_player 0.10.8+2 (backed by ExoPlayer): AVI
-      final controller = VideoPlayerController.uri(uri)..initialize();
-      controllerEntry = Tuple2(uri, controller);
+      // do not set data source of IjkMediaController here
+      controllerEntry = Tuple2(uri, IjkMediaController());
     }
     _videoControllers.insert(0, controllerEntry);
     while (_videoControllers.length > 3) {
@@ -352,7 +352,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 class FullscreenVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
   final ImageEntry entry;
-  final List<Tuple2<String, VideoPlayerController>> videoControllers;
+  final List<Tuple2<String, IjkMediaController>> videoControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImageTap, onImagePageRequested;

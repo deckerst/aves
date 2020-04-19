@@ -1,18 +1,20 @@
+import 'dart:async';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
-import 'package:video_player/video_player.dart';
 
 class VideoControlOverlay extends StatefulWidget {
   final ImageEntry entry;
   final Animation<double> scale;
-  final VideoPlayerController controller;
+  final IjkMediaController controller;
   final EdgeInsets viewInsets, viewPadding;
 
   const VideoControlOverlay({
@@ -32,16 +34,28 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   final GlobalKey _progressBarKey = GlobalKey();
   bool _playingOnDragStart = false;
   AnimationController _playPauseAnimation;
+  final List<StreamSubscription> _subscriptions = [];
+  double _seekTargetPercent;
+
+  // video info is not refreshed by default, so we use a timer to do so
+  Timer _progressTimer;
 
   ImageEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
 
-  VideoPlayerController get controller => widget.controller;
+  IjkMediaController get controller => widget.controller;
 
-  VideoPlayerValue get value => widget.controller.value;
+  // `videoInfo` is never null (even if `toString` prints `null`)
+  // check presence with `hasData` instead
+  VideoInfo get videoInfo => controller.videoInfo;
 
-  double get progress => value.position != null && value.duration != null ? value.position.inMilliseconds / value.duration.inMilliseconds : 0;
+  // we check whether video info is ready instead of checking for `noDatasource` status,
+  // as the controller could also be uninitialized with the `pause` status
+  // (e.g. when switching between video entries without playing them the first time)
+  bool get isInitialized => videoInfo.hasData;
+
+  bool get isPlaying => controller.ijkStatus == IjkStatus.playing;
 
   @override
   void initState() {
@@ -51,7 +65,6 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
       vsync: this,
     );
     _registerWidget(widget);
-    _onValueChange();
   }
 
   @override
@@ -69,11 +82,17 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   }
 
   void _registerWidget(VideoControlOverlay widget) {
-    widget.controller.addListener(_onValueChange);
+    _subscriptions.add(widget.controller.ijkStatusStream.listen(_onStatusChange));
+    _subscriptions.add(widget.controller.textureIdStream.listen(_onTextureIdChange));
+    _onStatusChange(widget.controller.ijkStatus);
+    _onTextureIdChange(widget.controller.textureId);
   }
 
   void _unregisterWidget(VideoControlOverlay widget) {
-    widget.controller.removeListener(_onValueChange);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+    _stopTimer();
   }
 
   @override
@@ -93,37 +112,43 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
           padding: safePadding,
           child: SizedBox(
             width: mqWidth - safePadding.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: value.hasError
-                  ? [
-                      OverlayButton(
-                        scale: scale,
-                        child: IconButton(
-                          icon: Icon(OMIcons.openInNew),
-                          onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
-                          tooltip: 'Open',
-                        ),
-                      ),
-                    ]
-                  : [
-                      Expanded(
-                        child: _buildProgressBar(),
-                      ),
-                      const SizedBox(width: 8),
-                      OverlayButton(
-                        scale: scale,
-                        child: IconButton(
-                          icon: AnimatedIcon(
-                            icon: AnimatedIcons.play_pause,
-                            progress: _playPauseAnimation,
-                          ),
-                          onPressed: _playPause,
-                          tooltip: value.isPlaying ? 'Pause' : 'Play',
-                        ),
-                      ),
-                    ],
-            ),
+            child: StreamBuilder<IjkStatus>(
+                stream: controller.ijkStatusStream,
+                builder: (context, snapshot) {
+                  // do not use stream snapshot because it is obsolete when switching between videos
+                  final status = controller.ijkStatus;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: status == IjkStatus.error
+                        ? [
+                            OverlayButton(
+                              scale: scale,
+                              child: IconButton(
+                                icon: Icon(OMIcons.openInNew),
+                                onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
+                                tooltip: 'Open',
+                              ),
+                            ),
+                          ]
+                        : [
+                            Expanded(
+                              child: _buildProgressBar(),
+                            ),
+                            const SizedBox(width: 8),
+                            OverlayButton(
+                              scale: scale,
+                              child: IconButton(
+                                icon: AnimatedIcon(
+                                  icon: AnimatedIcons.play_pause,
+                                  progress: _playPauseAnimation,
+                                ),
+                                onPressed: _playPause,
+                                tooltip: isPlaying ? 'Pause' : 'Play',
+                              ),
+                            ),
+                          ],
+                  );
+                }),
           ),
         );
       },
@@ -138,14 +163,14 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
         borderRadius: progressBarBorderRadius,
         child: GestureDetector(
           onTapDown: (TapDownDetails details) {
-            _seek(details.globalPosition);
+            _seekFromTap(details.globalPosition);
           },
           onHorizontalDragStart: (DragStartDetails details) {
-            _playingOnDragStart = controller.value.isPlaying;
+            _playingOnDragStart = isPlaying;
             if (_playingOnDragStart) controller.pause();
           },
           onHorizontalDragUpdate: (DragUpdateDetails details) {
-            _seek(details.globalPosition);
+            _seekFromTap(details.globalPosition);
           },
           onHorizontalDragEnd: (DragEndDetails details) {
             if (_playingOnDragStart) controller.play();
@@ -164,12 +189,25 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
               children: [
                 Row(
                   children: [
-                    Text(formatDuration(value.position ?? Duration.zero)),
+                    StreamBuilder<VideoInfo>(
+                        stream: controller.videoInfoStream,
+                        builder: (context, snapshot) {
+                          // do not use stream snapshot because it is obsolete when switching between videos
+                          final position = videoInfo.currentPosition?.floor() ?? 0;
+                          return Text(formatDuration(Duration(seconds: position)));
+                        }),
                     const Spacer(),
-                    Text(formatDuration(value.duration ?? Duration.zero)),
+                    Text(entry.durationText),
                   ],
                 ),
-                LinearProgressIndicator(value: progress),
+                StreamBuilder<VideoInfo>(
+                    stream: controller.videoInfoStream,
+                    builder: (context, snapshot) {
+                      // do not use stream snapshot because it is obsolete when switching between videos
+                      var progress = videoInfo.progress;
+                      if (!progress.isFinite) progress = 0.0;
+                      return LinearProgressIndicator(value: progress);
+                    }),
               ],
             ),
           ),
@@ -178,23 +216,44 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
     );
   }
 
-  void _onValueChange() {
-    setState(() {});
-    updatePlayPauseIcon();
+  void _startTimer() {
+    if (controller.textureId == null) return;
+    _progressTimer?.cancel();
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 350), (timer) {
+      controller.refreshVideoInfo();
+    });
+  }
+
+  void _stopTimer() {
+    _progressTimer?.cancel();
+  }
+
+  void _onTextureIdChange(int textureId) {
+    if (textureId != null) {
+      _startTimer();
+    } else {
+      _stopTimer();
+    }
+  }
+
+  void _onStatusChange(IjkStatus status) {
+    if (status == IjkStatus.playing && _seekTargetPercent != null) {
+      _seekFromTarget();
+    }
+    _updatePlayPauseIcon();
   }
 
   Future<void> _playPause() async {
-    if (value.isPlaying) {
+    if (isPlaying) {
       await controller.pause();
-    } else {
-      if (!value.initialized) await controller.initialize();
+    } else if (isInitialized) {
       await controller.play();
+    } else {
+      await controller.setDataSource(DataSource.photoManagerUrl(entry.uri), autoPlay: true);
     }
-    setState(() {});
   }
 
-  void updatePlayPauseIcon() {
-    final isPlaying = value.isPlaying;
+  void _updatePlayPauseIcon() {
     final status = _playPauseAnimation.status;
     if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
       _playPauseAnimation.forward();
@@ -203,10 +262,29 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
     }
   }
 
-  void _seek(Offset globalPosition) {
+  void _seekFromTap(Offset globalPosition) async {
     final keyContext = _progressBarKey.currentContext;
     final RenderBox box = keyContext.findRenderObject();
     final localPosition = box.globalToLocal(globalPosition);
-    controller.seekTo(value.duration * (localPosition.dx / box.size.width));
+    _seekTargetPercent = (localPosition.dx / box.size.width);
+
+    if (isInitialized) {
+      await _seekFromTarget();
+    } else {
+      // autoplay when seeking on uninitialized player, otherwise the texture is not updated
+      // as a workaround, pausing after a brief duration is possible, but fiddly
+      await controller.setDataSource(DataSource.photoManagerUrl(entry.uri), autoPlay: true);
+    }
+  }
+
+  Future _seekFromTarget() async {
+    // `seekToProgress` is not safe as it can be called when the `duration` is not set yet
+    // so we make sure the video info is up to date first
+    if (videoInfo.duration == null) {
+      await controller.refreshVideoInfo();
+    } else {
+      await controller.seekToProgress(_seekTargetPercent);
+      _seekTargetPercent = null;
+    }
   }
 }

@@ -35,7 +35,7 @@ packages:
       name: barcode
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "1.6.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -88,11 +88,9 @@ packages:
   draggable_scrollbar:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "3b823ae0a9def4edec62771f18e6348312bfce15"
-      url: "git://github.com/deckerst/flutter-draggable-scrollbar.git"
-    source: git
+      path: "../flutter-draggable-scrollbar"
+      relative: true
+    source: path
     version: "0.0.4"
   event_bus:
     dependency: "direct main"
@@ -104,26 +102,29 @@ packages:
   expansion_tile_card:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: edb6b11bb448fc2f30e566a20605b37093503176
-      url: "git://github.com/deckerst/expansion_tile_card.git"
-    source: git
+      path: "../expansion_tile_card"
+      relative: true
+    source: path
     version: "1.0.3"
   flushbar:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "13c55a8"
-      resolved-ref: "13c55a888c1693f1c8269ea30d55c614a1bfee16"
-      url: "https://github.com/AndreHaueisen/flushbar.git"
-    source: git
-    version: "1.9.1"
+      name: flushbar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.10.0"
   flutter:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_ijkplayer:
+    dependency: "direct main"
+    description:
+      path: "../flutter_ijkplayer"
+      relative: true
+    source: path
+    version: "0.3.6"
   flutter_native_timezone:
     dependency: "direct main"
     description:
@@ -144,7 +145,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.3+1"
+    version: "0.17.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -168,7 +169,7 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.25+2"
+    version: "0.5.26"
   image:
     dependency: transitive
     description:
@@ -189,7 +190,7 @@ packages:
       name: io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3"
+    version: "0.3.4"
   logger:
     dependency: "direct main"
     description:
@@ -266,7 +267,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.0"
+    version: "1.6.1"
   pedantic:
     dependency: "direct main"
     description:
@@ -280,14 +281,14 @@ packages:
       name: percent_indicator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1+1"
+    version: "2.1.3"
   permission_handler:
     dependency: "direct main"
     description:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0+hotfix.2"
+    version: "5.0.0+hotfix.3"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -322,14 +323,14 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.1"
+    version: "3.3.1"
   provider:
     dependency: "direct main"
     description:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.4"
+    version: "4.0.5"
   qr:
     dependency: transitive
     description:
@@ -489,27 +490,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
-  video_player:
-    dependency: "direct main"
-    description:
-      path: "../plugins/packages/video_player/video_player"
-      relative: true
-    source: path
-    version: "0.10.8+2"
-  video_player_platform_interface:
-    dependency: transitive
-    description:
-      name: video_player_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
-  video_player_web:
-    dependency: transitive
-    description:
-      name: video_player_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2+1"
   xml:
     dependency: transitive
     description:
