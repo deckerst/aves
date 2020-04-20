@@ -72,25 +72,13 @@ class AvesVideoState extends State<AvesVideo> {
                   statusWidgetBuilder: (context, controller, status) => const SizedBox.shrink(),
                   textureBuilder: (context, controller, info) {
                     var id = controller.textureId;
-                    if (id == null) {
-                      return AspectRatio(
-                        aspectRatio: entry.displayAspectRatio,
-                        child: Container(
-                          color: Colors.green,
-                        ),
-                      );
-                    }
-
-                    Widget child = Container(
-                      color: Colors.blue,
-                      child: Texture(
-                        textureId: id,
-                      ),
-                    );
-
-                    if (!controller.autoRotate) {
-                      return child;
-                    }
+                    var child = id != null
+                        ? Texture(
+                            textureId: id,
+                          )
+                        : Container(
+                            color: Colors.black,
+                          );
 
                     final degree = entry.catalogMetadata?.videoRotation ?? 0;
                     if (degree != 0) {
@@ -100,17 +88,14 @@ class AvesVideoState extends State<AvesVideo> {
                       );
                     }
 
-                    child = AspectRatio(
-                      aspectRatio: entry.displayAspectRatio,
-                      child: child,
-                    );
-
-                    return Container(
-                      child: child,
-                      alignment: Alignment.center,
-                      color: Colors.transparent,
+                    return Center(
+                      child: AspectRatio(
+                        aspectRatio: entry.displayAspectRatio,
+                        child: child,
+                      ),
                     );
                   },
+                  backgroundColor: Colors.transparent,
                 )
               : Image(
                   image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
