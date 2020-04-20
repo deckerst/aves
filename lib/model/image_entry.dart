@@ -273,7 +273,7 @@ class ImageEntry {
     if (path is String) this.path = path;
     final contentId = newFields['contentId'];
     if (contentId is int) this.contentId = contentId;
-    final sourceTitle = newFields['sourceTitle'];
+    final sourceTitle = newFields['title'];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();

@@ -156,7 +156,7 @@ class FullscreenActionDelegate {
   }
 
   Future<void> _showRenameDialog(BuildContext context, ImageEntry entry) async {
-    final currentName = entry.bestTitle;
+    final currentName = entry.filename ?? entry.sourceTitle;
     final controller = TextEditingController(text: currentName);
     final newName = await showDialog<String>(
         context: context,
