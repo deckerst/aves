@@ -14,23 +14,24 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
-# - no URI handling by default but trivial by fork
-# - support: AVI/XVID/MP3 nothing, MP2T nothing
-# - cannot support more formats
-# - playable only when both the video and audio streams are supported
+# - does not support content URIs (by default, but trivial by fork)
+# - does not support AVI/XVID, AC3
+# - cannot play if only the video or audio stream is supported
 
 # fijkplayer (as of v0.7.1, backed by IJKPlayer & ffmpeg):
-# - URI handling
-# - support: AVI/XVID/MP3 audio only, MP2T video only
-# - possible support for more formats by customizing ffmpeg build,
-# - playable when only the video or audio stream is supported
+# - support content URIs
+# - does not support XVID, AC3 (by default, but possible by custom build)
+# - can play if only the video or audio stream is supported
 # - crash when calling `seekTo` for some files (e.g. TED talk videos)
 
 # flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
-# - URI handling (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
-# - support: AVI/XVID/MP3 video/audio, MP2T video only
-# - possible support for more formats by TODO TLAD customizing ffmpeg build?
-# - playable when only the video or audio stream is supported
+# - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
+# - does not support AC3 (by default, but possible by custom build)
+# - can play if only the video or audio stream is supported
+
+# TODO TLAD flutter_ijkplayer: custom ijkplayer build to add AC3 support (only buildable on linux/mac)
+# cf https://github.com/CaiJingLong/flutter_ijkplayer/blob/master/compile.md
+# flags for AC3? --enable-decoder=ac3 --enable-decoder=ac3_fixed --enable-demuxer=ac3
 
 dependencies:
   flutter:
