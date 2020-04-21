@@ -70,6 +70,7 @@ dependencies:
   screen:
   shared_preferences:
   sqflite:
+  streams_channel:
   tuple:
   uuid:
 

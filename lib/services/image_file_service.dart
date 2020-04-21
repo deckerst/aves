@@ -1,12 +1,16 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:streams_channel/streams_channel.dart';
 
 class ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
+  static final StreamsChannel streamsChannel = StreamsChannel('deckers.thibault/aves/imagestream');
 
   static Future<void> getImageEntries() async {
     try {
@@ -30,24 +34,30 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> getImage(String uri, String mimeType) async {
+  static Future<Uint8List> getImage(String uri, String mimeType) {
     try {
-      final result = await platform.invokeMethod('getImage', <String, dynamic>{
+      final completer = Completer<Uint8List>();
+      final bytesBuilder = BytesBuilder(copy: false);
+      streamsChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
-      });
-      return result as Uint8List;
+      }).listen(
+        (data) => bytesBuilder.add(data as Uint8List),
+        onError: completer.completeError,
+        onDone: () => completer.complete(bytesBuilder.takeBytes()),
+        cancelOnError: true,
+      );
+      return completer.future;
     } on PlatformException catch (e) {
       debugPrint('getImage failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return Uint8List(0);
+    return Future.sync(() => Uint8List(0));
   }
 
   static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object cancellationKey}) {
     return servicePolicy.call(
       () async {
         if (width > 0 && height > 0) {
-//      debugPrint('getThumbnail width=$width path=${entry.path}');
           try {
             final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
               'entry': entry.toMap(),

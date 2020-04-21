@@ -1,12 +1,14 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 
@@ -101,6 +103,11 @@ class ImageView extends StatelessWidget {
                 image: uriImage,
               )
             : thumbnailLoadingBuilder(context),
+        loadFailedChild: EmptyContent(
+          icon: OMIcons.errorOutline,
+          text: 'Oops!',
+          alignment: Alignment.center,
+        ),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,
