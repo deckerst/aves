@@ -10,9 +10,9 @@ ScrollThumbBuilder avesScrollThumbBuilder({
   @required Color backgroundColor,
 }) {
   final scrollThumb = Container(
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
       color: Colors.black26,
-      borderRadius: const BorderRadius.all(
+      borderRadius: BorderRadius.all(
         Radius.circular(12.0),
       ),
     ),

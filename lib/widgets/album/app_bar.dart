@@ -6,7 +6,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/stats.dart';
+import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -149,12 +149,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           switch (stateNotifier.value) {
             case PageState.browse:
               return IconButton(
-                icon: Icon(OMIcons.search),
+                icon: const Icon(OMIcons.search),
                 onPressed: _goToSearch,
               );
             case PageState.search:
               return IconButton(
-                icon: Icon(OMIcons.clear),
+                icon: const Icon(OMIcons.clear),
                 onPressed: () => _searchFieldController.clear(),
               );
           }
@@ -192,7 +192,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ),
               const PopupMenuDivider(),
             ],
-            PopupMenuItem(
+            const PopupMenuItem(
               value: CollectionAction.stats,
               child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
             ),

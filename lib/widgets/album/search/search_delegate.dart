@@ -40,7 +40,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       if (query.isNotEmpty)
         IconButton(
           tooltip: 'Clear',
-          icon: Icon(OMIcons.clear),
+          icon: const Icon(OMIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);

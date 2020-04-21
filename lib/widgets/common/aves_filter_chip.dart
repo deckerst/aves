@@ -49,7 +49,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   @override
   Widget build(BuildContext context) {
     final leading = filter.iconBuilder(context, AvesFilterChip.iconSize);
-    final trailing = widget.removable ? Icon(OMIcons.clear, size: AvesFilterChip.iconSize) : null;
+    final trailing = widget.removable ? const Icon(OMIcons.clear, size: AvesFilterChip.iconSize) : null;
 
     final child = Row(
       mainAxisSize: MainAxisSize.min,

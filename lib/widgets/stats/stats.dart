@@ -7,11 +7,10 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/empty.dart';
-import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +86,9 @@ class StatsPage extends StatelessWidget {
               ],
             ),
           ),
-          ..._buildTopFilters(context, 'Top countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
-          ..._buildTopFilters(context, 'Top places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
-          ..._buildTopFilters(context, 'Top tags', entryCountPerTag, (s) => TagFilter(s)),
+          ..._buildTopFilters('Top Countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
+          ..._buildTopFilters('Top Places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
+          ..._buildTopFilters('Top Tags', entryCountPerTag, (s) => TagFilter(s)),
         ],
       );
     }
@@ -105,12 +104,17 @@ class StatsPage extends StatelessWidget {
     );
   }
 
+  String _cleanMime(String mime) {
+    mime = mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '');
+    return mime;
+  }
+
   Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
     if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold(0, (prev, v) => prev + v);
 
-    final seriesData = byMimeTypes.entries.map((kv) => StringNumDatum(kv.key.replaceFirst(RegExp('.*/'), '').toUpperCase(), kv.value)).toList();
+    final seriesData = byMimeTypes.entries.map((kv) => StringNumDatum(_cleanMime(kv.key), kv.value)).toList();
     seriesData.sort((kv1, kv2) {
       final c = kv2.value.compareTo(kv1.value);
       return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
@@ -195,19 +199,12 @@ class StatsPage extends StatelessWidget {
   }
 
   List<Widget> _buildTopFilters(
-    BuildContext context,
     String title,
     Map<String, int> entryCountMap,
     CollectionFilter Function(String key) filterBuilder,
   ) {
     if (entryCountMap.isEmpty) return [];
 
-    final maxCount = collection.entryCount;
-    final sortedEntries = entryCountMap.entries.toList()
-      ..sort((kv1, kv2) {
-        final c = kv2.value.compareTo(kv1.value);
-        return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
-      });
     return [
       Padding(
         padding: const EdgeInsets.all(16),
@@ -216,59 +213,12 @@ class StatsPage extends StatelessWidget {
           style: Constants.titleTextStyle,
         ),
       ),
-      Padding(
-        padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.buttonBorderWidth / 2 + 6, end: 8),
-        child: Table(
-          children: sortedEntries.take(5).map((kv) {
-            final filter = filterBuilder(kv.key);
-            final label = filter.label;
-            final count = kv.value;
-            final percent = count / maxCount;
-            return TableRow(
-              children: [
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: AvesFilterChip(
-                    filter: filter,
-                    onPressed: (filter) => _goToCollection(context, filter),
-                  ),
-                ),
-                LinearPercentIndicator(
-                  percent: percent,
-                  lineHeight: 16,
-                  backgroundColor: Colors.white24,
-                  progressColor: stringToColor(label),
-                  animation: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  center: Text(NumberFormat.percentPattern().format(percent)),
-                ),
-                Text(
-                  '${count}',
-                  style: const TextStyle(color: Colors.white70),
-                  textAlign: TextAlign.end,
-                ),
-              ],
-            );
-          }).toList(),
-          columnWidths: const {
-            0: IntrinsicColumnWidth(),
-            2: IntrinsicColumnWidth(),
-          },
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        ),
+      FilterTable(
+        collection: collection,
+        entryCountMap: entryCountMap,
+        filterBuilder: filterBuilder,
       ),
     ];
-  }
-
-  void _goToCollection(BuildContext context, CollectionFilter filter) {
-    if (collection == null) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CollectionPage(collection.derive(filter)),
-      ),
-      (route) => false,
-    );
   }
 }
 

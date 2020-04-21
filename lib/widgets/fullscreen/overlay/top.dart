@@ -135,7 +135,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                 tooltip: isFavourite ? 'Remove from favourites' : 'Add to favourites',
               ),
               Sweeper(
-                builder: (context) => Icon(AIcons.favourite, color: Colors.redAccent),
+                builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
                 toggledNotifier: entry.isFavouriteNotifier,
               ),
             ],

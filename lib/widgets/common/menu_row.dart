@@ -20,7 +20,7 @@ class MenuRow extends StatelessWidget {
         if (checked != null) ...[
           Opacity(
             opacity: checked ? 1 : 0,
-            child: Icon(OMIcons.done),
+            child: const Icon(OMIcons.done),
           ),
           const SizedBox(width: 8),
         ],

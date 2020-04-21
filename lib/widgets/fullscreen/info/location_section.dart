@@ -211,17 +211,17 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
         const SizedBox(width: 8),
         Column(children: [
           IconButton(
-            icon: Icon(OMIcons.add),
+            icon: const Icon(OMIcons.add),
             onPressed: _controller == null ? null : () => _zoomBy(1),
             tooltip: 'Zoom in',
           ),
           IconButton(
-            icon: Icon(OMIcons.remove),
+            icon: const Icon(OMIcons.remove),
             onPressed: _controller == null ? null : () => _zoomBy(-1),
             tooltip: 'Zoom out',
           ),
           IconButton(
-            icon: Icon(OMIcons.openInNew),
+            icon: const Icon(OMIcons.openInNew),
             onPressed: () => AndroidAppService.openMap(widget.geoUri),
             tooltip: 'Show on map...',
           ),
