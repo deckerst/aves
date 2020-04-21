@@ -10,14 +10,24 @@ class DaySectionHeader extends StatelessWidget {
       : text = _formatDate(date),
         super(key: key);
 
+  // Examples (en_US):
+  // `MMMMd`: `April 15`
+  // `yMMMMd`: `April 15, 2020`
+  // `MMMEd`: `Wed, Apr 15`
+  // `yMMMEd`: `Wed, Apr 15, 2020`
+  // `MMMMEEEEd`: `Wednesday, April 15`
+  // `yMMMMEEEEd`: `Wednesday, April 15, 2020`
+  // `MEd`: `Wed, 4/15`
+  // `yMEd`: `Wed, 4/15/2020`
   static DateFormat md = DateFormat.MMMMd();
   static DateFormat ymd = DateFormat.yMMMMd();
+  static DateFormat day = DateFormat.E();
 
   static String _formatDate(DateTime date) {
     if (date.isToday) return 'Today';
     if (date.isYesterday) return 'Yesterday';
-    if (date.isThisYear) return md.format(date);
-    return ymd.format(date);
+    if (date.isThisYear) return '${md.format(date)} (${day.format(date)})';
+    return '${ymd.format(date)} (${day.format(date)})';
   }
 
   @override
