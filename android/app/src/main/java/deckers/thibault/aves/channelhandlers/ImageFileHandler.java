@@ -103,24 +103,30 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             Glide.with(activity).clear(target);
         } else {
             ContentResolver cr = activity.getContentResolver();
-            try (InputStream is = cr.openInputStream(uri)) {
-                if (is != null) {
-                    data = getBytes(is);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType))) {
-                        // as of Flutter v1.15.17, Dart Image.memory cannot decode HEIF/HEIC images
-                        // so we convert the image using Android native decoder
-                        ImageDecoder.Source source = ImageDecoder.createSource(cr, uri);
-                        Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                        // Bitmap.CompressFormat.PNG is slower than JPEG
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                        data = stream.toByteArray();
-                    }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType))) {
+                // as of Flutter v1.15.17, Dart Image.memory cannot decode HEIF/HEIC images
+                // so we convert the image using Android native decoder
+                try {
+                    ImageDecoder.Source source = ImageDecoder.createSource(cr, uri);
+                    Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                    // Bitmap.CompressFormat.PNG is slower than JPEG
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                    data = stream.toByteArray();
+                } catch (IOException e) {
+                    result.error("getImage-decode-exception", "failed to decode image from uri=" + uri, e.getMessage());
+                    return;
                 }
-            } catch (IOException e) {
-                result.error("getImage-image-exception", "failed to get image from uri=" + uri, e.getMessage());
-                return;
+            } else {
+                try (InputStream is = cr.openInputStream(uri)) {
+                    if (is != null) {
+                        data = getBytes(is);
+                    }
+                } catch (IOException e) {
+                    result.error("getImage-read-exception", "failed to get image from uri=" + uri, e.getMessage());
+                    return;
+                }
             }
         }
 

@@ -56,7 +56,7 @@ class AvesVideoState extends State<AvesVideo> {
       ..clear();
   }
 
-  bool isPlayable(IjkStatus status) => [IjkStatus.prepared, IjkStatus.playing, IjkStatus.pause, IjkStatus.complete].contains(status);
+  bool isPlayable(IjkStatus status) => controller != null && [IjkStatus.prepared, IjkStatus.playing, IjkStatus.pause, IjkStatus.complete].contains(status);
 
   @override
   Widget build(BuildContext context) {
