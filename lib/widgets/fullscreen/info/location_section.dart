@@ -191,6 +191,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
                     onMapCreated: (controller) => setState(() => _controller = controller),
                     rotateGesturesEnabled: false,
                     scrollGesturesEnabled: false,
+                    zoomControlsEnabled: false,
                     zoomGesturesEnabled: false,
                     tiltGesturesEnabled: false,
                     myLocationEnabled: false,
