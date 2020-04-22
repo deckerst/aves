@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
@@ -66,19 +67,19 @@ extension ExtraFullscreenAction on FullscreenAction {
         // different data depending on toggle state
         return null;
       case FullscreenAction.delete:
-        return OMIcons.delete;
+        return AIcons.delete;
       case FullscreenAction.info:
         return OMIcons.info;
       case FullscreenAction.rename:
         return OMIcons.title;
       case FullscreenAction.rotateCCW:
-        return OMIcons.rotateLeft;
+        return AIcons.rotateLeft;
       case FullscreenAction.rotateCW:
-        return OMIcons.rotateRight;
+        return AIcons.rotateRight;
       case FullscreenAction.print:
-        return OMIcons.print;
+        return AIcons.print;
       case FullscreenAction.share:
-        return OMIcons.share;
+        return AIcons.share;
       // external app actions
       case FullscreenAction.edit:
       case FullscreenAction.open:

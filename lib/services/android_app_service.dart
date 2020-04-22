@@ -76,12 +76,11 @@ class AndroidAppService {
     }
   }
 
-  static Future<void> share(String uri, String mimeType) async {
+  static Future<void> share(Map<String, List<String>> urisByMimeType) async {
     try {
       await platform.invokeMethod('share', <String, dynamic>{
         'title': 'Share via:',
-        'uri': uri,
-        'mimeType': mimeType,
+        'urisByMimeType': urisByMimeType,
       });
     } on PlatformException catch (e) {
       debugPrint('share failed with code=${e.code}, exception=${e.message}, details=${e.details}');

@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
@@ -20,9 +21,13 @@ import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -81,9 +86,8 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
             }
             case "share": {
                 String title = call.argument("title");
-                Uri uri = Uri.parse(call.argument("uri"));
-                String mimeType = call.argument("mimeType");
-                share(title, uri, mimeType);
+                Map<String, List<String>> urisByMimeType = call.argument("urisByMimeType");
+                shareMultiple(title, urisByMimeType);
                 result.success(null);
                 break;
             }
@@ -190,7 +194,7 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         context.startActivity(Intent.createChooser(intent, title));
     }
 
-    private void share(String title, Uri uri, String mimeType) {
+    private void shareSingle(String title, Uri uri, String mimeType) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
             String path = uri.getPath();
@@ -202,6 +206,37 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         } else {
             intent.putExtra(Intent.EXTRA_STREAM, uri);
         }
+        intent.setType(mimeType);
+        context.startActivity(Intent.createChooser(intent, title));
+    }
+
+    private void shareMultiple(String title, @Nullable Map<String, List<String>> urisByMimeType) {
+        if (urisByMimeType == null) return;
+
+        ArrayList<Uri> uriList = urisByMimeType.values().stream().flatMap(Collection::stream).map(Uri::parse).collect(Collectors.toCollection(ArrayList::new));
+        String[] mimeTypes = urisByMimeType.keySet().toArray(new String[0]);
+
+        // simplify share intent for a single item, as some apps can handle one item but not more
+        if (uriList.size() == 1) {
+            shareSingle(title, uriList.get(0), mimeTypes[0]);
+            return;
+        }
+
+        String mimeType = "*/*";
+        if (mimeTypes.length == 1) {
+            // items have the same mime type & subtype
+            mimeType = mimeTypes[0];
+        } else {
+            // items have different subtypes
+            String[] mimeTypeTypes = Arrays.stream(mimeTypes).map(mt -> mt.split("/")[0]).distinct().toArray(String[]::new);
+            if (mimeTypeTypes.length == 1) {
+                // items have the same mime type
+                mimeType = mimeTypeTypes[0] + "/*";
+            }
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
         intent.setType(mimeType);
         context.startActivity(Intent.createChooser(intent, title));
     }

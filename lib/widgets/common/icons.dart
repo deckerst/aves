@@ -8,11 +8,17 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 
 class AIcons {
   static const IconData date = OMIcons.calendarToday;
-  static const IconData favourite = OMIcons.favoriteBorder;
-  static const IconData favouriteActive = OMIcons.favorite;
   static const IconData location = OMIcons.place;
   static const IconData tag = OMIcons.localOffer;
   static const IconData video = OMIcons.movie;
+
+  static const IconData delete = OMIcons.delete;
+  static const IconData favourite = OMIcons.favoriteBorder;
+  static const IconData favouriteActive = OMIcons.favorite;
+  static const IconData print = OMIcons.print;
+  static const IconData rotateLeft = OMIcons.rotateLeft;
+  static const IconData rotateRight = OMIcons.rotateRight;
+  static const IconData share = OMIcons.share;
 
   static const IconData animated = Icons.slideshow;
   static const IconData play = Icons.play_circle_outline;

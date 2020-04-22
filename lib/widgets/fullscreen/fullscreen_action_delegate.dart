@@ -62,7 +62,9 @@ class FullscreenActionDelegate {
         AndroidAppService.setAs(entry.uri, entry.mimeType);
         break;
       case FullscreenAction.share:
-        AndroidAppService.share(entry.uri, entry.mimeType);
+        AndroidAppService.share({
+          entry.mimeType: [entry.uri]
+        });
         break;
       case FullscreenAction.debug:
         _goToDebug(context, entry);

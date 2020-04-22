@@ -1,10 +1,14 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:aves/widgets/stats/stats.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -128,7 +132,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         animation: collection.selectionChangeNotifier,
         builder: (context, child) {
           final selection = collection.selection;
-          return Text(selection.isEmpty ? 'Select items' : '${selection.length} ${Intl.plural(selection.length, one: 'item', other: 'items')}');
+          final count = selection.length;
+          return Text(selection.isEmpty ? 'Select items' : '${count} ${Intl.plural(count, one: 'item', other: 'items')}');
         },
       );
     }
@@ -141,6 +146,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         IconButton(
           icon: const Icon(OMIcons.search),
           onPressed: _goToSearch,
+        ),
+      if (collection.isSelecting)
+        AnimatedBuilder(
+          animation: collection.selectionChangeNotifier,
+          builder: (context, child) {
+            const action = FullscreenAction.share;
+            return IconButton(
+              icon: Icon(action.getIcon()),
+              onPressed: collection.selection.isEmpty ? null : _shareSelection,
+              tooltip: action.getText(),
+            );
+          },
         ),
       Builder(
         builder: (context) => PopupMenuButton<CollectionAction>(
@@ -256,6 +273,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ),
       ),
     );
+  }
+
+  void _shareSelection() {
+    final urisByMimeType = groupBy<ImageEntry, String>(collection.selection, (e) => e.mimeType).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
+    AndroidAppService.share(urisByMimeType);
   }
 
   void _onActivityChange() {
