@@ -3,7 +3,6 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/app_bar.dart';
-import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
@@ -17,16 +16,9 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ThumbnailCollection extends StatelessWidget {
-  final ValueNotifier<PageState> stateNotifier;
-
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
   final GlobalKey _scrollableKey = GlobalKey();
-
-  ThumbnailCollection({
-    Key key,
-    @required this.stateNotifier,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +69,6 @@ class ThumbnailCollection extends StatelessWidget {
       physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
       slivers: [
         CollectionAppBar(
-          stateNotifier: stateNotifier,
           appBarHeightNotifier: _appBarHeightNotifier,
           collection: collection,
         ),

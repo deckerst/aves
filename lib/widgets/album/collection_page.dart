@@ -9,9 +9,7 @@ import 'package:provider/provider.dart';
 class CollectionPage extends StatelessWidget {
   final CollectionLens collection;
 
-  final ValueNotifier<PageState> _stateNotifier = ValueNotifier(PageState.browse);
-
-  CollectionPage(this.collection);
+  const CollectionPage(this.collection);
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +19,13 @@ class CollectionPage extends StatelessWidget {
         child: Scaffold(
           body: WillPopScope(
             onWillPop: () {
-              if (_stateNotifier.value == PageState.search) {
-                _stateNotifier.value = PageState.browse;
+              if (collection.isSelecting) {
+                collection.browse();
                 return SynchronousFuture(false);
               }
               return SynchronousFuture(true);
             },
-            child: ThumbnailCollection(
-              stateNotifier: _stateNotifier,
-            ),
+            child: ThumbnailCollection(),
           ),
           drawer: CollectionDrawer(
             source: collection.source,
@@ -40,5 +36,3 @@ class CollectionPage extends StatelessWidget {
     );
   }
 }
-
-enum PageState { browse, search }

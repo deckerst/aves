@@ -16,6 +16,7 @@ class CollectionLens with ChangeNotifier {
   GroupFactor groupFactor;
   SortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
+  final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
 
   List<ImageEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
@@ -194,8 +195,52 @@ class CollectionLens with ChangeNotifier {
     _applySort();
     _applyGroup();
   }
+
+  // selection
+
+  final ValueNotifier<Activity> _activityNotifier = ValueNotifier(Activity.browse);
+
+  ValueNotifier<Activity> get activityNotifier => _activityNotifier;
+
+  bool get isBrowsing => _activityNotifier.value == Activity.browse;
+
+  bool get isSelecting => _activityNotifier.value == Activity.select;
+
+  void browse() {
+    _activityNotifier.value = Activity.browse;
+    _clearSelection();
+  }
+
+  void select() => _activityNotifier.value = Activity.select;
+
+  final Set<ImageEntry> _selection = {};
+
+  Set<ImageEntry> get selection => _selection;
+
+  void addToSelection(List<ImageEntry> entries) {
+    _selection.addAll(entries);
+    selectionChangeNotifier.notifyListeners();
+  }
+
+  void removeFromSelection(List<ImageEntry> entries) {
+    _selection.removeAll(entries);
+    selectionChangeNotifier.notifyListeners();
+  }
+
+  void _clearSelection() {
+    _selection.clear();
+    selectionChangeNotifier.notifyListeners();
+  }
+
+  void toggleSelection(ImageEntry entry) {
+    if (_selection.isEmpty) select();
+    if (!_selection.remove(entry)) _selection.add(entry);
+    selectionChangeNotifier.notifyListeners();
+  }
 }
 
 enum SortFactor { date, size, name }
 
 enum GroupFactor { album, month, day }
+
+enum Activity { browse, select }

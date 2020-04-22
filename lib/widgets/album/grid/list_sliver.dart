@@ -2,7 +2,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/grid/list_known_extent.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
-import 'package:aves/widgets/album/thumbnail.dart';
+import 'package:aves/widgets/album/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/transparent_material_page_route.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,18 @@ class GridThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       key: ValueKey(entry.uri),
-      onTap: () => _goToFullscreen(context),
+      onTap: () {
+        if (collection.isBrowsing) {
+          _goToFullscreen(context);
+        } else {
+          collection.toggleSelection(entry);
+        }
+      },
+      onLongPress: () {
+        if (collection.isBrowsing) {
+          collection.toggleSelection(entry);
+        }
+      },
       child: MetaData(
         metaData: ThumbnailMetadata(index, entry),
         child: DecoratedThumbnail(
