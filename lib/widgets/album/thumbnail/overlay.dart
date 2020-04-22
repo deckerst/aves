@@ -19,7 +19,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = min(14.0, (extent / 8));
+    final fontSize = min(14.0, (extent / 8)).roundToDouble();
     final iconSize = fontSize * 2;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -56,7 +56,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = min(14.0, (extent / 8));
+    final fontSize = min(14.0, (extent / 8)).roundToDouble();
     final iconSize = fontSize * 2;
     final collection = Provider.of<CollectionLens>(context);
     return ValueListenableBuilder<Activity>(
@@ -66,9 +66,21 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
             ? AnimatedBuilder(
                 animation: collection.selectionChangeNotifier,
                 builder: (context, child) {
-                  return OverlayIcon(
-                    icon: collection.selection.contains(entry) ? Icons.check_circle_outline : Icons.radio_button_unchecked,
+                  final selected = collection.selection.contains(entry);
+                  final child = OverlayIcon(
+                    key: ValueKey(selected),
+                    icon: selected ? AIcons.selected : AIcons.unselected,
                     size: iconSize,
+                  );
+                  return AnimatedSwitcher(
+                    duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+                    switchInCurve: Curves.easeOutBack,
+                    switchOutCurve: Curves.easeOutBack,
+                    transitionBuilder: (child, animation) => ScaleTransition(
+                      child: child,
+                      scale: animation,
+                    ),
+                    child: child,
                   );
                 },
               )

@@ -7,13 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class AIcons {
-  static const IconData animated = Icons.slideshow;
-  static const IconData video = OMIcons.movie;
+  static const IconData date = OMIcons.calendarToday;
   static const IconData favourite = OMIcons.favoriteBorder;
   static const IconData favouriteActive = OMIcons.favorite;
-  static const IconData date = OMIcons.calendarToday;
   static const IconData location = OMIcons.place;
   static const IconData tag = OMIcons.localOffer;
+  static const IconData video = OMIcons.movie;
+
+  static const IconData animated = Icons.slideshow;
+  static const IconData play = Icons.play_circle_outline;
+  static const IconData selected = Icons.check_circle_outline;
+  static const IconData unselected = Icons.radio_button_unchecked;
 }
 
 class VideoIcon extends StatelessWidget {
@@ -25,7 +29,7 @@ class VideoIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: OMIcons.playCircleOutline,
+      icon: AIcons.play,
       size: iconSize,
       text: entry.durationText,
     );
