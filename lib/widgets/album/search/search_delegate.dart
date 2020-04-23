@@ -25,12 +25,12 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      tooltip: 'Back',
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
         progress: transitionAnimation,
       ),
       onPressed: () => close(context, null),
+      tooltip: 'Back',
     );
   }
 
@@ -39,12 +39,12 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     return [
       if (query.isNotEmpty)
         IconButton(
-          tooltip: 'Clear',
           icon: const Icon(OMIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);
           },
+          tooltip: 'Clear',
         ),
     ];
   }

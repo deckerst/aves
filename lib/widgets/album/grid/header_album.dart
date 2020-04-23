@@ -26,6 +26,7 @@ class AlbumSectionHeader extends StatelessWidget {
       );
     }
     return TitleSectionHeader(
+      sectionKey: folderPath,
       leading: albumIcon,
       title: albumName,
       trailing: androidFileUtils.isOnSD(folderPath)

@@ -7,8 +7,11 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/grid/header_album.dart';
 import 'package:aves/widgets/album/grid/header_date.dart';
 import 'package:aves/widgets/common/fx/outlined_text.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {
   final CollectionLens collection;
@@ -45,11 +48,7 @@ class SectionHeader extends StatelessWidget {
         header = _buildAlbumSectionHeader();
         break;
     }
-    return header != null
-        ? IgnorePointer(
-            child: header,
-          )
-        : const SizedBox.shrink();
+    return header ?? const SizedBox.shrink();
   }
 
   Widget _buildAlbumSectionHeader() {
@@ -95,13 +94,15 @@ class SectionHeader extends StatelessWidget {
 }
 
 class TitleSectionHeader extends StatelessWidget {
+  final dynamic sectionKey;
   final Widget leading, trailing;
   final String title;
 
   const TitleSectionHeader({
     Key key,
+    @required this.sectionKey,
     this.leading,
-    this.title,
+    @required this.title,
     this.trailing,
   }) : super(key: key);
 
@@ -117,14 +118,17 @@ class TitleSectionHeader extends StatelessWidget {
       padding: padding,
       constraints: const BoxConstraints(minHeight: leadingDimension),
       child: OutlinedText(
-        leadingBuilder: leading != null
-            ? (context, isShadow) => Container(
-                  padding: leadingPadding,
-                  width: leadingDimension,
-                  height: leadingDimension,
-                  child: isShadow ? null : leading,
-                )
-            : null,
+        leadingBuilder: (context, isShadow) => SectionSelectableLeading(
+          sectionKey: sectionKey,
+          browsingBuilder: leading != null
+              ? (context) => Container(
+                    padding: leadingPadding,
+                    width: leadingDimension,
+                    height: leadingDimension,
+                    child: isShadow ? null : leading,
+                  )
+              : null,
+        ),
         text: title,
         trailingBuilder: trailing != null
             ? (context, isShadow) => Container(
@@ -135,6 +139,78 @@ class TitleSectionHeader extends StatelessWidget {
         style: Constants.titleTextStyle,
         outlineWidth: 2,
       ),
+    );
+  }
+}
+
+class SectionSelectableLeading extends StatelessWidget {
+  final dynamic sectionKey;
+  final WidgetBuilder browsingBuilder;
+
+  static final WidgetBuilder _defaultBrowsingBuilder = (context) => const SizedBox.shrink();
+
+  SectionSelectableLeading({
+    Key key,
+    @required this.sectionKey,
+    WidgetBuilder browsingBuilder,
+  })  : browsingBuilder = browsingBuilder ?? _defaultBrowsingBuilder,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final collection = Provider.of<CollectionLens>(context);
+    return ValueListenableBuilder<Activity>(
+      valueListenable: collection.activityNotifier,
+      builder: (context, activity, child) {
+        final child = collection.isSelecting
+            ? AnimatedBuilder(
+                animation: collection.selectionChangeNotifier,
+                builder: (context, child) {
+                  final sectionEntries = collection.sections[sectionKey];
+                  final selected = collection.isSelected(sectionEntries);
+                  final child = IconButton(
+                    key: ValueKey(selected),
+                    iconSize: 26,
+                    padding: const EdgeInsets.only(top: 1),
+                    alignment: Alignment.topLeft,
+                    icon: Icon(selected ? AIcons.selected : AIcons.unselected),
+                    onPressed: () {
+                      if (selected) {
+                        collection.removeFromSelection(sectionEntries);
+                      } else {
+                        collection.addToSelection(sectionEntries);
+                      }
+                    },
+                    tooltip: selected ? 'Deselect section' : 'Select section',
+                    constraints: const BoxConstraints(
+                      minHeight: TitleSectionHeader.leadingDimension,
+                      minWidth: TitleSectionHeader.leadingDimension,
+                    ),
+                  );
+                  return AnimatedSwitcher(
+                    duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+                    switchInCurve: Curves.easeOutBack,
+                    switchOutCurve: Curves.easeOutBack,
+                    transitionBuilder: (child, animation) => ScaleTransition(
+                      child: child,
+                      scale: animation,
+                    ),
+                    child: child,
+                  );
+                },
+              )
+            : browsingBuilder(context);
+        return AnimatedSwitcher(
+          duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+          switchInCurve: Curves.easeOutBack,
+          switchOutCurve: Curves.easeOutBack,
+          transitionBuilder: (child, animation) => ScaleTransition(
+            child: child,
+            scale: animation,
+          ),
+          child: child,
+        );
+      },
     );
   }
 }

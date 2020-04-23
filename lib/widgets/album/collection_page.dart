@@ -20,6 +20,7 @@ class CollectionPage extends StatelessWidget {
           body: WillPopScope(
             onWillPop: () {
               if (collection.isSelecting) {
+                collection.clearSelection();
                 collection.browse();
                 return SynchronousFuture(false);
               }

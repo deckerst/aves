@@ -66,7 +66,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
             ? AnimatedBuilder(
                 animation: collection.selectionChangeNotifier,
                 builder: (context, child) {
-                  final selected = collection.selection.contains(entry);
+                  final selected = collection.isSelected([entry]);
                   final child = OverlayIcon(
                     key: ValueKey(selected),
                     icon: selected ? AIcons.selected : AIcons.unselected,

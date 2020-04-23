@@ -10,13 +10,12 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-class CollectionLens with ChangeNotifier {
+class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSelectionMixin {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   GroupFactor groupFactor;
   SortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
-  final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
 
   List<ImageEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
@@ -195,9 +194,15 @@ class CollectionLens with ChangeNotifier {
     _applySort();
     _applyGroup();
   }
+}
 
-  // selection
+enum SortFactor { date, size, name }
 
+enum GroupFactor { album, month, day }
+
+enum Activity { browse, select }
+
+mixin CollectionActivityMixin {
   final ValueNotifier<Activity> _activityNotifier = ValueNotifier(Activity.browse);
 
   ValueNotifier<Activity> get activityNotifier => _activityNotifier;
@@ -206,16 +211,19 @@ class CollectionLens with ChangeNotifier {
 
   bool get isSelecting => _activityNotifier.value == Activity.select;
 
-  void browse() {
-    _activityNotifier.value = Activity.browse;
-    _clearSelection();
-  }
+  void browse() => _activityNotifier.value = Activity.browse;
 
   void select() => _activityNotifier.value = Activity.select;
+}
+
+mixin CollectionSelectionMixin on CollectionActivityMixin {
+  final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
 
   final Set<ImageEntry> _selection = {};
 
   Set<ImageEntry> get selection => _selection;
+
+  bool isSelected(List<ImageEntry> entries) => entries.every(selection.contains);
 
   void addToSelection(List<ImageEntry> entries) {
     _selection.addAll(entries);
@@ -227,7 +235,7 @@ class CollectionLens with ChangeNotifier {
     selectionChangeNotifier.notifyListeners();
   }
 
-  void _clearSelection() {
+  void clearSelection() {
     _selection.clear();
     selectionChangeNotifier.notifyListeners();
   }
@@ -238,9 +246,3 @@ class CollectionLens with ChangeNotifier {
     selectionChangeNotifier.notifyListeners();
   }
 }
-
-enum SortFactor { date, size, name }
-
-enum GroupFactor { album, month, day }
-
-enum Activity { browse, select }

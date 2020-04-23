@@ -100,7 +100,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       onPressed = Scaffold.of(context).openDrawer;
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
     } else if (collection.isSelecting) {
-      onPressed = collection.browse;
+      onPressed = () {
+        collection.clearSelection();
+        collection.browse();
+      };
       tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(
@@ -131,9 +134,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       return AnimatedBuilder(
         animation: collection.selectionChangeNotifier,
         builder: (context, child) {
-          final selection = collection.selection;
-          final count = selection.length;
-          return Text(selection.isEmpty ? 'Select items' : '${count} ${Intl.plural(count, one: 'item', other: 'items')}');
+          final count = collection.selection.length;
+          return Text(Intl.plural(count, zero: 'Select items', one: '${count} item', other: '${count} items'));
         },
       );
     }
