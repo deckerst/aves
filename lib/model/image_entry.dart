@@ -295,7 +295,7 @@ class ImageEntry {
     return true;
   }
 
-  Future<bool> delete() => ImageFileService.delete(this);
+  Future<bool> delete() async => (await ImageFileService.delete([this])) == 1;
 
   void toggleFavourite() {
     if (isFavourite) {

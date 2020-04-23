@@ -77,16 +77,16 @@ class ImageFileService {
     );
   }
 
-  static Future<bool> delete(ImageEntry entry) async {
+  static Future<int> delete(List<ImageEntry> entries) async {
     try {
       await platform.invokeMethod('delete', <String, dynamic>{
-        'entry': entry.toMap(),
+        'entries': entries.map((e) => e.toMap()).toList(),
       });
-      return true;
+      return 1;
     } on PlatformException catch (e) {
       debugPrint('delete failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return false;
+    return 0;
   }
 
   static Future<Map> rename(ImageEntry entry, String newName) async {

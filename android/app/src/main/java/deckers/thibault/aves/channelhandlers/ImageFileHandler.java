@@ -7,6 +7,7 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -95,30 +96,44 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void delete(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map entryMap = call.argument("entry");
-        if (entryMap == null) {
+        List<Map> entryMapList = call.argument("entries");
+        if (entryMapList == null) {
             result.error("delete-args", "failed because of missing arguments", null);
             return;
         }
-        Uri uri = Uri.parse((String) entryMap.get("uri"));
-        String path = (String) entryMap.get("path");
 
-        ImageProvider provider = ImageProviderFactory.getProvider(uri);
-        if (provider == null) {
-            result.error("delete-provider", "failed to find provider for uri=" + uri, null);
+        if (entryMapList.size() == 0) {
+            result.success(0);
             return;
         }
-        provider.delete(activity, path, uri, new ImageProvider.ImageOpCallback() {
-            @Override
-            public void onSuccess(Map<String, Object> newFields) {
-                new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
-            }
 
-            @Override
-            public void onFailure() {
-                new Handler(Looper.getMainLooper()).post(() -> result.error("delete-failure", "failed to delete", null));
-            }
-        });
+        // assume same provider for all entries
+        Map firstEntry = entryMapList.get(0);
+        Uri firstUri = Uri.parse((String) firstEntry.get("uri"));
+        ImageProvider provider = ImageProviderFactory.getProvider(firstUri);
+        if (provider == null) {
+            result.error("delete-provider", "failed to find provider for uri=" + firstUri, null);
+            return;
+        }
+
+        for (Map entryMap : entryMapList) {
+            Uri uri = Uri.parse((String) entryMap.get("uri"));
+            String path = (String) entryMap.get("path");
+            provider.delete(activity, path, uri, new ImageProvider.ImageOpCallback() {
+
+                // TODO TLAD this will fail for more than 1 entry. stream results back instead
+
+                @Override
+                public void onSuccess(Map<String, Object> newFields) {
+                    new Handler(Looper.getMainLooper()).post(() -> result.success(1));
+                }
+
+                @Override
+                public void onFailure() {
+                    new Handler(Looper.getMainLooper()).post(() -> result.error("delete-failure", "failed to delete", null));
+                }
+            });
+        }
     }
 
     private void rename(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
