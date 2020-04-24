@@ -9,7 +9,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_action_delegate.dart';
+import 'package:aves/widgets/common/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
@@ -49,7 +49,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Animation<double> _topOverlayScale, _bottomOverlayScale;
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
-  FullscreenActionDelegate _actionDelegate;
+  EntryActionDelegate _actionDelegate;
   final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
 
   CollectionLens get collection => widget.collection;
@@ -93,7 +93,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       curve: Curves.easeOutQuad,
     ));
     _overlayVisible.addListener(_onOverlayVisibleChange);
-    _actionDelegate = FullscreenActionDelegate(
+    _actionDelegate = EntryActionDelegate(
       collection: collection,
       showInfo: () => _goToVerticalPage(infoPage),
     );

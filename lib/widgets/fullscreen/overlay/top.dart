@@ -1,10 +1,10 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class FullscreenTopOverlay extends StatelessWidget {
   final int index;
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
-  final Function(FullscreenAction value) onActionSelected;
+  final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
 
   ImageEntry get entry => entries[index];
@@ -53,12 +53,12 @@ class FullscreenTopOverlay extends StatelessWidget {
                 final quickActionCount = min(targetCount, availableCount);
 
                 final quickActions = [
-                  FullscreenAction.toggleFavourite,
-                  FullscreenAction.share,
-                  FullscreenAction.delete,
+                  EntryAction.toggleFavourite,
+                  EntryAction.share,
+                  EntryAction.delete,
                 ].where(_canDo).take(quickActionCount);
-                final inAppActions = FullscreenActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo);
-                final externalAppActions = FullscreenActions.externalApp.where(_canDo);
+                final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo);
+                final externalAppActions = EntryActions.externalApp.where(_canDo);
 
                 return Row(
                   children: [
@@ -70,14 +70,14 @@ class FullscreenTopOverlay extends StatelessWidget {
                     ...quickActions.map(_buildOverlayButton),
                     OverlayButton(
                       scale: scale,
-                      child: PopupMenuButton<FullscreenAction>(
+                      child: PopupMenuButton<EntryAction>(
                         itemBuilder: (context) => [
                           ...inAppActions.map(_buildPopupMenuItem),
                           const PopupMenuDivider(),
                           ...externalAppActions.map(_buildPopupMenuItem),
                           if (kDebugMode) ...[
                             const PopupMenuDivider(),
-                            _buildPopupMenuItem(FullscreenAction.debug),
+                            _buildPopupMenuItem(EntryAction.debug),
                           ]
                         ],
                         onSelected: onActionSelected,
@@ -93,37 +93,37 @@ class FullscreenTopOverlay extends StatelessWidget {
     );
   }
 
-  bool _canDo(FullscreenAction action) {
+  bool _canDo(EntryAction action) {
     switch (action) {
-      case FullscreenAction.toggleFavourite:
+      case EntryAction.toggleFavourite:
         return canToggleFavourite;
-      case FullscreenAction.delete:
-      case FullscreenAction.rename:
+      case EntryAction.delete:
+      case EntryAction.rename:
         return entry.canEdit;
-      case FullscreenAction.rotateCCW:
-      case FullscreenAction.rotateCW:
+      case EntryAction.rotateCCW:
+      case EntryAction.rotateCW:
         return entry.canRotate;
-      case FullscreenAction.print:
+      case EntryAction.print:
         return entry.canPrint;
-      case FullscreenAction.openMap:
+      case EntryAction.openMap:
         return entry.hasGps;
-      case FullscreenAction.share:
-      case FullscreenAction.info:
-      case FullscreenAction.open:
-      case FullscreenAction.edit:
-      case FullscreenAction.setAs:
+      case EntryAction.share:
+      case EntryAction.info:
+      case EntryAction.open:
+      case EntryAction.edit:
+      case EntryAction.setAs:
         return true;
-      case FullscreenAction.debug:
+      case EntryAction.debug:
         return kDebugMode;
     }
     return false;
   }
 
-  Widget _buildOverlayButton(FullscreenAction action) {
+  Widget _buildOverlayButton(EntryAction action) {
     Widget child;
     final onPressed = () => onActionSelected?.call(action);
     switch (action) {
-      case FullscreenAction.toggleFavourite:
+      case EntryAction.toggleFavourite:
         child = ValueListenableBuilder<bool>(
           valueListenable: entry.isFavouriteNotifier,
           builder: (context, isFavourite, child) => Stack(
@@ -142,24 +142,24 @@ class FullscreenTopOverlay extends StatelessWidget {
           ),
         );
         break;
-      case FullscreenAction.info:
-      case FullscreenAction.share:
-      case FullscreenAction.delete:
-      case FullscreenAction.rename:
-      case FullscreenAction.rotateCCW:
-      case FullscreenAction.rotateCW:
-      case FullscreenAction.print:
+      case EntryAction.info:
+      case EntryAction.share:
+      case EntryAction.delete:
+      case EntryAction.rename:
+      case EntryAction.rotateCCW:
+      case EntryAction.rotateCW:
+      case EntryAction.print:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
           tooltip: action.getText(),
         );
         break;
-      case FullscreenAction.openMap:
-      case FullscreenAction.open:
-      case FullscreenAction.edit:
-      case FullscreenAction.setAs:
-      case FullscreenAction.debug:
+      case EntryAction.openMap:
+      case EntryAction.open:
+      case EntryAction.edit:
+      case EntryAction.setAs:
+      case EntryAction.debug:
         break;
     }
     return child != null
@@ -173,11 +173,11 @@ class FullscreenTopOverlay extends StatelessWidget {
         : const SizedBox.shrink();
   }
 
-  PopupMenuEntry<FullscreenAction> _buildPopupMenuItem(FullscreenAction action) {
+  PopupMenuEntry<EntryAction> _buildPopupMenuItem(EntryAction action) {
     Widget child;
     switch (action) {
       // in app actions
-      case FullscreenAction.toggleFavourite:
+      case EntryAction.toggleFavourite:
         child = entry.isFavouriteNotifier.value
             ? const MenuRow(
                 text: 'Remove from favourites',
@@ -188,21 +188,21 @@ class FullscreenTopOverlay extends StatelessWidget {
                 icon: AIcons.favourite,
               );
         break;
-      case FullscreenAction.info:
-      case FullscreenAction.share:
-      case FullscreenAction.delete:
-      case FullscreenAction.rename:
-      case FullscreenAction.rotateCCW:
-      case FullscreenAction.rotateCW:
-      case FullscreenAction.print:
-      case FullscreenAction.debug:
+      case EntryAction.info:
+      case EntryAction.share:
+      case EntryAction.delete:
+      case EntryAction.rename:
+      case EntryAction.rotateCCW:
+      case EntryAction.rotateCW:
+      case EntryAction.print:
+      case EntryAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());
         break;
       // external app actions
-      case FullscreenAction.edit:
-      case FullscreenAction.open:
-      case FullscreenAction.setAs:
-      case FullscreenAction.openMap:
+      case EntryAction.edit:
+      case EntryAction.open:
+      case EntryAction.setAs:
+      case EntryAction.openMap:
         child = Text(action.getText());
         break;
     }

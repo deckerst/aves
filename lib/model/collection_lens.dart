@@ -31,7 +31,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         groupFactor = groupFactor ?? GroupFactor.month,
         sortFactor = sortFactor ?? SortFactor.date {
     _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));
-    _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entry)));
+    _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
     _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => onMetadataChanged()));
     onEntryAdded();
   }
@@ -66,6 +66,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
 
   int get entryCount => _filteredEntries.length;
 
+  // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
   List<ImageEntry> _sortedEntries;
 
   List<ImageEntry> get sortedEntries {
@@ -180,11 +181,12 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     _applyGroup();
   }
 
-  void onEntryRemoved(ImageEntry entry) {
+  void onEntryRemoved(Iterable<ImageEntry> entries) {
     // do not apply sort/group as section order change would surprise the user while browsing
-    _filteredEntries.remove(entry);
-    _sortedEntries?.remove(entry);
-    sections.forEach((key, entries) => entries.remove(entry));
+    _filteredEntries.removeWhere(entries.contains);
+    _sortedEntries?.removeWhere(entries.contains);
+    sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
+    selection.removeAll(entries);
     notifyListeners();
   }
 
@@ -223,14 +225,14 @@ mixin CollectionSelectionMixin on CollectionActivityMixin {
 
   Set<ImageEntry> get selection => _selection;
 
-  bool isSelected(List<ImageEntry> entries) => entries.every(selection.contains);
+  bool isSelected(Iterable<ImageEntry> entries) => entries.every(selection.contains);
 
-  void addToSelection(List<ImageEntry> entries) {
+  void addToSelection(Iterable<ImageEntry> entries) {
     _selection.addAll(entries);
     selectionChangeNotifier.notifyListeners();
   }
 
-  void removeFromSelection(List<ImageEntry> entries) {
+  void removeFromSelection(Iterable<ImageEntry> entries) {
     _selection.removeAll(entries);
     selectionChangeNotifier.notifyListeners();
   }

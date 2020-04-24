@@ -4,9 +4,9 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/debug.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_actions.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,58 +15,58 @@ import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
 
-class FullscreenActionDelegate {
+class EntryActionDelegate {
   final CollectionLens collection;
   final VoidCallback showInfo;
 
-  FullscreenActionDelegate({
+  EntryActionDelegate({
     @required this.collection,
     @required this.showInfo,
   });
 
   bool get hasCollection => collection != null;
 
-  void onActionSelected(BuildContext context, ImageEntry entry, FullscreenAction action) {
+  void onActionSelected(BuildContext context, ImageEntry entry, EntryAction action) {
     switch (action) {
-      case FullscreenAction.toggleFavourite:
+      case EntryAction.toggleFavourite:
         entry.toggleFavourite();
         break;
-      case FullscreenAction.delete:
+      case EntryAction.delete:
         _showDeleteDialog(context, entry);
         break;
-      case FullscreenAction.edit:
+      case EntryAction.edit:
         AndroidAppService.edit(entry.uri, entry.mimeType);
         break;
-      case FullscreenAction.info:
+      case EntryAction.info:
         showInfo();
         break;
-      case FullscreenAction.rename:
+      case EntryAction.rename:
         _showRenameDialog(context, entry);
         break;
-      case FullscreenAction.open:
+      case EntryAction.open:
         AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
         break;
-      case FullscreenAction.openMap:
+      case EntryAction.openMap:
         AndroidAppService.openMap(entry.geoUri);
         break;
-      case FullscreenAction.print:
+      case EntryAction.print:
         _print(entry);
         break;
-      case FullscreenAction.rotateCCW:
+      case EntryAction.rotateCCW:
         _rotate(context, entry, clockwise: false);
         break;
-      case FullscreenAction.rotateCW:
+      case EntryAction.rotateCW:
         _rotate(context, entry, clockwise: true);
         break;
-      case FullscreenAction.setAs:
+      case EntryAction.setAs:
         AndroidAppService.setAs(entry.uri, entry.mimeType);
         break;
-      case FullscreenAction.share:
+      case EntryAction.share:
         AndroidAppService.share({
           entry.mimeType: [entry.uri]
         });
         break;
-      case FullscreenAction.debug:
+      case EntryAction.debug:
         _goToDebug(context, entry);
         break;
     }
@@ -146,13 +146,16 @@ class FullscreenActionDelegate {
       },
     );
     if (confirmed == null || !confirmed) return;
-    if (hasCollection) {
-      if (!await collection.source.delete(entry)) {
-        _showFeedback(context, 'Failed');
-      } else if (collection.sortedEntries.isEmpty) {
+    if (!await entry.delete()) {
+      _showFeedback(context, 'Failed');
+    } else if (hasCollection) {
+      // update collection
+      collection.source.removeEntries([entry]);
+      if (collection.sortedEntries.isEmpty) {
         Navigator.pop(context);
       }
-    } else if (await entry.delete()) {
+    } else {
+      // leave viewer
       exit(0);
     }
   }

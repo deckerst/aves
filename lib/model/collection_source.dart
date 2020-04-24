@@ -138,13 +138,9 @@ class CollectionSource {
     eventBus.fire(const EntryAddedEvent());
   }
 
-  Future<bool> delete(ImageEntry entry) async {
-    final success = await entry.delete();
-    if (success) {
-      _rawEntries.remove(entry);
-      eventBus.fire(EntryRemovedEvent(entry));
-    }
-    return success;
+  void removeEntries(Iterable<ImageEntry> entries) async {
+    _rawEntries.remove(entries);
+    eventBus.fire(EntryRemovedEvent(entries));
   }
 
   String getUniqueAlbumName(String album) {
@@ -170,7 +166,7 @@ class EntryAddedEvent {
 }
 
 class EntryRemovedEvent {
-  final ImageEntry entry;
+  final Iterable<ImageEntry> entries;
 
-  const EntryRemovedEvent(this.entry);
+  const EntryRemovedEvent(this.entries);
 }
