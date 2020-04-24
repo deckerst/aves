@@ -7,7 +7,6 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
-import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -39,9 +38,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "getThumbnail":
                 new Thread(() -> getThumbnail(call, new MethodResultWrapper(result))).start();
-                break;
-            case "delete":
-                new Thread(() -> delete(call, new MethodResultWrapper(result))).start();
                 break;
             case "rename":
                 new Thread(() -> rename(call, new MethodResultWrapper(result))).start();
@@ -93,47 +89,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 result.error("getImageEntry-failure", "failed to get entry for uri=" + uriString, null);
             }
         });
-    }
-
-    private void delete(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        List<Map> entryMapList = call.argument("entries");
-        if (entryMapList == null) {
-            result.error("delete-args", "failed because of missing arguments", null);
-            return;
-        }
-
-        if (entryMapList.size() == 0) {
-            result.success(0);
-            return;
-        }
-
-        // assume same provider for all entries
-        Map firstEntry = entryMapList.get(0);
-        Uri firstUri = Uri.parse((String) firstEntry.get("uri"));
-        ImageProvider provider = ImageProviderFactory.getProvider(firstUri);
-        if (provider == null) {
-            result.error("delete-provider", "failed to find provider for uri=" + firstUri, null);
-            return;
-        }
-
-        for (Map entryMap : entryMapList) {
-            Uri uri = Uri.parse((String) entryMap.get("uri"));
-            String path = (String) entryMap.get("path");
-            provider.delete(activity, path, uri, new ImageProvider.ImageOpCallback() {
-
-                // TODO TLAD this will fail for more than 1 entry. stream results back instead
-
-                @Override
-                public void onSuccess(Map<String, Object> newFields) {
-                    new Handler(Looper.getMainLooper()).post(() -> result.success(1));
-                }
-
-                @Override
-                public void onFailure() {
-                    new Handler(Looper.getMainLooper()).post(() -> result.error("delete-failure", "failed to delete", null));
-                }
-            });
-        }
     }
 
     private void rename(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {

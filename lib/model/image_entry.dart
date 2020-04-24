@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -295,7 +297,19 @@ class ImageEntry {
     return true;
   }
 
-  Future<bool> delete() async => (await ImageFileService.delete([this])) == 1;
+  Future<bool> delete() {
+    Completer completer = Completer<bool>();
+    ImageFileService.delete([this]).listen(
+      (event) => completer.complete(event.success),
+      onError: completer.completeError,
+      onDone: () {
+        if (!completer.isCompleted) {
+          completer.complete(false);
+        }
+      },
+    );
+    return completer.future;
+  }
 
   void toggleFavourite() {
     if (isFavourite) {

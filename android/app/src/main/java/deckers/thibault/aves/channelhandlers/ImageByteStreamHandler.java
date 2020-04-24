@@ -24,8 +24,8 @@ import deckers.thibault.aves.decoder.VideoThumbnail;
 import deckers.thibault.aves.utils.MimeTypes;
 import io.flutter.plugin.common.EventChannel;
 
-public class ImageStreamHandler implements EventChannel.StreamHandler {
-    public static final String CHANNEL = "deckers.thibault/aves/imagestream";
+public class ImageByteStreamHandler implements EventChannel.StreamHandler {
+    public static final String CHANNEL = "deckers.thibault/aves/imagebytestream";
 
     private Activity activity;
     private Uri uri;
@@ -33,7 +33,7 @@ public class ImageStreamHandler implements EventChannel.StreamHandler {
     private EventChannel.EventSink eventSink;
     private Handler handler;
 
-    public ImageStreamHandler(Activity activity, Object arguments) {
+    public ImageByteStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
         if (arguments instanceof Map) {
             Map argMap = (Map) arguments;
@@ -87,7 +87,6 @@ public class ImageStreamHandler implements EventChannel.StreamHandler {
                 }
             } catch (Exception e) {
                 error("getImage-video-exception", "failed to get image from uri=" + uri, e.getMessage());
-                return;
             }
             Glide.with(activity).clear(target);
         } else {

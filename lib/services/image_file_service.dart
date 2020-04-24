@@ -10,7 +10,8 @@ import 'package:streams_channel/streams_channel.dart';
 
 class ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
-  static final StreamsChannel streamsChannel = StreamsChannel('deckers.thibault/aves/imagestream');
+  static final StreamsChannel byteChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
+  static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
 
   static Future<void> getImageEntries() async {
     try {
@@ -38,7 +39,7 @@ class ImageFileService {
     try {
       final completer = Completer<Uint8List>();
       final bytesBuilder = BytesBuilder(copy: false);
-      streamsChannel.receiveBroadcastStream(<String, dynamic>{
+      byteChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }).listen(
@@ -77,16 +78,16 @@ class ImageFileService {
     );
   }
 
-  static Future<int> delete(List<ImageEntry> entries) async {
+  static Stream<ImageOpEvent> delete(List<ImageEntry> entries) {
     try {
-      await platform.invokeMethod('delete', <String, dynamic>{
+      return opChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'delete',
         'entries': entries.map((e) => e.toMap()).toList(),
-      });
-      return 1;
+      }).map((event) => ImageOpEvent.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('delete failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      return Stream.error(e);
     }
-    return 0;
   }
 
   static Future<Map> rename(ImageEntry entry, String newName) async {
@@ -115,5 +116,19 @@ class ImageFileService {
       debugPrint('rotate failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
+  }
+}
+
+class ImageOpEvent {
+  final String uri;
+  final bool success;
+
+  ImageOpEvent({this.uri, this.success});
+
+  factory ImageOpEvent.fromMap(Map map) {
+    return ImageOpEvent(
+      uri: map['uri'],
+      success: map['success'] ?? false,
+    );
   }
 }

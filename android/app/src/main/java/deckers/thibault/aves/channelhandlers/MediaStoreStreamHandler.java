@@ -3,7 +3,6 @@ package deckers.thibault.aves.channelhandlers;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
 import deckers.thibault.aves.utils.Utils;

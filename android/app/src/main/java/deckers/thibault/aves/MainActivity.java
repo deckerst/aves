@@ -11,8 +11,9 @@ import java.util.Map;
 import app.loup.streams_channel.StreamsChannel;
 import deckers.thibault.aves.channelhandlers.AppAdapterHandler;
 import deckers.thibault.aves.channelhandlers.FileAdapterHandler;
+import deckers.thibault.aves.channelhandlers.ImageByteStreamHandler;
 import deckers.thibault.aves.channelhandlers.ImageFileHandler;
-import deckers.thibault.aves.channelhandlers.ImageStreamHandler;
+import deckers.thibault.aves.channelhandlers.ImageOpStreamHandler;
 import deckers.thibault.aves.channelhandlers.MediaStoreStreamHandler;
 import deckers.thibault.aves.channelhandlers.MetadataHandler;
 import deckers.thibault.aves.utils.Constants;
@@ -48,8 +49,11 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));
         new EventChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandler(mediaStoreStreamHandler);
 
-        final StreamsChannel imageStreamChannel = new StreamsChannel(messenger, ImageStreamHandler.CHANNEL);
-        imageStreamChannel.setStreamHandlerFactory(arguments -> new ImageStreamHandler(this, arguments));
+        final StreamsChannel imageByteStreamChannel = new StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL);
+        imageByteStreamChannel.setStreamHandlerFactory(arguments -> new ImageByteStreamHandler(this, arguments));
+
+        final StreamsChannel imageOpStreamChannel = new StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL);
+        imageOpStreamChannel.setStreamHandlerFactory(arguments -> new ImageOpStreamHandler(this, arguments));
 
         new MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler(
                 (call, result) -> {

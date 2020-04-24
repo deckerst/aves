@@ -45,22 +45,24 @@ class DecoratedThumbnail extends StatelessWidget {
                   extent: extent,
                   heroTag: heroTag,
                 ),
-          if (showOverlay) Positioned(
-            bottom: 0,
-            left: 0,
-            child: ThumbnailEntryOverlay(
-              entry: entry,
-              extent: extent,
+          if (showOverlay)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: ThumbnailEntryOverlay(
+                entry: entry,
+                extent: extent,
+              ),
             ),
-          ),
-          if (showOverlay) Positioned(
-            top: 0,
-            right: 0,
-            child: ThumbnailSelectionOverlay(
-              entry: entry,
-              extent: extent,
+          if (showOverlay)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: ThumbnailSelectionOverlay(
+                entry: entry,
+                extent: extent,
+              ),
             ),
-          ),
         ],
       ),
     );
