@@ -12,6 +12,8 @@ import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -76,7 +78,7 @@ public abstract class ImageProvider {
             Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
             if (sdCardTreeUri == null) {
                 Runnable runnable = () -> rename(activity, oldPath, oldUri, mimeType, newFilename, callback);
-                PermissionManager.showSdCardAccessDialog(activity, runnable);
+                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
                 return;
             }
             renamed = StorageUtils.renameOnSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), oldPath, newFilename);
@@ -162,7 +164,7 @@ public abstract class ImageProvider {
         if (onSdCard) {
             if (PermissionManager.getSdCardTreeUri(activity) == null) {
                 Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
-                PermissionManager.showSdCardAccessDialog(activity, runnable);
+                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
                 return;
             }
             // copy original file to a temporary file for editing
@@ -241,7 +243,7 @@ public abstract class ImageProvider {
         boolean onSdCard = Env.isOnSdCard(activity, path);
         if (onSdCard && PermissionManager.getSdCardTreeUri(activity) == null) {
             Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
-            PermissionManager.showSdCardAccessDialog(activity, runnable);
+            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
             return;
         }
 

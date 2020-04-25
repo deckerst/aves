@@ -7,6 +7,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -178,7 +180,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
             if (sdCardTreeUri == null) {
                 Runnable runnable = () -> delete(activity, path, uri, callback);
-                PermissionManager.showSdCardAccessDialog(activity, runnable);
+                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
                 return;
             }
 
