@@ -13,15 +13,16 @@ import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.utils.Env;
+import deckers.thibault.aves.utils.PermissionManager;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
-public class FileAdapterHandler implements MethodChannel.MethodCallHandler {
-    public static final String CHANNEL = "deckers.thibault/aves/file";
+public class StorageHandler implements MethodChannel.MethodCallHandler {
+    public static final String CHANNEL = "deckers.thibault/aves/storage";
 
     private Activity activity;
 
-    public FileAdapterHandler(Activity activity) {
+    public StorageHandler(Activity activity) {
         this.activity = activity;
     }
 
@@ -52,6 +53,12 @@ public class FileAdapterHandler implements MethodChannel.MethodCallHandler {
                     }
                 }
                 result.success(volumes);
+                break;
+            }
+            case "hasGrantedPermissionToVolumeRoot": {
+                String path = call.argument("path");
+                boolean granted = PermissionManager.hasGrantedPermissionToVolumeRoot(activity, path);
+                result.success(granted);
                 break;
             }
             default:

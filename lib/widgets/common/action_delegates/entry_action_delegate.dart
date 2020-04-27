@@ -4,6 +4,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/debug.dart';
@@ -15,7 +16,7 @@ import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
 
-class EntryActionDelegate {
+class EntryActionDelegate with PermissionAwareMixin {
   final CollectionLens collection;
   final VoidCallback showInfo;
 
@@ -122,6 +123,8 @@ class EntryActionDelegate {
   }
 
   Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
+    if (!await checkStoragePermission(context, [entry])) return;
+
     final success = await entry.rotate(clockwise: clockwise);
     if (!success) _showFeedback(context, 'Failed');
   }
@@ -146,6 +149,9 @@ class EntryActionDelegate {
       },
     );
     if (confirmed == null || !confirmed) return;
+
+    if (!await checkStoragePermission(context, [entry])) return;
+
     if (!await entry.delete()) {
       _showFeedback(context, 'Failed');
     } else if (hasCollection) {
@@ -184,6 +190,9 @@ class EntryActionDelegate {
           );
         });
     if (newName == null || newName.isEmpty) return;
+
+    if (!await checkStoragePermission(context, [entry])) return;
+
     _showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
   }
 

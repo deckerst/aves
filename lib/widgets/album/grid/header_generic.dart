@@ -66,7 +66,7 @@ class SectionHeader extends StatelessWidget {
     if (sectionKey is String) {
       // only compute height for album headers, as they're the only likely ones to split on multiple lines
       final hasLeading = androidFileUtils.getAlbumType(sectionKey) != AlbumType.Default;
-      final hasTrailing = androidFileUtils.isOnSD(sectionKey);
+      final hasTrailing = androidFileUtils.isOnRemovableStorage(sectionKey);
       final text = source.getUniqueAlbumName(sectionKey);
       final maxWidth = scrollableWidth - TitleSectionHeader.padding.horizontal;
       final para = RenderParagraph(

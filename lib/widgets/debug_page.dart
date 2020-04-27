@@ -4,12 +4,15 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tuple/tuple.dart';
 
 class DebugPage extends StatefulWidget {
   final CollectionSource source;
@@ -26,6 +29,7 @@ class DebugPageState extends State<DebugPage> {
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
   Future<List<FavouriteRow>> _dbFavouritesLoader;
+  Future<List<Tuple2<String, bool>>> _volumePermissionLoader;
 
   List<ImageEntry> get entries => widget.source.entries;
 
@@ -33,6 +37,7 @@ class DebugPageState extends State<DebugPage> {
   void initState() {
     super.initState();
     _startDbReport();
+    _checkVolumePermissions();
   }
 
   @override
@@ -50,7 +55,31 @@ class DebugPageState extends State<DebugPage> {
             padding: const EdgeInsets.all(8),
             children: [
               const Text('Storage'),
-              ...AndroidFileUtils.storageVolumes.map((v) => Text('${v.description}: ${v.path} (removable: ${v.isRemovable})')),
+              FutureBuilder(
+                future: _volumePermissionLoader,
+                builder: (context, AsyncSnapshot<List<Tuple2<String, bool>>> snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                  final permissions = snapshot.data;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...AndroidFileUtils.storageVolumes.expand((v) => [
+                            const SizedBox(height: 16),
+                            Text(v.path),
+                            InfoRowGroup({
+                              'description': '${v.description}',
+                              'isEmulated': '${v.isEmulated}',
+                              'isPrimary': '${v.isPrimary}',
+                              'isRemovable': '${v.isRemovable}',
+                              'state': '${v.state}',
+                              'permission': '${permissions.firstWhere((t) => t.item1 == v.path, orElse: () => null)?.item2 ?? false}',
+                            }),
+                          ])
+                    ],
+                  );
+                },
+              ),
               const Divider(),
               Row(
                 children: [
@@ -208,5 +237,15 @@ class DebugPageState extends State<DebugPage> {
     _dbAddressLoader = metadataDb.loadAddresses();
     _dbFavouritesLoader = metadataDb.loadFavourites();
     setState(() {});
+  }
+
+  void _checkVolumePermissions() {
+    _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
+      AndroidFileUtils.storageVolumes.map(
+        (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
+          (value) => Tuple2(volume.path, value),
+        ),
+      ),
+    );
   }
 }

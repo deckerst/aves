@@ -29,7 +29,7 @@ class AlbumSectionHeader extends StatelessWidget {
       sectionKey: folderPath,
       leading: albumIcon,
       title: albumName,
-      trailing: androidFileUtils.isOnSD(folderPath)
+      trailing: androidFileUtils.isOnRemovableStorage(folderPath)
           ? const Icon(
               OMIcons.sdStorage,
               size: 16,

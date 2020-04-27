@@ -9,7 +9,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
-import 'package:aves/widgets/common/entry_action_delegate.dart';
+import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';

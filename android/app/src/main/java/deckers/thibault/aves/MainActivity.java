@@ -10,12 +10,13 @@ import java.util.Map;
 
 import app.loup.streams_channel.StreamsChannel;
 import deckers.thibault.aves.channelhandlers.AppAdapterHandler;
-import deckers.thibault.aves.channelhandlers.FileAdapterHandler;
 import deckers.thibault.aves.channelhandlers.ImageByteStreamHandler;
 import deckers.thibault.aves.channelhandlers.ImageFileHandler;
 import deckers.thibault.aves.channelhandlers.ImageOpStreamHandler;
 import deckers.thibault.aves.channelhandlers.MediaStoreStreamHandler;
 import deckers.thibault.aves.channelhandlers.MetadataHandler;
+import deckers.thibault.aves.channelhandlers.StorageAccessStreamHandler;
+import deckers.thibault.aves.channelhandlers.StorageHandler;
 import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
@@ -43,11 +44,14 @@ public class MainActivity extends FlutterActivity {
         MediaStoreStreamHandler mediaStoreStreamHandler = new MediaStoreStreamHandler();
 
         FlutterView messenger = getFlutterView();
-        new MethodChannel(messenger, FileAdapterHandler.CHANNEL).setMethodCallHandler(new FileAdapterHandler(this));
+        new MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(new StorageHandler(this));
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
         new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this, mediaStoreStreamHandler));
         new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));
         new EventChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandler(mediaStoreStreamHandler);
+
+        final StreamsChannel fileAccessStreamChannel = new StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL);
+        fileAccessStreamChannel.setStreamHandlerFactory(arguments -> new StorageAccessStreamHandler(this, arguments));
 
         final StreamsChannel imageByteStreamChannel = new StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL);
         imageByteStreamChannel.setStreamHandlerFactory(arguments -> new ImageByteStreamHandler(this, arguments));
@@ -79,22 +83,23 @@ public class MainActivity extends FlutterActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.SD_CARD_PERMISSION_REQUEST_CODE && resultCode == RESULT_OK) {
-            Uri sdCardDocumentUri = data.getData();
-            if (sdCardDocumentUri == null) {
+        if (requestCode == Constants.SD_CARD_PERMISSION_REQUEST_CODE) {
+            if (resultCode != RESULT_OK || data.getData() == null) {
+                PermissionManager.onPermissionResult(requestCode, false);
                 return;
             }
 
-            Env.setSdCardDocumentUri(this, sdCardDocumentUri.toString());
+            Uri treeUri = data.getData();
+            Env.setSdCardDocumentUri(this, treeUri.toString());
 
             // save access permissions across reboots
             final int takeFlags = data.getFlags()
                     & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                     | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            getContentResolver().takePersistableUriPermission(sdCardDocumentUri, takeFlags);
+            getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
 
             // resume pending action
-            PermissionManager.onPermissionGranted(requestCode);
+            PermissionManager.onPermissionResult(requestCode, true);
         }
     }
 }

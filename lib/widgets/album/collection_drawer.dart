@@ -99,7 +99,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
         source: source,
         leading: IconUtils.getAlbumIcon(context: context, album: album),
         title: uniqueName,
-        trailing: androidFileUtils.isOnSD(album)
+        trailing: androidFileUtils.isOnRemovableStorage(album)
             ? const Icon(
                 OMIcons.sdStorage,
                 size: 16,

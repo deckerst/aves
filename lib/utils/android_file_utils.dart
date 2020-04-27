@@ -15,7 +15,7 @@ class AndroidFileUtils {
   Future<void> init() async {
     storageVolumes = (await AndroidFileService.getStorageVolumes()).map((map) => StorageVolume.fromMap(map)).toList();
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
-    externalStorage = '/storage/emulated/0';
+    externalStorage = storageVolumes.firstWhere((volume) => volume.isPrimary).path;
     dcimPath = join(externalStorage, 'DCIM');
     downloadPath = join(externalStorage, 'Download');
     moviesPath = join(externalStorage, 'Movies');
@@ -34,7 +34,7 @@ class AndroidFileUtils {
 
   StorageVolume getStorageVolume(String path) => storageVolumes.firstWhere((v) => path.startsWith(v.path), orElse: () => null);
 
-  bool isOnSD(String path) => getStorageVolume(path).isRemovable;
+  bool isOnRemovableStorage(String path) => getStorageVolume(path).isRemovable;
 
   AlbumType getAlbumType(String albumDirectory) {
     if (albumDirectory != null) {
