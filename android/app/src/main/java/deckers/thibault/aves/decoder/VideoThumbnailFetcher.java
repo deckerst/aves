@@ -13,6 +13,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import deckers.thibault.aves.utils.StorageUtils;
+
 class VideoThumbnailFetcher implements DataFetcher<InputStream> {
     private final VideoThumbnail model;
 
@@ -22,9 +24,7 @@ class VideoThumbnailFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(model.getContext(), model.getUri());
+        try (MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(model.getContext(), model.getUri(), null)) {
             byte[] picture = retriever.getEmbeddedPicture();
             if (picture != null) {
                 callback.onDataReady(new ByteArrayInputStream(picture));
@@ -40,8 +40,6 @@ class VideoThumbnailFetcher implements DataFetcher<InputStream> {
             }
         } catch (Exception ex) {
             callback.onLoadFailed(ex);
-        } finally {
-            retriever.release();
         }
     }
 

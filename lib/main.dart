@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
     // TODO reduce permission check time
     final permissions = await [
       Permission.storage,
-      // unredacted EXIF with scoped storage (Android 10+)
+      // to access media with unredacted metadata with scoped storage (Android 10+)
       Permission.accessMediaLocation,
     ].request(); // 350ms
     if (permissions[Permission.storage] != PermissionStatus.granted) {

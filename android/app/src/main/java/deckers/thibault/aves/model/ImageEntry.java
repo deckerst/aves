@@ -20,9 +20,6 @@ import com.drew.metadata.jpeg.JpegDirectory;
 import com.drew.metadata.mp4.Mp4Directory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -31,6 +28,7 @@ import java.util.TimeZone;
 
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
+import deckers.thibault.aves.utils.StorageUtils;
 
 import static deckers.thibault.aves.utils.MetadataHelper.getOrientationDegreesForExifCode;
 
@@ -38,11 +36,21 @@ public class ImageEntry {
     public Uri uri; // content or file URI
     public String path; // best effort to get local path
 
-    public String mimeType, title, bucketDisplayName;
+    public String mimeType;
+    @Nullable
+    public String title;
+    @Nullable
+    private String bucketDisplayName;
     @Nullable
     public Integer width, height, orientationDegrees;
     @Nullable
-    public Long sizeBytes, dateModifiedSecs, sourceDateTakenMillis, durationMillis;
+    public Long sizeBytes;
+    @Nullable
+    public Long dateModifiedSecs;
+    @Nullable
+    private Long sourceDateTakenMillis;
+    @Nullable
+    private Long durationMillis;
 
     public ImageEntry() {
     }
@@ -101,10 +109,6 @@ public class ImageEntry {
         return durationMillis != null && durationMillis > 0;
     }
 
-    public String getFilename() {
-        return path == null ? null : new File(path).getName();
-    }
-
     private boolean isImage() {
         return mimeType.startsWith(MimeTypes.IMAGE);
     }
@@ -118,11 +122,6 @@ public class ImageEntry {
     }
 
     // metadata retrieval
-
-    private InputStream getInputStream(Context context) throws FileNotFoundException {
-        // FileInputStream is faster than input stream from ContentResolver
-        return path != null ? new FileInputStream(path) : context.getContentResolver().openInputStream(uri);
-    }
 
     // expects entry with: uri/path, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
@@ -138,10 +137,7 @@ public class ImageEntry {
     // expects entry with: uri/path, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
     private void fillByMediaMetadataRetriever(Context context) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        try {
-            retriever.setDataSource(context, uri);
-
+        try (MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri, path)) {
             String width = null, height = null, rotation = null, durationMillis = null;
             if (isImage()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -181,8 +177,6 @@ public class ImageEntry {
             }
         } catch (Exception e) {
             // ignore
-        } finally {
-            retriever.release();
         }
     }
 
@@ -191,7 +185,7 @@ public class ImageEntry {
     private void fillByMetadataExtractor(Context context) {
         if (MimeTypes.SVG.equals(mimeType)) return;
 
-        try (InputStream is = getInputStream(context)) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri, path)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
             if (MimeTypes.JPEG.equals(mimeType)) {
@@ -253,7 +247,7 @@ public class ImageEntry {
     private void fillByBitmapDecode(Context context) {
         if (MimeTypes.SVG.equals(mimeType)) return;
 
-        try (InputStream is = getInputStream(context)) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri, path)) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(is, null, options);

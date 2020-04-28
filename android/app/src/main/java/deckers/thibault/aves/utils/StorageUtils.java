@@ -1,11 +1,14 @@
 package deckers.thibault.aves.utils;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -16,7 +19,10 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +33,47 @@ import java.util.Set;
 
 public class StorageUtils {
     private static final String LOG_TAG = Utils.createLogTag(StorageUtils.class);
+
+    private static boolean isMediaStoreContentUri(Uri uri) {
+        // a URI's authority is [userinfo@]host[:port]
+        // but we only want the host when comparing to Media Store's "authority"
+        return uri != null && ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme()) && MediaStore.AUTHORITY.equalsIgnoreCase(uri.getHost());
+    }
+
+    public static InputStream openInputStream(Context context, Uri uri, String path) throws FileNotFoundException {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // we get a permission denial if we require original from a provider other than the media store
+            if (isMediaStoreContentUri(uri)) {
+                uri = MediaStore.setRequireOriginal(uri);
+            }
+            return context.getContentResolver().openInputStream(uri);
+        }
+
+        // on Android <Q, we directly work with file paths if possible,
+        // as `FileInputStream` is faster than input stream from `ContentResolver`
+        return path != null ? new FileInputStream(path) : context.getContentResolver().openInputStream(uri);
+    }
+
+    public static MediaMetadataRetriever openMetadataRetriever(Context context, Uri uri, String path) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // we get a permission denial if we require original from a provider other than the media store
+            if (isMediaStoreContentUri(uri)) {
+                uri = MediaStore.setRequireOriginal(uri);
+            }
+            retriever.setDataSource(context, uri);
+            return retriever;
+        }
+
+        // on Android <Q, we directly work with file paths if possible
+        if (path != null) {
+            retriever.setDataSource(path);
+        } else {
+            retriever.setDataSource(context, uri);
+        }
+        return retriever;
+    }
 
     /**
      * Returns all available SD-Cards in the system (include emulated)

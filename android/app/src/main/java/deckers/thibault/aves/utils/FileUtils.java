@@ -17,7 +17,9 @@
  * https://raw.githubusercontent.com/iPaulPro/aFileChooser/master/aFileChooser/src/com/ipaulpro/afilechooser/utils/FileUtils.java
  */
 
-// TLAD: copied from https://raw.githubusercontent.com/flutter/plugins/master/packages/image_picker/android/src/main/java/io/flutter/plugins/imagepicker/FileUtils.java
+// TLAD: formatted code copied from:
+// https://raw.githubusercontent.com/flutter/plugins/master/packages/image_picker/android/src/main/java/io/flutter/plugins/imagepicker/FileUtils.java
+// do not add code to this file!
 
 package deckers.thibault.aves.utils;
 

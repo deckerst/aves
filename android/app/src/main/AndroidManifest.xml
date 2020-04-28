@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- to access media with unredacted metadata with scoped storage (Android 10+) -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+
     <!-- TODO remove this permission once this issue is fixed:
     https://github.com/flutter/flutter/issues/42349
     https://github.com/flutter/flutter/issues/42451
