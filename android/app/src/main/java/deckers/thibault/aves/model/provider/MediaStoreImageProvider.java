@@ -33,6 +33,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             MediaStore.MediaColumns.DATA,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,
+            // TODO TLAD use `DISPLAY_NAME` instead/along `TITLE`?
             MediaStore.MediaColumns.TITLE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
@@ -192,12 +193,15 @@ public class MediaStoreImageProvider extends ImageProvider {
             return;
         }
 
-        if (activity.getContentResolver().delete(uri, null, null) > 0) {
-            Log.d(LOG_TAG, "deleted from content resolver uri=" + uri);
-            callback.onSuccess(null);
-            return;
+        try {
+            if (activity.getContentResolver().delete(uri, null, null) > 0) {
+                Log.d(LOG_TAG, "deleted from content resolver uri=" + uri);
+                callback.onSuccess(null);
+                return;
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "failed to delete entry", e);
         }
-
         callback.onFailure();
     }
 

@@ -101,11 +101,13 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.hasError) return const Icon(OMIcons.error);
           if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
           debugPrint('$runtimeType app setup future complete');
-          return _sharedEntry != null
-              ? SingleFullscreenPage(
-                  entry: _sharedEntry,
-                )
-              : CollectionPage(_mediaStore.collection);
+          if (_sharedEntry != null) {
+            return SingleFullscreenPage(entry: _sharedEntry);
+          }
+          if (_mediaStore != null) {
+            return CollectionPage(_mediaStore.collection);
+          }
+          return const SizedBox.shrink();
         });
   }
 }

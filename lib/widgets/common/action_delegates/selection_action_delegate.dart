@@ -68,7 +68,8 @@ class SelectionActionDelegate with PermissionAwareMixin {
         final deletedCount = deletedUris.length;
         final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
-          _showFeedback(context, 'Failed to delete ${selectionCount - deletedCount} items');
+          final count = selectionCount - deletedCount;
+          _showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (deletedCount > 0) {
           collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));

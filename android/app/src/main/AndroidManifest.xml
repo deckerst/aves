@@ -3,8 +3,21 @@
     package="deckers.thibault.aves"
     android:installLocation="auto">
 
+    <!--
+    Scoped storage for primary storage is unusable on Android Q,
+    because it does not allow deleting in bulk items created by other apps.
+    These items can only be deleted one by one after catching
+    a `RecoverableSecurityException` and requesting permission for each.
+
+    On Android 11 it is possible with `createDeleteRequest`:
+    https://developer.android.com/reference/android/provider/MediaStore#createDeleteRequest(android.content.ContentResolver,%20java.util.Collection%3Candroid.net.Uri%3E)
+    -->
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- request write permission until Q (29) included, because scoped storage is unusable -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- to access media with unredacted metadata with scoped storage (Android 10+) -->

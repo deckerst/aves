@@ -84,7 +84,7 @@ class StorageVolume {
       isPrimary: map['isPrimary'] ?? false,
       isRemovable: map['isRemovable'] ?? false,
       path: map['path'] ?? '',
-      state: map['string'] ?? '',
+      state: map['state'] ?? '',
     );
   }
 }
