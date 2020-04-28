@@ -7,9 +7,9 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
-import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
@@ -38,7 +38,7 @@ class FullscreenBody extends StatefulWidget {
   FullscreenBodyState createState() => FullscreenBodyState();
 }
 
-class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProviderStateMixin {
+class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   ImageEntry _entry;
   int _currentHorizontalPage;
   ValueNotifier<int> _currentVerticalPage;
@@ -97,6 +97,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       collection: collection,
       showInfo: () => _goToVerticalPage(infoPage),
     );
+    WidgetsBinding.instance.addObserver(this);
     _initVideoController();
     _initOverlay();
     _registerWidget(widget);
@@ -116,6 +117,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _videoControllers.forEach((kv) => kv.item2.dispose());
     _videoControllers.clear();
     _verticalPager.removeListener(_onVerticalPageControllerChange);
+    WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -126,6 +128,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   void _unregisterWidget(FullscreenBody widget) {
     widget.collection?.removeListener(_onCollectionChange);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _pauseVideoControllers();
+    }
   }
 
   @override
