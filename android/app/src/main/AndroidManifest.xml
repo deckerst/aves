@@ -5,12 +5,19 @@
 
     <!--
     Scoped storage for primary storage is unusable on Android Q,
-    because it does not allow deleting in bulk items created by other apps.
+    because users are required to confirm each file to be edited or deleted.
     These items can only be deleted one by one after catching
     a `RecoverableSecurityException` and requesting permission for each.
 
-    On Android 11 it is possible with `createDeleteRequest`:
-    https://developer.android.com/reference/android/provider/MediaStore#createDeleteRequest(android.content.ContentResolver,%20java.util.Collection%3Candroid.net.Uri%3E)
+    Android R improvements:
+    - bulk changes (e.g. `createDeleteRequest`):
+    https://developer.android.com/preview/privacy/storage#media-file-access
+    - raw path access:
+    https://developer.android.com/preview/privacy/storage#media-files-raw-paths
+
+    Android R issues:
+    - users cannot grant directory access to the root Downloads directory,
+    - users cannot grant directory access to the root directory of each reliable SD card volume
     -->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -20,7 +27,7 @@
         android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- to access media with unredacted metadata with scoped storage (Android 10+) -->
+    <!-- to access media with unredacted metadata with scoped storage (Android Q+) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <!-- TODO remove this permission once this issue is fixed:
