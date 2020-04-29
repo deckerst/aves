@@ -7,7 +7,6 @@ import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
-import 'package:aves/widgets/fullscreen/info/map_initializer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
@@ -182,28 +181,27 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
               child: Container(
                 color: Colors.white70,
                 height: 200,
-                child: GoogleMapInitializer(
-                  builder: (context) => GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: widget.latLng,
-                      zoom: widget.initialZoom,
-                    ),
-                    onMapCreated: (controller) => setState(() => _controller = controller),
-                    rotateGesturesEnabled: false,
-                    scrollGesturesEnabled: false,
-                    zoomControlsEnabled: false,
-                    zoomGesturesEnabled: false,
-                    tiltGesturesEnabled: false,
-                    myLocationEnabled: false,
-                    myLocationButtonEnabled: false,
-                    markers: {
-                      Marker(
-                        markerId: MarkerId(widget.markerId),
-                        icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
-                        position: widget.latLng,
-                      )
-                    },
+                child: GoogleMap(
+                  // GoogleMap init perf issue: https://github.com/flutter/flutter/issues/28493
+                  initialCameraPosition: CameraPosition(
+                    target: widget.latLng,
+                    zoom: widget.initialZoom,
                   ),
+                  onMapCreated: (controller) => setState(() => _controller = controller),
+                  rotateGesturesEnabled: false,
+                  scrollGesturesEnabled: false,
+                  zoomControlsEnabled: false,
+                  zoomGesturesEnabled: false,
+                  tiltGesturesEnabled: false,
+                  myLocationEnabled: false,
+                  myLocationButtonEnabled: false,
+                  markers: {
+                    Marker(
+                      markerId: MarkerId(widget.markerId),
+                      icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
+                      position: widget.latLng,
+                    )
+                  },
                 ),
               ),
             ),
