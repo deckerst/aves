@@ -56,19 +56,26 @@ class ImageView extends StatelessWidget {
     // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
     // there's a black frame between the hero animation and the final image, even when it's cached.
 
-    final thumbnailLoadingBuilder = (context) => Center(
-          child: AspectRatio(
-            // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
-            aspectRatio: entry.displayAspectRatio,
-            child: Image(
-              image: ThumbnailProvider(
-                entry: entry,
-                extent: Constants.thumbnailCacheExtent,
-              ),
-              fit: BoxFit.fill,
-            ),
+    final thumbnailProvider = ThumbnailProvider(
+      entry: entry,
+      extent: Constants.thumbnailCacheExtent,
+    );
+    // this loading builder shows a transition image until the final image is ready
+    // if the image is already in the cache it will show the final image, otherwise the thumbnail
+    // in any case, we should use `Center` + `AspectRatio` + `Fill` so that the transition image
+    // appears as the final image with `PhotoViewComputedScale.contained` for `initialScale`
+    final loadingBuilder = (BuildContext context, ImageProvider imageProvider) {
+      return Center(
+        child: AspectRatio(
+          // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
+          aspectRatio: entry.displayAspectRatio,
+          child: Image(
+            image: imageProvider,
+            fit: BoxFit.fill,
           ),
-        );
+        ),
+      );
+    };
 
     Widget child;
     if (entry.isSvg) {
@@ -79,7 +86,7 @@ class ImageView extends StatelessWidget {
             mimeType: entry.mimeType,
             colorFilter: Constants.svgColorFilter,
           ),
-          placeholderBuilder: thumbnailLoadingBuilder,
+          placeholderBuilder: (context) => loadingBuilder(context, thumbnailProvider),
         ),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
@@ -98,11 +105,10 @@ class ImageView extends StatelessWidget {
         imageProvider: uriImage,
         // when the full image is ready, we use it in the `loadingBuilder`
         // we still provide a `loadingBuilder` in that case to avoid a black frame after hero animation
-        loadingBuilder: (context, event) => imageCache.statusForKey(uriImage).keepAlive
-            ? Image(
-                image: uriImage,
-              )
-            : thumbnailLoadingBuilder(context),
+        loadingBuilder: (context, event) => loadingBuilder(
+          context,
+          imageCache.statusForKey(uriImage).keepAlive ? uriImage : thumbnailProvider,
+        ),
         loadFailedChild: EmptyContent(
           icon: OMIcons.errorOutline,
           text: 'Oops!',
