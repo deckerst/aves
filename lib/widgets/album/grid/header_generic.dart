@@ -72,10 +72,13 @@ class SectionHeader extends StatelessWidget {
       final para = RenderParagraph(
         TextSpan(
           children: [
-            if (hasLeading)
-              // `RenderParagraph` fails to lay out `WidgetSpan` offscreen as of Flutter v1.17.0
-              // so we use a hair space times a magic number to match leading width
-              TextSpan(text: '\u200A' * 23), // 23 hair spaces match a width of 40.0
+            // `RenderParagraph` fails to lay out `WidgetSpan` offscreen as of Flutter v1.17.0
+            // so we use a hair space times a magic number to match width
+            TextSpan(
+              text: '\u200A' * (hasLeading ? 23 : 1),
+              // force a higher first line to match leading icon/selector dimension
+              style: const TextStyle(height: 2.3),
+            ), // 23 hair spaces match a width of 40.0
             if (hasTrailing)
               TextSpan(text: '\u200A' * 17),
             TextSpan(
@@ -120,14 +123,14 @@ class TitleSectionHeader extends StatelessWidget {
       child: OutlinedText(
         leadingBuilder: (context, isShadow) => SectionSelectableLeading(
           sectionKey: sectionKey,
-          browsingBuilder: leading != null
-              ? (context) => Container(
-                    padding: leadingPadding,
-                    width: leadingDimension,
-                    height: leadingDimension,
-                    child: isShadow ? null : leading,
-                  )
-              : null,
+          browsingBuilder: (context) => leading != null
+              ? Container(
+                  padding: leadingPadding,
+                  width: leadingDimension,
+                  height: leadingDimension,
+                  child: isShadow ? null : leading,
+                )
+              : const SizedBox(height: leadingDimension),
         ),
         text: title,
         trailingBuilder: trailing != null
@@ -147,14 +150,11 @@ class SectionSelectableLeading extends StatelessWidget {
   final dynamic sectionKey;
   final WidgetBuilder browsingBuilder;
 
-  static final WidgetBuilder _defaultBrowsingBuilder = (context) => const SizedBox.shrink();
-
-  SectionSelectableLeading({
+  const SectionSelectableLeading({
     Key key,
     @required this.sectionKey,
-    WidgetBuilder browsingBuilder,
-  })  : browsingBuilder = browsingBuilder ?? _defaultBrowsingBuilder,
-        super(key: key);
+    @required this.browsingBuilder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +188,7 @@ class SectionSelectableLeading extends StatelessWidget {
                     ),
                   );
                   return AnimatedSwitcher(
-                    duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+                    duration: Duration(milliseconds: (200 * timeDilation).toInt()),
                     switchInCurve: Curves.easeOutBack,
                     switchOutCurve: Curves.easeOutBack,
                     transitionBuilder: (child, animation) => ScaleTransition(
@@ -201,12 +201,16 @@ class SectionSelectableLeading extends StatelessWidget {
               )
             : browsingBuilder(context);
         return AnimatedSwitcher(
-          duration: Duration(milliseconds: (300 * timeDilation).toInt()),
-          switchInCurve: Curves.easeOutBack,
-          switchOutCurve: Curves.easeOutBack,
-          transitionBuilder: (child, animation) => ScaleTransition(
-            child: child,
-            scale: animation,
+          duration: Duration(milliseconds: (200 * timeDilation).toInt()),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          transitionBuilder: (child, animation) => SizeTransition(
+            axis: Axis.horizontal,
+            child: ScaleTransition(
+              child: child,
+              scale: animation,
+            ),
+            sizeFactor: animation,
           ),
           child: child,
         );
