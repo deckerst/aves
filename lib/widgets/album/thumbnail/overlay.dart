@@ -56,6 +56,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final duration = Duration(milliseconds: (200 * timeDilation).toInt());
     final fontSize = min(14.0, (extent / 8)).roundToDouble();
     final iconSize = fontSize * 2;
     final collection = Provider.of<CollectionLens>(context);
@@ -67,13 +68,15 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                 animation: collection.selectionChangeNotifier,
                 builder: (context, child) {
                   final selected = collection.isSelected([entry]);
-                  final child = OverlayIcon(
-                    key: ValueKey(selected),
-                    icon: selected ? AIcons.selected : AIcons.unselected,
-                    size: iconSize,
-                  );
-                  return AnimatedSwitcher(
-                    duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+                  var child = collection.isSelecting
+                      ? OverlayIcon(
+                          key: ValueKey(selected),
+                          icon: selected ? AIcons.selected : AIcons.unselected,
+                          size: iconSize,
+                        )
+                      : const SizedBox.shrink();
+                  child = AnimatedSwitcher(
+                    duration: duration,
                     switchInCurve: Curves.easeOutBack,
                     switchOutCurve: Curves.easeOutBack,
                     transitionBuilder: (child, animation) => ScaleTransition(
@@ -82,17 +85,18 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                     ),
                     child: child,
                   );
+                  child = AnimatedContainer(
+                    duration: duration,
+                    alignment: Alignment.topRight,
+                    color: selected ? Colors.black54 : Colors.transparent,
+                    child: child,
+                  );
+                  return child;
                 },
               )
             : const SizedBox.shrink();
         return AnimatedSwitcher(
-          duration: Duration(milliseconds: (300 * timeDilation).toInt()),
-          switchInCurve: Curves.easeOutBack,
-          switchOutCurve: Curves.easeOutBack,
-          transitionBuilder: (child, animation) => ScaleTransition(
-            child: child,
-            scale: animation,
-          ),
+          duration: duration,
           child: child,
         );
       },

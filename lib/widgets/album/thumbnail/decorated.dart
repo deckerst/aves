@@ -55,13 +55,9 @@ class DecoratedThumbnail extends StatelessWidget {
               ),
             ),
           if (showOverlay)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: ThumbnailSelectionOverlay(
-                entry: entry,
-                extent: extent,
-              ),
+            ThumbnailSelectionOverlay(
+              entry: entry,
+              extent: extent,
             ),
         ],
       ),
