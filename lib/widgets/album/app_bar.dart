@@ -5,9 +5,9 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
+import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -178,6 +178,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
               ),
             ],
+            if (collection.isSelecting) ...[
+              const PopupMenuItem(
+                value: CollectionAction.selectAll,
+                child: MenuRow(text: 'Select all'),
+              ),
+              const PopupMenuItem(
+                value: CollectionAction.selectNone,
+                child: MenuRow(text: 'Select none'),
+              ),
+            ]
           ],
           onSelected: _onCollectionActionSelected,
         ),
@@ -243,6 +253,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case CollectionAction.select:
         collection.select();
         break;
+      case CollectionAction.selectAll:
+        collection.addToSelection(collection.sortedEntries);
+        break;
+      case CollectionAction.selectNone:
+        collection.clearSelection();
+        break;
       case CollectionAction.stats:
         unawaited(_goToStats());
         break;
@@ -293,4 +309,4 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 }
 
-enum CollectionAction { select, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
+enum CollectionAction { select, selectAll, selectNone, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
