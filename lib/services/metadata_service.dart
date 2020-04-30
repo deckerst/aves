@@ -51,7 +51,6 @@ class MetadataService {
         return null;
       },
       priority: ServiceCallPriority.background,
-      debugLabel: 'getCatalogMetadata-${entry.path}',
     );
   }
 

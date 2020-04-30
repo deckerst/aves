@@ -13,6 +13,8 @@ class ImageFileService {
   static final StreamsChannel byteChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
 
+  static const thumbnailPriority = ServiceCallPriority.asap;
+
   static Future<void> getImageEntries() async {
     try {
       await platform.invokeMethod('getImageEntries');
@@ -55,7 +57,7 @@ class ImageFileService {
     return Future.sync(() => Uint8List(0));
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object cancellationKey}) {
+  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object taskKey}) {
     return servicePolicy.call(
       () async {
         if (width > 0 && height > 0) {
@@ -72,11 +74,14 @@ class ImageFileService {
         }
         return Uint8List(0);
       },
-      priority: ServiceCallPriority.asap,
-      debugLabel: 'getThumbnail-${entry.path}',
-      cancellationKey: cancellationKey,
+      priority: thumbnailPriority,
+      key: taskKey,
     );
   }
+
+  static bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, thumbnailPriority);
+
+  static Future<T> resumeThumbnail<T>(Object taskKey) => servicePolicy.resume<T>(taskKey, thumbnailPriority);
 
   static Stream<ImageOpEvent> delete(List<ImageEntry> entries) {
     try {

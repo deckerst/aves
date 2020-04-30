@@ -226,7 +226,6 @@ class ImageEntry {
       final addresses = await servicePolicy.call(
         () => Geocoder.local.findAddressesFromCoordinates(coordinates),
         priority: ServiceCallPriority.background,
-        debugLabel: 'findAddressesFromCoordinates-$path',
       );
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;

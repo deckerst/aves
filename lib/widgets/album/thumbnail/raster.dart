@@ -40,20 +40,20 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   void didUpdateWidget(ThumbnailRasterImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != entry) {
-      _cancelProvider();
+      _pauseProvider();
       _initProvider();
     }
   }
 
   @override
   void dispose() {
-    _cancelProvider();
+    _pauseProvider();
     super.dispose();
   }
 
   void _initProvider() => _imageProvider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
 
-  void _cancelProvider() => _imageProvider?.cancel();
+  void _pauseProvider() => _imageProvider?.pause();
 
   @override
   Widget build(BuildContext context) {
