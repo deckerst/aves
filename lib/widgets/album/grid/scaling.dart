@@ -32,6 +32,7 @@ class GridScaleGestureDetector extends StatefulWidget {
 
 class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
   double _startExtent, _extentMin, _extentMax;
+  bool _applyingScale = false;
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ThumbnailMetadata _metadata;
@@ -47,6 +48,10 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         // horizontal drag gestures are interpreted as scaling
       },
       onScaleStart: (details) {
+        // the gesture detector wrongly detects a new scaling gesture
+        // when scaling ends and we apply the new extent, so we prevent this
+        // until we scaled and scrolled to the tile in the new grid
+        if (_applyingScale) return;
         final scrollableContext = widget.scrollableKey.currentContext;
         final RenderBox scrollableBox = scrollableContext.findRenderObject();
         final result = BoxHitTestResult();
@@ -86,12 +91,13 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         _scaledExtentNotifier.value = (_startExtent * s).clamp(_extentMin, _extentMax);
       },
       onScaleEnd: (details) {
+        if (_scaledExtentNotifier == null) return;
         if (_overlayEntry != null) {
           _overlayEntry.remove();
           _overlayEntry = null;
         }
-        if (_scaledExtentNotifier == null) return;
 
+        _applyingScale = true;
         final oldExtent = tileExtentNotifier.value;
         // sanitize and update grid layout if necessary
         final newExtent = TileExtentManager.applyTileExtent(
@@ -101,23 +107,25 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
           newExtent: _scaledExtentNotifier.value,
         );
         _scaledExtentNotifier = null;
-        if (newExtent == oldExtent) return;
-
-        // TODO TLAD fix scroll to specific thumbnail with custom SliverList
-        // scroll to show the focal point thumbnail at its new position
-        final viewportClosure = _renderViewport;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          final scrollableContext = widget.scrollableKey.currentContext;
-          final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
-          final sectionLayout = Provider.of<SectionedListLayout>(context, listen: false);
-          final tileRect = sectionLayout.getTileRect(_metadata.entry);
-          final scrollOffset = (tileRect?.top ?? 0) - gridSize.height / 2;
-          viewportClosure.offset.jumpTo(scrollOffset.clamp(.0, double.infinity));
-          // about scrolling & offset retrieval:
-          // `Scrollable.ensureVisible` only works on already rendered objects
-          // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
-          // `RenderViewport.scrollOffsetOf` is a good alternative
-        });
+        if (newExtent == oldExtent) {
+          _applyingScale = false;
+        } else {
+          // scroll to show the focal point thumbnail at its new position
+          final viewportClosure = _renderViewport;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            // about scrolling & offset retrieval:
+            // `Scrollable.ensureVisible` only works on already rendered objects
+            // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
+            // `RenderViewport.scrollOffsetOf` is a good alternative
+            final scrollableContext = widget.scrollableKey.currentContext;
+            final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
+            final sectionLayout = Provider.of<SectionedListLayout>(context, listen: false);
+            final tileRect = sectionLayout.getTileRect(_metadata.entry);
+            final scrollOffset = (tileRect?.top ?? 0) - gridSize.height / 2;
+            viewportClosure.offset.jumpTo(max(.0, scrollOffset));
+            _applyingScale = false;
+          });
+        }
       },
       child: widget.child,
     );
