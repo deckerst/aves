@@ -38,6 +38,7 @@ class ThumbnailCollection extends StatelessWidget {
               final draggable = _buildDraggableScrollView(scrollView);
               final scaler = GridScaleGestureDetector(
                 scrollableKey: _scrollableKey,
+                appBarHeightNotifier: _appBarHeightNotifier,
                 extentNotifier: _tileExtentNotifier,
                 mqSize: mqSize,
                 mqHorizontalPadding: mqHorizontalPadding,

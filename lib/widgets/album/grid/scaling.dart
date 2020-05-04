@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
+  final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<double> extentNotifier;
   final Size mqSize;
   final double mqHorizontalPadding;
@@ -20,6 +21,7 @@ class GridScaleGestureDetector extends StatefulWidget {
 
   const GridScaleGestureDetector({
     this.scrollableKey,
+    @required this.appBarHeightNotifier,
     @required this.extentNotifier,
     @required this.mqSize,
     @required this.mqHorizontalPadding,
@@ -120,8 +122,11 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
             final scrollableContext = widget.scrollableKey.currentContext;
             final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
             final sectionLayout = Provider.of<SectionedListLayout>(context, listen: false);
-            final tileRect = sectionLayout.getTileRect(_metadata.entry);
-            final scrollOffset = (tileRect?.top ?? 0) - gridSize.height / 2;
+            final tileRect = sectionLayout.getTileRect(_metadata.entry) ?? Rect.zero;
+            // most of the time the app bar will be scrolled away after scaling,
+            // so we compensate for it to center the focal point thumbnail
+            final appBarHeight = widget.appBarHeightNotifier.value;
+            final scrollOffset = tileRect.top + (tileRect.height - gridSize.height) / 2 + appBarHeight;
             viewportClosure.offset.jumpTo(max(.0, scrollOffset));
             _applyingScale = false;
           });
