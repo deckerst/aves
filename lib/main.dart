@@ -14,6 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:screen/screen.dart';
 
 void main() {
+//  debugPrintGestureArenaDiagnostics = true;
   runApp(AvesApp());
 }
 

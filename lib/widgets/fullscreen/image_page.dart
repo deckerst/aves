@@ -38,9 +38,10 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
     return PhotoViewGestureDetectorScope(
       axis: scrollDirection,
       child: PageView.builder(
+        scrollDirection: scrollDirection,
         controller: widget.pageController,
+        physics: const PhotoViewPageViewScrollPhysics(parent: BouncingScrollPhysics()),
         onPageChanged: widget.onPageChanged,
-        itemCount: entries.length,
         itemBuilder: (context, index) {
           final entry = entries[index];
           return ImageView(
@@ -51,8 +52,7 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
             videoControllers: widget.videoControllers,
           );
         },
-        scrollDirection: scrollDirection,
-        physics: const BouncingScrollPhysics(),
+        itemCount: entries.length,
       ),
     );
   }

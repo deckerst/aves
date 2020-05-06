@@ -64,7 +64,12 @@ dependencies:
   pedantic:
   percent_indicator:
   permission_handler:
+  # photo_view v0.9.2 has issue https://github.com/renancaraujo/photo_view/issues/216
+  # https://github.com/renancaraujo/photo_view/pull/266 does not fix it
   photo_view:
+    path: ../photo_view
+#    git:
+#      url: git://github.com/deckerst/photo_view.git
   printing:
   provider:
   screen:
