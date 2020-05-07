@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/empty.dart';
@@ -18,7 +21,6 @@ import 'package:tuple/tuple.dart';
 class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
-  final GlobalKey _scrollableKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -34,23 +36,25 @@ class ThumbnailCollection extends StatelessWidget {
           // so that view updates on collection filter changes
           return Consumer<CollectionLens>(
             builder: (context, collection, child) {
-              final scrollView = _buildScrollView(collection);
-              final draggable = _buildDraggableScrollView(scrollView);
-              final scaler = GridScaleGestureDetector(
-                scrollableKey: _scrollableKey,
+              final appBar = CollectionAppBar(
                 appBarHeightNotifier: _appBarHeightNotifier,
-                extentNotifier: _tileExtentNotifier,
-                mqSize: mqSize,
-                mqHorizontalPadding: mqHorizontalPadding,
-                child: draggable,
+                collection: collection,
               );
+
               final sectionedListLayoutProvider = ValueListenableBuilder<double>(
                 valueListenable: _tileExtentNotifier,
                 builder: (context, tileExtent, child) => SectionedListLayoutProvider(
                   collection: collection,
                   scrollableWidth: mqSize.width - mqHorizontalPadding,
                   tileExtent: tileExtent,
-                  child: scaler,
+                  child: _ScalableThumbnailCollection(
+                    appBarHeightNotifier: _appBarHeightNotifier,
+                    tileExtentNotifier: _tileExtentNotifier,
+                    collection: collection,
+                    mqSize: mqSize,
+                    mqHorizontalPadding: mqHorizontalPadding,
+                    appBar: appBar,
+                  ),
                 ),
               );
               return sectionedListLayoutProvider;
@@ -60,8 +64,42 @@ class ThumbnailCollection extends StatelessWidget {
       ),
     );
   }
+}
 
-  ScrollView _buildScrollView(CollectionLens collection) {
+class _ScalableThumbnailCollection extends StatelessWidget {
+  final CollectionLens collection;
+  final ValueNotifier<double> appBarHeightNotifier;
+  final ValueNotifier<double> tileExtentNotifier;
+  final Size mqSize;
+  final double mqHorizontalPadding;
+  final Widget appBar;
+
+  final GlobalKey _scrollableKey = GlobalKey();
+
+  _ScalableThumbnailCollection({
+    @required this.appBarHeightNotifier,
+    @required this.tileExtentNotifier,
+    @required this.collection,
+    @required this.mqSize,
+    @required this.mqHorizontalPadding,
+    @required this.appBar,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollView = _buildScrollView(appBar, collection);
+    final draggable = _buildDraggableScrollView(scrollView);
+    return GridScaleGestureDetector(
+      scrollableKey: _scrollableKey,
+      extentNotifier: tileExtentNotifier,
+      mqSize: mqSize,
+      mqHorizontalPadding: mqHorizontalPadding,
+      onScaled: (entry) => _scrollToEntry(context, entry),
+      child: draggable,
+    );
+  }
+
+  ScrollView _buildScrollView(Widget appBar, CollectionLens collection) {
     return CustomScrollView(
       key: _scrollableKey,
       primary: true,
@@ -69,10 +107,7 @@ class ThumbnailCollection extends StatelessWidget {
       // when there is no content and we use `SliverFillRemaining`
       physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
       slivers: [
-        CollectionAppBar(
-          appBarHeightNotifier: _appBarHeightNotifier,
-          collection: collection,
-        ),
+      appBar,
         collection.isEmpty
             ? SliverFillRemaining(
                 child: _buildEmptyCollectionPlaceholder(collection),
@@ -93,7 +128,7 @@ class ThumbnailCollection extends StatelessWidget {
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {
     return ValueListenableBuilder<double>(
-      valueListenable: _appBarHeightNotifier,
+      valueListenable: appBarHeightNotifier,
       builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
         selector: (context, mq) => mq.viewInsets.bottom,
         builder: (context, mqViewInsetsBottom, child) => DraggableScrollbar(
@@ -127,5 +162,22 @@ class ThumbnailCollection extends StatelessWidget {
                 icon: AIcons.video,
               )
             : const EmptyContent();
+  }
+
+  // about scrolling & offset retrieval:
+  // `Scrollable.ensureVisible` only works on already rendered objects
+  // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
+  // `RenderViewport.scrollOffsetOf` is a good alternative
+  void _scrollToEntry(BuildContext context, ImageEntry entry) {
+    final scrollableContext = _scrollableKey.currentContext;
+    final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
+    final sectionLayout = Provider.of<SectionedListLayout>(context, listen: false);
+    final tileRect = sectionLayout.getTileRect(entry) ?? Rect.zero;
+    // most of the time the app bar will be scrolled away after scaling,
+    // so we compensate for it to center the focal point thumbnail
+    final appBarHeight = appBarHeightNotifier.value;
+    final scrollOffset = tileRect.top + (tileRect.height - scrollableHeight) / 2 + appBarHeight;
+
+    PrimaryScrollController.of(context)?.jumpTo(max(.0, scrollOffset));
   }
 }

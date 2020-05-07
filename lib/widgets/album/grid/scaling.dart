@@ -2,29 +2,27 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/album/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
-  final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<double> extentNotifier;
   final Size mqSize;
   final double mqHorizontalPadding;
+  final void Function(ImageEntry entry) onScaled;
   final Widget child;
 
   const GridScaleGestureDetector({
     this.scrollableKey,
-    @required this.appBarHeightNotifier,
     @required this.extentNotifier,
     @required this.mqSize,
     @required this.mqHorizontalPadding,
+    @required this.onScaled,
     @required this.child,
   });
 
@@ -38,7 +36,6 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ThumbnailMetadata _metadata;
-  RenderViewport _renderViewport;
 
   ValueNotifier<double> get tileExtentNotifier => widget.extentNotifier;
 
@@ -64,7 +61,6 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
-        _renderViewport = firstOf<RenderViewport>(result);
         _metadata = renderMetaData.metaData;
         _startExtent = tileExtentNotifier.value;
         _scaledExtentNotifier = ValueNotifier(_startExtent);
@@ -113,21 +109,8 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
           _applyingScale = false;
         } else {
           // scroll to show the focal point thumbnail at its new position
-          final viewportClosure = _renderViewport;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            // about scrolling & offset retrieval:
-            // `Scrollable.ensureVisible` only works on already rendered objects
-            // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
-            // `RenderViewport.scrollOffsetOf` is a good alternative
-            final scrollableContext = widget.scrollableKey.currentContext;
-            final gridSize = (scrollableContext.findRenderObject() as RenderBox).size;
-            final sectionLayout = Provider.of<SectionedListLayout>(context, listen: false);
-            final tileRect = sectionLayout.getTileRect(_metadata.entry) ?? Rect.zero;
-            // most of the time the app bar will be scrolled away after scaling,
-            // so we compensate for it to center the focal point thumbnail
-            final appBarHeight = widget.appBarHeightNotifier.value;
-            final scrollOffset = tileRect.top + (tileRect.height - gridSize.height) / 2 + appBarHeight;
-            viewportClosure.offset.jumpTo(max(.0, scrollOffset));
+            widget.onScaled(_metadata.entry);
             _applyingScale = false;
           });
         }

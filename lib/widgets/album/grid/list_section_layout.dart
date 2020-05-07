@@ -89,11 +89,14 @@ class SectionedListLayoutProvider extends StatelessWidget {
 
     final minEntryIndex = sectionChildIndex * columnCount;
     final maxEntryIndex = min(sectionEntryCount, minEntryIndex + columnCount);
+    final ids = <int>[];
     final children = <Widget>[];
     for (var i = minEntryIndex; i < maxEntryIndex; i++) {
       final entry = section[i];
+      final id = entry.contentId;
+      ids.add(id);
       children.add(GridThumbnail(
-        key: ValueKey(entry.contentId),
+        key: ValueKey(id),
         collection: collection,
         index: i,
         entry: entry,
@@ -101,6 +104,7 @@ class SectionedListLayoutProvider extends StatelessWidget {
       ));
     }
     return Row(
+      key: ValueKey(ids.join('-')),
       mainAxisSize: MainAxisSize.min,
       children: children,
     );
@@ -136,7 +140,6 @@ class SectionedListLayout {
 
     final left = tileExtent * column;
     final top = sectionLayout.indexToLayoutOffset(listIndex);
-    debugPrint('TLAD getTileRect sectionKey=$sectionKey sectionOffset=${sectionLayout.minOffset} top=$top row=$row column=$column for title=${entry.bestTitle}');
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
   }
 }
