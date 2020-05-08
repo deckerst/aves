@@ -2,27 +2,29 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/album/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
+  final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<double> extentNotifier;
   final Size mqSize;
   final double mqHorizontalPadding;
-  final void Function(ImageEntry entry) onScaled;
   final Widget child;
 
   const GridScaleGestureDetector({
     this.scrollableKey,
+    @required this.appBarHeightNotifier,
     @required this.extentNotifier,
     @required this.mqSize,
     @required this.mqHorizontalPadding,
-    @required this.onScaled,
     @required this.child,
   });
 
@@ -110,13 +112,30 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         } else {
           // scroll to show the focal point thumbnail at its new position
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            widget.onScaled(_metadata.entry);
+            _scrollToEntry(_metadata.entry);
             _applyingScale = false;
           });
         }
       },
       child: widget.child,
     );
+  }
+
+  // about scrolling & offset retrieval:
+  // `Scrollable.ensureVisible` only works on already rendered objects
+  // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
+  // `RenderViewport.scrollOffsetOf` is a good alternative
+  void _scrollToEntry(ImageEntry entry) {
+    final scrollableContext = widget.scrollableKey.currentContext;
+    final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
+    final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
+    final tileRect = sectionedListLayout.getTileRect(entry) ?? Rect.zero;
+    // most of the time the app bar will be scrolled away after scaling,
+    // so we compensate for it to center the focal point thumbnail
+    final appBarHeight = widget.appBarHeightNotifier.value;
+    final scrollOffset = tileRect.top + (tileRect.height - scrollableHeight) / 2 + appBarHeight;
+
+    PrimaryScrollController.of(context)?.jumpTo(max(.0, scrollOffset));
   }
 }
 

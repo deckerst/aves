@@ -35,18 +35,16 @@ class CollectionListSliver extends StatelessWidget {
 
 class GridThumbnail extends StatelessWidget {
   final CollectionLens collection;
-  final int index;
   final ImageEntry entry;
   final double tileExtent;
-  final GestureTapCallback onTap;
+  final ValueNotifier<bool> isScrollingNotifier;
 
   const GridThumbnail({
     Key key,
     this.collection,
-    this.index,
-    this.entry,
-    this.tileExtent,
-    this.onTap,
+    @required this.entry,
+    @required this.tileExtent,
+    this.isScrollingNotifier,
   }) : super(key: key);
 
   @override
@@ -66,11 +64,12 @@ class GridThumbnail extends StatelessWidget {
         }
       },
       child: MetaData(
-        metaData: ThumbnailMetadata(index, entry),
+        metaData: ThumbnailMetadata(entry),
         child: DecoratedThumbnail(
           entry: entry,
           extent: tileExtent,
-          heroTag: collection.heroTag(entry),
+          collection: collection,
+          isScrollingNotifier: isScrollingNotifier,
         ),
       ),
     );
@@ -91,8 +90,7 @@ class GridThumbnail extends StatelessWidget {
 
 // metadata to identify entry from RenderObject hit test during collection scaling
 class ThumbnailMetadata {
-  final int index;
   final ImageEntry entry;
 
-  const ThumbnailMetadata(this.index, this.entry);
+  const ThumbnailMetadata(this.entry);
 }

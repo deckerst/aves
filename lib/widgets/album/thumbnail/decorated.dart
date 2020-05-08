@@ -8,6 +8,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
   final Object heroTag;
+  final ValueNotifier<bool> isScrollingNotifier;
   final bool showOverlay;
 
   static final Color borderColor = Colors.grey.shade700;
@@ -18,11 +19,42 @@ class DecoratedThumbnail extends StatelessWidget {
     @required this.entry,
     @required this.extent,
     this.heroTag,
+    this.isScrollingNotifier,
     this.showOverlay = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final child = Stack(
+      children: [
+        entry.isSvg
+            ? ThumbnailVectorImage(
+                entry: entry,
+                extent: extent,
+                heroTag: heroTag,
+              )
+            : ThumbnailRasterImage(
+                entry: entry,
+                extent: extent,
+                isScrollingNotifier: isScrollingNotifier,
+                heroTag: heroTag,
+              ),
+        if (showOverlay)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: ThumbnailEntryOverlay(
+              entry: entry,
+              extent: extent,
+            ),
+          ),
+        if (showOverlay)
+          ThumbnailSelectionOverlay(
+            entry: entry,
+            extent: extent,
+          ),
+      ],
+    );
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -32,35 +64,7 @@ class DecoratedThumbnail extends StatelessWidget {
       ),
       width: extent,
       height: extent,
-      child: Stack(
-        children: [
-          entry.isSvg
-              ? ThumbnailVectorImage(
-                  entry: entry,
-                  extent: extent,
-                  heroTag: heroTag,
-                )
-              : ThumbnailRasterImage(
-                  entry: entry,
-                  extent: extent,
-                  heroTag: heroTag,
-                ),
-          if (showOverlay)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: ThumbnailEntryOverlay(
-                entry: entry,
-                extent: extent,
-              ),
-            ),
-          if (showOverlay)
-            ThumbnailSelectionOverlay(
-              entry: entry,
-              extent: extent,
-            ),
-        ],
-      ),
+      child: child,
     );
   }
 }

@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
-import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,12 +13,14 @@ class SectionedListLayoutProvider extends StatelessWidget {
   final int columnCount;
   final double scrollableWidth;
   final double tileExtent;
+  final Widget Function(ImageEntry entry) thumbnailBuilder;
   final Widget child;
 
   SectionedListLayoutProvider({
     @required this.collection,
     @required this.scrollableWidth,
     @required this.tileExtent,
+    @required this.thumbnailBuilder,
     @required this.child,
   }) : columnCount = max((scrollableWidth / tileExtent).round(), TileExtentManager.columnCountMin);
 
@@ -89,22 +91,12 @@ class SectionedListLayoutProvider extends StatelessWidget {
 
     final minEntryIndex = sectionChildIndex * columnCount;
     final maxEntryIndex = min(sectionEntryCount, minEntryIndex + columnCount);
-    final ids = <int>[];
     final children = <Widget>[];
     for (var i = minEntryIndex; i < maxEntryIndex; i++) {
       final entry = section[i];
-      final id = entry.contentId;
-      ids.add(id);
-      children.add(GridThumbnail(
-        key: ValueKey(id),
-        collection: collection,
-        index: i,
-        entry: entry,
-        tileExtent: tileExtent,
-      ));
+      children.add(thumbnailBuilder(entry));
     }
     return Row(
-      key: ValueKey(ids.join('-')),
       mainAxisSize: MainAxisSize.min,
       children: children,
     );
@@ -141,6 +133,25 @@ class SectionedListLayout {
     final left = tileExtent * column;
     final top = sectionLayout.indexToLayoutOffset(listIndex);
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
+  }
+
+  int rowIndex(dynamic sectionKey, List<int> builtIds) {
+    if (!collection.sections.containsKey(sectionKey)) return null;
+
+    final section = collection.sections[sectionKey];
+    final firstId = builtIds.first;
+    final firstIndexInSection = section.indexWhere((entry) => entry.contentId == firstId);
+    if (firstIndexInSection % columnCount != 0) return null;
+
+    final collectionIds = section.skip(firstIndexInSection).take(builtIds.length).map((entry) => entry.contentId);
+    final eq = const IterableEquality().equals;
+    if (eq(builtIds, collectionIds)) {
+      final sectionLayout = sectionLayouts.firstWhere((section) => section.sectionKey == sectionKey, orElse: () => null);
+      if (sectionLayout == null) return null;
+      return sectionLayout.firstIndex + 1 + firstIndexInSection ~/ columnCount;
+    }
+
+    return null;
   }
 }
 
