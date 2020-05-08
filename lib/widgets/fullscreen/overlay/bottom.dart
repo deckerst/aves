@@ -164,7 +164,6 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
                 if (entry.hasGps)
                   Container(
                     padding: const EdgeInsets.only(top: _interRowPadding),
-                    width: subRowWidth,
                     child: _LocationRow(entry: entry),
                   ),
                 if (twoColumns)
