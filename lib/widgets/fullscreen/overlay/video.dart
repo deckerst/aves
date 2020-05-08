@@ -97,61 +97,57 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    return Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
-      selector: (c, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
-      builder: (c, mq, child) {
-        final mqWidth = mq.item1;
-        final mqViewInsets = mq.item2;
-        final mqViewPadding = mq.item3;
+    final mq = context.select((MediaQueryData mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
+    final mqWidth = mq.item1;
+    final mqViewInsets = mq.item2;
+    final mqViewPadding = mq.item3;
 
-        final viewInsets = widget.viewInsets ?? mqViewInsets;
-        final viewPadding = widget.viewPadding ?? mqViewPadding;
-        final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
+    final viewInsets = widget.viewInsets ?? mqViewInsets;
+    final viewPadding = widget.viewPadding ?? mqViewPadding;
+    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
 
-        return Padding(
-          padding: safePadding,
-          child: SizedBox(
-            width: mqWidth - safePadding.horizontal,
-            child: StreamBuilder<IjkStatus>(
-                stream: controller.ijkStatusStream,
-                builder: (context, snapshot) {
-                  // do not use stream snapshot because it is obsolete when switching between videos
-                  final status = controller.ijkStatus;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: status == IjkStatus.error
-                        ? [
-                            OverlayButton(
-                              scale: scale,
-                              child: IconButton(
-                                icon: const Icon(OMIcons.openInNew),
-                                onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
-                                tooltip: 'Open',
-                              ),
+    return Padding(
+      padding: safePadding,
+      child: SizedBox(
+        width: mqWidth - safePadding.horizontal,
+        child: StreamBuilder<IjkStatus>(
+            stream: controller.ijkStatusStream,
+            builder: (context, snapshot) {
+              // do not use stream snapshot because it is obsolete when switching between videos
+              final status = controller.ijkStatus;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: status == IjkStatus.error
+                    ? [
+                        OverlayButton(
+                          scale: scale,
+                          child: IconButton(
+                            icon: const Icon(OMIcons.openInNew),
+                            onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
+                            tooltip: 'Open',
+                          ),
+                        ),
+                      ]
+                    : [
+                        Expanded(
+                          child: _buildProgressBar(),
+                        ),
+                        const SizedBox(width: 8),
+                        OverlayButton(
+                          scale: scale,
+                          child: IconButton(
+                            icon: AnimatedIcon(
+                              icon: AnimatedIcons.play_pause,
+                              progress: _playPauseAnimation,
                             ),
-                          ]
-                        : [
-                            Expanded(
-                              child: _buildProgressBar(),
-                            ),
-                            const SizedBox(width: 8),
-                            OverlayButton(
-                              scale: scale,
-                              child: IconButton(
-                                icon: AnimatedIcon(
-                                  icon: AnimatedIcons.play_pause,
-                                  progress: _playPauseAnimation,
-                                ),
-                                onPressed: _playPause,
-                                tooltip: isPlaying ? 'Pause' : 'Play',
-                              ),
-                            ),
-                          ],
-                  );
-                }),
-          ),
-        );
-      },
+                            onPressed: _playPause,
+                            tooltip: isPlaying ? 'Pause' : 'Play',
+                          ),
+                        ),
+                      ],
+              );
+            }),
+      ),
     );
   }
 
