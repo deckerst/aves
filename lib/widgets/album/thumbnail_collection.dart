@@ -107,13 +107,13 @@ class _ScalableThumbnailCollection extends StatelessWidget {
       // when there is no content and we use `SliverFillRemaining`
       physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
       slivers: [
-      appBar,
+        appBar,
         collection.isEmpty
             ? SliverFillRemaining(
                 child: _buildEmptyCollectionPlaceholder(collection),
                 hasScrollBody: false,
               )
-            : CollectionListSliver(),
+            : const CollectionListSliver(),
         SliverToBoxAdapter(
           child: Selector<MediaQueryData, double>(
             selector: (context, mq) => mq.viewInsets.bottom,
