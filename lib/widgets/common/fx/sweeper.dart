@@ -9,6 +9,7 @@ class Sweeper extends StatefulWidget {
   final double sweepAngle;
   final Curve curve;
   final ValueNotifier<bool> toggledNotifier;
+  final VoidCallback onSweepEnd;
 
   const Sweeper({
     Key key,
@@ -17,6 +18,7 @@ class Sweeper extends StatefulWidget {
     this.sweepAngle = pi / 4,
     this.curve = Curves.easeInOutCubic,
     @required this.toggledNotifier,
+    this.onSweepEnd,
   }) : super(key: key);
 
   @override
@@ -96,6 +98,9 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
 
   void _onAnimationStatusChange(AnimationStatus status) {
     setState(() {});
+    if (status == AnimationStatus.completed) {
+      widget.onSweepEnd?.call();
+    }
   }
 
   Future<void> _onToggle() async {
@@ -121,10 +126,23 @@ class _SweepClipPath extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
+    final width = size.width;
+    final height = size.height;
+    final centerX = width / 2;
+    final centerY = height / 2;
+    final diagonal = sqrt(width * width + height * height);
     return Path()
-      ..moveTo(size.width / 2, size.height / 2)
-      ..addArc(Rect.fromLTWH(0, 0, size.width, size.height), startAngle, sweepAngle)
-      ..lineTo(size.width / 2, size.height / 2);
+      ..moveTo(centerX, centerY)
+      ..addArc(
+        Rect.fromCenter(
+          center: Offset(centerX, centerY),
+          width: diagonal,
+          height: diagonal,
+        ),
+        startAngle,
+        sweepAngle,
+      )
+      ..lineTo(centerX, centerY);
   }
 
   @override

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -98,6 +99,46 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
         return AnimatedSwitcher(
           duration: duration,
           child: child,
+        );
+      },
+    );
+  }
+}
+
+class ThumbnailHighlightOverlay extends StatefulWidget {
+  final double extent;
+  final Stream<bool> highlightedStream;
+
+  const ThumbnailHighlightOverlay({
+    Key key,
+    @required this.extent,
+    @required this.highlightedStream,
+  }) : super(key: key);
+
+  @override
+  _ThumbnailHighlightOverlayState createState() => _ThumbnailHighlightOverlayState();
+}
+
+class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
+  final ValueNotifier<bool> _highlightedNotifier = ValueNotifier(false);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<bool>(
+      stream: widget.highlightedStream,
+      builder: (context, snapshot) {
+        _highlightedNotifier.value = snapshot.hasData && snapshot.data;
+        return Sweeper(
+          builder: (context) => Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).accentColor,
+                width: widget.extent * .1,
+              ),
+            ),
+          ),
+          toggledNotifier: _highlightedNotifier,
+          onSweepEnd: () => _highlightedNotifier.value = false,
         );
       },
     );

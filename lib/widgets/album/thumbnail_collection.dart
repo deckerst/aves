@@ -55,6 +55,7 @@ class ThumbnailCollection extends StatelessWidget {
                 extentNotifier: _tileExtentNotifier,
                 mqSize: mqSize,
                 mqHorizontalPadding: mqHorizontalPadding,
+                onScaled: collection.highlight,
                 child: scrollView,
               );
 
@@ -210,7 +211,6 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
     widget.isScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
     _scrollMonitoringTimer = Timer(const Duration(milliseconds: 100), () {
-      debugPrint('$runtimeType _onScrollChange is scrolling false');
       widget.isScrollingNotifier.value = false;
     });
   }

@@ -1,3 +1,4 @@
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/album/thumbnail/overlay.dart';
 import 'package:aves/widgets/album/thumbnail/raster.dart';
@@ -7,39 +8,42 @@ import 'package:flutter/material.dart';
 class DecoratedThumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
-  final Object heroTag;
+  final CollectionLens collection;
   final ValueNotifier<bool> isScrollingNotifier;
   final bool showOverlay;
+  final Object heroTag;
 
   static final Color borderColor = Colors.grey.shade700;
   static const double borderWidth = .5;
 
-  const DecoratedThumbnail({
+  DecoratedThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
-    this.heroTag,
+    this.collection,
     this.isScrollingNotifier,
     this.showOverlay = true,
-  }) : super(key: key);
+  })  : heroTag = collection?.heroTag(entry),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final child = Stack(
-      children: [
-        entry.isSvg
-            ? ThumbnailVectorImage(
-                entry: entry,
-                extent: extent,
-                heroTag: heroTag,
-              )
-            : ThumbnailRasterImage(
-                entry: entry,
-                extent: extent,
-                isScrollingNotifier: isScrollingNotifier,
-                heroTag: heroTag,
-              ),
-        if (showOverlay)
+    var child = entry.isSvg
+        ? ThumbnailVectorImage(
+            entry: entry,
+            extent: extent,
+            heroTag: heroTag,
+          )
+        : ThumbnailRasterImage(
+            entry: entry,
+            extent: extent,
+            isScrollingNotifier: isScrollingNotifier,
+            heroTag: heroTag,
+          );
+    if (showOverlay) {
+      child = Stack(
+        children: [
+          child,
           Positioned(
             bottom: 0,
             left: 0,
@@ -48,13 +52,17 @@ class DecoratedThumbnail extends StatelessWidget {
               extent: extent,
             ),
           ),
-        if (showOverlay)
           ThumbnailSelectionOverlay(
             entry: entry,
             extent: extent,
           ),
-      ],
-    );
+          ThumbnailHighlightOverlay(
+            highlightedStream: collection.highlightStream.map((highlighted) => highlighted == entry),
+            extent: extent,
+          ),
+        ],
+      );
+    }
     return Container(
       decoration: BoxDecoration(
         border: Border.all(

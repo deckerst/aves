@@ -17,6 +17,7 @@ class GridScaleGestureDetector extends StatefulWidget {
   final ValueNotifier<double> extentNotifier;
   final Size mqSize;
   final double mqHorizontalPadding;
+  final void Function(ImageEntry entry) onScaled;
   final Widget child;
 
   const GridScaleGestureDetector({
@@ -25,6 +26,7 @@ class GridScaleGestureDetector extends StatefulWidget {
     @required this.extentNotifier,
     @required this.mqSize,
     @required this.mqHorizontalPadding,
+    this.onScaled,
     @required this.child,
   });
 
@@ -112,7 +114,11 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         } else {
           // scroll to show the focal point thumbnail at its new position
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _scrollToEntry(_metadata.entry);
+            final entry = _metadata.entry;
+            _scrollToEntry(entry);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.onScaled?.call(entry);
+            });
             _applyingScale = false;
           });
         }
