@@ -75,7 +75,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
     _topOverlayScale = CurvedAnimation(

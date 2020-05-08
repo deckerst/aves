@@ -215,7 +215,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   void _startTimer() {
     if (controller.textureId == null) return;
     _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 350), (timer) {
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
       controller.refreshVideoInfo();
     });
   }
