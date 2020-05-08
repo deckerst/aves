@@ -40,16 +40,17 @@ class SelectionActionDelegate with PermissionAwareMixin {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
+        final buttonStyle = Theme.of(context).textTheme.button;
         return AlertDialog(
           content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these ${count} items')}?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('CANCEL'),
+              child: Text('Cancel', style: buttonStyle),
             ),
             FlatButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('DELETE'),
+              child: Text('Delete', style: buttonStyle),
             ),
           ],
         );

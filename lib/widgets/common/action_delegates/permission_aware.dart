@@ -22,17 +22,18 @@ mixin PermissionAwareMixin {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
+          final buttonStyle = Theme.of(context).textTheme.button;
           return AlertDialog(
             title: const Text('Storage Volume Access'),
             content: Text('Please select the root directory of “${volume.description}” in the next screen, so that this app can access it and complete your request.'),
             actions: [
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('CANCEL'),
+                child: Text('Cancel', style: buttonStyle),
               ),
               FlatButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('OK'),
+                child: Text('OK', style: buttonStyle),
               ),
             ],
           );
