@@ -44,12 +44,14 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           final entry = entries[index];
-          return ImageView(
-            entry: entry,
-            heroTag: widget.collection.heroTag(entry),
-            onScaleChanged: widget.onScaleChanged,
-            onTap: widget.onTap,
-            videoControllers: widget.videoControllers,
+          return ClipRect(
+            child: ImageView(
+              entry: entry,
+              heroTag: widget.collection.heroTag(entry),
+              onScaleChanged: widget.onScaleChanged,
+              onTap: widget.onTap,
+              videoControllers: widget.videoControllers,
+            ),
           );
         },
         itemCount: entries.length,

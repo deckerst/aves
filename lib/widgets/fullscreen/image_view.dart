@@ -109,7 +109,7 @@ class ImageView extends StatelessWidget {
           context,
           imageCache.statusForKey(uriImage).keepAlive ? uriImage : thumbnailProvider,
         ),
-        loadFailedChild: EmptyContent(
+        loadFailedChild: const EmptyContent(
           icon: AIcons.error,
           text: 'Oops!',
           alignment: Alignment.center,
