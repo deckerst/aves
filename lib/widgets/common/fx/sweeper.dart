@@ -9,6 +9,7 @@ class Sweeper extends StatefulWidget {
   final double sweepAngle;
   final Curve curve;
   final ValueNotifier<bool> toggledNotifier;
+  final bool centerSweep;
   final VoidCallback onSweepEnd;
 
   const Sweeper({
@@ -18,6 +19,7 @@ class Sweeper extends StatefulWidget {
     this.sweepAngle = pi / 4,
     this.curve = Curves.easeInOutCubic,
     @required this.toggledNotifier,
+    this.centerSweep = true,
     this.onSweepEnd,
   }) : super(key: key);
 
@@ -42,9 +44,12 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
       duration: const Duration(milliseconds: sweepingDurationMillis),
       vsync: this,
     );
+    final startAngle = widget.startAngle;
+    final sweepAngle = widget.sweepAngle;
+    final centerSweep = widget.centerSweep;
     _angle = Tween(
-      begin: widget.startAngle - widget.sweepAngle / 2,
-      end: widget.startAngle + pi * 2 - widget.sweepAngle / 2,
+      begin: startAngle - sweepAngle * (centerSweep ? .5 : 0),
+      end: startAngle + pi * 2 - sweepAngle * (centerSweep ? .5 : 1),
     ).animate(CurvedAnimation(
       parent: _angleAnimationController,
       curve: widget.curve,
@@ -109,10 +114,8 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
       setState(() {});
       await Future.delayed(Duration(milliseconds: (opacityAnimationDurationMillis * timeDilation).toInt()));
       _isAppearing = false;
-      _angleAnimationController.forward();
-    } else {
-      await Future.delayed(Duration(milliseconds: (opacityAnimationDurationMillis * timeDilation).toInt()));
       _angleAnimationController.reset();
+      _angleAnimationController.forward();
     }
     setState(() {});
   }

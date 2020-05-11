@@ -138,6 +138,8 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
             ),
           ),
           toggledNotifier: _highlightedNotifier,
+          startAngle: pi * -3 / 4,
+          centerSweep: false,
           onSweepEnd: () => _highlightedNotifier.value = false,
         );
       },
