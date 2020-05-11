@@ -114,11 +114,13 @@ class CollectionSource {
         return compareAsciiUpperCase(ua, ub);
       });
     sortedAlbums = List.unmodifiable(sorted);
+    eventBus.fire(AlbumsChangedEvent());
   }
 
   void updateTags() {
     final tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(tags);
+    eventBus.fire(TagsChangedEvent());
   }
 
   void updateLocations() {
@@ -126,6 +128,7 @@ class CollectionSource {
     final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
     sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
     sortedPlaces = lister((address) => address.place);
+    eventBus.fire(LocationsChangedEvent());
   }
 
   void addAll(Iterable<ImageEntry> entries) {
@@ -158,6 +161,12 @@ class CollectionSource {
 class AddressMetadataChangedEvent {}
 
 class CatalogMetadataChangedEvent {}
+
+class AlbumsChangedEvent {}
+
+class LocationsChangedEvent {}
+
+class TagsChangedEvent {}
 
 class EntryAddedEvent {
   final ImageEntry entry;

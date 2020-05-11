@@ -1,4 +1,5 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -70,26 +71,42 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
                     MimeFilter(MimeTypes.SVG),
                   ].where((f) => containQuery(f.label)),
                 ),
-                _buildFilterRow(
-                  context: context,
-                  title: 'Albums',
-                  filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName)),
-                ),
-                _buildFilterRow(
-                  context: context,
-                  title: 'Countries',
-                  filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)),
-                ),
-                _buildFilterRow(
-                  context: context,
-                  title: 'Places',
-                  filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)),
-                ),
-                _buildFilterRow(
-                  context: context,
-                  title: 'Tags',
-                  filters: source.sortedTags.where(containQuery).map((s) => TagFilter(s)),
-                ),
+                StreamBuilder(
+                    stream: source.eventBus.on<AlbumsChangedEvent>(),
+                    builder: (context, snapshot) {
+                      return _buildFilterRow(
+                        context: context,
+                        title: 'Albums',
+                        filters: source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName)),
+                      );
+                    }),
+                StreamBuilder(
+                    stream: source.eventBus.on<LocationsChangedEvent>(),
+                    builder: (context, snapshot) {
+                      return _buildFilterRow(
+                        context: context,
+                        title: 'Countries',
+                        filters: source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)),
+                      );
+                    }),
+                StreamBuilder(
+                    stream: source.eventBus.on<LocationsChangedEvent>(),
+                    builder: (context, snapshot) {
+                      return _buildFilterRow(
+                        context: context,
+                        title: 'Places',
+                        filters: source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s)),
+                      );
+                    }),
+                StreamBuilder(
+                    stream: source.eventBus.on<TagsChangedEvent>(),
+                    builder: (context, snapshot) {
+                      return _buildFilterRow(
+                        context: context,
+                        title: 'Tags',
+                        filters: source.sortedTags.where(containQuery).map((s) => TagFilter(s)),
+                      );
+                    }),
               ],
             );
           }),
