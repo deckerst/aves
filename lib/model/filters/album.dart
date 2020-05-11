@@ -5,7 +5,6 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/app_icon_image_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path/path.dart';
 
@@ -31,7 +30,7 @@ class AlbumFilter extends CollectionFilter {
 
   @override
   Widget iconBuilder(context, size) {
-    return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? Icon(OMIcons.photoAlbum, size: size);
+    return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? Icon(AIcons.album, size: size);
   }
 
   @override

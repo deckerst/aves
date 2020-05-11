@@ -7,18 +7,28 @@ import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class AIcons {
+  static const IconData allMedia = OMIcons.collections;
+  static const IconData image = OMIcons.photo;
+  static const IconData video = OMIcons.movie;
+  static const IconData album = OMIcons.photoAlbum;
+
   static const IconData date = OMIcons.calendarToday;
   static const IconData location = OMIcons.place;
+  static const IconData shooting = OMIcons.camera;
+  static const IconData removableStorage = OMIcons.sdStorage;
   static const IconData tag = OMIcons.localOffer;
-  static const IconData video = OMIcons.movie;
 
+  static const IconData clear = OMIcons.clear;
   static const IconData delete = OMIcons.delete;
   static const IconData favourite = OMIcons.favoriteBorder;
   static const IconData favouriteActive = OMIcons.favorite;
+  static const IconData openInNew = OMIcons.openInNew;
   static const IconData print = OMIcons.print;
   static const IconData rotateLeft = OMIcons.rotateLeft;
   static const IconData rotateRight = OMIcons.rotateRight;
   static const IconData share = OMIcons.share;
+  static const IconData zoomIn = OMIcons.add;
+  static const IconData zoomOut = OMIcons.remove;
 
   static const IconData animated = Icons.slideshow;
   static const IconData play = Icons.play_circle_outline;

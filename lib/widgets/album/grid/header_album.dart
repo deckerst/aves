@@ -2,7 +2,6 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class AlbumSectionHeader extends StatelessWidget {
   final String folderPath, albumName;
@@ -31,7 +30,7 @@ class AlbumSectionHeader extends StatelessWidget {
       title: albumName,
       trailing: androidFileUtils.isOnRemovableStorage(folderPath)
           ? const Icon(
-              OMIcons.sdStorage,
+              AIcons.removableStorage,
               size: 16,
               color: Color(0xFF757575),
             )

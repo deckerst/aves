@@ -8,8 +8,8 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/search/expandable_filter_row.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   final CollectionLens collection;
@@ -39,7 +39,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: const Icon(OMIcons.clear),
+          icon: const Icon(AIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);

@@ -10,7 +10,6 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -254,7 +253,7 @@ class _ShootingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(OMIcons.camera, size: _iconSize),
+        const Icon(AIcons.shooting, size: _iconSize),
         const SizedBox(width: _iconPadding),
         Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),

@@ -4,10 +4,10 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -122,7 +122,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                         OverlayButton(
                           scale: scale,
                           child: IconButton(
-                            icon: const Icon(OMIcons.openInNew),
+                            icon: const Icon(AIcons.openInNew),
                             onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                             tooltip: 'Open',
                           ),

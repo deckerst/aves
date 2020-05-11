@@ -71,7 +71,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
 
     final allMediaEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(OMIcons.photo),
+      leading: const Icon(AIcons.allMedia),
       title: 'All media',
       filter: null,
     );
@@ -101,7 +101,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
         title: uniqueName,
         trailing: androidFileUtils.isOnRemovableStorage(album)
             ? const Icon(
-                OMIcons.sdStorage,
+                AIcons.removableStorage,
                 size: 16,
                 color: Colors.grey,
               )
@@ -182,7 +182,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           top: false,
           bottom: false,
           child: ExpansionTile(
-            leading: const Icon(OMIcons.photoAlbum),
+            leading: const Icon(AIcons.album),
             title: Row(
               children: [
                 const Text('Albums'),
