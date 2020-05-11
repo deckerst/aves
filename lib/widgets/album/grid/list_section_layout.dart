@@ -63,7 +63,12 @@ class SectionedListLayoutProvider extends StatelessWidget {
           maxOffset: sectionMaxOffset,
           headerExtent: headerExtent,
           tileExtent: tileExtent,
-          builder: (context, listIndex) => _buildInSection(listIndex - sectionFirstIndex, collection, sectionKey),
+          builder: (context, listIndex) => _buildInSection(
+            listIndex - sectionFirstIndex,
+            collection,
+            sectionKey,
+            headerExtent,
+          ),
         ),
       );
     });
@@ -75,14 +80,9 @@ class SectionedListLayoutProvider extends StatelessWidget {
     );
   }
 
-  Widget _buildInSection(int sectionChildIndex, CollectionLens collection, dynamic sectionKey) {
+  Widget _buildInSection(int sectionChildIndex, CollectionLens collection, dynamic sectionKey, double headerExtent) {
     if (sectionChildIndex == 0) {
-      return collection.showHeaders
-          ? SectionHeader(
-              collection: collection,
-              sectionKey: sectionKey,
-            )
-          : const SizedBox.shrink();
+      return headerBuilder(collection, sectionKey, headerExtent);
     }
     sectionChildIndex--;
 
@@ -100,6 +100,16 @@ class SectionedListLayoutProvider extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: children,
     );
+  }
+
+  Widget headerBuilder(CollectionLens collection, dynamic sectionKey, double headerExtent) {
+    return collection.showHeaders
+        ? SectionHeader(
+            collection: collection,
+            sectionKey: sectionKey,
+            height: headerExtent,
+          )
+        : const SizedBox.shrink();
   }
 }
 

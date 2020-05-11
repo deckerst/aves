@@ -6,7 +6,6 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/grid/header_album.dart';
 import 'package:aves/widgets/album/grid/header_date.dart';
-import 'package:aves/widgets/common/fx/outlined_text.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,11 +15,13 @@ import 'package:provider/provider.dart';
 class SectionHeader extends StatelessWidget {
   final CollectionLens collection;
   final dynamic sectionKey;
+  final double height;
 
   const SectionHeader({
     Key key,
     @required this.collection,
     @required this.sectionKey,
+    @required this.height,
   }) : super(key: key);
 
   @override
@@ -48,7 +49,12 @@ class SectionHeader extends StatelessWidget {
         header = _buildAlbumSectionHeader();
         break;
     }
-    return header ?? const SizedBox.shrink();
+    return header != null
+        ? SizedBox(
+            height: height,
+            child: header,
+          )
+        : const SizedBox.shrink();
   }
 
   Widget _buildAlbumSectionHeader() {
@@ -113,6 +119,7 @@ class TitleSectionHeader extends StatelessWidget {
   static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
   static const trailingPadding = EdgeInsets.only(left: 8, bottom: 4);
   static const padding = EdgeInsets.all(16);
+  static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
   @override
   Widget build(BuildContext context) {
@@ -120,27 +127,37 @@ class TitleSectionHeader extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
       constraints: const BoxConstraints(minHeight: leadingDimension),
-      child: OutlinedText(
-        leadingBuilder: (context, isShadow) => SectionSelectableLeading(
-          sectionKey: sectionKey,
-          browsingBuilder: (context) => leading != null
-              ? Container(
-                  padding: leadingPadding,
-                  width: leadingDimension,
-                  height: leadingDimension,
-                  child: isShadow ? null : leading,
-                )
-              : const SizedBox(height: leadingDimension),
-        ),
-        text: title,
-        trailingBuilder: trailing != null
-            ? (context, isShadow) => Container(
+      child: RichText(
+        text: TextSpan(
+          children: [
+            WidgetSpan(
+              alignment: widgetSpanAlignment,
+              child: SectionSelectableLeading(
+                sectionKey: sectionKey,
+                browsingBuilder: (context) => leading != null
+                    ? Container(
+                        padding: leadingPadding,
+                        width: leadingDimension,
+                        height: leadingDimension,
+                        child: leading,
+                      )
+                    : const SizedBox(height: leadingDimension),
+              ),
+            ),
+            TextSpan(
+              text: title,
+              style: Constants.titleTextStyle,
+            ),
+            if (trailing != null)
+              WidgetSpan(
+                alignment: widgetSpanAlignment,
+                child: Container(
                   padding: trailingPadding,
-                  child: isShadow ? null : trailing,
-                )
-            : null,
-        style: Constants.titleTextStyle,
-        outlineWidth: 2,
+                  child: trailing,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
