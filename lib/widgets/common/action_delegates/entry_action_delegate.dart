@@ -133,17 +133,16 @@ class EntryActionDelegate with PermissionAwareMixin {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        final buttonStyle = Theme.of(context).textTheme.button;
         return AlertDialog(
           content: const Text('Are you sure?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel', style: buttonStyle),
+              child: Text('Cancel'.toUpperCase()),
             ),
             FlatButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Delete', style: buttonStyle),
+              child: Text('Delete'.toUpperCase()),
             ),
           ],
         );
@@ -173,7 +172,6 @@ class EntryActionDelegate with PermissionAwareMixin {
     final newName = await showDialog<String>(
         context: context,
         builder: (BuildContext context) {
-          final buttonStyle = Theme.of(context).textTheme.button;
           return AlertDialog(
             content: TextField(
               controller: controller,
@@ -182,11 +180,11 @@ class EntryActionDelegate with PermissionAwareMixin {
             actions: [
               FlatButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel', style: buttonStyle),
+                child: Text('Cancel'.toUpperCase()),
               ),
               FlatButton(
                 onPressed: () => Navigator.pop(context, controller.text),
-                child: Text('Apply', style: buttonStyle),
+                child: Text('Apply'.toUpperCase()),
               ),
             ],
           );
