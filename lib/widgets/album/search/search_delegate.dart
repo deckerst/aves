@@ -62,7 +62,13 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
               children: [
                 _buildFilterRow(
                   context: context,
-                  filters: [FavouriteFilter(), MimeFilter(MimeTypes.ANY_VIDEO), MimeFilter(MimeFilter.animated), MimeFilter(MimeTypes.SVG)].where((f) => containQuery(f.label)),
+                  filters: [
+                    FavouriteFilter(),
+                    MimeFilter(MimeTypes.ANY_IMAGE),
+                    MimeFilter(MimeTypes.ANY_VIDEO),
+                    MimeFilter(MimeFilter.animated),
+                    MimeFilter(MimeTypes.SVG),
+                  ].where((f) => containQuery(f.label)),
                 ),
                 _buildFilterRow(
                   context: context,

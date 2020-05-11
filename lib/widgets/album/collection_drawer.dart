@@ -75,17 +75,17 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       title: 'All media',
       filter: null,
     );
+    final imageEntry = _FilteredCollectionNavTile(
+      source: source,
+      leading: const Icon(AIcons.image),
+      title: 'Images',
+      filter: MimeFilter(MimeTypes.ANY_IMAGE),
+    );
     final videoEntry = _FilteredCollectionNavTile(
       source: source,
       leading: const Icon(AIcons.video),
       title: 'Videos',
       filter: MimeFilter(MimeTypes.ANY_VIDEO),
-    );
-    final animatedEntry = _FilteredCollectionNavTile(
-      source: source,
-      leading: const Icon(AIcons.animated),
-      title: 'Animated',
-      filter: MimeFilter(MimeFilter.animated),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,
@@ -170,8 +170,8 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     final drawerItems = <Widget>[
       header,
       allMediaEntry,
+      imageEntry,
       videoEntry,
-      animatedEntry,
       favouriteEntry,
       if (specialAlbums.isNotEmpty) ...[
         const Divider(),

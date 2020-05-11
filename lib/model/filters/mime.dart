@@ -28,6 +28,9 @@ class MimeFilter extends CollectionFilter {
       if (lowMime == 'video') {
         _label = 'Video';
         _icon = AIcons.video;
+      } else if (lowMime == 'image') {
+        _label = 'Image';
+        _icon = AIcons.image;
       }
       _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
