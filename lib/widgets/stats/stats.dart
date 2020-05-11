@@ -171,7 +171,7 @@ class StatsPage extends StatelessWidget {
                           alignment: PlaceholderAlignment.middle,
                           child: Padding(
                             padding: const EdgeInsetsDirectional.only(end: 8),
-                            child: Icon(Icons.fiber_manual_record, color: stringToColor(kv.key)),
+                            child: Icon(AIcons.disc, color: stringToColor(kv.key)),
                           ),
                         ),
                         TextSpan(text: '${kv.key}   '),

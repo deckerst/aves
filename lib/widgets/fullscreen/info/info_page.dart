@@ -3,12 +3,12 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -48,7 +48,7 @@ class InfoPageState extends State<InfoPage> {
 
     final appBar = SliverAppBar(
       leading: IconButton(
-        icon: const Icon(OMIcons.arrowUpward),
+        icon: const Icon(AIcons.goUp),
         onPressed: _goToImage,
         tooltip: 'Back to image',
       ),

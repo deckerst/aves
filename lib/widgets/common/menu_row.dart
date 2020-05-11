@@ -1,5 +1,5 @@
+import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class MenuRow extends StatelessWidget {
   final String text;
@@ -20,7 +20,7 @@ class MenuRow extends StatelessWidget {
         if (checked != null) ...[
           Opacity(
             opacity: checked ? 1 : 0,
-            child: const Icon(OMIcons.done),
+            child: const Icon(AIcons.checked),
           ),
           const SizedBox(width: 8),
         ],

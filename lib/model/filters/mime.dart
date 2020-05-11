@@ -3,7 +3,6 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/widgets.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class MimeFilter extends CollectionFilter {
   static const type = 'mime';
@@ -40,7 +39,7 @@ class MimeFilter extends CollectionFilter {
       }
       _label ??= lowMime.split('/')[1].toUpperCase();
     }
-    _icon ??= OMIcons.code;
+    _icon ??= AIcons.vector;
   }
 
   @override

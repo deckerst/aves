@@ -5,10 +5,10 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
   final ImageEntry entry;
@@ -74,7 +74,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           if (index == 0) {
-            return const SectionRow(OMIcons.info);
+            return const SectionRow(AIcons.info);
           }
           if (index < untitledDirectoryCount + 1) {
             final dir = directoriesWithoutTitle[index - 1];

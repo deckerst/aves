@@ -10,26 +10,47 @@ class AIcons {
   static const IconData allMedia = OMIcons.collections;
   static const IconData image = OMIcons.photo;
   static const IconData video = OMIcons.movie;
-  static const IconData album = OMIcons.photoAlbum;
+  static const IconData vector = OMIcons.code;
 
+  static const IconData checked = OMIcons.done;
   static const IconData date = OMIcons.calendarToday;
+  static const IconData disc = Icons.fiber_manual_record;
+  static const IconData error = OMIcons.error;
   static const IconData location = OMIcons.place;
   static const IconData shooting = OMIcons.camera;
   static const IconData removableStorage = OMIcons.sdStorage;
+  static const IconData text = OMIcons.formatQuote;
   static const IconData tag = OMIcons.localOffer;
 
+  // actions
   static const IconData clear = OMIcons.clear;
+  static const IconData collapse = OMIcons.expandLess;
+  static const IconData debug = OMIcons.whatshot;
   static const IconData delete = OMIcons.delete;
+  static const IconData expand = OMIcons.expandMore;
   static const IconData favourite = OMIcons.favoriteBorder;
   static const IconData favouriteActive = OMIcons.favorite;
+  static const IconData goUp = OMIcons.arrowUpward;
+  static const IconData info = OMIcons.info;
   static const IconData openInNew = OMIcons.openInNew;
   static const IconData print = OMIcons.print;
+  static const IconData rename = OMIcons.title;
   static const IconData rotateLeft = OMIcons.rotateLeft;
   static const IconData rotateRight = OMIcons.rotateRight;
+  static const IconData search = OMIcons.search;
+  static const IconData select = OMIcons.selectAll;
   static const IconData share = OMIcons.share;
+  static const IconData stats = OMIcons.pieChart;
   static const IconData zoomIn = OMIcons.add;
   static const IconData zoomOut = OMIcons.remove;
 
+  // albums
+  static const IconData album = OMIcons.photoAlbum;
+  static const IconData cameraAlbum = OMIcons.photoCamera;
+  static const IconData downloadAlbum = Icons.file_download;
+  static const IconData screenshotAlbum = OMIcons.smartphone;
+
+  // thumbnail overlay
   static const IconData animated = Icons.slideshow;
   static const IconData play = Icons.play_circle_outline;
   static const IconData selected = Icons.check_circle_outline;
@@ -138,12 +159,12 @@ class IconUtils {
   }) {
     switch (androidFileUtils.getAlbumType(album)) {
       case AlbumType.Camera:
-        return Icon(OMIcons.photoCamera, size: size);
+        return Icon(AIcons.cameraAlbum, size: size);
       case AlbumType.Screenshots:
       case AlbumType.ScreenRecordings:
-        return Icon(OMIcons.smartphone, size: size);
+        return Icon(AIcons.screenshotAlbum, size: size);
       case AlbumType.Download:
-        return Icon(Icons.file_download, size: size);
+        return Icon(AIcons.downloadAlbum, size: size);
       case AlbumType.App:
         return Image(
           image: AppIconImage(

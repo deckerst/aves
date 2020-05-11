@@ -18,7 +18,6 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:provider/provider.dart';
 
 class CollectionDrawer extends StatefulWidget {
@@ -275,7 +274,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           top: false,
           bottom: false,
           child: ListTile(
-            leading: const Icon(OMIcons.whatshot),
+            leading: const Icon(AIcons.debug),
             title: const Text('Debug'),
             onTap: () => _goToDebug(context),
           ),

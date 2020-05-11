@@ -1,6 +1,5 @@
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 enum EntryAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite, debug }
 
@@ -74,9 +73,9 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.delete:
         return AIcons.delete;
       case EntryAction.info:
-        return OMIcons.info;
+        return AIcons.info;
       case EntryAction.rename:
-        return OMIcons.title;
+        return AIcons.rename;
       case EntryAction.rotateCCW:
         return AIcons.rotateLeft;
       case EntryAction.rotateCW:
@@ -92,7 +91,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.openMap:
         return null;
       case EntryAction.debug:
-        return OMIcons.whatshot;
+        return AIcons.debug;
     }
     return null;
   }

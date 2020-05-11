@@ -7,12 +7,12 @@ import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:pedantic/pedantic.dart';
 
 class CollectionAppBar extends StatefulWidget {
@@ -149,7 +149,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       if (collection.isBrowsing)
         IconButton(
-          icon: const Icon(OMIcons.search),
+          icon: const Icon(AIcons.search),
           onPressed: _goToSearch,
         ),
       if (collection.isSelecting)
@@ -171,11 +171,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             if (collection.isBrowsing) ...[
               const PopupMenuItem(
                 value: CollectionAction.select,
-                child: MenuRow(text: 'Select', icon: OMIcons.selectAll),
+                child: MenuRow(text: 'Select', icon: AIcons.select),
               ),
               const PopupMenuItem(
                 value: CollectionAction.stats,
-                child: MenuRow(text: 'Stats', icon: OMIcons.pieChart),
+                child: MenuRow(text: 'Stats', icon: AIcons.stats),
               ),
             ],
             if (collection.isSelecting) ...[
