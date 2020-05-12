@@ -39,7 +39,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
-        android:label="Aves"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
@@ -67,7 +67,7 @@
         <!-- file provider to share files having a file:// URI -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="deckers.thibault.aves.fileprovider"
+            android:authorities="${applicationId}.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
