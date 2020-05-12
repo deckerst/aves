@@ -28,6 +28,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
 
   @override
   Widget build(BuildContext context) {
+    final catalog = widget.entry.catalogMetadata;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Debug'),
@@ -103,7 +104,18 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
               },
             ),
             const Divider(),
-            Text('Catalog metadata: ${widget.entry.catalogMetadata}'),
+            Text('Catalog metadata:${catalog == null ? ' no data' : ''}'),
+            if (catalog != null)
+              InfoRowGroup({
+                'contentId': '${catalog.contentId}',
+                'dateMillis': '${catalog.dateMillis}',
+                'isAnimated': '${catalog.isAnimated}',
+                'videoRotation': '${catalog.videoRotation}',
+                'latitude': '${catalog.latitude}',
+                'longitude': '${catalog.longitude}',
+                'xmpSubjects': '${catalog.xmpSubjects}',
+                'xmpTitleDescription': '${catalog.xmpTitleDescription}',
+              }),
           ],
         ),
       ),
