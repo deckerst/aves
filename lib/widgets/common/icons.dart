@@ -15,7 +15,7 @@ class AIcons {
   static const IconData checked = OMIcons.done;
   static const IconData date = OMIcons.calendarToday;
   static const IconData disc = Icons.fiber_manual_record;
-  static const IconData error = OMIcons.error;
+  static const IconData error = OMIcons.errorOutline;
   static const IconData location = OMIcons.place;
   static const IconData shooting = OMIcons.camera;
   static const IconData removableStorage = OMIcons.sdStorage;
