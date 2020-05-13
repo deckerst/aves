@@ -1,3 +1,4 @@
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -107,7 +108,11 @@ class _HomePageState extends State<HomePage> {
             return SingleFullscreenPage(entry: _sharedEntry);
           }
           if (_mediaStore != null) {
-            return CollectionPage(_mediaStore.collection);
+            return CollectionPage(CollectionLens(
+              source: _mediaStore.source,
+              groupFactor: settings.collectionGroupFactor,
+              sortFactor: settings.collectionSortFactor,
+            ));
           }
           return const SizedBox.shrink();
         });

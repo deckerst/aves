@@ -1,3 +1,4 @@
+import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -155,6 +156,19 @@ class CollectionSource {
       testName = separator + parts.skip(parts.length - ++partCount).join(separator);
     } while (otherAlbums.any((item) => item.endsWith(testName)));
     return parts.skip(parts.length - partCount).join(separator);
+  }
+
+  Map<String, ImageEntry> getTagEntries() {
+    final collection = CollectionLens(
+      source: this,
+      groupFactor: GroupFactor.month,
+      sortFactor: SortFactor.date,
+    );
+    final entries = collection.sortedEntries;
+    return Map.fromEntries(sortedTags.map((tag) => MapEntry(
+          tag,
+          entries.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),
+        )));
   }
 }
 

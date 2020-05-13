@@ -7,8 +7,11 @@ typedef FilterCallback = void Function(CollectionFilter filter);
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;
+  final bool showLeading;
+  final Decoration decoration;
   final FilterCallback onPressed;
 
+  static final BorderRadius borderRadius = BorderRadius.circular(32);
   static const double buttonBorderWidth = 2;
   static const double maxChipWidth = 160;
   static const double iconSize = 20;
@@ -18,6 +21,8 @@ class AvesFilterChip extends StatefulWidget {
     Key key,
     this.filter,
     this.removable = false,
+    this.showLeading = true,
+    this.decoration,
     @required this.onPressed,
   }) : super(key: key);
 
@@ -48,10 +53,10 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
-    final leading = filter.iconBuilder(context, AvesFilterChip.iconSize);
+    final leading = widget.showLeading ? filter.iconBuilder(context, AvesFilterChip.iconSize) : null;
     final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
-    final child = Row(
+    Widget child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         if (leading != null) ...[
@@ -74,13 +79,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     );
 
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(42),
+      borderRadius: AvesFilterChip.borderRadius,
     );
 
     return ButtonTheme(
       minWidth: 0,
-      child: ConstrainedBox(
+      child: Container(
         constraints: const BoxConstraints(maxWidth: AvesFilterChip.maxChipWidth),
+        decoration: widget.decoration,
         child: Tooltip(
           message: filter.tooltip,
           child: FutureBuilder(

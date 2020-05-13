@@ -16,6 +16,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
+import 'package:aves/widgets/tags_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,7 @@ class CollectionDrawer extends StatefulWidget {
 }
 
 class _CollectionDrawerState extends State<CollectionDrawer> {
-  bool _albumsExpanded = false, _placesExpanded = false, _countriesExpanded = false, _tagsExpanded = false;
+  bool _albumsExpanded = false, _placesExpanded = false, _countriesExpanded = false;
 
   CollectionSource get source => widget.source;
 
@@ -324,25 +325,57 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           return SafeArea(
             top: false,
             bottom: false,
-            child: ExpansionTile(
+            child: ListTile(
               leading: const Icon(AIcons.tag),
-              title: Row(
-                children: [
-                  const Text('Tags'),
-                  const Spacer(),
-                  Text(
-                    '${tags.length}',
-                    style: TextStyle(
-                      color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+              title: const Text('Tags'),
+              trailing: Text(
+                '${tags.length}',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(.6),
+                ),
+              ),
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TagsPage(
+                      source: source,
                     ),
                   ),
-                ],
-              ),
-              onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
-              children: tags.map(_buildTagEntry).toList(),
+                  (route) => false,
+                );
+              },
             ),
           );
         });
+
+//    return StreamBuilder(
+//        stream: source.eventBus.on<TagsChangedEvent>(),
+//        builder: (context, snapshot) {
+//          final tags = source.sortedTags;
+//          if (tags.isEmpty) return const SizedBox.shrink();
+//          return SafeArea(
+//            top: false,
+//            bottom: false,
+//            child: ExpansionTile(
+//              leading: const Icon(AIcons.tag),
+//              title: Row(
+//                children: [
+//                  const Text('Tags'),
+//                  const Spacer(),
+//                  Text(
+//                    '${tags.length}',
+//                    style: TextStyle(
+//                      color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//              onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
+//              children: tags.map(_buildTagEntry).toList(),
+//            ),
+//          );
+//        });
   }
 
   void _goToDebug(BuildContext context) {
