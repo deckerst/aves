@@ -1,6 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
-import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/constants.dart';
@@ -12,15 +12,22 @@ import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TagsPage extends StatelessWidget {
+class FilterGridPage extends StatelessWidget {
   final CollectionSource source;
-  final Map<String, ImageEntry> tagEntries;
+  final String title;
+  final Map<String, ImageEntry> filterEntries;
+  final CollectionFilter Function(String key) filterBuilder;
+  final bool showFilterIcon;
 
-  TagsPage({
+  const FilterGridPage({
     @required this.source,
-  }) : tagEntries = source.getTagEntries();
+    @required this.title,
+    @required this.filterEntries,
+    @required this.filterBuilder,
+    @required this.showFilterIcon,
+  });
 
-  List<String> get tags => source.sortedTags;
+  List<String> get filterKeys => filterEntries.keys.toList();
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +36,8 @@ class TagsPage extends StatelessWidget {
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
-              const SliverAppBar(
-                title: Text('Tags'),
+              SliverAppBar(
+                title: Text(title),
                 floating: true,
               ),
               SliverPadding(
@@ -38,8 +45,8 @@ class TagsPage extends StatelessWidget {
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, i) {
-                      final tag = tags[i];
-                      final entry = tagEntries[tag];
+                      final key = filterKeys[i];
+                      final entry = filterEntries[key];
                       Decoration decoration;
                       if (entry != null && !entry.isSvg) {
                         decoration = BoxDecoration(
@@ -55,10 +62,10 @@ class TagsPage extends StatelessWidget {
                         );
                       }
                       return AvesFilterChip(
-                        filter: TagFilter(tag),
-                        showLeading: false,
+                        filter: filterBuilder(key),
+                        showLeading: showFilterIcon,
                         decoration: decoration,
-                        onPressed: (filter) => Navigator.push(
+                        onPressed: (filter) => Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                             builder: (context) => CollectionPage(CollectionLens(
@@ -68,10 +75,11 @@ class TagsPage extends StatelessWidget {
                               sortFactor: settings.collectionSortFactor,
                             )),
                           ),
+                          (route) => false,
                         ),
                       );
                     },
-                    childCount: tags.length,
+                    childCount: filterKeys.length,
                   ),
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 120,

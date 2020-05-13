@@ -158,13 +158,27 @@ class CollectionSource {
     return parts.skip(parts.length - partCount).join(separator);
   }
 
+  List<ImageEntry> get _sortedEntriesForFilterList => CollectionLens(
+        source: this,
+        groupFactor: GroupFactor.month,
+        sortFactor: SortFactor.date,
+      ).sortedEntries;
+
+  Map<String, ImageEntry> getCountryEntries() {
+    final locatedEntries = _sortedEntriesForFilterList.where((entry) => entry.isLocated);
+    return Map.fromEntries(sortedCountries.map((countryNameAndCode) {
+      final split = countryNameAndCode.split(';');
+      ImageEntry entry;
+      if (split.length > 1) {
+        final countryCode = split[1];
+        entry = locatedEntries.firstWhere((entry) => entry.addressDetails.countryCode == countryCode, orElse: () => null);
+      }
+      return MapEntry(countryNameAndCode, entry);
+    }));
+  }
+
   Map<String, ImageEntry> getTagEntries() {
-    final collection = CollectionLens(
-      source: this,
-      groupFactor: GroupFactor.month,
-      sortFactor: SortFactor.date,
-    );
-    final entries = collection.sortedEntries;
+    final entries = _sortedEntriesForFilterList;
     return Map.fromEntries(sortedTags.map((tag) => MapEntry(
           tag,
           entries.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),

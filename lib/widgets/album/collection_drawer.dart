@@ -16,7 +16,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
-import 'package:aves/widgets/tags_page.dart';
+import 'package:aves/widgets/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,7 @@ class CollectionDrawer extends StatefulWidget {
 }
 
 class _CollectionDrawerState extends State<CollectionDrawer> {
-  bool _albumsExpanded = false, _placesExpanded = false, _countriesExpanded = false;
+  bool _albumsExpanded = false;
 
   CollectionSource get source => widget.source;
 
@@ -96,7 +96,6 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
       _buildSpecialAlbumSection(),
       _buildRegularAlbumSection(),
       _buildCountrySection(),
-      _buildPlaceSection(),
       _buildTagSection(),
       if (kDebugMode) ...[
         const Divider(),
@@ -180,17 +179,6 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
     );
   }
 
-  Widget _buildTagEntry(String tag) => _FilteredCollectionNavTile(
-        source: source,
-        leading: Icon(
-          AIcons.tag,
-          color: stringToColor(tag),
-        ),
-        title: tag,
-        dense: true,
-        filter: TagFilter(tag),
-      );
-
   Widget _buildSpecialAlbumSection() {
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
@@ -257,125 +245,79 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
   }
 
   Widget _buildCountrySection() {
-    return StreamBuilder(
-        stream: source.eventBus.on<LocationsChangedEvent>(),
-        builder: (context, snapshot) {
-          final countries = source.sortedCountries;
-          if (countries.isEmpty) return const SizedBox.shrink();
-          return SafeArea(
-            top: false,
-            bottom: false,
-            child: ExpansionTile(
-              leading: const Icon(AIcons.location),
-              title: Row(
-                children: [
-                  const Text('Countries'),
-                  const Spacer(),
-                  Text(
-                    '${countries.length}',
-                    style: TextStyle(
-                      color: (_countriesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                    ),
-                  ),
-                ],
-              ),
-              onExpansionChanged: (expanded) => setState(() => _countriesExpanded = expanded),
-              children: countries.map((s) => _buildLocationEntry(LocationLevel.country, s)).toList(),
-            ),
-          );
-        });
-  }
-
-  Widget _buildPlaceSection() {
-    return StreamBuilder(
-        stream: source.eventBus.on<LocationsChangedEvent>(),
-        builder: (context, snapshot) {
-          final places = source.sortedPlaces;
-          if (places.isEmpty) return const SizedBox.shrink();
-          return SafeArea(
-            top: false,
-            bottom: false,
-            child: ExpansionTile(
-              leading: const Icon(AIcons.location),
-              title: Row(
-                children: [
-                  const Text('Places'),
-                  const Spacer(),
-                  Text(
-                    '${places.length}',
-                    style: TextStyle(
-                      color: (_placesExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                    ),
-                  ),
-                ],
-              ),
-              onExpansionChanged: (expanded) => setState(() => _placesExpanded = expanded),
-              children: places.map((s) => _buildLocationEntry(LocationLevel.place, s)).toList(),
-            ),
-          );
-        });
-  }
-
-  Widget _buildTagSection() {
-    return StreamBuilder(
-        stream: source.eventBus.on<TagsChangedEvent>(),
-        builder: (context, snapshot) {
-          final tags = source.sortedTags;
-          if (tags.isEmpty) return const SizedBox.shrink();
-          return SafeArea(
-            top: false,
-            bottom: false,
-            child: ListTile(
-              leading: const Icon(AIcons.tag),
-              title: const Text('Tags'),
-              trailing: Text(
-                '${tags.length}',
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: ListTile(
+        leading: const Icon(AIcons.location),
+        title: const Text('Countries'),
+        trailing: StreamBuilder(
+            stream: source.eventBus.on<LocationsChangedEvent>(),
+            builder: (context, snapshot) {
+              return Text(
+                '${source.sortedCountries.length}',
                 style: TextStyle(
                   color: Colors.white.withOpacity(.6),
                 ),
-              ),
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TagsPage(
-                      source: source,
-                    ),
-                  ),
-                  (route) => false,
-                );
-              },
-            ),
-          );
-        });
+              );
+            }),
+        onTap: () => _goToCountries(context),
+      ),
+    );
+  }
 
-//    return StreamBuilder(
-//        stream: source.eventBus.on<TagsChangedEvent>(),
-//        builder: (context, snapshot) {
-//          final tags = source.sortedTags;
-//          if (tags.isEmpty) return const SizedBox.shrink();
-//          return SafeArea(
-//            top: false,
-//            bottom: false,
-//            child: ExpansionTile(
-//              leading: const Icon(AIcons.tag),
-//              title: Row(
-//                children: [
-//                  const Text('Tags'),
-//                  const Spacer(),
-//                  Text(
-//                    '${tags.length}',
-//                    style: TextStyle(
-//                      color: (_tagsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-//                    ),
-//                  ),
-//                ],
-//              ),
-//              onExpansionChanged: (expanded) => setState(() => _tagsExpanded = expanded),
-//              children: tags.map(_buildTagEntry).toList(),
-//            ),
-//          );
-//        });
+  Widget _buildTagSection() {
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: ListTile(
+        leading: const Icon(AIcons.tag),
+        title: const Text('Tags'),
+        trailing: StreamBuilder(
+            stream: source.eventBus.on<TagsChangedEvent>(),
+            builder: (context, snapshot) {
+              return Text(
+                '${source.sortedTags.length}',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(.6),
+                ),
+              );
+            }),
+        onTap: () => _goToTags(context),
+      ),
+    );
+  }
+
+  void _goToCountries(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FilterGridPage(
+          source: source,
+          title: 'Countries',
+          filterEntries: source.getCountryEntries(),
+          filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
+          showFilterIcon: true,
+        ),
+      ),
+    );
+  }
+
+  void _goToTags(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FilterGridPage(
+          source: source,
+          title: 'Tags',
+          filterEntries: source.getTagEntries(),
+          filterBuilder: (s) => TagFilter(s),
+          showFilterIcon: false,
+        ),
+      ),
+    );
   }
 
   void _goToDebug(BuildContext context) {
