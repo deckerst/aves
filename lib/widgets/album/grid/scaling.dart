@@ -116,9 +116,9 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final entry = _metadata.entry;
             _scrollToEntry(entry);
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              widget.onScaled?.call(entry);
-            });
+            // warning: posting `onScaled` in the next frame with `addPostFrameCallback`
+            // would trigger only when the scrollable offset actually changes
+            Future.delayed(const Duration(milliseconds: 300)).then((_) => widget.onScaled?.call(entry));
             _applyingScale = false;
           });
         }
