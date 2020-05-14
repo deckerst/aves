@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import app.loup.streams_channel.StreamsChannel;
 import deckers.thibault.aves.channelhandlers.AppAdapterHandler;
@@ -21,11 +22,10 @@ import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.Utils;
-import io.flutter.app.FlutterActivity;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugins.GeneratedPluginRegistrant;
-import io.flutter.view.FlutterView;
 
 public class MainActivity extends FlutterActivity {
     private static final String LOG_TAG = Utils.createLogTag(MainActivity.class);
@@ -37,13 +37,12 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GeneratedPluginRegistrant.registerWith(this);
 
         handleIntent(getIntent());
 
         MediaStoreStreamHandler mediaStoreStreamHandler = new MediaStoreStreamHandler();
 
-        FlutterView messenger = getFlutterView();
+        BinaryMessenger messenger = Objects.requireNonNull(getFlutterEngine()).getDartExecutor().getBinaryMessenger();
         new MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(new StorageHandler(this));
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
         new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this, mediaStoreStreamHandler));
