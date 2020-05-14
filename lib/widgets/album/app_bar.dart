@@ -292,7 +292,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Future<void> _goToSearch() async {
     final filter = await showSearch(
       context: context,
-      delegate: ImageSearchDelegate(collection),
+      delegate: ImageSearchDelegate(collection.source),
     );
     collection.addFilter(filter);
   }

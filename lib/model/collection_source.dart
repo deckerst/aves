@@ -143,7 +143,7 @@ class CollectionSource {
   }
 
   void removeEntries(Iterable<ImageEntry> entries) async {
-    _rawEntries.remove(entries);
+    _rawEntries.removeWhere(entries.contains);
     eventBus.fire(EntryRemovedEvent(entries));
   }
 

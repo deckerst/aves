@@ -1,4 +1,3 @@
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -13,10 +12,10 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 
 class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
-  final CollectionLens collection;
+  final CollectionSource source;
   final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
 
-  ImageSearchDelegate(this.collection);
+  ImageSearchDelegate(this.source);
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -52,7 +51,6 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final source = collection.source;
     final upQuery = query.trim().toUpperCase();
     final containQuery = (String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
