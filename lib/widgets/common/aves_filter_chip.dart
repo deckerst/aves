@@ -57,7 +57,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final leading = widget.showLeading ? filter.iconBuilder(context, AvesFilterChip.iconSize) : null;
     final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
-    Widget child = Padding(
+    Widget content = Padding(
       padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2),
       child: Row(
         mainAxisSize: widget.decoration != null ? MainAxisSize.max : MainAxisSize.min,
@@ -84,10 +84,10 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     );
 
     if (widget.decoration != null) {
-      child = Container(
+      content = Container(
         constraints: BoxConstraints(minHeight: DefaultTextStyle.of(context).style.fontSize * 2),
         color: Colors.black54,
-        child: child,
+        child: content,
       );
     }
 
@@ -95,7 +95,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       borderRadius: AvesFilterChip.borderRadius,
     );
 
-    child = ButtonTheme(
+    final button = ButtonTheme(
       minWidth: 0,
       child: Container(
         constraints: const BoxConstraints(
@@ -116,7 +116,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                 ),
                 padding: EdgeInsets.zero,
                 shape: shape,
-                child: child,
+                child: content,
               );
             },
           ),
@@ -124,15 +124,15 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ),
     );
 
-    return child;
+    return button;
     // TODO TLAD how to lerp between chip and grid tile
 //    return Hero(
 //      tag: filter,
 //      flightShuttleBuilder: (flight, animation, direction, fromHeroContext, toHeroContext) {
 //        final toHero = toHeroContext.widget as Hero;
-//        return Center(child: toHero.child);
+//        return Center(content: toHero.content);
 //      },
-//      child: child,
+//      content: button,
 //    );
   }
 }
