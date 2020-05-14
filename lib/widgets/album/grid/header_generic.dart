@@ -134,14 +134,14 @@ class TitleSectionHeader extends StatelessWidget {
               alignment: widgetSpanAlignment,
               child: SectionSelectableLeading(
                 sectionKey: sectionKey,
-                browsingBuilder: (context) => leading != null
-                    ? Container(
-                        padding: leadingPadding,
-                        width: leadingDimension,
-                        height: leadingDimension,
-                        child: leading,
-                      )
-                    : const SizedBox(height: leadingDimension),
+                browsingBuilder: leading != null
+                    ? (context) => Container(
+                          padding: leadingPadding,
+                          width: leadingDimension,
+                          height: leadingDimension,
+                          child: leading,
+                        )
+                    : null,
               ),
             ),
             TextSpan(
@@ -173,6 +173,8 @@ class SectionSelectableLeading extends StatelessWidget {
     @required this.browsingBuilder,
   }) : super(key: key);
 
+  static const leadingDimension = TitleSectionHeader.leadingDimension;
+
   @override
   Widget build(BuildContext context) {
     final collection = Provider.of<CollectionLens>(context);
@@ -200,8 +202,8 @@ class SectionSelectableLeading extends StatelessWidget {
                     },
                     tooltip: selected ? 'Deselect section' : 'Select section',
                     constraints: const BoxConstraints(
-                      minHeight: TitleSectionHeader.leadingDimension,
-                      minWidth: TitleSectionHeader.leadingDimension,
+                      minHeight: leadingDimension,
+                      minWidth: leadingDimension,
                     ),
                   );
                   return AnimatedSwitcher(
@@ -216,19 +218,27 @@ class SectionSelectableLeading extends StatelessWidget {
                   );
                 },
               )
-            : browsingBuilder(context);
+            : browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
         return AnimatedSwitcher(
           duration: Duration(milliseconds: (200 * timeDilation).toInt()),
           switchInCurve: Curves.easeInOut,
           switchOutCurve: Curves.easeInOut,
-          transitionBuilder: (child, animation) => SizeTransition(
-            axis: Axis.horizontal,
-            child: ScaleTransition(
+          transitionBuilder: (child, animation) {
+            Widget transition = ScaleTransition(
               child: child,
               scale: animation,
-            ),
-            sizeFactor: animation,
-          ),
+            );
+            if (browsingBuilder == null) {
+              // when switching with a header that has no icon,
+              // we also transition the size for a smooth push to the text
+              transition = SizeTransition(
+                axis: Axis.horizontal,
+                child: transition,
+                sizeFactor: animation,
+              );
+            }
+            return transition;
+          },
           child: child,
         );
       },
