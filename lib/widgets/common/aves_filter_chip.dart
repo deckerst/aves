@@ -13,6 +13,7 @@ class AvesFilterChip extends StatefulWidget {
 
   static final BorderRadius borderRadius = BorderRadius.circular(32);
   static const double buttonBorderWidth = 2;
+  static const double minChipWidth = 80;
   static const double maxChipWidth = 160;
   static const double iconSize = 20;
   static const double padding = 6;
@@ -56,36 +57,51 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final leading = widget.showLeading ? filter.iconBuilder(context, AvesFilterChip.iconSize) : null;
     final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
-    Widget child = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (leading != null) ...[
-          leading,
-          const SizedBox(width: AvesFilterChip.padding),
-        ],
-        Flexible(
-          child: Text(
-            filter.label,
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            maxLines: 1,
+    Widget child = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2),
+      child: Row(
+        mainAxisSize: widget.decoration != null ? MainAxisSize.max : MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (leading != null) ...[
+            leading,
+            const SizedBox(width: AvesFilterChip.padding),
+          ],
+          Flexible(
+            child: Text(
+              filter.label,
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+            ),
           ),
-        ),
-        if (trailing != null) ...[
-          const SizedBox(width: AvesFilterChip.padding),
-          trailing,
+          if (trailing != null) ...[
+            const SizedBox(width: AvesFilterChip.padding),
+            trailing,
+          ],
         ],
-      ],
+      ),
     );
+
+    if (widget.decoration != null) {
+      child = Container(
+        constraints: BoxConstraints(minHeight: DefaultTextStyle.of(context).style.fontSize * 2),
+        color: Colors.black54,
+        child: child,
+      );
+    }
 
     final shape = RoundedRectangleBorder(
       borderRadius: AvesFilterChip.borderRadius,
     );
 
-    return ButtonTheme(
+    child = ButtonTheme(
       minWidth: 0,
       child: Container(
-        constraints: const BoxConstraints(maxWidth: AvesFilterChip.maxChipWidth),
+        constraints: const BoxConstraints(
+          minWidth: AvesFilterChip.minChipWidth,
+          maxWidth: AvesFilterChip.maxChipWidth,
+        ),
         decoration: widget.decoration,
         child: Tooltip(
           message: filter.tooltip,
@@ -98,7 +114,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                   color: snapshot.hasData ? snapshot.data : Colors.transparent,
                   width: AvesFilterChip.buttonBorderWidth,
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2),
+                padding: EdgeInsets.zero,
                 shape: shape,
                 child: child,
               );
@@ -107,5 +123,16 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         ),
       ),
     );
+
+    return child;
+    // TODO TLAD how to lerp between chip and grid tile
+//    return Hero(
+//      tag: filter,
+//      flightShuttleBuilder: (flight, animation, direction, fromHeroContext, toHeroContext) {
+//        final toHero = toHeroContext.widget as Hero;
+//        return Center(child: toHero.child);
+//      },
+//      child: child,
+//    );
   }
 }

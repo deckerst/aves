@@ -55,7 +55,6 @@ class FilterGridPage extends StatelessWidget {
                               entry: entry,
                               extent: Constants.thumbnailCacheExtent,
                             ),
-                            colorFilter: ColorFilter.mode(Colors.black26, BlendMode.dstATop),
                             fit: BoxFit.cover,
                           ),
                           borderRadius: AvesFilterChip.borderRadius,
