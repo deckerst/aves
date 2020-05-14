@@ -137,7 +137,8 @@ public class ImageEntry {
     // expects entry with: uri/path, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
     private void fillByMediaMetadataRetriever(Context context) {
-        try (MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri, path)) {
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri, path);
+        try {
             String width = null, height = null, rotation = null, durationMillis = null;
             if (isImage()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -177,6 +178,9 @@ public class ImageEntry {
             }
         } catch (Exception e) {
             // ignore
+        } finally {
+            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+            retriever.release();
         }
     }
 

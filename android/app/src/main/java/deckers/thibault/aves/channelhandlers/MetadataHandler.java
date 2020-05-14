@@ -153,7 +153,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         // unnamed fallback directory
         metadataMap.put("", dirMap);
 
-        try (MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri), path)) {
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri), path);
+        try {
             for (Map.Entry<Integer, String> kv : Constants.MEDIA_METADATA_KEYS.entrySet()) {
                 Integer key = kv.getKey();
                 String value = retriever.extractMetadata(key);
@@ -172,6 +173,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             result.success(metadataMap);
         } catch (Exception e) {
             result.error("getAllVideoMetadataFallback-exception", "failed to get metadata for uri=" + uri + ", path=" + path, e.getMessage());
+        } finally {
+            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+            retriever.release();
         }
     }
 
@@ -240,7 +244,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
 
             if (isVideo(mimeType)) {
-                try (MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri), path)) {
+                MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri), path);
+                try {
                     String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
                     String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
                     String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
@@ -276,6 +281,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     }
                 } catch (Exception e) {
                     result.error("getCatalogMetadata-exception", "failed to get video metadata for uri=" + uri + ", path=" + path, e.getMessage());
+                } finally {
+                    // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                    retriever.release();
                 }
             }
             result.success(metadataMap);
