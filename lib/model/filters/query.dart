@@ -1,6 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class QueryFilter extends CollectionFilter {
@@ -9,9 +11,10 @@ class QueryFilter extends CollectionFilter {
   static final exactRegex = RegExp('^"(.*)"\$');
 
   final String query;
+  final bool colorful;
   bool Function(ImageEntry) _filter;
 
-  QueryFilter(this.query) {
+  QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
 
     // allow NOT queries starting with `-`
@@ -40,6 +43,9 @@ class QueryFilter extends CollectionFilter {
 
   @override
   Widget iconBuilder(context, size) => Icon(AIcons.text, size: size);
+
+  @override
+  Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(Colors.white);
 
   @override
   String get typeKey => type;

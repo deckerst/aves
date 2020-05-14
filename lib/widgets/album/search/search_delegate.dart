@@ -64,12 +64,13 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
                 _buildFilterRow(
                   context: context,
                   filters: [
+                    _buildQueryFilter(false),
                     FavouriteFilter(),
                     MimeFilter(MimeTypes.ANY_IMAGE),
                     MimeFilter(MimeTypes.ANY_VIDEO),
                     MimeFilter(MimeFilter.animated),
                     MimeFilter(MimeTypes.SVG),
-                  ].where((f) => containQuery(f.label)),
+                  ].where((f) => f != null && containQuery(f.label)),
                 ),
                 StreamBuilder(
                     stream: source.eventBus.on<AlbumsChangedEvent>(),
@@ -118,19 +119,23 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       title: title,
       filters: filters,
       expandedNotifier: expandedSectionNotifier,
-      onPressed: (filter) => close(context, filter),
+      onPressed: (filter) => close(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    final cleanQuery = query.trim();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // `buildResults` is called in the build phase,
       // so we post the call that will filter the collection
       // and possibly trigger a rebuild here
-      close(context, cleanQuery.isNotEmpty ? QueryFilter(cleanQuery) : null);
+      close(context, _buildQueryFilter(true));
     });
     return const SizedBox.shrink();
+  }
+
+  QueryFilter _buildQueryFilter(bool colorful) {
+    final cleanQuery = query.trim();
+    return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, colorful: colorful) : null;
   }
 }
