@@ -115,36 +115,41 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
             builder: (context, snapshot) {
               // do not use stream snapshot because it is obsolete when switching between videos
               final status = controller.ijkStatus;
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: status == IjkStatus.error
-                    ? [
-                        OverlayButton(
-                          scale: scale,
-                          child: IconButton(
-                            icon: const Icon(AIcons.openInNew),
-                            onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
-                            tooltip: 'Open',
-                          ),
-                        ),
-                      ]
-                    : [
-                        Expanded(
-                          child: _buildProgressBar(),
-                        ),
-                        const SizedBox(width: 8),
-                        OverlayButton(
-                          scale: scale,
-                          child: IconButton(
-                            icon: AnimatedIcon(
-                              icon: AnimatedIcons.play_pause,
-                              progress: _playPauseAnimation,
+              return TooltipTheme(
+                data: TooltipTheme.of(context).copyWith(
+                  preferBelow: false,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: status == IjkStatus.error
+                      ? [
+                          OverlayButton(
+                            scale: scale,
+                            child: IconButton(
+                              icon: const Icon(AIcons.openInNew),
+                              onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
+                              tooltip: 'Open',
                             ),
-                            onPressed: _playPause,
-                            tooltip: isPlaying ? 'Pause' : 'Play',
                           ),
-                        ),
-                      ],
+                        ]
+                      : [
+                          Expanded(
+                            child: _buildProgressBar(),
+                          ),
+                          const SizedBox(width: 8),
+                          OverlayButton(
+                            scale: scale,
+                            child: IconButton(
+                              icon: AnimatedIcon(
+                                icon: AnimatedIcons.play_pause,
+                                progress: _playPauseAnimation,
+                              ),
+                              onPressed: _playPause,
+                              tooltip: isPlaying ? 'Pause' : 'Play',
+                            ),
+                          ),
+                        ],
+                ),
               );
             }),
       ),

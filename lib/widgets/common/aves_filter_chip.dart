@@ -105,6 +105,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         decoration: widget.decoration,
         child: Tooltip(
           message: filter.tooltip,
+          preferBelow: false,
           child: FutureBuilder(
             future: _colorFuture,
             builder: (context, AsyncSnapshot<Color> snapshot) {

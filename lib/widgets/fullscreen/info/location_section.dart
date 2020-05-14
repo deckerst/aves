@@ -207,23 +207,28 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
           ),
         ),
         const SizedBox(width: 8),
-        Column(children: [
-          IconButton(
-            icon: const Icon(AIcons.zoomIn),
-            onPressed: _controller == null ? null : () => _zoomBy(1),
-            tooltip: 'Zoom in',
+        TooltipTheme(
+          data: TooltipTheme.of(context).copyWith(
+            preferBelow: false,
           ),
-          IconButton(
-            icon: const Icon(AIcons.zoomOut),
-            onPressed: _controller == null ? null : () => _zoomBy(-1),
-            tooltip: 'Zoom out',
-          ),
-          IconButton(
-            icon: const Icon(AIcons.openInNew),
-            onPressed: () => AndroidAppService.openMap(widget.geoUri),
-            tooltip: 'Show on map...',
-          ),
-        ])
+          child: Column(children: [
+            IconButton(
+              icon: const Icon(AIcons.zoomIn),
+              onPressed: _controller == null ? null : () => _zoomBy(1),
+              tooltip: 'Zoom in',
+            ),
+            IconButton(
+              icon: const Icon(AIcons.zoomOut),
+              onPressed: _controller == null ? null : () => _zoomBy(-1),
+              tooltip: 'Zoom out',
+            ),
+            IconButton(
+              icon: const Icon(AIcons.openInNew),
+              onPressed: () => AndroidAppService.openMap(widget.geoUri),
+              tooltip: 'Show on map...',
+            ),
+          ]),
+        )
       ],
     );
   }

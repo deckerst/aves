@@ -187,23 +187,28 @@ class SectionSelectableLeading extends StatelessWidget {
                 builder: (context, child) {
                   final sectionEntries = collection.sections[sectionKey];
                   final selected = collection.isSelected(sectionEntries);
-                  final child = IconButton(
-                    key: ValueKey(selected),
-                    iconSize: 26,
-                    padding: const EdgeInsets.only(top: 1),
-                    alignment: Alignment.topLeft,
-                    icon: Icon(selected ? AIcons.selected : AIcons.unselected),
-                    onPressed: () {
-                      if (selected) {
-                        collection.removeFromSelection(sectionEntries);
-                      } else {
-                        collection.addToSelection(sectionEntries);
-                      }
-                    },
-                    tooltip: selected ? 'Deselect section' : 'Select section',
-                    constraints: const BoxConstraints(
-                      minHeight: leadingDimension,
-                      minWidth: leadingDimension,
+                  final child = TooltipTheme(
+                    data: TooltipTheme.of(context).copyWith(
+                      preferBelow: false,
+                    ),
+                    child: IconButton(
+                      key: ValueKey(selected),
+                      iconSize: 26,
+                      padding: const EdgeInsets.only(top: 1),
+                      alignment: Alignment.topLeft,
+                      icon: Icon(selected ? AIcons.selected : AIcons.unselected),
+                      onPressed: () {
+                        if (selected) {
+                          collection.removeFromSelection(sectionEntries);
+                        } else {
+                          collection.addToSelection(sectionEntries);
+                        }
+                      },
+                      tooltip: selected ? 'Deselect section' : 'Select section',
+                      constraints: const BoxConstraints(
+                        minHeight: leadingDimension,
+                        minWidth: leadingDimension,
+                      ),
                     ),
                   );
                   return AnimatedSwitcher(

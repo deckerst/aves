@@ -29,6 +29,9 @@ class AvesApp extends StatelessWidget {
         brightness: Brightness.dark,
         accentColor: Colors.indigoAccent,
         scaffoldBackgroundColor: Colors.grey[900],
+        tooltipTheme: const TooltipThemeData(
+          verticalOffset: 32,
+        ),
         appBarTheme: const AppBarTheme(
           textTheme: TextTheme(
             headline6: TextStyle(
