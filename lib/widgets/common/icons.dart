@@ -158,14 +158,14 @@ class IconUtils {
     double size = 24,
   }) {
     switch (androidFileUtils.getAlbumType(album)) {
-      case AlbumType.Camera:
+      case AlbumType.camera:
         return Icon(AIcons.cameraAlbum, size: size);
-      case AlbumType.Screenshots:
-      case AlbumType.ScreenRecordings:
+      case AlbumType.screenshots:
+      case AlbumType.screenRecordings:
         return Icon(AIcons.screenshotAlbum, size: size);
-      case AlbumType.Download:
+      case AlbumType.download:
         return Icon(AIcons.downloadAlbum, size: size);
-      case AlbumType.App:
+      case AlbumType.app:
         return Image(
           image: AppIconImage(
             packageName: androidFileUtils.getAlbumAppPackageName(album),
@@ -174,7 +174,7 @@ class IconUtils {
           width: size,
           height: size,
         );
-      case AlbumType.Default:
+      case AlbumType.regular:
       default:
         return null;
     }

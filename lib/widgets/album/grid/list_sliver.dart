@@ -1,5 +1,7 @@
+import 'package:aves/main.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/album/grid/list_known_extent.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/thumbnail/decorated.dart';
@@ -52,14 +54,18 @@ class GridThumbnail extends StatelessWidget {
     return GestureDetector(
       key: ValueKey(entry.uri),
       onTap: () {
-        if (collection.isBrowsing) {
-          _goToFullscreen(context);
-        } else {
-          collection.toggleSelection(entry);
+        if (AvesApp.mode == AppMode.main) {
+          if (collection.isBrowsing) {
+            _goToFullscreen(context);
+          } else if (collection.isSelecting) {
+            collection.toggleSelection(entry);
+          }
+        } else if (AvesApp.mode == AppMode.pick) {
+          ViewerService.pick(entry.uri);
         }
       },
       onLongPress: () {
-        if (collection.isBrowsing) {
+        if (AvesApp.mode == AppMode.main && collection.isBrowsing) {
           collection.toggleSelection(entry);
         }
       },

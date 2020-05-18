@@ -32,7 +32,7 @@ public class MainActivity extends FlutterActivity {
 
     public static final String VIEWER_CHANNEL = "deckers.thibault/aves/viewer";
 
-    private Map<String, String> sharedEntryMap;
+    private Map<String, String> intentDataMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,23 +60,47 @@ public class MainActivity extends FlutterActivity {
 
         new MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler(
                 (call, result) -> {
-                    if (call.method.contentEquals("getSharedEntry")) {
-                        result.success(sharedEntryMap);
-                        sharedEntryMap = null;
+                    if (call.method.contentEquals("getIntentData")) {
+                        result.success(intentDataMap);
+                        intentDataMap = null;
+                    } else if (call.method.contentEquals("pick")) {
+                        result.success(intentDataMap);
+                        intentDataMap = null;
+                        String resultUri = call.argument("uri");
+                        if (resultUri != null) {
+                            Intent data = new Intent();
+                            data.setData(Uri.parse(resultUri));
+                            setResult(RESULT_OK, data);
+                            finish();
+                        } else {
+                            setResult(RESULT_CANCELED);
+                            finish();
+                        }
                     }
                 });
     }
 
     private void handleIntent(Intent intent) {
         Log.i(LOG_TAG, "handleIntent intent=" + intent);
-        if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction())) {
-            Uri uri = intent.getData();
-            String mimeType = intent.getType();
-            if (uri != null && mimeType != null) {
-                sharedEntryMap = new HashMap<>();
-                sharedEntryMap.put("uri", uri.toString());
-                sharedEntryMap.put("mimeType", mimeType);
-            }
+        if (intent == null) return;
+        String action = intent.getAction();
+        if (action == null) return;
+        switch (action) {
+            case Intent.ACTION_VIEW:
+                Uri uri = intent.getData();
+                String mimeType = intent.getType();
+                if (uri != null && mimeType != null) {
+                    intentDataMap = new HashMap<>();
+                    intentDataMap.put("action", "view");
+                    intentDataMap.put("uri", uri.toString());
+                    intentDataMap.put("mimeType", mimeType);
+                }
+                break;
+            case Intent.ACTION_GET_CONTENT:
+            case Intent.ACTION_PICK:
+                intentDataMap = new HashMap<>();
+                intentDataMap.put("action", "pick");
+                break;
         }
     }
 

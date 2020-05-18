@@ -185,7 +185,7 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
         builder: (context, snapshot) {
           final specialAlbums = source.sortedAlbums.where((album) {
             final type = androidFileUtils.getAlbumType(album);
-            return type != AlbumType.Default && type != AlbumType.App;
+            return type != AlbumType.regular && type != AlbumType.app;
           });
 
           if (specialAlbums.isEmpty) return const SizedBox.shrink();
@@ -205,10 +205,10 @@ class _CollectionDrawerState extends State<CollectionDrawer> {
           final regularAlbums = <String>[], appAlbums = <String>[];
           for (var album in source.sortedAlbums) {
             switch (androidFileUtils.getAlbumType(album)) {
-              case AlbumType.Default:
+              case AlbumType.regular:
                 regularAlbums.add(album);
                 break;
-              case AlbumType.App:
+              case AlbumType.app:
                 appAlbums.add(album);
                 break;
               default:

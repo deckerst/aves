@@ -20,7 +20,11 @@ void main() {
   runApp(AvesApp());
 }
 
+enum AppMode { main, pick, view }
+
 class AvesApp extends StatelessWidget {
+  static AppMode mode = AppMode.main;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,7 +60,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   MediaStoreSource _mediaStore;
-  ImageEntry _sharedEntry;
+  ImageEntry _viewerEntry;
   Future<void> _appSetup;
 
   @override
@@ -87,16 +91,34 @@ class _HomePageState extends State<HomePage> {
 
     await settings.init(); // <20ms
 
-    final sharedExtra = await ViewerService.getSharedEntry();
-    if (sharedExtra != null) {
-      _sharedEntry = await ImageFileService.getImageEntry(sharedExtra['uri'], sharedExtra['mimeType']);
-      // cataloging is essential for geolocation and video rotation
-      await _sharedEntry.catalog();
-      unawaited(_sharedEntry.locate());
-    } else {
+    final intentData = await ViewerService.getIntentData();
+    if (intentData != null) {
+      final action = intentData['action'];
+      switch (action) {
+        case 'view':
+          AvesApp.mode = AppMode.view;
+          await _initViewerEntry(
+            uri: intentData['uri'],
+            mimeType: intentData['mimeType'],
+          );
+          break;
+        case 'pick':
+          AvesApp.mode = AppMode.pick;
+          break;
+      }
+    }
+
+    if (AvesApp.mode != AppMode.view) {
       _mediaStore = MediaStoreSource();
       unawaited(_mediaStore.fetch());
     }
+  }
+
+  Future<void> _initViewerEntry({@required String uri, @required String mimeType}) async {
+    _viewerEntry = await ImageFileService.getImageEntry(uri, mimeType);
+    // cataloging is essential for geolocation and video rotation
+    await _viewerEntry.catalog();
+    unawaited(_viewerEntry.locate());
   }
 
   @override
@@ -107,8 +129,8 @@ class _HomePageState extends State<HomePage> {
           if (snapshot.hasError) return const Icon(AIcons.error);
           if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
           debugPrint('$runtimeType app setup future complete');
-          if (_sharedEntry != null) {
-            return SingleFullscreenPage(entry: _sharedEntry);
+          if (AvesApp.mode == AppMode.view) {
+            return SingleFullscreenPage(entry: _viewerEntry);
           }
           if (_mediaStore != null) {
             return CollectionPage(CollectionLens(

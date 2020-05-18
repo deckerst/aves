@@ -37,7 +37,7 @@ class AlbumFilter extends CollectionFilter {
   Future<Color> color(BuildContext context) {
     // do not use async/await and rely on `SynchronousFuture`
     // to prevent rebuilding of the `FutureBuilder` listening on this future
-    if (androidFileUtils.getAlbumType(album) == AlbumType.App) {
+    if (androidFileUtils.getAlbumType(album) == AlbumType.app) {
       if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]);
 
       return PaletteGenerator.fromImageProvider(

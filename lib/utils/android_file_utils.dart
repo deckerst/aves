@@ -38,15 +38,15 @@ class AndroidFileUtils {
 
   AlbumType getAlbumType(String albumDirectory) {
     if (albumDirectory != null) {
-      if (androidFileUtils.isCameraPath(albumDirectory)) return AlbumType.Camera;
-      if (androidFileUtils.isDownloadPath(albumDirectory)) return AlbumType.Download;
-      if (androidFileUtils.isScreenRecordingsPath(albumDirectory)) return AlbumType.ScreenRecordings;
-      if (androidFileUtils.isScreenshotsPath(albumDirectory)) return AlbumType.Screenshots;
+      if (androidFileUtils.isCameraPath(albumDirectory)) return AlbumType.camera;
+      if (androidFileUtils.isDownloadPath(albumDirectory)) return AlbumType.download;
+      if (androidFileUtils.isScreenRecordingsPath(albumDirectory)) return AlbumType.screenRecordings;
+      if (androidFileUtils.isScreenshotsPath(albumDirectory)) return AlbumType.screenshots;
 
       final parts = albumDirectory.split(separator);
-      if (albumDirectory.startsWith(androidFileUtils.externalStorage) && appNameMap.keys.contains(parts.last)) return AlbumType.App;
+      if (albumDirectory.startsWith(androidFileUtils.externalStorage) && appNameMap.keys.contains(parts.last)) return AlbumType.app;
     }
-    return AlbumType.Default;
+    return AlbumType.regular;
   }
 
   String getAlbumAppPackageName(String albumDirectory) {
@@ -55,14 +55,7 @@ class AndroidFileUtils {
   }
 }
 
-enum AlbumType {
-  Default,
-  App,
-  Camera,
-  Download,
-  ScreenRecordings,
-  Screenshots,
-}
+enum AlbumType { regular, app, camera, download, screenRecordings, screenshots }
 
 class StorageVolume {
   final String description, path, state;

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/main.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/constants.dart';
@@ -121,6 +122,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
+      final title = AvesApp.mode == AppMode.pick ? 'Select' : 'Aves';
       return GestureDetector(
         onTap: _goToSearch,
         // use a `Container` with a dummy color to make it expand
@@ -130,7 +132,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
           color: Colors.transparent,
           height: kToolbarHeight,
-          child: const Text('Aves'),
+          child: Text(title),
         ),
       );
     } else if (collection.isSelecting) {
@@ -169,10 +171,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             ..._buildSortMenuItems(),
             ..._buildGroupMenuItems(),
             if (collection.isBrowsing) ...[
-              const PopupMenuItem(
-                value: CollectionAction.select,
-                child: MenuRow(text: 'Select', icon: AIcons.select),
-              ),
+              if (AvesApp.mode == AppMode.main)
+                const PopupMenuItem(
+                  value: CollectionAction.select,
+                  child: MenuRow(text: 'Select', icon: AIcons.select),
+                ),
               const PopupMenuItem(
                 value: CollectionAction.stats,
                 child: MenuRow(text: 'Stats', icon: AIcons.stats),
