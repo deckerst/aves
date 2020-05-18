@@ -404,6 +404,9 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
+    if (oldWidget.entry != widget.entry) {
+      _onEntryChanged();
+    }
   }
 
   @override
@@ -413,18 +416,17 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   void _registerWidget(FullscreenVerticalPageView widget) {
-    widget.verticalPager.addListener(_onVerticalPageControllerChange);
-    widget.entry.imageChangeNotifier.addListener(_onImageChange);
+    widget.verticalPager.addListener(_onVerticalPageControllerChanged);
+    widget.entry.imageChangeNotifier.addListener(_onImageChanged);
   }
 
   void _unregisterWidget(FullscreenVerticalPageView widget) {
-    widget.verticalPager.removeListener(_onVerticalPageControllerChange);
-    widget.entry.imageChangeNotifier.removeListener(_onImageChange);
+    widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
+    widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
   }
 
   @override
   Widget build(BuildContext context) {
-    final onScaleChanged = (state) => setState(() => _isInitialScale = state == PhotoViewScaleState.initial);
     final pages = [
       // fake page for opacity transition between collection and fullscreen views
       const SizedBox(),
@@ -434,12 +436,12 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               pageController: widget.horizontalPager,
               onTap: widget.onImageTap,
               onPageChanged: widget.onHorizontalPageChanged,
-              onScaleChanged: onScaleChanged,
+              onScaleChanged: _onScaleChanged,
               videoControllers: widget.videoControllers,
             )
           : SingleImagePage(
               entry: entry,
-              onScaleChanged: onScaleChanged,
+              onScaleChanged: _onScaleChanged,
               onTap: widget.onImageTap,
               videoControllers: widget.videoControllers,
             ),
@@ -474,12 +476,20 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     );
   }
 
-  void _onVerticalPageControllerChange() {
+  void _onVerticalPageControllerChanged() {
     final opacity = min(1.0, widget.verticalPager.page);
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
   }
 
-  void _onImageChange() async {
+  void _onEntryChanged() {
+    _onScaleChanged(PhotoViewScaleState.initial);
+  }
+
+  void _onScaleChanged(PhotoViewScaleState state) {
+    setState(() => _isInitialScale = state == PhotoViewScaleState.initial);
+  }
+
+  void _onImageChanged() async {
     await UriImage(uri: entry.uri, mimeType: entry.mimeType).evict();
     await ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent).evict();
     if (entry.path != null) await FileImage(File(entry.path)).evict();
