@@ -34,11 +34,10 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
   Widget build(BuildContext context) {
     super.build(context);
 
-    const scrollDirection = Axis.horizontal;
     return PhotoViewGestureDetectorScope(
-      axis: scrollDirection,
+      axis: [Axis.horizontal, Axis.vertical],
       child: PageView.builder(
-        scrollDirection: scrollDirection,
+        scrollDirection: Axis.horizontal,
         controller: widget.pageController,
         physics: const PhotoViewPageViewScrollPhysics(parent: BouncingScrollPhysics()),
         onPageChanged: widget.onPageChanged,

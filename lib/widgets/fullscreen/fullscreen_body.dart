@@ -383,7 +383,6 @@ class FullscreenVerticalPageView extends StatefulWidget {
 }
 
 class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView> {
-  bool _isInitialScale = true;
   final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
   final ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
 
@@ -404,9 +403,6 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
-    if (oldWidget.entry != widget.entry) {
-      _onEntryChanged();
-    }
   }
 
   @override
@@ -436,12 +432,10 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               pageController: widget.horizontalPager,
               onTap: widget.onImageTap,
               onPageChanged: widget.onHorizontalPageChanged,
-              onScaleChanged: _onScaleChanged,
               videoControllers: widget.videoControllers,
             )
           : SingleImagePage(
               entry: entry,
-              onScaleChanged: _onScaleChanged,
               onTap: widget.onImageTap,
               videoControllers: widget.videoControllers,
             ),
@@ -466,7 +460,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
       child: PageView(
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
-        physics: _isInitialScale ? const PageScrollPhysics() : const NeverScrollableScrollPhysics(),
+        physics: const PhotoViewPageViewScrollPhysics(parent: PageScrollPhysics()),
         onPageChanged: (page) {
           widget.onVerticalPageChanged(page);
           _infoPageVisibleNotifier.value = page == pages.length - 1;
@@ -479,14 +473,6 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   void _onVerticalPageControllerChanged() {
     final opacity = min(1.0, widget.verticalPager.page);
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
-  }
-
-  void _onEntryChanged() {
-    _onScaleChanged(PhotoViewScaleState.initial);
-  }
-
-  void _onScaleChanged(PhotoViewScaleState state) {
-    setState(() => _isInitialScale = state == PhotoViewScaleState.initial);
   }
 
   void _onImageChanged() async {
