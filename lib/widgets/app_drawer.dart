@@ -21,16 +21,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CollectionDrawer extends StatefulWidget {
+class AppDrawer extends StatefulWidget {
   final CollectionSource source;
 
-  const CollectionDrawer({@required this.source});
+  const AppDrawer({@required this.source});
 
   @override
-  _CollectionDrawerState createState() => _CollectionDrawerState();
+  _AppDrawerState createState() => _AppDrawerState();
 }
 
-class _CollectionDrawerState extends State<CollectionDrawer> {
+class _AppDrawerState extends State<AppDrawer> {
   bool _albumsExpanded = false;
 
   CollectionSource get source => widget.source;

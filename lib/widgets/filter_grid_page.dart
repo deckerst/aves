@@ -4,8 +4,8 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/album/collection_drawer.dart';
 import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/app_drawer.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
@@ -98,7 +98,7 @@ class FilterGridPage extends StatelessWidget {
             ],
           ),
         ),
-        drawer: CollectionDrawer(
+        drawer: AppDrawer(
           source: source,
         ),
         resizeToAvoidBottomInset: false,

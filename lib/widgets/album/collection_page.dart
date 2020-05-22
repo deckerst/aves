@@ -1,6 +1,6 @@
 import 'package:aves/model/collection_lens.dart';
-import 'package:aves/widgets/album/collection_drawer.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
+import 'package:aves/widgets/app_drawer.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class CollectionPage extends StatelessWidget {
             },
             child: ThumbnailCollection(),
           ),
-          drawer: CollectionDrawer(
+          drawer: AppDrawer(
             source: collection.source,
           ),
           resizeToAvoidBottomInset: false,
