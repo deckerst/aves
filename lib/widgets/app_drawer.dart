@@ -11,7 +11,7 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/color_utils.dart';
+import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -87,6 +87,15 @@ class _AppDrawerState extends State<AppDrawer> {
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
+    final aboutEntry = SafeArea(
+      top: false,
+      bottom: false,
+      child: ListTile(
+        leading: const Icon(AIcons.info),
+        title: const Text('About'),
+        onTap: () => _goToAbout(context),
+      ),
+    );
 
     final drawerItems = <Widget>[
       header,
@@ -97,6 +106,7 @@ class _AppDrawerState extends State<AppDrawer> {
       _buildRegularAlbumSection(),
       _buildCountrySection(),
       _buildTagSection(),
+      aboutEntry,
       if (kDebugMode) ...[
         const Divider(),
         SafeArea(
@@ -147,35 +157,6 @@ class _AppDrawerState extends State<AppDrawer> {
           : null,
       dense: dense,
       filter: AlbumFilter(album, uniqueName),
-    );
-  }
-
-  Widget _buildLocationEntry(LocationLevel level, String location) {
-    String title;
-    String flag;
-    if (level == LocationLevel.country) {
-      final split = location.split(';');
-      String countryCode;
-      if (split.isNotEmpty) title = split[0];
-      if (split.length > 1) countryCode = split[1];
-      flag = LocationFilter.countryCodeToFlag(countryCode);
-    } else {
-      title = location;
-    }
-    return _FilteredCollectionNavTile(
-      source: source,
-      leading: flag != null
-          ? Text(
-              flag,
-              style: TextStyle(fontSize: IconTheme.of(context).size),
-            )
-          : Icon(
-              AIcons.location,
-              color: stringToColor(title),
-            ),
-      title: title,
-      dense: true,
-      filter: LocationFilter(level, location),
     );
   }
 
@@ -316,6 +297,16 @@ class _AppDrawerState extends State<AppDrawer> {
           filterBuilder: (s) => TagFilter(s),
           showFilterIcon: false,
         ),
+      ),
+    );
+  }
+
+  void _goToAbout(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AboutPage(),
       ),
     );
   }

@@ -40,6 +40,7 @@ class AIcons {
   static const IconData search = OMIcons.search;
   static const IconData select = OMIcons.selectAll;
   static const IconData share = OMIcons.share;
+  static const IconData sort = OMIcons.sort;
   static const IconData stats = OMIcons.pieChart;
   static const IconData zoomIn = OMIcons.add;
   static const IconData zoomOut = OMIcons.remove;

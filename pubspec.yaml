@@ -47,19 +47,19 @@ dependencies:
     path: ../expansion_tile_card
 #    git:
 #      url: git://github.com/deckerst/expansion_tile_card.git
+  flushbar:
   flutter_ijkplayer:
     path: ../flutter_ijkplayer
-#    git:
-#      url: git://github.com/deckerst/flutter_ijkplayer.git
-  flushbar:
+  #    git:
+  #      url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_native_timezone:
   flutter_svg:
   geocoder:
   google_maps_flutter:
   intl:
   outline_material_icons:
-  pdf:
   palette_generator:
+  pdf:
   pedantic:
   percent_indicator:
   permission_handler:
@@ -76,6 +76,7 @@ dependencies:
   sqflite:
   streams_channel:
   tuple:
+  url_launcher:
   uuid:
 
 dev_dependencies:
