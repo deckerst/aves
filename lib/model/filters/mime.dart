@@ -49,7 +49,7 @@ class MimeFilter extends CollectionFilter {
   String get label => _label;
 
   @override
-  Widget iconBuilder(context, size) => Icon(_icon, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(_icon, size: size);
 
   @override
   String get typeKey => type;

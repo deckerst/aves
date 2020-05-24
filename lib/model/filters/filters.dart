@@ -30,7 +30,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String get tooltip => label;
 
-  Widget iconBuilder(BuildContext context, double size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true});
 
   Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(label));
 

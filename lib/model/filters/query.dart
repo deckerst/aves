@@ -42,7 +42,7 @@ class QueryFilter extends CollectionFilter {
   String get label => '${query}';
 
   @override
-  Widget iconBuilder(context, size) => Icon(AIcons.text, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.text, size: size);
 
   @override
   Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(Colors.white);

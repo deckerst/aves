@@ -17,14 +17,12 @@ class FilterGridPage extends StatelessWidget {
   final String title;
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
-  final bool showFilterIcon;
 
   const FilterGridPage({
     @required this.source,
     @required this.title,
     @required this.filterEntries,
     @required this.filterBuilder,
-    @required this.showFilterIcon,
   });
 
   List<String> get filterKeys => filterEntries.keys.toList();
@@ -62,7 +60,7 @@ class FilterGridPage extends StatelessWidget {
                       }
                       return AvesFilterChip(
                         filter: filterBuilder(key),
-                        showLeading: showFilterIcon,
+                        showGenericIcon: false,
                         decoration: decoration,
                         onPressed: (filter) => Navigator.pushAndRemoveUntil(
                           context,

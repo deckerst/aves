@@ -14,7 +14,7 @@ class FavouriteFilter extends CollectionFilter {
   String get label => 'Favourite';
 
   @override
-  Widget iconBuilder(context, size) => Icon(AIcons.favourite, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.favourite, size: size);
 
   @override
   String get typeKey => type;

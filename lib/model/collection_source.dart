@@ -2,6 +2,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
@@ -163,6 +164,28 @@ class CollectionSource {
         groupFactor: GroupFactor.month,
         sortFactor: SortFactor.date,
       ).sortedEntries;
+
+  Map<String, ImageEntry> getAlbumEntries() {
+    final entries = _sortedEntriesForFilterList;
+    final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
+    for (var album in sortedAlbums) {
+      switch (androidFileUtils.getAlbumType(album)) {
+        case AlbumType.regular:
+          regularAlbums.add(album);
+          break;
+        case AlbumType.app:
+          appAlbums.add(album);
+          break;
+        default:
+          specialAlbums.add(album);
+          break;
+      }
+    }
+    return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((tag) => MapEntry(
+          tag,
+          entries.firstWhere((entry) => entry.directory == tag, orElse: () => null),
+        )));
+  }
 
   Map<String, ImageEntry> getCountryEntries() {
     final locatedEntries = _sortedEntriesForFilterList.where((entry) => entry.isLocated);

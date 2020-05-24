@@ -23,7 +23,7 @@ class LocationFilter extends CollectionFilter {
   String get label => _location;
 
   @override
-  Widget iconBuilder(context, size) {
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
     final flag = countryCodeToFlag(_countryCode);
     if (flag != null) return Text(flag, style: TextStyle(fontSize: size));
     return Icon(AIcons.location, size: size);

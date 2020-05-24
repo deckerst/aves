@@ -31,8 +31,6 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  bool _albumsExpanded = false;
-
   CollectionSource get source => widget.source;
 
   @override
@@ -184,49 +182,25 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget _buildRegularAlbumSection() {
-    return StreamBuilder(
-        stream: source.eventBus.on<AlbumsChangedEvent>(),
-        builder: (context, snapshot) {
-          final regularAlbums = <String>[], appAlbums = <String>[];
-          for (var album in source.sortedAlbums) {
-            switch (androidFileUtils.getAlbumType(album)) {
-              case AlbumType.regular:
-                regularAlbums.add(album);
-                break;
-              case AlbumType.app:
-                appAlbums.add(album);
-                break;
-              default:
-                break;
-            }
-          }
-          if (appAlbums.isEmpty && regularAlbums.isEmpty) return const SizedBox.shrink();
-          return SafeArea(
-            top: false,
-            bottom: false,
-            child: ExpansionTile(
-              leading: const Icon(AIcons.album),
-              title: Row(
-                children: [
-                  const Text('Albums'),
-                  const Spacer(),
-                  Text(
-                    '${appAlbums.length + regularAlbums.length}',
-                    style: TextStyle(
-                      color: (_albumsExpanded ? Theme.of(context).accentColor : Colors.white).withOpacity(.6),
-                    ),
-                  ),
-                ],
-              ),
-              onExpansionChanged: (expanded) => setState(() => _albumsExpanded = expanded),
-              children: [
-                ...appAlbums.map(_buildAlbumEntry),
-                if (appAlbums.isNotEmpty && regularAlbums.isNotEmpty) const Divider(),
-                ...regularAlbums.map(_buildAlbumEntry),
-              ],
-            ),
-          );
-        });
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: ListTile(
+        leading: const Icon(AIcons.album),
+        title: const Text('Albums'),
+        trailing: StreamBuilder(
+            stream: source.eventBus.on<AlbumsChangedEvent>(),
+            builder: (context, snapshot) {
+              return Text(
+                '${source.sortedAlbums.length}',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(.6),
+                ),
+              );
+            }),
+        onTap: () => _goToAlbums(context),
+      ),
+    );
   }
 
   Widget _buildCountrySection() {
@@ -273,6 +247,21 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
+  void _goToAlbums(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FilterGridPage(
+          source: source,
+          title: 'Albums',
+          filterEntries: source.getAlbumEntries(),
+          filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
+        ),
+      ),
+    );
+  }
+
   void _goToCountries(BuildContext context) {
     Navigator.pop(context);
     Navigator.push(
@@ -283,7 +272,6 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Countries',
           filterEntries: source.getCountryEntries(),
           filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
-          showFilterIcon: true,
         ),
       ),
     );
@@ -299,7 +287,6 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Tags',
           filterEntries: source.getTagEntries(),
           filterBuilder: (s) => TagFilter(s),
-          showFilterIcon: false,
         ),
       ),
     );

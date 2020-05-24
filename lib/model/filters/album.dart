@@ -14,7 +14,6 @@ class AlbumFilter extends CollectionFilter {
   static final Map<String, Color> _appColors = {};
 
   final String album;
-
   final String uniqueName;
 
   const AlbumFilter(this.album, this.uniqueName);
@@ -29,8 +28,8 @@ class AlbumFilter extends CollectionFilter {
   String get tooltip => album;
 
   @override
-  Widget iconBuilder(context, size) {
-    return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? Icon(AIcons.album, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
+    return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? (showGenericIcon ? Icon(AIcons.album, size: size) : null);
   }
 
   @override

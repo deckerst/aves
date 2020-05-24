@@ -7,7 +7,7 @@ typedef FilterCallback = void Function(CollectionFilter filter);
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;
-  final bool showLeading;
+  final bool showGenericIcon;
   final Decoration decoration;
   final FilterCallback onPressed;
 
@@ -22,7 +22,7 @@ class AvesFilterChip extends StatefulWidget {
     Key key,
     this.filter,
     this.removable = false,
-    this.showLeading = true,
+    this.showGenericIcon = true,
     this.decoration,
     @required this.onPressed,
   }) : super(key: key);
@@ -54,7 +54,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
-    final leading = widget.showLeading ? filter.iconBuilder(context, AvesFilterChip.iconSize) : null;
+    final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon);
     final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
     Widget content = Padding(
