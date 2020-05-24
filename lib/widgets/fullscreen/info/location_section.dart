@@ -191,6 +191,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
                   scrollGesturesEnabled: false,
                   zoomControlsEnabled: false,
                   zoomGesturesEnabled: false,
+                  liteModeEnabled: false,
                   tiltGesturesEnabled: false,
                   myLocationEnabled: false,
                   myLocationButtonEnabled: false,
