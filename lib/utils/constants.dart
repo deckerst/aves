@@ -28,7 +28,28 @@ class Constants {
   static const svgBackground = Colors.white;
   static const svgColorFilter = ColorFilter.mode(svgBackground, BlendMode.dstOver);
 
-  static const List<Dependency> packages = [
+  static const List<Dependency> androidDependencies = [
+    Dependency(
+      name: 'Glide',
+      license: 'Apache 2.0, BSD 2-Clause',
+      licenseUrl: 'https://github.com/bumptech/glide/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/bumptech/glide',
+    ),
+    Dependency(
+      name: 'Guava',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/google/guava/blob/master/COPYING',
+      sourceUrl: 'https://github.com/google/guava',
+    ),
+    Dependency(
+      name: 'Metadata Extractor',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/drewnoakes/metadata-extractor/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/drewnoakes/metadata-extractor',
+    ),
+  ];
+
+  static const List<Dependency> flutterPackages = [
     Dependency(
       name: 'Flutter',
       license: 'BSD 3-Clause',

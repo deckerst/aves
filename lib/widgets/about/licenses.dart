@@ -17,7 +17,7 @@ class _LicensesState extends State<Licenses> {
   @override
   void initState() {
     super.initState();
-    _packages = List.of(Constants.packages);
+    _packages = [...Constants.androidDependencies, ...Constants.flutterPackages];
     _sortPackages();
   }
 
