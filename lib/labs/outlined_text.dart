@@ -27,8 +27,8 @@ class OutlinedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        RichText(
-          text: TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               if (leadingBuilder != null)
                 WidgetSpan(
@@ -52,8 +52,8 @@ class OutlinedText extends StatelessWidget {
             ],
           ),
         ),
-        RichText(
-          text: TextSpan(
+        Text.rich(
+          TextSpan(
             children: [
               if (leadingBuilder != null)
                 WidgetSpan(

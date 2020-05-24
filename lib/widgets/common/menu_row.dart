@@ -28,7 +28,7 @@ class MenuRow extends StatelessWidget {
           Icon(icon),
           const SizedBox(width: 8),
         ],
-        Text(text),
+        Expanded(child: Text(text)),
       ],
     );
   }

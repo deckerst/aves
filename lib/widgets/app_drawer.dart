@@ -50,18 +50,22 @@ class _AppDrawerState extends State<AppDrawer> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const AvesLogo(size: 64),
-                  const SizedBox(width: 16),
-                  const Text(
-                    'Aves',
-                    style: TextStyle(
-                      fontSize: 44,
-                      fontFamily: 'Concourse Caps',
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Wrap(
+                  spacing: 16,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const AvesLogo(size: 64),
+                    const Text(
+                      'Aves',
+                      style: TextStyle(
+                        fontSize: 44,
+                        fontFamily: 'Concourse Caps',
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

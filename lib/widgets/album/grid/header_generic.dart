@@ -67,8 +67,9 @@ class SectionHeader extends StatelessWidget {
   }
 
   // TODO TLAD cache header extent computation?
-  static double computeHeaderHeight(CollectionSource source, dynamic sectionKey, double scrollableWidth) {
+  static double computeHeaderHeight(BuildContext context, CollectionSource source, dynamic sectionKey, double scrollableWidth) {
     var headerExtent = 0.0;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
     if (sectionKey is String) {
       // only compute height for album headers, as they're the only likely ones to split on multiple lines
       final hasLeading = androidFileUtils.getAlbumType(sectionKey) != AlbumType.regular;
@@ -83,7 +84,7 @@ class SectionHeader extends StatelessWidget {
             TextSpan(
               text: '\u200A' * (hasLeading ? 23 : 1),
               // force a higher first line to match leading icon/selector dimension
-              style: const TextStyle(height: 2.3),
+              style: TextStyle(height: 2.3 * textScaleFactor),
             ), // 23 hair spaces match a width of 40.0
             if (hasTrailing)
               TextSpan(text: '\u200A' * 17),
@@ -94,10 +95,11 @@ class SectionHeader extends StatelessWidget {
           ],
         ),
         textDirection: TextDirection.ltr,
+        textScaleFactor: textScaleFactor,
       )..layout(BoxConstraints(maxWidth: maxWidth), parentUsesSize: true);
       headerExtent = para.getMaxIntrinsicHeight(maxWidth);
     }
-    headerExtent = max(headerExtent, TitleSectionHeader.leadingDimension) + TitleSectionHeader.padding.vertical;
+    headerExtent = max(headerExtent, TitleSectionHeader.leadingDimension * textScaleFactor) + TitleSectionHeader.padding.vertical;
     return headerExtent;
   }
 }
@@ -127,8 +129,8 @@ class TitleSectionHeader extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
       constraints: const BoxConstraints(minHeight: leadingDimension),
-      child: RichText(
-        text: TextSpan(
+      child: Text.rich(
+        TextSpan(
           children: [
             WidgetSpan(
               alignment: widgetSpanAlignment,

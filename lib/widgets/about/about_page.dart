@@ -17,8 +17,8 @@ class AboutPage extends StatelessWidget {
                 delegate: SliverChildListDelegate(
                   [
                     Center(
-                      child: RichText(
-                        text: TextSpan(
+                      child: Text.rich(
+                        TextSpan(
                           children: [
                             const TextSpan(text: 'Made with ❤️ and '),
                             WidgetSpan(

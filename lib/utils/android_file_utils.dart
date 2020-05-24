@@ -34,7 +34,7 @@ class AndroidFileUtils {
 
   StorageVolume getStorageVolume(String path) => storageVolumes.firstWhere((v) => path.startsWith(v.path), orElse: () => null);
 
-  bool isOnRemovableStorage(String path) => getStorageVolume(path).isRemovable;
+  bool isOnRemovableStorage(String path) => getStorageVolume(path)?.isRemovable ?? false;
 
   AlbumType getAlbumType(String albumDirectory) {
     if (albumDirectory != null) {

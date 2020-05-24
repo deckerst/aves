@@ -51,41 +51,46 @@ class StatsPage extends StatelessWidget {
     if (collection.isEmpty) {
       child = const EmptyContent();
     } else {
-      final catalogued = entries.where((entry) => entry.isCatalogued);
-      final withGps = catalogued.where((entry) => entry.hasGps);
-      final withGpsPercent = withGps.length / collection.entryCount;
       final byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
+      final mimeDonuts = Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
+          _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
+        ],
+      );
+
+      final catalogued = entries.where((entry) => entry.isCatalogued);
+      final withGps = catalogued.where((entry) => entry.hasGps);
+      final withGpsPercent = withGps.length / collection.entryCount;
+      final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+      final lineHeight = 16 * textScaleFactor;
+      final locationIndicator = Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            LinearPercentIndicator(
+              percent: withGpsPercent,
+              lineHeight: lineHeight,
+              backgroundColor: Colors.white24,
+              progressColor: Theme.of(context).accentColor,
+              animation: true,
+              leading: const Icon(AIcons.location),
+              // right padding to match leading, so that inside label is aligned with outside label below
+              padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
+              center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
+            ),
+            const SizedBox(height: 8),
+            Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
+          ],
+        ),
+      );
       child = ListView(
         children: [
-          Wrap(
-            alignment: WrapAlignment.center,
-            children: [
-              _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
-              _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                LinearPercentIndicator(
-                  percent: withGpsPercent,
-                  lineHeight: 16,
-                  backgroundColor: Colors.white24,
-                  progressColor: Theme.of(context).accentColor,
-                  animation: true,
-                  leading: const Icon(AIcons.location),
-                  // right padding to match leading, so that inside label is aligned with outside label below
-                  padding: const EdgeInsets.symmetric(horizontal: 16) + const EdgeInsets.only(right: 24),
-                  center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
-                ),
-                const SizedBox(height: 8),
-                Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
-              ],
-            ),
-          ),
+          mimeDonuts,
+          locationIndicator,
           ..._buildTopFilters('Top Countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
           ..._buildTopFilters('Top Places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
           ..._buildTopFilters('Top Tags', entryCountPerTag, (s) => TagFilter(s)),
@@ -132,8 +137,10 @@ class StatsPage extends StatelessWidget {
     ];
 
     return LayoutBuilder(builder: (context, constraints) {
+      final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+      final minWidth = mimeDonutMinWidth * textScaleFactor;
       final availableWidth = constraints.maxWidth;
-      final dim = max(mimeDonutMinWidth, availableWidth / (availableWidth > 4 * mimeDonutMinWidth ? 4 : 2));
+      final dim = max(minWidth, availableWidth / (availableWidth > 4 * minWidth ? 4 : (availableWidth > 2 * minWidth ? 2 : 1)));
 
       final donut = Container(
         width: dim,
@@ -161,11 +168,8 @@ class StatsPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: seriesData
-              .map((kv) => RichText(
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    maxLines: 1,
-                    text: TextSpan(
+              .map((kv) => Text.rich(
+                    TextSpan(
                       children: [
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
@@ -178,6 +182,9 @@ class StatsPage extends StatelessWidget {
                         TextSpan(text: '${kv.value}', style: const TextStyle(color: Colors.white70)),
                       ],
                     ),
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
                   ))
               .toList(),
         ),
@@ -186,7 +193,7 @@ class StatsPage extends StatelessWidget {
         donut,
         legend,
       ];
-      return availableWidth > mimeDonutMinWidth * 2
+      return availableWidth > minWidth * 2
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: children,

@@ -32,6 +32,9 @@ class FilterTable extends StatelessWidget {
         return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
       });
 
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final lineHeight = 16 * textScaleFactor;
+
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.buttonBorderWidth / 2 + 6, end: 8),
       child: LayoutBuilder(
@@ -55,11 +58,11 @@ class FilterTable extends StatelessWidget {
                   if (showPercentIndicator)
                     LinearPercentIndicator(
                       percent: percent,
-                      lineHeight: 16,
+                      lineHeight: lineHeight,
                       backgroundColor: Colors.white24,
                       progressColor: stringToColor(label),
                       animation: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: lineHeight),
                       center: Text(NumberFormat.percentPattern().format(percent)),
                     ),
                   Text(

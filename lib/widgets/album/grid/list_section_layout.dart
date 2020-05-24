@@ -44,7 +44,7 @@ class SectionedListLayoutProvider extends StatelessWidget {
       final sectionEntryCount = sections[sectionKey].length;
       final sectionChildCount = 1 + (sectionEntryCount / columnCount).ceil();
 
-      final headerExtent = showHeaders ? SectionHeader.computeHeaderHeight(source, sectionKey, scrollableWidth) : 0.0;
+      final headerExtent = showHeaders ? SectionHeader.computeHeaderHeight(context, source, sectionKey, scrollableWidth) : 0.0;
 
       final sectionFirstIndex = currentIndex;
       currentIndex += sectionChildCount;
