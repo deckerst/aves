@@ -81,20 +81,26 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
             return InfoRowGroup(dir.tags);
           }
           final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
-          return ExpansionTileCard(
-            value: dir.name,
-            expandedNotifier: _expandedDirectoryNotifier,
-            title: _DirectoryTitle(dir.name),
-            children: [
-              const Divider(thickness: 1.0, height: 1.0),
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.all(8),
-                child: InfoRowGroup(dir.tags),
-              ),
-            ],
-            baseColor: Colors.grey[900],
-            expandedColor: Colors.grey[850],
+          return Theme(
+            data: Theme.of(context).copyWith(
+              // color used by the `ExpansionTileCard` for selected text and icons
+              accentColor: Colors.white,
+            ),
+            child: ExpansionTileCard(
+              value: dir.name,
+              expandedNotifier: _expandedDirectoryNotifier,
+              title: _DirectoryTitle(dir.name),
+              children: [
+                const Divider(thickness: 1.0, height: 1.0),
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.all(8),
+                  child: InfoRowGroup(dir.tags),
+                ),
+              ],
+              baseColor: Colors.grey[900],
+              expandedColor: Colors.grey[850],
+            ),
           );
         },
         childCount: 1 + _metadata.length,
@@ -148,7 +154,6 @@ class _DirectoryTitle extends StatelessWidget {
         child: Text(
           name,
           style: const TextStyle(
-            color: Colors.white,
             shadows: [
               Shadow(
                 color: Colors.black,
