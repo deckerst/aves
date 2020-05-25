@@ -224,9 +224,7 @@ public abstract class ImageProvider {
         values.put(MediaStore.MediaColumns.ORIENTATION, orientationDegrees);
         int updatedRowCount = contentResolver.update(uri, values, null, null);
         if (updatedRowCount > 0) {
-            MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> {
-                callback.onSuccess(newFields);
-            });
+            MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
         } else {
             Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
             callback.onSuccess(newFields);

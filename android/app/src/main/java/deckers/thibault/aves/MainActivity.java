@@ -71,11 +71,10 @@ public class MainActivity extends FlutterActivity {
                             Intent data = new Intent();
                             data.setData(Uri.parse(resultUri));
                             setResult(RESULT_OK, data);
-                            finish();
                         } else {
                             setResult(RESULT_CANCELED);
-                            finish();
                         }
+                        finish();
                     }
                 });
     }

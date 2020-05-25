@@ -33,10 +33,19 @@ android {
 
     defaultConfig {
         applicationId "deckers.thibault.aves"
-        minSdkVersion 24 // Java 8 (stream, lambda, etc.) requires minSdkVersion 24
+        // some Java 8 APIs (java.util.stream, etc.) require minSdkVersion 24
+        // but Android Studio 4.0 desugaring features allow targeting older SDKs
+        minSdkVersion 23
         targetSdkVersion 29 // same as compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+    }
+
+    compileOptions {
+        // enable support for Java 8 language APIs (stream, optional, etc.)
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -56,6 +65,9 @@ flutter {
 }
 
 dependencies {
+    // enable support for Java 8 language APIs (stream, optional, etc.)
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+
     implementation 'com.drewnoakes:metadata-extractor:2.14.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.guava:guava:29.0-android'

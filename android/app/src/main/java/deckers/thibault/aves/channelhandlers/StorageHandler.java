@@ -1,10 +1,12 @@
 package deckers.thibault.aves.channelhandlers;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,27 +32,12 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "getStorageVolumes": {
-                List<Map<String, Object>> volumes = new ArrayList<>();
-                StorageManager sm = activity.getSystemService(StorageManager.class);
-                if (sm != null) {
-                    for (String path : Env.getStorageVolumes(activity)) {
-                        try {
-                            File file = new File(path);
-                            StorageVolume volume = sm.getStorageVolume(file);
-                            if (volume != null) {
-                                Map<String, Object> volumeMap = new HashMap<>();
-                                volumeMap.put("path", path);
-                                volumeMap.put("description", volume.getDescription(activity));
-                                volumeMap.put("isPrimary", volume.isPrimary());
-                                volumeMap.put("isRemovable", volume.isRemovable());
-                                volumeMap.put("isEmulated", volume.isEmulated());
-                                volumeMap.put("state", volume.getState());
-                                volumes.add(volumeMap);
-                            }
-                        } catch (IllegalArgumentException e) {
-                            // ignore
-                        }
-                    }
+                List<Map<String, Object>> volumes = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    volumes = getStorageVolumes();
+                } else {
+                    // TODO TLAD find alternative for Android <N
+                    volumes = new ArrayList<>();
                 }
                 result.success(volumes);
                 break;
@@ -65,5 +52,32 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
                 result.notImplemented();
                 break;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private List<Map<String, Object>> getStorageVolumes() {
+        List<Map<String, Object>> volumes = new ArrayList<>();
+        StorageManager sm = activity.getSystemService(StorageManager.class);
+        if (sm != null) {
+            for (String path : Env.getStorageVolumes(activity)) {
+                try {
+                    File file = new File(path);
+                    StorageVolume volume = sm.getStorageVolume(file);
+                    if (volume != null) {
+                        Map<String, Object> volumeMap = new HashMap<>();
+                        volumeMap.put("path", path);
+                        volumeMap.put("description", volume.getDescription(activity));
+                        volumeMap.put("isPrimary", volume.isPrimary());
+                        volumeMap.put("isRemovable", volume.isRemovable());
+                        volumeMap.put("isEmulated", volume.isEmulated());
+                        volumeMap.put("state", volume.getState());
+                        volumes.add(volumeMap);
+                    }
+                } catch (IllegalArgumentException e) {
+                    // ignore
+                }
+            }
+        }
+        return volumes;
     }
 }

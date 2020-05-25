@@ -1,6 +1,5 @@
 package deckers.thibault.aves.utils;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.util.Pair;
@@ -36,7 +36,7 @@ public class PermissionManager {
         return uriPermissionOptional.map(UriPermission::getUri).orElse(null);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void showSdCardAccessDialog(final Activity activity, final Runnable pendingRunnable) {
         new AlertDialog.Builder(activity)
                 .setTitle("SD Card Access")
@@ -77,19 +77,23 @@ public class PermissionManager {
         runnable.run();
     }
 
-
     public static boolean hasGrantedPermissionToVolumeRoot(Context context, String path) {
         boolean canAccess = false;
         Stream<Uri> permittedUris = context.getContentResolver().getPersistedUriPermissions().stream().map(UriPermission::getUri);
         // e.g. content://com.android.externalstorage.documents/tree/12A9-8B42%3A
         StorageManager sm = context.getSystemService(StorageManager.class);
         if (sm != null) {
-            StorageVolume volume = sm.getStorageVolume(new File(path));
-            if (volume != null) {
-                // primary storage doesn't have a UUID
-                String uuid = volume.isPrimary() ? "primary" : volume.getUuid();
-                Uri targetVolumeTreeUri = getVolumeTreeUriFromUuid(uuid);
-                canAccess = permittedUris.anyMatch(uri -> uri.equals(targetVolumeTreeUri));
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                StorageVolume volume = sm.getStorageVolume(new File(path));
+                if (volume != null) {
+                    // primary storage doesn't have a UUID
+                    String uuid = volume.isPrimary() ? "primary" : volume.getUuid();
+                    Uri targetVolumeTreeUri = getVolumeTreeUriFromUuid(uuid);
+                    canAccess = permittedUris.anyMatch(uri -> uri.equals(targetVolumeTreeUri));
+                }
+            } else {
+                // TODO TLAD find alternative for Android <N
+                canAccess = true;
             }
         }
         return canAccess;

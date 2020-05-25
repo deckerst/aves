@@ -1,7 +1,6 @@
 package deckers.thibault.aves.channelhandlers;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -12,6 +11,8 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
+
+import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
@@ -104,7 +105,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         return new Result(p, data);
     }
 
-    @TargetApi(Build.VERSION_CODES.Q)
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     private Bitmap getThumbnailBytesByResolver(Params params) throws IOException {
         ImageEntry entry = params.entry;
         int width = params.width;
