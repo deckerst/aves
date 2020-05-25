@@ -1,16 +1,15 @@
 # aves
 
-A new Flutter application.
+Aves is a gallery and metadata explorer app. It is built for Android, with Flutter.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Support raster images: JPEG, PNG, GIF, WEBP, BMP, WBMP, HEIC (from Android Pie)
+- Support animated images: GIF, WEBP
+- Support vector images: SVG
+- Support videos: MP4, AVI
+- search and filter by country, place, XMP tag, type (animated, raster, vector, video)
+- bulk delete, share
+- favorites
+- stats
+- handle intents to view or pick images
