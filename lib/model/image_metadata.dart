@@ -43,10 +43,25 @@ class CatalogMetadata {
     this.xmpTitleDescription,
     double latitude,
     double longitude,
-  })  
+  })
   // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
   : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
         longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
+
+  CatalogMetadata copyWith({
+    @required int contentId,
+  }) {
+    return CatalogMetadata(
+      contentId: contentId ?? this.contentId,
+      dateMillis: dateMillis,
+      isAnimated: isAnimated,
+      videoRotation: videoRotation,
+      xmpSubjects: xmpSubjects,
+      xmpTitleDescription: xmpTitleDescription,
+      latitude: latitude,
+      longitude: longitude,
+    );
+  }
 
   factory CatalogMetadata.fromMap(Map map, {bool boolAsInteger = false}) {
     final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
@@ -120,6 +135,19 @@ class AddressDetails {
     this.adminArea,
     this.locality,
   });
+
+  AddressDetails copyWith({
+    @required int contentId,
+  }) {
+    return AddressDetails(
+      contentId: contentId ?? this.contentId,
+      addressLine: addressLine,
+      countryCode: countryCode,
+      countryName: countryName,
+      adminArea: adminArea,
+      locality: locality,
+    );
+  }
 
   factory AddressDetails.fromMap(Map map) {
     return AddressDetails(

@@ -62,11 +62,10 @@ class SelectionActionDelegate with PermissionAwareMixin {
               leading: const BackButton(),
               title: Text(copy ? 'Copy to Album' : 'Move to Album'),
               actions: [
-                IconButton(
-                  icon: const Icon(AIcons.createAlbum),
-                  onPressed: () {
-                    // TODO TLAD album creation
-                  },
+                const IconButton(
+                  icon: Icon(AIcons.createAlbum),
+                  // TODO TLAD album creation
+                  onPressed: null,
                   tooltip: 'Create album',
                 ),
               ],
@@ -90,19 +89,31 @@ class SelectionActionDelegate with PermissionAwareMixin {
       opStream: ImageFileService.move(selection, copy: copy, destinationPath: filter.album),
       onDone: (Set<MoveOpEvent> processed) {
         debugPrint('$runtimeType _moveSelection onDone');
-        final movedUris = processed.where((e) => e.success).map((e) => e.uri);
-        final movedCount = movedUris.length;
+        final movedOps = processed.where((e) => e.success);
+        final movedCount = movedOps.length;
         final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           _showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (movedCount > 0) {
-          processed.forEach((event) {
-            debugPrint('$runtimeType _moveSelection moved entry uri=${event.uri} newFields=${event.newFields}');
-            // TODO TLAD update source
-          });
+          if (copy) {
+            collection.source.addAll(movedOps.map((movedOp) {
+              final sourceUri = movedOp.uri;
+              final newFields = movedOp.newFields;
+              final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+              return sourceEntry?.copyWith(
+                uri: newFields['uri'] as String,
+                path: newFields['path'] as String,
+                contentId: newFields['contentId'] as int,
+              );
+            }));
+          } else {
+            // TODO TLAD update old entries path/dir/ID
+          }
+          // TODO TLAD update DB for catalog/address/fav
         }
+        collection.clearSelection();
         collection.browse();
       },
     );
@@ -149,6 +160,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
         if (deletedCount > 0) {
           collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
         }
+        collection.clearSelection();
         collection.browse();
       },
     );

@@ -40,8 +40,6 @@ public class ImageEntry {
     @Nullable
     public String title;
     @Nullable
-    private String bucketDisplayName;
-    @Nullable
     public Integer width, height, orientationDegrees;
     @Nullable
     public Long sizeBytes;
@@ -66,7 +64,6 @@ public class ImageEntry {
         this.title = (String) map.get("title");
         this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));
         this.sourceDateTakenMillis = toLong(map.get("sourceDateTakenMillis"));
-        this.bucketDisplayName = (String) map.get("bucketDisplayName");
         this.durationMillis = toLong(map.get("durationMillis"));
     }
 
@@ -82,7 +79,6 @@ public class ImageEntry {
             put("title", title);
             put("dateModifiedSecs", dateModifiedSecs);
             put("sourceDateTakenMillis", sourceDateTakenMillis);
-            put("bucketDisplayName", bucketDisplayName);
             put("durationMillis", durationMillis);
             // only for map export
             put("contentId", getContentId());

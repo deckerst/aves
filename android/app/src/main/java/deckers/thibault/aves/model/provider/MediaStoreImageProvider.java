@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -51,7 +53,6 @@ public class MediaStoreImageProvider extends ImageProvider {
     private static final String[] IMAGE_PROJECTION = Stream.of(BASE_PROJECTION, new String[]{
             // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
             MediaStore.Images.Media.DATE_TAKEN,
-            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.ORIENTATION,
     }).flatMap(Stream::of).toArray(String[]::new);
 
@@ -59,7 +60,6 @@ public class MediaStoreImageProvider extends ImageProvider {
     private static final String[] VIDEO_PROJECTION = Stream.of(BASE_PROJECTION, new String[]{
             // uses MediaStore.Video.Media instead of MediaStore.MediaColumns for APIs < Q
             MediaStore.Video.Media.DATE_TAKEN,
-            MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Video.Media.DURATION,
     }, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ?
             new String[]{
@@ -111,7 +111,6 @@ public class MediaStoreImageProvider extends ImageProvider {
                 int heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT);
                 int dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED);
                 int dateTakenColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_TAKEN);
-                int bucketDisplayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
 
                 // image & video for API >= Q, only for images for API < Q
                 int orientationColumn = cursor.getColumnIndex(MediaStore.MediaColumns.ORIENTATION);
@@ -138,7 +137,6 @@ public class MediaStoreImageProvider extends ImageProvider {
                         put("title", cursor.getString(titleColumn));
                         put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
                         put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
-                        put("bucketDisplayName", cursor.getString(bucketDisplayNameColumn));
                         // only for map export
                         put("contentId", contentId);
                     }};
@@ -228,21 +226,19 @@ public class MediaStoreImageProvider extends ImageProvider {
     public ListenableFuture<Map<String, Object>> move(final Activity activity, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
         SettableFuture<Map<String, Object>> future = SettableFuture.create();
 
-//        if (Env.isOnSdCard(activity, path)) {
-//            Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
-//            if (sdCardTreeUri == null) {
-//                Runnable runnable = () -> move(activity, path, uri, copy, destinationPath, callback);
-//                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
-//                return;
-//            }
-//
-//            // if the file is on SD card, calling the content resolver delete() removes the entry from the Media Store
-//            // but it doesn't delete the file, even if the app has the permission
-//            StorageUtils.deleteFromSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), path);
-//            Log.d(LOG_TAG, "deleted from SD card at path=" + uri);
-//            callback.onSuccess(null);
-//            return;
-//        }
+        String volumeName = "external";
+        StorageManager sm = activity.getSystemService(StorageManager.class);
+        if (sm != null) {
+            StorageVolume volume = sm.getStorageVolume(new File(destinationDir));
+            if (volume != null && !volume.isPrimary()) {
+                String uuid = volume.getUuid();
+                if (uuid != null) {
+                    // the UUID returned may be uppercase
+                    // but it should be lowercase to work with the MediaStore
+                    volumeName = volume.getUuid().toLowerCase();
+                }
+            }
+        }
 
         try {
             // from API 29, changing MediaColumns.RELATIVE_PATH can move files on disk (same storage device)
@@ -250,9 +246,6 @@ public class MediaStoreImageProvider extends ImageProvider {
             // DocumentFile.getUri() is same as original uri: "content://media/external/images/media/58457"
             // DocumentFile.getParentFile() is null without picking a tree first
             // DocumentsContract.copyDocument() and moveDocument() need parent doc uri
-
-            // TODO TLAD copy/move
-            // TODO TLAD cannot copy to SD card, even with the permission to the volume root, by inserting to MediaStore
 
             PathComponents sourcePathComponents = new PathComponents(sourcePath, Env.getStorageVolumes(activity));
             String destinationPath = destinationDir + File.separator + sourcePathComponents.getFilename();
@@ -262,15 +255,16 @@ public class MediaStoreImageProvider extends ImageProvider {
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
 //            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "");
 //            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "");
-            Uri tableUrl = mimeType.startsWith(MimeTypes.VIDEO) ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI : MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Uri tableUrl = mimeType.startsWith(MimeTypes.VIDEO) ? MediaStore.Video.Media.getContentUri(volumeName) : MediaStore.Images.Media.getContentUri(volumeName);
             Uri destinationUri = activity.getContentResolver().insert(tableUrl, contentValues);
-//            Log.d("TLAD", "move copy from=" + sourcePath + " to=" + destinationPath + " (destinationUri=" + destinationUri + ")");
             if (destinationUri == null) {
                 future.setException(new Exception("failed to insert row to content resolver"));
             } else {
                 DocumentFileCompat source = DocumentFileCompat.fromFile(new File(sourcePath));
                 DocumentFileCompat destination = DocumentFileCompat.fromSingleUri(activity, destinationUri);
                 source.copyTo(destination);
+
+                // TODO TLAD delete source when it is a `move`
 
                 Map<String, Object> newFields = new HashMap<>();
                 newFields.put("uri", destinationUri.toString());

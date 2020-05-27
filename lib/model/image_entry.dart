@@ -28,7 +28,6 @@ class ImageEntry {
   String sourceTitle;
   final int dateModifiedSecs;
   final int sourceDateTakenMillis;
-  final String bucketDisplayName;
   final int durationMillis;
   int _catalogDateMillis;
   CatalogMetadata _catalogMetadata;
@@ -49,10 +48,36 @@ class ImageEntry {
     this.sourceTitle,
     this.dateModifiedSecs,
     this.sourceDateTakenMillis,
-    this.bucketDisplayName,
     this.durationMillis,
   }) : directory = path != null ? dirname(path) : null {
     isFavouriteNotifier.value = isFavourite;
+  }
+
+  ImageEntry copyWith({
+    @required String uri,
+    @required String path,
+    @required int contentId,
+  }) {
+    final copyContentId = contentId ?? this.contentId;
+    final copied = ImageEntry(
+      uri: uri ?? uri,
+      path: path ?? this.path,
+      contentId: copyContentId,
+      mimeType: mimeType,
+      width: width,
+      height: height,
+      orientationDegrees: orientationDegrees,
+      sizeBytes: sizeBytes,
+      sourceTitle: sourceTitle,
+      dateModifiedSecs: dateModifiedSecs,
+      sourceDateTakenMillis: sourceDateTakenMillis,
+      durationMillis: durationMillis,
+    )
+      .._catalogDateMillis = _catalogDateMillis
+      .._catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
+      .._addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
+
+    return copied;
   }
 
   factory ImageEntry.fromMap(Map map) {
@@ -68,7 +93,6 @@ class ImageEntry {
       sourceTitle: map['title'] as String,
       dateModifiedSecs: map['dateModifiedSecs'] as int,
       sourceDateTakenMillis: map['sourceDateTakenMillis'] as int,
-      bucketDisplayName: map['bucketDisplayName'] as String,
       durationMillis: map['durationMillis'] as int,
     );
   }
@@ -86,7 +110,6 @@ class ImageEntry {
       'title': sourceTitle,
       'dateModifiedSecs': dateModifiedSecs,
       'sourceDateTakenMillis': sourceDateTakenMillis,
-      'bucketDisplayName': bucketDisplayName,
       'durationMillis': durationMillis,
     };
   }
