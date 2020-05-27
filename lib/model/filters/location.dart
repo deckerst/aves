@@ -35,11 +35,16 @@ class LocationFilter extends CollectionFilter {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is LocationFilter && other._location == _location;
+    return other is LocationFilter && other.level == level && other._location == _location;
   }
 
   @override
-  int get hashCode => hashValues('LocationFilter', _location);
+  int get hashCode => hashValues('LocationFilter', level, _location);
+
+  @override
+  String toString() {
+    return 'LocationFilter{level=$level, location=$_location}';
+  }
 
   // U+0041 Latin Capital letter A
   // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A

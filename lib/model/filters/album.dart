@@ -65,4 +65,9 @@ class AlbumFilter extends CollectionFilter {
 
   @override
   int get hashCode => hashValues('AlbumFilter', album);
+
+  @override
+  String toString() {
+    return 'AlbumFilter{album=$album}';
+  }
 }

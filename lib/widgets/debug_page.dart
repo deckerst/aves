@@ -49,7 +49,7 @@ class DebugPageState extends State<DebugPage> {
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Debug'),
-            bottom: TabBar(
+            bottom: const TabBar(
               tabs: [
                 Tab(icon: Icon(OMIcons.whatshot)),
                 Tab(icon: Icon(OMIcons.settings)),

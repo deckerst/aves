@@ -25,6 +25,7 @@ class AIcons {
   // actions
   static const IconData clear = OMIcons.clear;
   static const IconData collapse = OMIcons.expandLess;
+  static const IconData createAlbum = OMIcons.addCircleOutline;
   static const IconData debug = OMIcons.whatshot;
   static const IconData delete = OMIcons.delete;
   static const IconData expand = OMIcons.expandMore;

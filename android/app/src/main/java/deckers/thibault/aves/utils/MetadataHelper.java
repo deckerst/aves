@@ -1,8 +1,7 @@
 package deckers.thibault.aves.utils;
 
-import android.media.ExifInterface;
-
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import java.text.DateFormat;
 import java.text.ParseException;

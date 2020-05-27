@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -20,11 +19,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.file.FileTypeDirectory;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -49,8 +51,12 @@ public abstract class ImageProvider {
         callback.onFailure();
     }
 
-    public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
-        callback.onFailure();
+    public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri uri) {
+        return Futures.immediateFailedFuture(new UnsupportedOperationException());
+    }
+
+    public ListenableFuture<Map<String, Object>> move(final Activity activity, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
+        return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
     public void rename(final Activity activity, final String oldPath, final Uri oldUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {

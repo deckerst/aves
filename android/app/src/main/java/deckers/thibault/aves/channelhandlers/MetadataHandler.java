@@ -1,8 +1,11 @@
 package deckers.thibault.aves.channelhandlers;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.format.Formatter;
 
 import androidx.annotation.NonNull;
@@ -86,6 +89,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "getOverlayMetadata":
                 new Thread(() -> getOverlayMetadata(call, new MethodResultWrapper(result))).start();
+                break;
+            case "getContentResolverMetadata":
+                new Thread(() -> getContentResolverMetadata(call, new MethodResultWrapper(result))).start();
                 break;
             default:
                 result.notImplemented();
@@ -326,6 +332,56 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             result.error("getOverlayMetadata-filenotfound", "failed to get metadata for uri=" + uri + ", path=" + path, e.getMessage());
         } catch (Exception e) {
             result.error("getOverlayMetadata-exception", "failed to get metadata for uri=" + uri + ", path=" + path, e.getMessage());
+        }
+    }
+
+    private void getContentResolverMetadata(MethodCall call, MethodChannel.Result result) {
+        String mimeType = call.argument("mimeType");
+        String uriString = call.argument("uri");
+        if (mimeType == null || uriString == null) {
+            result.error("getContentResolverMetadata-args", "failed because of missing arguments", null);
+            return;
+        }
+
+        Uri uri = Uri.parse(uriString);
+        long id = ContentUris.parseId(uri);
+        Uri contentUri = uri;
+        if (mimeType.startsWith(MimeTypes.IMAGE)) {
+            contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
+        } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+            contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
+        }
+
+        Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            Map<String, Object> metadataMap = new HashMap<>();
+            int columnCount = cursor.getColumnCount();
+            String[] columnNames = cursor.getColumnNames();
+            for (int i = 0; i < columnCount; i++) {
+                String key = columnNames[i];
+                switch (cursor.getType(i)) {
+                    case Cursor.FIELD_TYPE_NULL:
+                    default:
+                        metadataMap.put(key, null);
+                        break;
+                    case Cursor.FIELD_TYPE_INTEGER:
+                        metadataMap.put(key, cursor.getInt(i));
+                        break;
+                    case Cursor.FIELD_TYPE_FLOAT:
+                        metadataMap.put(key, cursor.getFloat(i));
+                        break;
+                    case Cursor.FIELD_TYPE_STRING:
+                        metadataMap.put(key, cursor.getString(i));
+                        break;
+                    case Cursor.FIELD_TYPE_BLOB:
+                        metadataMap.put(key, cursor.getBlob(i));
+                        break;
+                }
+            }
+            cursor.close();
+            result.success(metadataMap);
+        } else {
+            result.error("getContentResolverMetadata-null", "failed to get cursor for contentUri=" + contentUri, null);
         }
     }
 

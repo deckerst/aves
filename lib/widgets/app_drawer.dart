@@ -105,9 +105,11 @@ class _AppDrawerState extends State<AppDrawer> {
       videoEntry,
       favouriteEntry,
       _buildSpecialAlbumSection(),
+      const Divider(),
       _buildRegularAlbumSection(),
       _buildCountrySection(),
       _buildTagSection(),
+      const Divider(),
       aboutEntry,
       if (kDebugMode) ...[
         const Divider(),
@@ -252,7 +254,7 @@ class _AppDrawerState extends State<AppDrawer> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FilterGridPage(
+        builder: (context) => FilterNavigationPage(
           source: source,
           title: 'Albums',
           filterEntries: source.getAlbumEntries(),
@@ -267,7 +269,7 @@ class _AppDrawerState extends State<AppDrawer> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FilterGridPage(
+        builder: (context) => FilterNavigationPage(
           source: source,
           title: 'Countries',
           filterEntries: source.getCountryEntries(),
@@ -282,7 +284,7 @@ class _AppDrawerState extends State<AppDrawer> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FilterGridPage(
+        builder: (context) => FilterNavigationPage(
           source: source,
           title: 'Tags',
           filterEntries: source.getTagEntries(),

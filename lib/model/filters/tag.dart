@@ -33,4 +33,9 @@ class TagFilter extends CollectionFilter {
 
   @override
   int get hashCode => hashValues('TagFilter', tag);
+
+  @override
+  String toString() {
+    return 'TagFilter{tag=$tag}';
+  }
 }

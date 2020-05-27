@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
@@ -95,6 +96,21 @@ class ImageFileService {
     }
   }
 
+  static Stream<MoveOpEvent> move(List<ImageEntry> entries, {@required bool copy, @required String destinationPath}) {
+    debugPrint('move ${entries.length} entries');
+    try {
+      return opChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'move',
+        'entries': entries.map((e) => e.toMap()).toList(),
+        'copy': copy,
+        'destinationPath': destinationPath,
+      }).map((event) => MoveOpEvent.fromMap(event));
+    } on PlatformException catch (e) {
+      debugPrint('move failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      return Stream.error(e);
+    }
+  }
+
   static Future<Map> rename(ImageEntry entry, String newName) async {
     try {
       // return map with: 'contentId' 'path' 'title' 'uri' (all optional)
@@ -125,15 +141,55 @@ class ImageFileService {
 }
 
 class ImageOpEvent {
-  final String uri;
   final bool success;
+  final String uri;
 
-  ImageOpEvent({this.uri, this.success});
+  ImageOpEvent({
+    this.success,
+    this.uri,
+  });
 
   factory ImageOpEvent.fromMap(Map map) {
     return ImageOpEvent(
-      uri: map['uri'],
       success: map['success'] ?? false,
+      uri: map['uri'],
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is ImageOpEvent && other.success == success && other.uri == uri;
+  }
+
+  @override
+  int get hashCode => hashValues('ImageOpEvent', success, uri);
+
+  @override
+  String toString() {
+    return 'ImageOpEvent{success=$success, uri=$uri}';
+  }
+}
+
+class MoveOpEvent extends ImageOpEvent {
+  final Map newFields;
+
+  MoveOpEvent({bool success, String uri, this.newFields})
+      : super(
+          success: success,
+          uri: uri,
+        );
+
+  factory MoveOpEvent.fromMap(Map map) {
+    return MoveOpEvent(
+      success: map['success'] ?? false,
+      uri: map['uri'],
+      newFields: map['newFields'],
+    );
+  }
+
+  @override
+  String toString() {
+    return 'MoveOpEvent{success=$success, uri=$uri, newFields=$newFields}';
   }
 }

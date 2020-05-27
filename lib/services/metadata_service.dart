@@ -70,4 +70,18 @@ class MetadataService {
     }
     return null;
   }
+
+  static Future<Map> getContentResolverMetadata(ImageEntry entry) async {
+    try {
+      // return map with all data available from the content resolver
+      final result = await platform.invokeMethod('getContentResolverMetadata', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getContentResolverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
 }

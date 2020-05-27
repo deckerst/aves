@@ -160,7 +160,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               builder: (context, child) {
                 return IconButton(
                   icon: Icon(action.getIcon()),
-                  onPressed: collection.selection.isEmpty ? null : () => _actionDelegate.onActionSelected(context, action),
+                  onPressed: collection.selection.isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
                   tooltip: action.getText(),
                 );
               },
@@ -182,6 +182,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ),
             ],
             if (collection.isSelecting) ...[
+              const PopupMenuItem(
+                value: CollectionAction.copy,
+                child: MenuRow(text: 'Copy to album'),
+              ),
+              const PopupMenuItem(
+                value: CollectionAction.move,
+                child: MenuRow(text: 'Move to album'),
+              ),
               const PopupMenuItem(
                 value: CollectionAction.selectAll,
                 child: MenuRow(text: 'Select all'),
@@ -253,6 +261,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     // wait for the popup menu to hide before proceeding with the action
     await Future.delayed(Constants.popupMenuTransitionDuration);
     switch (action) {
+      case CollectionAction.copy:
+      case CollectionAction.move:
+        _actionDelegate.onCollectionActionSelected(context, action);
+        break;
       case CollectionAction.select:
         collection.select();
         break;
@@ -312,4 +324,4 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 }
 
-enum CollectionAction { select, selectAll, selectNone, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
+enum CollectionAction { copy, move, select, selectAll, selectNone, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }

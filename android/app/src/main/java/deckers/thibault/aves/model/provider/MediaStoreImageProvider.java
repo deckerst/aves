@@ -3,6 +3,7 @@ package deckers.thibault.aves.model.provider;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,6 +15,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.commonsware.cwac.document.DocumentFileCompat;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -21,6 +27,7 @@ import java.util.stream.Stream;
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MimeTypes;
+import deckers.thibault.aves.utils.PathComponents;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
@@ -171,38 +178,112 @@ public class MediaStoreImageProvider extends ImageProvider {
         return !MimeTypes.SVG.equals(mimeType);
     }
 
+    // check write access permission to SD card
+    // Before KitKat, we do whatever we want on the SD card.
+    // From KitKat, we need access permission from the Document Provider, at the file level.
+    // From Lollipop, we can request the permission at the SD card root level.
+
     @Override
-    public void delete(final Activity activity, final String path, final Uri uri, final ImageOpCallback callback) {
-        // check write access permission to SD card
-        // Before KitKat, we do whatever we want on the SD card.
-        // From KitKat, we need access permission from the Document Provider, at the file level.
-        // From Lollipop, we can request the permission at the SD card root level.
+    public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri uri) {
+        SettableFuture<Object> future = SettableFuture.create();
+
         if (Env.isOnSdCard(activity, path)) {
             Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
             if (sdCardTreeUri == null) {
-                Runnable runnable = () -> delete(activity, path, uri, callback);
+                Runnable runnable = () -> {
+                    try {
+                        future.set(delete(activity, path, uri).get());
+                    } catch (Exception e) {
+                        future.setException(e);
+                    }
+                };
                 new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
-                return;
+                return future;
             }
 
             // if the file is on SD card, calling the content resolver delete() removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
             StorageUtils.deleteFromSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), path);
             Log.d(LOG_TAG, "deleted from SD card at path=" + uri);
-            callback.onSuccess(null);
-            return;
+            future.set(null);
+            return future;
         }
 
         try {
             if (activity.getContentResolver().delete(uri, null, null) > 0) {
                 Log.d(LOG_TAG, "deleted from content resolver uri=" + uri);
-                callback.onSuccess(null);
-                return;
+                future.set(null);
+            } else {
+                future.setException(new Exception("failed to delete row from content provider"));
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "failed to delete entry", e);
+            future.setException(e);
         }
-        callback.onFailure();
+
+        return future;
+    }
+
+    @Override
+    public ListenableFuture<Map<String, Object>> move(final Activity activity, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
+        SettableFuture<Map<String, Object>> future = SettableFuture.create();
+
+//        if (Env.isOnSdCard(activity, path)) {
+//            Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
+//            if (sdCardTreeUri == null) {
+//                Runnable runnable = () -> move(activity, path, uri, copy, destinationPath, callback);
+//                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
+//                return;
+//            }
+//
+//            // if the file is on SD card, calling the content resolver delete() removes the entry from the Media Store
+//            // but it doesn't delete the file, even if the app has the permission
+//            StorageUtils.deleteFromSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), path);
+//            Log.d(LOG_TAG, "deleted from SD card at path=" + uri);
+//            callback.onSuccess(null);
+//            return;
+//        }
+
+        try {
+            // from API 29, changing MediaColumns.RELATIVE_PATH can move files on disk (same storage device)
+            // from API 26, retrieve document URI from mediastore URI with `MediaStore.getDocumentUri(...)`
+            // DocumentFile.getUri() is same as original uri: "content://media/external/images/media/58457"
+            // DocumentFile.getParentFile() is null without picking a tree first
+            // DocumentsContract.copyDocument() and moveDocument() need parent doc uri
+
+            // TODO TLAD copy/move
+            // TODO TLAD cannot copy to SD card, even with the permission to the volume root, by inserting to MediaStore
+
+            PathComponents sourcePathComponents = new PathComponents(sourcePath, Env.getStorageVolumes(activity));
+            String destinationPath = destinationDir + File.separator + sourcePathComponents.getFilename();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DATA, destinationPath);
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+//            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "");
+//            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "");
+            Uri tableUrl = mimeType.startsWith(MimeTypes.VIDEO) ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI : MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Uri destinationUri = activity.getContentResolver().insert(tableUrl, contentValues);
+//            Log.d("TLAD", "move copy from=" + sourcePath + " to=" + destinationPath + " (destinationUri=" + destinationUri + ")");
+            if (destinationUri == null) {
+                future.setException(new Exception("failed to insert row to content resolver"));
+            } else {
+                DocumentFileCompat source = DocumentFileCompat.fromFile(new File(sourcePath));
+                DocumentFileCompat destination = DocumentFileCompat.fromSingleUri(activity, destinationUri);
+                source.copyTo(destination);
+
+                Map<String, Object> newFields = new HashMap<>();
+                newFields.put("uri", destinationUri.toString());
+                newFields.put("contentId", ContentUris.parseId(destinationUri));
+                newFields.put("path", destinationPath);
+                future.set(newFields);
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "failed to " + (copy ? "copy" : "move") + " entry", e);
+            future.setException(e);
+        }
+
+        return future;
     }
 
     public interface NewEntryHandler {

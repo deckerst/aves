@@ -12,17 +12,58 @@ import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FilterGridPage extends StatelessWidget {
+class FilterNavigationPage extends StatelessWidget {
   final CollectionSource source;
   final String title;
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
 
-  const FilterGridPage({
+  const FilterNavigationPage({
     @required this.source,
     @required this.title,
     @required this.filterEntries,
     @required this.filterBuilder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterGridPage(
+      source: source,
+      appBar: SliverAppBar(
+        title: Text(title),
+        floating: true,
+      ),
+      filterEntries: filterEntries,
+      filterBuilder: filterBuilder,
+      onPressed: (filter) => Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CollectionPage(CollectionLens(
+            source: source,
+            filters: [filter],
+            groupFactor: settings.collectionGroupFactor,
+            sortFactor: settings.collectionSortFactor,
+          )),
+        ),
+        (route) => false,
+      ),
+    );
+  }
+}
+
+class FilterGridPage extends StatelessWidget {
+  final CollectionSource source;
+  final Widget appBar;
+  final Map<String, ImageEntry> filterEntries;
+  final CollectionFilter Function(String key) filterBuilder;
+  final FilterCallback onPressed;
+
+  const FilterGridPage({
+    @required this.source,
+    @required this.appBar,
+    @required this.filterEntries,
+    @required this.filterBuilder,
+    @required this.onPressed,
   });
 
   List<String> get filterKeys => filterEntries.keys.toList();
@@ -34,10 +75,7 @@ class FilterGridPage extends StatelessWidget {
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
-              SliverAppBar(
-                title: Text(title),
-                floating: true,
-              ),
+              appBar,
               SliverPadding(
                 padding: EdgeInsets.all(AvesFilterChip.buttonBorderWidth),
                 sliver: SliverGrid(
@@ -62,18 +100,7 @@ class FilterGridPage extends StatelessWidget {
                         filter: filterBuilder(key),
                         showGenericIcon: false,
                         decoration: decoration,
-                        onPressed: (filter) => Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CollectionPage(CollectionLens(
-                              source: source,
-                              filters: [filter],
-                              groupFactor: settings.collectionGroupFactor,
-                              sortFactor: settings.collectionSortFactor,
-                            )),
-                          ),
-                          (route) => false,
-                        ),
+                        onPressed: onPressed,
                       );
                     },
                     childCount: filterKeys.length,

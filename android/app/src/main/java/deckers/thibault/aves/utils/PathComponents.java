@@ -27,11 +27,11 @@ public class PathComponents {
         return storage;
     }
 
-    String getFolder() {
+    public String getFolder() {
         return folder;
     }
 
-    String getFilename() {
+    public String getFilename() {
         return filename;
     }
 }

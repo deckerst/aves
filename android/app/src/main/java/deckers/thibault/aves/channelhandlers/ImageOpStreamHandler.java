@@ -4,36 +4,40 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
+import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.EventChannel;
 
 public class ImageOpStreamHandler implements EventChannel.StreamHandler {
+    private static final String LOG_TAG = Utils.createLogTag(ImageOpStreamHandler.class);
+
     public static final String CHANNEL = "deckers.thibault/aves/imageopstream";
 
     private Activity activity;
     private EventChannel.EventSink eventSink;
     private Handler handler;
-    private List<Map> entryMapList;
+    private Map<String, Object> argMap;
+    private List<Map<String, Object>> entryMapList;
     private String op;
 
     public ImageOpStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
         if (arguments instanceof Map) {
-            Map argMap = (Map) arguments;
+            argMap = (Map<String, Object>) arguments;
             this.op = (String) argMap.get("op");
             this.entryMapList = new ArrayList<>();
-            List rawEntries = (List) argMap.get("entries");
+            List<Map<String, Object>> rawEntries = (List<Map<String, Object>>) argMap.get("entries");
             if (rawEntries != null) {
-                for (Object entry : rawEntries) {
-                    entryMapList.add((Map) entry);
-                }
+                entryMapList.addAll(rawEntries);
             }
         }
     }
@@ -44,6 +48,8 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         this.handler = new Handler(Looper.getMainLooper());
         if ("delete".equals(op)) {
             new Thread(this::delete).start();
+        } else if ("move".equals(op)) {
+            new Thread(this::move).start();
         } else {
             endOfStream();
         }
@@ -53,7 +59,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
     public void onCancel(Object o) {
     }
 
-    // {String uri, bool success}
+    // {String uri, bool success, [Map<String, Object> newFields]}
     private void success(final Map<String, Object> result) {
         handler.post(() -> eventSink.success(result));
     }
@@ -66,6 +72,47 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         handler.post(() -> eventSink.endOfStream());
     }
 
+    private void move() {
+        if (entryMapList.size() == 0) {
+            endOfStream();
+            return;
+        }
+
+        // assume same provider for all entries
+        Map<String, Object> firstEntry = entryMapList.get(0);
+        Uri firstUri = Uri.parse((String) firstEntry.get("uri"));
+        ImageProvider provider = ImageProviderFactory.getProvider(firstUri);
+        if (provider == null) {
+            error("move-provider", "failed to find provider for uri=" + firstUri, null);
+            return;
+        }
+
+        Boolean copy = (Boolean) argMap.get("copy");
+        String destinationDir = (String) argMap.get("destinationPath");
+        if (copy == null || destinationDir == null) return;
+
+        for (Map<String, Object> entryMap : entryMapList) {
+            String uriString = (String) entryMap.get("uri");
+            Uri sourceUri = Uri.parse(uriString);
+            String sourcePath = (String) entryMap.get("path");
+            String mimeType = (String) entryMap.get("mimeType");
+
+            Map<String, Object> result = new HashMap<String, Object>() {{
+                put("uri", uriString);
+            }};
+            try {
+                Map<String, Object> newFields = provider.move(activity, sourcePath, sourceUri, destinationDir, mimeType, copy).get();
+                result.put("success", true);
+                result.put("newFields", newFields);
+            } catch (ExecutionException | InterruptedException e) {
+                Log.w(LOG_TAG, "failed to move to destinationDir=" + destinationDir + " entry with sourcePath=" + sourcePath, e);
+                result.put("success", false);
+            }
+            success(result);
+        }
+        endOfStream();
+    }
+
     private void delete() {
         if (entryMapList.size() == 0) {
             endOfStream();
@@ -73,7 +120,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         }
 
         // assume same provider for all entries
-        Map firstEntry = entryMapList.get(0);
+        Map<String, Object> firstEntry = entryMapList.get(0);
         Uri firstUri = Uri.parse((String) firstEntry.get("uri"));
         ImageProvider provider = ImageProviderFactory.getProvider(firstUri);
         if (provider == null) {
@@ -81,29 +128,23 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
             return;
         }
 
-        for (Map entryMap : entryMapList) {
+        for (Map<String, Object> entryMap : entryMapList) {
             String uriString = (String) entryMap.get("uri");
             Uri uri = Uri.parse(uriString);
             String path = (String) entryMap.get("path");
-            provider.delete(activity, path, uri, new ImageProvider.ImageOpCallback() {
-                @Override
-                public void onSuccess(Map<String, Object> newFields) {
-                    Map<String, Object> result = new HashMap<String, Object>() {{
-                        put("uri", uriString);
-                        put("success", true);
-                    }};
-                    success(result);
-                }
 
-                @Override
-                public void onFailure() {
-                    Map<String, Object> result = new HashMap<String, Object>() {{
-                        put("uri", uriString);
-                        put("success", false);
-                    }};
-                    success(result);
-                }
-            });
+            Map<String, Object> result = new HashMap<String, Object>() {{
+                put("uri", uriString);
+            }};
+            try {
+                provider.delete(activity, path, uri).get();
+                result.put("success", true);
+            } catch (ExecutionException | InterruptedException e) {
+                Log.w(LOG_TAG, "failed to delete entry with path=" + path, e);
+                result.put("success", false);
+            }
+            success(result);
+
         }
         endOfStream();
     }
