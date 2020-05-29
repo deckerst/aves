@@ -17,14 +17,16 @@ class FavouriteRepo {
 
   bool isFavourite(ImageEntry entry) => _rows.any((row) => row.contentId == entry.contentId);
 
-  Future<void> add(ImageEntry entry) async {
-    final newRows = [FavouriteRow(contentId: entry.contentId, path: entry.path)];
+  FavouriteRow _entryToRow(ImageEntry entry) => FavouriteRow(contentId: entry.contentId, path: entry.path);
+
+  Future<void> add(Iterable<ImageEntry> entries) async {
+    final newRows = entries.map(_entryToRow);
     await metadataDb.addFavourites(newRows);
     _rows.addAll(newRows);
   }
 
-  Future<void> remove(ImageEntry entry) async {
-    final removedRows = [FavouriteRow(contentId: entry.contentId, path: entry.path)];
+  Future<void> remove(Iterable<ImageEntry> entries) async {
+    final removedRows = entries.map(_entryToRow);
     await metadataDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
   }

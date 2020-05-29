@@ -144,6 +144,7 @@ class CollectionSource {
   }
 
   void removeEntries(Iterable<ImageEntry> entries) async {
+    entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
     eventBus.fire(EntryRemovedEvent(entries));
   }

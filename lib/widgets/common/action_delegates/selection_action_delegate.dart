@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/album/app_bar.dart';
@@ -98,20 +99,30 @@ class SelectionActionDelegate with PermissionAwareMixin {
         }
         if (movedCount > 0) {
           if (copy) {
-            collection.source.addAll(movedOps.map((movedOp) {
+            final newEntries = <ImageEntry>[];
+            final newFavs = <ImageEntry>[];
+            movedOps.forEach((movedOp) {
               final sourceUri = movedOp.uri;
               final newFields = movedOp.newFields;
               final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-              return sourceEntry?.copyWith(
+              final copy = sourceEntry?.copyWith(
                 uri: newFields['uri'] as String,
                 path: newFields['path'] as String,
                 contentId: newFields['contentId'] as int,
               );
-            }));
+              newEntries.add(copy);
+              if (sourceEntry.isFavourite) {
+                newFavs.add(copy);
+              }
+            });
+            collection.source.addAll(newEntries);
+            metadataDb.saveMetadata(newEntries.map((entry) => entry.catalogMetadata));
+            metadataDb.saveAddresses(newEntries.map((entry) => entry.addressDetails));
+            newFavs.forEach((entry) => entry.addToFavourites());
           } else {
             // TODO TLAD update old entries path/dir/ID
+            // TODO TLAD update DB for catalog/address/fav
           }
-          // TODO TLAD update DB for catalog/address/fav
         }
         collection.clearSelection();
         collection.browse();

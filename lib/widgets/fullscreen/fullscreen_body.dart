@@ -413,12 +413,12 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   void _registerWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.addListener(_onVerticalPageControllerChanged);
-    widget.entry.imageChangeNotifier.addListener(_onImageChanged);
+    widget.entry?.imageChangeNotifier?.addListener(_onImageChanged);
   }
 
   void _unregisterWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
-    widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
+    widget.entry?.imageChangeNotifier?.removeListener(_onImageChanged);
   }
 
   @override

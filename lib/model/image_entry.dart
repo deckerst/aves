@@ -335,10 +335,23 @@ class ImageEntry {
 
   void toggleFavourite() {
     if (isFavourite) {
-      favourites.remove(this);
+      removeFromFavourites();
     } else {
-      favourites.add(this);
+      addToFavourites();
     }
-    isFavouriteNotifier.value = !isFavouriteNotifier.value;
+  }
+
+  void addToFavourites() {
+    if (!isFavourite) {
+      favourites.add([this]);
+      isFavouriteNotifier.value = true;
+    }
+  }
+
+  void removeFromFavourites() {
+    if (isFavourite) {
+      favourites.remove([this]);
+      isFavouriteNotifier.value = false;
+    }
   }
 }
