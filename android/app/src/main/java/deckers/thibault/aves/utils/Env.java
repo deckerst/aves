@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
+
 public class Env {
     private static String[] mStorageVolumeRoots;
     private static String mExternalStorage;
@@ -38,12 +40,17 @@ public class Env {
 
     private static String getExternalStorage() {
         if (mExternalStorage == null) {
-            mExternalStorage = Environment.getExternalStorageDirectory().toString();
+            mExternalStorage = Environment.getExternalStorageDirectory().getAbsolutePath();
+            if (!mExternalStorage.endsWith("/")) {
+                mExternalStorage += "/";
+            }
         }
         return mExternalStorage;
     }
 
-    public static boolean isOnSdCard(final Activity activity, String path) {
-        return path != null && !getExternalStorage().equals(new PathSegments(path, getStorageVolumeRoots(activity)).getStorage());
+    public static boolean requireAccessPermission(@NonNull String path) {
+        boolean onPrimaryVolume = path.startsWith(getExternalStorage());
+        // TODO TLAD on Android R, we should require access permission even on primary
+        return !onPrimaryVolume;
     }
 }

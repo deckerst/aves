@@ -180,7 +180,7 @@ public class MediaStoreImageProvider extends ImageProvider {
     public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri mediaUri) {
         SettableFuture<Object> future = SettableFuture.create();
 
-        if (Env.isOnSdCard(activity, path)) {
+        if (Env.requireAccessPermission(path)) {
             Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
             if (sdCardTreeUri == null) {
                 Runnable runnable = () -> {
@@ -235,7 +235,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                 if (uuid != null) {
                     // the UUID returned may be uppercase
                     // but it should be lowercase to work with the MediaStore
-                    volumeName = volume.getUuid().toLowerCase();
+                    volumeName = uuid.toLowerCase();
                 }
             }
         }

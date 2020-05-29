@@ -83,8 +83,7 @@ public abstract class ImageProvider {
             return;
         }
 
-        if (Env.isOnSdCard(activity, oldPath)) {
-            // rename with DocumentFile
+        if (Env.requireAccessPermission(oldPath)) {
             Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
             if (sdCardTreeUri == null) {
                 Runnable runnable = () -> rename(activity, oldPath, oldMediaUri, mimeType, newFilename, callback);
@@ -173,21 +172,14 @@ public abstract class ImageProvider {
 
     private void rotateJpeg(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.JPEG;
-        String editablePath = path;
-        boolean onSdCard = Env.isOnSdCard(activity, path);
-        if (onSdCard) {
+        // copy original file to a temporary file for editing
+        final String editablePath = StorageUtils.copyFileToTemp(path);
+        if (Env.requireAccessPermission(path)) {
             if (PermissionManager.getSdCardTreeUri(activity) == null) {
                 Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
                 new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
                 return;
             }
-            // copy original file to a temporary file for editing
-            editablePath = StorageUtils.copyFileToTemp(path);
-        }
-
-        if (editablePath == null) {
-            callback.onFailure();
-            return;
         }
 
         boolean rotated = false;
@@ -211,10 +203,8 @@ public abstract class ImageProvider {
             exif.setAttribute(ExifInterface.TAG_ORIENTATION, Integer.toString(newOrientationCode));
             exif.saveAttributes();
 
-            // if the image is on the SD card, copy the edited temporary file to the original DocumentFile
-            if (onSdCard) {
-                DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
-            }
+            // copy the edited temporary file to the original DocumentFile
+            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
             rotated = true;
         } catch (IOException e) {
             Log.w(LOG_TAG, "failed to edit EXIF to rotate image at path=" + path, e);
@@ -251,21 +241,14 @@ public abstract class ImageProvider {
 
     private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.PNG;
-        String editablePath = path;
-        boolean onSdCard = Env.isOnSdCard(activity, path);
-        if (onSdCard) {
+        // copy original file to a temporary file for editing
+        final String editablePath = StorageUtils.copyFileToTemp(path);
+        if (Env.requireAccessPermission(path)) {
             if (PermissionManager.getSdCardTreeUri(activity) == null) {
                 Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
                 new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
                 return;
             }
-            // copy original file to a temporary file for editing
-            editablePath = StorageUtils.copyFileToTemp(path);
-        }
-
-        if (editablePath == null) {
-            callback.onFailure();
-            return;
         }
 
         Bitmap originalImage = BitmapFactory.decodeFile(path);
@@ -284,10 +267,8 @@ public abstract class ImageProvider {
         try (FileOutputStream fos = new FileOutputStream(editablePath)) {
             rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
-            // if the image is on the SD card, copy the edited temporary file to the original DocumentFile
-            if (onSdCard) {
-                DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
-            }
+            // copy the edited temporary file to the original DocumentFile
+            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
             rotated = true;
         } catch (IOException e) {
             Log.e(LOG_TAG, "failed to save rotated image to path=" + path, e);

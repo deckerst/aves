@@ -212,7 +212,7 @@ public class StorageUtils {
 
     @Nullable
     public static DocumentFileCompat getDocumentFile(Activity activity, @NonNull String path, @NonNull Uri mediaUri) {
-        if (Env.isOnSdCard(activity, path)) {
+        if (Env.requireAccessPermission(path)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Uri docUri = MediaStore.getDocumentUri(activity, mediaUri);
                 return DocumentFileCompat.fromSingleUri(activity, docUri);
