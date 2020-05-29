@@ -22,6 +22,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -29,7 +30,6 @@ import java.util.stream.Stream;
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MimeTypes;
-import deckers.thibault.aves.utils.PathComponents;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
@@ -176,13 +176,8 @@ public class MediaStoreImageProvider extends ImageProvider {
         return !MimeTypes.SVG.equals(mimeType);
     }
 
-    // check write access permission to SD card
-    // Before KitKat, we do whatever we want on the SD card.
-    // From KitKat, we need access permission from the Document Provider, at the file level.
-    // From Lollipop, we can request the permission at the SD card root level.
-
     @Override
-    public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri uri) {
+    public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri mediaUri) {
         SettableFuture<Object> future = SettableFuture.create();
 
         if (Env.isOnSdCard(activity, path)) {
@@ -190,7 +185,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             if (sdCardTreeUri == null) {
                 Runnable runnable = () -> {
                     try {
-                        future.set(delete(activity, path, uri).get());
+                        future.set(delete(activity, path, mediaUri).get());
                     } catch (Exception e) {
                         future.setException(e);
                     }
@@ -201,15 +196,20 @@ public class MediaStoreImageProvider extends ImageProvider {
 
             // if the file is on SD card, calling the content resolver delete() removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
-            StorageUtils.deleteFromSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), path);
-            Log.d(LOG_TAG, "deleted from SD card at path=" + uri);
-            future.set(null);
+            try {
+                DocumentFileCompat df = StorageUtils.getDocumentFile(activity, path, mediaUri);
+                if (df != null && df.delete()) {
+                    future.set(null);
+                    future.setException(new Exception("failed to delete file with df=" + df));
+                }
+            } catch (FileNotFoundException e) {
+                future.setException(e);
+            }
             return future;
         }
 
         try {
-            if (activity.getContentResolver().delete(uri, null, null) > 0) {
-                Log.d(LOG_TAG, "deleted from content resolver uri=" + uri);
+            if (activity.getContentResolver().delete(mediaUri, null, null) > 0) {
                 future.set(null);
             } else {
                 future.setException(new Exception("failed to delete row from content provider"));
@@ -247,8 +247,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             // DocumentFile.getParentFile() is null without picking a tree first
             // DocumentsContract.copyDocument() and moveDocument() need parent doc uri
 
-            PathComponents sourcePathComponents = new PathComponents(sourcePath, Env.getStorageVolumes(activity));
-            String destinationPath = destinationDir + File.separator + sourcePathComponents.getFilename();
+            String destinationPath = destinationDir + File.separator + new File(sourcePath).getName();
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.MediaColumns.DATA, destinationPath);

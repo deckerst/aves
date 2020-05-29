@@ -1,20 +1,22 @@
 package deckers.thibault.aves.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import androidx.documentfile.provider.DocumentFile;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
@@ -85,7 +87,7 @@ public class StorageUtils {
      * @return paths to all available SD-Cards in the system (include emulated)
      */
     @SuppressLint("ObsoleteSdkInt")
-    public static String[] getStorageVolumes(Context context) {
+    public static String[] getStorageVolumeRoots(Context context) {
         // Final set of paths
         final Set<String> rv = new HashSet<>();
 
@@ -182,36 +184,47 @@ public class StorageUtils {
         };
     }
 
-    private static Optional<DocumentFile> getSdCardDocumentFile(Context context, Uri sdCardTreeUri, String[] storageVolumes, String path) {
-        if (sdCardTreeUri == null || storageVolumes == null || path == null) {
+    private static Optional<DocumentFileCompat> getSdCardDocumentFile(Context context, Uri rootTreeUri, String[] storageVolumeRoots, String path) {
+        if (rootTreeUri == null || storageVolumeRoots == null || path == null) {
             return Optional.empty();
         }
 
-        PathComponents pathComponents = new PathComponents(path, storageVolumes);
-        ArrayList<String> pathSegments = Lists.newArrayList(Splitter.on(File.separatorChar)
-                .trimResults().omitEmptyStrings().split(pathComponents.getFolder()));
-        pathSegments.add(pathComponents.getFilename());
-        Iterator<String> pathIterator = pathSegments.iterator();
+        PathSegments pathSegments = new PathSegments(path, storageVolumeRoots);
+        ArrayList<String> pathSteps = Lists.newArrayList(Splitter.on(File.separatorChar)
+                .trimResults().omitEmptyStrings().split(pathSegments.getRelativePath()));
+        pathSteps.add(pathSegments.getFilename());
+        Iterator<String> pathIterator = pathSteps.iterator();
 
+        DocumentFileCompat documentFile = DocumentFileCompat.fromTreeUri(context, rootTreeUri);
+        if (documentFile == null) {
+            return Optional.empty();
+        }
         // follow the entry path down the document tree
-        boolean found = true;
-        DocumentFile documentFile = DocumentFile.fromTreeUri(context, sdCardTreeUri);
-        while (pathIterator.hasNext() && found) {
-            String segment = pathIterator.next();
-            found = false;
-            if (documentFile != null) {
-                DocumentFile[] children = documentFile.listFiles();
-                for (int i = children.length - 1; i >= 0 && !found; i--) {
-                    DocumentFile child = children[i];
-                    if (segment.equals(child.getName())) {
-                        found = true;
-                        documentFile = child;
-                    }
-                }
+        while (pathIterator.hasNext()) {
+            documentFile = documentFile.findFile(pathIterator.next());
+            if (documentFile == null) {
+                return Optional.empty();
             }
         }
+        return Optional.of(documentFile);
+    }
 
-        return found && documentFile != null ? Optional.of(documentFile) : Optional.empty();
+
+    @Nullable
+    public static DocumentFileCompat getDocumentFile(Activity activity, @NonNull String path, @NonNull Uri mediaUri) {
+        if (Env.isOnSdCard(activity, path)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Uri docUri = MediaStore.getDocumentUri(activity, mediaUri);
+                return DocumentFileCompat.fromSingleUri(activity, docUri);
+            } else {
+                Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
+                String[] storageVolumeRoots = Env.getStorageVolumeRoots(activity);
+                Optional<DocumentFileCompat> docFile = StorageUtils.getSdCardDocumentFile(activity, sdCardTreeUri, storageVolumeRoots, path);
+                return docFile.orElse(null);
+            }
+        } else {
+            return DocumentFileCompat.fromFile(new File(path));
+        }
     }
 
     public static String copyFileToTemp(String path) {
@@ -225,41 +238,5 @@ public class StorageUtils {
             Log.w(LOG_TAG, "failed to copy file at path=" + path);
         }
         return null;
-    }
-
-    public static boolean writeToDocumentFile(Context context, String from, Uri documentUri) {
-        try {
-            ParcelFileDescriptor pfd = context.getContentResolver().openFileDescriptor(documentUri, "rw");
-            if (pfd == null) {
-                Log.w(LOG_TAG, "failed to get file descriptor for documentUri=" + documentUri);
-                return false;
-            }
-            Utils.copyFile(new File(from), pfd.getFileDescriptor());
-            return true;
-        } catch (IOException e) {
-            Log.w(LOG_TAG, "failed to write to DocumentFile at documentUri=" + documentUri);
-        }
-        return false;
-    }
-
-    /**
-     * Delete the specified file on SD card
-     * Note that it does not update related content providers such as the Media Store.
-     */
-    public static boolean deleteFromSdCard(Context context, Uri sdCardTreeUri, String[] storageVolumes, String path) {
-        Optional<DocumentFile> documentFile = getSdCardDocumentFile(context, sdCardTreeUri, storageVolumes, path);
-        boolean success = documentFile.isPresent() && documentFile.get().delete();
-        Log.d(LOG_TAG, "deleteFromSdCard success=" + success + " for sdCardTreeUri=" + sdCardTreeUri + ", path=" + path);
-        return success;
-    }
-
-    /**
-     * Rename the specified file on SD card
-     * Note that it does not update related content providers such as the Media Store.
-     */
-    public static boolean renameOnSdCard(Context context, Uri sdCardTreeUri, String[] storageVolumes, String path, String newFilename) {
-        Log.d(LOG_TAG, "renameOnSdCard with path=" + path + ", newFilename=" + newFilename);
-        Optional<DocumentFile> documentFile = getSdCardDocumentFile(context, sdCardTreeUri, storageVolumes, path);
-        return documentFile.isPresent() && documentFile.get().renameTo(newFilename);
     }
 }

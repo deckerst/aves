@@ -59,7 +59,7 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
         List<Map<String, Object>> volumes = new ArrayList<>();
         StorageManager sm = activity.getSystemService(StorageManager.class);
         if (sm != null) {
-            for (String path : Env.getStorageVolumes(activity)) {
+            for (String path : Env.getStorageVolumeRoots(activity)) {
                 try {
                     File file = new File(path);
                     StorageVolume volume = sm.getStorageVolume(file);

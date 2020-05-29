@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 
@@ -350,6 +351,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
         } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
             contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentUri = MediaStore.setRequireOriginal(contentUri);
         }
 
         Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);

@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 
 public class Env {
-    private static String[] mStorageVolumes;
+    private static String[] mStorageVolumeRoots;
     private static String mExternalStorage;
     // SD card path as a content URI from the Documents Provider
     // e.g. content://com.android.externalstorage.documents/tree/12A9-8B42%3A
@@ -29,11 +29,11 @@ public class Env {
         return mSdCardDocumentUri;
     }
 
-    public static String[] getStorageVolumes(final Activity activity) {
-        if (mStorageVolumes == null) {
-            mStorageVolumes = StorageUtils.getStorageVolumes(activity);
+    public static String[] getStorageVolumeRoots(final Activity activity) {
+        if (mStorageVolumeRoots == null) {
+            mStorageVolumeRoots = StorageUtils.getStorageVolumeRoots(activity);
         }
-        return mStorageVolumes;
+        return mStorageVolumeRoots;
     }
 
     private static String getExternalStorage() {
@@ -44,6 +44,6 @@ public class Env {
     }
 
     public static boolean isOnSdCard(final Activity activity, String path) {
-        return path != null && !getExternalStorage().equals(new PathComponents(path, getStorageVolumes(activity)).getStorage());
+        return path != null && !getExternalStorage().equals(new PathSegments(path, getStorageVolumeRoots(activity)).getStorage());
     }
 }

@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -21,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.commonsware.cwac.document.DocumentFileCompat;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
@@ -29,7 +29,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,6 +42,15 @@ import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
+
+// *** about file access to write/rename/delete
+// * primary volume
+// until 28/Pie, use `File`
+// on 29/Q, use `File` after setting `requestLegacyExternalStorage` flag in the manifest
+// from 30/R, use `DocumentFile` (not `File`) after requesting permission to the volume root???
+// * non primary volumes
+// on 19/KitKat, use `DocumentFile` (not `File`) after getting permission for each file
+// from 21/Lollipop, use `DocumentFile` (not `File`) after getting permission to the volume root
 
 public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
@@ -59,9 +67,9 @@ public abstract class ImageProvider {
         return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
-    public void rename(final Activity activity, final String oldPath, final Uri oldUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {
+    public void rename(final Activity activity, final String oldPath, final Uri oldMediaUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {
         if (oldPath == null) {
-            Log.w(LOG_TAG, "entry does not have a path, uri=" + oldUri);
+            Log.w(LOG_TAG, "entry does not have a path, uri=" + oldMediaUri);
             callback.onFailure();
             return;
         }
@@ -75,26 +83,26 @@ public abstract class ImageProvider {
             return;
         }
 
-        // Before KitKat, we do whatever we want on the SD card.
-        // From KitKat, we need access permission from the Document Provider, at the file level.
-        // From Lollipop, we can request the permission at the SD card root level.
-        boolean renamed;
         if (Env.isOnSdCard(activity, oldPath)) {
             // rename with DocumentFile
             Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
             if (sdCardTreeUri == null) {
-                Runnable runnable = () -> rename(activity, oldPath, oldUri, mimeType, newFilename, callback);
+                Runnable runnable = () -> rename(activity, oldPath, oldMediaUri, mimeType, newFilename, callback);
                 new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
                 return;
             }
-            renamed = StorageUtils.renameOnSdCard(activity, sdCardTreeUri, Env.getStorageVolumes(activity), oldPath, newFilename);
-        } else {
-            // rename with File
-            renamed = oldFile.renameTo(newFile);
         }
 
-        if (!renamed) {
-            Log.w(LOG_TAG, "failed to rename entry at path=" + oldPath);
+        DocumentFileCompat df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri);
+        try {
+            boolean renamed = df != null && df.renameTo(newFilename);
+            if (!renamed) {
+                Log.w(LOG_TAG, "failed to rename entry at path=" + oldPath);
+                callback.onFailure();
+                return;
+            }
+        } catch (FileNotFoundException e) {
+            Log.w(LOG_TAG, "failed to rename entry at path=" + oldPath, e);
             callback.onFailure();
             return;
         }
@@ -204,7 +212,10 @@ public abstract class ImageProvider {
             exif.saveAttributes();
 
             // if the image is on the SD card, copy the edited temporary file to the original DocumentFile
-            rotated = !onSdCard || StorageUtils.writeToDocumentFile(activity, editablePath, uri);
+            if (onSdCard) {
+                DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
+            }
+            rotated = true;
         } catch (IOException e) {
             Log.w(LOG_TAG, "failed to edit EXIF to rotate image at path=" + path, e);
         }
@@ -227,7 +238,8 @@ public abstract class ImageProvider {
             values.clear();
             values.put(MediaStore.MediaColumns.IS_PENDING, 0);
         }
-        values.put(MediaStore.MediaColumns.ORIENTATION, orientationDegrees);
+        // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
+        values.put(MediaStore.Images.Media.ORIENTATION, orientationDegrees);
         int updatedRowCount = contentResolver.update(uri, values, null, null);
         if (updatedRowCount > 0) {
             MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
@@ -239,15 +251,20 @@ public abstract class ImageProvider {
 
     private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.PNG;
-        if (path == null) {
-            callback.onFailure();
-            return;
+        String editablePath = path;
+        boolean onSdCard = Env.isOnSdCard(activity, path);
+        if (onSdCard) {
+            if (PermissionManager.getSdCardTreeUri(activity) == null) {
+                Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
+                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
+                return;
+            }
+            // copy original file to a temporary file for editing
+            editablePath = StorageUtils.copyFileToTemp(path);
         }
 
-        boolean onSdCard = Env.isOnSdCard(activity, path);
-        if (onSdCard && PermissionManager.getSdCardTreeUri(activity) == null) {
-            Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
-            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
+        if (editablePath == null) {
+            callback.onFailure();
             return;
         }
 
@@ -264,29 +281,16 @@ public abstract class ImageProvider {
         Bitmap rotatedImage = Bitmap.createBitmap(originalImage, 0, 0, originalWidth, originalHeight, matrix, true);
 
         boolean rotated = false;
-        if (onSdCard) {
-            FileDescriptor fd = null;
-            try {
-                ParcelFileDescriptor pfd = activity.getContentResolver().openFileDescriptor(uri, "rw");
-                if (pfd != null) fd = pfd.getFileDescriptor();
-            } catch (FileNotFoundException e) {
-                Log.e(LOG_TAG, "failed to get file descriptor for document at uri=" + path, e);
+        try (FileOutputStream fos = new FileOutputStream(editablePath)) {
+            rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+
+            // if the image is on the SD card, copy the edited temporary file to the original DocumentFile
+            if (onSdCard) {
+                DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
             }
-            if (fd != null) {
-                try (FileOutputStream fos = new FileOutputStream(fd)) {
-                    rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    rotated = true;
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "failed to save rotated image to document at uri=" + path, e);
-                }
-            }
-        } else {
-            try (FileOutputStream fos = new FileOutputStream(path)) {
-                rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                rotated = true;
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "failed to save rotated image to path=" + path, e);
-            }
+            rotated = true;
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "failed to save rotated image to path=" + path, e);
         }
         if (!rotated) {
             callback.onFailure();
