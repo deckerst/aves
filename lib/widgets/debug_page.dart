@@ -1,9 +1,12 @@
+import 'dart:collection';
+
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -31,6 +34,7 @@ class DebugPageState extends State<DebugPage> {
   Future<List<AddressDetails>> _dbAddressLoader;
   Future<List<FavouriteRow>> _dbFavouritesLoader;
   Future<List<Tuple2<String, bool>>> _volumePermissionLoader;
+  Future<Map> _envLoader;
 
   List<ImageEntry> get entries => widget.source.entries;
 
@@ -38,14 +42,21 @@ class DebugPageState extends State<DebugPage> {
   void initState() {
     super.initState();
     _startDbReport();
-    _checkVolumePermissions();
+    _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
+      AndroidFileUtils.storageVolumes.map(
+        (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
+          (value) => Tuple2(volume.path, value),
+        ),
+      ),
+    );
+    _envLoader = AndroidAppService.getEnv();
   }
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             title: const Text('Debug'),
@@ -54,6 +65,7 @@ class DebugPageState extends State<DebugPage> {
                 Tab(icon: Icon(OMIcons.whatshot)),
                 Tab(icon: Icon(OMIcons.settings)),
                 Tab(icon: Icon(OMIcons.sdStorage)),
+                Tab(text: 'Env'),
               ],
             ),
           ),
@@ -63,6 +75,7 @@ class DebugPageState extends State<DebugPage> {
                 _buildGeneralTabView(),
                 _buildSettingsTabView(),
                 _buildStorageTabView(),
+                _buildEnvTabView(),
               ],
             ),
           ),
@@ -266,6 +279,23 @@ class DebugPageState extends State<DebugPage> {
     );
   }
 
+  Widget _buildEnvTabView() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        FutureBuilder(
+          future: _envLoader,
+          builder: (context, AsyncSnapshot<Map> snapshot) {
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            final data = SplayTreeMap.of(snapshot.data.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));
+            return InfoRowGroup(data);
+          },
+        ),
+      ],
+    );
+  }
+
   void _startDbReport() {
     _dbFileSizeLoader = metadataDb.dbFileSize();
     _dbDateLoader = metadataDb.loadDates();
@@ -273,15 +303,5 @@ class DebugPageState extends State<DebugPage> {
     _dbAddressLoader = metadataDb.loadAddresses();
     _dbFavouritesLoader = metadataDb.loadFavourites();
     setState(() {});
-  }
-
-  void _checkVolumePermissions() {
-    _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
-      AndroidFileUtils.storageVolumes.map(
-        (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
-          (value) => Tuple2(volume.path, value),
-        ),
-      ),
-    );
   }
 }

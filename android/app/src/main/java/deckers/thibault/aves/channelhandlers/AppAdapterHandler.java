@@ -54,6 +54,10 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
                 result.success(getAppNames());
                 break;
             }
+            case "getEnv": {
+                result.success(getEnv());
+                break;
+            }
             case "edit": {
                 String title = call.argument("title");
                 Uri uri = Uri.parse(call.argument("uri"));
@@ -166,6 +170,10 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         } else {
             result.error("getAppIcon-null", "failed to get icon for packageName=" + packageName, null);
         }
+    }
+
+    private Map<String, String> getEnv() {
+        return System.getenv();
     }
 
     private void edit(String title, Uri uri, String mimeType) {

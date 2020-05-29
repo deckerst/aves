@@ -29,6 +29,16 @@ class AndroidAppService {
     return Uint8List(0);
   }
 
+  static Future<Map> getEnv() async {
+    try {
+      final result = await platform.invokeMethod('getEnv');
+      return result as Map;
+    } on PlatformException catch (e) {
+      debugPrint('getEnv failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return {};
+  }
+
   static Future<void> edit(String uri, String mimeType) async {
     try {
       await platform.invokeMethod('edit', <String, dynamic>{
