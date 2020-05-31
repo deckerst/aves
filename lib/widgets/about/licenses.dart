@@ -82,7 +82,7 @@ class _LicensesState extends State<Licenses> {
                   setState(() {});
                 },
                 tooltip: 'Sort',
-                icon: Icon(AIcons.sort),
+                icon: const Icon(AIcons.sort),
               ),
             ],
           ),

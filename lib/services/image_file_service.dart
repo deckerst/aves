@@ -84,7 +84,7 @@ class ImageFileService {
 
   static Future<T> resumeThumbnail<T>(Object taskKey) => servicePolicy.resume<T>(taskKey, thumbnailPriority);
 
-  static Stream<ImageOpEvent> delete(List<ImageEntry> entries) {
+  static Stream<ImageOpEvent> delete(Iterable<ImageEntry> entries) {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
@@ -96,14 +96,14 @@ class ImageFileService {
     }
   }
 
-  static Stream<MoveOpEvent> move(List<ImageEntry> entries, {@required bool copy, @required String destinationPath}) {
+  static Stream<MoveOpEvent> move(Iterable<ImageEntry> entries, {@required bool copy, @required String destinationAlbum}) {
     debugPrint('move ${entries.length} entries');
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
         'entries': entries.map((e) => e.toMap()).toList(),
         'copy': copy,
-        'destinationPath': destinationPath,
+        'destinationPath': destinationAlbum,
       }).map((event) => MoveOpEvent.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('move failed with code=${e.code}, exception=${e.message}, details=${e.details}');

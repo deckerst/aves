@@ -146,8 +146,23 @@ class CollectionSource {
   void removeEntries(Iterable<ImageEntry> entries) async {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
+    cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
     eventBus.fire(EntryRemovedEvent(entries));
   }
+
+  void notifyMovedEntries(Iterable<ImageEntry> movedEntries) {
+    eventBus.fire(EntryMovedEvent(entries));
+  }
+
+  void cleanEmptyAlbums(Set<String> albums) {
+    final emptyAlbums = albums.where(_isEmptyAlbum);
+    if (emptyAlbums.isNotEmpty) {
+      _folderPaths.removeAll(emptyAlbums);
+      updateAlbums();
+    }
+  }
+
+  bool _isEmptyAlbum(String album) => !_rawEntries.any((entry) => entry.directory == album);
 
   String getUniqueAlbumName(String album) {
     final otherAlbums = _folderPaths.where((item) => item != album);
@@ -230,4 +245,10 @@ class EntryRemovedEvent {
   final Iterable<ImageEntry> entries;
 
   const EntryRemovedEvent(this.entries);
+}
+
+class EntryMovedEvent {
+  final Iterable<ImageEntry> entries;
+
+  const EntryMovedEvent(this.entries);
 }

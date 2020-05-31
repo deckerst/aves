@@ -106,22 +106,33 @@ class MetadataDb {
     final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
-    metadataEntries.where((metadata) => metadata != null).forEach((metadata) {
-      if (metadata.dateMillis != 0) {
-        batch.insert(
-          dateTakenTable,
-          DateMetadata(contentId: metadata.contentId, dateMillis: metadata.dateMillis).toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-      batch.insert(
-        metadataTable,
-        metadata.toMap(boolAsInteger: true),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    });
+    metadataEntries.where((metadata) => metadata != null).forEach((metadata) => _batchInsertMetadata(batch, metadata));
     await batch.commit(noResult: true);
     debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
+  }
+
+  Future<void> updateMetadataId(int oldId, CatalogMetadata metadata) async {
+    final db = await _database;
+    final batch = db.batch();
+    batch.delete(dateTakenTable, where: 'contentId = ?', whereArgs: [oldId]);
+    batch.delete(metadataTable, where: 'contentId = ?', whereArgs: [oldId]);
+    _batchInsertMetadata(batch, metadata);
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertMetadata(Batch batch, CatalogMetadata metadata) {
+    if (metadata.dateMillis != 0) {
+      batch.insert(
+        dateTakenTable,
+        DateMetadata(contentId: metadata.contentId, dateMillis: metadata.dateMillis).toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+    batch.insert(
+      metadataTable,
+      metadata.toMap(boolAsInteger: true),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   // address
@@ -146,13 +157,25 @@ class MetadataDb {
     final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
-    addresses.where((address) => address != null).forEach((address) => batch.insert(
-          addressTable,
-          address.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        ));
+    addresses.where((address) => address != null).forEach((address) => _batchInsertAddress(batch, address));
     await batch.commit(noResult: true);
     debugPrint('$runtimeType saveAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${addresses.length} entries');
+  }
+
+  Future<void> updateAddressId(int oldId, AddressDetails address) async {
+    final db = await _database;
+    final batch = db.batch();
+    batch.delete(addressTable, where: 'contentId = ?', whereArgs: [oldId]);
+    _batchInsertAddress(batch, address);
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertAddress(Batch batch, AddressDetails address) {
+    batch.insert(
+      addressTable,
+      address.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   // favourites
@@ -177,13 +200,25 @@ class MetadataDb {
 //    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
-    favouriteRows.where((row) => row != null).forEach((row) => batch.insert(
-          favouriteTable,
-          row.toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        ));
+    favouriteRows.where((row) => row != null).forEach((row) => _batchInsertFavourite(batch, row));
     await batch.commit(noResult: true);
 //    debugPrint('$runtimeType addFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
+  }
+
+  Future<void> updateFavouriteId(int oldId, FavouriteRow row) async {
+    final db = await _database;
+    final batch = db.batch();
+    batch.delete(favouriteTable, where: 'contentId = ?', whereArgs: [oldId]);
+    _batchInsertFavourite(batch, row);
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertFavourite(Batch batch, FavouriteRow row) {
+    batch.insert(
+      favouriteTable,
+      row.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<void> removeFavourites(Iterable<FavouriteRow> favouriteRows) async {
@@ -195,11 +230,7 @@ class MetadataDb {
 //    final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
-    ids.forEach((id) => batch.delete(
-          favouriteTable,
-          where: 'contentId = ?',
-          whereArgs: [id],
-        ));
+    ids.forEach((id) => batch.delete(favouriteTable, where: 'contentId = ?', whereArgs: [id]));
     await batch.commit(noResult: true);
 //    debugPrint('$runtimeType removeFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
   }

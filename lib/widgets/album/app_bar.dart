@@ -188,8 +188,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               ),
               const PopupMenuItem(
                 value: CollectionAction.move,
-                // TODO TLAD enable when handled on native side
-                enabled: false,
                 child: MenuRow(text: 'Move to album'),
               ),
               const PopupMenuItem(

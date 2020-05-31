@@ -17,8 +17,9 @@ import 'mime_types.dart';
 
 class ImageEntry {
   String uri;
-  String path;
-  String directory;
+  String _path;
+  String _directory;
+  String _filename;
   int contentId;
   final String mimeType;
   int width;
@@ -38,7 +39,7 @@ class ImageEntry {
 
   ImageEntry({
     this.uri,
-    this.path,
+    String path,
     this.contentId,
     this.mimeType,
     this.width,
@@ -49,7 +50,8 @@ class ImageEntry {
     this.dateModifiedSecs,
     this.sourceDateTakenMillis,
     this.durationMillis,
-  }) : directory = path != null ? dirname(path) : null {
+  }) {
+    this.path = path;
     isFavouriteNotifier.value = isFavourite;
   }
 
@@ -126,7 +128,23 @@ class ImageEntry {
     return 'ImageEntry{uri=$uri, path=$path}';
   }
 
-  String get filename => basenameWithoutExtension(path);
+  set path(String path) {
+    _path = path;
+    _directory = null;
+    _filename = null;
+  }
+
+  String get path => _path;
+
+  String get directory {
+    _directory ??= path != null ? dirname(path) : null;
+    return _directory;
+  }
+
+  String get filenameWithoutExtension {
+    _filename ??= path != null ? basenameWithoutExtension(path) : null;
+    return _filename;
+  }
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
 
@@ -286,7 +304,7 @@ class ImageEntry {
   }
 
   Future<bool> rename(String newName) async {
-    if (newName == filename) return true;
+    if (newName == filenameWithoutExtension) return true;
 
     final newFields = await ImageFileService.rename(this, '$newName${extension(this.path)}');
     if (newFields.isEmpty) return false;

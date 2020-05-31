@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -87,7 +88,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
     _showOpReport(
       context: context,
       selection: selection,
-      opStream: ImageFileService.move(selection, copy: copy, destinationPath: filter.album),
+      opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: filter.album),
       onDone: (Set<MoveOpEvent> processed) {
         debugPrint('$runtimeType _moveSelection onDone');
         final movedOps = processed.where((e) => e.success);
@@ -98,30 +99,44 @@ class SelectionActionDelegate with PermissionAwareMixin {
           _showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (movedCount > 0) {
+          final source = collection.source;
           if (copy) {
-            final newEntries = <ImageEntry>[];
-            final newFavs = <ImageEntry>[];
-            movedOps.forEach((movedOp) {
+            final newEntries = movedOps.map((movedOp) {
               final sourceUri = movedOp.uri;
               final newFields = movedOp.newFields;
               final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-              final copy = sourceEntry?.copyWith(
+              return sourceEntry?.copyWith(
                 uri: newFields['uri'] as String,
                 path: newFields['path'] as String,
                 contentId: newFields['contentId'] as int,
               );
-              newEntries.add(copy);
-              if (sourceEntry.isFavourite) {
-                newFavs.add(copy);
-              }
-            });
-            collection.source.addAll(newEntries);
+            }).toList();
+            source.addAll(newEntries);
             metadataDb.saveMetadata(newEntries.map((entry) => entry.catalogMetadata));
             metadataDb.saveAddresses(newEntries.map((entry) => entry.addressDetails));
-            newFavs.forEach((entry) => entry.addToFavourites());
           } else {
-            // TODO TLAD update old entries path/dir/ID
-            // TODO TLAD update DB for catalog/address/fav
+            final movedEntries = <ImageEntry>[];
+            final fromAlbums = <String>{};
+            movedOps.forEach((movedOp) {
+              final sourceUri = movedOp.uri;
+              final newFields = movedOp.newFields;
+              final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+              if (entry != null) {
+                fromAlbums.add(entry.directory);
+                final oldContentId = entry.contentId;
+                final newContentId = newFields['contentId'] as int;
+                entry.uri = newFields['uri'] as String;
+                entry.path = newFields['path'] as String;
+                entry.contentId = newContentId;
+
+                metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
+                metadataDb.updateAddressId(oldContentId, entry.addressDetails);
+                metadataDb.updateFavouriteId(oldContentId, FavouriteRow(contentId: entry.contentId, path: entry.path));
+              }
+              movedEntries.add(entry);
+            });
+            source.cleanEmptyAlbums(fromAlbums);
+            source.notifyMovedEntries(movedEntries);
           }
         }
         collection.clearSelection();

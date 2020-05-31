@@ -31,10 +31,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
         groupFactor = groupFactor ?? GroupFactor.month,
         sortFactor = sortFactor ?? SortFactor.date {
-    _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded()));
+    _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
     _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
-    _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => onMetadataChanged()));
-    onEntryAdded();
+    _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
+    _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+    _refresh();
   }
 
   @override
@@ -107,9 +108,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   }
 
   void onFilterChanged() {
-    _applyFilters();
-    _applySort();
-    _applyGroup();
+    _refresh();
     filterChangeNotifier.notifyListeners();
   }
 
@@ -180,7 +179,9 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     notifyListeners();
   }
 
-  void onEntryAdded() {
+  // metadata change should also trigger a full refresh
+  // as dates impact sorting and grouping
+  void _refresh() {
     _applyFilters();
     _applySort();
     _applyGroup();
@@ -193,13 +194,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
     selection.removeAll(entries);
     notifyListeners();
-  }
-
-  void onMetadataChanged() {
-    _applyFilters();
-    // metadata dates impact sorting and grouping
-    _applySort();
-    _applyGroup();
   }
 }
 

@@ -167,7 +167,7 @@ class EntryActionDelegate with PermissionAwareMixin {
   }
 
   Future<void> _showRenameDialog(BuildContext context, ImageEntry entry) async {
-    final currentName = entry.filename ?? entry.sourceTitle;
+    final currentName = entry.filenameWithoutExtension ?? entry.sourceTitle;
     final controller = TextEditingController(text: currentName);
     final newName = await showDialog<String>(
         context: context,

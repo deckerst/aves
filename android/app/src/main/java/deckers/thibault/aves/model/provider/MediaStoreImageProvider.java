@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -263,7 +264,14 @@ public class MediaStoreImageProvider extends ImageProvider {
                 DocumentFileCompat destination = DocumentFileCompat.fromSingleUri(activity, destinationUri);
                 source.copyTo(destination);
 
-                // TODO TLAD delete source when it is a `move`
+                if (!copy) {
+                    // delete original entry
+                    try {
+                        delete(activity, sourcePath, sourceUri).get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        Log.w(LOG_TAG, "failed to delete entry with path=" + sourcePath, e);
+                    }
+                }
 
                 Map<String, Object> newFields = new HashMap<>();
                 newFields.put("uri", destinationUri.toString());
