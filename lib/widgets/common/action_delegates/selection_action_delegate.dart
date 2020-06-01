@@ -8,6 +8,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/album/app_bar.dart';
+import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -16,6 +17,7 @@ import 'package:collection/collection.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -53,9 +55,9 @@ class SelectionActionDelegate with PermissionAwareMixin {
   }
 
   Future _moveSelection(BuildContext context, {@required bool copy}) async {
-    final filter = await Navigator.push(
+    final destinationAlbum = await Navigator.push(
       context,
-      MaterialPageRoute<AlbumFilter>(
+      MaterialPageRoute<String>(
         builder: (context) {
           final source = collection.source;
           return FilterGridPage(
@@ -64,10 +66,17 @@ class SelectionActionDelegate with PermissionAwareMixin {
               leading: const BackButton(),
               title: Text(copy ? 'Copy to Album' : 'Move to Album'),
               actions: [
-                const IconButton(
+                IconButton(
                   icon: Icon(AIcons.createAlbum),
-                  // TODO TLAD album creation
-                  onPressed: null,
+                  onPressed: () async {
+                    final newAlbum = await showDialog<String>(
+                      context: context,
+                      builder: (context) => CreateAlbumDialog(),
+                    );
+                    if (newAlbum != null && newAlbum.isNotEmpty) {
+                      Navigator.pop<String>(context, newAlbum);
+                    }
+                  },
                   tooltip: 'Create album',
                 ),
               ],
@@ -75,12 +84,12 @@ class SelectionActionDelegate with PermissionAwareMixin {
             ),
             filterEntries: source.getAlbumEntries(),
             filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-            onPressed: (filter) => Navigator.pop<AlbumFilter>(context, filter),
+            onPressed: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           );
         },
       ),
     );
-    if (filter == null) return;
+    if (destinationAlbum == null || destinationAlbum.isEmpty) return;
 
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;
@@ -88,7 +97,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
     _showOpReport(
       context: context,
       selection: selection,
-      opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: filter.album),
+      opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
       onDone: (Set<MoveOpEvent> processed) {
         debugPrint('$runtimeType _moveSelection onDone');
         final movedOps = processed.where((e) => e.success);
@@ -97,6 +106,9 @@ class SelectionActionDelegate with PermissionAwareMixin {
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           _showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+        } else {
+          final count = movedCount;
+          _showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (movedCount > 0) {
           final source = collection.source;

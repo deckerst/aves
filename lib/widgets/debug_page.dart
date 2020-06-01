@@ -43,7 +43,7 @@ class DebugPageState extends State<DebugPage> {
     super.initState();
     _startDbReport();
     _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
-      AndroidFileUtils.storageVolumes.map(
+      androidFileUtils.storageVolumes.map(
         (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
           (value) => Tuple2(volume.path, value),
         ),
@@ -259,7 +259,7 @@ class DebugPageState extends State<DebugPage> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...AndroidFileUtils.storageVolumes.expand((v) => [
+                ...androidFileUtils.storageVolumes.expand((v) => [
                       Text(v.path),
                       InfoRowGroup({
                         'description': '${v.description}',

@@ -4,6 +4,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
@@ -167,28 +168,10 @@ class EntryActionDelegate with PermissionAwareMixin {
   }
 
   Future<void> _showRenameDialog(BuildContext context, ImageEntry entry) async {
-    final currentName = entry.filenameWithoutExtension ?? entry.sourceTitle;
-    final controller = TextEditingController(text: currentName);
     final newName = await showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: TextField(
-              controller: controller,
-              autofocus: true,
-            ),
-            actions: [
-              FlatButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'.toUpperCase()),
-              ),
-              FlatButton(
-                onPressed: () => Navigator.pop(context, controller.text),
-                child: Text('Apply'.toUpperCase()),
-              ),
-            ],
-          );
-        });
+      context: context,
+      builder: (context) => RenameEntryDialog(entry),
+    );
     if (newName == null || newName.isEmpty) return;
 
     if (!await checkStoragePermission(context, [entry])) return;

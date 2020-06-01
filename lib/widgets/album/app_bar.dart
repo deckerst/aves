@@ -64,6 +64,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void dispose() {
     _unregisterWidget(widget);
     _browseToSelectAnimation.dispose();
+    _searchFieldController.dispose();
     super.dispose();
   }
 

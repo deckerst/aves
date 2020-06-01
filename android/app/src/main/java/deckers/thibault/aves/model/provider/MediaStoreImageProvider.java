@@ -23,6 +23,7 @@ import com.google.common.util.concurrent.SettableFuture;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -88,7 +89,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             entryCount = fetchFrom(context, onSuccess, contentUri, VIDEO_PROJECTION);
         }
         if (entryCount == 0) {
-            callback.onFailure();
+            callback.onFailure(new Exception("failed to fetch entry at uri=" + uri));
         }
     }
 
@@ -224,9 +225,7 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     @Override
-    public ListenableFuture<Map<String, Object>> move(final Activity activity, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
-        SettableFuture<Map<String, Object>> future = SettableFuture.create();
-
+    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, ArrayList<ImageEntry> entries, ImageOpCallback callback) {
         String volumeName = "external";
         StorageManager sm = activity.getSystemService(StorageManager.class);
         if (sm != null) {
@@ -240,6 +239,34 @@ public class MediaStoreImageProvider extends ImageProvider {
                 }
             }
         }
+
+        if (!StorageUtils.createDirectoryIfAbsent(activity, destinationDir)) {
+            callback.onFailure(new Exception("failed to create directory at path=" + destinationDir));
+            return;
+        }
+
+        for (ImageEntry entry : entries) {
+            Uri sourceUri = entry.uri;
+            String sourcePath = entry.path;
+            String mimeType = entry.mimeType;
+
+            Map<String, Object> result = new HashMap<String, Object>() {{
+                put("uri", sourceUri.toString());
+            }};
+            try {
+                Map<String, Object> newFields = moveSingle(activity, volumeName, sourcePath, sourceUri, destinationDir, mimeType, copy).get();
+                result.put("success", true);
+                result.put("newFields", newFields);
+            } catch (ExecutionException | InterruptedException e) {
+                Log.w(LOG_TAG, "failed to move to destinationDir=" + destinationDir + " entry with sourcePath=" + sourcePath, e);
+                result.put("success", false);
+            }
+            callback.onSuccess(result);
+        }
+    }
+
+    private ListenableFuture<Map<String, Object>> moveSingle(final Activity activity, final String volumeName, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
+        SettableFuture<Map<String, Object>> future = SettableFuture.create();
 
         try {
             // from API 29, changing MediaColumns.RELATIVE_PATH can move files on disk (same storage device)

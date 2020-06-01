@@ -33,9 +33,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
@@ -56,21 +58,20 @@ public abstract class ImageProvider {
     private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
 
     public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
-        callback.onFailure();
+        callback.onFailure(new UnsupportedOperationException());
     }
 
     public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri uri) {
         return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
-    public ListenableFuture<Map<String, Object>> move(final Activity activity, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
-        return Futures.immediateFailedFuture(new UnsupportedOperationException());
+    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, ArrayList<ImageEntry> entries, @NonNull ImageOpCallback callback) {
+        callback.onFailure(new UnsupportedOperationException());
     }
 
     public void rename(final Activity activity, final String oldPath, final Uri oldMediaUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {
         if (oldPath == null) {
-            Log.w(LOG_TAG, "entry does not have a path, uri=" + oldMediaUri);
-            callback.onFailure();
+            callback.onFailure(new IllegalArgumentException("entry does not have a path, uri=" + oldMediaUri));
             return;
         }
 
@@ -96,13 +97,11 @@ public abstract class ImageProvider {
         try {
             boolean renamed = df != null && df.renameTo(newFilename);
             if (!renamed) {
-                Log.w(LOG_TAG, "failed to rename entry at path=" + oldPath);
-                callback.onFailure();
+                callback.onFailure(new Exception("failed to rename entry at path=" + oldPath));
                 return;
             }
         } catch (FileNotFoundException e) {
-            Log.w(LOG_TAG, "failed to rename entry at path=" + oldPath, e);
-            callback.onFailure();
+            callback.onFailure(e);
             return;
         }
 
@@ -125,8 +124,7 @@ public abstract class ImageProvider {
                         cursor.close();
                     }
                 } catch (Exception e) {
-                    Log.w(LOG_TAG, "failed to update Media Store after renaming entry at path=" + oldPath, e);
-                    callback.onFailure();
+                    callback.onFailure(e);
                     return;
                 }
             }
@@ -157,8 +155,11 @@ public abstract class ImageProvider {
     public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
         // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
         // so we retrieve it again from the file metadata
-        String metadataMimeType = getMimeType(activity, uri);
-        switch (metadataMimeType != null ? metadataMimeType : mimeType) {
+        String actualMimeType = getMimeType(activity, uri);
+        if (actualMimeType == null) {
+            actualMimeType = mimeType;
+        }
+        switch (actualMimeType) {
             case MimeTypes.JPEG:
                 rotateJpeg(activity, path, uri, clockwise, callback);
                 break;
@@ -166,7 +167,7 @@ public abstract class ImageProvider {
                 rotatePng(activity, path, uri, clockwise, callback);
                 break;
             default:
-                callback.onFailure();
+                callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + actualMimeType));
         }
     }
 
@@ -182,8 +183,7 @@ public abstract class ImageProvider {
             }
         }
 
-        boolean rotated = false;
-        int newOrientationCode = 0;
+        int newOrientationCode;
         try {
             ExifInterface exif = new ExifInterface(editablePath);
             switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
@@ -205,12 +205,8 @@ public abstract class ImageProvider {
 
             // copy the edited temporary file to the original DocumentFile
             DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
-            rotated = true;
         } catch (IOException e) {
-            Log.w(LOG_TAG, "failed to edit EXIF to rotate image at path=" + path, e);
-        }
-        if (!rotated) {
-            callback.onFailure();
+            callback.onFailure(e);
             return;
         }
 
@@ -253,8 +249,7 @@ public abstract class ImageProvider {
 
         Bitmap originalImage = BitmapFactory.decodeFile(path);
         if (originalImage == null) {
-            Log.e(LOG_TAG, "failed to decode image at path=" + path);
-            callback.onFailure();
+            callback.onFailure(new Exception("failed to decode image at path=" + path));
             return;
         }
         Matrix matrix = new Matrix();
@@ -263,18 +258,13 @@ public abstract class ImageProvider {
         matrix.setRotate(clockwise ? 90 : -90, originalWidth >> 1, originalHeight >> 1);
         Bitmap rotatedImage = Bitmap.createBitmap(originalImage, 0, 0, originalWidth, originalHeight, matrix, true);
 
-        boolean rotated = false;
         try (FileOutputStream fos = new FileOutputStream(editablePath)) {
             rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
             // copy the edited temporary file to the original DocumentFile
             DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
-            rotated = true;
         } catch (IOException e) {
-            Log.e(LOG_TAG, "failed to save rotated image to path=" + path, e);
-        }
-        if (!rotated) {
-            callback.onFailure();
+            callback.onFailure(e);
             return;
         }
 
@@ -306,8 +296,8 @@ public abstract class ImageProvider {
     }
 
     public interface ImageOpCallback {
-        void onSuccess(Map<String, Object> newFields);
+        void onSuccess(Map<String, Object> fields);
 
-        void onFailure();
+        void onFailure(Throwable throwable);
     }
 }

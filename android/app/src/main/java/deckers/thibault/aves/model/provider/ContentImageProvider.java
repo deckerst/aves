@@ -18,7 +18,7 @@ class ContentImageProvider extends ImageProvider {
         if (entry.hasSize() || entry.isSvg()) {
             callback.onSuccess(entry.toMap());
         } else {
-            callback.onFailure();
+            callback.onFailure(new Exception("entry has no size"));
         }
     }
 }

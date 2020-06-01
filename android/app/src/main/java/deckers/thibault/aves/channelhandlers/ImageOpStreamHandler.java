@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
+import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import deckers.thibault.aves.utils.Utils;
@@ -91,25 +93,18 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         String destinationDir = (String) argMap.get("destinationPath");
         if (copy == null || destinationDir == null) return;
 
-        for (Map<String, Object> entryMap : entryMapList) {
-            String uriString = (String) entryMap.get("uri");
-            Uri sourceUri = Uri.parse(uriString);
-            String sourcePath = (String) entryMap.get("path");
-            String mimeType = (String) entryMap.get("mimeType");
-
-            Map<String, Object> result = new HashMap<String, Object>() {{
-                put("uri", uriString);
-            }};
-            try {
-                Map<String, Object> newFields = provider.move(activity, sourcePath, sourceUri, destinationDir, mimeType, copy).get();
-                result.put("success", true);
-                result.put("newFields", newFields);
-            } catch (ExecutionException | InterruptedException e) {
-                Log.w(LOG_TAG, "failed to move to destinationDir=" + destinationDir + " entry with sourcePath=" + sourcePath, e);
-                result.put("success", false);
+        ArrayList<ImageEntry> entries = entryMapList.stream().map(ImageEntry::new).collect(Collectors.toCollection(ArrayList::new));
+        provider.moveMultiple(activity, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {
+            @Override
+            public void onSuccess(Map<String, Object> fields) {
+                success(fields);
             }
-            success(result);
-        }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                error("move-failure", "failed to move entries", throwable);
+            }
+        });
         endOfStream();
     }
 

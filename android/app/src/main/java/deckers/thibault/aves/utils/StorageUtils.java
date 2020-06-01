@@ -59,20 +59,24 @@ public class StorageUtils {
     public static MediaMetadataRetriever openMetadataRetriever(Context context, Uri uri, String path) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // we get a permission denial if we require original from a provider other than the media store
-            if (isMediaStoreContentUri(uri)) {
-                uri = MediaStore.setRequireOriginal(uri);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // we get a permission denial if we require original from a provider other than the media store
+                if (isMediaStoreContentUri(uri)) {
+                    uri = MediaStore.setRequireOriginal(uri);
+                }
+                retriever.setDataSource(context, uri);
+                return retriever;
             }
-            retriever.setDataSource(context, uri);
-            return retriever;
-        }
 
-        // on Android <Q, we directly work with file paths if possible
-        if (path != null) {
-            retriever.setDataSource(path);
-        } else {
-            retriever.setDataSource(context, uri);
+            // on Android <Q, we directly work with file paths if possible
+            if (path != null) {
+                retriever.setDataSource(path);
+            } else {
+                retriever.setDataSource(context, uri);
+            }
+        } catch (IllegalArgumentException e) {
+            Log.w(LOG_TAG, "failed to open MediaMetadataRetriever for uri=" + uri + ", path=" + path);
         }
         return retriever;
     }
@@ -189,17 +193,13 @@ public class StorageUtils {
             return Optional.empty();
         }
 
-        PathSegments pathSegments = new PathSegments(path, storageVolumeRoots);
-        ArrayList<String> pathSteps = Lists.newArrayList(Splitter.on(File.separatorChar)
-                .trimResults().omitEmptyStrings().split(pathSegments.getRelativePath()));
-        pathSteps.add(pathSegments.getFilename());
-        Iterator<String> pathIterator = pathSteps.iterator();
-
         DocumentFileCompat documentFile = DocumentFileCompat.fromTreeUri(context, rootTreeUri);
         if (documentFile == null) {
             return Optional.empty();
         }
+
         // follow the entry path down the document tree
+        Iterator<String> pathIterator = getPathStepIterator(storageVolumeRoots, path);
         while (pathIterator.hasNext()) {
             documentFile = documentFile.findFile(pathIterator.next());
             if (documentFile == null) {
@@ -209,9 +209,20 @@ public class StorageUtils {
         return Optional.of(documentFile);
     }
 
+    private static Iterator<String> getPathStepIterator(String[] storageVolumeRoots, String path) {
+        PathSegments pathSegments = new PathSegments(path, storageVolumeRoots);
+        ArrayList<String> pathSteps = Lists.newArrayList(Splitter.on(File.separatorChar)
+                .trimResults().omitEmptyStrings().split(pathSegments.getRelativePath()));
+        String filename = pathSegments.getFilename();
+        if (filename != null && filename.length() > 0) {
+            pathSteps.add(filename);
+        }
+        return pathSteps.iterator();
+    }
+
 
     @Nullable
-    public static DocumentFileCompat getDocumentFile(Activity activity, @NonNull String path, @NonNull Uri mediaUri) {
+    public static DocumentFileCompat getDocumentFile(@NonNull Activity activity, @NonNull String path, @NonNull Uri mediaUri) {
         if (Env.requireAccessPermission(path)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Uri docUri = MediaStore.getDocumentUri(activity, mediaUri);
@@ -224,6 +235,40 @@ public class StorageUtils {
             }
         } else {
             return DocumentFileCompat.fromFile(new File(path));
+        }
+    }
+
+    public static boolean createDirectoryIfAbsent(@NonNull Activity activity, @NonNull String directoryPath) {
+        if (Env.requireAccessPermission(directoryPath)) {
+            Uri rootTreeUri = PermissionManager.getSdCardTreeUri(activity);
+            DocumentFileCompat parentFile = DocumentFileCompat.fromTreeUri(activity, rootTreeUri);
+            if (parentFile == null) return false;
+
+            String[] storageVolumeRoots = Env.getStorageVolumeRoots(activity);
+            if (!directoryPath.endsWith(File.separator)) {
+                directoryPath += File.separator;
+            }
+            Iterator<String> pathIterator = getPathStepIterator(storageVolumeRoots, directoryPath);
+            while (pathIterator.hasNext()) {
+                String dirName = pathIterator.next();
+                DocumentFileCompat dirFile = parentFile.findFile(dirName);
+                if (dirFile == null || !dirFile.exists()) {
+                    try {
+                        dirFile = parentFile.createDirectory(dirName);
+                        if (dirFile != null) {
+                            parentFile = dirFile;
+                        }
+                    } catch (FileNotFoundException e) {
+                        Log.e(LOG_TAG, "failed to create directory with name=" + dirName + " from parent=" + parentFile, e);
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            File directory = new File(directoryPath);
+            if (directory.exists()) return true;
+            return directory.mkdirs();
         }
     }
 

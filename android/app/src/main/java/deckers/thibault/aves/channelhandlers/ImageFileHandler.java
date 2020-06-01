@@ -85,8 +85,8 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             }
 
             @Override
-            public void onFailure() {
-                result.error("getImageEntry-failure", "failed to get entry for uri=" + uriString, null);
+            public void onFailure(Throwable throwable) {
+                result.error("getImageEntry-failure", "failed to get entry for uri=" + uriString, throwable);
             }
         });
     }
@@ -114,8 +114,8 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             }
 
             @Override
-            public void onFailure() {
-                new Handler(Looper.getMainLooper()).post(() -> result.error("rename-failure", "failed to rename", null));
+            public void onFailure(Throwable throwable) {
+                new Handler(Looper.getMainLooper()).post(() -> result.error("rename-failure", "failed to rename", throwable));
             }
         });
     }
@@ -143,8 +143,8 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             }
 
             @Override
-            public void onFailure() {
-                new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", null));
+            public void onFailure(Throwable throwable) {
+                new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", throwable));
             }
         });
     }

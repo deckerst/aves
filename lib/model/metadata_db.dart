@@ -121,6 +121,7 @@ class MetadataDb {
   }
 
   void _batchInsertMetadata(Batch batch, CatalogMetadata metadata) {
+    if (metadata == null) return;
     if (metadata.dateMillis != 0) {
       batch.insert(
         dateTakenTable,
@@ -171,6 +172,7 @@ class MetadataDb {
   }
 
   void _batchInsertAddress(Batch batch, AddressDetails address) {
+    if (address == null) return;
     batch.insert(
       addressTable,
       address.toMap(),
@@ -214,6 +216,7 @@ class MetadataDb {
   }
 
   void _batchInsertFavourite(Batch batch, FavouriteRow row) {
+    if (row == null) return;
     batch.insert(
       favouriteTable,
       row.toMap(),

@@ -5,21 +5,20 @@ import 'package:path/path.dart';
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
-  String externalStorage, dcimPath, downloadPath, moviesPath, picturesPath;
-
-  static List<StorageVolume> storageVolumes = [];
-  static Map appNameMap = {};
+  String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath;
+  Set<StorageVolume> storageVolumes = {};
+  Map appNameMap = {};
 
   AndroidFileUtils._private();
 
   Future<void> init() async {
-    storageVolumes = (await AndroidFileService.getStorageVolumes()).map((map) => StorageVolume.fromMap(map)).toList();
+    storageVolumes = (await AndroidFileService.getStorageVolumes()).map((map) => StorageVolume.fromMap(map)).toSet();
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
-    externalStorage = storageVolumes.firstWhere((volume) => volume.isPrimary).path;
-    dcimPath = join(externalStorage, 'DCIM');
-    downloadPath = join(externalStorage, 'Download');
-    moviesPath = join(externalStorage, 'Movies');
-    picturesPath = join(externalStorage, 'Pictures');
+    primaryStorage = storageVolumes.firstWhere((volume) => volume.isPrimary).path;
+    dcimPath = join(primaryStorage, 'DCIM');
+    downloadPath = join(primaryStorage, 'Download');
+    moviesPath = join(primaryStorage, 'Movies');
+    picturesPath = join(primaryStorage, 'Pictures');
     appNameMap = await AndroidAppService.getAppNames()
       ..addAll({'KakaoTalkDownload': 'com.kakao.talk'});
   }
@@ -38,20 +37,20 @@ class AndroidFileUtils {
 
   AlbumType getAlbumType(String albumDirectory) {
     if (albumDirectory != null) {
-      if (androidFileUtils.isCameraPath(albumDirectory)) return AlbumType.camera;
-      if (androidFileUtils.isDownloadPath(albumDirectory)) return AlbumType.download;
-      if (androidFileUtils.isScreenRecordingsPath(albumDirectory)) return AlbumType.screenRecordings;
-      if (androidFileUtils.isScreenshotsPath(albumDirectory)) return AlbumType.screenshots;
+      if (isCameraPath(albumDirectory)) return AlbumType.camera;
+      if (isDownloadPath(albumDirectory)) return AlbumType.download;
+      if (isScreenRecordingsPath(albumDirectory)) return AlbumType.screenRecordings;
+      if (isScreenshotsPath(albumDirectory)) return AlbumType.screenshots;
 
       final parts = albumDirectory.split(separator);
-      if (albumDirectory.startsWith(androidFileUtils.externalStorage) && appNameMap.keys.contains(parts.last)) return AlbumType.app;
+      if (albumDirectory.startsWith(primaryStorage) && appNameMap.keys.contains(parts.last)) return AlbumType.app;
     }
     return AlbumType.regular;
   }
 
   String getAlbumAppPackageName(String albumDirectory) {
     final parts = albumDirectory.split(separator);
-    return AndroidFileUtils.appNameMap[parts.last];
+    return appNameMap[parts.last];
   }
 }
 
