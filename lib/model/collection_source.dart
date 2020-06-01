@@ -1,4 +1,5 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -13,10 +14,10 @@ class CollectionSource {
   final Set<String> _folderPaths = {};
   final EventBus _eventBus = EventBus();
 
-  List<String> sortedAlbums = List.unmodifiable(const Iterable.empty());
-  List<String> sortedCountries = List.unmodifiable(const Iterable.empty());
-  List<String> sortedPlaces = List.unmodifiable(const Iterable.empty());
-  List<String> sortedTags = List.unmodifiable(const Iterable.empty());
+  List<String> sortedAlbums = List.unmodifiable([]);
+  List<String> sortedCountries = List.unmodifiable([]);
+  List<String> sortedPlaces = List.unmodifiable([]);
+  List<String> sortedTags = List.unmodifiable([]);
 
   List<ImageEntry> get entries => List.unmodifiable(_rawEntries);
 
@@ -222,6 +223,11 @@ class CollectionSource {
           tag,
           entries.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),
         )));
+  }
+
+  // TODO TLAD cache counts, invalidate them on any add/remove
+  int count(CollectionFilter filter) {
+    return _rawEntries.where((entry) => filter.filter(entry)).length;
   }
 }
 

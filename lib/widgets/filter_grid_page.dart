@@ -1,13 +1,16 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/app_drawer.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +71,8 @@ class FilterGridPage extends StatelessWidget {
 
   List<String> get filterKeys => filterEntries.keys.toList();
 
+  static const Color detailColor = Color(0xFFE0E0E0);
+
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
@@ -77,13 +82,14 @@ class FilterGridPage extends StatelessWidget {
             slivers: [
               appBar,
               SliverPadding(
-                padding: EdgeInsets.all(AvesFilterChip.buttonBorderWidth),
+                padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth),
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, i) {
                       final key = filterKeys[i];
                       final entry = filterEntries[key];
                       Decoration decoration;
+                      // TODO TLAD add decoration for SVG
                       if (entry != null && !entry.isSvg) {
                         decoration = BoxDecoration(
                           image: DecorationImage(
@@ -96,10 +102,12 @@ class FilterGridPage extends StatelessWidget {
                           borderRadius: AvesFilterChip.borderRadius,
                         );
                       }
+                      final filter = filterBuilder(key);
                       return AvesFilterChip(
-                        filter: filterBuilder(key),
+                        filter: filter,
                         showGenericIcon: false,
                         decoration: decoration,
+                        details: _buildDetails(filter),
                         onPressed: onPressed,
                       );
                     },
@@ -129,5 +137,26 @@ class FilterGridPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
       ),
     );
+  }
+
+  Widget _buildDetails(CollectionFilter filter) {
+    final count = Text(
+      '${source.count(filter)}',
+      style: const TextStyle(color: FilterGridPage.detailColor),
+    );
+    return filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                AIcons.removableStorage,
+                size: 16,
+                color: FilterGridPage.detailColor,
+              ),
+              const SizedBox(width: 8),
+              count,
+            ],
+          )
+        : count;
   }
 }

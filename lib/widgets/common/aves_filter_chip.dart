@@ -9,6 +9,7 @@ class AvesFilterChip extends StatefulWidget {
   final bool removable;
   final bool showGenericIcon;
   final Decoration decoration;
+  final Widget details;
   final FilterCallback onPressed;
 
   static final BorderRadius borderRadius = BorderRadius.circular(32);
@@ -24,6 +25,7 @@ class AvesFilterChip extends StatefulWidget {
     this.removable = false,
     this.showGenericIcon = true,
     this.decoration,
+    this.details,
     @required this.onPressed,
   }) : super(key: key);
 
@@ -57,37 +59,60 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon);
     final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
-    Widget content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2),
-      child: Row(
-        mainAxisSize: widget.decoration != null ? MainAxisSize.max : MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (leading != null) ...[
-            leading,
-            const SizedBox(width: AvesFilterChip.padding),
-          ],
-          Flexible(
-            child: Text(
-              filter.label,
-              softWrap: false,
-              overflow: TextOverflow.fade,
-              maxLines: 1,
-            ),
-          ),
-          if (trailing != null) ...[
-            const SizedBox(width: AvesFilterChip.padding),
-            trailing,
-          ],
+    Widget content = Row(
+      mainAxisSize: widget.decoration != null ? MainAxisSize.max : MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (leading != null) ...[
+          leading,
+          const SizedBox(width: AvesFilterChip.padding),
         ],
-      ),
+        Flexible(
+          child: Text(
+            filter.label,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+            maxLines: 1,
+          ),
+        ),
+        if (trailing != null) ...[
+          const SizedBox(width: AvesFilterChip.padding),
+          trailing,
+        ],
+      ],
+    );
+
+    if (widget.details != null) {
+      content = Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          content,
+          widget.details,
+        ],
+      );
+    }
+
+    content = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2, vertical: 2),
+      child: content,
     );
 
     if (widget.decoration != null) {
-      content = Container(
-        constraints: BoxConstraints(minHeight: DefaultTextStyle.of(context).style.fontSize * 2),
-        color: Colors.black54,
-        child: content,
+      content = Center(
+        child: ColoredBox(
+          color: Colors.black54,
+          child: DefaultTextStyle(
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              shadows: const [
+                Shadow(
+                  color: Colors.black87,
+                  offset: Offset(0.5, 1.0),
+                )
+              ],
+            ),
+            child: content,
+          ),
+        ),
       );
     }
 
