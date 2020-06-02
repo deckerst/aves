@@ -55,11 +55,12 @@ class SelectionActionDelegate with PermissionAwareMixin {
   }
 
   Future _moveSelection(BuildContext context, {@required bool copy}) async {
+    final source = collection.source;
+    var isNewAlbum = false;
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
         builder: (context) {
-          final source = collection.source;
           return FilterGridPage(
             source: source,
             appBar: SliverAppBar(
@@ -74,6 +75,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
                       builder: (context) => CreateAlbumDialog(),
                     );
                     if (newAlbum != null && newAlbum.isNotEmpty) {
+                      isNewAlbum = true;
                       Navigator.pop<String>(context, newAlbum);
                     }
                   },
@@ -111,7 +113,6 @@ class SelectionActionDelegate with PermissionAwareMixin {
           _showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (movedCount > 0) {
-          final source = collection.source;
           if (copy) {
             final newEntries = movedOps.map((movedOp) {
               final sourceUri = movedOp.uri;
@@ -149,6 +150,9 @@ class SelectionActionDelegate with PermissionAwareMixin {
             });
             source.cleanEmptyAlbums(fromAlbums);
             source.notifyMovedEntries(movedEntries);
+          }
+          if (isNewAlbum) {
+            source.updateAlbums();
           }
         }
         collection.clearSelection();

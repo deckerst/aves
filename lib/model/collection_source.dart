@@ -12,6 +12,7 @@ import 'package:path/path.dart';
 class CollectionSource {
   final List<ImageEntry> _rawEntries;
   final Set<String> _folderPaths = {};
+  final Map<CollectionFilter, int> _filterEntryCountMap = {};
   final EventBus _eventBus = EventBus();
 
   List<String> sortedAlbums = List.unmodifiable([]);
@@ -117,12 +118,14 @@ class CollectionSource {
         return compareAsciiUpperCase(ua, ub);
       });
     sortedAlbums = List.unmodifiable(sorted);
+    _filterEntryCountMap.clear();
     eventBus.fire(AlbumsChangedEvent());
   }
 
   void updateTags() {
     final tags = _rawEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(tags);
+    _filterEntryCountMap.clear();
     eventBus.fire(TagsChangedEvent());
   }
 
@@ -131,6 +134,7 @@ class CollectionSource {
     final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
     sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
     sortedPlaces = lister((address) => address.place);
+    _filterEntryCountMap.clear();
     eventBus.fire(LocationsChangedEvent());
   }
 
@@ -141,6 +145,7 @@ class CollectionSource {
     });
     _rawEntries.addAll(entries);
     _folderPaths.addAll(_rawEntries.map((entry) => entry.directory).toSet());
+    _filterEntryCountMap.clear();
     eventBus.fire(const EntryAddedEvent());
   }
 
@@ -148,10 +153,12 @@ class CollectionSource {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
+    _filterEntryCountMap.clear();
     eventBus.fire(EntryRemovedEvent(entries));
   }
 
-  void notifyMovedEntries(Iterable<ImageEntry> movedEntries) {
+  void notifyMovedEntries(Iterable<ImageEntry> entries) {
+    _filterEntryCountMap.clear();
     eventBus.fire(EntryMovedEvent(entries));
   }
 
@@ -225,9 +232,8 @@ class CollectionSource {
         )));
   }
 
-  // TODO TLAD cache counts, invalidate them on any add/remove
   int count(CollectionFilter filter) {
-    return _rawEntries.where((entry) => filter.filter(entry)).length;
+    return _filterEntryCountMap.putIfAbsent(filter, () => _rawEntries.where((entry) => filter.filter(entry)).length);
   }
 }
 
