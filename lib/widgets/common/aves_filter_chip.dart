@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 
 typedef FilterCallback = void Function(CollectionFilter filter);
 
+enum HeroType { always, onTap, never }
+
 class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;
   final bool showGenericIcon;
   final Decoration decoration;
   final Widget details;
+  final HeroType heroType;
   final FilterCallback onPressed;
 
   static final BorderRadius borderRadius = BorderRadius.circular(32);
@@ -27,6 +30,7 @@ class AvesFilterChip extends StatefulWidget {
     this.showGenericIcon = true,
     this.decoration,
     this.details,
+    this.heroType = HeroType.onTap,
     @required this.onPressed,
   }) : super(key: key);
 
@@ -36,6 +40,7 @@ class AvesFilterChip extends StatefulWidget {
 
 class _AvesFilterChipState extends State<AvesFilterChip> {
   Future<Color> _colorFuture;
+  bool _tapped;
 
   CollectionFilter get filter => widget.filter;
 
@@ -43,6 +48,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   void initState() {
     super.initState();
     _initColorLoader();
+    _tapped = false;
   }
 
   @override
@@ -50,6 +56,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.filter != filter) {
       _initColorLoader();
+      _tapped = false;
     }
   }
 
@@ -119,7 +126,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
     final borderRadius = AvesFilterChip.borderRadius;
 
-    final chip = Container(
+    Widget chip = Container(
       constraints: const BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
         maxWidth: AvesFilterChip.maxChipWidth,
@@ -135,7 +142,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
             borderRadius: borderRadius,
           ),
           child: InkWell(
-            onTap: widget.onPressed != null ? () => widget.onPressed(filter) : null,
+            onTap: widget.onPressed != null
+                ? () {
+                    WidgetsBinding.instance.addPostFrameCallback((_) => widget.onPressed(filter));
+                    setState(() => _tapped = true);
+                  }
+                : null,
             borderRadius: borderRadius,
             child: FutureBuilder(
               future: _colorFuture,
@@ -162,14 +174,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       ),
     );
 
-    // TODO TLAD only hero between `FilterBar` and chips that are tapped
-    return Hero(
-      tag: filter,
-      flightShuttleBuilder: (flight, animation, direction, fromHeroContext, toHeroContext) {
-        final toHero = toHeroContext.widget as Hero;
-        return Center(child: toHero.child);
-      },
-      child: chip,
-    );
+    if (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped) {
+      chip = Hero(
+        tag: filter,
+        child: chip,
+      );
+    }
+    return chip;
   }
 }

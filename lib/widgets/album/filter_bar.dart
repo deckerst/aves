@@ -33,8 +33,10 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
             final filter = filters[index];
             return Center(
               child: AvesFilterChip(
+                key: ValueKey(filter),
                 filter: filter,
                 removable: true,
+                heroType: HeroType.always,
                 onPressed: collection.removeFilter,
               ),
             );
