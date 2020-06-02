@@ -17,6 +17,9 @@ class ExpandableFilterRow extends StatelessWidget {
     @required this.onPressed,
   });
 
+  static const double horizontalPadding = 8;
+  static const double verticalPadding = 8;
+
   @override
   Widget build(BuildContext context) {
     if (filters.isEmpty) return const SizedBox.shrink();
@@ -48,12 +51,13 @@ class ExpandableFilterRow extends StatelessWidget {
     final filtersList = filters.toList();
     final wrap = Container(
       key: ValueKey('wrap$title'),
-      padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.buttonBorderWidth / 2 + 6),
+      padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
       child: Wrap(
-        spacing: 8,
+        spacing: horizontalPadding,
+        runSpacing: verticalPadding,
         children: filtersList
             .map((filter) => AvesFilterChip(
                   filter: filter,
@@ -67,19 +71,17 @@ class ExpandableFilterRow extends StatelessWidget {
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
-      height: kMinInteractiveDimension,
+      height: AvesFilterChip.minChipHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.symmetric(horizontal: 6),
+        padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
           if (index >= filtersList.length) return null;
           final filter = filtersList[index];
-          return Center(
-            child: AvesFilterChip(
-              filter: filter,
-              onPressed: onPressed,
-            ),
+          return AvesFilterChip(
+            filter: filter,
+            onPressed: onPressed,
           );
         },
         separatorBuilder: (context, index) => const SizedBox(width: 8),

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FilterBar extends StatelessWidget implements PreferredSizeWidget {
-  static const double preferredHeight = kMinInteractiveDimension;
+  static const double verticalPadding = 16;
+  static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
   @override
   final Size preferredSize = const Size.fromHeight(preferredHeight);
@@ -26,7 +27,7 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth / 2) + const EdgeInsets.symmetric(horizontal: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           itemBuilder: (context, index) {
             if (index >= filters.length) return null;
             final filter = filters[index];

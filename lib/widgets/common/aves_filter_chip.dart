@@ -13,7 +13,8 @@ class AvesFilterChip extends StatefulWidget {
   final FilterCallback onPressed;
 
   static final BorderRadius borderRadius = BorderRadius.circular(32);
-  static const double buttonBorderWidth = 2;
+  static const double outlineWidth = 2;
+  static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
   static const double maxChipWidth = 160;
   static const double iconSize = 20;
@@ -116,49 +117,59 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       );
     }
 
-    final shape = RoundedRectangleBorder(
-      borderRadius: AvesFilterChip.borderRadius,
-    );
+    final borderRadius = AvesFilterChip.borderRadius;
 
-    final button = ButtonTheme(
-      minWidth: 0,
-      child: Container(
-        constraints: const BoxConstraints(
-          minWidth: AvesFilterChip.minChipWidth,
-          maxWidth: AvesFilterChip.maxChipWidth,
-        ),
-        decoration: widget.decoration,
-        child: Tooltip(
-          message: filter.tooltip,
-          preferBelow: false,
-          child: FutureBuilder(
-            future: _colorFuture,
-            builder: (context, AsyncSnapshot<Color> snapshot) {
-              return OutlineButton(
-                onPressed: widget.onPressed != null ? () => widget.onPressed(filter) : null,
-                borderSide: BorderSide(
-                  color: snapshot.hasData ? snapshot.data : Colors.transparent,
-                  width: AvesFilterChip.buttonBorderWidth,
-                ),
-                padding: EdgeInsets.zero,
-                shape: shape,
-                child: content,
-              );
-            },
+    final chip = Container(
+      constraints: const BoxConstraints(
+        minWidth: AvesFilterChip.minChipWidth,
+        maxWidth: AvesFilterChip.maxChipWidth,
+        minHeight: AvesFilterChip.minChipHeight,
+      ),
+      decoration: widget.decoration,
+      child: Tooltip(
+        message: filter.tooltip,
+        preferBelow: false,
+        child: Material(
+          color: widget.decoration != null ? Colors.transparent : Theme.of(context).scaffoldBackgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: borderRadius,
+          ),
+          child: InkWell(
+            onTap: widget.onPressed != null ? () => widget.onPressed(filter) : null,
+            borderRadius: borderRadius,
+            child: FutureBuilder(
+              future: _colorFuture,
+              builder: (context, AsyncSnapshot<Color> snapshot) {
+                final outlineColor = snapshot.hasData ? snapshot.data : Colors.transparent;
+                return DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: outlineColor,
+                      width: AvesFilterChip.outlineWidth,
+                    ),
+                    borderRadius: borderRadius,
+                  ),
+                  position: DecorationPosition.foreground,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: content,
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
     );
 
-    return button;
-    // TODO TLAD how to lerp between chip and grid tile
-//    return Hero(
-//      tag: filter,
-//      flightShuttleBuilder: (flight, animation, direction, fromHeroContext, toHeroContext) {
-//        final toHero = toHeroContext.widget as Hero;
-//        return Center(content: toHero.content);
-//      },
-//      content: button,
-//    );
+    // TODO TLAD only hero between `FilterBar` and chips that are tapped
+    return Hero(
+      tag: filter,
+      flightShuttleBuilder: (flight, animation, direction, fromHeroContext, toHeroContext) {
+        final toHero = toHeroContext.widget as Hero;
+        return Center(child: toHero.child);
+      },
+      child: chip,
+    );
   }
 }

@@ -169,7 +169,7 @@ class SectionRow extends StatelessWidget {
     final buildDivider = () => const SizedBox(
           width: dim,
           child: Divider(
-            thickness: AvesFilterChip.buttonBorderWidth,
+            thickness: AvesFilterChip.outlineWidth,
             color: Colors.white70,
           ),
         );

@@ -58,6 +58,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             return ListView(
+              padding: const EdgeInsets.only(top: 8),
               children: [
                 _buildFilterRow(
                   context: context,

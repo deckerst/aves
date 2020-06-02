@@ -87,7 +87,7 @@ class FilterGridPage extends StatelessWidget {
             slivers: [
               appBar,
               SliverPadding(
-                padding: const EdgeInsets.all(AvesFilterChip.buttonBorderWidth),
+                padding: const EdgeInsets.all(AvesFilterChip.outlineWidth),
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, i) {
