@@ -56,7 +56,6 @@ class SelectionActionDelegate with PermissionAwareMixin {
 
   Future _moveSelection(BuildContext context, {@required bool copy}) async {
     final source = collection.source;
-    var isNewAlbum = false;
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
@@ -75,7 +74,6 @@ class SelectionActionDelegate with PermissionAwareMixin {
                       builder: (context) => CreateAlbumDialog(),
                     );
                     if (newAlbum != null && newAlbum.isNotEmpty) {
-                      isNewAlbum = true;
                       Navigator.pop<String>(context, newAlbum);
                     }
                   },
@@ -113,23 +111,23 @@ class SelectionActionDelegate with PermissionAwareMixin {
           _showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (movedCount > 0) {
+          final fromAlbums = <String>{};
+          final movedEntries = <ImageEntry>[];
           if (copy) {
-            final newEntries = movedOps.map((movedOp) {
+            movedOps.forEach((movedOp) {
               final sourceUri = movedOp.uri;
               final newFields = movedOp.newFields;
               final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-              return sourceEntry?.copyWith(
+              fromAlbums.add(sourceEntry.directory);
+              movedEntries.add(sourceEntry?.copyWith(
                 uri: newFields['uri'] as String,
                 path: newFields['path'] as String,
                 contentId: newFields['contentId'] as int,
-              );
-            }).toList();
-            source.addAll(newEntries);
-            metadataDb.saveMetadata(newEntries.map((entry) => entry.catalogMetadata));
-            metadataDb.saveAddresses(newEntries.map((entry) => entry.addressDetails));
+              ));
+            });
+            metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
+            metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
           } else {
-            final movedEntries = <ImageEntry>[];
-            final fromAlbums = <String>{};
             movedOps.forEach((movedOp) {
               final sourceUri = movedOp.uri;
               final newFields = movedOp.newFields;
@@ -141,19 +139,20 @@ class SelectionActionDelegate with PermissionAwareMixin {
                 entry.uri = newFields['uri'] as String;
                 entry.path = newFields['path'] as String;
                 entry.contentId = newContentId;
+                movedEntries.add(entry);
 
                 metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
                 metadataDb.updateAddressId(oldContentId, entry.addressDetails);
                 metadataDb.updateFavouriteId(oldContentId, FavouriteRow(contentId: entry.contentId, path: entry.path));
               }
-              movedEntries.add(entry);
             });
-            source.cleanEmptyAlbums(fromAlbums);
-            source.notifyMovedEntries(movedEntries);
           }
-          if (isNewAlbum) {
-            source.updateAlbums();
-          }
+          source.applyMove(
+            entries: movedEntries,
+            fromAlbums: fromAlbums,
+            toAlbum: destinationAlbum,
+            copy: copy,
+          );
         }
         collection.clearSelection();
         collection.browse();

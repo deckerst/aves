@@ -152,17 +152,29 @@ class CollectionSource {
   void removeEntries(Iterable<ImageEntry> entries) async {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
-    cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
+    _cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
     _filterEntryCountMap.clear();
     eventBus.fire(EntryRemovedEvent(entries));
   }
 
-  void notifyMovedEntries(Iterable<ImageEntry> entries) {
+  void applyMove({
+    @required Iterable<ImageEntry> entries,
+    @required Set<String> fromAlbums,
+    @required String toAlbum,
+    @required bool copy,
+  }) {
+    if (copy) {
+      addAll(entries);
+    } else {
+      _cleanEmptyAlbums(fromAlbums);
+      _folderPaths.add(toAlbum);
+    }
+    updateAlbums();
     _filterEntryCountMap.clear();
     eventBus.fire(EntryMovedEvent(entries));
   }
 
-  void cleanEmptyAlbums(Set<String> albums) {
+  void _cleanEmptyAlbums(Set<String> albums) {
     final emptyAlbums = albums.where(_isEmptyAlbum);
     if (emptyAlbums.isNotEmpty) {
       _folderPaths.removeAll(emptyAlbums);

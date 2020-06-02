@@ -150,20 +150,20 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       case SortFactor.date:
         switch (groupFactor) {
           case GroupFactor.album:
-            sections = Map.unmodifiable(groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory));
+            sections = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
             break;
           case GroupFactor.month:
-            sections = Map.unmodifiable(groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.monthTaken));
+            sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.monthTaken);
             break;
           case GroupFactor.day:
-            sections = Map.unmodifiable(groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.dayTaken));
+            sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.dayTaken);
             break;
         }
         break;
       case SortFactor.size:
-        sections = Map.unmodifiable(Map.fromEntries([
+        sections = Map.fromEntries([
           MapEntry(null, _filteredEntries),
-        ]));
+        ]);
         break;
       case SortFactor.name:
         final byAlbum = groupBy(_filteredEntries, (ImageEntry entry) => entry.directory);
@@ -172,9 +172,10 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
           final ub = source.getUniqueAlbumName(b);
           return compareAsciiUpperCase(ua, ub);
         };
-        sections = Map.unmodifiable(SplayTreeMap.of(byAlbum, compare));
+        sections = SplayTreeMap.of(byAlbum, compare);
         break;
     }
+    sections = Map.unmodifiable(sections);
     _sortedEntries = null;
     notifyListeners();
   }
@@ -188,10 +189,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   }
 
   void onEntryRemoved(Iterable<ImageEntry> entries) {
-    // do not apply sort/group as section order change would surprise the user while browsing
+    // we should remove obsolete entries and sections
+    // but do not apply sort/group
+    // as section order change would surprise the user while browsing
     _filteredEntries.removeWhere(entries.contains);
     _sortedEntries?.removeWhere(entries.contains);
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
+    sections = Map.unmodifiable(Map.fromEntries(sections.entries.where((kv) => kv.value.isNotEmpty)));
     selection.removeAll(entries);
     notifyListeners();
   }
