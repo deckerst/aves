@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
@@ -40,15 +40,18 @@ class ImageFileService {
 
   static Future<Uint8List> getImage(String uri, String mimeType) {
     try {
-      final completer = Completer<Uint8List>();
-      final bytesBuilder = BytesBuilder(copy: false);
+      final completer = Completer<Uint8List>.sync();
+      final sink = _OutputBuffer();
       byteChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }).listen(
-        (data) => bytesBuilder.add(data as Uint8List),
+        (chunk) => sink.add(chunk as Uint8List),
         onError: completer.completeError,
-        onDone: () => completer.complete(bytesBuilder.takeBytes()),
+        onDone: () {
+          sink.close();
+          completer.complete(sink.bytes);
+        },
         cancelOnError: true,
       );
       return completer.future;
@@ -191,5 +194,39 @@ class MoveOpEvent extends ImageOpEvent {
   @override
   String toString() {
     return 'MoveOpEvent{success=$success, uri=$uri, newFields=$newFields}';
+  }
+}
+
+// copied from `consolidateHttpClientResponseBytes` in flutter/foundation
+class _OutputBuffer extends ByteConversionSinkBase {
+  List<List<int>> _chunks = <List<int>>[];
+  int _contentLength = 0;
+  Uint8List _bytes;
+
+  @override
+  void add(List<int> chunk) {
+    assert(_bytes == null);
+    _chunks.add(chunk);
+    _contentLength += chunk.length;
+  }
+
+  @override
+  void close() {
+    if (_bytes != null) {
+      // We've already been closed; this is a no-op
+      return;
+    }
+    _bytes = Uint8List(_contentLength);
+    int offset = 0;
+    for (final List<int> chunk in _chunks) {
+      _bytes.setRange(offset, offset + chunk.length, chunk);
+      offset += chunk.length;
+    }
+    _chunks = null;
+  }
+
+  Uint8List get bytes {
+    assert(_bytes != null);
+    return _bytes;
   }
 }

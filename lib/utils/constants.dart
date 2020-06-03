@@ -30,6 +30,12 @@ class Constants {
 
   static const List<Dependency> androidDependencies = [
     Dependency(
+      name: 'CWAC-Document',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/commonsguy/cwac-document/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/commonsguy/cwac-document',
+    ),
+    Dependency(
       name: 'Glide',
       license: 'Apache 2.0, BSD 2-Clause',
       licenseUrl: 'https://github.com/bumptech/glide/blob/master/LICENSE',

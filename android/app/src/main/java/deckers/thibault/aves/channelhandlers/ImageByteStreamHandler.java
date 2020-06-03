@@ -108,7 +108,9 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } else {
                 try (InputStream is = cr.openInputStream(uri)) {
                     if (is != null) {
-                        streamBytes(is);
+                        // TODO TLAD streaming would allow chunk events, but in practice Flutter blocks every time we send a chunk
+//                        streamBytes(is);
+                        success(getBytes(is));
                     } else {
                         error("getImage-image-read-null", "failed to get image from uri=" + uri, null);
                     }
@@ -130,5 +132,18 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             System.arraycopy(buffer, 0, sub, 0, len);
             success(sub);
         }
+    }
+
+    // InputStream.readAllBytes is only available from Java 9+
+    private byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 }
