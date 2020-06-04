@@ -33,7 +33,7 @@ class ThumbnailCollection extends StatelessWidget {
           final mqSize = mq.item1;
           final mqHorizontalPadding = mq.item2;
           TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
-          final cacheExtent = TileExtentManager.extentMaxForSize(mqSize);
+          final cacheExtent = TileExtentManager.extentMaxForSize(mqSize) * 2;
 
           // do not replace by Provider.of<CollectionLens>
           // so that view updates on collection filter changes

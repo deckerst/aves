@@ -89,7 +89,17 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
         ? fastImage
         : Image(
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-              return frame == null ? fastImage : child;
+              if (wasSynchronouslyLoaded) return child;
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, animation) => child == fastImage
+                    ? child
+                    : FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      ),
+                child: frame == null ? fastImage : child,
+              );
             },
             image: _sizedThumbnailProvider,
             width: extent,
