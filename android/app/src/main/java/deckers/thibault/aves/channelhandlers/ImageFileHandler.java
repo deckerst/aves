@@ -7,6 +7,8 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -39,6 +41,10 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             case "getThumbnail":
                 new Thread(() -> getThumbnail(call, new MethodResultWrapper(result))).start();
                 break;
+            case "clearSizedThumbnailDiskCache":
+                new Thread(() -> Glide.get(activity).clearDiskCache()).start();
+                result.success(null);
+                break;
             case "rename":
                 new Thread(() -> rename(call, new MethodResultWrapper(result))).start();
                 break;
@@ -55,12 +61,13 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         Map entryMap = call.argument("entry");
         Integer width = call.argument("width");
         Integer height = call.argument("height");
-        if (entryMap == null || width == null || height == null) {
+        Integer defaultSize = call.argument("defaultSize");
+        if (entryMap == null || defaultSize == null) {
             result.error("getThumbnail-args", "failed because of missing arguments", null);
             return;
         }
         ImageEntry entry = new ImageEntry(entryMap);
-        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, result));
+        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, defaultSize, result));
     }
 
     private void getImageEntry(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {

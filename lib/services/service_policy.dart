@@ -2,36 +2,37 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
+import 'package:tuple/tuple.dart';
 
 final ServicePolicy servicePolicy = ServicePolicy._private();
 
 class ServicePolicy {
-  final Map<Object, _Task> _paused = {};
-  final Queue<_Task> _asapQueue = Queue(), _normalQueue = Queue(), _backgroundQueue = Queue();
-  List<Queue<_Task>> _queues;
+  final Map<Object, Tuple2<int, _Task>> _paused = {};
+  final SplayTreeMap<int, Queue<_Task>> _queues = SplayTreeMap();
   _Task _running;
 
-  ServicePolicy._private() {
-    _queues = [_asapQueue, _normalQueue, _backgroundQueue];
-  }
+  ServicePolicy._private();
 
   Future<T> call<T>(
     Future<T> Function() platformCall, {
-    ServiceCallPriority priority = ServiceCallPriority.normal,
+    int priority = ServiceCallPriority.normal,
     String debugLabel,
     Object key,
   }) {
-    var task = _paused.remove(key);
-    if (task != null) {
+    _Task task;
+    final priorityTask = _paused.remove(key);
+    if (priorityTask != null) {
       debugPrint('resume task with key=$key');
+      priority = priorityTask.item1;
+      task = priorityTask.item2;
     }
     var completer = task?.completer ?? Completer<T>();
     task ??= _Task(
       () async {
-//      if (debugLabel != null) debugPrint('$runtimeType $debugLabel start');
+        if (debugLabel != null) debugPrint('$runtimeType $debugLabel start');
         final result = await platformCall();
         completer.complete(result);
-//      if (debugLabel != null) debugPrint('$runtimeType $debugLabel completed');
+        if (debugLabel != null) debugPrint('$runtimeType $debugLabel completed');
         _running = null;
         _pickNext();
       },
@@ -43,62 +44,46 @@ class ServicePolicy {
     return completer.future;
   }
 
-  Future<T> resume<T>(Object key, ServiceCallPriority priority) {
-    var task = _paused.remove(key);
-    if (task == null) return null;
+  Future<T> resume<T>(Object key) {
+    final priorityTask = _paused.remove(key);
+    if (priorityTask == null) return null;
+    final priority = priorityTask.item1;
+    final task = priorityTask.item2;
     _getQueue(priority).addLast(task);
     _pickNext();
     return task.completer.future;
   }
 
-  Queue<_Task> _getQueue(ServiceCallPriority priority) {
-    Queue<_Task> queue;
-    switch (priority) {
-      case ServiceCallPriority.asap:
-        queue = _asapQueue;
-        break;
-      case ServiceCallPriority.background:
-        queue = _backgroundQueue;
-        break;
-      case ServiceCallPriority.normal:
-      default:
-        queue = _normalQueue;
-        break;
-    }
-    return queue;
-  }
+  Queue<_Task> _getQueue(int priority) => _queues.putIfAbsent(priority, () => Queue<_Task>());
 
   void _pickNext() {
     if (_running != null) return;
-    final queue = _queues.firstWhere((q) => q.isNotEmpty, orElse: () => null);
+    final queue = _queues.entries.firstWhere((kv) => kv.value.isNotEmpty, orElse: () => null)?.value;
     _running = queue?.removeFirst();
     _running?.callback?.call();
   }
 
-  bool cancel(Object key, ServiceCallPriority priority) {
-    var cancelled = false;
-    final queue = _getQueue(priority);
-    final tasks = queue.where((task) => task.key == key).toList();
-    tasks.forEach((task) {
-      if (queue.remove(task)) {
-        cancelled = true;
-        task.completer.completeError(CancelledException());
-      }
+  bool _takeOut(Object key, Iterable<int> priorities, void Function(int priority, _Task task) action) {
+    var out = false;
+    priorities.forEach((priority) {
+      final queue = _getQueue(priority);
+      final tasks = queue.where((task) => task.key == key).toList();
+      tasks.forEach((task) {
+        if (queue.remove(task)) {
+          out = true;
+          action(priority, task);
+        }
+      });
     });
-    return cancelled;
+    return out;
   }
 
-  bool pause(Object key, ServiceCallPriority priority) {
-    var paused = false;
-    final queue = _getQueue(priority);
-    final tasks = queue.where((task) => task.key == key).toList();
-    tasks.forEach((task) {
-      if (queue.remove(task)) {
-        paused = true;
-        _paused.putIfAbsent(key, () => task);
-      }
-    });
-    return paused;
+  bool cancel(Object key, Iterable<int> priorities) {
+    return _takeOut(key, priorities, (priority, task) => task.completer.completeError(CancelledException()));
+  }
+
+  bool pause(Object key, Iterable<int> priorities) {
+    return _takeOut(key, priorities, (priority, task) => _paused.putIfAbsent(key, () => Tuple2(priority, task)));
   }
 
   bool isPaused(Object key) => _paused.containsKey(key);
@@ -114,4 +99,10 @@ class _Task {
 
 class CancelledException {}
 
-enum ServiceCallPriority { asap, normal, background }
+class ServiceCallPriority {
+  static const int getFastThumbnail = 100;
+  static const int getSizedThumbnail = 200;
+  static const int normal = 500;
+  static const int getMetadata = 1000;
+  static const int getLocation = 1000;
+}

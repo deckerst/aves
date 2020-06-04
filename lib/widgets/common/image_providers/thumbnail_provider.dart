@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   ThumbnailProvider({
     @required this.entry,
-    @required this.extent,
-    this.scale = 1.0,
+    this.extent = 0,
+    this.scale = 1,
   })  : assert(entry != null),
         assert(extent != null),
         assert(scale != null) {

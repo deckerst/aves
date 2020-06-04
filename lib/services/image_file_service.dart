@@ -14,8 +14,6 @@ class ImageFileService {
   static final StreamsChannel byteChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
 
-  static const thumbnailPriority = ServiceCallPriority.asap;
-
   static Future<void> getImageEntries() async {
     try {
       await platform.invokeMethod('getImageEntries');
@@ -64,28 +62,36 @@ class ImageFileService {
   static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object taskKey}) {
     return servicePolicy.call(
       () async {
-        if (width > 0 && height > 0) {
-          try {
-            final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
-              'entry': entry.toMap(),
-              'width': width,
-              'height': height,
-            });
-            return result as Uint8List;
-          } on PlatformException catch (e) {
-            debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-          }
+        try {
+          final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
+            'entry': entry.toMap(),
+            'width': width,
+            'height': height,
+            'defaultSize': 256,
+          });
+          return result as Uint8List;
+        } on PlatformException catch (e) {
+          debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
         }
         return Uint8List(0);
       },
-      priority: thumbnailPriority,
+//      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
+      priority: width == 0 || height == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail,
       key: taskKey,
     );
   }
 
-  static bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, thumbnailPriority);
+  static Future<void> clearSizedThumbnailDiskCache() async {
+    try {
+      return platform.invokeMethod('clearSizedThumbnailDiskCache');
+    } on PlatformException catch (e) {
+      debugPrint('clearSizedThumbnailDiskCache failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+  }
 
-  static Future<T> resumeThumbnail<T>(Object taskKey) => servicePolicy.resume<T>(taskKey, thumbnailPriority);
+  static bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
+
+  static Future<T> resumeThumbnail<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   static Stream<ImageOpEvent> delete(Iterable<ImageEntry> entries) {
     try {

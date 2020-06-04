@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -32,6 +33,7 @@ class ThumbnailCollection extends StatelessWidget {
           final mqSize = mq.item1;
           final mqHorizontalPadding = mq.item2;
           TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
+          final cacheExtent = TileExtentManager.extentMaxForSize(mqSize);
 
           // do not replace by Provider.of<CollectionLens>
           // so that view updates on collection filter changes
@@ -47,6 +49,7 @@ class ThumbnailCollection extends StatelessWidget {
                 appBarHeightNotifier: _appBarHeightNotifier,
                 isScrollingNotifier: _isScrollingNotifier,
                 scrollController: PrimaryScrollController.of(context),
+                cacheExtent: cacheExtent,
               );
 
               final scaler = GridScaleGestureDetector(
@@ -91,6 +94,7 @@ class CollectionScrollView extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
+  final double cacheExtent;
 
   const CollectionScrollView({
     @required this.scrollableKey,
@@ -99,6 +103,7 @@ class CollectionScrollView extends StatefulWidget {
     @required this.appBarHeightNotifier,
     @required this.isScrollingNotifier,
     @required this.scrollController,
+    @required this.cacheExtent,
   });
 
   @override
@@ -149,6 +154,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
       physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
+      cacheExtent: widget.cacheExtent,
       slivers: [
         appBar,
         collection.isEmpty

@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/transition_image.dart';
@@ -24,13 +25,18 @@ class ThumbnailRasterImage extends StatefulWidget {
 }
 
 class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
-  ThumbnailProvider _imageProvider;
+  ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
   ImageEntry get entry => widget.entry;
 
   double get extent => widget.extent;
 
   Object get heroTag => widget.heroTag;
+
+  // we standardize the thumbnail loading dimension by taking the nearest larger power of 2
+  // so that there are less variants of the thumbnails to load and cache
+  // it increases the chance of cache hit when loading similarly sized columns (e.g. on orientation change)
+  double get requestExtent => pow(2, (log(extent) / log(2)).ceil()).toDouble();
 
   @override
   void initState() {
@@ -53,7 +59,12 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     super.dispose();
   }
 
-  void _initProvider() => _imageProvider = ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent);
+  void _initProvider() {
+    _fastThumbnailProvider = ThumbnailProvider(entry: entry);
+    if (!entry.isVideo) {
+      _sizedThumbnailProvider = ThumbnailProvider(entry: entry, extent: requestExtent);
+    }
+  }
 
   void _pauseProvider() {
     final isScrolling = widget.isScrollingNotifier?.value ?? false;
@@ -61,24 +72,36 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     // the retrieval task queue can pile up for thumbnails that got disposed
     // in this case we pause the image retrieval task to get it out of the queue
     if (isScrolling) {
-      _imageProvider?.pause();
+      _fastThumbnailProvider?.pause();
+      _sizedThumbnailProvider?.pause();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final image = Image(
-      image: _imageProvider,
+    final fastImage = Image(
+      image: _fastThumbnailProvider,
       width: extent,
       height: extent,
       fit: BoxFit.cover,
     );
+    final image = _sizedThumbnailProvider == null
+        ? fastImage
+        : Image(
+            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+              return frame == null ? fastImage : child;
+            },
+            image: _sizedThumbnailProvider,
+            width: extent,
+            height: extent,
+            fit: BoxFit.cover,
+          );
     return heroTag == null
         ? image
         : Hero(
             tag: heroTag,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-              ImageProvider heroImageProvider = _imageProvider;
+              ImageProvider heroImageProvider = _fastThumbnailProvider;
               if (!entry.isVideo && !entry.isSvg) {
                 final imageProvider = UriImage(
                   uri: entry.uri,

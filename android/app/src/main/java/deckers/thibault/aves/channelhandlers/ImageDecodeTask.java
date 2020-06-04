@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
@@ -35,14 +36,15 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
     static class Params {
         ImageEntry entry;
-        int width, height;
+        Integer width, height, defaultSize;
         MethodChannel.Result result;
 
-        Params(ImageEntry entry, int width, int height, MethodChannel.Result result) {
+        Params(ImageEntry entry, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
             this.entry = entry;
             this.width = width;
             this.height = height;
             this.result = result;
+            this.defaultSize = defaultSize;
         }
     }
 
@@ -69,17 +71,24 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         Bitmap bitmap = null;
         if (!this.isCancelled()) {
             Exception exception = null;
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    bitmap = getThumbnailBytesByResolver(p);
-                } else {
-                    bitmap = getThumbnailBytesByMediaStore(p);
+            Integer w = p.width;
+            Integer h = p.height;
+            // fetch low quality thumbnails when size is not specified
+            if (w == null || h == null || w == 0 || h == 0) {
+                p.width = p.defaultSize;
+                p.height = p.defaultSize;
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        bitmap = getThumbnailBytesByResolver(p);
+                    } else {
+                        bitmap = getThumbnailBytesByMediaStore(p);
+                    }
+                } catch (Exception e) {
+                    exception = e;
                 }
-            } catch (Exception e) {
-                exception = e;
             }
 
-            // fallback if the native methods failed
+            // fallback if the native methods failed or for higher quality thumbnails
             try {
                 if (bitmap == null) {
                     bitmap = getThumbnailByGlide(p);
@@ -108,8 +117,9 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private Bitmap getThumbnailBytesByResolver(Params params) throws IOException {
         ImageEntry entry = params.entry;
-        int width = params.width;
-        int height = params.height;
+        Integer width = params.width;
+        Integer height = params.height;
+//        Log.d(LOG_TAG, "getThumbnailBytesByResolver width=" + width + ", path=" + entry.path);
 
         ContentResolver resolver = activity.getContentResolver();
         return resolver.loadThumbnail(entry.uri, new Size(width, height), null);
@@ -141,6 +151,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         ImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
+//        Log.d(LOG_TAG, "getThumbnailByGlide width=" + width + ", path=" + entry.path);
 
         // add signature to ignore cache for images which got modified but kept the same URI
         Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.orientationDegrees);

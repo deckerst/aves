@@ -22,9 +22,6 @@ class Constants {
   // ref _PopupMenuRoute._kMenuDuration
   static const popupMenuTransitionDuration = Duration(milliseconds: 300);
 
-  // TODO TLAD smarter sizing, but shouldn't only depend on `extent` so that it doesn't reload during gridview scaling
-  static const double thumbnailCacheExtent = 50;
-
   static const svgBackground = Colors.white;
   static const svgColorFilter = ColorFilter.mode(svgBackground, BlendMode.dstOver);
 

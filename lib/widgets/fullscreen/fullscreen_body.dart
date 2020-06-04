@@ -5,7 +5,6 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
@@ -477,7 +476,8 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   void _onImageChanged() async {
     await UriImage(uri: entry.uri, mimeType: entry.mimeType).evict();
-    await ThumbnailProvider(entry: entry, extent: Constants.thumbnailCacheExtent).evict();
+    // TODO TLAD also evict `ThumbnailProvider` with specified extents
+    await ThumbnailProvider(entry: entry).evict();
     if (entry.path != null) await FileImage(File(entry.path)).evict();
     // rebuild to refresh the Image inside ImagePage
     setState(() {});

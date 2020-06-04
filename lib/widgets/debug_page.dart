@@ -8,6 +8,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
+import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
@@ -65,7 +66,7 @@ class DebugPageState extends State<DebugPage> {
                 Tab(icon: Icon(OMIcons.whatshot)),
                 Tab(icon: Icon(OMIcons.settings)),
                 Tab(icon: Icon(OMIcons.sdStorage)),
-                Tab(text: 'Env'),
+                Tab(icon: Icon(OMIcons.android)),
               ],
             ),
           ),
@@ -108,8 +109,10 @@ class DebugPageState extends State<DebugPage> {
         const Divider(),
         Row(
           children: [
-            Text('Image cache: ${imageCache.currentSize} items, ${formatFilesize(imageCache.currentSizeBytes)}'),
-            const Spacer(),
+            Expanded(
+              child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t${formatFilesize(imageCache.currentSizeBytes)}/${formatFilesize(imageCache.maximumSizeBytes)}'),
+            ),
+            const SizedBox(width: 8),
             RaisedButton(
               onPressed: () {
                 imageCache.clear();
@@ -121,13 +124,27 @@ class DebugPageState extends State<DebugPage> {
         ),
         Row(
           children: [
-            Text('SVG cache: ${PictureProvider.cacheCount} items'),
-            const Spacer(),
+            Expanded(
+              child: Text('SVG cache: ${PictureProvider.cacheCount} items'),
+            ),
+            const SizedBox(width: 8),
             RaisedButton(
               onPressed: () {
                 PictureProvider.clearCache();
                 setState(() {});
               },
+              child: const Text('Clear'),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            const Expanded(
+              child: Text('Glide disk cache: ?'),
+            ),
+            const SizedBox(width: 8),
+            RaisedButton(
+              onPressed: () => ImageFileService.clearSizedThumbnailDiskCache(),
               child: const Text('Clear'),
             ),
           ],
@@ -140,8 +157,10 @@ class DebugPageState extends State<DebugPage> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
               children: [
-                Text('DB file size: ${formatFilesize(snapshot.data)}'),
-                const Spacer(),
+                Expanded(
+                  child: Text('DB file size: ${formatFilesize(snapshot.data)}'),
+                ),
+                const SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
                   child: const Text('Reset'),
@@ -157,8 +176,10 @@ class DebugPageState extends State<DebugPage> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
               children: [
-                Text('DB date rows: ${snapshot.data.length}'),
-                const Spacer(),
+                Expanded(
+                  child: Text('DB date rows: ${snapshot.data.length}'),
+                ),
+                const SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearDates().then((_) => _startDbReport()),
                   child: const Text('Clear'),
@@ -174,8 +195,10 @@ class DebugPageState extends State<DebugPage> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
               children: [
-                Text('DB metadata rows: ${snapshot.data.length}'),
-                const Spacer(),
+                Expanded(
+                  child: Text('DB metadata rows: ${snapshot.data.length}'),
+                ),
+                const SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearMetadataEntries().then((_) => _startDbReport()),
                   child: const Text('Clear'),
@@ -191,8 +214,10 @@ class DebugPageState extends State<DebugPage> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
               children: [
-                Text('DB address rows: ${snapshot.data.length}'),
-                const Spacer(),
+                Expanded(
+                  child: Text('DB address rows: ${snapshot.data.length}'),
+                ),
+                const SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
                   child: const Text('Clear'),
@@ -208,8 +233,10 @@ class DebugPageState extends State<DebugPage> {
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
               children: [
-                Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)'),
-                const Spacer(),
+                Expanded(
+                  child: Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)'),
+                ),
+                const SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => favourites.clear().then((_) => _startDbReport()),
                   child: const Text('Clear'),
@@ -228,8 +255,10 @@ class DebugPageState extends State<DebugPage> {
       children: [
         Row(
           children: [
-            const Text('Settings'),
-            const Spacer(),
+            const Expanded(
+              child: Text('Settings'),
+            ),
+            const SizedBox(width: 8),
             RaisedButton(
               onPressed: () => settings.reset().then((_) => setState(() {})),
               child: const Text('Reset'),

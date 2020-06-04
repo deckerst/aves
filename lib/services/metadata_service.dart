@@ -50,7 +50,7 @@ class MetadataService {
         }
         return null;
       },
-      priority: ServiceCallPriority.background,
+      priority: ServiceCallPriority.getMetadata,
     );
   }
 
