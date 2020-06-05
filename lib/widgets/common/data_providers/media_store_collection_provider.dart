@@ -17,6 +17,7 @@ class MediaStoreSource {
 
   Future<void> fetch() async {
     final stopwatch = Stopwatch()..start();
+    source.stateNotifier.value = SourceState.loading;
     await metadataDb.init(); // <20ms
     await favourites.init();
     final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
@@ -48,10 +49,13 @@ class MediaStoreSource {
         source.addAll(allEntries);
         // TODO reduce setup time until here
         source.updateAlbums(); // <50ms
+        source.stateNotifier.value = SourceState.cataloging;
         await source.loadCatalogMetadata(); // 400ms for 5400 entries
         await source.catalogEntries(); // <50ms
+        source.stateNotifier.value = SourceState.locating;
         await source.loadAddresses(); // 350ms
         await source.locateEntries(); // <50ms
+        source.stateNotifier.value = SourceState.ready;
         debugPrint('$runtimeType setup end, elapsed=${stopwatch.elapsed}');
       },
       onError: (error) => debugPrint('$runtimeType mediastore stream error=$error'),

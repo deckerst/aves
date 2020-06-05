@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/main.dart';
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
@@ -13,6 +14,7 @@ import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
 
@@ -123,7 +125,66 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
-      final title = AvesApp.mode == AppMode.pick ? 'Select' : 'Aves';
+      Widget title = Text(AvesApp.mode == AppMode.pick ? 'Select' : 'Aves');
+      if (AvesApp.mode == AppMode.main) {
+        title = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            title,
+            ValueListenableBuilder<SourceState>(
+              valueListenable: collection.source.stateNotifier,
+              builder: (context, sourceState, child) {
+                String subtitle;
+                switch (sourceState) {
+                  case SourceState.loading:
+                    subtitle = 'Loading';
+                    break;
+                  case SourceState.cataloging:
+                    subtitle = 'Cataloging';
+                    break;
+                  case SourceState.locating:
+                    subtitle = 'Locating';
+                    break;
+                  case SourceState.ready:
+                  default:
+                    break;
+                }
+                final subtitleStyle = Theme.of(context).textTheme.caption;
+                final progressIndicatorSize = subtitleStyle.fontSize;
+                return AnimatedSwitcher(
+                  duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: SizeTransition(
+                      child: child,
+                      sizeFactor: animation,
+                    ),
+                  ),
+                  child: subtitle == null
+                      ? const SizedBox.shrink()
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(1),
+                              width: progressIndicatorSize,
+                              height: progressIndicatorSize,
+                              margin: const EdgeInsetsDirectional.only(end: 8),
+                              child: const CircularProgressIndicator(strokeWidth: 1),
+                            ),
+                            Text(
+                              '$subtitle',
+                              style: subtitleStyle,
+                            ),
+                          ],
+                        ),
+                );
+              },
+            ),
+          ],
+        );
+      }
       return GestureDetector(
         onTap: _goToSearch,
         // use a `Container` with a dummy color to make it expand
@@ -133,7 +194,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
           color: Colors.transparent,
           height: kToolbarHeight,
-          child: Text(title),
+          child: title,
         ),
       );
     } else if (collection.isSelecting) {

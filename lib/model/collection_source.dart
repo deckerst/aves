@@ -19,6 +19,7 @@ class CollectionSource {
   List<String> sortedCountries = List.unmodifiable([]);
   List<String> sortedPlaces = List.unmodifiable([]);
   List<String> sortedTags = List.unmodifiable([]);
+  ValueNotifier<SourceState> stateNotifier = ValueNotifier<SourceState>(SourceState.ready);
 
   List<ImageEntry> get entries => List.unmodifiable(_rawEntries);
 
@@ -248,6 +249,8 @@ class CollectionSource {
     return _filterEntryCountMap.putIfAbsent(filter, () => _rawEntries.where((entry) => filter.filter(entry)).length);
   }
 }
+
+enum SourceState { loading, cataloging, locating, ready }
 
 class AddressMetadataChangedEvent {}
 
