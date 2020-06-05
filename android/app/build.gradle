@@ -34,19 +34,21 @@ android {
     defaultConfig {
         applicationId "deckers.thibault.aves"
         // some Java 8 APIs (java.util.stream, etc.) require minSdkVersion 24
-        // but Android Studio 4.0 desugaring features allow targeting older SDKs
+        // Gradle plugin 4.0 desugaring features allow targeting older SDKs
+        // but Flutter (as of v1.17.3) fails to run in release mode when using Gradle plugin 4.0:
+        // https://github.com/flutter/flutter/issues/58247
         minSdkVersion 24
         targetSdkVersion 29 // same as compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
-    compileOptions {
-        // enable support for Java 8 language APIs (stream, optional, etc.)
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        // enable support for Java 8 language APIs (stream, optional, etc.)
+//        coreLibraryDesugaringEnabled true
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
 
     buildTypes {
         debug {
@@ -72,7 +74,7 @@ repositories {
 
 dependencies {
     // enable support for Java 8 language APIs (stream, optional, etc.)
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+//    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
 
     implementation "androidx.exifinterface:exifinterface:1.2.0"
     implementation 'com.commonsware.cwac:document:0.4.1'
