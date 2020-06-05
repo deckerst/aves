@@ -8,6 +8,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/album/app_bar.dart';
+import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
@@ -84,6 +85,10 @@ class SelectionActionDelegate with PermissionAwareMixin {
             ),
             filterEntries: source.getAlbumEntries(),
             filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
+            emptyBuilder: () => const EmptyContent(
+              icon: AIcons.album,
+              text: 'No albums!',
+            ),
             onPressed: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           );
         },

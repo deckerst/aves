@@ -24,12 +24,14 @@ class FilterNavigationPage extends StatelessWidget {
   final String title;
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
+  final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
     @required this.source,
     @required this.title,
     @required this.filterEntries,
     @required this.filterBuilder,
+    @required this.emptyBuilder,
   });
 
   @override
@@ -42,6 +44,7 @@ class FilterNavigationPage extends StatelessWidget {
       ),
       filterEntries: filterEntries,
       filterBuilder: filterBuilder,
+      emptyBuilder: emptyBuilder,
       onPressed: (filter) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -63,6 +66,7 @@ class FilterGridPage extends StatelessWidget {
   final Widget appBar;
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
+  final Widget Function() emptyBuilder;
   final FilterCallback onPressed;
 
   const FilterGridPage({
@@ -70,6 +74,7 @@ class FilterGridPage extends StatelessWidget {
     @required this.appBar,
     @required this.filterEntries,
     @required this.filterBuilder,
+    @required this.emptyBuilder,
     @required this.onPressed,
   });
 
@@ -86,28 +91,33 @@ class FilterGridPage extends StatelessWidget {
           child: CustomScrollView(
             slivers: [
               appBar,
-              SliverPadding(
-                padding: const EdgeInsets.all(AvesFilterChip.outlineWidth),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, i) {
-                      final key = filterKeys[i];
-                      return DecoratedFilterChip(
-                        source: source,
-                        filter: filterBuilder(key),
-                        entry: filterEntries[key],
-                        onPressed: onPressed,
-                      );
-                    },
-                    childCount: filterKeys.length,
-                  ),
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: maxCrossAxisExtent,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                  ),
-                ),
-              ),
+              filterKeys.isEmpty
+                  ? SliverFillRemaining(
+                      child: emptyBuilder(),
+                      hasScrollBody: false,
+                    )
+                  : SliverPadding(
+                      padding: const EdgeInsets.all(AvesFilterChip.outlineWidth),
+                      sliver: SliverGrid(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, i) {
+                            final key = filterKeys[i];
+                            return DecoratedFilterChip(
+                              source: source,
+                              filter: filterBuilder(key),
+                              entry: filterEntries[key],
+                              onPressed: onPressed,
+                            );
+                          },
+                          childCount: filterKeys.length,
+                        ),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: maxCrossAxisExtent,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                        ),
+                      ),
+                    ),
               SliverToBoxAdapter(
                 child: Selector<MediaQueryData, double>(
                   selector: (context, mq) => mq.viewInsets.bottom,

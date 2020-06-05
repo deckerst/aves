@@ -13,6 +13,7 @@ import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
@@ -259,6 +260,10 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Albums',
           filterEntries: source.getAlbumEntries(),
           filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
+          emptyBuilder: () => const EmptyContent(
+            icon: AIcons.album,
+            text: 'No albums!',
+          ),
         ),
       ),
     );
@@ -274,6 +279,10 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Countries',
           filterEntries: source.getCountryEntries(),
           filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
+          emptyBuilder: () => const EmptyContent(
+            icon: AIcons.location,
+            text: 'No countries!',
+          ),
         ),
       ),
     );
@@ -289,6 +298,10 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Tags',
           filterEntries: source.getTagEntries(),
           filterBuilder: (s) => TagFilter(s),
+          emptyBuilder: () => const EmptyContent(
+            icon: AIcons.tag,
+            text: 'No tags!',
+          ),
         ),
       ),
     );
