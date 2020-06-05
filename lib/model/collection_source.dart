@@ -250,7 +250,7 @@ class CollectionSource {
   }
 }
 
-enum SourceState { loading, cataloging, locating, ready }
+enum SourceState { loading, cataloguing, locating, ready }
 
 class AddressMetadataChangedEvent {}
 

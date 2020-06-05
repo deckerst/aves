@@ -49,7 +49,7 @@ class MediaStoreSource {
         source.addAll(allEntries);
         // TODO reduce setup time until here
         source.updateAlbums(); // <50ms
-        source.stateNotifier.value = SourceState.cataloging;
+        source.stateNotifier.value = SourceState.cataloguing;
         await source.loadCatalogMetadata(); // 400ms for 5400 entries
         await source.catalogEntries(); // <50ms
         source.stateNotifier.value = SourceState.locating;

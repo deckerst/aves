@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _initViewerEntry({@required String uri, @required String mimeType}) async {
     _viewerEntry = await ImageFileService.getImageEntry(uri, mimeType);
-    // cataloging is essential for geolocation and video rotation
+    // cataloguing is essential for geolocation and video rotation
     await _viewerEntry.catalog();
     unawaited(_viewerEntry.locate());
   }

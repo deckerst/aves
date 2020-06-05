@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/main.dart';
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
@@ -135,23 +136,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             ValueListenableBuilder<SourceState>(
               valueListenable: collection.source.stateNotifier,
               builder: (context, sourceState, child) {
-                String subtitle;
-                switch (sourceState) {
-                  case SourceState.loading:
-                    subtitle = 'Loading';
-                    break;
-                  case SourceState.cataloging:
-                    subtitle = 'Cataloging';
-                    break;
-                  case SourceState.locating:
-                    subtitle = 'Locating';
-                    break;
-                  case SourceState.ready:
-                  default:
-                    break;
-                }
-                final subtitleStyle = Theme.of(context).textTheme.caption;
-                final progressIndicatorSize = subtitleStyle.fontSize;
                 return AnimatedSwitcher(
                   duration: Duration(milliseconds: (300 * timeDilation).toInt()),
                   transitionBuilder: (child, animation) => FadeTransition(
@@ -161,23 +145,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                       sizeFactor: animation,
                     ),
                   ),
-                  child: subtitle == null
+                  child: sourceState == SourceState.ready
                       ? const SizedBox.shrink()
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(1),
-                              width: progressIndicatorSize,
-                              height: progressIndicatorSize,
-                              margin: const EdgeInsetsDirectional.only(end: 8),
-                              child: const CircularProgressIndicator(strokeWidth: 1),
-                            ),
-                            Text(
-                              '$subtitle',
-                              style: subtitleStyle,
-                            ),
-                          ],
+                      : SourceStateSubtitle(
+                          source: collection.source,
                         ),
                 );
               },
@@ -387,3 +358,72 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 }
 
 enum CollectionAction { copy, move, select, selectAll, selectNone, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
+
+class SourceStateSubtitle extends StatefulWidget {
+  final CollectionSource source;
+
+  const SourceStateSubtitle({@required this.source});
+
+  @override
+  _SourceStateSubtitleState createState() => _SourceStateSubtitleState();
+}
+
+class _SourceStateSubtitleState extends State<SourceStateSubtitle> {
+  Timer _progressTimer;
+
+  CollectionSource get source => widget.source;
+
+  SourceState get sourceState => source.stateNotifier.value;
+
+  List<ImageEntry> get entries => source.entries;
+
+  @override
+  void initState() {
+    super.initState();
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _progressTimer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String subtitle;
+    double progress;
+    switch (sourceState) {
+      case SourceState.loading:
+        subtitle = 'Loading';
+        break;
+      case SourceState.cataloguing:
+        subtitle = 'Cataloguing';
+        progress = entries.where((entry) => entry.isCatalogued).length.toDouble() / entries.length;
+        break;
+      case SourceState.locating:
+        subtitle = 'Locating';
+        progress = entries.where((entry) => entry.isLocated).length.toDouble() / entries.length;
+        break;
+      case SourceState.ready:
+      default:
+        break;
+    }
+    final subtitleStyle = Theme.of(context).textTheme.caption;
+    return subtitle == null
+        ? const SizedBox.shrink()
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(subtitle, style: subtitleStyle),
+              if (progress != null && progress > 0) ...[
+                const SizedBox(width: 8),
+                Text(
+                  NumberFormat.percentPattern().format(progress),
+                  style: subtitleStyle.copyWith(color: Colors.white30),
+                ),
+              ]
+            ],
+          );
+  }
+}
