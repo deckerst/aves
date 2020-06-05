@@ -74,7 +74,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     _topOverlayScale = CurvedAnimation(
@@ -316,10 +316,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     await _onOverlayVisibleChange();
   }
 
-  Future<void> _onOverlayVisibleChange() async {
+  Future<void> _onOverlayVisibleChange({bool animate = true}) async {
     if (_overlayVisible.value) {
       _showSystemUI();
-      _overlayAnimationController.forward();
+      if (animate) {
+        _overlayAnimationController.forward();
+      } else {
+        _overlayAnimationController.value = _overlayAnimationController.upperBound;
+      }
     } else {
       final mediaQuery = Provider.of<MediaQueryData>(context, listen: false);
       setState(() {
@@ -327,7 +331,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         _frozenViewPadding = mediaQuery.viewPadding;
       });
       _hideSystemUI();
-      await _overlayAnimationController.reverse();
+      if (animate) {
+        await _overlayAnimationController.reverse();
+      } else {
+        _overlayAnimationController.reset();
+      }
       setState(() {
         _frozenViewInsets = null;
         _frozenViewPadding = null;

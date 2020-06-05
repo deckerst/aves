@@ -80,6 +80,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   @override
   Widget build(BuildContext context) {
     final fastImage = Image(
+      key: const ValueKey('LQ'),
       image: _fastThumbnailProvider,
       width: extent,
       height: extent,
@@ -88,16 +89,24 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     final image = _sizedThumbnailProvider == null
         ? fastImage
         : Image(
+            key: const ValueKey('HQ'),
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               if (wasSynchronouslyLoaded) return child;
               return AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, animation) => child == fastImage
-                    ? child
-                    : FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      ),
+                transitionBuilder: (child, animation) {
+                  var shouldFade = true;
+                  if (child is Image && child.image == _fastThumbnailProvider) {
+                    // directly show LQ thumbnail, only fade when switching from LQ to HQ
+                    shouldFade = false;
+                  }
+                  return shouldFade
+                      ? FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        )
+                      : child;
+                },
                 child: frame == null ? fastImage : child,
               );
             },
