@@ -116,6 +116,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                 final imageProvider = UriImage(
                   uri: entry.uri,
                   mimeType: entry.mimeType,
+                  expectedContentLength: entry.sizeBytes,
                 );
                 if (imageCache.statusForKey(imageProvider).keepAlive) {
                   heroImageProvider = imageProvider;

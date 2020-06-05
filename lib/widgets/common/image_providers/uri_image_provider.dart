@@ -1,20 +1,23 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pedantic/pedantic.dart';
 
 class UriImage extends ImageProvider<UriImage> {
   const UriImage({
     @required this.uri,
     @required this.mimeType,
+    this.expectedContentLength,
     this.scale = 1.0,
   })  : assert(uri != null),
         assert(scale != null);
 
   final String uri, mimeType;
-
+  final int expectedContentLength;
   final double scale;
 
   @override
@@ -24,20 +27,37 @@ class UriImage extends ImageProvider<UriImage> {
 
   @override
   ImageStreamCompleter load(UriImage key, DecoderCallback decode) {
+    final chunkEvents = StreamController<ImageChunkEvent>();
+
     return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key, decode),
+      codec: _loadAsync(key, decode, chunkEvents),
       scale: key.scale,
+      chunkEvents: chunkEvents.stream,
       informationCollector: () sync* {
         yield ErrorDescription('uri=$uri, mimeType=$mimeType');
       },
     );
   }
 
-  Future<ui.Codec> _loadAsync(UriImage key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(UriImage key, DecoderCallback decode, StreamController<ImageChunkEvent> chunkEvents) async {
     assert(key == this);
 
-    final bytes = await ImageFileService.getImage(uri, mimeType);
-    return await decode(bytes ?? Uint8List(0));
+    try {
+      final bytes = await ImageFileService.getImage(
+        uri,
+        mimeType,
+        expectedContentLength: expectedContentLength,
+        onBytesReceived: (cumulative, total) {
+          chunkEvents.add(ImageChunkEvent(
+            cumulativeBytesLoaded: cumulative,
+            expectedTotalBytes: total,
+          ));
+        },
+      );
+      return await decode(bytes ?? Uint8List(0));
+    } finally {
+      unawaited(chunkEvents.close());
+    }
   }
 
   @override

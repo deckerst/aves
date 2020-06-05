@@ -36,15 +36,28 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> getImage(String uri, String mimeType) {
+  static Future<Uint8List> getImage(String uri, String mimeType, {int expectedContentLength, BytesReceivedCallback onBytesReceived}) {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = _OutputBuffer();
+      var bytesReceived = 0;
       byteChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }).listen(
-        (chunk) => sink.add(chunk as Uint8List),
+        (data) {
+          final chunk = data as Uint8List;
+          sink.add(chunk);
+          if (onBytesReceived != null) {
+            bytesReceived += chunk.length;
+            try {
+              onBytesReceived(bytesReceived, expectedContentLength);
+            } catch (error, stackTrace) {
+              completer.completeError(error, stackTrace);
+              return;
+            }
+          }
+        },
         onError: completer.completeError,
         onDone: () {
           sink.close();
@@ -203,7 +216,10 @@ class MoveOpEvent extends ImageOpEvent {
   }
 }
 
-// copied from `consolidateHttpClientResponseBytes` in flutter/foundation
+// cf flutter/foundation `consolidateHttpClientResponseBytes`
+typedef BytesReceivedCallback = void Function(int cumulative, int total);
+
+// cf flutter/foundation `consolidateHttpClientResponseBytes`
 class _OutputBuffer extends ByteConversionSinkBase {
   List<List<int>> _chunks = <List<int>>[];
   int _contentLength = 0;
@@ -223,8 +239,8 @@ class _OutputBuffer extends ByteConversionSinkBase {
       return;
     }
     _bytes = Uint8List(_contentLength);
-    int offset = 0;
-    for (final List<int> chunk in _chunks) {
+    var offset = 0;
+    for (final chunk in _chunks) {
       _bytes.setRange(offset, offset + chunk.length, chunk);
       offset += chunk.length;
     }

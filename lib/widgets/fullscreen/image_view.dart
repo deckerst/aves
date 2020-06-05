@@ -95,6 +95,7 @@ class ImageView extends StatelessWidget {
       final uriImage = UriImage(
         uri: entry.uri,
         mimeType: entry.mimeType,
+        expectedContentLength: entry.sizeBytes,
       );
       child = PhotoView(
         // key includes size and orientation to refresh when the image is rotated

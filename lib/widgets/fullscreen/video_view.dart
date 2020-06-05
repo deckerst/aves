@@ -98,7 +98,11 @@ class AvesVideoState extends State<AvesVideo> {
                   backgroundColor: Colors.transparent,
                 )
               : Image(
-                  image: UriImage(uri: entry.uri, mimeType: entry.mimeType),
+                  image: UriImage(
+                    uri: entry.uri,
+                    mimeType: entry.mimeType,
+                    expectedContentLength: entry.sizeBytes,
+                  ),
                   width: entry.width.toDouble(),
                   height: entry.height.toDouble(),
                 );
