@@ -130,7 +130,9 @@ class InfoPageState extends State<InfoPage> {
         _scrollStartFromTop = metrics.pixels == metrics.minScrollExtent;
       }
       if (_scrollStartFromTop) {
-        if (notification is ScrollEndNotification) {
+        if (notification is ScrollUpdateNotification) {
+          _scrollStartFromTop = notification.scrollDelta < 0;
+        } else if (notification is ScrollEndNotification) {
           _scrollStartFromTop = false;
         } else if (notification is OverscrollNotification) {
           if (notification.overscroll < 0) {
