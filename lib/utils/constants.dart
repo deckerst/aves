@@ -90,6 +90,12 @@ class Constants {
       sourceUrl: 'https://github.com/Skylled/expansion_tile_card',
     ),
     Dependency(
+      name: 'Firebase Crashlytics',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/FirebaseExtended/flutterfire/blob/master/packages/firebase_crashlytics/LICENSE',
+      sourceUrl: 'https://github.com/FirebaseExtended/flutterfire/tree/master/packages/firebase_crashlytics',
+    ),
+    Dependency(
       name: 'Flushbar',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/AndreHaueisen/flushbar/blob/master/LICENSE',

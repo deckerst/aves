@@ -8,6 +8,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedantic/pedantic.dart';
@@ -17,6 +18,9 @@ import 'package:screen/screen.dart';
 void main() {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
 //  debugPrintGestureArenaDiagnostics = true;
+  Crashlytics.instance.enableInDevMode = true;
+
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
   runApp(AvesApp());
 }
 

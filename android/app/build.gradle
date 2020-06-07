@@ -87,3 +87,6 @@ dependencies {
 
     compileOnly rootProject.findProject(':streams_channel')
 }
+
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'

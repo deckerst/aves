@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "100907092477",
+    "firebase_url": "https://aves-1564927220626.firebaseio.com",
+    "project_id": "aves-1564927220626",
+    "storage_bucket": "aves-1564927220626.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100907092477:android:883192cb81028ac9ec7194",
+        "android_client_info": {
+          "package_name": "deckers.thibault.aves"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100907092477-u7sm8gp5t2sotn42oq20ufhtn3craodu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsAb_CN9AxeT05jLGhdnNLFQ6U5esTjjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100907092477-u7sm8gp5t2sotn42oq20ufhtn3craodu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100907092477:android:f3d6f758d2ed896aec7194",
+        "android_client_info": {
+          "package_name": "deckers.thibault.aves.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100907092477-u7sm8gp5t2sotn42oq20ufhtn3craodu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsAb_CN9AxeT05jLGhdnNLFQ6U5esTjjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100907092477-u7sm8gp5t2sotn42oq20ufhtn3craodu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
