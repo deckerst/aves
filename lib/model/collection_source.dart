@@ -73,10 +73,12 @@ class CollectionSource {
       await entry.catalog();
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata);
+        if (newMetadata.length >= 500) {
+          await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+          newMetadata.clear();
+        }
       }
     });
-    if (newMetadata.isEmpty) return;
-
     await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
     onCatalogMetadataChanged();
     debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s with ${newMetadata.length} new entries');

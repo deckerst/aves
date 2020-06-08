@@ -72,7 +72,7 @@ class ImageFileService {
     return Future.sync(() => Uint8List(0));
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object taskKey}) {
+  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object taskKey, int priority}) {
     return servicePolicy.call(
       () async {
         try {
@@ -89,7 +89,7 @@ class ImageFileService {
         return Uint8List(0);
       },
 //      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
-      priority: width == 0 || height == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail,
+      priority: priority ?? (width == 0 || height == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
   }

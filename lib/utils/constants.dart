@@ -114,6 +114,12 @@ class Constants {
       sourceUrl: 'https://github.com/pinkfish/flutter_native_timezone',
     ),
     Dependency(
+      name: 'Flutter Staggered Animations',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/mobiten/flutter_staggered_animations/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
+    ),
+    Dependency(
       name: 'Flutter SVG',
       license: 'MIT',
       licenseUrl: 'https://github.com/dnfield/flutter_svg/blob/master/LICENSE',
