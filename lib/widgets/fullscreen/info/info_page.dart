@@ -14,14 +14,14 @@ import 'package:tuple/tuple.dart';
 
 class InfoPage extends StatefulWidget {
   final CollectionLens collection;
-  final ImageEntry entry;
+  final ValueNotifier<ImageEntry> entryNotifier;
   final ValueNotifier<bool> visibleNotifier;
 
   const InfoPage({
     Key key,
     @required this.collection,
-    @required this.entry,
-    this.visibleNotifier,
+    @required this.entryNotifier,
+    @required this.visibleNotifier,
   }) : super(key: key);
 
   @override
@@ -34,12 +34,31 @@ class InfoPageState extends State<InfoPage> {
 
   CollectionLens get collection => widget.collection;
 
-  ImageEntry get entry => widget.entry;
-
   @override
   void initState() {
     super.initState();
-    entry.locate();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(InfoPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(InfoPage widget) {
+    widget.entryNotifier.addListener(_onEntryChanged);
+  }
+
+  void _unregisterWidget(InfoPage widget) {
+    widget.entryNotifier.removeListener(_onEntryChanged);
   }
 
   @override
@@ -67,52 +86,57 @@ class InfoPageState extends State<InfoPage> {
                 final mqWidth = mq.item1;
                 final mqViewInsetsBottom = mq.item2;
                 final split = mqWidth > 400;
-                final locationAtTop = split && entry.hasGps;
 
-                final locationSection = LocationSection(
-                  collection: collection,
-                  entry: entry,
-                  showTitle: !locationAtTop,
-                  visibleNotifier: widget.visibleNotifier,
-                  onFilter: _goToCollection,
-                );
-                final basicAndLocationSliver = locationAtTop
-                    ? SliverToBoxAdapter(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
-                            const SizedBox(width: 8),
-                            Expanded(child: locationSection),
-                          ],
-                        ),
-                      )
-                    : SliverList(
-                        delegate: SliverChildListDelegate.fixed(
-                          [
-                            BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
-                            locationSection,
-                          ],
-                        ),
-                      );
-                final metadataSliver = MetadataSectionSliver(
-                  entry: entry,
-                  visibleNotifier: widget.visibleNotifier,
-                );
+                return ValueListenableBuilder(
+                  valueListenable: widget.entryNotifier,
+                  builder: (context, entry, child) {
+                    final locationAtTop = split && entry.hasGps;
+                    final locationSection = LocationSection(
+                      collection: collection,
+                      entry: entry,
+                      showTitle: !locationAtTop,
+                      visibleNotifier: widget.visibleNotifier,
+                      onFilter: _goToCollection,
+                    );
+                    final basicAndLocationSliver = locationAtTop
+                        ? SliverToBoxAdapter(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
+                                const SizedBox(width: 8),
+                                Expanded(child: locationSection),
+                              ],
+                            ),
+                          )
+                        : SliverList(
+                            delegate: SliverChildListDelegate.fixed(
+                              [
+                                BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
+                                locationSection,
+                              ],
+                            ),
+                          );
+                    final metadataSliver = MetadataSectionSliver(
+                      entry: entry,
+                      visibleNotifier: widget.visibleNotifier,
+                    );
 
-                return CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    appBar,
-                    SliverPadding(
-                      padding: horizontalPadding + const EdgeInsets.only(top: 8),
-                      sliver: basicAndLocationSliver,
-                    ),
-                    SliverPadding(
-                      padding: horizontalPadding + EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
-                      sliver: metadataSliver,
-                    ),
-                  ],
+                    return CustomScrollView(
+                      controller: _scrollController,
+                      slivers: [
+                        appBar,
+                        SliverPadding(
+                          padding: horizontalPadding + const EdgeInsets.only(top: 8),
+                          sliver: basicAndLocationSliver,
+                        ),
+                        SliverPadding(
+                          padding: horizontalPadding + EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
+                          sliver: metadataSliver,
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),
@@ -121,6 +145,10 @@ class InfoPageState extends State<InfoPage> {
         resizeToAvoidBottomInset: false,
       ),
     );
+  }
+
+  void _onEntryChanged() {
+    widget.entryNotifier.value?.locate();
   }
 
   bool _handleTopScroll(Notification notification) {

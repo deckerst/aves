@@ -9,16 +9,14 @@ import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class FullscreenTopOverlay extends StatelessWidget {
-  final List<ImageEntry> entries;
-  final int index;
+  final ImageEntry entry;
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
   final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
-
-  ImageEntry get entry => entries[index];
 
   static const double padding = 8;
 
@@ -28,13 +26,12 @@ class FullscreenTopOverlay extends StatelessWidget {
 
   const FullscreenTopOverlay({
     Key key,
-    @required this.entries,
-    @required this.index,
+    @required this.entry,
     @required this.scale,
-    this.canToggleFavourite = false,
-    this.viewInsets,
-    this.viewPadding,
-    this.onActionSelected,
+    @required this.canToggleFavourite,
+    @required this.viewInsets,
+    @required this.viewPadding,
+    @required this.onActionSelected,
   }) : super(key: key);
 
   @override
@@ -43,49 +40,31 @@ class FullscreenTopOverlay extends StatelessWidget {
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
         padding: const EdgeInsets.all(padding),
-        child: Selector<MediaQueryData, Orientation>(
-          selector: (c, mq) => mq.orientation,
-          builder: (c, orientation, child) {
-            final targetCount = orientation == Orientation.landscape ? landscapeActionCount : portraitActionCount;
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                final availableCount = (constraints.maxWidth / (kMinInteractiveDimension + padding)).floor() - 2;
-                final quickActionCount = min(targetCount, availableCount);
+        child: Selector<MediaQueryData, Tuple2<double, Orientation>>(
+          selector: (c, mq) => Tuple2(mq.size.width, mq.orientation),
+          builder: (c, mq, child) {
+            final mqWidth = mq.item1;
+            final mqOrientation = mq.item2;
 
-                final quickActions = [
-                  EntryAction.toggleFavourite,
-                  EntryAction.share,
-                  EntryAction.delete,
-                ].where(_canDo).take(quickActionCount);
-                final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo);
-                final externalAppActions = EntryActions.externalApp.where(_canDo);
+            final targetCount = mqOrientation == Orientation.landscape ? landscapeActionCount : portraitActionCount;
+            final availableCount = (mqWidth / (kMinInteractiveDimension + padding)).floor() - 2;
+            final quickActionCount = min(targetCount, availableCount);
 
-                return Row(
-                  children: [
-                    OverlayButton(
-                      scale: scale,
-                      child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
-                    ),
-                    const Spacer(),
-                    ...quickActions.map(_buildOverlayButton),
-                    OverlayButton(
-                      scale: scale,
-                      child: PopupMenuButton<EntryAction>(
-                        itemBuilder: (context) => [
-                          ...inAppActions.map(_buildPopupMenuItem),
-                          const PopupMenuDivider(),
-                          ...externalAppActions.map(_buildPopupMenuItem),
-                          if (kDebugMode) ...[
-                            const PopupMenuDivider(),
-                            _buildPopupMenuItem(EntryAction.debug),
-                          ]
-                        ],
-                        onSelected: onActionSelected,
-                      ),
-                    ),
-                  ],
-                );
-              },
+            final quickActions = [
+              EntryAction.toggleFavourite,
+              EntryAction.share,
+              EntryAction.delete,
+            ].where(_canDo).take(quickActionCount).toList();
+            final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
+            final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
+
+            return _TopOverlayRow(
+              quickActions: quickActions,
+              inAppActions: inAppActions,
+              externalAppActions: externalAppActions,
+              scale: scale,
+              isFavouriteNotifier: entry.isFavouriteNotifier,
+              onActionSelected: onActionSelected,
             );
           },
         ),
@@ -118,6 +97,56 @@ class FullscreenTopOverlay extends StatelessWidget {
     }
     return false;
   }
+}
+
+class _TopOverlayRow extends StatelessWidget {
+  final List<EntryAction> quickActions;
+  final List<EntryAction> inAppActions;
+  final List<EntryAction> externalAppActions;
+  final Animation<double> scale;
+  final ValueNotifier<bool> isFavouriteNotifier;
+  final Function(EntryAction value) onActionSelected;
+
+  const _TopOverlayRow({
+    Key key,
+    @required this.quickActions,
+    @required this.inAppActions,
+    @required this.externalAppActions,
+    @required this.scale,
+    @required this.isFavouriteNotifier,
+    @required this.onActionSelected,
+  }) : super(key: key);
+
+  static const double padding = 8;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        OverlayButton(
+          scale: scale,
+          child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
+        ),
+        const Spacer(),
+        ...quickActions.map(_buildOverlayButton),
+        OverlayButton(
+          scale: scale,
+          child: PopupMenuButton<EntryAction>(
+            itemBuilder: (context) => [
+              ...inAppActions.map(_buildPopupMenuItem),
+              const PopupMenuDivider(),
+              ...externalAppActions.map(_buildPopupMenuItem),
+              if (kDebugMode) ...[
+                const PopupMenuDivider(),
+                _buildPopupMenuItem(EntryAction.debug),
+              ]
+            ],
+            onSelected: onActionSelected,
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildOverlayButton(EntryAction action) {
     Widget child;
@@ -125,7 +154,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     switch (action) {
       case EntryAction.toggleFavourite:
         child = ValueListenableBuilder<bool>(
-          valueListenable: entry.isFavouriteNotifier,
+          valueListenable: isFavouriteNotifier,
           builder: (context, isFavourite, child) => Stack(
             alignment: Alignment.center,
             children: [
@@ -136,7 +165,7 @@ class FullscreenTopOverlay extends StatelessWidget {
               ),
               Sweeper(
                 builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
-                toggledNotifier: entry.isFavouriteNotifier,
+                toggledNotifier: isFavouriteNotifier,
               ),
             ],
           ),
@@ -178,7 +207,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     switch (action) {
       // in app actions
       case EntryAction.toggleFavourite:
-        child = entry.isFavouriteNotifier.value
+        child = isFavouriteNotifier.value
             ? const MenuRow(
                 text: 'Remove from favourites',
                 icon: AIcons.favouriteActive,
