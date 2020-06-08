@@ -3,6 +3,7 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Licenses extends StatefulWidget {
@@ -44,7 +45,17 @@ class _LicensesState extends State<Licenses> {
             if (index-- == 0) {
               return _buildHeader();
             }
-            return LicenseRow(_packages[index]);
+            final child = LicenseRow(_packages[index]);
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              duration: const Duration(milliseconds: 375),
+              child: SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                  child: child,
+                ),
+              ),
+            );
           },
           childCount: _packages.length + 1,
         ),
