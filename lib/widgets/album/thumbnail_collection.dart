@@ -12,6 +12,7 @@ import 'package:aves/widgets/album/grid/scaling.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/scroll_thumb.dart';
+import 'package:aves/widgets/common/sloppy_scroll_physics.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -153,7 +154,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       primary: true,
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
-      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : null,
+      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : const SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       cacheExtent: widget.cacheExtent,
       slivers: [
         appBar,
