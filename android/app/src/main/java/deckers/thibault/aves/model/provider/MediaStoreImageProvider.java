@@ -68,9 +68,39 @@ public class MediaStoreImageProvider extends ImageProvider {
                     MediaStore.Video.Media.ORIENTATION,
             } : new String[0]).flatMap(Stream::of).toArray(String[]::new);
 
-    public void fetchAll(Activity activity, NewEntryHandler newEntryHandler) {
-        fetchFrom(activity, newEntryHandler, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION);
-        fetchFrom(activity, newEntryHandler, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION);
+    public void fetchAll(Activity activity, final String sortBy, final String groupBy, NewEntryHandler newEntryHandler) {
+        String orderBy;
+        switch (sortBy) {
+            case "size":
+                orderBy = MediaStore.MediaColumns.SIZE + " DESC";
+                break;
+            case "name":
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    orderBy = MediaStore.MediaColumns.RELATIVE_PATH + ", " + MediaStore.MediaColumns.BUCKET_DISPLAY_NAME + ", " + MediaStore.MediaColumns.DISPLAY_NAME;
+                } else {
+                    orderBy = MediaStore.MediaColumns.DATA;
+                }
+                break;
+            default:
+            case "date":
+                switch (groupBy) {
+                    case "album":
+                        // TODO TLAD find album order first
+                    case "month":
+                    case "day":
+                    default:
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
+                        } else {
+                            orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
+                        }
+                        break;
+                }
+                break;
+        }
+
+        fetchFrom(activity, newEntryHandler, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, orderBy);
+        fetchFrom(activity, newEntryHandler, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, orderBy);
     }
 
     @Override
@@ -83,10 +113,10 @@ public class MediaStoreImageProvider extends ImageProvider {
         };
         if (mimeType.startsWith(MimeTypes.IMAGE)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-            entryCount = fetchFrom(context, onSuccess, contentUri, IMAGE_PROJECTION);
+            entryCount = fetchFrom(context, onSuccess, contentUri, IMAGE_PROJECTION, null);
         } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
-            entryCount = fetchFrom(context, onSuccess, contentUri, VIDEO_PROJECTION);
+            entryCount = fetchFrom(context, onSuccess, contentUri, VIDEO_PROJECTION, null);
         }
         if (entryCount == 0) {
             callback.onFailure(new Exception("failed to fetch entry at uri=" + uri));
@@ -94,8 +124,7 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     @SuppressLint("InlinedApi")
-    private int fetchFrom(final Context context, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection) {
-        String orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
+    private int fetchFrom(final Context context, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection, String orderBy) {
         int entryCount = 0;
 
         final boolean needDuration = projection == VIDEO_PROJECTION;

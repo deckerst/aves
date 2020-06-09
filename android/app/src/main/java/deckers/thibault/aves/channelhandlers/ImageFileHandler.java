@@ -32,7 +32,11 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "getImageEntries":
-                new Thread(() -> mediaStoreStreamHandler.fetchAll(activity)).start();
+                new Thread(() -> {
+                    String sortBy = call.argument("sort");
+                    String groupBy = call.argument("group");
+                    mediaStoreStreamHandler.fetchAll(activity, sortBy, groupBy);
+                }).start();
                 result.success(null);
                 break;
             case "getImageEntry":

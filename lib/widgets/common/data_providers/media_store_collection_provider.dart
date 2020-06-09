@@ -63,6 +63,6 @@ class MediaStoreSource {
 
     // TODO split image fetch AND/OR cache fetch across sessions
     debugPrint('$runtimeType stream start at ${stopwatch.elapsed.inMilliseconds}ms');
-    await ImageFileService.getImageEntries(); // 460ms
+    await ImageFileService.getImageEntries(settings.collectionSortFactor, settings.collectionGroupFactor); // 460ms
   }
 }
