@@ -10,7 +10,7 @@ class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;
   final bool showGenericIcon;
-  final Decoration decoration;
+  final Widget background;
   final Widget details;
   final HeroType heroType;
   final FilterCallback onPressed;
@@ -28,7 +28,7 @@ class AvesFilterChip extends StatefulWidget {
     this.filter,
     this.removable = false,
     this.showGenericIcon = true,
-    this.decoration,
+    this.background,
     this.details,
     this.heroType = HeroType.onTap,
     @required this.onPressed,
@@ -64,11 +64,12 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
+    final hasBackground = widget.background != null;
     final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon);
     final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
     Widget content = Row(
-      mainAxisSize: widget.decoration != null ? MainAxisSize.max : MainAxisSize.min,
+      mainAxisSize: hasBackground ? MainAxisSize.max : MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         if (leading != null) ...[
@@ -105,7 +106,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       child: content,
     );
 
-    if (widget.decoration != null) {
+    if (hasBackground) {
       content = Center(
         child: ColoredBox(
           color: Colors.black54,
@@ -132,45 +133,54 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         maxWidth: AvesFilterChip.maxChipWidth,
         minHeight: AvesFilterChip.minChipHeight,
       ),
-      decoration: widget.decoration,
-      child: Tooltip(
-        message: filter.tooltip,
-        preferBelow: false,
-        child: Material(
-          color: widget.decoration != null ? Colors.transparent : Theme.of(context).scaffoldBackgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: borderRadius,
-          ),
-          child: InkWell(
-            onTap: widget.onPressed != null
-                ? () {
-                    WidgetsBinding.instance.addPostFrameCallback((_) => widget.onPressed(filter));
-                    setState(() => _tapped = true);
-                  }
-                : null,
-            borderRadius: borderRadius,
-            child: FutureBuilder(
-              future: _colorFuture,
-              builder: (context, AsyncSnapshot<Color> snapshot) {
-                final outlineColor = snapshot.hasData ? snapshot.data : Colors.transparent;
-                return DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: outlineColor,
-                      width: AvesFilterChip.outlineWidth,
-                    ),
-                    borderRadius: borderRadius,
-                  ),
-                  position: DecorationPosition.foreground,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: content,
-                  ),
-                );
-              },
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          if (widget.background != null)
+            ClipRRect(
+              borderRadius: borderRadius,
+              child: widget.background,
+            ),
+          Tooltip(
+            message: filter.tooltip,
+            preferBelow: false,
+            child: Material(
+              color: hasBackground ? Colors.transparent : Theme.of(context).scaffoldBackgroundColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: borderRadius,
+              ),
+              child: InkWell(
+                onTap: widget.onPressed != null
+                    ? () {
+                        WidgetsBinding.instance.addPostFrameCallback((_) => widget.onPressed(filter));
+                        setState(() => _tapped = true);
+                      }
+                    : null,
+                borderRadius: borderRadius,
+                child: FutureBuilder(
+                  future: _colorFuture,
+                  builder: (context, AsyncSnapshot<Color> snapshot) {
+                    final outlineColor = snapshot.hasData ? snapshot.data : Colors.transparent;
+                    return DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: outlineColor,
+                          width: AvesFilterChip.outlineWidth,
+                        ),
+                        borderRadius: borderRadius,
+                      ),
+                      position: DecorationPosition.foreground,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: content,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
 
