@@ -218,8 +218,8 @@ class SectionSelectableLeading extends StatelessWidget {
                     switchInCurve: Curves.easeOutBack,
                     switchOutCurve: Curves.easeOutBack,
                     transitionBuilder: (child, animation) => ScaleTransition(
-                      child: child,
                       scale: animation,
+                      child: child,
                     ),
                     child: child,
                   );
@@ -232,16 +232,16 @@ class SectionSelectableLeading extends StatelessWidget {
           switchOutCurve: Curves.easeInOut,
           transitionBuilder: (child, animation) {
             Widget transition = ScaleTransition(
-              child: child,
               scale: animation,
+              child: child,
             );
             if (browsingBuilder == null) {
               // when switching with a header that has no icon,
               // we also transition the size for a smooth push to the text
               transition = SizeTransition(
                 axis: Axis.horizontal,
-                child: transition,
                 sizeFactor: animation,
+                child: transition,
               );
             }
             return transition;

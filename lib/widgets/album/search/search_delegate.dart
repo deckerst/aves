@@ -8,14 +8,16 @@ import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/album/search/expandable_filter_row.dart';
+import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 
 class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   final CollectionSource source;
   final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
+  final FilterCallback onSelection;
 
-  ImageSearchDelegate(this.source);
+  ImageSearchDelegate(this.source, this.onSelection);
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -29,7 +31,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
         icon: AnimatedIcons.menu_arrow,
         progress: transitionAnimation,
       ),
-      onPressed: () => close(context, null),
+      onPressed: () => _select(context, null),
       tooltip: 'Back',
     );
   }
@@ -118,7 +120,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       title: title,
       filters: filters,
       expandedNotifier: expandedSectionNotifier,
-      onPressed: (filter) => close(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
+      onPressed: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
     );
   }
 
@@ -128,7 +130,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       // `buildResults` is called in the build phase,
       // so we post the call that will filter the collection
       // and possibly trigger a rebuild here
-      close(context, _buildQueryFilter(true));
+      _select(context, _buildQueryFilter(true));
     });
     return const SizedBox.shrink();
   }
@@ -136,5 +138,17 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   QueryFilter _buildQueryFilter(bool colorful) {
     final cleanQuery = query.trim();
     return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, colorful: colorful) : null;
+  }
+
+  void _select(BuildContext context, CollectionFilter filter) {
+    if (filter != null) {
+      onSelection(filter);
+    }
+    // we post closing the search page after applying the filter selection
+    // so that hero animation target is ready in the `FilterBar`,
+    // even when the target is a child of an `AnimatedList`
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      close(context, null);
+    });
   }
 }

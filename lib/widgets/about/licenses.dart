@@ -136,7 +136,7 @@ class LicenseRow extends StatelessWidget {
                 children: [
                   Text(
                     package.name,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 8),
                   Icon(

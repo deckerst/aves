@@ -1,48 +1,113 @@
-import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class FilterBar extends StatelessWidget implements PreferredSizeWidget {
+class FilterBar extends StatefulWidget implements PreferredSizeWidget {
   static const double verticalPadding = 16;
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
+
+  final List<CollectionFilter> filters;
+  final FilterCallback onPressed;
+
+  FilterBar({
+    Key key,
+    @required Set<CollectionFilter> filters,
+    @required this.onPressed,
+  })  : filters = List.from(filters)..sort(),
+        super(key: key);
 
   @override
   final Size preferredSize = const Size.fromHeight(preferredHeight);
 
   @override
-  Widget build(BuildContext context) {
-    final collection = Provider.of<CollectionLens>(context);
-    final filters = collection.filters.toList()..sort();
+  _FilterBarState createState() => _FilterBarState();
+}
 
+class _FilterBarState extends State<FilterBar> {
+  final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey();
+  CollectionFilter _userRemovedFilter;
+
+  @override
+  void didUpdateWidget(FilterBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final current = widget.filters;
+    final existing = oldWidget.filters;
+    final removed = existing.where((filter) => !current.contains(filter)).toList();
+    final added = current.where((filter) => !existing.contains(filter)).toList();
+    final listState = _animatedListKey.currentState;
+    removed.forEach((filter) {
+      final index = existing.indexOf(filter);
+      existing.removeAt(index);
+      // only animate item removal when triggered by a user interaction with the chip,
+      // not from automatic chip replacement following chip selection
+      final animate = _userRemovedFilter == filter;
+      listState.removeItem(
+        index,
+        animate
+            ? (context, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SizeTransition(
+                    axis: Axis.horizontal,
+                    sizeFactor: animation,
+                    child: ScaleTransition(
+                      scale: animation,
+                      child: _buildChip(filter),
+                    ),
+                  ),
+                )
+            : (context, animation) => _buildChip(filter),
+        duration: animate ? const Duration(milliseconds: 200) : Duration.zero,
+      );
+    });
+    added.forEach((filter) {
+      final index = current.indexOf(filter);
+      listState.insertItem(
+        index,
+        duration: Duration.zero,
+      );
+    });
+    _userRemovedFilter = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
-      height: preferredSize.height,
+      height: FilterBar.preferredHeight,
       child: NotificationListener<ScrollNotification>(
         // cancel notification bubbling so that the draggable scrollbar
         // does not misinterpret filter bar scrolling for collection scrolling
         onNotification: (notification) => true,
-        child: ListView.separated(
+        child: AnimatedList(
+          key: _animatedListKey,
+          initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          itemBuilder: (context, index) {
-            if (index >= filters.length) return null;
-            final filter = filters[index];
-            return Center(
-              child: AvesFilterChip(
-                key: ValueKey(filter),
-                filter: filter,
-                removable: true,
-                heroType: HeroType.always,
-                onPressed: collection.removeFilter,
-              ),
-            );
+          padding: const EdgeInsets.only(left: 8),
+          itemBuilder: (context, index, animation) {
+            if (index >= widget.filters.length) return null;
+            return _buildChip(widget.filters.toList()[index]);
           },
-          separatorBuilder: (context, index) => const SizedBox(width: 8),
-          itemCount: filters.length,
+        ),
+      ),
+    );
+  }
+
+  Padding _buildChip(CollectionFilter filter) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Center(
+        child: AvesFilterChip(
+          key: ValueKey(filter),
+          filter: filter,
+          removable: true,
+          heroType: HeroType.always,
+          onPressed: (filter) {
+            _userRemovedFilter = filter;
+            widget.onPressed(filter);
+          },
         ),
       ),
     );

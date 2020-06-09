@@ -81,8 +81,8 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                     switchInCurve: Curves.easeOutBack,
                     switchOutCurve: Curves.easeOutBack,
                     transitionBuilder: (child, animation) => ScaleTransition(
-                      child: child,
                       scale: animation,
+                      child: child,
                     ),
                     child: child,
                   );

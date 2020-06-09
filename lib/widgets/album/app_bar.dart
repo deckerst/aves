@@ -93,7 +93,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             leading: _buildAppBarLeading(),
             title: _buildAppBarTitle(),
             actions: _buildActions(),
-            bottom: hasFilters ? FilterBar() : null,
+            bottom: hasFilters
+                ? FilterBar(
+                    filters: collection.filters,
+                    onPressed: collection.removeFilter,
+                  )
+                : null,
             floating: true,
           ),
         );
@@ -141,8 +146,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   transitionBuilder: (child, animation) => FadeTransition(
                     opacity: animation,
                     child: SizeTransition(
-                      child: child,
                       sizeFactor: animation,
+                      child: child,
                     ),
                   ),
                   child: sourceState == SourceState.ready
@@ -337,12 +342,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     }
   }
 
-  Future<void> _goToSearch() async {
-    final filter = await showSearch(
+  void _goToSearch() {
+    showSearch(
       context: context,
-      delegate: ImageSearchDelegate(collection.source),
+      delegate: ImageSearchDelegate(collection.source, collection.addFilter),
     );
-    collection.addFilter(filter);
   }
 
   Future<void> _goToStats() {
