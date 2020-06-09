@@ -279,8 +279,8 @@ class ImageEntry {
           locality: address.locality,
         );
       }
-    } catch (exception) {
-      debugPrint('$runtimeType addAddressToMetadata failed with path=$path coordinates=$coordinates exception=$exception');
+    } catch (exception, stack) {
+      debugPrint('$runtimeType addAddressToMetadata failed with path=$path coordinates=$coordinates exception=$exception\n$stack');
     }
   }
 

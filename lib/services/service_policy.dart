@@ -30,8 +30,11 @@ class ServicePolicy {
     task ??= _Task(
       () async {
         if (debugLabel != null) debugPrint('$runtimeType $debugLabel start');
-        final result = await platformCall();
-        completer.complete(result);
+        try {
+          completer.complete(await platformCall());
+        } catch (error, stackTrace) {
+          completer.completeError(error, stackTrace);
+        }
         if (debugLabel != null) debugPrint('$runtimeType $debugLabel completed');
         _running = null;
         _pickNext();
