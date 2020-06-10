@@ -53,6 +53,7 @@ dependencies:
     path: ../flutter_ijkplayer
   #    git:
   #      url: git://github.com/deckerst/flutter_ijkplayer.git
+  flutter_markdown:
   flutter_native_timezone:
   flutter_staggered_animations:
   flutter_svg:

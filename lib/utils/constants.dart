@@ -108,6 +108,12 @@ class Constants {
       sourceUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer',
     ),
     Dependency(
+      name: 'Flutter Markdown',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/flutter_markdown/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/flutter/flutter_markdown',
+    ),
+    Dependency(
       name: 'Flutter Native Timezone',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/pinkfish/flutter_native_timezone/blob/master/LICENSE',

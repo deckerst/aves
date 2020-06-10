@@ -8,6 +8,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
+import 'package:aves/widgets/welcome.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,8 +27,21 @@ void main() {
 
 enum AppMode { main, pick, view }
 
-class AvesApp extends StatelessWidget {
+class AvesApp extends StatefulWidget {
   static AppMode mode = AppMode.main;
+
+  @override
+  _AvesAppState createState() => _AvesAppState();
+}
+
+class _AvesAppState extends State<AvesApp> {
+  Future<void> _appSetup;
+
+  @override
+  void initState() {
+    super.initState();
+    _appSetup = settings.init();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +64,14 @@ class AvesApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const HomePage(),
+      home: FutureBuilder(
+        future: _appSetup,
+        builder: (context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.hasError) return const Icon(AIcons.error);
+          if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+          return settings.hasAcceptedTerms ? const HomePage() : const WelcomePage();
+        },
+      ),
     );
   }
 }
@@ -69,7 +90,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    debugPrint('$runtimeType initState');
     super.initState();
     _appSetup = _setup();
     imageCache.maximumSizeBytes = 512 * (1 << 20);
@@ -92,8 +112,6 @@ class _HomePageState extends State<HomePage> {
 
     // TODO notify when icons are ready for drawer and section header refresh
     await androidFileUtils.init(); // 170ms
-
-    await settings.init(); // <20ms
 
     final intentData = await ViewerService.getIntentData();
     if (intentData != null) {

@@ -20,6 +20,7 @@ class Settings {
   static const collectionTileExtentKey = 'collection_tile_extent';
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
+  static const hasAcceptedTermsKey = 'has_accepted_terms';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -68,6 +69,10 @@ class Settings {
   double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
 
   set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
+
+  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
+
+  set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
 
   // convenience methods
 
