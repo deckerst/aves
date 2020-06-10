@@ -35,7 +35,6 @@ class ImageEntry {
   AddressDetails _addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
-  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
 
   ImageEntry({
     this.uri,
@@ -52,7 +51,6 @@ class ImageEntry {
     this.durationMillis,
   }) {
     this.path = path;
-    isFavouriteNotifier.value = isFavourite;
   }
 
   ImageEntry copyWith({
@@ -120,7 +118,6 @@ class ImageEntry {
     imageChangeNotifier.dispose();
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
-    isFavouriteNotifier.dispose();
   }
 
   @override
@@ -362,14 +359,12 @@ class ImageEntry {
   void addToFavourites() {
     if (!isFavourite) {
       favourites.add([this]);
-      isFavouriteNotifier.value = true;
     }
   }
 
   void removeFromFavourites() {
     if (isFavourite) {
       favourites.remove([this]);
-      isFavouriteNotifier.value = false;
     }
   }
 }

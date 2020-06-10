@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
@@ -63,7 +64,7 @@ class FullscreenTopOverlay extends StatelessWidget {
               inAppActions: inAppActions,
               externalAppActions: externalAppActions,
               scale: scale,
-              isFavouriteNotifier: entry.isFavouriteNotifier,
+              entry: entry,
               onActionSelected: onActionSelected,
             );
           },
@@ -104,7 +105,7 @@ class _TopOverlayRow extends StatelessWidget {
   final List<EntryAction> inAppActions;
   final List<EntryAction> externalAppActions;
   final Animation<double> scale;
-  final ValueNotifier<bool> isFavouriteNotifier;
+  final ImageEntry entry;
   final Function(EntryAction value) onActionSelected;
 
   const _TopOverlayRow({
@@ -113,7 +114,7 @@ class _TopOverlayRow extends StatelessWidget {
     @required this.inAppActions,
     @required this.externalAppActions,
     @required this.scale,
-    @required this.isFavouriteNotifier,
+    @required this.entry,
     @required this.onActionSelected,
   }) : super(key: key);
 
@@ -153,22 +154,9 @@ class _TopOverlayRow extends StatelessWidget {
     final onPressed = () => onActionSelected?.call(action);
     switch (action) {
       case EntryAction.toggleFavourite:
-        child = ValueListenableBuilder<bool>(
-          valueListenable: isFavouriteNotifier,
-          builder: (context, isFavourite, child) => Stack(
-            alignment: Alignment.center,
-            children: [
-              IconButton(
-                icon: Icon(isFavourite ? AIcons.favouriteActive : AIcons.favourite),
-                onPressed: onPressed,
-                tooltip: isFavourite ? 'Remove from favourites' : 'Add to favourites',
-              ),
-              Sweeper(
-                builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
-                toggledNotifier: isFavouriteNotifier,
-              ),
-            ],
-          ),
+        child = _FavouriteToggler(
+          entry: entry,
+          onPressed: onPressed,
         );
         break;
       case EntryAction.info:
@@ -207,15 +195,10 @@ class _TopOverlayRow extends StatelessWidget {
     switch (action) {
       // in app actions
       case EntryAction.toggleFavourite:
-        child = isFavouriteNotifier.value
-            ? const MenuRow(
-                text: 'Remove from favourites',
-                icon: AIcons.favouriteActive,
-              )
-            : const MenuRow(
-                text: 'Add to favourites',
-                icon: AIcons.favourite,
-              );
+        child = _FavouriteToggler(
+          entry: entry,
+          isMenuItem: true,
+        );
         break;
       case EntryAction.info:
       case EntryAction.share:
@@ -239,5 +222,82 @@ class _TopOverlayRow extends StatelessWidget {
       value: action,
       child: child,
     );
+  }
+}
+
+class _FavouriteToggler extends StatefulWidget {
+  final ImageEntry entry;
+  final bool isMenuItem;
+  final VoidCallback onPressed;
+
+  const _FavouriteToggler({
+    @required this.entry,
+    this.isMenuItem = false,
+    this.onPressed,
+  });
+
+  @override
+  _FavouriteTogglerState createState() => _FavouriteTogglerState();
+}
+
+class _FavouriteTogglerState extends State<_FavouriteToggler> {
+  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(null);
+
+  @override
+  void initState() {
+    super.initState();
+    favourites.changeNotifier.addListener(_onChanged);
+    _onChanged();
+  }
+
+  @override
+  void didUpdateWidget(_FavouriteToggler oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _onChanged();
+  }
+
+  @override
+  void dispose() {
+    favourites.changeNotifier.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: isFavouriteNotifier,
+      builder: (context, isFavourite, child) {
+        if (widget.isMenuItem) {
+          return isFavourite
+              ? const MenuRow(
+                  text: 'Remove from favourites',
+                  icon: AIcons.favouriteActive,
+                )
+              : const MenuRow(
+                  text: 'Add to favourites',
+                  icon: AIcons.favourite,
+                );
+        }
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            IconButton(
+              icon: Icon(isFavourite ? AIcons.favouriteActive : AIcons.favourite),
+              onPressed: widget.onPressed,
+              tooltip: isFavourite ? 'Remove from favourites' : 'Add to favourites',
+            ),
+            Sweeper(
+              key: ValueKey(widget.entry),
+              builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
+              toggledNotifier: isFavouriteNotifier,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onChanged() {
+    isFavouriteNotifier.value = widget.entry.isFavourite;
   }
 }

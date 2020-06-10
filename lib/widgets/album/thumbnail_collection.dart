@@ -33,6 +33,9 @@ class ThumbnailCollection extends StatelessWidget {
         builder: (context, mq, child) {
           final mqSize = mq.item1;
           final mqHorizontalPadding = mq.item2;
+
+          if (mqSize.isEmpty) return const SizedBox.shrink();
+
           TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
           final cacheExtent = TileExtentManager.extentMaxForSize(mqSize) * 2;
 

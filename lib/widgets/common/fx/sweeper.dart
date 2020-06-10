@@ -68,6 +68,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _angleAnimationController.removeStatusListener(_onAnimationStatusChange);
+    _angleAnimationController.dispose();
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -114,10 +115,14 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
       setState(() {});
       await Future.delayed(Duration(milliseconds: (opacityAnimationDurationMillis * timeDilation).toInt()));
       _isAppearing = false;
-      _angleAnimationController.reset();
-      _angleAnimationController.forward();
+      if (mounted) {
+        _angleAnimationController.reset();
+        _angleAnimationController.forward();
+      }
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 }
 

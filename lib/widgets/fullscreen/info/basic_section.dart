@@ -1,4 +1,5 @@
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -31,7 +32,6 @@ class BasicSection extends StatelessWidget {
     final showMegaPixels = entry.isPhoto && entry.megaPixels != null && entry.megaPixels > 0;
     final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
-    final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -44,34 +44,42 @@ class BasicSection extends StatelessWidget {
           'URI': entry.uri ?? '?',
           if (entry.path != null) 'Path': entry.path,
         }),
-        ValueListenableBuilder<bool>(
-          valueListenable: entry.isFavouriteNotifier,
-          builder: (context, isFavourite, child) {
-            final album = entry.directory;
-            final filters = [
-              if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
-              if (entry.isAnimated) MimeFilter(MimeFilter.animated),
-              if (isFavourite) FavouriteFilter(),
-              if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
-              ...tags.map((tag) => TagFilter(tag)),
-            ]..sort();
-            if (filters.isEmpty) return const SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: filters
-                    .map((filter) => AvesFilterChip(
-                          filter: filter,
-                          onPressed: onFilter,
-                        ))
-                    .toList(),
-              ),
-            );
-          },
-        ),
+        _buildChips(),
       ],
+    );
+  }
+
+  Widget _buildChips() {
+    final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
+    final album = entry.directory;
+    final filters = [
+      if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
+      if (entry.isAnimated) MimeFilter(MimeFilter.animated),
+      if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
+      ...tags.map((tag) => TagFilter(tag)),
+    ];
+    return AnimatedBuilder(
+      animation: favourites.changeNotifier,
+      builder: (context, child) {
+        final effectiveFilters = [
+          ...filters,
+          if (entry.isFavourite) FavouriteFilter(),
+        ]..sort();
+        if (effectiveFilters.isEmpty) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: effectiveFilters
+                .map((filter) => AvesFilterChip(
+                      filter: filter,
+                      onPressed: onFilter,
+                    ))
+                .toList(),
+          ),
+        );
+      },
     );
   }
 

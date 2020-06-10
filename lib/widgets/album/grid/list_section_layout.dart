@@ -22,7 +22,8 @@ class SectionedListLayoutProvider extends StatelessWidget {
     @required this.tileExtent,
     @required this.thumbnailBuilder,
     @required this.child,
-  }) : columnCount = max((scrollableWidth / tileExtent).round(), TileExtentManager.columnCountMin);
+  })  : assert(scrollableWidth != 0),
+        columnCount = max((scrollableWidth / tileExtent).round(), TileExtentManager.columnCountMin);
 
   @override
   Widget build(BuildContext context) {

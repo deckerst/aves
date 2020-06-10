@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -103,7 +103,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
       context: context,
       selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
-      onDone: (Set<MoveOpEvent> processed) {
+      onDone: (Set<MoveOpEvent> processed) async {
         debugPrint('$runtimeType _moveSelection onDone');
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
@@ -130,10 +130,10 @@ class SelectionActionDelegate with PermissionAwareMixin {
                 contentId: newFields['contentId'] as int,
               ));
             });
-            metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
-            metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
+            await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
+            await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
           } else {
-            movedOps.forEach((movedOp) {
+            await Future.forEach(movedOps, (movedOp) async {
               final sourceUri = movedOp.uri;
               final newFields = movedOp.newFields;
               final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
@@ -146,9 +146,9 @@ class SelectionActionDelegate with PermissionAwareMixin {
                 entry.contentId = newContentId;
                 movedEntries.add(entry);
 
-                metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
-                metadataDb.updateAddressId(oldContentId, entry.addressDetails);
-                metadataDb.updateFavouriteId(oldContentId, FavouriteRow(contentId: entry.contentId, path: entry.path));
+                await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
+                await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
+                await favourites.move(oldContentId, entry);
               }
             });
           }
@@ -234,17 +234,17 @@ class SelectionActionDelegate with PermissionAwareMixin {
     // do not handle completion inside `StreamBuilder`
     // as it could be called multiple times
     final onComplete = () => _hideOpReportOverlay().then((_) => onDone(processed));
-    opStream.listen(null, onError: (error) => onComplete(), onDone: onComplete);
+    opStream.listen(
+      (event) => processed.add(event),
+      onError: (error) => onComplete(),
+      onDone: onComplete,
+    );
 
     _opReportOverlayEntry = OverlayEntry(
       builder: (context) {
         return StreamBuilder<T>(
             stream: opStream,
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                processed.add(snapshot.data);
-              }
-
               Widget child = const SizedBox.shrink();
               if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
                 final percent = processed.length.toDouble() / selection.length;

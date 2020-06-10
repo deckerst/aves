@@ -31,6 +31,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
     private List<Map<String, Object>> entryMapList;
     private String op;
 
+    @SuppressWarnings("unchecked")
     public ImageOpStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
         if (arguments instanceof Map) {
