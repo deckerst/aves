@@ -407,7 +407,8 @@ class _SourceStateSubtitleState extends State<SourceStateSubtitle> {
         break;
       case SourceState.locating:
         subtitle = 'Locating';
-        progress = entries.where((entry) => entry.isLocated).length.toDouble() / entries.length;
+        final entriesToLocate = entries.where((entry) => entry.hasGps).toList();
+        progress = entriesToLocate.where((entry) => entry.isLocated).length.toDouble() / entriesToLocate.length;
         break;
       case SourceState.ready:
       default:

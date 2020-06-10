@@ -23,11 +23,7 @@ class _LabeledCheckboxState extends State<LabeledCheckbox> {
   @override
   void initState() {
     super.initState();
-    _tapRecognizer = TapGestureRecognizer()
-      ..onTap = () {
-        debugPrint('tapped');
-        widget.onChanged(!widget.value);
-      };
+    _tapRecognizer = TapGestureRecognizer()..onTap = () => widget.onChanged(!widget.value);
   }
 
   @override

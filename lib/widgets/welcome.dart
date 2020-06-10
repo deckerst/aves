@@ -35,20 +35,16 @@ class _WelcomePageState extends State<WelcomePage> {
                   child: child,
                 ),
               ),
-              children: _buildChildren(context),
+              children: [
+                ..._buildTop(context),
+                Flexible(child: _buildTerms()),
+                ..._buildBottomControls(context),
+              ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  List<Widget> _buildChildren(BuildContext context) {
-    return [
-      ..._buildTop(context),
-      Flexible(child: _buildTerms()),
-      ..._buildBottomControls(context),
-    ];
   }
 
   List<Widget> _buildTop(BuildContext context) {
@@ -124,6 +120,7 @@ class _WelcomePageState extends State<WelcomePage> {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white10,
       ),
+      constraints: const BoxConstraints(maxWidth: 460),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Markdown(
