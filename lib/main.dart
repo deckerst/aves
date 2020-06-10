@@ -37,6 +37,8 @@ class AvesApp extends StatefulWidget {
 class _AvesAppState extends State<AvesApp> {
   Future<void> _appSetup;
 
+  static const accentColor = Colors.indigoAccent;
+
   @override
   void initState() {
     super.initState();
@@ -49,8 +51,10 @@ class _AvesAppState extends State<AvesApp> {
       title: 'Aves',
       theme: ThemeData(
         brightness: Brightness.dark,
-        accentColor: Colors.indigoAccent,
+        accentColor: accentColor,
         scaffoldBackgroundColor: Colors.grey[900],
+        buttonColor: accentColor,
+        toggleableActiveColor: accentColor,
         tooltipTheme: const TooltipThemeData(
           verticalOffset: 32,
         ),
