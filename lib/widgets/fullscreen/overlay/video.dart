@@ -179,8 +179,8 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16) + const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: Colors.black26,
-              border: Border.all(color: Colors.white30, width: 0.5),
+              color: FullscreenOverlay.backgroundColor,
+              border: FullscreenOverlay.buildBorder(context),
               borderRadius: const BorderRadius.all(
                 Radius.circular(progressBarBorderRadius),
               ),

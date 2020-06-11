@@ -8,6 +8,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +80,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
             final overlayContentMaxWidth = mqWidth - viewPadding.horizontal - innerPadding.horizontal;
 
             return Container(
-              color: Colors.black26,
+              color: FullscreenOverlay.backgroundColor,
               padding: viewInsets + viewPadding.copyWith(top: 0),
               child: FutureBuilder(
                 future: _detailLoader,

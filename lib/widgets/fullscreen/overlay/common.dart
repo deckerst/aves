@@ -1,6 +1,18 @@
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:flutter/material.dart';
 
+class FullscreenOverlay {
+  static const backgroundColor = Colors.black26;
+
+  static BoxBorder buildBorder(BuildContext context) {
+    final subPixel = MediaQuery.of(context).devicePixelRatio > 2;
+    return Border.all(
+      color: Colors.white30,
+      width: subPixel ? 0.5 : 1.0,
+    );
+  }
+}
+
 class OverlayButton extends StatelessWidget {
   final Animation<double> scale;
   final Widget child;
@@ -14,10 +26,10 @@ class OverlayButton extends StatelessWidget {
       child: BlurredOval(
         child: Material(
           type: MaterialType.circle,
-          color: Colors.black26,
+          color: FullscreenOverlay.backgroundColor,
           child: Ink(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white30, width: 0.5),
+              border: FullscreenOverlay.buildBorder(context),
               shape: BoxShape.circle,
             ),
             child: child,
