@@ -119,7 +119,7 @@ class TitleSectionHeader extends StatelessWidget {
 
   static const leadingDimension = 32.0;
   static const leadingPadding = EdgeInsets.only(right: 8, bottom: 4);
-  static const trailingPadding = EdgeInsets.only(left: 8, bottom: 4);
+  static const trailingPadding = EdgeInsets.only(left: 8, bottom: 2);
   static const padding = EdgeInsets.all(16);
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 

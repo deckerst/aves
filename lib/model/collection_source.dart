@@ -188,7 +188,8 @@ class CollectionSource {
   bool _isEmptyAlbum(String album) => !_rawEntries.any((entry) => entry.directory == album);
 
   String getUniqueAlbumName(String album) {
-    final otherAlbums = _folderPaths.where((item) => item != album);
+    final volumeRoot = androidFileUtils.getStorageVolume(album)?.path ?? '';
+    final otherAlbums = _folderPaths.where((item) => item != album && item.startsWith(volumeRoot));
     final parts = album.split(separator);
     var partCount = 0;
     String testName;

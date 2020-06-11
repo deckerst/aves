@@ -6,6 +6,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -170,7 +171,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         final compare = (a, b) {
           final ua = source.getUniqueAlbumName(a);
           final ub = source.getUniqueAlbumName(b);
-          return compareAsciiUpperCase(ua, ub);
+          final c = compareAsciiUpperCase(ua, ub);
+          if (c != 0) return c;
+          final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
+          final vb = androidFileUtils.getStorageVolume(b)?.path ?? '';
+          return compareAsciiUpperCase(va, vb);
         };
         sections = SplayTreeMap.of(byAlbum, compare);
         break;
