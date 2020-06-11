@@ -123,10 +123,14 @@ class _HomePageState extends State<HomePage> {
       switch (action) {
         case 'view':
           AvesApp.mode = AppMode.view;
-          await _initViewerEntry(
+          _viewerEntry = await _initViewerEntry(
             uri: intentData['uri'],
             mimeType: intentData['mimeType'],
           );
+          if (_viewerEntry == null) {
+            // fallback to default mode when we fail to retrieve the entry
+            AvesApp.mode = AppMode.main;
+          }
           break;
         case 'pick':
           AvesApp.mode = AppMode.pick;
@@ -140,11 +144,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _initViewerEntry({@required String uri, @required String mimeType}) async {
-    _viewerEntry = await ImageFileService.getImageEntry(uri, mimeType);
-    // cataloguing is essential for geolocation and video rotation
-    await _viewerEntry.catalog();
-    unawaited(_viewerEntry.locate());
+  Future<ImageEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
+    final entry = await ImageFileService.getImageEntry(uri, mimeType);
+    if (entry != null) {
+      // cataloguing is essential for geolocation and video rotation
+      await entry.catalog();
+      unawaited(entry.locate());
+    }
+    return entry;
   }
 
   @override
