@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/mime_types.dart';
@@ -206,16 +207,31 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   }
 
   Widget _buildEmptyCollectionPlaceholder(CollectionLens collection) {
-    return collection.filters.any((filter) => filter is FavouriteFilter)
-        ? const EmptyContent(
+    return ValueListenableBuilder<SourceState>(
+      valueListenable: collection.source.stateNotifier,
+      builder: (context, sourceState, child) {
+        if (sourceState == SourceState.loading) {
+          return const SizedBox.shrink();
+        }
+        if (collection.filters.any((filter) => filter is FavouriteFilter)) {
+          return const EmptyContent(
             icon: AIcons.favourite,
             text: 'No favourites',
-          )
-        : collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)
-            ? const EmptyContent(
-                icon: AIcons.video,
-              )
-            : const EmptyContent();
+          );
+        }
+        debugPrint('collection.filters=${collection.filters}');
+        if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)) {
+          return const EmptyContent(
+            icon: AIcons.video,
+            text: 'No videos',
+          );
+        }
+        return const EmptyContent(
+          icon: AIcons.image,
+          text: 'No images',
+        );
+      },
+    );
   }
 
   void _onScrollChange() {

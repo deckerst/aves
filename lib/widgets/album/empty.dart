@@ -7,8 +7,8 @@ class EmptyContent extends StatelessWidget {
   final AlignmentGeometry alignment;
 
   const EmptyContent({
-    this.icon = AIcons.image,
-    this.text = 'No images',
+    @required this.icon = AIcons.image,
+    @required this.text = 'No images',
     this.alignment = const FractionalOffset(.5, .35),
   });
 

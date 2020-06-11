@@ -49,7 +49,10 @@ class StatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child;
     if (collection.isEmpty) {
-      child = const EmptyContent();
+      child = const EmptyContent(
+        icon: AIcons.image,
+        text: 'No images',
+      );
     } else {
       final byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
