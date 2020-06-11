@@ -8,7 +8,7 @@ class EmptyContent extends StatelessWidget {
 
   const EmptyContent({
     this.icon = AIcons.image,
-    this.text = 'Nothing!',
+    this.text = 'No images',
     this.alignment = const FractionalOffset(.5, .35),
   });
 

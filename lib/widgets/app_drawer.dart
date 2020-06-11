@@ -262,7 +262,7 @@ class _AppDrawerState extends State<AppDrawer> {
           filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
           emptyBuilder: () => const EmptyContent(
             icon: AIcons.album,
-            text: 'No albums!',
+            text: 'No albums',
           ),
         ),
       ),
@@ -281,7 +281,7 @@ class _AppDrawerState extends State<AppDrawer> {
           filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
           emptyBuilder: () => const EmptyContent(
             icon: AIcons.location,
-            text: 'No countries!',
+            text: 'No countries',
           ),
         ),
       ),
@@ -300,7 +300,7 @@ class _AppDrawerState extends State<AppDrawer> {
           filterBuilder: (s) => TagFilter(s),
           emptyBuilder: () => const EmptyContent(
             icon: AIcons.tag,
-            text: 'No tags!',
+            text: 'No tags',
           ),
         ),
       ),

@@ -208,7 +208,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
     return collection.filters.any((filter) => filter is FavouriteFilter)
         ? const EmptyContent(
             icon: AIcons.favourite,
-            text: 'No favourites!',
+            text: 'No favourites',
           )
         : collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)
             ? const EmptyContent(

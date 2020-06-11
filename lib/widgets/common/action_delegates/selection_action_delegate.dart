@@ -10,19 +10,19 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
+import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grid_page.dart';
 import 'package:collection/collection.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-class SelectionActionDelegate with PermissionAwareMixin {
+class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
   final CollectionLens collection;
 
   SelectionActionDelegate({
@@ -87,7 +87,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
             filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
             emptyBuilder: () => const EmptyContent(
               icon: AIcons.album,
-              text: 'No albums!',
+              text: 'No albums',
             ),
             onPressed: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           );
@@ -110,10 +110,10 @@ class SelectionActionDelegate with PermissionAwareMixin {
         final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          _showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         } else {
           final count = movedCount;
-          _showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (movedCount > 0) {
           final fromAlbums = <String>{};
@@ -201,7 +201,7 @@ class SelectionActionDelegate with PermissionAwareMixin {
         final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
-          _showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
         }
         if (deletedCount > 0) {
           collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
@@ -273,18 +273,5 @@ class SelectionActionDelegate with PermissionAwareMixin {
     await Future.delayed(_overlayAnimationDuration);
     _opReportOverlayEntry.remove();
     _opReportOverlayEntry = null;
-  }
-
-  void _showFeedback(BuildContext context, String message) {
-    Flushbar(
-      message: message,
-      margin: const EdgeInsets.all(8),
-      borderRadius: 8,
-      borderColor: Colors.white30,
-      borderWidth: 0.5,
-      duration: const Duration(seconds: 2),
-      flushbarPosition: FlushbarPosition.TOP,
-      animationDuration: const Duration(milliseconds: 600),
-    ).show(context);
   }
 }

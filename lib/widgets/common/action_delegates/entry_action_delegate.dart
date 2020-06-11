@@ -4,12 +4,12 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
+import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
+import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/debug.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf/pdf.dart';
@@ -17,7 +17,7 @@ import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
 
-class EntryActionDelegate with PermissionAwareMixin {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
   final CollectionLens collection;
   final VoidCallback showInfo;
 
@@ -74,19 +74,6 @@ class EntryActionDelegate with PermissionAwareMixin {
     }
   }
 
-  void _showFeedback(BuildContext context, String message) {
-    Flushbar(
-      message: message,
-      margin: const EdgeInsets.all(8),
-      borderRadius: 8,
-      borderColor: Colors.white30,
-      borderWidth: 0.5,
-      duration: const Duration(seconds: 2),
-      flushbarPosition: FlushbarPosition.TOP,
-      animationDuration: const Duration(milliseconds: 600),
-    ).show(context);
-  }
-
   Future<void> _print(ImageEntry entry) async {
     final uri = entry.uri;
     final mimeType = entry.mimeType;
@@ -127,7 +114,7 @@ class EntryActionDelegate with PermissionAwareMixin {
     if (!await checkStoragePermission(context, [entry])) return;
 
     final success = await entry.rotate(clockwise: clockwise);
-    if (!success) _showFeedback(context, 'Failed');
+    if (!success) showFeedback(context, 'Failed');
   }
 
   Future<void> _showDeleteDialog(BuildContext context, ImageEntry entry) async {
@@ -154,7 +141,7 @@ class EntryActionDelegate with PermissionAwareMixin {
     if (!await checkStoragePermission(context, [entry])) return;
 
     if (!await entry.delete()) {
-      _showFeedback(context, 'Failed');
+      showFeedback(context, 'Failed');
     } else if (hasCollection) {
       // update collection
       collection.source.removeEntries([entry]);
@@ -176,7 +163,7 @@ class EntryActionDelegate with PermissionAwareMixin {
 
     if (!await checkStoragePermission(context, [entry])) return;
 
-    _showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
+    showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
   }
 
   void _goToDebug(BuildContext context, ImageEntry entry) {
