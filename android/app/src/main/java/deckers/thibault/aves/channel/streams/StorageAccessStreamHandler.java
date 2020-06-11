@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channelhandlers;
+package deckers.thibault.aves.channel.streams;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -19,10 +19,11 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     private Handler handler;
     private String volumePath;
 
+    @SuppressWarnings("unchecked")
     public StorageAccessStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
         if (arguments instanceof Map) {
-            Map argMap = (Map) arguments;
+            Map<String, Object> argMap = (Map<String, Object>) arguments;
             this.volumePath = (String) argMap.get("path");
         }
     }
@@ -43,10 +44,6 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     private void success(final boolean result) {
         handler.post(() -> eventSink.success(result));
         endOfStream();
-    }
-
-    private void error(final String errorCode, final String errorMessage, final Object errorDetails) {
-        handler.post(() -> eventSink.error(errorCode, errorMessage, errorDetails));
     }
 
     private void endOfStream() {

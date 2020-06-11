@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channelhandlers;
+package deckers.thibault.aves.channel.calls;
 
 import android.app.Activity;
 import android.os.Build;
@@ -32,7 +32,7 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "getStorageVolumes": {
-                List<Map<String, Object>> volumes = null;
+                List<Map<String, Object>> volumes;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     volumes = getStorageVolumes();
                 } else {

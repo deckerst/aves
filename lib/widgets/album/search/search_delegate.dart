@@ -1,4 +1,3 @@
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -7,6 +6,10 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
+import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/tag.dart';
 import 'package:aves/widgets/album/search/expandable_filter_row.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';

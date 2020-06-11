@@ -1,9 +1,9 @@
-import 'package:aves/main.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/terms.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/labeled_checkbox.dart';
+import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';

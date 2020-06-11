@@ -1,5 +1,5 @@
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/album/thumbnail/overlay.dart';
 import 'package:aves/widgets/album/thumbnail/raster.dart';
 import 'package:aves/widgets/album/thumbnail/vector.dart';

@@ -1,6 +1,6 @@
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';

@@ -35,6 +35,7 @@ class AIcons {
   static const IconData info = OMIcons.info;
   static const IconData openInNew = OMIcons.openInNew;
   static const IconData print = OMIcons.print;
+  static const IconData refresh = OMIcons.refresh;
   static const IconData rename = OMIcons.title;
   static const IconData rotateLeft = OMIcons.rotateLeft;
   static const IconData rotateRight = OMIcons.rotateRight;

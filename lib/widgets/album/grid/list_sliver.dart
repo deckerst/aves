@@ -1,6 +1,6 @@
 import 'package:aves/main.dart';
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/album/grid/list_known_extent.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';

@@ -1,4 +1,4 @@
-import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
 import 'package:aves/widgets/app_drawer.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';

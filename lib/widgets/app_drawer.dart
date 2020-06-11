@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -10,6 +8,11 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/album/collection_page.dart';

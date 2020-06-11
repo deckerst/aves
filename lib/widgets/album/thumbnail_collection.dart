@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/mime_types.dart';
+import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/empty.dart';

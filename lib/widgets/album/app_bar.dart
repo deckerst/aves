@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:aves/main.dart';
-import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
+import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
@@ -210,10 +211,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             ..._buildGroupMenuItems(),
             if (collection.isBrowsing) ...[
               if (AvesApp.mode == AppMode.main)
-                const PopupMenuItem(
-                  value: CollectionAction.select,
-                  child: MenuRow(text: 'Select', icon: AIcons.select),
-                ),
+                if (kDebugMode)
+                  const PopupMenuItem(
+                    value: CollectionAction.refresh,
+                    child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                  ),
+              const PopupMenuItem(
+                value: CollectionAction.select,
+                child: MenuRow(text: 'Select', icon: AIcons.select),
+              ),
               const PopupMenuItem(
                 value: CollectionAction.stats,
                 child: MenuRow(text: 'Stats', icon: AIcons.stats),
@@ -303,6 +309,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case CollectionAction.move:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
+      case CollectionAction.refresh:
+        final source = collection.source;
+        if (source is MediaStoreSource) {
+          source.clearEntries();
+          unawaited(source.refresh());
+        }
+        break;
       case CollectionAction.select:
         collection.select();
         break;
@@ -361,7 +374,21 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 }
 
-enum CollectionAction { copy, move, select, selectAll, selectNone, stats, groupByAlbum, groupByMonth, groupByDay, sortByDate, sortBySize, sortByName }
+enum CollectionAction {
+  copy,
+  move,
+  refresh,
+  select,
+  selectAll,
+  selectNone,
+  stats,
+  groupByAlbum,
+  groupByMonth,
+  groupByDay,
+  sortByDate,
+  sortBySize,
+  sortByName,
+}
 
 class SourceStateSubtitle extends StatefulWidget {
   final CollectionSource source;
@@ -379,7 +406,7 @@ class _SourceStateSubtitleState extends State<SourceStateSubtitle> {
 
   SourceState get sourceState => source.stateNotifier.value;
 
-  List<ImageEntry> get entries => source.entries;
+  List<ImageEntry> get entries => source.rawEntries;
 
   @override
   void initState() {

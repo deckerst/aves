@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channelhandlers;
+package deckers.thibault.aves.channel.streams;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -33,10 +33,11 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private EventChannel.EventSink eventSink;
     private Handler handler;
 
+    @SuppressWarnings("unchecked")
     public ImageByteStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
         if (arguments instanceof Map) {
-            Map argMap = (Map) arguments;
+            Map<String, Object> argMap = (Map<String, Object>) arguments;
             this.mimeType = (String) argMap.get("mimeType");
             this.uri = Uri.parse((String) argMap.get("uri"));
         }

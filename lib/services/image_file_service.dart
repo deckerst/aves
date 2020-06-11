@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
@@ -12,18 +11,17 @@ import 'package:streams_channel/streams_channel.dart';
 
 class ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
+  static final StreamsChannel mediaStoreChannel = StreamsChannel('deckers.thibault/aves/mediastorestream');
   static final StreamsChannel byteChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
   static const double thumbnailDefaultSize = 64.0;
 
-  static Future<void> getImageEntries(SortFactor sort, GroupFactor group) async {
+  static Stream<ImageEntry> getImageEntries() {
     try {
-      await platform.invokeMethod('getImageEntries', <String, dynamic>{
-        'sort': sort.toString().replaceAll('SortFactor.', ''),
-        'group': group.toString().replaceAll('GroupFactor.', ''),
-      });
+      return mediaStoreChannel.receiveBroadcastStream().map((event) => ImageEntry.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('getImageEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      return Stream.error(e);
     }
   }
 

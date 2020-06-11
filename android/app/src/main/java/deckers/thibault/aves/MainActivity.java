@@ -10,21 +10,20 @@ import java.util.Map;
 import java.util.Objects;
 
 import app.loup.streams_channel.StreamsChannel;
-import deckers.thibault.aves.channelhandlers.AppAdapterHandler;
-import deckers.thibault.aves.channelhandlers.ImageByteStreamHandler;
-import deckers.thibault.aves.channelhandlers.ImageFileHandler;
-import deckers.thibault.aves.channelhandlers.ImageOpStreamHandler;
-import deckers.thibault.aves.channelhandlers.MediaStoreStreamHandler;
-import deckers.thibault.aves.channelhandlers.MetadataHandler;
-import deckers.thibault.aves.channelhandlers.StorageAccessStreamHandler;
-import deckers.thibault.aves.channelhandlers.StorageHandler;
+import deckers.thibault.aves.channel.calls.AppAdapterHandler;
+import deckers.thibault.aves.channel.calls.ImageFileHandler;
+import deckers.thibault.aves.channel.calls.MetadataHandler;
+import deckers.thibault.aves.channel.calls.StorageHandler;
+import deckers.thibault.aves.channel.streams.ImageByteStreamHandler;
+import deckers.thibault.aves.channel.streams.ImageOpStreamHandler;
+import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler;
+import deckers.thibault.aves.channel.streams.StorageAccessStreamHandler;
 import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
@@ -40,23 +39,17 @@ public class MainActivity extends FlutterActivity {
 
         handleIntent(getIntent());
 
-        MediaStoreStreamHandler mediaStoreStreamHandler = new MediaStoreStreamHandler();
-
         BinaryMessenger messenger = Objects.requireNonNull(getFlutterEngine()).getDartExecutor().getBinaryMessenger();
-        new MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(new StorageHandler(this));
+
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
-        new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this, mediaStoreStreamHandler));
+        new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this));
         new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));
-        new EventChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandler(mediaStoreStreamHandler);
+        new MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(new StorageHandler(this));
 
-        final StreamsChannel fileAccessStreamChannel = new StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL);
-        fileAccessStreamChannel.setStreamHandlerFactory(arguments -> new StorageAccessStreamHandler(this, arguments));
-
-        final StreamsChannel imageByteStreamChannel = new StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL);
-        imageByteStreamChannel.setStreamHandlerFactory(arguments -> new ImageByteStreamHandler(this, arguments));
-
-        final StreamsChannel imageOpStreamChannel = new StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL);
-        imageOpStreamChannel.setStreamHandlerFactory(arguments -> new ImageOpStreamHandler(this, arguments));
+        new StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new ImageByteStreamHandler(this, args));
+        new StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new ImageOpStreamHandler(this, args));
+        new StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new MediaStoreStreamHandler(this));
+        new StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new StorageAccessStreamHandler(this, args));
 
         new MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler(
                 (call, result) -> {

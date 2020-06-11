@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:aves/model/collection_source.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -37,7 +37,7 @@ class DebugPageState extends State<DebugPage> {
   Future<List<Tuple2<String, bool>>> _volumePermissionLoader;
   Future<Map> _envLoader;
 
-  List<ImageEntry> get entries => widget.source.entries;
+  List<ImageEntry> get entries => widget.source.rawEntries;
 
   @override
   void initState() {

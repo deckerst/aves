@@ -68,35 +68,12 @@ public class MediaStoreImageProvider extends ImageProvider {
                     MediaStore.Video.Media.ORIENTATION,
             } : new String[0]).flatMap(Stream::of).toArray(String[]::new);
 
-    public void fetchAll(Activity activity, final String sortBy, final String groupBy, NewEntryHandler newEntryHandler) {
+    public void fetchAll(Activity activity, NewEntryHandler newEntryHandler) {
         String orderBy;
-        switch (sortBy) {
-            case "size":
-                orderBy = MediaStore.MediaColumns.SIZE + " DESC";
-                break;
-            case "name":
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    orderBy = MediaStore.MediaColumns.RELATIVE_PATH + ", " + MediaStore.MediaColumns.BUCKET_DISPLAY_NAME + ", " + MediaStore.MediaColumns.DISPLAY_NAME;
-                } else {
-                    orderBy = MediaStore.MediaColumns.DATA;
-                }
-                break;
-            default:
-            case "date":
-                switch (groupBy) {
-                    case "album":
-                        // TODO TLAD find album order first
-                    case "month":
-                    case "day":
-                    default:
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
-                        } else {
-                            orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
-                        }
-                        break;
-                }
-                break;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
+        } else {
+            orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
         }
 
         fetchFrom(activity, newEntryHandler, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, orderBy);

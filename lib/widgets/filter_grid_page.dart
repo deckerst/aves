@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:aves/model/collection_lens.dart';
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/collection_page.dart';

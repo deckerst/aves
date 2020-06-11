@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channelhandlers;
+package deckers.thibault.aves.channel.calls;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -22,11 +22,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
 
     private Activity activity;
     private float density;
-    private MediaStoreStreamHandler mediaStoreStreamHandler;
 
-    public ImageFileHandler(Activity activity, MediaStoreStreamHandler mediaStoreStreamHandler) {
+    public ImageFileHandler(Activity activity) {
         this.activity = activity;
-        this.mediaStoreStreamHandler = mediaStoreStreamHandler;
     }
 
     public float getDensity() {
@@ -39,14 +37,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
-            case "getImageEntries":
-                new Thread(() -> {
-                    String sortBy = call.argument("sort");
-                    String groupBy = call.argument("group");
-                    mediaStoreStreamHandler.fetchAll(activity, sortBy, groupBy);
-                }).start();
-                result.success(null);
-                break;
             case "getImageEntry":
                 new Thread(() -> getImageEntry(call, new MethodResultWrapper(result))).start();
                 break;
@@ -70,7 +60,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map entryMap = call.argument("entry");
+        Map<String, Object> entryMap = call.argument("entry");
         Double widthDip = call.argument("widthDip");
         Double heightDip = call.argument("heightDip");
         Double defaultSizeDip = call.argument("defaultSizeDip");
@@ -118,7 +108,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void rename(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map entryMap = call.argument("entry");
+        Map<String, Object> entryMap = call.argument("entry");
         String newName = call.argument("newName");
         if (entryMap == null || newName == null) {
             result.error("rename-args", "failed because of missing arguments", null);
@@ -147,7 +137,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void rotate(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map entryMap = call.argument("entry");
+        Map<String, Object> entryMap = call.argument("entry");
         Boolean clockwise = call.argument("clockwise");
         if (entryMap == null || clockwise == null) {
             result.error("rotate-args", "failed because of missing arguments", null);

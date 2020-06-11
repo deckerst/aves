@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/collection_lens.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';

@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channelhandlers;
+package deckers.thibault.aves.channel.calls;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

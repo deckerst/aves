@@ -1,5 +1,5 @@
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';

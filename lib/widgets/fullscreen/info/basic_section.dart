@@ -1,4 +1,3 @@
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
@@ -6,6 +5,7 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/mime_types.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';

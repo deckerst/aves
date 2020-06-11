@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channelhandlers;
+package deckers.thibault.aves.channel.streams;
 
 import android.app.Activity;
 import android.net.Uri;

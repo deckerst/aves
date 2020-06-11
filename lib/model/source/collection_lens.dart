@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
@@ -125,7 +126,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   }
 
   void _applyFilters() {
-    final rawEntries = source.entries;
+    final rawEntries = source.rawEntries;
     _filteredEntries = List.of(filters.isEmpty ? rawEntries : rawEntries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
   }
 
