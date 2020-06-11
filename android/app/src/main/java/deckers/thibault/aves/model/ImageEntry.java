@@ -119,7 +119,7 @@ public class ImageEntry {
 
     // metadata retrieval
 
-    // expects entry with: uri/path, mimeType
+    // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
     public ImageEntry fillPreCatalogMetadata(Context context) {
         fillByMediaMetadataRetriever(context);
@@ -130,10 +130,10 @@ public class ImageEntry {
         return this;
     }
 
-    // expects entry with: uri/path, mimeType
+    // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
     private void fillByMediaMetadataRetriever(Context context) {
-        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri, path);
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
         try {
             String width = null, height = null, rotation = null, durationMillis = null;
             if (isImage()) {
@@ -180,12 +180,12 @@ public class ImageEntry {
         }
     }
 
-    // expects entry with: uri/path, mimeType
+    // expects entry with: uri, mimeType
     // finds: width, height, orientation, date
     private void fillByMetadataExtractor(Context context) {
         if (MimeTypes.SVG.equals(mimeType)) return;
 
-        try (InputStream is = StorageUtils.openInputStream(context, uri, path)) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
             if (MimeTypes.JPEG.equals(mimeType)) {
@@ -242,12 +242,12 @@ public class ImageEntry {
         }
     }
 
-    // expects entry with: uri/path
+    // expects entry with: uri
     // finds: width, height
     private void fillByBitmapDecode(Context context) {
         if (MimeTypes.SVG.equals(mimeType)) return;
 
-        try (InputStream is = StorageUtils.openInputStream(context, uri, path)) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeStream(is, null, options);

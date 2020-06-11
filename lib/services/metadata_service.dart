@@ -14,7 +14,6 @@ class MetadataService {
     try {
       final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
-        'path': entry.path,
         'uri': entry.uri,
       });
       return result as Map;
@@ -40,7 +39,6 @@ class MetadataService {
           // 'xmpTitleDescription': XMP title or XMP description (string)
           final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
             'mimeType': entry.mimeType,
-            'path': entry.path,
             'uri': entry.uri,
           }) as Map;
           result['contentId'] = entry.contentId;
@@ -61,7 +59,6 @@ class MetadataService {
       // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
-        'path': entry.path,
         'uri': entry.uri,
       }) as Map;
       return OverlayMetadata.fromMap(result);

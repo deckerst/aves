@@ -42,41 +42,28 @@ public class StorageUtils {
         return uri != null && ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme()) && MediaStore.AUTHORITY.equalsIgnoreCase(uri.getHost());
     }
 
-    public static InputStream openInputStream(Context context, Uri uri, String path) throws FileNotFoundException {
+    public static InputStream openInputStream(Context context, Uri uri) throws FileNotFoundException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // we get a permission denial if we require original from a provider other than the media store
             if (isMediaStoreContentUri(uri)) {
                 uri = MediaStore.setRequireOriginal(uri);
             }
-            return context.getContentResolver().openInputStream(uri);
         }
-
-        // on Android <Q, we directly work with file paths if possible,
-        // as `FileInputStream` is faster than input stream from `ContentResolver`
-        return path != null ? new FileInputStream(path) : context.getContentResolver().openInputStream(uri);
+        return context.getContentResolver().openInputStream(uri);
     }
 
-    public static MediaMetadataRetriever openMetadataRetriever(Context context, Uri uri, String path) {
+    public static MediaMetadataRetriever openMetadataRetriever(Context context, Uri uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // we get a permission denial if we require original from a provider other than the media store
                 if (isMediaStoreContentUri(uri)) {
                     uri = MediaStore.setRequireOriginal(uri);
                 }
-                retriever.setDataSource(context, uri);
-                return retriever;
             }
-
-            // on Android <Q, we directly work with file paths if possible
-            if (path != null) {
-                retriever.setDataSource(path);
-            } else {
-                retriever.setDataSource(context, uri);
-            }
-        } catch (IllegalArgumentException e) {
-            Log.w(LOG_TAG, "failed to open MediaMetadataRetriever for uri=" + uri + ", path=" + path);
+            retriever.setDataSource(context, uri);
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "failed to open MediaMetadataRetriever for uri=" + uri, e);
         }
         return retriever;
     }

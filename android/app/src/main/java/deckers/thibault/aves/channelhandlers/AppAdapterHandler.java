@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,12 +30,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 import static com.bumptech.glide.request.RequestOptions.centerCropTransform;
 
 public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
+    private static final String LOG_TAG = Utils.createLogTag(AppAdapterHandler.class);
+
     public static final String CHANNEL = "deckers.thibault/aves/app";
 
     private Context context;
@@ -162,11 +166,11 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
                     data = stream.toByteArray();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.w(LOG_TAG, "failed to decode app icon for packageName=" + packageName, e);
             }
             Glide.with(context).clear(target);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.w(LOG_TAG, "failed to get app info for packageName=" + packageName, e);
             return;
         }
         if (data != null) {

@@ -24,7 +24,7 @@ class VideoThumbnailFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
-        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(model.getContext(), model.getUri(), null);
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(model.getContext(), model.getUri());
         try {
             byte[] picture = retriever.getEmbeddedPicture();
             if (picture != null) {
