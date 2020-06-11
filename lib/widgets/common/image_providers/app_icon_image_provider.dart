@@ -21,7 +21,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   Future<AppIconImageKey> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture<AppIconImageKey>(AppIconImageKey(
       packageName: packageName,
-      sizePixels: (size * configuration.devicePixelRatio).round(),
+      size: size,
       scale: scale,
     ));
   }
@@ -38,28 +38,28 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   }
 
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
-    final bytes = await AndroidAppService.getAppIcon(key.packageName, key.sizePixels);
+    final bytes = await AndroidAppService.getAppIcon(key.packageName, key.size);
     return await decode(bytes ?? Uint8List(0));
   }
 }
 
 class AppIconImageKey {
   final String packageName;
-  final int sizePixels;
+  final double size;
   final double scale;
 
   const AppIconImageKey({
     @required this.packageName,
-    @required this.sizePixels,
+    @required this.size,
     this.scale,
   });
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is AppIconImageKey && other.packageName == packageName && other.sizePixels == sizePixels && other.scale == scale;
+    return other is AppIconImageKey && other.packageName == packageName && other.size == size && other.scale == scale;
   }
 
   @override
-  int get hashCode => hashValues(packageName, sizePixels, scale);
+  int get hashCode => hashValues(packageName, size, scale);
 }

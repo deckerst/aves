@@ -14,6 +14,7 @@ class ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
   static final StreamsChannel byteChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
+  static const double thumbnailDefaultSize = 64.0;
 
   static Future<void> getImageEntries(SortFactor sort, GroupFactor group) async {
     try {
@@ -76,15 +77,15 @@ class ImageFileService {
     return Future.sync(() => Uint8List(0));
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, int width, int height, {Object taskKey, int priority}) {
+  static Future<Uint8List> getThumbnail(ImageEntry entry, double width, double height, {Object taskKey, int priority}) {
     return servicePolicy.call(
       () async {
         try {
           final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
             'entry': entry.toMap(),
-            'width': width,
-            'height': height,
-            'defaultSize': 256,
+            'widthDip': width,
+            'heightDip': height,
+            'defaultSizeDip': thumbnailDefaultSize,
           });
           return result as Uint8List;
         } on PlatformException catch (e) {

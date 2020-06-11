@@ -34,7 +34,6 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   ThumbnailProviderKey _buildKey(ImageConfiguration configuration) => ThumbnailProviderKey(
         entry: entry,
         extent: extent,
-        devicePixelRatio: configuration.devicePixelRatio,
         scale: scale,
       );
 
@@ -50,8 +49,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
-    final dimPixels = (extent * key.devicePixelRatio).round();
-    final bytes = await ImageFileService.getThumbnail(key.entry, dimPixels, dimPixels, taskKey: _cancellationKey);
+    final bytes = await ImageFileService.getThumbnail(key.entry, extent, extent, taskKey: _cancellationKey);
     return await decode(bytes ?? Uint8List(0));
   }
 
@@ -67,13 +65,11 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 class ThumbnailProviderKey {
   final ImageEntry entry;
   final double extent;
-  final double devicePixelRatio; // do not include configuration in key hashcode or == operator
   final double scale;
 
   const ThumbnailProviderKey({
     @required this.entry,
     @required this.extent,
-    @required this.devicePixelRatio,
     this.scale,
   });
 

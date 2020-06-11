@@ -16,11 +16,11 @@ class AndroidAppService {
     return {};
   }
 
-  static Future<Uint8List> getAppIcon(String packageName, int size) async {
+  static Future<Uint8List> getAppIcon(String packageName, double size) async {
     try {
       final result = await platform.invokeMethod('getAppIcon', <String, dynamic>{
         'packageName': packageName,
-        'size': size,
+        'sizeDip': size,
       });
       return result as Uint8List;
     } on PlatformException catch (e) {

@@ -21,11 +21,19 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/image";
 
     private Activity activity;
+    private float density;
     private MediaStoreStreamHandler mediaStoreStreamHandler;
 
     public ImageFileHandler(Activity activity, MediaStoreStreamHandler mediaStoreStreamHandler) {
         this.activity = activity;
         this.mediaStoreStreamHandler = mediaStoreStreamHandler;
+    }
+
+    public float getDensity() {
+        if (density == 0) {
+            density = activity.getResources().getDisplayMetrics().density;
+        }
+        return density;
     }
 
     @Override
@@ -63,13 +71,20 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
 
     private void getThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Map entryMap = call.argument("entry");
-        Integer width = call.argument("width");
-        Integer height = call.argument("height");
-        Integer defaultSize = call.argument("defaultSize");
-        if (entryMap == null || defaultSize == null) {
+        Double widthDip = call.argument("widthDip");
+        Double heightDip = call.argument("heightDip");
+        Double defaultSizeDip = call.argument("defaultSizeDip");
+
+        if (entryMap == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
             result.error("getThumbnail-args", "failed because of missing arguments", null);
             return;
         }
+        // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
+        float density = getDensity();
+        int width = (int) Math.round(widthDip * density);
+        int height = (int) Math.round(heightDip * density);
+        int defaultSize = (int) Math.round(defaultSizeDip * density);
+
         ImageEntry entry = new ImageEntry(entryMap);
         new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, defaultSize, result));
     }

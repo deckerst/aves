@@ -121,11 +121,15 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
 
     private void getAppIcon(MethodCall call, MethodChannel.Result result) {
         String packageName = call.argument("packageName");
-        Integer size = call.argument("size");
-        if (packageName == null || size == null) {
+        Double sizeDip = call.argument("sizeDip");
+        if (packageName == null || sizeDip == null) {
             result.error("getAppIcon-args", "failed because of missing arguments", null);
             return;
         }
+
+        // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
+        float density = context.getResources().getDisplayMetrics().density;
+        int size = (int) Math.round(sizeDip * density);
 
         byte[] data = null;
         try {
