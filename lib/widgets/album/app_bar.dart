@@ -5,7 +5,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
@@ -49,7 +49,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       collection: collection,
     );
     _browseToSelectAnimation = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: Durations.iconAnimation,
       vsync: this,
     );
     _registerWidget(widget);
@@ -142,7 +142,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               valueListenable: collection.source.stateNotifier,
               builder: (context, sourceState, child) {
                 return AnimatedSwitcher(
-                  duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+                  duration: Durations.appBarTitleAnimation,
                   transitionBuilder: (child, animation) => FadeTransition(
                     opacity: animation,
                     child: SizeTransition(
@@ -297,7 +297,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _onCollectionActionSelected(CollectionAction action) async {
     // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Constants.popupMenuTransitionDuration);
+    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
     switch (action) {
       case CollectionAction.copy:
       case CollectionAction.move:
@@ -384,7 +384,7 @@ class _SourceStateSubtitleState extends State<SourceStateSubtitle> {
   @override
   void initState() {
     super.initState();
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 1000), (timer) => setState(() {}));
+    _progressTimer = Timer.periodic(Durations.appBarProgressTimerInterval, (_) => setState(() {}));
   }
 
   @override

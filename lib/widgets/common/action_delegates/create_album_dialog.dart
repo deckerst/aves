@@ -53,14 +53,14 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                   isExpanded: true,
                   items: allVolumes
                       .map((volume) => DropdownMenuItem(
-                    value: volume,
-                    child: Text(
-                      volume.description,
-                      softWrap: false,
-                      overflow: TextOverflow.fade,
-                      maxLines: 1,
-                    ),
-                  ))
+                            value: volume,
+                            child: Text(
+                              volume.description,
+                              softWrap: false,
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                            ),
+                          ))
                       .toList(),
                   value: selectedVolume,
                   onChanged: (volume) => setState(() => selectedVolume = volume),

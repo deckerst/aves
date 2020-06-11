@@ -5,6 +5,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
@@ -73,7 +74,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: Durations.fullscreenOverlayAnimation,
       vsync: this,
     );
     _topOverlayScale = CurvedAnimation(
@@ -97,8 +98,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
     WidgetsBinding.instance.addObserver(this);
     _initVideoController();
-    _initOverlay();
     _registerWidget(widget);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override
@@ -283,7 +284,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
-      duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+      duration: Durations.fullscreenPageAnimation,
       curve: Curves.easeInOut,
     );
   }
@@ -321,18 +322,18 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _showSystemUI();
   }
 
-// system UI
+  // system UI
 
   static void _showSystemUI() => SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
   static void _hideSystemUI() => SystemChrome.setEnabledSystemUIOverlays([]);
 
-// overlay
+  // overlay
 
   Future<void> _initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after hero animation is complete
-    await Future.delayed(Duration(milliseconds: (300 * timeDilation).toInt()));
+    await Future.delayed(ModalRoute.of(context).transitionDuration * timeDilation);
     await _onOverlayVisibleChange();
   }
 

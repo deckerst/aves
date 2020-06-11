@@ -1,5 +1,7 @@
+import 'package:aves/utils/durations.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 mixin FeedbackMixin {
   void showFeedback(BuildContext context, String message) {
@@ -9,9 +11,9 @@ mixin FeedbackMixin {
       borderRadius: 8,
       borderColor: Colors.white30,
       borderWidth: 0.5,
-      duration: const Duration(seconds: 2),
+      duration: Durations.opToastDisplay * timeDilation,
       flushbarPosition: FlushbarPosition.TOP,
-      animationDuration: const Duration(milliseconds: 600),
+      animationDuration: Durations.opToastAnimation,
     ).show(context);
   }
 }

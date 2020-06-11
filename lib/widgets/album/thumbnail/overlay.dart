@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class ThumbnailEntryOverlay extends StatelessWidget {
@@ -57,7 +57,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final duration = Duration(milliseconds: (200 * timeDilation).toInt());
+    final duration = Durations.thumbnailOverlayAnimation;
     final fontSize = min(14.0, (extent / 8)).roundToDouble();
     final iconSize = fontSize * 2;
     final collection = Provider.of<CollectionLens>(context);

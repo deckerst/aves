@@ -1,6 +1,7 @@
 import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -8,7 +9,6 @@ import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -177,7 +177,7 @@ class InfoPageState extends State<InfoPage> {
     BackUpNotification().dispatch(context);
     _scrollController.animateTo(
       0,
-      duration: Duration(milliseconds: (300 * timeDilation).toInt()),
+      duration: Durations.fullscreenPageAnimation,
       curve: Curves.easeInOut,
     );
   }

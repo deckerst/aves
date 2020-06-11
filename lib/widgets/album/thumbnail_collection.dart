@@ -4,6 +4,7 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/mime_types.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
@@ -220,7 +221,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   void _onScrollChange() {
     widget.isScrollingNotifier.value = true;
     _stopScrollMonitoringTimer();
-    _scrollMonitoringTimer = Timer(const Duration(milliseconds: 100), () {
+    _scrollMonitoringTimer = Timer(Durations.collectionScrollMonitoringTimerDelay, () {
       widget.isScrollingNotifier.value = false;
     });
   }

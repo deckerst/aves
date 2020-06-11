@@ -19,9 +19,6 @@ class Constants {
     ],
   );
 
-  // ref _PopupMenuRoute._kMenuDuration
-  static const popupMenuTransitionDuration = Duration(milliseconds: 300);
-
   static const svgBackground = Colors.white;
   static const svgColorFilter = ColorFilter.mode(svgBackground, BlendMode.dstOver);
 

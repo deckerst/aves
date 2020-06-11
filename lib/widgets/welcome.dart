@@ -1,6 +1,7 @@
 import 'package:aves/main.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/terms.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/labeled_checkbox.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,8 @@ class _WelcomePageState extends State<WelcomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: _toStaggeredList(
-              duration: const Duration(milliseconds: 375),
+              duration: Durations.staggeredAnimation,
+              delay: Durations.staggeredAnimationDelay,
               childAnimationBuilder: (child) => SlideAnimation(
                 verticalOffset: 50.0,
                 child: FadeInAnimation(

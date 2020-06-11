@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -61,7 +62,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   void initState() {
     super.initState();
     _playPauseAnimation = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: Durations.iconAnimation,
       vsync: this,
     );
     _registerWidget(widget);
@@ -220,9 +221,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   void _startTimer() {
     if (controller.textureId == null) return;
     _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 300), (timer) {
-      controller.refreshVideoInfo();
-    });
+    _progressTimer = Timer.periodic(Durations.videoProgressTimerInterval, (_) => controller.refreshVideoInfo());
   }
 
   void _stopTimer() {

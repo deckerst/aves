@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/utils/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -34,14 +35,11 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
 
   bool get isToggled => widget.toggledNotifier.value;
 
-  static const opacityAnimationDurationMillis = 150;
-  static const sweepingDurationMillis = 650;
-
   @override
   void initState() {
     super.initState();
     _angleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: sweepingDurationMillis),
+      duration: Durations.sweepingAnimation,
       vsync: this,
     );
     final startAngle = widget.startAngle;
@@ -86,7 +84,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     return IgnorePointer(
       child: AnimatedOpacity(
         opacity: isToggled && (_isAppearing || _angleAnimationController.status == AnimationStatus.forward) ? 1 : 0,
-        duration: const Duration(milliseconds: opacityAnimationDurationMillis),
+        duration: Durations.sweeperOpacityAnimation,
         child: ValueListenableBuilder<double>(
             valueListenable: _angleAnimationController,
             builder: (context, value, child) {
@@ -113,7 +111,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
     if (isToggled) {
       _isAppearing = true;
       setState(() {});
-      await Future.delayed(Duration(milliseconds: (opacityAnimationDurationMillis * timeDilation).toInt()));
+      await Future.delayed(Durations.sweeperOpacityAnimation * timeDilation);
       _isAppearing = false;
       if (mounted) {
         _angleAnimationController.reset();

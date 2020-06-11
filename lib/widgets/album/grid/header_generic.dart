@@ -4,12 +4,12 @@ import 'package:aves/model/collection_lens.dart';
 import 'package:aves/model/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/grid/header_album.dart';
 import 'package:aves/widgets/album/grid/header_date.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {
@@ -190,11 +190,11 @@ class SectionSelectableLeading extends StatelessWidget {
                   final sectionEntries = collection.sections[sectionKey];
                   final selected = collection.isSelected(sectionEntries);
                   final child = TooltipTheme(
+                    key: ValueKey(selected),
                     data: TooltipTheme.of(context).copyWith(
                       preferBelow: false,
                     ),
                     child: IconButton(
-                      key: ValueKey(selected),
                       iconSize: 26,
                       padding: const EdgeInsets.only(top: 1),
                       alignment: Alignment.topLeft,
@@ -214,7 +214,7 @@ class SectionSelectableLeading extends StatelessWidget {
                     ),
                   );
                   return AnimatedSwitcher(
-                    duration: Duration(milliseconds: (200 * timeDilation).toInt()),
+                    duration: Durations.sectionHeaderAnimation,
                     switchInCurve: Curves.easeOutBack,
                     switchOutCurve: Curves.easeOutBack,
                     transitionBuilder: (child, animation) => ScaleTransition(
@@ -227,7 +227,7 @@ class SectionSelectableLeading extends StatelessWidget {
               )
             : browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
         return AnimatedSwitcher(
-          duration: Duration(milliseconds: (200 * timeDilation).toInt()),
+          duration: Durations.sectionHeaderAnimation,
           switchInCurve: Curves.easeInOut,
           switchOutCurve: Curves.easeInOut,
           transitionBuilder: (child, animation) {

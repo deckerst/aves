@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/transition_image.dart';
@@ -93,7 +94,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               if (wasSynchronouslyLoaded) return child;
               return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: Durations.thumbnailTransition,
                 transitionBuilder: (child, animation) {
                   var shouldFade = true;
                   if (child is Image && child.image == _fastThumbnailProvider) {

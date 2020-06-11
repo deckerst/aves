@@ -7,6 +7,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/thumbnail/raster.dart';
 import 'package:aves/widgets/album/thumbnail/vector.dart';
@@ -115,7 +116,8 @@ class FilterGridPage extends StatelessWidget {
                                   return AnimationConfiguration.staggeredGrid(
                                     position: i,
                                     columnCount: columnCount,
-                                    duration: const Duration(milliseconds: 375),
+                                    duration: Durations.staggeredAnimation,
+                                    delay: Durations.staggeredAnimationDelay,
                                     child: SlideAnimation(
                                       verticalOffset: 50.0,
                                       child: FadeInAnimation(

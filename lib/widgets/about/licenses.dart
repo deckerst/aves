@@ -1,4 +1,5 @@
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:collection/collection.dart';
@@ -48,7 +49,8 @@ class _LicensesState extends State<Licenses> {
             final child = LicenseRow(_packages[index]);
             return AnimationConfiguration.staggeredList(
               position: index,
-              duration: const Duration(milliseconds: 375),
+              duration: Durations.staggeredAnimation,
+              delay: Durations.staggeredAnimationDelay,
               child: SlideAnimation(
                 verticalOffset: 50.0,
                 child: FadeInAnimation(

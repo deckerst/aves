@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,7 @@ class _FilterBarState extends State<FilterBar> {
                   ),
                 )
             : (context, animation) => _buildChip(filter),
-        duration: animate ? const Duration(milliseconds: 200) : Duration.zero,
+        duration: animate ? Durations.filterBarRemovalAnimation : Duration.zero,
       );
     });
     added.forEach((filter) {

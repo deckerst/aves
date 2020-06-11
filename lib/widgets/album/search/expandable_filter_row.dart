@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class ExpandableFilterRow extends StatelessWidget {
             children: [
               titleRow,
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
+                duration: Durations.filterRowExpandAnimation,
                 child: filterChips,
                 layoutBuilder: (currentChild, previousChildren) => Stack(
                   children: [

@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/grid/list_sliver.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
@@ -118,7 +119,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
             _scrollToEntry(entry);
             // warning: posting `onScaled` in the next frame with `addPostFrameCallback`
             // would trigger only when the scrollable offset actually changes
-            Future.delayed(const Duration(milliseconds: 300)).then((_) => widget.onScaled?.call(entry));
+            Future.delayed(Durations.collectionScalingCompleteNotificationDelay).then((_) => widget.onScaled?.call(entry));
             _applyingScale = false;
           });
         }
@@ -200,7 +201,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     ],
                   ),
                 ),
-          duration: const Duration(milliseconds: 200),
+          duration: Durations.collectionScalingBackgroundAnimation,
           child: ValueListenableBuilder<double>(
             valueListenable: widget.scaledExtentNotifier,
             builder: (context, extent, child) {

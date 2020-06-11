@@ -15,4 +15,3 @@ __We collect anonymous data to improve the app.__ We use Google Firebase for Ana
 ## Links
 [Sources](https://github.com/deckerst/aves)
 ''';
-

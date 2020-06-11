@@ -7,6 +7,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
@@ -18,6 +19,7 @@ import 'package:aves/widgets/filter_grid_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -221,8 +223,6 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
   OverlayEntry _opReportOverlayEntry;
 
-  static const _overlayAnimationDuration = Duration(milliseconds: 300);
-
   void _showOpReport<T extends ImageOpEvent>({
     @required BuildContext context,
     @required List<ImageEntry> selection,
@@ -260,7 +260,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
                 );
               }
               return AnimatedSwitcher(
-                duration: _overlayAnimationDuration,
+                duration: Durations.collectionOpOverlayAnimation,
                 child: child,
               );
             });
@@ -270,7 +270,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
   }
 
   Future<void> _hideOpReportOverlay() async {
-    await Future.delayed(_overlayAnimationDuration);
+    await Future.delayed(Durations.collectionOpOverlayAnimation * timeDilation);
     _opReportOverlayEntry.remove();
     _opReportOverlayEntry = null;
   }
