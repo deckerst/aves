@@ -352,23 +352,27 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             String[] columnNames = cursor.getColumnNames();
             for (int i = 0; i < columnCount; i++) {
                 String key = columnNames[i];
-                switch (cursor.getType(i)) {
-                    case Cursor.FIELD_TYPE_NULL:
-                    default:
-                        metadataMap.put(key, null);
-                        break;
-                    case Cursor.FIELD_TYPE_INTEGER:
-                        metadataMap.put(key, cursor.getInt(i));
-                        break;
-                    case Cursor.FIELD_TYPE_FLOAT:
-                        metadataMap.put(key, cursor.getFloat(i));
-                        break;
-                    case Cursor.FIELD_TYPE_STRING:
-                        metadataMap.put(key, cursor.getString(i));
-                        break;
-                    case Cursor.FIELD_TYPE_BLOB:
-                        metadataMap.put(key, cursor.getBlob(i));
-                        break;
+                try {
+                    switch (cursor.getType(i)) {
+                        case Cursor.FIELD_TYPE_NULL:
+                        default:
+                            metadataMap.put(key, null);
+                            break;
+                        case Cursor.FIELD_TYPE_INTEGER:
+                            metadataMap.put(key, cursor.getLong(i));
+                            break;
+                        case Cursor.FIELD_TYPE_FLOAT:
+                            metadataMap.put(key, cursor.getFloat(i));
+                            break;
+                        case Cursor.FIELD_TYPE_STRING:
+                            metadataMap.put(key, cursor.getString(i));
+                            break;
+                        case Cursor.FIELD_TYPE_BLOB:
+                            metadataMap.put(key, cursor.getBlob(i));
+                            break;
+                    }
+                } catch (Exception e) {
+                    Log.w(LOG_TAG, "failed to get value for key=" + key, e);
                 }
             }
             cursor.close();

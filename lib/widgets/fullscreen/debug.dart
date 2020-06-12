@@ -144,6 +144,10 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     );
   }
 
+  // MediaStore timestamp keys
+  static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
+  static const millisecondTimestampKeys = ['datetaken', 'datetime'];
+
   Widget _buildContentResolverTabView() {
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -153,7 +157,17 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           builder: (context, AsyncSnapshot<Map> snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-            final data = SplayTreeMap.of(snapshot.data.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));
+            final data = SplayTreeMap.of(snapshot.data.map((k, v) {
+              final key = k.toString();
+              var value = v?.toString() ?? 'null';
+              if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
+                if (secondTimestampKeys.contains(key)) {
+                  v *= 1000;
+                }
+                value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+              }
+              return MapEntry(key, value);
+            }));
             return InfoRowGroup(data);
           },
         ),
