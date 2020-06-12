@@ -445,6 +445,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   void _registerWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.addListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.addListener(_onEntryChanged);
+    _onEntryChanged();
   }
 
   void _unregisterWidget(FullscreenVerticalPageView widget) {
