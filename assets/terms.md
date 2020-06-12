@@ -1,4 +1,3 @@
-const String termsAndConditions = '''
 # Terms of Service
 Aves is an open-source gallery and metadata explorer app allowing you to access and manage your local photos.
 
@@ -14,4 +13,4 @@ __We collect anonymous data to improve the app.__ We use Google Firebase for Ana
 
 ## Links
 [Sources](https://github.com/deckerst/aves)
-''';
+[License](https://github.com/deckerst/aves/blob/master/LICENSE)
