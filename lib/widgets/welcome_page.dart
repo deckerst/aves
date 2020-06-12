@@ -1,10 +1,10 @@
 import 'package:aves/model/settings.dart';
-import 'package:aves/model/terms.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/labeled_checkbox.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,6 +18,13 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   bool _hasAcceptedTerms = false;
+  Future<String> _termsLoader;
+
+  @override
+  void initState() {
+    super.initState();
+    _termsLoader = rootBundle.loadString('assets/terms.md');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +33,30 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _toStaggeredList(
-              duration: Durations.staggeredAnimation,
-              delay: Durations.staggeredAnimationDelay,
-              childAnimationBuilder: (child) => SlideAnimation(
-                verticalOffset: 50.0,
-                child: FadeInAnimation(
-                  child: child,
-                ),
-              ),
-              children: [
-                ..._buildTop(context),
-                Flexible(child: _buildTerms()),
-                ..._buildBottomControls(context),
-              ],
-            ),
-          ),
+          child: FutureBuilder(
+              future: _termsLoader,
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+                final terms = snapshot.data;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _toStaggeredList(
+                    duration: Durations.staggeredAnimation,
+                    delay: Durations.staggeredAnimationDelay,
+                    childAnimationBuilder: (child) => SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: child,
+                      ),
+                    ),
+                    children: [
+                      ..._buildTop(context),
+                      Flexible(child: _buildTerms(terms)),
+                      ..._buildBottomControls(context),
+                    ],
+                  ),
+                );
+              }),
         ),
       ),
     );
@@ -116,7 +129,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ];
   }
 
-  Widget _buildTerms() {
+  Widget _buildTerms(String terms) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -126,7 +139,7 @@ class _WelcomePageState extends State<WelcomePage> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Markdown(
-          data: termsAndConditions,
+          data: terms,
           // TODO TLAD make it selectable when this fix (in 1.18.0-6.0.pre) lands on stable: https://github.com/flutter/flutter/pull/54479
           selectable: false,
           onTapLink: (url) async {
