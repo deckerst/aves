@@ -94,7 +94,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         String destinationDir = (String) argMap.get("destinationPath");
         if (copy == null || destinationDir == null) return;
 
-        ArrayList<ImageEntry> entries = entryMapList.stream().map(ImageEntry::new).collect(Collectors.toCollection(ArrayList::new));
+        List<ImageEntry> entries = entryMapList.stream().map(ImageEntry::new).collect(Collectors.toList());
         provider.moveMultiple(activity, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {
             @Override
             public void onSuccess(Map<String, Object> fields) {

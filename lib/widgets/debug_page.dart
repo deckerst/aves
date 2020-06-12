@@ -1,11 +1,11 @@
 import 'dart:collection';
 
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -30,6 +30,7 @@ class DebugPage extends StatefulWidget {
 
 class DebugPageState extends State<DebugPage> {
   Future<int> _dbFileSizeLoader;
+  Future<List<ImageEntry>> _dbEntryLoader;
   Future<List<DateMetadata>> _dbDateLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
@@ -170,8 +171,27 @@ class DebugPageState extends State<DebugPage> {
           },
         ),
         FutureBuilder(
+          future: _dbEntryLoader,
+          builder: (context, AsyncSnapshot<List> snapshot) {
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            return Row(
+              children: [
+                Expanded(
+                  child: Text('DB entry rows: ${snapshot.data.length}'),
+                ),
+                const SizedBox(width: 8),
+                RaisedButton(
+                  onPressed: () => metadataDb.clearEntries().then((_) => _startDbReport()),
+                  child: const Text('Clear'),
+                ),
+              ],
+            );
+          },
+        ),
+        FutureBuilder(
           future: _dbDateLoader,
-          builder: (context, AsyncSnapshot<List<DateMetadata>> snapshot) {
+          builder: (context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -190,7 +210,7 @@ class DebugPageState extends State<DebugPage> {
         ),
         FutureBuilder(
           future: _dbMetadataLoader,
-          builder: (context, AsyncSnapshot<List<CatalogMetadata>> snapshot) {
+          builder: (context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -209,7 +229,7 @@ class DebugPageState extends State<DebugPage> {
         ),
         FutureBuilder(
           future: _dbAddressLoader,
-          builder: (context, AsyncSnapshot<List<AddressDetails>> snapshot) {
+          builder: (context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -228,7 +248,7 @@ class DebugPageState extends State<DebugPage> {
         ),
         FutureBuilder(
           future: _dbFavouritesLoader,
-          builder: (context, AsyncSnapshot<List<FavouriteRow>> snapshot) {
+          builder: (context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -327,6 +347,7 @@ class DebugPageState extends State<DebugPage> {
 
   void _startDbReport() {
     _dbFileSizeLoader = metadataDb.dbFileSize();
+    _dbEntryLoader = metadataDb.loadEntries();
     _dbDateLoader = metadataDb.loadDates();
     _dbMetadataLoader = metadataDb.loadMetadataEntries();
     _dbAddressLoader = metadataDb.loadAddresses();

@@ -33,8 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -65,7 +65,7 @@ public abstract class ImageProvider {
         return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
-    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, ArrayList<ImageEntry> entries, @NonNull ImageOpCallback callback) {
+    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<ImageEntry> entries, @NonNull ImageOpCallback callback) {
         callback.onFailure(new UnsupportedOperationException());
     }
 

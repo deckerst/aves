@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 mixin LocationMixin on SourceBase {
+  static const _commitCountThreshold = 50;
+
   List<String> sortedCountries = List.unmodifiable([]);
   List<String> sortedPlaces = List.unmodifiable([]);
 
@@ -16,19 +18,21 @@ mixin LocationMixin on SourceBase {
       final contentId = entry.contentId;
       entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
     });
-    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} saved entries');
+    debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onAddressMetadataChanged();
   }
 
   Future<void> locateEntries() async {
-    final stopwatch = Stopwatch()..start();
+//    final stopwatch = Stopwatch()..start();
     final unlocatedEntries = rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
+    if (unlocatedEntries.isEmpty) return;
+
     final newAddresses = <AddressDetails>[];
     await Future.forEach<ImageEntry>(unlocatedEntries, (entry) async {
       await entry.locate();
       if (entry.isLocated) {
         newAddresses.add(entry.addressDetails);
-        if (newAddresses.length >= 50) {
+        if (newAddresses.length >= _commitCountThreshold) {
           await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
           newAddresses.clear();
         }
@@ -36,7 +40,7 @@ mixin LocationMixin on SourceBase {
     });
     await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
     onAddressMetadataChanged();
-    debugPrint('$runtimeType locateEntries complete in ${stopwatch.elapsed.inMilliseconds}ms');
+//    debugPrint('$runtimeType locateEntries complete in ${stopwatch.elapsed.inSeconds}s');
   }
 
   void onAddressMetadataChanged() {

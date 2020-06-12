@@ -13,9 +13,9 @@ class MediaStoreSource extends CollectionSource {
   Future<void> init() async {
     final stopwatch = Stopwatch()..start();
     stateNotifier.value = SourceState.loading;
-    await metadataDb.init(); // <20ms
+    await metadataDb.init();
     await favourites.init();
-    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone(); // <20ms
+    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
     final catalogTimeZone = settings.catalogTimeZone;
     if (currentTimeZone != catalogTimeZone) {
       // clear catalog metadata to get correct date/times when moving to a different time zone
@@ -29,35 +29,50 @@ class MediaStoreSource extends CollectionSource {
   }
 
   Future<void> refresh() async {
+    debugPrint('$runtimeType refresh start');
     final stopwatch = Stopwatch()..start();
     stateNotifier.value = SourceState.loading;
 
+    final oldEntries = await metadataDb.loadEntries(); // 400ms for 5500 entries
+    final knownEntryMap = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
+    final obsoleteEntries = await ImageFileService.getObsoleteEntries(knownEntryMap.keys.toList());
+    oldEntries.removeWhere((entry) => obsoleteEntries.contains(entry.contentId));
+
+    // show known entries
+    addAll(oldEntries);
+    await loadCatalogMetadata(); // 600ms for 5500 entries
+    await loadAddresses(); // 200ms for 3000 entries
+    debugPrint('$runtimeType refresh loaded ${oldEntries.length} known entries, elapsed=${stopwatch.elapsed}');
+
+    // clean up obsolete entries
+    metadataDb.removeIds(obsoleteEntries);
+
+    // fetch new entries
     var refreshCount = 10;
     const refreshCountMax = 1000;
-    final allEntries = <ImageEntry>[];
-
-    // TODO split image fetch AND/OR cache fetch across sessions
-    ImageFileService.getImageEntries().listen(
+    final allNewEntries = <ImageEntry>[], pendingNewEntries = <ImageEntry>[];
+    final addPendingEntries = () {
+      allNewEntries.addAll(pendingNewEntries);
+      addAll(pendingNewEntries);
+      pendingNewEntries.clear();
+    };
+    ImageFileService.getImageEntries(knownEntryMap).listen(
       (entry) {
-        allEntries.add(entry);
-        if (allEntries.length >= refreshCount) {
+        pendingNewEntries.add(entry);
+        if (pendingNewEntries.length >= refreshCount) {
           refreshCount = min(refreshCount * 10, refreshCountMax);
-          addAll(allEntries);
-          allEntries.clear();
-//          debugPrint('$runtimeType streamed ${entries.length} entries at ${stopwatch.elapsed.inMilliseconds}ms');
+          addPendingEntries();
         }
       },
       onDone: () async {
-        debugPrint('$runtimeType stream done, elapsed=${stopwatch.elapsed}');
-        addAll(allEntries);
-        // TODO reduce setup time until here
-        updateAlbums(); // <50ms
+        addPendingEntries();
+        debugPrint('$runtimeType refresh loaded ${allNewEntries.length} new entries, elapsed=${stopwatch.elapsed}');
+        await metadataDb.saveEntries(allNewEntries); // 700ms for 5500 entries
+        updateAlbums();
         stateNotifier.value = SourceState.cataloguing;
-        await loadCatalogMetadata(); // 400ms for 5400 entries
-        await catalogEntries(); // <50ms
+        await catalogEntries();
         stateNotifier.value = SourceState.locating;
-        await loadAddresses(); // 350ms
-        await locateEntries(); // <50ms
+        await locateEntries();
         stateNotifier.value = SourceState.ready;
         debugPrint('$runtimeType refresh done, elapsed=${stopwatch.elapsed}');
       },

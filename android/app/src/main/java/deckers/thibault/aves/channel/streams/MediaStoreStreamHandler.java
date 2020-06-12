@@ -15,9 +15,15 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     private Activity activity;
     private EventChannel.EventSink eventSink;
     private Handler handler;
+    private Map<Integer, Integer> knownEntries;
 
-    public MediaStoreStreamHandler(Activity activity) {
+    @SuppressWarnings("unchecked")
+    public MediaStoreStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
+        if (arguments instanceof Map) {
+            Map<String, Object> argMap = (Map<String, Object>) arguments;
+            this.knownEntries = (Map<Integer, Integer>) argMap.get("knownEntries");
+        }
     }
 
     @Override
@@ -41,7 +47,7 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     }
 
     void fetchAll() {
-        new MediaStoreImageProvider().fetchAll(activity, this::success); // 350ms
+        new MediaStoreImageProvider().fetchAll(activity, knownEntries, this::success); // 350ms
         endOfStream();
     }
 }

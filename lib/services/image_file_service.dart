@@ -16,13 +16,28 @@ class ImageFileService {
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
   static const double thumbnailDefaultSize = 64.0;
 
-  static Stream<ImageEntry> getImageEntries() {
+  // knownEntries: map of contentId -> dateModifiedSecs
+  static Stream<ImageEntry> getImageEntries(Map<int, int> knownEntries) {
     try {
-      return mediaStoreChannel.receiveBroadcastStream().map((event) => ImageEntry.fromMap(event));
+      return mediaStoreChannel.receiveBroadcastStream(<String, dynamic>{
+        'knownEntries': knownEntries,
+      }).map((event) => ImageEntry.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('getImageEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       return Stream.error(e);
     }
+  }
+
+  static Future<List> getObsoleteEntries(List<int> knownContentIds) async {
+    try {
+      final result = await platform.invokeMethod('getObsoleteEntries', <String, dynamic>{
+        'knownContentIds': knownContentIds,
+      });
+      return (result as List).cast<int>();
+    } on PlatformException catch (e) {
+      debugPrint('getObsoleteEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return [];
   }
 
   static Future<ImageEntry> getImageEntry(String uri, String mimeType) async {

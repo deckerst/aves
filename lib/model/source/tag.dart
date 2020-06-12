@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 mixin TagMixin on SourceBase {
+  static const _commitCountThreshold = 300;
+
   List<String> sortedTags = List.unmodifiable([]);
 
   Future<void> loadCatalogMetadata() async {
@@ -15,12 +17,12 @@ mixin TagMixin on SourceBase {
       final contentId = entry.contentId;
       entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
     });
-    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} saved entries');
+    debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
   }
 
   Future<void> catalogEntries() async {
-    final stopwatch = Stopwatch()..start();
+//    final stopwatch = Stopwatch()..start();
     final uncataloguedEntries = rawEntries.where((entry) => !entry.isCatalogued).toList();
     if (uncataloguedEntries.isEmpty) return;
 
@@ -29,7 +31,7 @@ mixin TagMixin on SourceBase {
       await entry.catalog();
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata);
-        if (newMetadata.length >= 500) {
+        if (newMetadata.length >= _commitCountThreshold) {
           await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
           newMetadata.clear();
         }
@@ -37,7 +39,7 @@ mixin TagMixin on SourceBase {
     });
     await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
     onCatalogMetadataChanged();
-    debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s with ${newMetadata.length} new entries');
+//    debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s');
   }
 
   void onCatalogMetadataChanged() {

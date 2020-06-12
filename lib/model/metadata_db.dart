@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -12,6 +13,7 @@ class MetadataDb {
 
   Future<String> get path async => join(await getDatabasesPath(), 'metadata.db');
 
+  static const entryTable = 'entry';
   static const dateTakenTable = 'dateTaken';
   static const metadataTable = 'metadata';
   static const addressTable = 'address';
@@ -24,6 +26,20 @@ class MetadataDb {
     _database = openDatabase(
       await path,
       onCreate: (db, version) async {
+        await db.execute('CREATE TABLE $entryTable('
+            'contentId INTEGER PRIMARY KEY'
+            ', uri TEXT'
+            ', path TEXT'
+            ', mimeType TEXT'
+            ', width INTEGER'
+            ', height INTEGER'
+            ', orientationDegrees INTEGER'
+            ', sizeBytes INTEGER'
+            ', title TEXT'
+            ', dateModifiedSecs INTEGER'
+            ', sourceDateTakenMillis INTEGER'
+            ', durationMillis INTEGER'
+            ')');
         await db.execute('CREATE TABLE $dateTakenTable('
             'contentId INTEGER PRIMARY KEY'
             ', dateMillis INTEGER'
@@ -65,6 +81,62 @@ class MetadataDb {
     await (await _database).close();
     await deleteDatabase(await path);
     await init();
+  }
+
+  void removeIds(List<int> contentIds) async {
+    if (contentIds == null || contentIds.isEmpty) return;
+
+    final stopwatch = Stopwatch()..start();
+    final db = await _database;
+    // using array in `whereArgs` and using it with `where contentId IN ?` is a pain, so we prefer `batch` instead
+    final batch = db.batch();
+    const where = 'contentId = ?';
+    contentIds.forEach((id) {
+      final whereArgs = [id];
+      batch.delete(entryTable, where: where, whereArgs: whereArgs);
+      batch.delete(dateTakenTable, where: where, whereArgs: whereArgs);
+      batch.delete(metadataTable, where: where, whereArgs: whereArgs);
+      batch.delete(addressTable, where: where, whereArgs: whereArgs);
+      batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
+    });
+    await batch.commit(noResult: true);
+    debugPrint('$runtimeType removeIds complete in ${stopwatch.elapsed.inMilliseconds}ms for ${contentIds.length} entries');
+  }
+
+  // entries
+
+  Future<void> clearEntries() async {
+    final db = await _database;
+    final count = await db.delete(entryTable, where: '1');
+    debugPrint('$runtimeType clearEntries deleted $count entries');
+  }
+
+  Future<List<ImageEntry>> loadEntries() async {
+    final stopwatch = Stopwatch()..start();
+    final db = await _database;
+    final maps = await db.query(entryTable);
+    final entries = maps.map((map) => ImageEntry.fromMap(map)).toList();
+    debugPrint('$runtimeType loadEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
+    return entries;
+  }
+
+  Future<void> saveEntries(Iterable<ImageEntry> entries) async {
+    if (entries == null || entries.isEmpty) return;
+    final stopwatch = Stopwatch()..start();
+    final db = await _database;
+    final batch = db.batch();
+    entries.forEach((entry) => _batchInsertEntry(batch, entry));
+    await batch.commit(noResult: true);
+    debugPrint('$runtimeType saveEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
+  }
+
+  void _batchInsertEntry(Batch batch, ImageEntry entry) {
+    if (entry == null) return;
+    batch.insert(
+      entryTable,
+      entry.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   // date taken
@@ -229,12 +301,10 @@ class MetadataDb {
     final ids = favouriteRows.where((row) => row != null).map((row) => row.contentId);
     if (ids.isEmpty) return;
 
-    // using array in `whereArgs` and using it with `where contentId IN ?` is a pain, so we prefer `batch` instead
-//    final stopwatch = Stopwatch()..start();
     final db = await _database;
+    // using array in `whereArgs` and using it with `where contentId IN ?` is a pain, so we prefer `batch` instead
     final batch = db.batch();
     ids.forEach((id) => batch.delete(favouriteTable, where: 'contentId = ?', whereArgs: [id]));
     await batch.commit(noResult: true);
-//    debugPrint('$runtimeType removeFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
   }
 }

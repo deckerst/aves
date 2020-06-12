@@ -48,7 +48,7 @@ public class MainActivity extends FlutterActivity {
 
         new StreamsChannel(messenger, ImageByteStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new ImageByteStreamHandler(this, args));
         new StreamsChannel(messenger, ImageOpStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new ImageOpStreamHandler(this, args));
-        new StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new MediaStoreStreamHandler(this));
+        new StreamsChannel(messenger, MediaStoreStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new MediaStoreStreamHandler(this, args));
         new StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory(args -> new StorageAccessStreamHandler(this, args));
 
         new MethodChannel(messenger, VIEWER_CHANNEL).setMethodCallHandler(

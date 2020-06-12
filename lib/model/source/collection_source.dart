@@ -40,10 +40,14 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   Future<void> loadDates() async {
     final stopwatch = Stopwatch()..start();
     _savedDates = List.unmodifiable(await metadataDb.loadDates());
-    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} saved entries');
+    debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
   void addAll(Iterable<ImageEntry> entries) {
+    if (_rawEntries.isNotEmpty) {
+      final newContentIds = entries.map((entry) => entry.contentId).toList();
+      _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
+    }
     entries.forEach((entry) {
       final contentId = entry.contentId;
       entry.catalogDateMillis = _savedDates.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null)?.dateMillis;

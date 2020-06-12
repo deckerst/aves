@@ -9,11 +9,13 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 
+import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.ImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
+import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -37,6 +39,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
+            case "getObsoleteEntries":
+                new Thread(() -> getObsoleteEntries(call, new MethodResultWrapper(result))).start();
+                break;
             case "getImageEntry":
                 new Thread(() -> getImageEntry(call, new MethodResultWrapper(result))).start();
                 break;
@@ -77,6 +82,16 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
 
         ImageEntry entry = new ImageEntry(entryMap);
         new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, defaultSize, result));
+    }
+
+    private void getObsoleteEntries(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        List<Integer> known = call.argument("knownContentIds");
+        if (known == null) {
+            result.error("getObsoleteEntries-args", "failed because of missing arguments", null);
+            return;
+        }
+        List<Integer> obsolete = new MediaStoreImageProvider().getObsoleteContentIds(activity, known);
+        result.success(obsolete);
     }
 
     private void getImageEntry(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {

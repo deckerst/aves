@@ -25,8 +25,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.ImageEntry;
@@ -68,16 +70,13 @@ public class MediaStoreImageProvider extends ImageProvider {
                     MediaStore.Video.Media.ORIENTATION,
             } : new String[0]).flatMap(Stream::of).toArray(String[]::new);
 
-    public void fetchAll(Activity activity, NewEntryHandler newEntryHandler) {
-        String orderBy;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            orderBy = MediaStore.MediaColumns.DATE_TAKEN + " DESC";
-        } else {
-            orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
-        }
-
-        fetchFrom(activity, newEntryHandler, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION, orderBy);
-        fetchFrom(activity, newEntryHandler, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION, orderBy);
+    public void fetchAll(Context context, Map<Integer, Integer> knownEntries, NewEntryHandler newEntryHandler) {
+        NewEntryChecker isModified = (contentId, dateModifiedSecs) -> {
+            final Integer knownDate = knownEntries.get(contentId);
+            return knownDate == null || knownDate < dateModifiedSecs;
+        };
+        fetchFrom(context, isModified, newEntryHandler, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION);
+        fetchFrom(context, isModified, newEntryHandler, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_PROJECTION);
     }
 
     @Override
@@ -88,23 +87,48 @@ public class MediaStoreImageProvider extends ImageProvider {
             entry.put("uri", uri.toString());
             callback.onSuccess(entry);
         };
+        NewEntryChecker alwaysValid = (contentId, dateModifiedSecs) -> true;
         if (mimeType.startsWith(MimeTypes.IMAGE)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-            entryCount = fetchFrom(context, onSuccess, contentUri, IMAGE_PROJECTION, null);
+            entryCount = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION);
         } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
-            entryCount = fetchFrom(context, onSuccess, contentUri, VIDEO_PROJECTION, null);
+            entryCount = fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION);
         }
         if (entryCount == 0) {
             callback.onFailure(new Exception("failed to fetch entry at uri=" + uri));
         }
     }
 
-    @SuppressLint("InlinedApi")
-    private int fetchFrom(final Context context, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection, String orderBy) {
-        int entryCount = 0;
+    public List<Integer> getObsoleteContentIds(Context context, List<Integer> knownContentIds) {
+        final ArrayList<Integer> current = new ArrayList<>();
+        current.addAll(getContentIdList(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
+        current.addAll(getContentIdList(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI));
+        return knownContentIds.stream().filter(id -> !current.contains(id)).collect(Collectors.toList());
+    }
 
+    private List<Integer> getContentIdList(Context context, Uri contentUri) {
+        final ArrayList<Integer> foundContentIds = new ArrayList<>();
+        try {
+            Cursor cursor = context.getContentResolver().query(contentUri, new String[]{MediaStore.MediaColumns._ID}, null, null, null);
+            if (cursor != null) {
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
+                while (cursor.moveToNext()) {
+                    foundContentIds.add(cursor.getInt(idColumn));
+                }
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "failed to get content IDs for contentUri=" + contentUri, e);
+        }
+        return foundContentIds;
+    }
+
+    @SuppressLint("InlinedApi")
+    private int fetchFrom(final Context context, NewEntryChecker newEntryChecker, NewEntryHandler newEntryHandler, final Uri contentUri, String[] projection) {
+        int newEntryCount = 0;
         final boolean needDuration = projection == VIDEO_PROJECTION;
+        final String orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
 
         try {
             Cursor cursor = context.getContentResolver().query(contentUri, projection, null, null, orderBy);
@@ -127,49 +151,52 @@ public class MediaStoreImageProvider extends ImageProvider {
                 int durationColumn = cursor.getColumnIndex(MediaStore.MediaColumns.DURATION);
 
                 while (cursor.moveToNext()) {
-                    final long contentId = cursor.getLong(idColumn);
-                    // this is fine if `contentUri` does not already contain the ID
-                    final Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
-                    final String path = cursor.getString(pathColumn);
-                    final String mimeType = cursor.getString(mimeTypeColumn);
-                    int width = cursor.getInt(widthColumn);
-                    int height = cursor.getInt(heightColumn);
-                    long durationMillis = durationColumn != -1 ? cursor.getLong(durationColumn) : 0;
+                    final int contentId = cursor.getInt(idColumn);
+                    final int dateModifiedSecs = cursor.getInt(dateModifiedColumn);
+                    if (newEntryChecker.where(contentId, dateModifiedSecs)) {
+                        // this is fine if `contentUri` does not already contain the ID
+                        final Uri itemUri = ContentUris.withAppendedId(contentUri, contentId);
+                        final String path = cursor.getString(pathColumn);
+                        final String mimeType = cursor.getString(mimeTypeColumn);
+                        int width = cursor.getInt(widthColumn);
+                        int height = cursor.getInt(heightColumn);
+                        final long durationMillis = durationColumn != -1 ? cursor.getLong(durationColumn) : 0;
 
-                    Map<String, Object> entryMap = new HashMap<String, Object>() {{
-                        put("uri", itemUri.toString());
-                        put("path", path);
-                        put("mimeType", mimeType);
-                        put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
-                        put("sizeBytes", cursor.getLong(sizeColumn));
-                        put("title", cursor.getString(titleColumn));
-                        put("dateModifiedSecs", cursor.getLong(dateModifiedColumn));
-                        put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
-                        // only for map export
-                        put("contentId", contentId);
-                    }};
-                    entryMap.put("width", width);
-                    entryMap.put("height", height);
-                    entryMap.put("durationMillis", durationMillis);
+                        Map<String, Object> entryMap = new HashMap<String, Object>() {{
+                            put("uri", itemUri.toString());
+                            put("path", path);
+                            put("mimeType", mimeType);
+                            put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
+                            put("sizeBytes", cursor.getLong(sizeColumn));
+                            put("title", cursor.getString(titleColumn));
+                            put("dateModifiedSecs", dateModifiedSecs);
+                            put("sourceDateTakenMillis", cursor.getLong(dateTakenColumn));
+                            // only for map export
+                            put("contentId", contentId);
+                        }};
+                        entryMap.put("width", width);
+                        entryMap.put("height", height);
+                        entryMap.put("durationMillis", durationMillis);
 
-                    if (((width <= 0 || height <= 0) && needSize(mimeType)) || (durationMillis == 0 && needDuration)) {
-                        // some images are incorrectly registered in the Media Store,
-                        // they are valid but miss some attributes, such as width, height, orientation
-                        ImageEntry entry = new ImageEntry(entryMap).fillPreCatalogMetadata(context);
-                        entryMap = entry.toMap();
-                        width = entry.width != null ? entry.width : 0;
-                        height = entry.height != null ? entry.height : 0;
-                    }
-
-                    if ((width <= 0 || height <= 0) && needSize(mimeType)) {
-                        // this is probably not a real image, like "/storage/emulated/0", so we skip it
-                        Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path + ", mimeType=" + mimeType);
-                    } else {
-                        newEntryHandler.handleEntry(entryMap);
-                        if (entryCount % 30 == 0) {
-                            Thread.sleep(10);
+                        if (((width <= 0 || height <= 0) && needSize(mimeType)) || (durationMillis == 0 && needDuration)) {
+                            // some images are incorrectly registered in the Media Store,
+                            // they are valid but miss some attributes, such as width, height, orientation
+                            ImageEntry entry = new ImageEntry(entryMap).fillPreCatalogMetadata(context);
+                            entryMap = entry.toMap();
+                            width = entry.width != null ? entry.width : 0;
+                            height = entry.height != null ? entry.height : 0;
                         }
-                        entryCount++;
+
+                        if ((width <= 0 || height <= 0) && needSize(mimeType)) {
+                            // this is probably not a real image, like "/storage/emulated/0", so we skip it
+                            Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path + ", mimeType=" + mimeType);
+                        } else {
+                            newEntryHandler.handleEntry(entryMap);
+                            if (newEntryCount % 30 == 0) {
+                                Thread.sleep(10);
+                            }
+                            newEntryCount++;
+                        }
                     }
                 }
                 cursor.close();
@@ -177,7 +204,7 @@ public class MediaStoreImageProvider extends ImageProvider {
         } catch (Exception e) {
             Log.e(LOG_TAG, "failed to get entries", e);
         }
-        return entryCount;
+        return newEntryCount;
     }
 
     private boolean needSize(String mimeType) {
@@ -231,7 +258,7 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     @Override
-    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, ArrayList<ImageEntry> entries, ImageOpCallback callback) {
+    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<ImageEntry> entries, ImageOpCallback callback) {
         String volumeName = "external";
         StorageManager sm = activity.getSystemService(StorageManager.class);
         if (sm != null) {
@@ -322,5 +349,9 @@ public class MediaStoreImageProvider extends ImageProvider {
 
     public interface NewEntryHandler {
         void handleEntry(Map<String, Object> entry);
+    }
+
+    public interface NewEntryChecker {
+        boolean where(int contentId, int dateModifiedSecs);
     }
 }

@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/collection_page.dart';
@@ -451,6 +451,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   void _unregisterWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.removeListener(_onEntryChanged);
+    _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
   }
 
   @override
@@ -517,7 +518,12 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
     await UriImage(uri: entry.uri, mimeType: entry.mimeType).evict();
-    // TODO TLAD also evict `ThumbnailProvider` with specified extents
+    // evict low quality thumbnail (without specified extents)
+    await ThumbnailProvider(entry: entry).evict();
+    // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)
+    final extents = List.generate(6, (index) => pow(2, index + 5).toDouble());
+    await Future.forEach(extents, (extent) => ThumbnailProvider(entry: entry, extent: extent).evict());
+
     await ThumbnailProvider(entry: entry).evict();
     if (entry.path != null) await FileImage(File(entry.path)).evict();
     // rebuild to refresh the Image inside ImagePage

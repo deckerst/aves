@@ -36,20 +36,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _setup() async {
-    debugPrint('$runtimeType _setup');
-
-    // TODO reduce permission check time
     final permissions = await [
       Permission.storage,
       // to access media with unredacted metadata with scoped storage (Android 10+)
       Permission.accessMediaLocation,
-    ].request(); // 350ms
+    ].request();
     if (permissions[Permission.storage] != PermissionStatus.granted) {
       unawaited(SystemNavigator.pop());
       return;
     }
 
-    // TODO notify when icons are ready for drawer and section header refresh
     await androidFileUtils.init(); // 170ms
 
     final intentData = await ViewerService.getIntentData();
@@ -97,7 +93,6 @@ class _HomePageState extends State<HomePage> {
         builder: (context, AsyncSnapshot<void> snapshot) {
           if (snapshot.hasError) return const Icon(AIcons.error);
           if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-          debugPrint('$runtimeType app setup future complete');
           if (AvesApp.mode == AppMode.view) {
             return SingleFullscreenPage(entry: _viewerEntry);
           }
