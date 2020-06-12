@@ -1,11 +1,11 @@
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/link_chip.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Licenses extends StatefulWidget {
   @override
@@ -115,8 +115,6 @@ class LicenseRow extends StatelessWidget {
 
   const LicenseRow(this.package);
 
-  static const borderRadius = BorderRadius.all(Radius.circular(8));
-
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -128,50 +126,17 @@ class LicenseRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            borderRadius: borderRadius,
-            onTap: () => launch(package.sourceUrl),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    package.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    AIcons.openInNew,
-                    size: bodyTextStyle.fontSize,
-                  )
-                ],
-              ),
-            ),
+          LinkChip(
+            text: package.name,
+            url: package.sourceUrl,
+            textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
-            child: InkWell(
-              borderRadius: borderRadius,
-              onTap: () => launch(package.licenseUrl),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      package.license,
-                      style: TextStyle(color: subColor),
-                    ),
-                    const SizedBox(width: 8),
-                    Icon(
-                      AIcons.openInNew,
-                      size: bodyTextStyle.fontSize,
-                      color: subColor,
-                    )
-                  ],
-                ),
-              ),
+            child: LinkChip(
+              text: package.license,
+              url: package.licenseUrl,
+              color: subColor,
             ),
           ),
         ],
