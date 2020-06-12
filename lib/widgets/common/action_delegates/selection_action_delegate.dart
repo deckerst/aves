@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/durations.dart';
@@ -97,6 +97,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
       ),
     );
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
+    if (!await checkStoragePermissionForPaths(context, [destinationAlbum])) return;
 
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;

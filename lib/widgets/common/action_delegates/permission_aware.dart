@@ -1,14 +1,17 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 mixin PermissionAwareMixin {
-  Future<bool> checkStoragePermission(BuildContext context, Iterable<ImageEntry> entries) async {
-    final byVolume = groupBy(entries.where((e) => e.path != null), (e) => androidFileUtils.getStorageVolume(e.path));
-    final removableVolumes = byVolume.keys.where((v) => v.isRemovable);
+  Future<bool> checkStoragePermission(BuildContext context, Iterable<ImageEntry> entries) {
+    return checkStoragePermissionForPaths(context, entries.where((e) => e.path != null).map((e) => e.path));
+  }
+
+  Future<bool> checkStoragePermissionForPaths(BuildContext context, Iterable<String> paths) async {
+    final volumes = paths.map((path) => androidFileUtils.getStorageVolume(path)).toSet();
+    final removableVolumes = volumes.where((v) => v.isRemovable);
     final volumePermissions = await Future.wait<Tuple2<StorageVolume, bool>>(
       removableVolumes.map(
         (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
