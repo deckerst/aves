@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 mixin FeedbackMixin {
+  Flushbar _flushbar;
+
+  Future<void> dismissFeedback() => _flushbar?.dismiss();
+
   void showFeedback(BuildContext context, String message) {
-    Flushbar(
+    _flushbar = Flushbar(
       message: message,
       margin: const EdgeInsets.all(8),
       borderRadius: 8,
@@ -14,6 +18,6 @@ mixin FeedbackMixin {
       duration: Durations.opToastDisplay * timeDilation,
       flushbarPosition: FlushbarPosition.TOP,
       animationDuration: Durations.opToastAnimation,
-    ).show(context);
+    )..show(context);
   }
 }
