@@ -19,7 +19,6 @@ import com.adobe.internal.xmp.XMPMeta;
 import com.adobe.internal.xmp.properties.XMPProperty;
 import com.adobe.internal.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
 import com.drew.lang.GeoLocation;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
@@ -143,22 +142,24 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     }
                 }
             }
+        } catch (Exception | NoClassDefFoundError e) {
+            Log.w(LOG_TAG, "failed to get video metadata by ImageMetadataReader for uri=" + uri, e);
+        }
+
+        Map<String, String> videoDir = getVideoMetadataByRetriever(uri);
+        if (!videoDir.isEmpty()) {
+            metadataMap.put("Video", videoDir);
+        }
+
+        if (metadataMap.isEmpty()) {
+            result.error("getAllMetadata-failure", "failed to get metadata for uri=" + uri, null);
+        } else {
             result.success(metadataMap);
-        } catch (ImageProcessingException | NoClassDefFoundError e) {
-            getAllVideoMetadataFallback(call, result);
-        } catch (Exception e) {
-            result.error("getAllMetadata-exception", "failed to get metadata for uri=" + uri, e.getMessage());
         }
     }
 
-    private void getAllVideoMetadataFallback(MethodCall call, MethodChannel.Result result) {
-        String uri = call.argument("uri");
-
-        Map<String, Map<String, String>> metadataMap = new HashMap<>();
+    private Map<String, String> getVideoMetadataByRetriever(String uri) {
         Map<String, String> dirMap = new HashMap<>();
-        // unnamed fallback directory
-        metadataMap.put("", dirMap);
-
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
         try {
             for (Map.Entry<Integer, String> kv : Constants.MEDIA_METADATA_KEYS.entrySet()) {
@@ -176,13 +177,13 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     dirMap.put(kv.getValue(), value);
                 }
             }
-            result.success(metadataMap);
         } catch (Exception e) {
-            result.error("getAllVideoMetadataFallback-exception", "failed to get metadata for uri=" + uri, e.getMessage());
+            Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=" + uri, e);
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
             retriever.release();
         }
+        return dirMap;
     }
 
     private void getCatalogMetadata(MethodCall call, MethodChannel.Result result) {
