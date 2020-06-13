@@ -289,9 +289,10 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
   }
 
-  void _onVerticalPageChanged(int page) {
+  Future<void> _onVerticalPageChanged(int page) async {
     _currentVerticalPage.value = page;
     if (page == transitionPage) {
+      await _actionDelegate.dismissFeedback();
       _onLeave();
       Navigator.pop(context);
     }
