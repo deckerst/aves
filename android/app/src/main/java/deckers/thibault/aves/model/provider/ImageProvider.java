@@ -146,7 +146,7 @@ public abstract class ImageProvider {
                     return fileTypeDir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE);
                 }
             }
-        } catch (IOException | ImageProcessingException e) {
+        } catch (IOException | ImageProcessingException | NoClassDefFoundError e) {
             Log.w(LOG_TAG, "failed to get mime type from metadata for uri=" + uri, e);
         }
         return null;

@@ -144,7 +144,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
             result.success(metadataMap);
-        } catch (ImageProcessingException e) {
+        } catch (ImageProcessingException | NoClassDefFoundError e) {
             getAllVideoMetadataFallback(call, result);
         } catch (Exception e) {
             result.error("getAllMetadata-exception", "failed to get metadata for uri=" + uri, e.getMessage());
@@ -292,7 +292,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
             result.success(metadataMap);
-        } catch (Exception e) {
+        } catch (Exception | NoClassDefFoundError e) {
             result.error("getCatalogMetadata-exception", "failed to get metadata for uri=" + uri, e.getMessage());
         }
     }
@@ -320,7 +320,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
             result.success(metadataMap);
-        } catch (Exception e) {
+        } catch (Exception | NoClassDefFoundError e) {
             result.error("getOverlayMetadata-exception", "failed to get metadata for uri=" + uri, e.getMessage());
         }
     }
