@@ -1,4 +1,3 @@
-import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 
 class EmptyContent extends StatelessWidget {
@@ -7,8 +6,8 @@ class EmptyContent extends StatelessWidget {
   final AlignmentGeometry alignment;
 
   const EmptyContent({
-    @required this.icon = AIcons.image,
-    @required this.text = 'No images',
+    @required this.icon,
+    @required this.text,
     this.alignment = const FractionalOffset(.5, .35),
   });
 
