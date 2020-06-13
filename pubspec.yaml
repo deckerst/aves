@@ -39,20 +39,20 @@ dependencies:
   charts_flutter:
   collection:
   draggable_scrollbar:
-    path: ../flutter-draggable-scrollbar
-#    git:
-#      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
+#    path: ../flutter-draggable-scrollbar
+    git:
+      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   event_bus:
   expansion_tile_card:
-    path: ../expansion_tile_card
-#    git:
-#      url: git://github.com/deckerst/expansion_tile_card.git
+#    path: ../expansion_tile_card
+    git:
+      url: git://github.com/deckerst/expansion_tile_card.git
   firebase_crashlytics:
   flushbar:
   flutter_ijkplayer:
-    path: ../flutter_ijkplayer
-  #    git:
-  #      url: git://github.com/deckerst/flutter_ijkplayer.git
+#    path: ../flutter_ijkplayer
+    git:
+      url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_markdown:
   flutter_native_timezone:
   flutter_staggered_animations:
@@ -66,12 +66,10 @@ dependencies:
   pedantic:
   percent_indicator:
   permission_handler:
-  # photo_view v0.9.2 has issue https://github.com/renancaraujo/photo_view/issues/216
-  # https://github.com/renancaraujo/photo_view/pull/266 does not fix it
   photo_view:
-    path: ../photo_view
-#    git:
-#      url: git://github.com/deckerst/photo_view.git
+#    path: ../photo_view
+    git:
+      url: git://github.com/deckerst/photo_view.git
   printing:
   provider:
   screen:
