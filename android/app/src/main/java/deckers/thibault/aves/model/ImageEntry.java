@@ -237,7 +237,7 @@ public class ImageEntry {
                     }
                 }
             }
-        } catch (IOException | ImageProcessingException | MetadataException e) {
+        } catch (IOException | ImageProcessingException | MetadataException | NoClassDefFoundError e) {
             // ignore
         }
     }
