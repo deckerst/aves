@@ -61,8 +61,9 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   void removeEntries(Iterable<ImageEntry> entries) {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
-    // TODO TLAD invalidate locations/tags, like cleaning albums
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
+    updateLocations();
+    updateTags();
     invalidateFilterEntryCounts();
     eventBus.fire(EntryRemovedEvent(entries));
   }
