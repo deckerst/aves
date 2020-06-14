@@ -5,6 +5,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/durations.dart';
@@ -51,6 +52,9 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         break;
       case CollectionAction.move:
         _moveSelection(context, copy: false);
+        break;
+      case CollectionAction.refreshMetadata:
+        _refreshSelectionMetadata();
         break;
       default:
         break;
@@ -136,7 +140,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
             await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
             await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
           } else {
-            await Future.forEach(movedOps, (movedOp) async {
+            await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
               final sourceUri = movedOp.uri;
               final newFields = movedOp.newFields;
               final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
@@ -166,6 +170,16 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         collection.browse();
       },
     );
+  }
+
+  void _refreshSelectionMetadata() async {
+    collection.selection.forEach((entry) => entry.clearMetadata());
+    final source = collection.source;
+    source.stateNotifier.value = SourceState.cataloguing;
+    await source.catalogEntries();
+    source.stateNotifier.value = SourceState.locating;
+    await source.locateEntries();
+    source.stateNotifier.value = SourceState.ready;
   }
 
   void _showDeleteDialog(BuildContext context) async {

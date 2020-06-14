@@ -206,44 +206,56 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             )),
       Builder(
         builder: (context) => PopupMenuButton<CollectionAction>(
-          itemBuilder: (context) => [
-            ..._buildSortMenuItems(),
-            ..._buildGroupMenuItems(),
-            if (collection.isBrowsing) ...[
-              if (AvesApp.mode == AppMode.main)
-                if (kDebugMode)
-                  const PopupMenuItem(
-                    value: CollectionAction.refresh,
-                    child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
-                  ),
-              const PopupMenuItem(
-                value: CollectionAction.select,
-                child: MenuRow(text: 'Select', icon: AIcons.select),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.stats,
-                child: MenuRow(text: 'Stats', icon: AIcons.stats),
-              ),
-            ],
-            if (collection.isSelecting) ...[
-              const PopupMenuItem(
-                value: CollectionAction.copy,
-                child: MenuRow(text: 'Copy to album'),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.move,
-                child: MenuRow(text: 'Move to album'),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.selectAll,
-                child: MenuRow(text: 'Select all'),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.selectNone,
-                child: MenuRow(text: 'Select none'),
-              ),
-            ]
-          ],
+          itemBuilder: (context) {
+            final hasSelection = collection.selection.isNotEmpty;
+            return [
+              ..._buildSortMenuItems(),
+              ..._buildGroupMenuItems(),
+              if (collection.isBrowsing) ...[
+                if (AvesApp.mode == AppMode.main)
+                  if (kDebugMode)
+                    const PopupMenuItem(
+                      value: CollectionAction.refresh,
+                      child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                    ),
+                const PopupMenuItem(
+                  value: CollectionAction.select,
+                  child: MenuRow(text: 'Select', icon: AIcons.select),
+                ),
+                const PopupMenuItem(
+                  value: CollectionAction.stats,
+                  child: MenuRow(text: 'Stats', icon: AIcons.stats),
+                ),
+              ],
+              if (collection.isSelecting) ...[
+                PopupMenuItem(
+                  value: CollectionAction.copy,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Copy to album'),
+                ),
+                PopupMenuItem(
+                  value: CollectionAction.move,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Move to album'),
+                ),
+                PopupMenuItem(
+                  value: CollectionAction.refreshMetadata,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Refresh metadata'),
+                ),
+                const PopupMenuDivider(),
+                const PopupMenuItem(
+                  value: CollectionAction.selectAll,
+                  child: MenuRow(text: 'Select all'),
+                ),
+                PopupMenuItem(
+                  value: CollectionAction.selectNone,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Select none'),
+                ),
+              ]
+            ];
+          },
           onSelected: _onCollectionActionSelected,
         ),
       ),
@@ -307,6 +319,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     switch (action) {
       case CollectionAction.copy:
       case CollectionAction.move:
+      case CollectionAction.refreshMetadata:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.refresh:
@@ -378,6 +391,7 @@ enum CollectionAction {
   copy,
   move,
   refresh,
+  refreshMetadata,
   select,
   selectAll,
   selectNone,
