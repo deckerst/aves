@@ -291,18 +291,15 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
             }
             if (locationString != null) {
-                Log.d(LOG_TAG, "TLAD locationString=" + locationString);
                 Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
                 if (locationMatcher.find() && locationMatcher.groupCount() >= 2) {
                     String latitudeString = locationMatcher.group(1);
                     String longitudeString = locationMatcher.group(2);
-                    Log.d(LOG_TAG, "TLAD latitudeString=" + latitudeString + ", longitudeString=" + longitudeString);
                     if (latitudeString != null && longitudeString != null) {
                         try {
                             double latitude = Double.parseDouble(latitudeString);
                             double longitude = Double.parseDouble(longitudeString);
                             if (latitude != 0 && longitude != 0) {
-                                Log.d(LOG_TAG, "TLAD latitude=" + latitude + ", longitude=" + longitude);
                                 metadataMap.put(KEY_LATITUDE, latitude);
                                 metadataMap.put(KEY_LONGITUDE, longitude);
                             }
