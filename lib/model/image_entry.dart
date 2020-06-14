@@ -73,7 +73,6 @@ class ImageEntry {
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
     )
-      .._catalogDateMillis = _catalogDateMillis
       .._catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
       .._addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
 
@@ -232,11 +231,15 @@ class ImageEntry {
   }
 
   set catalogMetadata(CatalogMetadata newMetadata) {
-    if (newMetadata == null) return;
-    catalogDateMillis = newMetadata.dateMillis;
+    catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
+  }
+
+  void clearMetadata() {
+    catalogMetadata = null;
+    addressDetails = null;
   }
 
   Future<void> catalog() async {

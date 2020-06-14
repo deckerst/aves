@@ -523,7 +523,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     await ThumbnailProvider(entry: entry).evict();
     // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)
     final extents = List.generate(6, (index) => pow(2, index + 5).toDouble());
-    await Future.forEach(extents, (extent) => ThumbnailProvider(entry: entry, extent: extent).evict());
+    await Future.forEach<double>(extents, (extent) => ThumbnailProvider(entry: entry, extent: extent).evict());
 
     await ThumbnailProvider(entry: entry).evict();
     if (entry.path != null) await FileImage(File(entry.path)).evict();
