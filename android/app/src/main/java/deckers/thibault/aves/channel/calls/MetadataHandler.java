@@ -73,7 +73,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private static final String XMP_GENERIC_LANG = "";
     private static final String XMP_SPECIFIC_LANG = "en-US";
 
-    private static final Pattern VIDEO_LOCATION_PATTERN = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+)/?");
+    // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
+    // Examples:
+    // "+37.5090+127.0243/" (Samsung)
+    // "+51.3328-000.7053+113.474/" (Apple)
+    private static final Pattern VIDEO_LOCATION_PATTERN = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*");
 
     private Context context;
 
@@ -146,7 +150,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Log.w(LOG_TAG, "failed to get video metadata by ImageMetadataReader for uri=" + uri, e);
         }
 
-        Map<String, String> videoDir = getVideoMetadataByRetriever(uri);
+        Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uri);
         if (!videoDir.isEmpty()) {
             metadataMap.put("Video", videoDir);
         }
@@ -158,7 +162,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         }
     }
 
-    private Map<String, String> getVideoMetadataByRetriever(String uri) {
+    private Map<String, String> getVideoAllMetadataByMediaMetadataRetriever(String uri) {
         Map<String, String> dirMap = new HashMap<>();
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
         try {
@@ -190,112 +194,131 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         String mimeType = call.argument("mimeType");
         String uri = call.argument("uri");
 
+        Map<String, Object> metadataMap = new HashMap<>(getCatalogMetadataByImageMetadataReader(uri, mimeType));
+        if (isVideo(mimeType)) {
+            metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri));
+        }
+
+        if (metadataMap.isEmpty()) {
+            result.error("getCatalogMetadata-failure", "failed to get catalog metadata for uri=" + uri, null);
+        } else {
+            result.success(metadataMap);
+        }
+    }
+
+    private Map<String, Object> getCatalogMetadataByImageMetadataReader(String uri, String mimeType) {
         Map<String, Object> metadataMap = new HashMap<>();
 
+        // as of metadata-extractor 2.14.0, MP2T files are not supported
+        if (MimeTypes.MP2T.equals(mimeType)) return metadataMap;
+
         try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
-            if (!MimeTypes.MP2T.equals(mimeType)) {
-                Metadata metadata = ImageMetadataReader.readMetadata(is);
+            Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-                // EXIF
-                putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifSubIFDDirectory.class, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                    putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifIFD0Directory.class, ExifIFD0Directory.TAG_DATETIME);
-                }
+            // EXIF
+            putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifSubIFDDirectory.class, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifIFD0Directory.class, ExifIFD0Directory.TAG_DATETIME);
+            }
 
-                // GPS
-                GpsDirectory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-                if (gpsDir != null) {
-                    GeoLocation geoLocation = gpsDir.getGeoLocation();
-                    if (geoLocation != null) {
-                        metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
-                        metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
-                    }
-                }
-
-                // XMP
-                XmpDirectory xmpDir = metadata.getFirstDirectoryOfType(XmpDirectory.class);
-                if (xmpDir != null) {
-                    XMPMeta xmpMeta = xmpDir.getXMPMeta();
-                    try {
-                        if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
-                            StringBuilder sb = new StringBuilder();
-                            int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
-                            for (int i = 1; i < count + 1; i++) {
-                                XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
-                                sb.append(";").append(item.getValue());
-                            }
-                            metadataMap.put(KEY_XMP_SUBJECTS, sb.toString());
-                        }
-
-                        putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_TITLE_PROP_NAME);
-                        if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                            putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_DESCRIPTION_PROP_NAME);
-                        }
-                    } catch (XMPException e) {
-                        Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
-                    }
-                }
-
-                // Animated GIF & WEBP
-                if (MimeTypes.GIF.equals(mimeType)) {
-                    metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
-                } else if (MimeTypes.WEBP.equals(mimeType)) {
-                    WebpDirectory webpDir = metadata.getFirstDirectoryOfType(WebpDirectory.class);
-                    if (webpDir != null) {
-                        if (webpDir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
-                            metadataMap.put(KEY_IS_ANIMATED, webpDir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
-                        }
-                    }
+            // GPS
+            GpsDirectory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
+            if (gpsDir != null) {
+                GeoLocation geoLocation = gpsDir.getGeoLocation();
+                if (geoLocation != null) {
+                    metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
+                    metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
                 }
             }
 
-            if (isVideo(mimeType)) {
-                MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
+            // XMP
+            XmpDirectory xmpDir = metadata.getFirstDirectoryOfType(XmpDirectory.class);
+            if (xmpDir != null) {
+                XMPMeta xmpMeta = xmpDir.getXMPMeta();
                 try {
-                    String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-                    String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                    String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+                    if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
+                        StringBuilder sb = new StringBuilder();
+                        int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
+                        for (int i = 1; i < count + 1; i++) {
+                            XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
+                            sb.append(";").append(item.getValue());
+                        }
+                        metadataMap.put(KEY_XMP_SUBJECTS, sb.toString());
+                    }
 
-                    if (dateString != null) {
-                        long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
-                        // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
-                        if (dateMillis > 0) {
-                            metadataMap.put(KEY_DATE_MILLIS, dateMillis);
-                        }
+                    putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_TITLE_PROP_NAME);
+                    if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
+                        putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_DESCRIPTION_PROP_NAME);
                     }
-                    if (rotationString != null) {
-                        metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
-                    }
-                    if (locationString != null) {
-                        Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
-                        if (locationMatcher.find() && locationMatcher.groupCount() == 2) {
-                            String latitudeString = locationMatcher.group(1);
-                            String longitudeString = locationMatcher.group(2);
-                            if (latitudeString != null && longitudeString != null) {
-                                try {
-                                    double latitude = Double.parseDouble(latitudeString);
-                                    double longitude = Double.parseDouble(longitudeString);
-                                    if (latitude != 0 && longitude != 0) {
-                                        metadataMap.put(KEY_LATITUDE, latitude);
-                                        metadataMap.put(KEY_LONGITUDE, longitude);
-                                    }
-                                } catch (NumberFormatException ex) {
-                                    // ignore
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    result.error("getCatalogMetadata-exception", "failed to get video metadata for uri=" + uri, e.getMessage());
-                } finally {
-                    // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-                    retriever.release();
+                } catch (XMPException e) {
+                    Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
                 }
             }
-            result.success(metadataMap);
+
+            // Animated GIF & WEBP
+            if (MimeTypes.GIF.equals(mimeType)) {
+                metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
+            } else if (MimeTypes.WEBP.equals(mimeType)) {
+                WebpDirectory webpDir = metadata.getFirstDirectoryOfType(WebpDirectory.class);
+                if (webpDir != null) {
+                    if (webpDir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
+                        metadataMap.put(KEY_IS_ANIMATED, webpDir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
+                    }
+                }
+            }
         } catch (Exception | NoClassDefFoundError e) {
-            result.error("getCatalogMetadata-exception", "failed to get metadata for uri=" + uri, e.getMessage());
+            Log.w(LOG_TAG, "failed to get catalog metadata by ImageMetadataReader for uri=" + uri, e);
         }
+        return metadataMap;
+    }
+
+    private Map<String, Object> getVideoCatalogMetadataByMediaMetadataRetriever(String uri) {
+        Map<String, Object> metadataMap = new HashMap<>();
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
+        try {
+            String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+            String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+            String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+
+            if (dateString != null) {
+                long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
+                // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
+                if (dateMillis > 0) {
+                    metadataMap.put(KEY_DATE_MILLIS, dateMillis);
+                }
+            }
+            if (rotationString != null) {
+                metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
+            }
+            if (locationString != null) {
+                Log.d(LOG_TAG, "TLAD locationString=" + locationString);
+                Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
+                if (locationMatcher.find() && locationMatcher.groupCount() >= 2) {
+                    String latitudeString = locationMatcher.group(1);
+                    String longitudeString = locationMatcher.group(2);
+                    Log.d(LOG_TAG, "TLAD latitudeString=" + latitudeString + ", longitudeString=" + longitudeString);
+                    if (latitudeString != null && longitudeString != null) {
+                        try {
+                            double latitude = Double.parseDouble(latitudeString);
+                            double longitude = Double.parseDouble(longitudeString);
+                            if (latitude != 0 && longitude != 0) {
+                                Log.d(LOG_TAG, "TLAD latitude=" + latitude + ", longitude=" + longitude);
+                                metadataMap.put(KEY_LATITUDE, latitude);
+                                metadataMap.put(KEY_LONGITUDE, longitude);
+                            }
+                        } catch (NumberFormatException ex) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for uri=" + uri, e);
+        } finally {
+            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+            retriever.release();
+        }
+        return metadataMap;
     }
 
     private void getOverlayMetadata(MethodCall call, MethodChannel.Result result) {
