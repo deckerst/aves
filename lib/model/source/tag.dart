@@ -23,12 +23,16 @@ mixin TagMixin on SourceBase {
 
   Future<void> catalogEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final uncataloguedEntries = rawEntries.where((entry) => !entry.isCatalogued).toList();
-    if (uncataloguedEntries.isEmpty) return;
+    final todo = rawEntries.where((entry) => !entry.isCatalogued).toList();
+    if (todo.isEmpty) return;
+
+    var progressDone = 0;
+    final progressTotal = todo.length;
+    setProgress(done: progressDone, total: progressTotal);
 
     final newMetadata = <CatalogMetadata>[];
-    await Future.forEach<ImageEntry>(uncataloguedEntries, (entry) async {
-      await entry.catalog();
+    await Future.forEach<ImageEntry>(todo, (entry) async {
+      await entry.catalog(background: true);
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata);
         if (newMetadata.length >= _commitCountThreshold) {
@@ -36,6 +40,7 @@ mixin TagMixin on SourceBase {
           newMetadata.clear();
         }
       }
+      setProgress(done: ++progressDone, total: progressTotal);
     });
     await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
     onCatalogMetadataChanged();

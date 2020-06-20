@@ -23,33 +23,36 @@ class MetadataService {
     return {};
   }
 
-  static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry) async {
+  static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
-    return servicePolicy.call(
-      () async {
-        try {
-          // return map with:
-          // 'dateMillis': date taken in milliseconds since Epoch (long)
-          // 'isAnimated': animated gif/webp (bool)
-          // 'latitude': latitude (double)
-          // 'longitude': longitude (double)
-          // 'videoRotation': video rotation degrees (int)
-          // 'xmpSubjects': ';' separated XMP subjects (string)
-          // 'xmpTitleDescription': XMP title or XMP description (string)
-          final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
-            'mimeType': entry.mimeType,
-            'uri': entry.uri,
-          }) as Map;
-          result['contentId'] = entry.contentId;
-          return CatalogMetadata.fromMap(result);
-        } on PlatformException catch (e) {
-          debugPrint('getCatalogMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-        }
-        return null;
-      },
-      priority: ServiceCallPriority.getMetadata,
-    );
+    final call = () async {
+      try {
+        // return map with:
+        // 'dateMillis': date taken in milliseconds since Epoch (long)
+        // 'isAnimated': animated gif/webp (bool)
+        // 'latitude': latitude (double)
+        // 'longitude': longitude (double)
+        // 'videoRotation': video rotation degrees (int)
+        // 'xmpSubjects': ';' separated XMP subjects (string)
+        // 'xmpTitleDescription': XMP title or XMP description (string)
+        final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
+          'mimeType': entry.mimeType,
+          'uri': entry.uri,
+        }) as Map;
+        result['contentId'] = entry.contentId;
+        return CatalogMetadata.fromMap(result);
+      } on PlatformException catch (e) {
+        debugPrint('getCatalogMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      }
+      return null;
+    };
+    return background
+        ? servicePolicy.call(
+            call,
+            priority: ServiceCallPriority.getMetadata,
+          )
+        : call();
   }
 
   static Future<OverlayMetadata> getOverlayMetadata(ImageEntry entry) async {

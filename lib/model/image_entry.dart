@@ -242,9 +242,9 @@ class ImageEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog() async {
+  Future<void> catalog({bool background = false}) async {
     if (isCatalogued) return;
-    catalogMetadata = await MetadataService.getCatalogMetadata(this);
+    catalogMetadata = await MetadataService.getCatalogMetadata(this, background: background);
   }
 
   AddressDetails get addressDetails => _addressDetails;
@@ -254,20 +254,23 @@ class ImageEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate() async {
+  Future<void> locate({bool background = false}) async {
     if (isLocated) return;
 
-    await catalog();
+    await catalog(background: background);
     final latitude = _catalogMetadata?.latitude;
     final longitude = _catalogMetadata?.longitude;
     if (latitude == null || longitude == null) return;
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final addresses = await servicePolicy.call(
-        () => Geocoder.local.findAddressesFromCoordinates(coordinates),
-        priority: ServiceCallPriority.getLocation,
-      );
+      final call = () => Geocoder.local.findAddressesFromCoordinates(coordinates);
+      final addresses = await (background
+          ? servicePolicy.call(
+              call,
+              priority: ServiceCallPriority.getLocation,
+            )
+          : call());
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         addressDetails = AddressDetails(
