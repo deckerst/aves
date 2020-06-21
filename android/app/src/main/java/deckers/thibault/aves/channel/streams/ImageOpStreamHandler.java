@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import deckers.thibault.aves.utils.Utils;
@@ -94,7 +94,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         String destinationDir = (String) argMap.get("destinationPath");
         if (copy == null || destinationDir == null) return;
 
-        List<ImageEntry> entries = entryMapList.stream().map(ImageEntry::new).collect(Collectors.toList());
+        List<AvesImageEntry> entries = entryMapList.stream().map(AvesImageEntry::new).collect(Collectors.toList());
         provider.moveMultiple(activity, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {
             @Override
             public void onSuccess(Map<String, Object> fields) {

@@ -12,6 +12,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/thumbnail/raster.dart';
 import 'package:aves/widgets/album/thumbnail/vector.dart';
 import 'package:aves/widgets/app_drawer.dart';
+import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -39,7 +40,10 @@ class FilterNavigationPage extends StatelessWidget {
     return FilterGridPage(
       source: source,
       appBar: SliverAppBar(
-        title: Text(title),
+        title: SourceStateAwareAppBarTitle(
+          title: Text(title),
+          source: source,
+        ),
         floating: true,
       ),
       filterEntries: filterEntries,

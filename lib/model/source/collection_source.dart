@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -23,6 +25,12 @@ mixin SourceBase {
   final Map<CollectionFilter, int> _filterEntryCountMap = {};
 
   void invalidateFilterEntryCounts() => _filterEntryCountMap.clear();
+
+  final StreamController<ProgressEvent> _progressStreamController = StreamController.broadcast();
+
+  Stream<ProgressEvent> get progressStream => _progressStreamController.stream;
+
+  void setProgress({@required int done, @required int total}) => _progressStreamController.add(ProgressEvent(done: done, total: total));
 }
 
 class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
@@ -117,4 +125,10 @@ class EntryMovedEvent {
   final Iterable<ImageEntry> entries;
 
   const EntryMovedEvent(this.entries);
+}
+
+class ProgressEvent {
+  final int done, total;
+
+  const ProgressEvent({@required this.done, @required this.total});
 }

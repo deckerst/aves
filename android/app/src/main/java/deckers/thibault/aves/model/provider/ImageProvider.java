@@ -17,14 +17,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.commonsware.cwac.document.DocumentFileCompat;
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.imaging.ImageProcessingException;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.file.FileTypeDirectory;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -32,12 +27,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
@@ -65,7 +59,7 @@ public abstract class ImageProvider {
         return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
-    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<ImageEntry> entries, @NonNull ImageOpCallback callback) {
+    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<AvesImageEntry> entries, @NonNull ImageOpCallback callback) {
         callback.onFailure(new UnsupportedOperationException());
     }
 
@@ -132,34 +126,8 @@ public abstract class ImageProvider {
         });
     }
 
-    // file extension is unreliable
-    // `context.getContentResolver().getType()` sometimes return incorrect value
-    // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-    // so we check with `metadata-extractor`
-    @Nullable
-    private String getMimeType(@NonNull final Context context, @NonNull final Uri uri) {
-        try (InputStream is = context.getContentResolver().openInputStream(uri)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
-            FileTypeDirectory fileTypeDir = metadata.getFirstDirectoryOfType(FileTypeDirectory.class);
-            if (fileTypeDir != null) {
-                if (fileTypeDir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                    return fileTypeDir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE);
-                }
-            }
-        } catch (IOException | ImageProcessingException e) {
-            Log.w(LOG_TAG, "failed to get mime type from metadata for uri=" + uri, e);
-        }
-        return null;
-    }
-
     public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
-        // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
-        // so we retrieve it again from the file metadata
-        String actualMimeType = getMimeType(activity, uri);
-        if (actualMimeType == null) {
-            actualMimeType = mimeType;
-        }
-        switch (actualMimeType) {
+        switch (mimeType) {
             case MimeTypes.JPEG:
                 rotateJpeg(activity, path, uri, clockwise, callback);
                 break;
@@ -167,7 +135,7 @@ public abstract class ImageProvider {
                 rotatePng(activity, path, uri, clockwise, callback);
                 break;
             default:
-                callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + actualMimeType));
+                callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + mimeType));
         }
     }
 

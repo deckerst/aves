@@ -134,7 +134,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     switch (sortFactor) {
       case SortFactor.date:
         _filteredEntries.sort((a, b) {
-          final c = b.bestDate.compareTo(a.bestDate);
+          final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
           return c != 0 ? c : compareAsciiUpperCase(a.bestTitle, b.bestTitle);
         });
         break;

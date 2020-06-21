@@ -38,35 +38,37 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (allVolumes.length > 1) ...[
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Storage:'),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: DropdownButton<StorageVolume>(
+                    isExpanded: true,
+                    items: allVolumes
+                        .map((volume) => DropdownMenuItem(
+                              value: volume,
+                              child: Text(
+                                volume.description,
+                                softWrap: false,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1,
+                              ),
+                            ))
+                        .toList(),
+                    value: selectedVolume,
+                    onChanged: (volume) => setState(() => selectedVolume = volume),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
           TextField(
             controller: _nameController,
 //            autofocus: true,
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Storage:'),
-              const SizedBox(width: 8),
-              Expanded(
-                child: DropdownButton<StorageVolume>(
-                  isExpanded: true,
-                  items: allVolumes
-                      .map((volume) => DropdownMenuItem(
-                            value: volume,
-                            child: Text(
-                              volume.description,
-                              softWrap: false,
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                            ),
-                          ))
-                      .toList(),
-                  value: selectedVolume,
-                  onChanged: (volume) => setState(() => selectedVolume = volume),
-                ),
-              ),
-            ],
           ),
         ],
       ),

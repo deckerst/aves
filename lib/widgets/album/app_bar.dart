@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:aves/main.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
+import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -134,32 +133,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     if (collection.isBrowsing) {
       Widget title = Text(AvesApp.mode == AppMode.pick ? 'Select' : 'Aves');
       if (AvesApp.mode == AppMode.main) {
-        title = Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            title,
-            ValueListenableBuilder<SourceState>(
-              valueListenable: collection.source.stateNotifier,
-              builder: (context, sourceState, child) {
-                return AnimatedSwitcher(
-                  duration: Durations.appBarTitleAnimation,
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: SizeTransition(
-                      sizeFactor: animation,
-                      child: child,
-                    ),
-                  ),
-                  child: sourceState == SourceState.ready
-                      ? const SizedBox.shrink()
-                      : SourceStateSubtitle(
-                          source: collection.source,
-                        ),
-                );
-              },
-            ),
-          ],
+        title = SourceStateAwareAppBarTitle(
+          title: title,
+          source: collection.source,
         );
       }
       return GestureDetector(
@@ -206,44 +182,56 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             )),
       Builder(
         builder: (context) => PopupMenuButton<CollectionAction>(
-          itemBuilder: (context) => [
-            ..._buildSortMenuItems(),
-            ..._buildGroupMenuItems(),
-            if (collection.isBrowsing) ...[
-              if (AvesApp.mode == AppMode.main)
-                if (kDebugMode)
-                  const PopupMenuItem(
-                    value: CollectionAction.refresh,
-                    child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
-                  ),
-              const PopupMenuItem(
-                value: CollectionAction.select,
-                child: MenuRow(text: 'Select', icon: AIcons.select),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.stats,
-                child: MenuRow(text: 'Stats', icon: AIcons.stats),
-              ),
-            ],
-            if (collection.isSelecting) ...[
-              const PopupMenuItem(
-                value: CollectionAction.copy,
-                child: MenuRow(text: 'Copy to album'),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.move,
-                child: MenuRow(text: 'Move to album'),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.selectAll,
-                child: MenuRow(text: 'Select all'),
-              ),
-              const PopupMenuItem(
-                value: CollectionAction.selectNone,
-                child: MenuRow(text: 'Select none'),
-              ),
-            ]
-          ],
+          itemBuilder: (context) {
+            final hasSelection = collection.selection.isNotEmpty;
+            return [
+              ..._buildSortMenuItems(),
+              ..._buildGroupMenuItems(),
+              if (collection.isBrowsing) ...[
+                if (AvesApp.mode == AppMode.main)
+                  if (kDebugMode)
+                    const PopupMenuItem(
+                      value: CollectionAction.refresh,
+                      child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                    ),
+                const PopupMenuItem(
+                  value: CollectionAction.select,
+                  child: MenuRow(text: 'Select', icon: AIcons.select),
+                ),
+                const PopupMenuItem(
+                  value: CollectionAction.stats,
+                  child: MenuRow(text: 'Stats', icon: AIcons.stats),
+                ),
+              ],
+              if (collection.isSelecting) ...[
+                PopupMenuItem(
+                  value: CollectionAction.copy,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Copy to album'),
+                ),
+                PopupMenuItem(
+                  value: CollectionAction.move,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Move to album'),
+                ),
+                PopupMenuItem(
+                  value: CollectionAction.refreshMetadata,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Refresh metadata'),
+                ),
+                const PopupMenuDivider(),
+                const PopupMenuItem(
+                  value: CollectionAction.selectAll,
+                  child: MenuRow(text: 'Select all'),
+                ),
+                PopupMenuItem(
+                  value: CollectionAction.selectNone,
+                  enabled: hasSelection,
+                  child: const MenuRow(text: 'Select none'),
+                ),
+              ]
+            ];
+          },
           onSelected: _onCollectionActionSelected,
         ),
       ),
@@ -307,6 +295,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     switch (action) {
       case CollectionAction.copy:
       case CollectionAction.move:
+      case CollectionAction.refreshMetadata:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.refresh:
@@ -378,6 +367,7 @@ enum CollectionAction {
   copy,
   move,
   refresh,
+  refreshMetadata,
   select,
   selectAll,
   selectNone,
@@ -388,74 +378,4 @@ enum CollectionAction {
   sortByDate,
   sortBySize,
   sortByName,
-}
-
-class SourceStateSubtitle extends StatefulWidget {
-  final CollectionSource source;
-
-  const SourceStateSubtitle({@required this.source});
-
-  @override
-  _SourceStateSubtitleState createState() => _SourceStateSubtitleState();
-}
-
-class _SourceStateSubtitleState extends State<SourceStateSubtitle> {
-  Timer _progressTimer;
-
-  CollectionSource get source => widget.source;
-
-  SourceState get sourceState => source.stateNotifier.value;
-
-  List<ImageEntry> get entries => source.rawEntries;
-
-  @override
-  void initState() {
-    super.initState();
-    _progressTimer = Timer.periodic(Durations.appBarProgressTimerInterval, (_) => setState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _progressTimer.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String subtitle;
-    double progress;
-    switch (sourceState) {
-      case SourceState.loading:
-        subtitle = 'Loading';
-        break;
-      case SourceState.cataloguing:
-        subtitle = 'Cataloguing';
-        progress = entries.where((entry) => entry.isCatalogued).length.toDouble() / entries.length;
-        break;
-      case SourceState.locating:
-        subtitle = 'Locating';
-        final entriesToLocate = entries.where((entry) => entry.hasGps).toList();
-        progress = entriesToLocate.where((entry) => entry.isLocated).length.toDouble() / entriesToLocate.length;
-        break;
-      case SourceState.ready:
-      default:
-        break;
-    }
-    final subtitleStyle = Theme.of(context).textTheme.caption;
-    return subtitle == null
-        ? const SizedBox.shrink()
-        : Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(subtitle, style: subtitleStyle),
-              if (progress != null && progress > 0) ...[
-                const SizedBox(width: 8),
-                Text(
-                  NumberFormat.percentPattern().format(progress),
-                  style: subtitleStyle.copyWith(color: Colors.white30),
-                ),
-              ]
-            ],
-          );
-  }
 }

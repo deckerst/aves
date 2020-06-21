@@ -24,12 +24,16 @@ mixin LocationMixin on SourceBase {
 
   Future<void> locateEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final unlocatedEntries = rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
-    if (unlocatedEntries.isEmpty) return;
+    final todo = rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
+    if (todo.isEmpty) return;
+
+    var progressDone = 0;
+    final progressTotal = todo.length;
+    setProgress(done: progressDone, total: progressTotal);
 
     final newAddresses = <AddressDetails>[];
-    await Future.forEach<ImageEntry>(unlocatedEntries, (entry) async {
-      await entry.locate();
+    await Future.forEach<ImageEntry>(todo, (entry) async {
+      await entry.locate(background: true);
       if (entry.isLocated) {
         newAddresses.add(entry.addressDetails);
         if (newAddresses.length >= _commitCountThreshold) {
@@ -37,6 +41,7 @@ mixin LocationMixin on SourceBase {
           newAddresses.clear();
         }
       }
+      setProgress(done: ++progressDone, total: progressTotal);
     });
     await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
     onAddressMetadataChanged();
