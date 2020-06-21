@@ -29,7 +29,6 @@ class Durations {
   static const opToastDisplay = Duration(seconds: 2);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScalingCompleteNotificationDelay = Duration(milliseconds: 300);
-  static const appBarProgressTimerInterval = Duration(seconds: 1);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static var staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
 }

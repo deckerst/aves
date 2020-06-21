@@ -16,6 +16,18 @@ class ImageFileService {
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
   static const double thumbnailDefaultSize = 64.0;
 
+  static Map<String, dynamic> _toPlatformEntryMap(ImageEntry entry) {
+    return {
+      'uri': entry.uri,
+      'path': entry.path,
+      'mimeType': entry.mimeType,
+      'width': entry.width,
+      'height': entry.height,
+      'orientationDegrees': entry.orientationDegrees,
+      'dateModifiedSecs': entry.dateModifiedSecs,
+    };
+  }
+
   // knownEntries: map of contentId -> dateModifiedSecs
   static Stream<ImageEntry> getImageEntries(Map<int, int> knownEntries) {
     try {
@@ -95,7 +107,7 @@ class ImageFileService {
       () async {
         try {
           final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
-            'entry': entry.toMap(),
+            'entry': _toPlatformEntryMap(entry),
             'widthDip': width,
             'heightDip': height,
             'defaultSizeDip': thumbnailDefaultSize,
@@ -128,7 +140,7 @@ class ImageFileService {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
-        'entries': entries.map((e) => e.toMap()).toList(),
+        'entries': entries.map((entry) => _toPlatformEntryMap(entry)).toList(),
       }).map((event) => ImageOpEvent.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('delete failed with code=${e.code}, exception=${e.message}, details=${e.details}');
@@ -141,7 +153,7 @@ class ImageFileService {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
-        'entries': entries.map((e) => e.toMap()).toList(),
+        'entries': entries.map((entry) => _toPlatformEntryMap(entry)).toList(),
         'copy': copy,
         'destinationPath': destinationAlbum,
       }).map((event) => MoveOpEvent.fromMap(event));
@@ -155,7 +167,7 @@ class ImageFileService {
     try {
       // return map with: 'contentId' 'path' 'title' 'uri' (all optional)
       final result = await platform.invokeMethod('rename', <String, dynamic>{
-        'entry': entry.toMap(),
+        'entry': _toPlatformEntryMap(entry),
         'newName': newName,
       }) as Map;
       return result;
@@ -169,7 +181,7 @@ class ImageFileService {
     try {
       // return map with: 'width' 'height' 'orientationDegrees' (all optional)
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
-        'entry': entry.toMap(),
+        'entry': _toPlatformEntryMap(entry),
         'clockwise': clockwise,
       }) as Map;
       return result;

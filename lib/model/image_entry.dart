@@ -21,7 +21,7 @@ class ImageEntry {
   String _directory;
   String _filename;
   int contentId;
-  final String mimeType;
+  final String sourceMimeType;
   int width;
   int height;
   int orientationDegrees;
@@ -40,7 +40,7 @@ class ImageEntry {
     this.uri,
     String path,
     this.contentId,
-    this.mimeType,
+    this.sourceMimeType,
     this.width,
     this.height,
     this.orientationDegrees,
@@ -63,7 +63,7 @@ class ImageEntry {
       uri: uri ?? uri,
       path: path ?? this.path,
       contentId: copyContentId,
-      mimeType: mimeType,
+      sourceMimeType: sourceMimeType,
       width: width,
       height: height,
       orientationDegrees: orientationDegrees,
@@ -73,19 +73,19 @@ class ImageEntry {
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
     )
-      .._catalogDateMillis = _catalogDateMillis
       .._catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
       .._addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
 
     return copied;
   }
 
+  // from DB or platform source entry
   factory ImageEntry.fromMap(Map map) {
     return ImageEntry(
       uri: map['uri'] as String,
       path: map['path'] as String,
       contentId: map['contentId'] as int,
-      mimeType: map['mimeType'] as String,
+      sourceMimeType: map['sourceMimeType'] as String,
       width: map['width'] as int,
       height: map['height'] as int,
       orientationDegrees: map['orientationDegrees'] as int,
@@ -97,12 +97,13 @@ class ImageEntry {
     );
   }
 
+  // for DB only
   Map<String, dynamic> toMap() {
     return {
       'uri': uri,
       'path': path,
       'contentId': contentId,
-      'mimeType': mimeType,
+      'sourceMimeType': sourceMimeType,
       'width': width,
       'height': height,
       'orientationDegrees': orientationDegrees,
@@ -142,6 +143,10 @@ class ImageEntry {
     _filename ??= path != null ? basenameWithoutExtension(path) : null;
     return _filename;
   }
+
+  // the MIME type reported by the Media Store is unreliable
+  // so we use the one found during cataloguing if possible
+  String get mimeType => catalogMetadata?.mimeType ?? sourceMimeType;
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
 
@@ -232,16 +237,20 @@ class ImageEntry {
   }
 
   set catalogMetadata(CatalogMetadata newMetadata) {
-    if (newMetadata == null) return;
-    catalogDateMillis = newMetadata.dateMillis;
+    catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<void> catalog() async {
+  void clearMetadata() {
+    catalogMetadata = null;
+    addressDetails = null;
+  }
+
+  Future<void> catalog({bool background = false}) async {
     if (isCatalogued) return;
-    catalogMetadata = await MetadataService.getCatalogMetadata(this);
+    catalogMetadata = await MetadataService.getCatalogMetadata(this, background: background);
   }
 
   AddressDetails get addressDetails => _addressDetails;
@@ -251,20 +260,23 @@ class ImageEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate() async {
+  Future<void> locate({bool background = false}) async {
     if (isLocated) return;
 
-    await catalog();
+    await catalog(background: background);
     final latitude = _catalogMetadata?.latitude;
     final longitude = _catalogMetadata?.longitude;
     if (latitude == null || longitude == null) return;
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final addresses = await servicePolicy.call(
-        () => Geocoder.local.findAddressesFromCoordinates(coordinates),
-        priority: ServiceCallPriority.getLocation,
-      );
+      final call = () => Geocoder.local.findAddressesFromCoordinates(coordinates);
+      final addresses = await (background
+          ? servicePolicy.call(
+              call,
+              priority: ServiceCallPriority.getLocation,
+            )
+          : call());
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         addressDetails = AddressDetails(

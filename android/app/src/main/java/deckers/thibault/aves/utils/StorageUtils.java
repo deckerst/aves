@@ -174,6 +174,16 @@ public class StorageUtils {
         };
     }
 
+    // variation on `DocumentFileCompat.findFile()` to allow case insensitive search
+    static private DocumentFileCompat findFileIgnoreCase(DocumentFileCompat documentFile, String displayName) {
+        for (DocumentFileCompat doc : documentFile.listFiles()) {
+            if (displayName.equalsIgnoreCase(doc.getName())) {
+                return doc;
+            }
+        }
+        return null;
+    }
+
     private static Optional<DocumentFileCompat> getSdCardDocumentFile(Context context, Uri rootTreeUri, String[] storageVolumeRoots, String path) {
         if (rootTreeUri == null || storageVolumeRoots == null || path == null) {
             return Optional.empty();
@@ -187,7 +197,7 @@ public class StorageUtils {
         // follow the entry path down the document tree
         Iterator<String> pathIterator = getPathStepIterator(storageVolumeRoots, path);
         while (pathIterator.hasNext()) {
-            documentFile = documentFile.findFile(pathIterator.next());
+            documentFile = findFileIgnoreCase(documentFile, pathIterator.next());
             if (documentFile == null) {
                 return Optional.empty();
             }
@@ -224,11 +234,13 @@ public class StorageUtils {
         }
     }
 
-    public static boolean createDirectoryIfAbsent(@NonNull Activity activity, @NonNull String directoryPath) {
+    // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
+    // returns null if directory does not exist and could not be created
+    public static DocumentFileCompat createDirectoryIfAbsent(@NonNull Activity activity, @NonNull String directoryPath) {
         if (Env.requireAccessPermission(directoryPath)) {
             Uri rootTreeUri = PermissionManager.getSdCardTreeUri(activity);
             DocumentFileCompat parentFile = DocumentFileCompat.fromTreeUri(activity, rootTreeUri);
-            if (parentFile == null) return false;
+            if (parentFile == null) return null;
 
             String[] storageVolumeRoots = Env.getStorageVolumeRoots(activity);
             if (!directoryPath.endsWith(File.separator)) {
@@ -237,24 +249,31 @@ public class StorageUtils {
             Iterator<String> pathIterator = getPathStepIterator(storageVolumeRoots, directoryPath);
             while (pathIterator.hasNext()) {
                 String dirName = pathIterator.next();
-                DocumentFileCompat dirFile = parentFile.findFile(dirName);
+                DocumentFileCompat dirFile = findFileIgnoreCase(parentFile, dirName);
                 if (dirFile == null || !dirFile.exists()) {
                     try {
                         dirFile = parentFile.createDirectory(dirName);
-                        if (dirFile != null) {
-                            parentFile = dirFile;
+                        if (dirFile == null) {
+                            Log.e(LOG_TAG, "failed to create directory with name=" + dirName + " from parent=" + parentFile);
+                            return null;
                         }
                     } catch (FileNotFoundException e) {
                         Log.e(LOG_TAG, "failed to create directory with name=" + dirName + " from parent=" + parentFile, e);
-                        return false;
+                        return null;
                     }
                 }
+                parentFile = dirFile;
             }
-            return true;
+            return parentFile;
         } else {
             File directory = new File(directoryPath);
-            if (directory.exists()) return true;
-            return directory.mkdirs();
+            if (!directory.exists()) {
+                if (!directory.mkdirs()) {
+                    Log.e(LOG_TAG, "failed to create directories at path=" + directoryPath);
+                    return null;
+                }
+            }
+            return DocumentFileCompat.fromFile(directory);
         }
     }
 

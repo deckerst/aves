@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
-import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -35,11 +35,11 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     private static final String LOG_TAG = Utils.createLogTag(ImageDecodeTask.class);
 
     static class Params {
-        ImageEntry entry;
+        AvesImageEntry entry;
         Integer width, height, defaultSize;
         MethodChannel.Result result;
 
-        Params(ImageEntry entry, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
+        Params(AvesImageEntry entry, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
             this.entry = entry;
             this.width = width;
             this.height = height;
@@ -116,7 +116,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private Bitmap getThumbnailBytesByResolver(Params params) throws IOException {
-        ImageEntry entry = params.entry;
+        AvesImageEntry entry = params.entry;
         Integer width = params.width;
         Integer height = params.height;
 //        Log.d(LOG_TAG, "getThumbnailBytesByResolver width=" + width + ", path=" + entry.path);
@@ -126,7 +126,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     }
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
-        ImageEntry entry = params.entry;
+        AvesImageEntry entry = params.entry;
         long contentId = ContentUris.parseId(entry.uri);
 
         ContentResolver resolver = activity.getContentResolver();
@@ -148,7 +148,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     }
 
     private Bitmap getThumbnailByGlide(Params params) throws ExecutionException, InterruptedException {
-        ImageEntry entry = params.entry;
+        AvesImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
 //        Log.d(LOG_TAG, "getThumbnailByGlide width=" + width + ", path=" + entry.path);
