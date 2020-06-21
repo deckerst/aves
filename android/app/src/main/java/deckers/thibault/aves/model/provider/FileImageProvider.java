@@ -7,15 +7,15 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 
-import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.SourceImageEntry;
 import deckers.thibault.aves.utils.FileUtils;
 
 class FileImageProvider extends ImageProvider {
     @Override
     public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
-        ImageEntry entry = new ImageEntry();
+        SourceImageEntry entry = new SourceImageEntry();
         entry.uri = uri;
-        entry.mimeType = mimeType;
+        entry.sourceMimeType = mimeType;
 
         String path = FileUtils.getPathFromUri(context, uri);
         if (path != null) {

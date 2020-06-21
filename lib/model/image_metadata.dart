@@ -30,12 +30,13 @@ class DateMetadata {
 class CatalogMetadata {
   final int contentId, dateMillis, videoRotation;
   final bool isAnimated;
-  final String xmpSubjects, xmpTitleDescription;
+  final String mimeType, xmpSubjects, xmpTitleDescription;
   final double latitude, longitude;
   Address address;
 
   CatalogMetadata({
     this.contentId,
+    this.mimeType,
     this.dateMillis,
     this.isAnimated,
     this.videoRotation,
@@ -53,6 +54,7 @@ class CatalogMetadata {
   }) {
     return CatalogMetadata(
       contentId: contentId ?? this.contentId,
+      mimeType: mimeType,
       dateMillis: dateMillis,
       isAnimated: isAnimated,
       videoRotation: videoRotation,
@@ -67,6 +69,7 @@ class CatalogMetadata {
     final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
     return CatalogMetadata(
       contentId: map['contentId'],
+      mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
       isAnimated: boolAsInteger ? isAnimated != 0 : isAnimated,
       videoRotation: map['videoRotation'] ?? 0,
@@ -79,6 +82,7 @@ class CatalogMetadata {
 
   Map<String, dynamic> toMap({bool boolAsInteger = false}) => {
         'contentId': contentId,
+        'mimeType': mimeType,
         'dateMillis': dateMillis,
         'isAnimated': boolAsInteger ? (isAnimated ? 1 : 0) : isAnimated,
         'videoRotation': videoRotation,
@@ -90,7 +94,7 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, dateMillis=$dateMillis, isAnimated=$isAnimated, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

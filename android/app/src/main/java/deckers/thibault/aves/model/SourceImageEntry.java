@@ -32,11 +32,11 @@ import deckers.thibault.aves.utils.StorageUtils;
 
 import static deckers.thibault.aves.utils.MetadataHelper.getOrientationDegreesForExifCode;
 
-public class ImageEntry {
+public class SourceImageEntry {
     public Uri uri; // content or file URI
     public String path; // best effort to get local path
 
-    public String mimeType;
+    public String sourceMimeType;
     @Nullable
     public String title;
     @Nullable
@@ -50,13 +50,13 @@ public class ImageEntry {
     @Nullable
     private Long durationMillis;
 
-    public ImageEntry() {
+    public SourceImageEntry() {
     }
 
-    public ImageEntry(Map map) {
+    public SourceImageEntry(Map<String, Object> map) {
         this.uri = Uri.parse((String) map.get("uri"));
         this.path = (String) map.get("path");
-        this.mimeType = (String) map.get("mimeType");
+        this.sourceMimeType = (String) map.get("sourceMimeType");
         this.width = (int) map.get("width");
         this.height = (int) map.get("height");
         this.orientationDegrees = (int) map.get("orientationDegrees");
@@ -71,7 +71,7 @@ public class ImageEntry {
         return new HashMap<String, Object>() {{
             put("uri", uri.toString());
             put("path", path);
-            put("mimeType", mimeType);
+            put("sourceMimeType", sourceMimeType);
             put("width", width);
             put("height", height);
             put("orientationDegrees", orientationDegrees != null ? orientationDegrees : 0);
@@ -106,22 +106,22 @@ public class ImageEntry {
     }
 
     private boolean isImage() {
-        return mimeType.startsWith(MimeTypes.IMAGE);
+        return sourceMimeType.startsWith(MimeTypes.IMAGE);
     }
 
     public boolean isSvg() {
-        return mimeType.equals(MimeTypes.SVG);
+        return sourceMimeType.equals(MimeTypes.SVG);
     }
 
-    public boolean isVideo() {
-        return mimeType.startsWith(MimeTypes.VIDEO);
+    private boolean isVideo() {
+        return sourceMimeType.startsWith(MimeTypes.VIDEO);
     }
 
     // metadata retrieval
 
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
-    public ImageEntry fillPreCatalogMetadata(Context context) {
+    public SourceImageEntry fillPreCatalogMetadata(Context context) {
         fillByMediaMetadataRetriever(context);
         if (hasSize() && (!isVideo() || hasDuration())) return this;
         fillByMetadataExtractor(context);
@@ -183,12 +183,12 @@ public class ImageEntry {
     // expects entry with: uri, mimeType
     // finds: width, height, orientation, date
     private void fillByMetadataExtractor(Context context) {
-        if (MimeTypes.SVG.equals(mimeType)) return;
+        if (isSvg()) return;
 
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-            if (MimeTypes.JPEG.equals(mimeType)) {
+            if (MimeTypes.JPEG.equals(sourceMimeType)) {
                 JpegDirectory jpegDir = metadata.getFirstDirectoryOfType(JpegDirectory.class);
                 if (jpegDir != null) {
                     if (jpegDir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
@@ -207,7 +207,7 @@ public class ImageEntry {
                         sourceDateTakenMillis = exifDir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();
                     }
                 }
-            } else if (MimeTypes.MP4.equals(mimeType)) {
+            } else if (MimeTypes.MP4.equals(sourceMimeType)) {
                 Mp4VideoDirectory mp4VideoDir = metadata.getFirstDirectoryOfType(Mp4VideoDirectory.class);
                 if (mp4VideoDir != null) {
                     if (mp4VideoDir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
@@ -223,7 +223,7 @@ public class ImageEntry {
                         durationMillis = mp4Dir.getLong(Mp4Directory.TAG_DURATION);
                     }
                 }
-            } else if (MimeTypes.AVI.equals(mimeType)) {
+            } else if (MimeTypes.AVI.equals(sourceMimeType)) {
                 AviDirectory aviDir = metadata.getFirstDirectoryOfType(AviDirectory.class);
                 if (aviDir != null) {
                     if (aviDir.containsTag(AviDirectory.TAG_WIDTH)) {
@@ -245,7 +245,7 @@ public class ImageEntry {
     // expects entry with: uri
     // finds: width, height
     private void fillByBitmapDecode(Context context) {
-        if (MimeTypes.SVG.equals(mimeType)) return;
+        if (isSvg()) return;
 
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             BitmapFactory.Options options = new BitmapFactory.Options();

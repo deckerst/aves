@@ -26,6 +26,7 @@ import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
+import com.drew.metadata.file.FileTypeDirectory;
 import com.drew.metadata.gif.GifAnimationDirectory;
 import com.drew.metadata.webp.WebpDirectory;
 import com.drew.metadata.xmp.XmpDirectory;
@@ -51,6 +52,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/metadata";
 
     // catalog metadata
+    private static final String KEY_MIME_TYPE = "mimeType";
     private static final String KEY_DATE_MILLIS = "dateMillis";
     private static final String KEY_IS_ANIMATED = "isAnimated";
     private static final String KEY_LATITUDE = "latitude";
@@ -111,6 +113,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getAllMetadata(MethodCall call, MethodChannel.Result result) {
+        String mimeType = call.argument("mimeType");
         String uri = call.argument("uri");
 
         Map<String, Map<String, String>> metadataMap = new HashMap<>();
@@ -150,9 +153,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Log.w(LOG_TAG, "failed to get video metadata by ImageMetadataReader for uri=" + uri, e);
         }
 
-        Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uri);
-        if (!videoDir.isEmpty()) {
-            metadataMap.put("Video", videoDir);
+        if (isVideo(mimeType)) {
+            Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uri);
+            if (!videoDir.isEmpty()) {
+                metadataMap.put("Video", videoDir);
+            }
         }
 
         if (metadataMap.isEmpty()) {
@@ -214,6 +219,18 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
         try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
+
+            // File type
+            FileTypeDirectory fileTypeDir = metadata.getFirstDirectoryOfType(FileTypeDirectory.class);
+            if (fileTypeDir != null) {
+                // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
+                // file extension is unreliable
+                // `context.getContentResolver().getType()` sometimes return incorrect value
+                // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
+                if (fileTypeDir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                    metadataMap.put(KEY_MIME_TYPE, fileTypeDir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE));
+                }
+            }
 
             // EXIF
             putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifSubIFDDirectory.class, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);

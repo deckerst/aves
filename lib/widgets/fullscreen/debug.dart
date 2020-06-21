@@ -92,6 +92,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                 Text('DB metadata:${data == null ? ' no row' : ''}'),
                 if (data != null)
                   InfoRowGroup({
+                    'mimeType': '${data.mimeType}',
                     'dateMillis': '${data.dateMillis}',
                     'isAnimated': '${data.isAnimated}',
                     'videoRotation': '${data.videoRotation}',
@@ -132,6 +133,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
         if (catalog != null)
           InfoRowGroup({
             'contentId': '${catalog.contentId}',
+            'mimeType': '${catalog.mimeType}',
             'dateMillis': '${catalog.dateMillis}',
             'isAnimated': '${catalog.isAnimated}',
             'videoRotation': '${catalog.videoRotation}',
