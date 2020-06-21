@@ -21,7 +21,7 @@ class ImageEntry {
   String _directory;
   String _filename;
   int contentId;
-  final String mimeType;
+  final String sourceMimeType;
   int width;
   int height;
   int orientationDegrees;
@@ -40,7 +40,7 @@ class ImageEntry {
     this.uri,
     String path,
     this.contentId,
-    this.mimeType,
+    this.sourceMimeType,
     this.width,
     this.height,
     this.orientationDegrees,
@@ -63,7 +63,7 @@ class ImageEntry {
       uri: uri ?? uri,
       path: path ?? this.path,
       contentId: copyContentId,
-      mimeType: mimeType,
+      sourceMimeType: sourceMimeType,
       width: width,
       height: height,
       orientationDegrees: orientationDegrees,
@@ -79,12 +79,13 @@ class ImageEntry {
     return copied;
   }
 
+  // from DB or platform source entry
   factory ImageEntry.fromMap(Map map) {
     return ImageEntry(
       uri: map['uri'] as String,
       path: map['path'] as String,
       contentId: map['contentId'] as int,
-      mimeType: map['mimeType'] as String,
+      sourceMimeType: map['sourceMimeType'] as String,
       width: map['width'] as int,
       height: map['height'] as int,
       orientationDegrees: map['orientationDegrees'] as int,
@@ -96,12 +97,13 @@ class ImageEntry {
     );
   }
 
+  // for DB only
   Map<String, dynamic> toMap() {
     return {
       'uri': uri,
       'path': path,
       'contentId': contentId,
-      'mimeType': mimeType,
+      'sourceMimeType': sourceMimeType,
       'width': width,
       'height': height,
       'orientationDegrees': orientationDegrees,
@@ -141,6 +143,10 @@ class ImageEntry {
     _filename ??= path != null ? basenameWithoutExtension(path) : null;
     return _filename;
   }
+
+  // the MIME type reported by the Media Store is unreliable
+  // so we use the one found during cataloguing if possible
+  String get mimeType => catalogMetadata?.mimeType ?? sourceMimeType;
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
 

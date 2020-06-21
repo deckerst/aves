@@ -113,7 +113,7 @@ class StatsPage extends StatelessWidget {
   }
 
   String _cleanMime(String mime) {
-    mime = mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '');
+    mime = mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '').replaceFirst('VND.', '');
     return mime;
   }
 

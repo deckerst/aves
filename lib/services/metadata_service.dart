@@ -29,6 +29,7 @@ class MetadataService {
     final call = () async {
       try {
         // return map with:
+        // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
         // 'isAnimated': animated gif/webp (bool)
         // 'latitude': latitude (double)

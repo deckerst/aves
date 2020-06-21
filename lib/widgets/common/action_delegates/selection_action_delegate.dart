@@ -251,34 +251,39 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final onComplete = () => _hideOpReportOverlay().then((_) => onDone(processed));
     opStream.listen(
       (event) => processed.add(event),
-      onError: (error) => onComplete(),
+      onError: (error) {
+        debugPrint('_showOpReport error=$error');
+        onComplete();
+      },
       onDone: onComplete,
     );
 
     _opReportOverlayEntry = OverlayEntry(
       builder: (context) {
-        return StreamBuilder<T>(
-            stream: opStream,
-            builder: (context, snapshot) {
-              Widget child = const SizedBox.shrink();
-              if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
-                final percent = processed.length.toDouble() / selection.length;
-                child = CircularPercentIndicator(
-                  percent: percent,
-                  lineWidth: 16,
-                  radius: 160,
-                  backgroundColor: Colors.white24,
-                  progressColor: Theme.of(context).accentColor,
-                  animation: true,
-                  center: Text(NumberFormat.percentPattern().format(percent)),
-                  animateFromLastPercent: true,
+        return AbsorbPointer(
+          child: StreamBuilder<T>(
+              stream: opStream,
+              builder: (context, snapshot) {
+                Widget child = const SizedBox.shrink();
+                if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
+                  final percent = processed.length.toDouble() / selection.length;
+                  child = CircularPercentIndicator(
+                    percent: percent,
+                    lineWidth: 16,
+                    radius: 160,
+                    backgroundColor: Colors.white24,
+                    progressColor: Theme.of(context).accentColor,
+                    animation: true,
+                    center: Text(NumberFormat.percentPattern().format(percent)),
+                    animateFromLastPercent: true,
+                  );
+                }
+                return AnimatedSwitcher(
+                  duration: Durations.collectionOpOverlayAnimation,
+                  child: child,
                 );
-              }
-              return AnimatedSwitcher(
-                duration: Durations.collectionOpOverlayAnimation,
-                child: child,
-              );
-            });
+              }),
+        );
       },
     );
     Overlay.of(context).insert(_opReportOverlayEntry);

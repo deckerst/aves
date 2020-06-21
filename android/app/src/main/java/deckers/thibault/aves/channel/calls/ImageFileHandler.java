@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Map;
 
-import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
@@ -80,7 +80,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         int height = (int) Math.round(heightDip * density);
         int defaultSize = (int) Math.round(defaultSizeDip * density);
 
-        ImageEntry entry = new ImageEntry(entryMap);
+        AvesImageEntry entry = new AvesImageEntry(entryMap);
         new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, defaultSize, result));
     }
 

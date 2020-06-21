@@ -30,7 +30,7 @@ class MetadataDb {
             'contentId INTEGER PRIMARY KEY'
             ', uri TEXT'
             ', path TEXT'
-            ', mimeType TEXT'
+            ', sourceMimeType TEXT'
             ', width INTEGER'
             ', height INTEGER'
             ', orientationDegrees INTEGER'
@@ -46,6 +46,7 @@ class MetadataDb {
             ')');
         await db.execute('CREATE TABLE $metadataTable('
             'contentId INTEGER PRIMARY KEY'
+            ', mimeType TEXT'
             ', dateMillis INTEGER'
             ', isAnimated INTEGER'
             ', videoRotation INTEGER'

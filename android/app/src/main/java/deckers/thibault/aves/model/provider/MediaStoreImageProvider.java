@@ -6,6 +6,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -31,7 +32,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import deckers.thibault.aves.model.ImageEntry;
+import deckers.thibault.aves.model.AvesImageEntry;
+import deckers.thibault.aves.model.SourceImageEntry;
 import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
@@ -165,7 +167,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                         Map<String, Object> entryMap = new HashMap<String, Object>() {{
                             put("uri", itemUri.toString());
                             put("path", path);
-                            put("mimeType", mimeType);
+                            put("sourceMimeType", mimeType);
                             put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
                             put("sizeBytes", cursor.getLong(sizeColumn));
                             put("title", cursor.getString(titleColumn));
@@ -181,7 +183,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                         if (((width <= 0 || height <= 0) && needSize(mimeType)) || (durationMillis == 0 && needDuration)) {
                             // some images are incorrectly registered in the Media Store,
                             // they are valid but miss some attributes, such as width, height, orientation
-                            ImageEntry entry = new ImageEntry(entryMap).fillPreCatalogMetadata(context);
+                            SourceImageEntry entry = new SourceImageEntry(entryMap).fillPreCatalogMetadata(context);
                             entryMap = entry.toMap();
                             width = entry.width != null ? entry.width : 0;
                             height = entry.height != null ? entry.height : 0;
@@ -235,6 +237,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                 DocumentFileCompat df = StorageUtils.getDocumentFile(activity, path, mediaUri);
                 if (df != null && df.delete()) {
                     future.set(null);
+                } else {
                     future.setException(new Exception("failed to delete file with df=" + df));
                 }
             } catch (FileNotFoundException e) {
@@ -253,16 +256,14 @@ public class MediaStoreImageProvider extends ImageProvider {
             Log.e(LOG_TAG, "failed to delete entry", e);
             future.setException(e);
         }
-
         return future;
     }
 
-    @Override
-    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<ImageEntry> entries, ImageOpCallback callback) {
+    private String getVolumeName(final Activity activity, String path) {
         String volumeName = "external";
         StorageManager sm = activity.getSystemService(StorageManager.class);
         if (sm != null) {
-            StorageVolume volume = sm.getStorageVolume(new File(destinationDir));
+            StorageVolume volume = sm.getStorageVolume(new File(path));
             if (volume != null && !volume.isPrimary()) {
                 String uuid = volume.getUuid();
                 if (uuid != null) {
@@ -272,13 +273,20 @@ public class MediaStoreImageProvider extends ImageProvider {
                 }
             }
         }
+        return volumeName;
+    }
 
-        if (!StorageUtils.createDirectoryIfAbsent(activity, destinationDir)) {
+    @Override
+    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<AvesImageEntry> entries, @NonNull ImageOpCallback callback) {
+        DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(activity, destinationDir);
+        if (destinationDirDocFile == null) {
             callback.onFailure(new Exception("failed to create directory at path=" + destinationDir));
             return;
         }
 
-        for (ImageEntry entry : entries) {
+        String volumeName = null;
+
+        for (AvesImageEntry entry : entries) {
             Uri sourceUri = entry.uri;
             String sourcePath = entry.path;
             String mimeType = entry.mimeType;
@@ -287,7 +295,16 @@ public class MediaStoreImageProvider extends ImageProvider {
                 put("uri", sourceUri.toString());
             }};
             try {
-                Map<String, Object> newFields = moveSingle(activity, volumeName, sourcePath, sourceUri, destinationDir, mimeType, copy).get();
+                ListenableFuture<Map<String, Object>> newFieldsFuture;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (volumeName == null) {
+                        volumeName = getVolumeName(activity, destinationDir);
+                    }
+                    newFieldsFuture = moveSingleByMediaStoreInsert(activity, sourcePath, sourceUri, destinationDir, volumeName, mimeType, copy);
+                } else {
+                    newFieldsFuture = moveSingleByTreeDocAndScan(activity, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy);
+                }
+                Map<String, Object> newFields = newFieldsFuture.get();
                 result.put("success", true);
                 result.put("newFields", newFields);
             } catch (ExecutionException | InterruptedException e) {
@@ -298,17 +315,19 @@ public class MediaStoreImageProvider extends ImageProvider {
         }
     }
 
-    private ListenableFuture<Map<String, Object>> moveSingle(final Activity activity, final String volumeName, final String sourcePath, final Uri sourceUri, String destinationDir, String mimeType, boolean copy) {
+    // We can create an item via `ContentResolver.insert()` with a path, and retrieve its content URI, but:
+    // - the Media Store isolates content by storage volume (e.g. `MediaStore.Images.Media.getContentUri(volumeName)`)
+    // - the volume name should be lower case, not exactly as the `StorageVolume` UUID
+    // - inserting on a removable volume works on API 29, but not on API 25 nor 26 (on which API/devices does it work?)
+    // - there is no documentation regarding support for usage with removable storage
+    private ListenableFuture<Map<String, Object>> moveSingleByMediaStoreInsert(final Activity activity, final String sourcePath, final Uri sourceUri, final String destinationDir, final String volumeName, final String mimeType, final boolean copy) {
         SettableFuture<Map<String, Object>> future = SettableFuture.create();
 
         try {
+            String destinationPath = destinationDir + File.separator + new File(sourcePath).getName();
+
             // from API 29, changing MediaColumns.RELATIVE_PATH can move files on disk (same storage device)
             // from API 26, retrieve document URI from mediastore URI with `MediaStore.getDocumentUri(...)`
-            // DocumentFile.getUri() is same as original uri: "content://media/external/images/media/58457"
-            // DocumentFile.getParentFile() is null without picking a tree first
-            // DocumentsContract.copyDocument() and moveDocument() need parent doc uri
-
-            String destinationPath = destinationDir + File.separator + new File(sourcePath).getName();
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.MediaColumns.DATA, destinationPath);
@@ -324,10 +343,12 @@ public class MediaStoreImageProvider extends ImageProvider {
                 DocumentFileCompat destination = DocumentFileCompat.fromSingleUri(activity, destinationUri);
                 source.copyTo(destination);
 
+                boolean deletedSource = false;
                 if (!copy) {
                     // delete original entry
                     try {
                         delete(activity, sourcePath, sourceUri).get();
+                        deletedSource = true;
                     } catch (ExecutionException | InterruptedException e) {
                         Log.w(LOG_TAG, "failed to delete entry with path=" + sourcePath, e);
                     }
@@ -337,8 +358,83 @@ public class MediaStoreImageProvider extends ImageProvider {
                 newFields.put("uri", destinationUri.toString());
                 newFields.put("contentId", ContentUris.parseId(destinationUri));
                 newFields.put("path", destinationPath);
+                newFields.put("deletedSource", deletedSource);
                 future.set(newFields);
             }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "failed to " + (copy ? "copy" : "move") + " entry", e);
+            future.setException(e);
+        }
+
+        return future;
+    }
+
+    // We can create an item via `DocumentFile.createFile()`, but:
+    // - we need to scan the file to get the Media Store content URI
+    // - there is no control on the filename (derived from the display name, MIME type)
+    private ListenableFuture<Map<String, Object>> moveSingleByTreeDocAndScan(final Activity activity, final String sourcePath, final Uri sourceUri, final String destinationDir, final DocumentFileCompat destinationDirDocFile, final String mimeType, boolean copy) {
+        SettableFuture<Map<String, Object>> future = SettableFuture.create();
+
+        try {
+            // TODO TLAD more robust `destinationPath`, as it could be broken:
+            // - if a file with the same name already exists, and the name gets appended ` (1)`
+            // - if the original extension does not match the appended extension from the provided MIME type
+            final String fileName = new File(sourcePath).getName();
+            final String displayName = fileName.replaceFirst("[.][^.]+$", "");
+            String destinationPath = destinationDir + File.separator + fileName;
+
+            DocumentFileCompat source = DocumentFileCompat.fromSingleUri(activity, sourceUri);
+            // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+            // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+            // through a document URI, not a tree URI
+            DocumentFileCompat destinationTreeFile = destinationDirDocFile.createFile(mimeType, displayName);
+            DocumentFileCompat destinationDocFile = DocumentFileCompat.fromSingleUri(activity, destinationTreeFile.getUri());
+            // `DocumentFile.getParentFile()` is null without picking a tree first
+            // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
+            // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
+            // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
+            source.copyTo(destinationDocFile);
+
+            boolean deletedSource = false;
+            if (!copy) {
+                // delete original entry
+                try {
+                    delete(activity, sourcePath, sourceUri).get();
+                    deletedSource = true;
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.w(LOG_TAG, "failed to delete entry with path=" + sourcePath, e);
+                }
+            }
+
+            boolean finalDeletedSource = deletedSource;
+            MediaScannerConnection.scanFile(activity, new String[]{destinationPath}, new String[]{mimeType}, (newPath, newUri) -> {
+                Map<String, Object> newFields = new HashMap<>();
+                if (newUri != null) {
+                    // we retrieve updated fields as the moved file became a new entry in the Media Store
+                    String[] projection = {MediaStore.MediaColumns._ID};
+                    try {
+                        Cursor cursor = activity.getContentResolver().query(newUri, projection, null, null, null);
+                        if (cursor != null) {
+                            if (cursor.moveToNext()) {
+                                long contentId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
+                                newFields.put("uri", newUri.toString());
+                                newFields.put("contentId", contentId);
+                                newFields.put("path", destinationPath);
+                                newFields.put("deletedSource", finalDeletedSource);
+                            }
+                            cursor.close();
+                        }
+                    } catch (Exception e) {
+                        future.setException(e);
+                        return;
+                    }
+                }
+                if (newFields.isEmpty()) {
+                    future.setException(new Exception("failed to scan moved item at path=" + destinationPath));
+                } else {
+                    future.set(newFields);
+                }
+            });
         } catch (Exception e) {
             Log.e(LOG_TAG, "failed to " + (copy ? "copy" : "move") + " entry", e);
             future.setException(e);
