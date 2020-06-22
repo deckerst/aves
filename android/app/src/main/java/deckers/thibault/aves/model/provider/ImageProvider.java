@@ -141,8 +141,20 @@ public abstract class ImageProvider {
 
     private void rotateJpeg(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.JPEG;
+
+        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(activity, path, uri);
+        if (originalDocumentFile == null) {
+            callback.onFailure(new Exception("failed to get document file for path=" + path + ", uri=" + uri));
+            return;
+        }
+
         // copy original file to a temporary file for editing
-        final String editablePath = StorageUtils.copyFileToTemp(path);
+        final String editablePath = StorageUtils.copyFileToTemp(originalDocumentFile, path);
+        if (editablePath == null) {
+            callback.onFailure(new Exception("failed to create a temporary file for path=" + path));
+            return;
+        }
+
         if (Env.requireAccessPermission(path)) {
             if (PermissionManager.getSdCardTreeUri(activity) == null) {
                 Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
@@ -171,8 +183,8 @@ public abstract class ImageProvider {
             exif.setAttribute(ExifInterface.TAG_ORIENTATION, Integer.toString(newOrientationCode));
             exif.saveAttributes();
 
-            // copy the edited temporary file to the original DocumentFile
-            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
+            // copy the edited temporary file back to the original
+            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(originalDocumentFile);
         } catch (IOException e) {
             callback.onFailure(e);
             return;
@@ -205,8 +217,20 @@ public abstract class ImageProvider {
 
     private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.PNG;
+
+        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(activity, path, uri);
+        if (originalDocumentFile == null) {
+            callback.onFailure(new Exception("failed to get document file for path=" + path + ", uri=" + uri));
+            return;
+        }
+
         // copy original file to a temporary file for editing
-        final String editablePath = StorageUtils.copyFileToTemp(path);
+        final String editablePath = StorageUtils.copyFileToTemp(originalDocumentFile, path);
+        if (editablePath == null) {
+            callback.onFailure(new Exception("failed to create a temporary file for path=" + path));
+            return;
+        }
+
         if (Env.requireAccessPermission(path)) {
             if (PermissionManager.getSdCardTreeUri(activity) == null) {
                 Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
@@ -229,8 +253,8 @@ public abstract class ImageProvider {
         try (FileOutputStream fos = new FileOutputStream(editablePath)) {
             rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
-            // copy the edited temporary file to the original DocumentFile
-            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(DocumentFileCompat.fromSingleUri(activity, uri));
+            // copy the edited temporary file back to the original
+            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(originalDocumentFile);
         } catch (IOException e) {
             callback.onFailure(e);
             return;
