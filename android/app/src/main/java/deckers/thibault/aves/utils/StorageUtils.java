@@ -220,18 +220,22 @@ public class StorageUtils {
     @Nullable
     public static DocumentFileCompat getDocumentFile(@NonNull Activity activity, @NonNull String path, @NonNull Uri mediaUri) {
         if (Env.requireAccessPermission(path)) {
+            // need a document URI (not a media content URI) to open a `DocumentFile` output stream
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // cleanest API to get it
                 Uri docUri = MediaStore.getDocumentUri(activity, mediaUri);
-                return DocumentFileCompat.fromSingleUri(activity, docUri);
-            } else {
-                Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
-                String[] storageVolumeRoots = Env.getStorageVolumeRoots(activity);
-                Optional<DocumentFileCompat> docFile = StorageUtils.getSdCardDocumentFile(activity, sdCardTreeUri, storageVolumeRoots, path);
-                return docFile.orElse(null);
+                if (docUri != null) {
+                    return DocumentFileCompat.fromSingleUri(activity, docUri);
+                }
             }
-        } else {
-            return DocumentFileCompat.fromFile(new File(path));
+            // fallback for older APIs
+            Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
+            String[] storageVolumeRoots = Env.getStorageVolumeRoots(activity);
+            Optional<DocumentFileCompat> docFile = StorageUtils.getSdCardDocumentFile(activity, sdCardTreeUri, storageVolumeRoots, path);
+            return docFile.orElse(null);
         }
+        // good old `File`
+        return DocumentFileCompat.fromFile(new File(path));
     }
 
     // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
@@ -277,15 +281,15 @@ public class StorageUtils {
         }
     }
 
-    public static String copyFileToTemp(String path) {
+    public static String copyFileToTemp(@NonNull DocumentFileCompat documentFile, @NonNull String path) {
+        String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(path)).toString());
         try {
-            String extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(new File(path)).toString());
             File temp = File.createTempFile("aves", '.' + extension);
-            Utils.copyFile(new File(path), temp);
+            documentFile.copyTo(DocumentFileCompat.fromFile(temp));
             temp.deleteOnExit();
             return temp.getPath();
         } catch (IOException e) {
-            Log.w(LOG_TAG, "failed to copy file at path=" + path);
+            Log.w(LOG_TAG, "failed to copy file from path=" + path);
         }
         return null;
     }
