@@ -29,10 +29,6 @@ version: 1.0.5+6
 # - does not support AC3 (by default, but possible by custom build)
 # - can play if only the video or audio stream is supported
 
-# TODO TLAD flutter_ijkplayer: custom ijkplayer build to add AC3 support (only buildable on linux/mac)
-# cf https://github.com/CaiJingLong/flutter_ijkplayer/blob/master/compile.md
-# flags for AC3? --enable-decoder=ac3 --enable-decoder=ac3_fixed --enable-demuxer=ac3
-
 dependencies:
   flutter:
     sdk: flutter
