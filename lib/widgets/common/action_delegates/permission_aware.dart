@@ -10,16 +10,17 @@ mixin PermissionAwareMixin {
   }
 
   Future<bool> checkStoragePermissionForPaths(BuildContext context, Iterable<String> paths) async {
-    final volumes = paths.map((path) => androidFileUtils.getStorageVolume(path)).toSet();
-    final removableVolumes = volumes.where((v) => v.isRemovable);
-    final volumePermissions = await Future.wait<Tuple2<StorageVolume, bool>>(
-      removableVolumes.map(
-        (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
+    final volumes = paths.map(androidFileUtils.getStorageVolume).toSet();
+    final ungrantedVolumes = (await Future.wait<Tuple2<StorageVolume, bool>>(
+      volumes.map(
+        (volume) => AndroidFileService.requireVolumeAccessDialog(volume.path).then(
           (granted) => Tuple2(volume, granted),
         ),
       ),
-    );
-    final ungrantedVolumes = volumePermissions.where((t) => !t.item2).map((t) => t.item1).toList();
+    ))
+        .where((t) => t.item2)
+        .map((t) => t.item1)
+        .toList();
     while (ungrantedVolumes.isNotEmpty) {
       final volume = ungrantedVolumes.first;
       final confirmed = await showDialog<bool>(

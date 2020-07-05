@@ -46,8 +46,8 @@ class DebugPageState extends State<DebugPage> {
     _startDbReport();
     _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
       androidFileUtils.storageVolumes.map(
-        (volume) => AndroidFileService.hasGrantedPermissionToVolumeRoot(volume.path).then(
-          (value) => Tuple2(volume.path, value),
+        (volume) => AndroidFileService.requireVolumeAccessDialog(volume.path).then(
+          (value) => Tuple2(volume.path, !value),
         ),
       ),
     );

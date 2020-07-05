@@ -18,14 +18,14 @@ class AndroidFileService {
     return [];
   }
 
-  static Future<bool> hasGrantedPermissionToVolumeRoot(String path) async {
+  static Future<bool> requireVolumeAccessDialog(String path) async {
     try {
-      final result = await platform.invokeMethod('hasGrantedPermissionToVolumeRoot', <String, dynamic>{
+      final result = await platform.invokeMethod('requireVolumeAccessDialog', <String, dynamic>{
         'path': path,
       });
       return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('hasGrantedPermissionToVolumeRoot failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      debugPrint('requireVolumeAccessDialog failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return false;
   }

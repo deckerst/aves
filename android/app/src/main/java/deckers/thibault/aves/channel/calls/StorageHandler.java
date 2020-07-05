@@ -42,10 +42,13 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
                 result.success(volumes);
                 break;
             }
-            case "hasGrantedPermissionToVolumeRoot": {
+            case "requireVolumeAccessDialog": {
                 String path = call.argument("path");
-                boolean granted = PermissionManager.hasGrantedPermissionToVolumeRoot(activity, path);
-                result.success(granted);
+                if (path == null) {
+                    result.success(true);
+                } else {
+                    result.success(PermissionManager.requireVolumeAccessDialog(activity, path));
+                }
                 break;
             }
             default:

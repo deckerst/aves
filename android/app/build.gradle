@@ -51,12 +51,12 @@ android {
         manifestPlaceholders = [googleApiKey:keystoreProperties['googleApiKey']]
     }
 
-//    compileOptions {
-//        // enable support for Java 8 language APIs (stream, optional, etc.)
-//        coreLibraryDesugaringEnabled true
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
+    compileOptions {
+        // enable support for Java 8 language APIs (stream, optional, etc.)
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     signingConfigs {
         release {
@@ -105,7 +105,7 @@ repositories {
 
 dependencies {
     // enable support for Java 8 language APIs (stream, optional, etc.)
-//    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 
     implementation "androidx.exifinterface:exifinterface:1.2.0"
     implementation 'com.commonsware.cwac:document:0.4.1'

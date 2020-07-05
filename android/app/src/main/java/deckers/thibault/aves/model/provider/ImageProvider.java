@@ -2,6 +2,7 @@ package deckers.thibault.aves.model.provider;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -99,23 +100,33 @@ public abstract class ImageProvider {
         MediaScannerConnection.scanFile(activity, new String[]{newFile.getPath()}, new String[]{mimeType}, (newPath, newUri) -> {
             Log.d(LOG_TAG, "onScanCompleted with newPath=" + newPath + ", newUri=" + newUri);
             if (newUri != null) {
-                // we retrieve updated fields as the renamed file became a new entry in the Media Store
-                String[] projection = {MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.TITLE};
-                try {
-                    Cursor cursor = activity.getContentResolver().query(newUri, projection, null, null, null);
-                    if (cursor != null) {
-                        if (cursor.moveToNext()) {
-                            long contentId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID));
-                            newFields.put("uri", newUri.toString());
-                            newFields.put("contentId", contentId);
-                            newFields.put("path", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)));
-                            newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
+                // newURI is a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+                long contentId = ContentUris.parseId(newUri);
+                Uri contentUri = null;
+                if (mimeType.startsWith(MimeTypes.IMAGE)) {
+                    contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId);
+                } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+                    contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId);
+                }
+                if (contentUri != null) {
+                    // we retrieve updated fields as the renamed file became a new entry in the Media Store
+                    String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.TITLE};
+                    try {
+                        Cursor cursor = activity.getContentResolver().query(contentUri, projection, null, null, null);
+                        if (cursor != null) {
+                            if (cursor.moveToNext()) {
+                                newFields.put("uri", contentUri.toString());
+                                newFields.put("contentId", contentId);
+                                newFields.put("path", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)));
+                                newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
+                            }
+                            cursor.close();
                         }
-                        cursor.close();
+                    } catch (Exception e) {
+                        callback.onFailure(e);
+                        return;
                     }
-                } catch (Exception e) {
-                    callback.onFailure(e);
-                    return;
                 }
             }
             callback.onSuccess(newFields);
@@ -189,24 +200,26 @@ public abstract class ImageProvider {
         Map<String, Object> newFields = new HashMap<>();
         newFields.put("orientationDegrees", orientationDegrees);
 
-        ContentResolver contentResolver = activity.getContentResolver();
-        ContentValues values = new ContentValues();
-        // from Android Q, media store update needs to be flagged IS_PENDING first
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
-            contentResolver.update(uri, values, null, null);
-            values.clear();
-            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
-        }
-        // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
-        values.put(MediaStore.Images.Media.ORIENTATION, orientationDegrees);
-        int updatedRowCount = contentResolver.update(uri, values, null, null);
-        if (updatedRowCount > 0) {
-            MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
-        } else {
-            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
-            callback.onSuccess(newFields);
-        }
+//        ContentResolver contentResolver = activity.getContentResolver();
+//        ContentValues values = new ContentValues();
+//        // from Android Q, media store update needs to be flagged IS_PENDING first
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+//            // TODO TLAD catch RecoverableSecurityException
+//            contentResolver.update(uri, values, null, null);
+//            values.clear();
+//            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
+//        }
+//        // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
+//        values.put(MediaStore.Images.Media.ORIENTATION, orientationDegrees);
+//        // TODO TLAD catch RecoverableSecurityException
+//        int updatedRowCount = contentResolver.update(uri, values, null, null);
+//        if (updatedRowCount > 0) {
+        MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
+//        } else {
+//            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
+//            callback.onSuccess(newFields);
+//        }
     }
 
     private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
@@ -259,24 +272,26 @@ public abstract class ImageProvider {
         newFields.put("width", rotatedWidth);
         newFields.put("height", rotatedHeight);
 
-        ContentResolver contentResolver = activity.getContentResolver();
-        ContentValues values = new ContentValues();
-        // from Android Q, media store update needs to be flagged IS_PENDING first
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
-            contentResolver.update(uri, values, null, null);
-            values.clear();
-            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
-        }
-        values.put(MediaStore.MediaColumns.WIDTH, rotatedWidth);
-        values.put(MediaStore.MediaColumns.HEIGHT, rotatedHeight);
-        int updatedRowCount = contentResolver.update(uri, values, null, null);
-        if (updatedRowCount > 0) {
-            MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
-        } else {
-            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
-            callback.onSuccess(newFields);
-        }
+//        ContentResolver contentResolver = activity.getContentResolver();
+//        ContentValues values = new ContentValues();
+//        // from Android Q, media store update needs to be flagged IS_PENDING first
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+//            // TODO TLAD catch RecoverableSecurityException
+//            contentResolver.update(uri, values, null, null);
+//            values.clear();
+//            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
+//        }
+//        values.put(MediaStore.MediaColumns.WIDTH, rotatedWidth);
+//        values.put(MediaStore.MediaColumns.HEIGHT, rotatedHeight);
+//        // TODO TLAD catch RecoverableSecurityException
+//        int updatedRowCount = contentResolver.update(uri, values, null, null);
+//        if (updatedRowCount > 0) {
+        MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
+//        } else {
+//            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
+//            callback.onSuccess(newFields);
+//        }
     }
 
     public interface ImageOpCallback {
