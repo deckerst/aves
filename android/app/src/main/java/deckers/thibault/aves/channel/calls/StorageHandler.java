@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
+import deckers.thibault.aves.utils.StorageUtils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -59,13 +59,12 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
         List<Map<String, Object>> volumes = new ArrayList<>();
         StorageManager sm = activity.getSystemService(StorageManager.class);
         if (sm != null) {
-            for (String path : Env.getStorageVolumeRoots(activity)) {
+            for (String volumePath : StorageUtils.getVolumePaths(activity)) {
                 try {
-                    File file = new File(path);
-                    StorageVolume volume = sm.getStorageVolume(file);
+                    StorageVolume volume = sm.getStorageVolume(new File(volumePath));
                     if (volume != null) {
                         Map<String, Object> volumeMap = new HashMap<>();
-                        volumeMap.put("path", path);
+                        volumeMap.put("path", volumePath);
                         volumeMap.put("description", volume.getDescription(activity));
                         volumeMap.put("isPrimary", volume.isPrimary());
                         volumeMap.put("isRemovable", volume.isRemovable());
