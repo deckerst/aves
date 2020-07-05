@@ -35,33 +35,6 @@ class InfoPageState extends State<InfoPage> {
   CollectionLens get collection => widget.collection;
 
   @override
-  void initState() {
-    super.initState();
-    _registerWidget(widget);
-  }
-
-  @override
-  void didUpdateWidget(InfoPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    super.dispose();
-  }
-
-  void _registerWidget(InfoPage widget) {
-    widget.entryNotifier.addListener(_onEntryChanged);
-  }
-
-  void _unregisterWidget(InfoPage widget) {
-    widget.entryNotifier.removeListener(_onEntryChanged);
-  }
-
-  @override
   Widget build(BuildContext context) {
     const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
@@ -145,10 +118,6 @@ class InfoPageState extends State<InfoPage> {
         resizeToAvoidBottomInset: false,
       ),
     );
-  }
-
-  void _onEntryChanged() {
-    widget.entryNotifier.value?.locate();
   }
 
   bool _handleTopScroll(Notification notification) {
