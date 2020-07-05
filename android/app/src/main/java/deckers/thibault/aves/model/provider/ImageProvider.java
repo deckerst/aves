@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.AvesImageEntry;
-import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
@@ -78,13 +77,10 @@ public abstract class ImageProvider {
             return;
         }
 
-        if (Env.requireAccessPermission(oldPath)) {
-            Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
-            if (sdCardTreeUri == null) {
-                Runnable runnable = () -> rename(activity, oldPath, oldMediaUri, mimeType, newFilename, callback);
-                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
-                return;
-            }
+        if (PermissionManager.requireVolumeAccessDialog(activity, oldPath)) {
+            Runnable runnable = () -> rename(activity, oldPath, oldMediaUri, mimeType, newFilename, callback);
+            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, oldPath, runnable));
+            return;
         }
 
         DocumentFileCompat df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri);
@@ -127,6 +123,12 @@ public abstract class ImageProvider {
     }
 
     public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
+        if (PermissionManager.requireVolumeAccessDialog(activity, path)) {
+            Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
+            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, path, runnable));
+            return;
+        }
+
         switch (mimeType) {
             case MimeTypes.JPEG:
                 rotateJpeg(activity, path, uri, clockwise, callback);
@@ -153,14 +155,6 @@ public abstract class ImageProvider {
         if (editablePath == null) {
             callback.onFailure(new Exception("failed to create a temporary file for path=" + path));
             return;
-        }
-
-        if (Env.requireAccessPermission(path)) {
-            if (PermissionManager.getSdCardTreeUri(activity) == null) {
-                Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
-                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
-                return;
-            }
         }
 
         int newOrientationCode;
@@ -231,15 +225,13 @@ public abstract class ImageProvider {
             return;
         }
 
-        if (Env.requireAccessPermission(path)) {
-            if (PermissionManager.getSdCardTreeUri(activity) == null) {
-                Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
-                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
-                return;
-            }
+        Bitmap originalImage;
+        try {
+            originalImage = BitmapFactory.decodeStream(StorageUtils.openInputStream(activity, uri));
+        } catch (FileNotFoundException e) {
+            callback.onFailure(e);
+            return;
         }
-
-        Bitmap originalImage = BitmapFactory.decodeFile(path);
         if (originalImage == null) {
             callback.onFailure(new Exception("failed to decode image at path=" + path));
             return;

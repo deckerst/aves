@@ -34,7 +34,6 @@ import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.SourceImageEntry;
-import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
@@ -217,9 +216,8 @@ public class MediaStoreImageProvider extends ImageProvider {
     public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri mediaUri) {
         SettableFuture<Object> future = SettableFuture.create();
 
-        if (Env.requireAccessPermission(path)) {
-            Uri sdCardTreeUri = PermissionManager.getSdCardTreeUri(activity);
-            if (sdCardTreeUri == null) {
+        if (StorageUtils.requireAccessPermission(path)) {
+            if (PermissionManager.getVolumeTreeUri(activity, path) == null) {
                 Runnable runnable = () -> {
                     try {
                         future.set(delete(activity, path, mediaUri).get());
@@ -227,7 +225,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                         future.setException(e);
                     }
                 };
-                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showSdCardAccessDialog(activity, runnable));
+                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, path, runnable));
                 return future;
             }
 

@@ -18,8 +18,6 @@ import deckers.thibault.aves.channel.streams.ImageByteStreamHandler;
 import deckers.thibault.aves.channel.streams.ImageOpStreamHandler;
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler;
 import deckers.thibault.aves.channel.streams.StorageAccessStreamHandler;
-import deckers.thibault.aves.utils.Constants;
-import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.embedding.android.FlutterActivity;
@@ -98,14 +96,13 @@ public class MainActivity extends FlutterActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.SD_CARD_PERMISSION_REQUEST_CODE) {
+        if (requestCode == PermissionManager.VOLUME_ROOT_PERMISSION_REQUEST_CODE) {
             if (resultCode != RESULT_OK || data.getData() == null) {
-                PermissionManager.onPermissionResult(requestCode, false);
+                PermissionManager.onPermissionResult(this, requestCode, false, null);
                 return;
             }
 
             Uri treeUri = data.getData();
-            Env.setSdCardDocumentUri(this, treeUri.toString());
 
             // save access permissions across reboots
             final int takeFlags = data.getFlags()
@@ -114,7 +111,7 @@ public class MainActivity extends FlutterActivity {
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
 
             // resume pending action
-            PermissionManager.onPermissionResult(requestCode, true);
+            PermissionManager.onPermissionResult(this, requestCode, true, treeUri);
         }
     }
 }
