@@ -59,9 +59,10 @@ public class MainActivity extends FlutterActivity {
                         intentDataMap = null;
                         String resultUri = call.argument("uri");
                         if (resultUri != null) {
-                            Intent data = new Intent();
-                            data.setData(Uri.parse(resultUri));
-                            setResult(RESULT_OK, data);
+                            Intent intent = new Intent();
+                            intent.setData(Uri.parse(resultUri));
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            setResult(RESULT_OK, intent);
                         } else {
                             setResult(RESULT_CANCELED);
                         }
@@ -90,6 +91,7 @@ public class MainActivity extends FlutterActivity {
             case Intent.ACTION_PICK:
                 intentDataMap = new HashMap<>();
                 intentDataMap.put("action", "pick");
+                intentDataMap.put("mimeType", intent.getType());
                 break;
         }
     }
