@@ -43,6 +43,7 @@ android {
         // Gradle plugin 4.0 desugaring features allow targeting older SDKs
         // but Flutter (as of v1.17.3) fails to run in release mode when using Gradle plugin 4.0:
         // https://github.com/flutter/flutter/issues/58247
+        // but there is a workaround (cf `afterEvaluate` section below)
         minSdkVersion 24
         targetSdkVersion 29 // same as compileSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -78,6 +79,22 @@ android {
 
 flutter {
     source '../..'
+}
+
+// workaround to https://github.com/flutter/flutter/issues/58247
+afterEvaluate {
+    android.productFlavors.all { flavor ->
+        def debugLintTask = tasks.findByName("lint${flavor.name.capitalize()}Debug")
+        def releaseLintTask = tasks.findByName("lint${flavor.name.capitalize()}Release")
+
+        if (debugLintTask != null) {
+            debugLintTask.dependsOn ':flutter:assemble'
+        }
+
+        if (releaseLintTask != null) {
+            releaseLintTask.dependsOn ':flutter:assemble'
+        }
+    }
 }
 
 repositories {
