@@ -514,6 +514,10 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
     entry?.imageChangeNotifier?.addListener(_onImageChanged);
     _oldEntry = entry;
+    // make sure to locate the entry,
+    // so that we can display the address instead of coordinates
+    // even when background locating has not reached this entry yet
+    entry?.locate();
   }
 
   // when the entry image itself changed (e.g. after rotation)
