@@ -276,6 +276,12 @@ public class MediaStoreImageProvider extends ImageProvider {
 
     @Override
     public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<AvesImageEntry> entries, @NonNull ImageOpCallback callback) {
+        if (PermissionManager.requireVolumeAccessDialog(activity, destinationDir)) {
+            Runnable runnable = () -> moveMultiple(activity, copy, destinationDir, entries, callback);
+            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, destinationDir, runnable));
+            return;
+        }
+
         DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(activity, destinationDir);
         if (destinationDirDocFile == null) {
             callback.onFailure(new Exception("failed to create directory at path=" + destinationDir));
@@ -330,6 +336,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.MediaColumns.DATA, destinationPath);
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+            // TODO TLAD when not using legacy storage (~Q, R+), provide relative path (assess first whether the root is the "Pictures" folder or the root)
 //            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "");
 //            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, "");
             Uri tableUrl = mimeType.startsWith(MimeTypes.VIDEO) ? MediaStore.Video.Media.getContentUri(volumeName) : MediaStore.Images.Media.getContentUri(volumeName);
@@ -337,7 +344,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             if (destinationUri == null) {
                 future.setException(new Exception("failed to insert row to content resolver"));
             } else {
-                DocumentFileCompat source = DocumentFileCompat.fromFile(new File(sourcePath));
+                DocumentFileCompat source = DocumentFileCompat.fromSingleUri(activity, sourceUri);
                 DocumentFileCompat destination = DocumentFileCompat.fromSingleUri(activity, destinationUri);
                 source.copyTo(destination);
 
@@ -408,6 +415,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             MediaScannerConnection.scanFile(activity, new String[]{destinationPath}, new String[]{mimeType}, (newPath, newUri) -> {
                 Map<String, Object> newFields = new HashMap<>();
                 if (newUri != null) {
+                    // TODO TLAD check whether newURI is a file media URI (cf case in `rename`)
                     // we retrieve updated fields as the moved file became a new entry in the Media Store
                     String[] projection = {MediaStore.MediaColumns._ID};
                     try {
