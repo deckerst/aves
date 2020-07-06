@@ -11,7 +11,7 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.7+8
+version: 1.0.8+9
 
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
