@@ -65,6 +65,10 @@ class _HomePageState extends State<HomePage> {
           break;
         case 'pick':
           AvesApp.mode = AppMode.pick;
+          // TODO TLAD apply pick mimetype(s)
+          // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
+          String pickMimeTypes = intentData['mimeType'];
+          debugPrint('pick mimeType=' + pickMimeTypes);
           break;
       }
     }

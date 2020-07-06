@@ -18,8 +18,6 @@ import deckers.thibault.aves.channel.streams.ImageByteStreamHandler;
 import deckers.thibault.aves.channel.streams.ImageOpStreamHandler;
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler;
 import deckers.thibault.aves.channel.streams.StorageAccessStreamHandler;
-import deckers.thibault.aves.utils.Constants;
-import deckers.thibault.aves.utils.Env;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.embedding.android.FlutterActivity;
@@ -61,9 +59,10 @@ public class MainActivity extends FlutterActivity {
                         intentDataMap = null;
                         String resultUri = call.argument("uri");
                         if (resultUri != null) {
-                            Intent data = new Intent();
-                            data.setData(Uri.parse(resultUri));
-                            setResult(RESULT_OK, data);
+                            Intent intent = new Intent();
+                            intent.setData(Uri.parse(resultUri));
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            setResult(RESULT_OK, intent);
                         } else {
                             setResult(RESULT_CANCELED);
                         }
@@ -92,20 +91,20 @@ public class MainActivity extends FlutterActivity {
             case Intent.ACTION_PICK:
                 intentDataMap = new HashMap<>();
                 intentDataMap.put("action", "pick");
+                intentDataMap.put("mimeType", intent.getType());
                 break;
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.SD_CARD_PERMISSION_REQUEST_CODE) {
+        if (requestCode == PermissionManager.VOLUME_ROOT_PERMISSION_REQUEST_CODE) {
             if (resultCode != RESULT_OK || data.getData() == null) {
-                PermissionManager.onPermissionResult(requestCode, false);
+                PermissionManager.onPermissionResult(this, requestCode, false, null);
                 return;
             }
 
             Uri treeUri = data.getData();
-            Env.setSdCardDocumentUri(this, treeUri.toString());
 
             // save access permissions across reboots
             final int takeFlags = data.getFlags()
@@ -114,7 +113,7 @@ public class MainActivity extends FlutterActivity {
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
 
             // resume pending action
-            PermissionManager.onPermissionResult(requestCode, true);
+            PermissionManager.onPermissionResult(this, requestCode, true, treeUri);
         }
     }
 }
