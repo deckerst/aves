@@ -32,7 +32,7 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     public void onListen(Object o, final EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         this.handler = new Handler(Looper.getMainLooper());
-        Runnable onGranted = () -> success(PermissionManager.hasGrantedPermissionToVolumeRoot(activity, volumePath));
+        Runnable onGranted = () -> success(!PermissionManager.requireVolumeAccessDialog(activity, volumePath));
         Runnable onDenied = () -> success(false);
         PermissionManager.requestVolumeAccess(activity, volumePath, onGranted, onDenied);
     }

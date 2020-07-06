@@ -38,7 +38,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import deckers.thibault.aves.utils.Constants;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
@@ -74,6 +73,32 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private static final String XMP_DESCRIPTION_PROP_NAME = "dc:description";
     private static final String XMP_GENERIC_LANG = "";
     private static final String XMP_SPECIFIC_LANG = "en-US";
+
+    // video metadata keys, from android.media.MediaMetadataRetriever
+    private static final Map<Integer, String> VIDEO_MEDIA_METADATA_KEYS = new HashMap<Integer, String>() {
+        {
+            put(MediaMetadataRetriever.METADATA_KEY_ALBUM, "Album");
+            put(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST, "Album Artist");
+            put(MediaMetadataRetriever.METADATA_KEY_ARTIST, "Artist");
+            put(MediaMetadataRetriever.METADATA_KEY_AUTHOR, "Author");
+            put(MediaMetadataRetriever.METADATA_KEY_BITRATE, "Bitrate");
+            put(MediaMetadataRetriever.METADATA_KEY_COMPOSER, "Composer");
+            put(MediaMetadataRetriever.METADATA_KEY_DATE, "Date");
+            put(MediaMetadataRetriever.METADATA_KEY_GENRE, "Content Type");
+            put(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO, "Has Audio");
+            put(MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO, "Has Video");
+            put(MediaMetadataRetriever.METADATA_KEY_LOCATION, "Location");
+            put(MediaMetadataRetriever.METADATA_KEY_MIMETYPE, "MIME Type");
+            put(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS, "Number of Tracks");
+            put(MediaMetadataRetriever.METADATA_KEY_TITLE, "Title");
+            put(MediaMetadataRetriever.METADATA_KEY_WRITER, "Writer");
+            put(MediaMetadataRetriever.METADATA_KEY_YEAR, "Year");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                put(MediaMetadataRetriever.METADATA_KEY_VIDEO_FRAME_COUNT, "Frame Count");
+            }
+            // TODO TLAD comment? category?
+        }
+    };
 
     // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
     // Examples:
@@ -171,7 +196,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         Map<String, String> dirMap = new HashMap<>();
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
         try {
-            for (Map.Entry<Integer, String> kv : Constants.MEDIA_METADATA_KEYS.entrySet()) {
+            for (Map.Entry<Integer, String> kv : VIDEO_MEDIA_METADATA_KEYS.entrySet()) {
                 Integer key = kv.getKey();
                 String value = retriever.extractMetadata(key);
                 if (value != null) {

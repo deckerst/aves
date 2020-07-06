@@ -11,10 +11,11 @@ import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
-import androidx.core.util.Pair;
 
 import java.io.File;
 import java.util.Optional;
@@ -24,30 +25,40 @@ import java.util.stream.Stream;
 public class PermissionManager {
     private static final String LOG_TAG = Utils.createLogTag(PermissionManager.class);
 
-    // permission request code to pending runnable
-    private static ConcurrentHashMap<Integer, Pair<Runnable, Runnable>> pendingPermissionMap = new ConcurrentHashMap<>();
+    public static final int VOLUME_ROOT_PERMISSION_REQUEST_CODE = 1;
 
-    // check access permission to SD card directory & return its content URI if available
-    public static Uri getSdCardTreeUri(Activity activity) {
-        final String sdCardDocumentUri = Env.getSdCardDocumentUri(activity);
+    // permission request code to pending runnable
+    private static ConcurrentHashMap<Integer, PendingPermissionHandler> pendingPermissionMap = new ConcurrentHashMap<>();
+
+
+    public static boolean requireVolumeAccessDialog(Activity activity, @NonNull String anyPath) {
+        return StorageUtils.requireAccessPermission(anyPath) && getVolumeTreeUri(activity, anyPath) == null;
+    }
+
+    // check access permission to volume root directory & return its tree URI if available
+    @Nullable
+    public static Uri getVolumeTreeUri(Activity activity, @NonNull String anyPath) {
+        String volumeTreeUri = StorageUtils.getVolumeTreeUriForPath(activity, anyPath).orElse(null);
         Optional<UriPermission> uriPermissionOptional = activity.getContentResolver().getPersistedUriPermissions().stream()
-                .filter(uriPermission -> uriPermission.getUri().toString().equals(sdCardDocumentUri))
+                .filter(uriPermission -> uriPermission.getUri().toString().equals(volumeTreeUri))
                 .findFirst();
         return uriPermissionOptional.map(UriPermission::getUri).orElse(null);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void showSdCardAccessDialog(final Activity activity, final Runnable pendingRunnable) {
+    public static void showVolumeAccessDialog(final Activity activity, @NonNull String anyPath, final Runnable pendingRunnable) {
+        String volumePath = StorageUtils.getVolumePath(activity, anyPath).orElse(null);
+        // TODO TLAD show volume name/ID in the message
         new AlertDialog.Builder(activity)
-                .setTitle("SD Card Access")
-                .setMessage("Please select the root directory of the SD card in the next screen, so that this app has permission to access it and complete your request.")
-                .setPositiveButton(android.R.string.ok, (dialog, button) -> requestVolumeAccess(activity, null, pendingRunnable, null))
+                .setTitle("Storage Volume Access")
+                .setMessage("Please select the root directory of the storage volume in the next screen, so that this app has permission to access it and complete your request.")
+                .setPositiveButton(android.R.string.ok, (dialog, button) -> requestVolumeAccess(activity, volumePath, pendingRunnable, null))
                 .show();
     }
 
     public static void requestVolumeAccess(Activity activity, String volumePath, Runnable onGranted, Runnable onDenied) {
         Log.i(LOG_TAG, "request user to select and grant access permission to volume=" + volumePath);
-        pendingPermissionMap.put(Constants.SD_CARD_PERMISSION_REQUEST_CODE, Pair.create(onGranted, onDenied));
+        pendingPermissionMap.put(VOLUME_ROOT_PERMISSION_REQUEST_CODE, new PendingPermissionHandler(volumePath, onGranted, onDenied));
 
         Intent intent = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && volumePath != null) {
@@ -65,38 +76,19 @@ public class PermissionManager {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         }
 
-        ActivityCompat.startActivityForResult(activity, intent, Constants.SD_CARD_PERMISSION_REQUEST_CODE, null);
+        ActivityCompat.startActivityForResult(activity, intent, VOLUME_ROOT_PERMISSION_REQUEST_CODE, null);
     }
 
-    public static void onPermissionResult(int requestCode, boolean granted) {
+    public static void onPermissionResult(Activity activity, int requestCode, boolean granted, Uri treeUri) {
         Log.d(LOG_TAG, "onPermissionResult with requestCode=" + requestCode + ", granted=" + granted);
-        Pair<Runnable, Runnable> runnables = pendingPermissionMap.remove(requestCode);
-        if (runnables == null) return;
-        Runnable runnable = granted ? runnables.first : runnables.second;
+
+        PendingPermissionHandler handler = pendingPermissionMap.remove(requestCode);
+        if (handler == null) return;
+        StorageUtils.setVolumeTreeUri(activity, handler.volumePath, treeUri.toString());
+
+        Runnable runnable = granted ? handler.onGranted : handler.onDenied;
         if (runnable == null) return;
         runnable.run();
-    }
-
-    public static boolean hasGrantedPermissionToVolumeRoot(Context context, String path) {
-        boolean canAccess = false;
-        Stream<Uri> permittedUris = context.getContentResolver().getPersistedUriPermissions().stream().map(UriPermission::getUri);
-        // e.g. content://com.android.externalstorage.documents/tree/12A9-8B42%3A
-        StorageManager sm = context.getSystemService(StorageManager.class);
-        if (sm != null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                StorageVolume volume = sm.getStorageVolume(new File(path));
-                if (volume != null) {
-                    // primary storage doesn't have a UUID
-                    String uuid = volume.isPrimary() ? "primary" : volume.getUuid();
-                    Uri targetVolumeTreeUri = getVolumeTreeUriFromUuid(uuid);
-                    canAccess = permittedUris.anyMatch(uri -> uri.equals(targetVolumeTreeUri));
-                }
-            } else {
-                // TODO TLAD find alternative for Android <N
-                canAccess = true;
-            }
-        }
-        return canAccess;
     }
 
     private static Uri getVolumeTreeUriFromUuid(String uuid) {
@@ -104,5 +96,17 @@ public class PermissionManager {
                 "com.android.externalstorage.documents",
                 uuid + ":"
         );
+    }
+
+    static class PendingPermissionHandler {
+        String volumePath;
+        Runnable onGranted;
+        Runnable onDenied;
+
+        PendingPermissionHandler(String volumePath, Runnable onGranted, Runnable onDenied) {
+            this.volumePath = volumePath;
+            this.onGranted = onGranted;
+            this.onDenied = onDenied;
+        }
     }
 }
