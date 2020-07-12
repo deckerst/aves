@@ -18,6 +18,11 @@ jobs:
         with:
           channel: 'stable'
 
+      # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
+      # https://issuetracker.google.com/issues/144111441
+      - name: Install NDK
+        run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
+
       - name: Clone the repository.
         uses: actions/checkout@v2
 
@@ -28,8 +33,9 @@ jobs:
         working-directory: ${{ github.workspace }}/scripts
         run: ./update_flutter_version.sh
 
-      - name: Run the unit tests.
-        run: flutter test
+      # `flutter test` fails if test directory is missing
+      #- name: Run the unit tests.
+      #  run: flutter test
 
       - name: Build signed artifacts.
         # `KEY_JKS` should contain the result of:
