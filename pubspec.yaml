@@ -57,6 +57,7 @@ dependencies:
   google_maps_flutter:
   intl:
   outline_material_icons:
+  package_info:
   palette_generator:
   pdf:
   pedantic:
