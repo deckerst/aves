@@ -1,7 +1,6 @@
 package deckers.thibault.aves.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.UriPermission;
 import android.net.Uri;
@@ -20,7 +19,6 @@ import androidx.core.app.ActivityCompat;
 import java.io.File;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 public class PermissionManager {
     private static final String LOG_TAG = Utils.createLogTag(PermissionManager.class);

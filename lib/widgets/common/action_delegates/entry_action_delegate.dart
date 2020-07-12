@@ -64,9 +64,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         AndroidAppService.setAs(entry.uri, entry.mimeType);
         break;
       case EntryAction.share:
-        AndroidAppService.share({
-          entry.mimeType: [entry.uri]
-        });
+        AndroidAppService.share({entry});
         break;
       case EntryAction.debug:
         _goToDebug(context, entry);
