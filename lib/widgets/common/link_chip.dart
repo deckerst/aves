@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinkChip extends StatelessWidget {
+  final Widget leading;
   final String text;
   final String url;
   final Color color;
@@ -12,6 +13,7 @@ class LinkChip extends StatelessWidget {
 
   const LinkChip({
     Key key,
+    this.leading,
     @required this.text,
     @required this.url,
     this.color,
@@ -20,32 +22,35 @@ class LinkChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTextStyle = (textStyle ?? DefaultTextStyle.of(context).style).copyWith(
-      color: color,
-    );
-    return InkWell(
-      borderRadius: borderRadius,
-      onTap: () async {
-        if (await canLaunch(url)) {
-          await launch(url);
-        }
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              text,
-              style: effectiveTextStyle,
-            ),
-            const SizedBox(width: 8),
-            Icon(
-              AIcons.openInNew,
-              size: Theme.of(context).textTheme.bodyText2.fontSize,
-              color: color,
-            )
-          ],
+    return DefaultTextStyle.merge(
+      style: (textStyle ?? const TextStyle()).copyWith(color: color),
+      child: InkWell(
+        borderRadius: borderRadius,
+        onTap: () async {
+          if (await canLaunch(url)) {
+            await launch(url);
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (leading != null) ...[
+                leading,
+                const SizedBox(width: 8),
+              ],
+              Text(text),
+              const SizedBox(width: 8),
+              Builder(
+                builder: (context) => Icon(
+                  AIcons.openInNew,
+                  size: DefaultTextStyle.of(context).style.fontSize,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
