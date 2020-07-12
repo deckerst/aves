@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
         future: _appSetup,
         builder: (context, AsyncSnapshot<void> snapshot) {
           if (snapshot.hasError) return const Icon(AIcons.error);
-          if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+          if (snapshot.connectionState != ConnectionState.done) return const Scaffold();
           if (AvesApp.mode == AppMode.view) {
             return SingleFullscreenPage(entry: _viewerEntry);
           }

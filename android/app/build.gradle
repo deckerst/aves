@@ -27,7 +27,17 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
+    // for release using credentials stored in a local file
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} else {
+    // for release using credentials in environment variables set up by Github Actions
+    // warning: in property file, single quotes should be escaped with a backslash
+    // but they should not be escaped when stored in env variables
+    keystoreProperties['storeFile'] = System.getenv('AVES_STORE_FILE')
+    keystoreProperties['storePassword'] = System.getenv('AVES_STORE_PASSWORD')
+    keystoreProperties['keyAlias'] = System.getenv('AVES_KEY_ALIAS')
+    keystoreProperties['keyPassword'] = System.getenv('AVES_KEY_PASSWORD')
+    keystoreProperties['googleApiKey'] = System.getenv('AVES_GOOGLE_API_KEY')
 }
 
 android {

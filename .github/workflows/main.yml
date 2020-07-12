@@ -1,0 +1,62 @@
+name: Release an APK and an App Bundle on tagging
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build and release artifacts.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
+      # https://issuetracker.google.com/issues/144111441
+      - name: Install NDK
+        run: echo "y" | sudo /usr/local/lib/android/sdk/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
+
+      - name: Clone the repository.
+        uses: actions/checkout@v2
+
+      - name: Get packages for the Flutter project.
+        run: flutter pub get
+
+      - name: Update the flutter version file.
+        working-directory: ${{ github.workspace }}/scripts
+        run: ./update_flutter_version.sh
+
+      # `flutter test` fails if test directory is missing
+      #- name: Run the unit tests.
+      #  run: flutter test
+
+      - name: Build signed artifacts.
+        # `KEY_JKS` should contain the result of:
+        # gpg -c --armor keystore.jks
+        # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
+        run: |
+          echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
+          gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
+          rm release.keystore.asc
+          flutter build apk
+          flutter build appbundle
+          rm $AVES_STORE_FILE
+        env:
+          AVES_STORE_FILE: ${{ github.workspace }}/key.jks
+          AVES_STORE_PASSWORD: ${{ secrets.AVES_STORE_PASSWORD }}
+          AVES_KEY_ALIAS: ${{ secrets.AVES_KEY_ALIAS }}
+          AVES_KEY_PASSWORD: ${{ secrets.AVES_KEY_PASSWORD }}
+          AVES_GOOGLE_API_KEY: ${{ secrets.AVES_GOOGLE_API_KEY }}
+
+      - name: Create a release with the APK and App Bundle.
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*.apk,build/app/outputs/bundle/release/*.aab"
+          token: ${{ secrets.RELEASE_WORKFLOW_TOKEN }}
