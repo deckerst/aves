@@ -17,7 +17,6 @@ import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grid_page.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -38,7 +37,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         _showDeleteDialog(context);
         break;
       case EntryAction.share:
-        _share();
+        AndroidAppService.share(collection.selection);
         break;
       default:
         break;
@@ -227,11 +226,6 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         collection.browse();
       },
     );
-  }
-
-  void _share() {
-    final urisByMimeType = groupBy<ImageEntry, String>(collection.selection, (e) => e.mimeType).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
-    AndroidAppService.share(urisByMimeType);
   }
 
   // selection action report overlay
