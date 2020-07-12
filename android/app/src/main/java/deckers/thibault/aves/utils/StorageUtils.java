@@ -45,7 +45,10 @@ public class StorageUtils {
      * Volume paths
      */
 
+    // volume paths, with trailing "/"
     private static String[] mStorageVolumePaths;
+
+    // primary volume path, with trailing "/"
     private static String mPrimaryVolumePath;
 
     private static String getPrimaryVolumePath() {
@@ -90,8 +93,8 @@ public class StorageUtils {
 
     private static String findPrimaryVolumePath() {
         String primaryVolumePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        if (!primaryVolumePath.endsWith("/")) {
-            primaryVolumePath += "/";
+        if (!primaryVolumePath.endsWith(File.separator)) {
+            primaryVolumePath += File.separator;
         }
         return primaryVolumePath;
     }
@@ -167,8 +170,8 @@ public class StorageUtils {
         String[] paths = rv.toArray(new String[0]);
         for (int i = 0; i < paths.length; i++) {
             String path = paths[i];
-            if (path.endsWith(File.separator)) {
-                paths[i] = path.substring(0, path.length() - 1);
+            if (!path.endsWith(File.separator)) {
+                paths[i] = path + File.separator;
             }
         }
         return paths;
@@ -361,8 +364,11 @@ public class StorageUtils {
      */
 
     public static boolean requireAccessPermission(@NonNull String anyPath) {
+        // on Android R, we should always require access permission, even on primary volume
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            return true;
+        }
         boolean onPrimaryVolume = anyPath.startsWith(getPrimaryVolumePath());
-        // TODO TLAD on Android R, we should require access permission even on primary
         return !onPrimaryVolume;
     }
 
