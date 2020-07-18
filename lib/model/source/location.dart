@@ -4,6 +4,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:tuple/tuple.dart';
 
 mixin LocationMixin on SourceBase {
   static const _commitCountThreshold = 50;
@@ -24,8 +25,19 @@ mixin LocationMixin on SourceBase {
 
   Future<void> locateEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final todo = rawEntries.where((entry) => entry.hasGps && !entry.isLocated).toList();
+    final byLocated = groupBy<ImageEntry, bool>(rawEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
+    final todo = byLocated[false] ?? [];
     if (todo.isEmpty) return;
+
+    // cache known locations to avoid querying the geocoder unless necessary
+    // measuring the time it takes to process ~3000 coordinates (with ~10% of duplicates)
+    // does not clearly show whether it is an actual optimization,
+    // as results vary wildly (durations in "min:sec"):
+    // - with no cache: 06:17, 08:36, 08:34
+    // - with cache: 08:28, 05:42, 08:03, 05:58
+    // anyway, in theory it should help!
+    final knownLocations = <Tuple2<double, double>, AddressDetails>{};
+    byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(entry.latLng, () => entry.addressDetails));
 
     var progressDone = 0;
     final progressTotal = todo.length;
@@ -33,7 +45,14 @@ mixin LocationMixin on SourceBase {
 
     final newAddresses = <AddressDetails>[];
     await Future.forEach<ImageEntry>(todo, (entry) async {
-      await entry.locate(background: true);
+      if (knownLocations.containsKey(entry.latLng)) {
+        entry.addressDetails = knownLocations[entry.latLng]?.copyWith(contentId: entry.contentId);
+      } else {
+        await entry.locate(background: true);
+        // it is intended to insert `null` if the geocoder failed,
+        // so that we skip geocoding of following entries with the same coordinates
+        knownLocations[entry.latLng] = entry.addressDetails;
+      }
       if (entry.isLocated) {
         newAddresses.add(entry.addressDetails);
         if (newAddresses.length >= _commitCountThreshold) {
