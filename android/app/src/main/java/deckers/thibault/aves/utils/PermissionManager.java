@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
-import android.provider.DocumentsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -27,7 +26,6 @@ public class PermissionManager {
 
     // permission request code to pending runnable
     private static ConcurrentHashMap<Integer, PendingPermissionHandler> pendingPermissionMap = new ConcurrentHashMap<>();
-
 
     public static boolean requireVolumeAccessDialog(Activity activity, @NonNull String anyPath) {
         return StorageUtils.requireAccessPermission(anyPath) && getVolumeTreeUri(activity, anyPath) == null;
@@ -87,13 +85,6 @@ public class PermissionManager {
         Runnable runnable = granted ? handler.onGranted : handler.onDenied;
         if (runnable == null) return;
         runnable.run();
-    }
-
-    private static Uri getVolumeTreeUriFromUuid(String uuid) {
-        return DocumentsContract.buildTreeDocumentUri(
-                "com.android.externalstorage.documents",
-                uuid + ":"
-        );
     }
 
     static class PendingPermissionHandler {
