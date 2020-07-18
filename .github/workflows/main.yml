@@ -60,3 +60,30 @@ jobs:
         with:
           artifacts: "build/app/outputs/apk/release/*.apk,build/app/outputs/bundle/release/*.aab"
           token: ${{ secrets.RELEASE_WORKFLOW_TOKEN }}
+
+      - name: Upload app bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: appbundle
+          path: build/app/outputs/bundle/release/app-release.aab
+
+  release:
+    name: Create beta release on Play Store.
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get appbundle from artifacts.
+        uses: actions/download-artifact@v2
+        with:
+          name: appbundle
+
+      - name: Release app to beta channel.
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
+          packageName: deckers.thibault.aves
+          releaseFile: app-release.aab
+          track: beta
+          whatsNewDirectory: whatsnew
