@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,6 +94,10 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         Boolean copy = (Boolean) argMap.get("copy");
         String destinationDir = (String) argMap.get("destinationPath");
         if (copy == null || destinationDir == null) return;
+
+        if (!destinationDir.endsWith(File.separator)) {
+            destinationDir += File.separator;
+        }
 
         List<AvesImageEntry> entries = entryMapList.stream().map(AvesImageEntry::new).collect(Collectors.toList());
         provider.moveMultiple(activity, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {

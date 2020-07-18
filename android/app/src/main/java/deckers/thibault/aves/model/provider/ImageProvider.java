@@ -56,7 +56,7 @@ public abstract class ImageProvider {
         return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
-    public void moveMultiple(final Activity activity, Boolean copy, String destinationDir, List<AvesImageEntry> entries, @NonNull ImageOpCallback callback) {
+    public void moveMultiple(final Activity activity, final Boolean copy, final String destinationDir, final List<AvesImageEntry> entries, @NonNull final ImageOpCallback callback) {
         callback.onFailure(new UnsupportedOperationException());
     }
 
@@ -66,12 +66,11 @@ public abstract class ImageProvider {
             return;
         }
 
-        Map<String, Object> newFields = new HashMap<>();
         File oldFile = new File(oldPath);
         File newFile = new File(oldFile.getParent(), newFilename);
         if (oldFile.equals(newFile)) {
             Log.w(LOG_TAG, "new name and old name are the same, path=" + oldPath);
-            callback.onSuccess(newFields);
+            callback.onSuccess(new HashMap<>());
             return;
         }
 
@@ -94,40 +93,7 @@ public abstract class ImageProvider {
         }
 
         MediaScannerConnection.scanFile(activity, new String[]{oldPath}, new String[]{mimeType}, null);
-        MediaScannerConnection.scanFile(activity, new String[]{newFile.getPath()}, new String[]{mimeType}, (newPath, newUri) -> {
-            Log.d(LOG_TAG, "onScanCompleted with newPath=" + newPath + ", newUri=" + newUri);
-            if (newUri != null) {
-                // newURI is a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                long contentId = ContentUris.parseId(newUri);
-                Uri contentUri = null;
-                if (mimeType.startsWith(MimeTypes.IMAGE)) {
-                    contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId);
-                } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
-                    contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId);
-                }
-                if (contentUri != null) {
-                    // we retrieve updated fields as the renamed file became a new entry in the Media Store
-                    String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.TITLE};
-                    try {
-                        Cursor cursor = activity.getContentResolver().query(contentUri, projection, null, null, null);
-                        if (cursor != null) {
-                            if (cursor.moveToNext()) {
-                                newFields.put("uri", contentUri.toString());
-                                newFields.put("contentId", contentId);
-                                newFields.put("path", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)));
-                                newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
-                            }
-                            cursor.close();
-                        }
-                    } catch (Exception e) {
-                        callback.onFailure(e);
-                        return;
-                    }
-                }
-            }
-            callback.onSuccess(newFields);
-        });
+        scanNewPath(activity, newFile.getPath(), mimeType, callback);
     }
 
     public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
@@ -289,6 +255,54 @@ public abstract class ImageProvider {
 //            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
 //            callback.onSuccess(newFields);
 //        }
+    }
+
+    protected void scanNewPath(final Activity activity, final String path, final String mimeType, final ImageOpCallback callback) {
+        MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (newPath, newUri) -> {
+            Log.d(LOG_TAG, "scanNewPath onScanCompleted with newPath=" + newPath + ", newUri=" + newUri);
+
+            long contentId = 0;
+            Uri contentUri = null;
+            if (newUri != null) {
+                // newURI is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+                contentId = ContentUris.parseId(newUri);
+                if (mimeType.startsWith(MimeTypes.IMAGE)) {
+                    contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId);
+                } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+                    contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId);
+                }
+            }
+            if (contentUri == null) {
+                callback.onFailure(new Exception("failed to get content URI of item at path=" + path));
+                return;
+            }
+
+            Map<String, Object> newFields = new HashMap<>();
+            // we retrieve updated fields as the renamed file became a new entry in the Media Store
+            String[] projection = {MediaStore.MediaColumns.TITLE};
+            try {
+                Cursor cursor = activity.getContentResolver().query(contentUri, projection, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToNext()) {
+                        newFields.put("uri", contentUri.toString());
+                        newFields.put("contentId", contentId);
+                        newFields.put("path", path);
+                        newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
+                    }
+                    cursor.close();
+                }
+            } catch (Exception e) {
+                callback.onFailure(e);
+                return;
+            }
+
+            if (newFields.isEmpty()) {
+                callback.onFailure(new Exception("failed to get item details from provider at contentUri=" + contentUri));
+            } else {
+                callback.onSuccess(newFields);
+            }
+        });
     }
 
     public interface ImageOpCallback {
