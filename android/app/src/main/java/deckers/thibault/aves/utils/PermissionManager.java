@@ -41,26 +41,15 @@ public class PermissionManager {
         return uriPermissionOptional.map(UriPermission::getUri).orElse(null);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void showVolumeAccessDialog(final Activity activity, @NonNull String anyPath, final Runnable pendingRunnable) {
-        String volumePath = StorageUtils.getVolumePath(activity, anyPath).orElse(null);
-        // TODO TLAD show volume name/ID in the message
-        new AlertDialog.Builder(activity)
-                .setTitle("Storage Volume Access")
-                .setMessage("Please select the root directory of the storage volume in the next screen, so that this app has permission to access it and complete your request.")
-                .setPositiveButton(android.R.string.ok, (dialog, button) -> requestVolumeAccess(activity, volumePath, pendingRunnable, null))
-                .show();
-    }
-
-    public static void requestVolumeAccess(Activity activity, String volumePath, Runnable onGranted, Runnable onDenied) {
-        Log.i(LOG_TAG, "request user to select and grant access permission to volume=" + volumePath);
-        pendingPermissionMap.put(VOLUME_ROOT_PERMISSION_REQUEST_CODE, new PendingPermissionHandler(volumePath, onGranted, onDenied));
+    public static void requestVolumeAccess(@NonNull Activity activity, @NonNull String path, @NonNull Runnable onGranted, @NonNull Runnable onDenied) {
+        Log.i(LOG_TAG, "request user to select and grant access permission to volume=" + path);
+        pendingPermissionMap.put(VOLUME_ROOT_PERMISSION_REQUEST_CODE, new PendingPermissionHandler(path, onGranted, onDenied));
 
         Intent intent = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && volumePath != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             StorageManager sm = activity.getSystemService(StorageManager.class);
             if (sm != null) {
-                StorageVolume volume = sm.getStorageVolume(new File(volumePath));
+                StorageVolume volume = sm.getStorageVolume(new File(path));
                 if (volume != null) {
                     intent = volume.createOpenDocumentTreeIntent();
                 }
@@ -75,25 +64,42 @@ public class PermissionManager {
         ActivityCompat.startActivityForResult(activity, intent, VOLUME_ROOT_PERMISSION_REQUEST_CODE, null);
     }
 
-    public static void onPermissionResult(Activity activity, int requestCode, boolean granted, Uri treeUri) {
-        Log.d(LOG_TAG, "onPermissionResult with requestCode=" + requestCode + ", granted=" + granted);
+    public static void onPermissionResult(Activity activity, int requestCode, @Nullable Uri treeUri) {
+        Log.d(LOG_TAG, "onPermissionResult with requestCode=" + requestCode + ", treeUri=" + treeUri);
+        boolean granted = treeUri != null;
 
         PendingPermissionHandler handler = pendingPermissionMap.remove(requestCode);
         if (handler == null) return;
-        StorageUtils.setVolumeTreeUri(activity, handler.volumePath, treeUri.toString());
+
+        if (granted) {
+            String requestedPath = handler.path;
+            if (isTreeUriPath(requestedPath, treeUri)) {
+                StorageUtils.setVolumeTreeUri(activity, requestedPath, treeUri.toString());
+            } else {
+                granted = false;
+            }
+        }
 
         Runnable runnable = granted ? handler.onGranted : handler.onDenied;
         if (runnable == null) return;
         runnable.run();
     }
 
-    static class PendingPermissionHandler {
-        String volumePath;
-        Runnable onGranted;
-        Runnable onDenied;
+    private static boolean isTreeUriPath(String path, Uri treeUri) {
+        // TODO TLAD check requestedPath match treeUri
+        // e.g. OK match for path=/storage/emulated/0/, treeUri=content://com.android.externalstorage.documents/tree/primary%3A
+        // e.g. NO match for path=/storage/10F9-3F13/, treeUri=content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures
+        Log.d(LOG_TAG, "isTreeUriPath path=" + path + ", treeUri=" + treeUri);
+        return true;
+    }
 
-        PendingPermissionHandler(String volumePath, Runnable onGranted, Runnable onDenied) {
-            this.volumePath = volumePath;
+    static class PendingPermissionHandler {
+        final String path;
+        final Runnable onGranted;
+        final Runnable onDenied;
+
+        PendingPermissionHandler(@NonNull String path, @NonNull Runnable onGranted, @NonNull Runnable onDenied) {
+            this.path = path;
             this.onGranted = onGranted;
             this.onDenied = onDenied;
         }

@@ -17,14 +17,14 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     private Activity activity;
     private EventChannel.EventSink eventSink;
     private Handler handler;
-    private String volumePath;
+    private String path;
 
     @SuppressWarnings("unchecked")
     public StorageAccessStreamHandler(Activity activity, Object arguments) {
         this.activity = activity;
         if (arguments instanceof Map) {
             Map<String, Object> argMap = (Map<String, Object>) arguments;
-            this.volumePath = (String) argMap.get("path");
+            this.path = (String) argMap.get("path");
         }
     }
 
@@ -32,9 +32,9 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     public void onListen(Object o, final EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         this.handler = new Handler(Looper.getMainLooper());
-        Runnable onGranted = () -> success(!PermissionManager.requireVolumeAccessDialog(activity, volumePath));
+        Runnable onGranted = () -> success(!PermissionManager.requireVolumeAccessDialog(activity, path));
         Runnable onDenied = () -> success(false);
-        PermissionManager.requestVolumeAccess(activity, volumePath, onGranted, onDenied);
+        PermissionManager.requestVolumeAccess(activity, path, onGranted, onDenied);
     }
 
     @Override

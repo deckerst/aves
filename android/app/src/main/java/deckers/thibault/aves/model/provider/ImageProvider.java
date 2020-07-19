@@ -9,8 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -32,7 +30,6 @@ import java.util.Map;
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
-import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
 
@@ -74,12 +71,6 @@ public abstract class ImageProvider {
             return;
         }
 
-        if (PermissionManager.requireVolumeAccessDialog(activity, oldPath)) {
-            Runnable runnable = () -> rename(activity, oldPath, oldMediaUri, mimeType, newFilename, callback);
-            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, oldPath, runnable));
-            return;
-        }
-
         DocumentFileCompat df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri);
         try {
             boolean renamed = df != null && df.renameTo(newFilename);
@@ -97,12 +88,6 @@ public abstract class ImageProvider {
     }
 
     public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
-        if (PermissionManager.requireVolumeAccessDialog(activity, path)) {
-            Runnable runnable = () -> rotate(activity, path, uri, mimeType, clockwise, callback);
-            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, path, runnable));
-            return;
-        }
-
         switch (mimeType) {
             case MimeTypes.JPEG:
                 rotateJpeg(activity, path, uri, clockwise, callback);
