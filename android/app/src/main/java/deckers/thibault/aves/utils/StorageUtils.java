@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -119,7 +120,21 @@ public class StorageUtils {
         if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
             // fix of empty raw emulated storage on marshmallow
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                File[] files = context.getExternalFilesDirs(null);
+                List<File> files;
+                boolean validFiles;
+                do {
+                    // `getExternalFilesDirs` sometimes include `null` when called right after getting read access
+                    // (e.g. on API 30 emulator) so we retry until the file system is ready
+                    files = Arrays.asList(context.getExternalFilesDirs(null));
+                    validFiles = !files.contains(null);
+                    if (!validFiles) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            Log.e(LOG_TAG, "insomnia", e);
+                        }
+                    }
+                } while(!validFiles);
                 for (File file : files) {
                     String applicationSpecificAbsolutePath = file.getAbsolutePath();
                     String emulatedRootPath = applicationSpecificAbsolutePath.substring(0, applicationSpecificAbsolutePath.indexOf("Android/data"));
