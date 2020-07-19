@@ -41,7 +41,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 29 // latest (or latest-1 if the sources of latest SDK are unavailable)
+    compileSdkVersion 30 // latest (or latest-1 if the sources of latest SDK are unavailable)
 
     lintOptions {
         disable 'InvalidPackage'
@@ -54,7 +54,7 @@ android {
         // but Flutter (as of v1.17.3) fails to run in release mode when using Gradle plugin 4.0:
         // https://github.com/flutter/flutter/issues/58247
         minSdkVersion 24
-        targetSdkVersion 29 // same as compileSdkVersion
+        targetSdkVersion 30 // same as compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [googleApiKey:keystoreProperties['googleApiKey']]

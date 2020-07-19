@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -167,6 +168,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                   v *= 1000;
                 }
                 value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+              }
+              if (key == 'xmp' && v != null && v is Uint8List) {
+                value = String.fromCharCodes(v);
               }
               return MapEntry(key, value);
             }));
