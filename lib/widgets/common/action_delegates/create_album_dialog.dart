@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,19 +12,17 @@ class CreateAlbumDialog extends StatefulWidget {
 
 class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   final TextEditingController _nameController = TextEditingController();
-  Set<StorageVolume> allVolumes;
-  StorageVolume primaryVolume, selectedVolume;
+  final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
+  Set<StorageVolume> _allVolumes;
+  StorageVolume _primaryVolume, _selectedVolume;
 
   @override
   void initState() {
     super.initState();
-
-    // TODO TLAD improve new album default name
-    _nameController.text = 'Album 1';
-
-    allVolumes = androidFileUtils.storageVolumes;
-    primaryVolume = allVolumes.firstWhere((volume) => volume.isPrimary, orElse: () => allVolumes.first);
-    selectedVolume = primaryVolume;
+    _allVolumes = androidFileUtils.storageVolumes;
+    _primaryVolume = _allVolumes.firstWhere((volume) => volume.isPrimary, orElse: () => _allVolumes.first);
+    _selectedVolume = _primaryVolume;
+    _initAlbumName();
   }
 
   @override
@@ -38,7 +38,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (allVolumes.length > 1) ...[
+          if (_allVolumes.length > 1) ...[
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -47,7 +47,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                 Expanded(
                   child: DropdownButton<StorageVolume>(
                     isExpanded: true,
-                    items: allVolumes
+                    items: _allVolumes
                         .map((volume) => DropdownMenuItem(
                               value: volume,
                               child: Text(
@@ -58,18 +58,30 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                               ),
                             ))
                         .toList(),
-                    value: selectedVolume,
-                    onChanged: (volume) => setState(() => selectedVolume = volume),
+                    value: _selectedVolume,
+                    onChanged: (volume) {
+                      _selectedVolume = volume;
+                      _checkAlbumExists();
+                      setState(() {});
+                    },
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
           ],
-          TextField(
-            controller: _nameController,
-//            autofocus: true,
-          ),
+          ValueListenableBuilder<bool>(
+              valueListenable: _existsNotifier,
+              builder: (context, exists, child) {
+                return TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    helperText: exists ? 'Album already exists' : '',
+                  ),
+                  onChanged: (_) => _checkAlbumExists(),
+                  onSubmitted: (_) => _submit(context),
+                );
+              }),
         ],
       ),
       contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
@@ -79,16 +91,34 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
           child: Text('Cancel'.toUpperCase()),
         ),
         FlatButton(
-          onPressed: () => Navigator.pop(context, _buildAlbumPath()),
+          onPressed: () => _submit(context),
           child: Text('Create'.toUpperCase()),
         ),
       ],
     );
   }
 
-  String _buildAlbumPath() {
-    final newName = _nameController.text;
-    if (newName == null || newName.isEmpty) return null;
-    return join(selectedVolume == primaryVolume ? androidFileUtils.dcimPath : selectedVolume.path, newName);
+  String _buildAlbumPath(String name) {
+    if (name == null || name.isEmpty) return '';
+    return join(_selectedVolume.path, 'Pictures', name);
   }
+
+  Future<void> _initAlbumName() async {
+    var count = 1;
+    while (true) {
+      var name = 'Album $count';
+      if (!await Directory(_buildAlbumPath(name)).exists()) {
+        _nameController.text = name;
+        return;
+      }
+      count++;
+    }
+  }
+
+  Future<void> _checkAlbumExists() async {
+    final path = _buildAlbumPath(_nameController.text);
+    _existsNotifier.value = path.isEmpty ? false : await Directory(path).exists();
+  }
+
+  void _submit(BuildContext context) => Navigator.pop(context, _buildAlbumPath(_nameController.text));
 }
