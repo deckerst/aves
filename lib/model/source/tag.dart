@@ -37,6 +37,7 @@ mixin TagMixin on SourceBase {
         newMetadata.add(entry.catalogMetadata);
         if (newMetadata.length >= _commitCountThreshold) {
           await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+          onCatalogMetadataChanged();
           newMetadata.clear();
         }
       }

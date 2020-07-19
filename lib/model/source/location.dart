@@ -57,6 +57,7 @@ mixin LocationMixin on SourceBase {
         newAddresses.add(entry.addressDetails);
         if (newAddresses.length >= _commitCountThreshold) {
           await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+          onAddressMetadataChanged();
           newAddresses.clear();
         }
       }
