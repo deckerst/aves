@@ -8,8 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
@@ -35,7 +33,6 @@ import java.util.stream.Stream;
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.SourceImageEntry;
 import deckers.thibault.aves.utils.MimeTypes;
-import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
 
@@ -217,18 +214,6 @@ public class MediaStoreImageProvider extends ImageProvider {
         SettableFuture<Object> future = SettableFuture.create();
 
         if (StorageUtils.requireAccessPermission(path)) {
-            if (PermissionManager.getVolumeTreeUri(activity, path) == null) {
-                Runnable runnable = () -> {
-                    try {
-                        future.set(delete(activity, path, mediaUri).get());
-                    } catch (Exception e) {
-                        future.setException(e);
-                    }
-                };
-                new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, path, runnable));
-                return future;
-            }
-
             // if the file is on SD card, calling the content resolver delete() removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
             try {
@@ -276,12 +261,6 @@ public class MediaStoreImageProvider extends ImageProvider {
 
     @Override
     public void moveMultiple(final Activity activity, final Boolean copy, final String destinationDir, final List<AvesImageEntry> entries, @NonNull final ImageOpCallback callback) {
-        if (PermissionManager.requireVolumeAccessDialog(activity, destinationDir)) {
-            Runnable runnable = () -> moveMultiple(activity, copy, destinationDir, entries, callback);
-            new Handler(Looper.getMainLooper()).post(() -> PermissionManager.showVolumeAccessDialog(activity, destinationDir, runnable));
-            return;
-        }
-
         DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(activity, destinationDir);
         if (destinationDirDocFile == null) {
             callback.onFailure(new Exception("failed to create directory at path=" + destinationDir));
