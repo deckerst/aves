@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.streams;
 
-import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,7 +25,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
 
     public static final String CHANNEL = "deckers.thibault/aves/imageopstream";
 
-    private Activity activity;
+    private Context context;
     private EventChannel.EventSink eventSink;
     private Handler handler;
     private Map<String, Object> argMap;
@@ -33,8 +33,8 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
     private String op;
 
     @SuppressWarnings("unchecked")
-    public ImageOpStreamHandler(Activity activity, Object arguments) {
-        this.activity = activity;
+    public ImageOpStreamHandler(Context context, Object arguments) {
+        this.context = context;
         if (arguments instanceof Map) {
             argMap = (Map<String, Object>) arguments;
             this.op = (String) argMap.get("op");
@@ -100,7 +100,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         }
 
         List<AvesImageEntry> entries = entryMapList.stream().map(AvesImageEntry::new).collect(Collectors.toList());
-        provider.moveMultiple(activity, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {
+        provider.moveMultiple(context, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {
             @Override
             public void onSuccess(Map<String, Object> fields) {
                 success(fields);
@@ -138,7 +138,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
                 put("uri", uriString);
             }};
             try {
-                provider.delete(activity, path, uri).get();
+                provider.delete(context, path, uri).get();
                 result.put("success", true);
             } catch (ExecutionException | InterruptedException e) {
                 Log.w(LOG_TAG, "failed to delete entry with path=" + path, e);

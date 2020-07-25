@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.calls;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -22,10 +22,10 @@ import io.flutter.plugin.common.MethodChannel;
 public class StorageHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/storage";
 
-    private Activity activity;
+    private Context context;
 
-    public StorageHandler(Activity activity) {
-        this.activity = activity;
+    public StorageHandler(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -42,12 +42,12 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
                 result.success(volumes);
                 break;
             }
-            case "requireVolumeAccessDialog": {
-                String path = call.argument("path");
-                if (path == null) {
-                    result.success(true);
+            case "getInaccessibleDirectories": {
+                List<String> dirPaths = call.argument("dirPaths");
+                if (dirPaths == null) {
+                    result.error("getInaccessibleDirectories-args", "failed because of missing arguments", null);
                 } else {
-                    result.success(PermissionManager.requireVolumeAccessDialog(activity, path));
+                    result.success(PermissionManager.getInaccessibleDirectories(context, dirPaths));
                 }
                 break;
             }
@@ -60,15 +60,15 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private List<Map<String, Object>> getStorageVolumes() {
         List<Map<String, Object>> volumes = new ArrayList<>();
-        StorageManager sm = activity.getSystemService(StorageManager.class);
+        StorageManager sm = context.getSystemService(StorageManager.class);
         if (sm != null) {
-            for (String volumePath : StorageUtils.getVolumePaths(activity)) {
+            for (String volumePath : StorageUtils.getVolumePaths(context)) {
                 try {
                     StorageVolume volume = sm.getStorageVolume(new File(volumePath));
                     if (volume != null) {
                         Map<String, Object> volumeMap = new HashMap<>();
                         volumeMap.put("path", volumePath);
-                        volumeMap.put("description", volume.getDescription(activity));
+                        volumeMap.put("description", volume.getDescription(context));
                         volumeMap.put("isPrimary", volume.isPrimary());
                         volumeMap.put("isRemovable", volume.isRemovable());
                         volumeMap.put("isEmulated", volume.isEmulated());

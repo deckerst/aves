@@ -1,14 +1,15 @@
 package deckers.thibault.aves.utils;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,9 +22,6 @@ import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,13 +29,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StorageUtils {
     private static final String LOG_TAG = Utils.createLogTag(StorageUtils.class);
@@ -52,35 +50,37 @@ public class StorageUtils {
     // primary volume path, with trailing "/"
     private static String mPrimaryVolumePath;
 
-    private static String getPrimaryVolumePath() {
+    public static String getPrimaryVolumePath() {
         if (mPrimaryVolumePath == null) {
             mPrimaryVolumePath = findPrimaryVolumePath();
         }
         return mPrimaryVolumePath;
     }
 
-    public static String[] getVolumePaths(Context context) {
+    public static String[] getVolumePaths(@NonNull Context context) {
         if (mStorageVolumePaths == null) {
             mStorageVolumePaths = findVolumePaths(context);
         }
         return mStorageVolumePaths;
     }
 
-    public static Optional<String> getVolumePath(Context context, @NonNull String anyPath) {
+    public static Optional<String> getVolumePath(@NonNull Context context, @NonNull String anyPath) {
         return Arrays.stream(getVolumePaths(context)).filter(anyPath::startsWith).findFirst();
     }
 
     @Nullable
-    private static Iterator<String> getPathStepIterator(Context context, @NonNull String anyPath) {
-        Optional<String> volumePathOpt = getVolumePath(context, anyPath);
-        if (!volumePathOpt.isPresent()) return null;
+    private static Iterator<String> getPathStepIterator(@NonNull Context context, @NonNull String anyPath, @Nullable String root) {
+        if (root == null) {
+            root = getVolumePath(context, anyPath).orElse(null);
+            if (root == null) return null;
+        }
 
         String relativePath = null, filename = null;
         int lastSeparatorIndex = anyPath.lastIndexOf(File.separator) + 1;
-        int volumePathLength = volumePathOpt.get().length();
-        if (lastSeparatorIndex > volumePathLength) {
+        int rootLength = root.length();
+        if (lastSeparatorIndex > rootLength) {
             filename = anyPath.substring(lastSeparatorIndex);
-            relativePath = anyPath.substring(volumePathLength, lastSeparatorIndex);
+            relativePath = anyPath.substring(rootLength, lastSeparatorIndex);
         }
         if (relativePath == null) return null;
 
@@ -134,7 +134,7 @@ public class StorageUtils {
                             Log.e(LOG_TAG, "insomnia", e);
                         }
                     }
-                } while(!validFiles);
+                } while (!validFiles);
                 for (File file : files) {
                     String applicationSpecificAbsolutePath = file.getAbsolutePath();
                     String emulatedRootPath = applicationSpecificAbsolutePath.substring(0, applicationSpecificAbsolutePath.indexOf("Android/data"));
@@ -225,43 +225,86 @@ public class StorageUtils {
      * Volume tree URIs
      */
 
-    // serialized map from storage volume paths to their document tree URIs, from the Documents Provider
-    // e.g. "/storage/12A9-8B42" -> "content://com.android.externalstorage.documents/tree/12A9-8B42%3A"
-    private static final String PREF_VOLUME_TREE_URIS = "volume_tree_uris";
-
-    public static void setVolumeTreeUri(Activity activity, String volumePath, String treeUri) {
-        Map<String, String> map = getVolumeTreeUris(activity);
-        map.put(volumePath, treeUri);
-
-        SharedPreferences.Editor editor = activity.getPreferences(Context.MODE_PRIVATE).edit();
-        String json = new JSONObject(map).toString();
-        editor.putString(PREF_VOLUME_TREE_URIS, json);
-        editor.apply();
-    }
-
-    private static Map<String, String> getVolumeTreeUris(Activity activity) {
-        Map<String, String> map = new HashMap<>();
-
-        SharedPreferences preferences = activity.getPreferences(Context.MODE_PRIVATE);
-        String json = preferences.getString(PREF_VOLUME_TREE_URIS, new JSONObject().toString());
-        if (json != null) {
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                Iterator<String> iterator = jsonObject.keys();
-                while (iterator.hasNext()) {
-                    String k = iterator.next();
-                    String v = (String) jsonObject.get(k);
-                    map.put(k, v);
+    private static Optional<String> getVolumeUuidForTreeUri(@NonNull Context context, @NonNull String anyPath) {
+        StorageManager sm = context.getSystemService(StorageManager.class);
+        if (sm != null) {
+            StorageVolume volume = sm.getStorageVolume(new File(anyPath));
+            if (volume != null) {
+                if (volume.isPrimary()) {
+                    return Optional.of("primary");
                 }
-            } catch (JSONException e) {
-                Log.w(LOG_TAG, "failed to read volume tree URIs from preferences", e);
+                String uuid = volume.getUuid();
+                if (uuid != null) {
+                    return Optional.of(uuid.toUpperCase());
+                }
             }
         }
-        return map;
+        Log.e(LOG_TAG, "failed to find volume UUID for anyPath=" + anyPath);
+        return Optional.empty();
     }
 
-    public static Optional<String> getVolumeTreeUriForPath(Activity activity, String anyPath) {
-        return StorageUtils.getVolumePath(activity, anyPath).map(volumePath -> getVolumeTreeUris(activity).get(volumePath));
+    private static Optional<String> getVolumePathFromTreeUriUuid(@NonNull Context context, @NonNull String uuid) {
+        if (uuid.equals("primary")) {
+            return Optional.of(getPrimaryVolumePath());
+        }
+        StorageManager sm = context.getSystemService(StorageManager.class);
+        if (sm != null) {
+            for (String volumePath : StorageUtils.getVolumePaths(context)) {
+                try {
+                    StorageVolume volume = sm.getStorageVolume(new File(volumePath));
+                    if (volume != null && uuid.equalsIgnoreCase(volume.getUuid())) {
+                        return Optional.of(volumePath);
+                    }
+                } catch (IllegalArgumentException e) {
+                    // ignore
+                }
+            }
+        }
+        Log.e(LOG_TAG, "failed to find volume path for UUID=" + uuid);
+        return Optional.empty();
+    }
+
+    // e.g.
+    // /storage/emulated/0/         -> content://com.android.externalstorage.documents/tree/primary%3A
+    // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures
+    static Optional<Uri> convertDirPathToTreeUri(@NonNull Context context, @NonNull String dirPath) {
+        Optional<String> uuid = getVolumeUuidForTreeUri(context, dirPath);
+        if (uuid.isPresent()) {
+            String relativeDir = new PathSegments(context, dirPath).relativeDir;
+            if (relativeDir == null) {
+                relativeDir = "";
+            } else if (relativeDir.endsWith(File.separator)) {
+                relativeDir = relativeDir.substring(0, relativeDir.length() - 1);
+            }
+            Uri treeUri = DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", uuid.get() + ":" + relativeDir);
+            return Optional.of(treeUri);
+        }
+        Log.e(LOG_TAG, "failed to convert dirPath=" + dirPath + " to tree URI");
+        return Optional.empty();
+    }
+
+    // e.g.
+    // content://com.android.externalstorage.documents/tree/primary%3A              -> /storage/emulated/0/
+    // content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures    -> /storage/10F9-3F13/Pictures/
+    static Optional<String> convertTreeUriToDirPath(@NonNull Context context, @NonNull Uri treeUri) {
+        String encoded = treeUri.toString().substring("content://com.android.externalstorage.documents/tree/".length());
+        Matcher matcher = Pattern.compile("(.*?):(.*)").matcher(Uri.decode(encoded));
+        if (matcher.find()) {
+            String uuid = matcher.group(1);
+            String relativePath = matcher.group(2);
+            if (uuid != null && relativePath != null) {
+                Optional<String> volumePath = getVolumePathFromTreeUriUuid(context, uuid);
+                if (volumePath.isPresent()) {
+                    String dirPath = volumePath.get() + relativePath;
+                    if (!dirPath.endsWith(File.separator)) {
+                        dirPath += File.separator;
+                    }
+                    return Optional.of(dirPath);
+                }
+            }
+        }
+        Log.e(LOG_TAG, "failed to convert treeUri=" + treeUri + " to path");
+        return Optional.empty();
     }
 
     /**
@@ -269,20 +312,22 @@ public class StorageUtils {
      */
 
     @Nullable
-    public static DocumentFileCompat getDocumentFile(@NonNull Activity activity, @NonNull String anyPath, @NonNull Uri mediaUri) {
+    public static DocumentFileCompat getDocumentFile(@NonNull Context context, @NonNull String anyPath, @NonNull Uri mediaUri) {
         if (requireAccessPermission(anyPath)) {
             // need a document URI (not a media content URI) to open a `DocumentFile` output stream
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // cleanest API to get it
-                Uri docUri = MediaStore.getDocumentUri(activity, mediaUri);
+                Uri docUri = MediaStore.getDocumentUri(context, mediaUri);
                 if (docUri != null) {
-                    return DocumentFileCompat.fromSingleUri(activity, docUri);
+                    return DocumentFileCompat.fromSingleUri(context, docUri);
                 }
             }
             // fallback for older APIs
-            Uri volumeTreeUri = PermissionManager.getVolumeTreeUri(activity, anyPath);
-            Optional<DocumentFileCompat> docFile = getDocumentFileFromVolumeTree(activity, volumeTreeUri, anyPath);
-            return docFile.orElse(null);
+            return getVolumePath(context, anyPath)
+                    .flatMap(volumePath -> convertDirPathToTreeUri(context, volumePath)
+                            .flatMap(treeUri -> getDocumentFileFromVolumeTree(context, treeUri, anyPath)))
+                    .orElse(null);
+
         }
         // good old `File`
         return DocumentFileCompat.fromFile(new File(anyPath));
@@ -290,16 +335,21 @@ public class StorageUtils {
 
     // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
     // returns null if directory does not exist and could not be created
-    public static DocumentFileCompat createDirectoryIfAbsent(@NonNull Activity activity, @NonNull String directoryPath) {
-        if (requireAccessPermission(directoryPath)) {
-            Uri rootTreeUri = PermissionManager.getVolumeTreeUri(activity, directoryPath);
-            DocumentFileCompat parentFile = DocumentFileCompat.fromTreeUri(activity, rootTreeUri);
+    public static DocumentFileCompat createDirectoryIfAbsent(@NonNull Context context, @NonNull String dirPath) {
+        if (!dirPath.endsWith(File.separator)) {
+            dirPath += File.separator;
+        }
+        if (requireAccessPermission(dirPath)) {
+            String grantedDir = PermissionManager.getGrantedDirForPath(context, dirPath).orElse(null);
+            if (grantedDir == null) return null;
+
+            Uri rootTreeUri = convertDirPathToTreeUri(context, grantedDir).orElse(null);
+            if (rootTreeUri == null) return null;
+
+            DocumentFileCompat parentFile = DocumentFileCompat.fromTreeUri(context, rootTreeUri);
             if (parentFile == null) return null;
 
-            if (!directoryPath.endsWith(File.separator)) {
-                directoryPath += File.separator;
-            }
-            Iterator<String> pathIterator = getPathStepIterator(activity, directoryPath);
+            Iterator<String> pathIterator = getPathStepIterator(context, dirPath, grantedDir);
             while (pathIterator != null && pathIterator.hasNext()) {
                 String dirName = pathIterator.next();
                 DocumentFileCompat dirFile = findDocumentFileIgnoreCase(parentFile, dirName);
@@ -319,10 +369,10 @@ public class StorageUtils {
             }
             return parentFile;
         } else {
-            File directory = new File(directoryPath);
+            File directory = new File(dirPath);
             if (!directory.exists()) {
                 if (!directory.mkdirs()) {
-                    Log.e(LOG_TAG, "failed to create directories at path=" + directoryPath);
+                    Log.e(LOG_TAG, "failed to create directories at path=" + dirPath);
                     return null;
                 }
             }
@@ -338,23 +388,19 @@ public class StorageUtils {
             temp.deleteOnExit();
             return temp.getPath();
         } catch (IOException e) {
-            Log.w(LOG_TAG, "failed to copy file from path=" + path);
+            Log.e(LOG_TAG, "failed to copy file from path=" + path);
         }
         return null;
     }
 
-    private static Optional<DocumentFileCompat> getDocumentFileFromVolumeTree(Context context, Uri rootTreeUri, String path) {
-        if (rootTreeUri == null || path == null) {
-            return Optional.empty();
-        }
-
+    private static Optional<DocumentFileCompat> getDocumentFileFromVolumeTree(Context context, @NonNull Uri rootTreeUri, @NonNull String anyPath) {
         DocumentFileCompat documentFile = DocumentFileCompat.fromTreeUri(context, rootTreeUri);
         if (documentFile == null) {
             return Optional.empty();
         }
 
         // follow the entry path down the document tree
-        Iterator<String> pathIterator = getPathStepIterator(context, path);
+        Iterator<String> pathIterator = getPathStepIterator(context, anyPath, null);
         while (pathIterator != null && pathIterator.hasNext()) {
             documentFile = findDocumentFileIgnoreCase(documentFile, pathIterator.next());
             if (documentFile == null) {
@@ -393,7 +439,7 @@ public class StorageUtils {
         return uri != null && ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme()) && MediaStore.AUTHORITY.equalsIgnoreCase(uri.getHost());
     }
 
-    public static InputStream openInputStream(Context context, Uri uri) throws FileNotFoundException {
+    public static InputStream openInputStream(@NonNull Context context, @NonNull Uri uri) throws FileNotFoundException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // we get a permission denial if we require original from a provider other than the media store
             if (isMediaStoreContentUri(uri)) {
@@ -403,7 +449,7 @@ public class StorageUtils {
         return context.getContentResolver().openInputStream(uri);
     }
 
-    public static MediaMetadataRetriever openMetadataRetriever(Context context, Uri uri) {
+    public static MediaMetadataRetriever openMetadataRetriever(@NonNull Context context, @NonNull Uri uri) {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -414,8 +460,28 @@ public class StorageUtils {
             }
             retriever.setDataSource(context, uri);
         } catch (Exception e) {
-            Log.w(LOG_TAG, "failed to open MediaMetadataRetriever for uri=" + uri, e);
+            Log.e(LOG_TAG, "failed to open MediaMetadataRetriever for uri=" + uri, e);
         }
         return retriever;
+    }
+
+    public static class PathSegments {
+        String fullPath; // should match "volumePath + relativeDir + filename"
+        String volumePath; // with trailing "/"
+        String relativeDir; // with trailing "/"
+        String filename; // null for directories
+
+        PathSegments(@NonNull Context context, @NonNull String fullPath) {
+            this.fullPath = fullPath;
+            volumePath = StorageUtils.getVolumePath(context, fullPath).orElse(null);
+            if (volumePath == null) return;
+
+            int lastSeparatorIndex = fullPath.lastIndexOf(File.separator) + 1;
+            int volumePathLength = volumePath.length();
+            if (lastSeparatorIndex > volumePathLength) {
+                filename = fullPath.substring(lastSeparatorIndex);
+                relativeDir = fullPath.substring(volumePathLength, lastSeparatorIndex);
+            }
+        }
     }
 }

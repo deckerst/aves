@@ -8,6 +8,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -53,7 +54,7 @@ public class SourceImageEntry {
     public SourceImageEntry() {
     }
 
-    public SourceImageEntry(Map<String, Object> map) {
+    public SourceImageEntry(@NonNull Map<String, Object> map) {
         this.uri = Uri.parse((String) map.get("uri"));
         this.path = (String) map.get("path");
         this.sourceMimeType = (String) map.get("sourceMimeType");
@@ -121,7 +122,7 @@ public class SourceImageEntry {
 
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
-    public SourceImageEntry fillPreCatalogMetadata(Context context) {
+    public SourceImageEntry fillPreCatalogMetadata(@NonNull Context context) {
         fillByMediaMetadataRetriever(context);
         if (hasSize() && (!isVideo() || hasDuration())) return this;
         fillByMetadataExtractor(context);
@@ -132,7 +133,7 @@ public class SourceImageEntry {
 
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
-    private void fillByMediaMetadataRetriever(Context context) {
+    private void fillByMediaMetadataRetriever(@NonNull Context context) {
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
         try {
             String width = null, height = null, rotation = null, durationMillis = null;
@@ -182,7 +183,7 @@ public class SourceImageEntry {
 
     // expects entry with: uri, mimeType
     // finds: width, height, orientation, date
-    private void fillByMetadataExtractor(Context context) {
+    private void fillByMetadataExtractor(@NonNull Context context) {
         if (isSvg()) return;
 
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
@@ -244,7 +245,7 @@ public class SourceImageEntry {
 
     // expects entry with: uri
     // finds: width, height
-    private void fillByBitmapDecode(Context context) {
+    private void fillByBitmapDecode(@NonNull Context context) {
         if (isSvg()) return;
 
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
@@ -260,7 +261,7 @@ public class SourceImageEntry {
 
     // convenience method
 
-    private static Long toLong(Object o) {
+    private static Long toLong(@Nullable Object o) {
         if (o == null) return null;
         if (o instanceof Integer) return Long.valueOf((Integer) o);
         return (long) o;

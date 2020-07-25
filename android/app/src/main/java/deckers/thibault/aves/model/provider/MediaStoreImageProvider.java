@@ -1,7 +1,6 @@
 package deckers.thibault.aves.model.provider;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -210,14 +209,14 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     @Override
-    public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri mediaUri) {
+    public ListenableFuture<Object> delete(final Context context, final String path, final Uri mediaUri) {
         SettableFuture<Object> future = SettableFuture.create();
 
         if (StorageUtils.requireAccessPermission(path)) {
             // if the file is on SD card, calling the content resolver delete() removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
             try {
-                DocumentFileCompat df = StorageUtils.getDocumentFile(activity, path, mediaUri);
+                DocumentFileCompat df = StorageUtils.getDocumentFile(context, path, mediaUri);
                 if (df != null && df.delete()) {
                     future.set(null);
                 } else {
@@ -230,7 +229,7 @@ public class MediaStoreImageProvider extends ImageProvider {
         }
 
         try {
-            if (activity.getContentResolver().delete(mediaUri, null, null) > 0) {
+            if (context.getContentResolver().delete(mediaUri, null, null) > 0) {
                 future.set(null);
             } else {
                 future.setException(new Exception("failed to delete row from content provider"));
@@ -242,11 +241,11 @@ public class MediaStoreImageProvider extends ImageProvider {
         return future;
     }
 
-    private String getVolumeName(final Activity activity, String path) {
+    private String getVolumeNameForMediaStore(@NonNull Context context, @NonNull String anyPath) {
         String volumeName = "external";
-        StorageManager sm = activity.getSystemService(StorageManager.class);
+        StorageManager sm = context.getSystemService(StorageManager.class);
         if (sm != null) {
-            StorageVolume volume = sm.getStorageVolume(new File(path));
+            StorageVolume volume = sm.getStorageVolume(new File(anyPath));
             if (volume != null && !volume.isPrimary()) {
                 String uuid = volume.getUuid();
                 if (uuid != null) {
@@ -260,14 +259,14 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     @Override
-    public void moveMultiple(final Activity activity, final Boolean copy, final String destinationDir, final List<AvesImageEntry> entries, @NonNull final ImageOpCallback callback) {
-        DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(activity, destinationDir);
+    public void moveMultiple(final Context context, final Boolean copy, final String destinationDir, final List<AvesImageEntry> entries, @NonNull final ImageOpCallback callback) {
+        DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(context, destinationDir);
         if (destinationDirDocFile == null) {
             callback.onFailure(new Exception("failed to create directory at path=" + destinationDir));
             return;
         }
 
-        MediaStoreMoveDestination destination = new MediaStoreMoveDestination(activity, destinationDir);
+        MediaStoreMoveDestination destination = new MediaStoreMoveDestination(context, destinationDir);
         if (destination.volumePath == null) {
             callback.onFailure(new Exception("failed to set up destination volume path for path=" + destinationDir));
             return;
@@ -282,14 +281,14 @@ public class MediaStoreImageProvider extends ImageProvider {
                 put("uri", sourceUri.toString());
             }};
 
-            // TODO TLAD check if there is any downside to use tree document files with scoped storage on API 30+
-            // when testing scoped storage on API 29, it seems less constraining to use tree document files than to rely on the Media Store
+            // on API 30 we cannot get access granted directly to a volume root from its document tree,
+            // but it is still less constraining to use tree document files than to rely on the Media Store
             try {
                 ListenableFuture<Map<String, Object>> newFieldsFuture;
 //                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-//                    newFieldsFuture = moveSingleByMediaStoreInsert(activity, sourcePath, sourceUri, destination, mimeType, copy);
+//                    newFieldsFuture = moveSingleByMediaStoreInsert(context, sourcePath, sourceUri, destination, mimeType, copy);
 //                } else {
-                newFieldsFuture = moveSingleByTreeDocAndScan(activity, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy);
+                newFieldsFuture = moveSingleByTreeDocAndScan(context, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy);
 //                }
                 Map<String, Object> newFields = newFieldsFuture.get();
                 result.put("success", true);
@@ -309,7 +308,7 @@ public class MediaStoreImageProvider extends ImageProvider {
     // - there is no documentation regarding support for usage with removable storage
     // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    private ListenableFuture<Map<String, Object>> moveSingleByMediaStoreInsert(final Activity activity, final String sourcePath, final Uri sourceUri,
+    private ListenableFuture<Map<String, Object>> moveSingleByMediaStoreInsert(final Context context, final String sourcePath, final Uri sourceUri,
                                                                                final MediaStoreMoveDestination destination, final String mimeType, final boolean copy) {
         SettableFuture<Map<String, Object>> future = SettableFuture.create();
 
@@ -323,22 +322,23 @@ public class MediaStoreImageProvider extends ImageProvider {
             // from API 29, changing MediaColumns.RELATIVE_PATH can move files on disk (same storage device)
             contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, destination.relativePath);
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
+            String volumeName = destination.volumeNameForMediaStore;
             Uri tableUrl = mimeType.startsWith(MimeTypes.VIDEO) ?
-                    MediaStore.Video.Media.getContentUri(destination.volumeName) :
-                    MediaStore.Images.Media.getContentUri(destination.volumeName);
-            Uri destinationUri = activity.getContentResolver().insert(tableUrl, contentValues);
+                    MediaStore.Video.Media.getContentUri(volumeName) :
+                    MediaStore.Images.Media.getContentUri(volumeName);
+            Uri destinationUri = context.getContentResolver().insert(tableUrl, contentValues);
             if (destinationUri == null) {
                 future.setException(new Exception("failed to insert row to content resolver"));
             } else {
-                DocumentFileCompat sourceFile = DocumentFileCompat.fromSingleUri(activity, sourceUri);
-                DocumentFileCompat destinationFile = DocumentFileCompat.fromSingleUri(activity, destinationUri);
+                DocumentFileCompat sourceFile = DocumentFileCompat.fromSingleUri(context, sourceUri);
+                DocumentFileCompat destinationFile = DocumentFileCompat.fromSingleUri(context, destinationUri);
                 sourceFile.copyTo(destinationFile);
 
                 boolean deletedSource = false;
                 if (!copy) {
                     // delete original entry
                     try {
-                        delete(activity, sourcePath, sourceUri).get();
+                        delete(context, sourcePath, sourceUri).get();
                         deletedSource = true;
                     } catch (ExecutionException | InterruptedException e) {
                         Log.w(LOG_TAG, "failed to delete entry with path=" + sourcePath, e);
@@ -363,7 +363,7 @@ public class MediaStoreImageProvider extends ImageProvider {
     // We can create an item via `DocumentFile.createFile()`, but:
     // - we need to scan the file to get the Media Store content URI
     // - the underlying document provider controls the new file name
-    private ListenableFuture<Map<String, Object>> moveSingleByTreeDocAndScan(final Activity activity, final String sourcePath, final Uri sourceUri, final String destinationDir, final DocumentFileCompat destinationDirDocFile, final String mimeType, boolean copy) {
+    private ListenableFuture<Map<String, Object>> moveSingleByTreeDocAndScan(final Context context, final String sourcePath, final Uri sourceUri, final String destinationDir, final DocumentFileCompat destinationDirDocFile, final String mimeType, boolean copy) {
         SettableFuture<Map<String, Object>> future = SettableFuture.create();
 
         try {
@@ -375,12 +375,12 @@ public class MediaStoreImageProvider extends ImageProvider {
             // through a document URI, not a tree URI
             // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
             DocumentFileCompat destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension);
-            DocumentFileCompat destinationDocFile = DocumentFileCompat.fromSingleUri(activity, destinationTreeFile.getUri());
+            DocumentFileCompat destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.getUri());
 
             // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
             // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
             // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
-            DocumentFileCompat source = DocumentFileCompat.fromSingleUri(activity, sourceUri);
+            DocumentFileCompat source = DocumentFileCompat.fromSingleUri(context, sourceUri);
             source.copyTo(destinationDocFile);
 
             // the source file name and the created document file name can be different when:
@@ -393,7 +393,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             if (!copy) {
                 // delete original entry
                 try {
-                    delete(activity, sourcePath, sourceUri).get();
+                    delete(context, sourcePath, sourceUri).get();
                     deletedSource = true;
                 } catch (ExecutionException | InterruptedException e) {
                     Log.w(LOG_TAG, "failed to delete entry with path=" + sourcePath, e);
@@ -401,7 +401,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             }
 
             boolean finalDeletedSource = deletedSource;
-            scanNewPath(activity, destinationFullPath, mimeType, new ImageProvider.ImageOpCallback() {
+            scanNewPath(context, destinationFullPath, mimeType, new ImageProvider.ImageOpCallback() {
                 @Override
                 public void onSuccess(Map<String, Object> newFields) {
                     newFields.put("deletedSource", finalDeletedSource);
@@ -430,15 +430,15 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     class MediaStoreMoveDestination {
-        final String volumeName;
+        final String volumeNameForMediaStore;
         final String volumePath;
         final String relativePath;
         final String fullPath;
 
-        MediaStoreMoveDestination(Activity activity, String destinationDir) {
+        MediaStoreMoveDestination(@NonNull Context context, @NonNull String destinationDir) {
             fullPath = destinationDir;
-            volumeName = getVolumeName(activity, destinationDir);
-            volumePath = StorageUtils.getVolumePath(activity, destinationDir).orElse(null);
+            volumeNameForMediaStore = getVolumeNameForMediaStore(context, destinationDir);
+            volumePath = StorageUtils.getVolumePath(context, destinationDir).orElse(null);
             relativePath = volumePath != null ? destinationDir.replaceFirst(volumePath, "") : null;
         }
     }

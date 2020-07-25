@@ -34,8 +34,8 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
               child: sourceState == SourceState.ready
                   ? const SizedBox.shrink()
                   : SourceStateSubtitle(
-                source: source,
-              ),
+                      source: source,
+                    ),
             );
           },
         ),
@@ -70,24 +70,24 @@ class SourceStateSubtitle extends StatelessWidget {
     return subtitle == null
         ? const SizedBox.shrink()
         : Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(subtitle, style: subtitleStyle),
-        StreamBuilder<ProgressEvent>(
-          stream: source.progressStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasError || !snapshot.hasData) return const SizedBox.shrink();
-            final progress = snapshot.data;
-            return Padding(
-              padding: const EdgeInsetsDirectional.only(start: 8),
-              child: Text(
-                '${progress.done}/${progress.total}',
-                style: subtitleStyle.copyWith(color: Colors.white30),
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(subtitle, style: subtitleStyle),
+              StreamBuilder<ProgressEvent>(
+                stream: source.progressStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError || !snapshot.hasData) return const SizedBox.shrink();
+                  final progress = snapshot.data;
+                  return Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 8),
+                    child: Text(
+                      '${progress.done}/${progress.total}',
+                      style: subtitleStyle.copyWith(color: Colors.white30),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ],
-    );
+            ],
+          );
   }
 }

@@ -32,8 +32,8 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     public void onListen(Object o, final EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         this.handler = new Handler(Looper.getMainLooper());
-        Runnable onGranted = () -> success(!PermissionManager.requireVolumeAccessDialog(activity, path));
-        Runnable onDenied = () -> success(false);
+        Runnable onGranted = () -> success(true); // user gave access to a directory, with no guarantee that it matches the specified `path`
+        Runnable onDenied = () -> success(false); // user cancelled
         PermissionManager.requestVolumeAccess(activity, path, onGranted, onDenied);
     }
 
