@@ -168,7 +168,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         ]);
         break;
       case SortFactor.name:
-        final byAlbum = groupBy(_filteredEntries, (entry) => entry.directory);
+        final byAlbum = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
         int compare(a, b) {
           final ua = source.getUniqueAlbumName(a);
           final ub = source.getUniqueAlbumName(b);

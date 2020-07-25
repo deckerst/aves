@@ -62,9 +62,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        FutureBuilder(
+        FutureBuilder<DateMetadata>(
           future: _dbDateLoader,
-          builder: (context, AsyncSnapshot<DateMetadata> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
@@ -81,9 +81,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           },
         ),
         const SizedBox(height: 16),
-        FutureBuilder(
+        FutureBuilder<CatalogMetadata>(
           future: _dbMetadataLoader,
-          builder: (context, AsyncSnapshot<CatalogMetadata> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
@@ -107,9 +107,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           },
         ),
         const SizedBox(height: 16),
-        FutureBuilder(
+        FutureBuilder<AddressDetails>(
           future: _dbAddressLoader,
-          builder: (context, AsyncSnapshot<AddressDetails> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
@@ -155,9 +155,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        FutureBuilder(
+        FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
-          builder: (context, AsyncSnapshot<Map> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = SplayTreeMap.of(snapshot.data.map((k, v) {

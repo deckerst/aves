@@ -58,9 +58,9 @@ class _AvesAppState extends State<AvesApp> {
           ),
         ),
       ),
-      home: FutureBuilder(
+      home: FutureBuilder<void>(
         future: _appSetup,
-        builder: (context, AsyncSnapshot<void> snapshot) {
+        builder: (context, snapshot) {
           if (snapshot.hasError) return const Icon(AIcons.error);
           if (snapshot.connectionState != ConnectionState.done) return const Scaffold();
           return settings.hasAcceptedTerms ? const HomePage() : const WelcomePage();

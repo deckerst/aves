@@ -157,9 +157,9 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                       }
                     : null,
                 borderRadius: borderRadius,
-                child: FutureBuilder(
+                child: FutureBuilder<Color>(
                   future: _colorFuture,
-                  builder: (context, AsyncSnapshot<Color> snapshot) {
+                  builder: (context, snapshot) {
                     final outlineColor = snapshot.hasData ? snapshot.data : Colors.transparent;
                     return DecoratedBox(
                       decoration: BoxDecoration(

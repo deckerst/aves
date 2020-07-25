@@ -82,9 +82,9 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
             return Container(
               color: FullscreenOverlay.backgroundColor,
               padding: viewInsets + viewPadding.copyWith(top: 0),
-              child: FutureBuilder(
+              child: FutureBuilder<OverlayMetadata>(
                 future: _detailLoader,
-                builder: (futureContext, AsyncSnapshot<OverlayMetadata> snapshot) {
+                builder: (futureContext, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done && !snapshot.hasError) {
                     _lastDetails = snapshot.data;
                     _lastEntry = entry;

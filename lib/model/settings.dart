@@ -76,6 +76,7 @@ class Settings {
 
   // convenience methods
 
+  // ignore: avoid_positional_boolean_parameters
   bool getBoolOrDefault(String key, bool defaultValue) => _prefs.getKeys().contains(key) ? _prefs.getBool(key) : defaultValue;
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
