@@ -57,7 +57,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final duration = Durations.thumbnailOverlayAnimation;
+    const duration = Durations.thumbnailOverlayAnimation;
     final fontSize = min(14.0, (extent / 8)).roundToDouble();
     final iconSize = fontSize * 2;
     final collection = Provider.of<CollectionLens>(context);

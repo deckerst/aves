@@ -54,7 +54,7 @@ class StatsPage extends StatelessWidget {
         text: 'No images',
       );
     } else {
-      final byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
+      final byMimeTypes = groupBy<ImageEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
       final mimeDonuts = Wrap(
@@ -120,7 +120,7 @@ class StatsPage extends StatelessWidget {
   Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
     if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
-    final sum = byMimeTypes.values.fold(0, (prev, v) => prev + v);
+    final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
 
     final seriesData = byMimeTypes.entries.map((kv) => StringNumDatum(_cleanMime(kv.key), kv.value)).toList();
     seriesData.sort((kv1, kv2) {

@@ -60,7 +60,7 @@ class InfoPageState extends State<InfoPage> {
                 final mqViewInsetsBottom = mq.item2;
                 final split = mqWidth > 400;
 
-                return ValueListenableBuilder(
+                return ValueListenableBuilder<ImageEntry>(
                   valueListenable: widget.entryNotifier,
                   builder: (context, entry, child) {
                     final locationAtTop = split && entry.hasGps;

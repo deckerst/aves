@@ -4,7 +4,6 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/album/grid/header_generic.dart';
 import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -144,25 +143,6 @@ class SectionedListLayout {
     final left = tileExtent * column;
     final top = sectionLayout.indexToLayoutOffset(listIndex);
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
-  }
-
-  int rowIndex(dynamic sectionKey, List<int> builtIds) {
-    if (!collection.sections.containsKey(sectionKey)) return null;
-
-    final section = collection.sections[sectionKey];
-    final firstId = builtIds.first;
-    final firstIndexInSection = section.indexWhere((entry) => entry.contentId == firstId);
-    if (firstIndexInSection % columnCount != 0) return null;
-
-    final collectionIds = section.skip(firstIndexInSection).take(builtIds.length).map((entry) => entry.contentId);
-    final eq = const IterableEquality().equals;
-    if (eq(builtIds, collectionIds)) {
-      final sectionLayout = sectionLayouts.firstWhere((section) => section.sectionKey == sectionKey, orElse: () => null);
-      if (sectionLayout == null) return null;
-      return sectionLayout.firstIndex + 1 + firstIndexInSection ~/ columnCount;
-    }
-
-    return null;
   }
 }
 

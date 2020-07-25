@@ -192,11 +192,12 @@ class ImageFileService {
   }
 }
 
+@immutable
 class ImageOpEvent {
   final bool success;
   final String uri;
 
-  ImageOpEvent({
+  const ImageOpEvent({
     this.success,
     this.uri,
   });
@@ -226,7 +227,7 @@ class ImageOpEvent {
 class MoveOpEvent extends ImageOpEvent {
   final Map newFields;
 
-  MoveOpEvent({bool success, String uri, this.newFields})
+  const MoveOpEvent({bool success, String uri, this.newFields})
       : super(
           success: success,
           uri: uri,

@@ -134,16 +134,16 @@ class DebugPageState extends State<DebugPage> {
               child: Text('Glide disk cache: ?'),
             ),
             const SizedBox(width: 8),
-            RaisedButton(
+            const RaisedButton(
               onPressed: ImageFileService.clearSizedThumbnailDiskCache,
-              child: const Text('Clear'),
+              child: Text('Clear'),
             ),
           ],
         ),
         const Divider(),
-        FutureBuilder(
+        FutureBuilder<int>(
           future: _dbFileSizeLoader,
-          builder: (context, AsyncSnapshot<int> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -160,9 +160,9 @@ class DebugPageState extends State<DebugPage> {
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbEntryLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -179,9 +179,9 @@ class DebugPageState extends State<DebugPage> {
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbDateLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -198,9 +198,9 @@ class DebugPageState extends State<DebugPage> {
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbMetadataLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -217,9 +217,9 @@ class DebugPageState extends State<DebugPage> {
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbAddressLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -236,9 +236,9 @@ class DebugPageState extends State<DebugPage> {
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbFavouritesLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             return Row(
@@ -308,9 +308,9 @@ class DebugPageState extends State<DebugPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        FutureBuilder(
+        FutureBuilder<Map>(
           future: _envLoader,
-          builder: (context, AsyncSnapshot<Map> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = SplayTreeMap.of(snapshot.data.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));

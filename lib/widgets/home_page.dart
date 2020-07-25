@@ -92,9 +92,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<void>(
         future: _appSetup,
-        builder: (context, AsyncSnapshot<void> snapshot) {
+        builder: (context, snapshot) {
           if (snapshot.hasError) return const Icon(AIcons.error);
           if (snapshot.connectionState != ConnectionState.done) return const Scaffold();
           if (AvesApp.mode == AppMode.view) {

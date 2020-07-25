@@ -98,7 +98,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    final mq = context.select((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
+    final mq = context.select<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
     final mqWidth = mq.item1;
     final mqViewInsets = mq.item2;
     final mqViewPadding = mq.item3;

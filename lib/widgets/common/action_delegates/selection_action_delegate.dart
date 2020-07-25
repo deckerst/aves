@@ -105,11 +105,11 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;
 
-    _showOpReport(
+    _showOpReport<MoveOpEvent>(
       context: context,
       selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
-      onDone: (Set<MoveOpEvent> processed) async {
+      onDone: (processed) async {
         debugPrint('$runtimeType _moveSelection onDone');
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
@@ -207,11 +207,11 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     if (!await checkStoragePermission(context, selection)) return;
 
-    _showOpReport(
+    _showOpReport<ImageOpEvent>(
       context: context,
       selection: selection,
       opStream: ImageFileService.delete(selection),
-      onDone: (Set<ImageOpEvent> processed) {
+      onDone: (processed) {
         final deletedUris = processed.where((e) => e.success).map((e) => e.uri);
         final deletedCount = deletedUris.length;
         final selectionCount = selection.length;
