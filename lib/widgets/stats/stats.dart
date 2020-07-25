@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/empty.dart';

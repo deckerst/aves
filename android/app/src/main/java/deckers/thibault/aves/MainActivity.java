@@ -100,7 +100,7 @@ public class MainActivity extends FlutterActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PermissionManager.VOLUME_ROOT_PERMISSION_REQUEST_CODE) {
             if (resultCode != RESULT_OK || data.getData() == null) {
-                PermissionManager.onPermissionResult(this, requestCode, null);
+                PermissionManager.onPermissionResult(requestCode, null);
                 return;
             }
 
@@ -113,7 +113,7 @@ public class MainActivity extends FlutterActivity {
             getContentResolver().takePersistableUriPermission(treeUri, takeFlags);
 
             // resume pending action
-            PermissionManager.onPermissionResult(this, requestCode, treeUri);
+            PermissionManager.onPermissionResult(requestCode, treeUri);
         }
     }
 }

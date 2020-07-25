@@ -88,7 +88,7 @@ class AndroidAppService {
     }
   }
 
-  static Future<void> share(Set<ImageEntry> entries) async {
+  static Future<void> share(Iterable<ImageEntry> entries) async {
     // loosen mime type to a generic one, so we can share with badly defined apps
     // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
     final urisByMimeType = groupBy<ImageEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));

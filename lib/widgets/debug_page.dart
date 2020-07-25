@@ -7,7 +7,6 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:tuple/tuple.dart';
 
 class DebugPage extends StatefulWidget {
   final CollectionSource source;
@@ -35,7 +33,6 @@ class DebugPageState extends State<DebugPage> {
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
   Future<List<FavouriteRow>> _dbFavouritesLoader;
-  Future<List<Tuple2<String, bool>>> _volumePermissionLoader;
   Future<Map> _envLoader;
 
   List<ImageEntry> get entries => widget.source.rawEntries;
@@ -44,13 +41,6 @@ class DebugPageState extends State<DebugPage> {
   void initState() {
     super.initState();
     _startDbReport();
-    _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
-      androidFileUtils.storageVolumes.map(
-        (volume) => AndroidFileService.requireVolumeAccessDialog(volume.path).then(
-          (value) => Tuple2(volume.path, !value),
-        ),
-      ),
-    );
     _envLoader = AndroidAppService.getEnv();
   }
 
@@ -299,31 +289,17 @@ class DebugPageState extends State<DebugPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        FutureBuilder(
-          future: _volumePermissionLoader,
-          builder: (context, AsyncSnapshot<List<Tuple2<String, bool>>> snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-            final permissions = snapshot.data;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...androidFileUtils.storageVolumes.expand((v) => [
-                      Text(v.path),
-                      InfoRowGroup({
-                        'description': '${v.description}',
-                        'isEmulated': '${v.isEmulated}',
-                        'isPrimary': '${v.isPrimary}',
-                        'isRemovable': '${v.isRemovable}',
-                        'state': '${v.state}',
-                        'permission': '${permissions.firstWhere((t) => t.item1 == v.path, orElse: () => null)?.item2 ?? false}',
-                      }),
-                      const Divider(),
-                    ])
-              ],
-            );
-          },
-        ),
+        ...androidFileUtils.storageVolumes.expand((v) => [
+              Text(v.path),
+              InfoRowGroup({
+                'description': '${v.description}',
+                'isEmulated': '${v.isEmulated}',
+                'isPrimary': '${v.isPrimary}',
+                'isRemovable': '${v.isRemovable}',
+                'state': '${v.state}',
+              }),
+              const Divider(),
+            ])
       ],
     );
   }

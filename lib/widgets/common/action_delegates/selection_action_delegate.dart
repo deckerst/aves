@@ -100,7 +100,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
       ),
     );
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
-    if (!await checkStoragePermissionForPaths(context, [destinationAlbum])) return;
+    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;

@@ -1,34 +1,30 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_file_service.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Iterable<ImageEntry> entries) {
-    return checkStoragePermissionForPaths(context, entries.where((e) => e.path != null).map((e) => e.path));
+    return checkStoragePermissionForAlbums(context, entries.where((e) => e.path != null).map((e) => e.directory).toSet());
   }
 
-  Future<bool> checkStoragePermissionForPaths(BuildContext context, Iterable<String> paths) async {
-    final volumes = paths.map(androidFileUtils.getStorageVolume).toSet();
-    final ungrantedVolumes = (await Future.wait<Tuple2<StorageVolume, bool>>(
-      volumes.map(
-        (volume) => AndroidFileService.requireVolumeAccessDialog(volume.path).then(
-          (granted) => Tuple2(volume, granted),
-        ),
-      ),
-    ))
-        .where((t) => t.item2)
-        .map((t) => t.item1)
-        .toList();
-    while (ungrantedVolumes.isNotEmpty) {
-      final volume = ungrantedVolumes.first;
+  Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths) async {
+    while (true) {
+      final dirs = await AndroidFileService.getInaccessibleDirectories(albumPaths);
+      if (dirs == null) return false;
+      if (dirs.isEmpty) return true;
+
+      final dir = dirs.first;
+      final volumePath = dir['volumePath'] as String;
+      final volumeDescription = dir['volumeDescription'] as String;
+      final relativeDir = dir['relativeDir'] as String;
+      final dirDisplayName = relativeDir.isEmpty ? 'root' : '“$relativeDir”';
+
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Storage Volume Access'),
-            content: Text('Please select the root directory of “${volume.description}” in the next screen, so that this app can access it and complete your request.'),
+            content: Text('Please select the $dirDisplayName directory of “$volumeDescription” in the next screen, so that this app can access it and complete your request.'),
             actions: [
               FlatButton(
                 onPressed: () => Navigator.pop(context),
@@ -45,15 +41,11 @@ mixin PermissionAwareMixin {
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
 
-      final granted = await AndroidFileService.requestVolumeAccess(volume.path);
-      debugPrint('$runtimeType _checkStoragePermission with volume=${volume.path} got granted=$granted');
-      if (granted) {
-        ungrantedVolumes.remove(volume);
-      } else {
+      final granted = await AndroidFileService.requestVolumeAccess(volumePath);
+      if (!granted) {
         // abort if the user denies access from the native dialog
         return false;
       }
     }
-    return true;
   }
 }

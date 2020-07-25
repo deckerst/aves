@@ -1,6 +1,5 @@
 package deckers.thibault.aves.model.provider;
 
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -49,15 +48,15 @@ public abstract class ImageProvider {
         callback.onFailure(new UnsupportedOperationException());
     }
 
-    public ListenableFuture<Object> delete(final Activity activity, final String path, final Uri uri) {
+    public ListenableFuture<Object> delete(final Context context, final String path, final Uri uri) {
         return Futures.immediateFailedFuture(new UnsupportedOperationException());
     }
 
-    public void moveMultiple(final Activity activity, final Boolean copy, final String destinationDir, final List<AvesImageEntry> entries, @NonNull final ImageOpCallback callback) {
+    public void moveMultiple(final Context context, final Boolean copy, final String destinationDir, final List<AvesImageEntry> entries, @NonNull final ImageOpCallback callback) {
         callback.onFailure(new UnsupportedOperationException());
     }
 
-    public void rename(final Activity activity, final String oldPath, final Uri oldMediaUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {
+    public void rename(final Context context, final String oldPath, final Uri oldMediaUri, final String mimeType, final String newFilename, final ImageOpCallback callback) {
         if (oldPath == null) {
             callback.onFailure(new IllegalArgumentException("entry does not have a path, uri=" + oldMediaUri));
             return;
@@ -71,7 +70,7 @@ public abstract class ImageProvider {
             return;
         }
 
-        DocumentFileCompat df = StorageUtils.getDocumentFile(activity, oldPath, oldMediaUri);
+        DocumentFileCompat df = StorageUtils.getDocumentFile(context, oldPath, oldMediaUri);
         try {
             boolean renamed = df != null && df.renameTo(newFilename);
             if (!renamed) {
@@ -83,27 +82,27 @@ public abstract class ImageProvider {
             return;
         }
 
-        MediaScannerConnection.scanFile(activity, new String[]{oldPath}, new String[]{mimeType}, null);
-        scanNewPath(activity, newFile.getPath(), mimeType, callback);
+        MediaScannerConnection.scanFile(context, new String[]{oldPath}, new String[]{mimeType}, null);
+        scanNewPath(context, newFile.getPath(), mimeType, callback);
     }
 
-    public void rotate(final Activity activity, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
+    public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
         switch (mimeType) {
             case MimeTypes.JPEG:
-                rotateJpeg(activity, path, uri, clockwise, callback);
+                rotateJpeg(context, path, uri, clockwise, callback);
                 break;
             case MimeTypes.PNG:
-                rotatePng(activity, path, uri, clockwise, callback);
+                rotatePng(context, path, uri, clockwise, callback);
                 break;
             default:
                 callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + mimeType));
         }
     }
 
-    private void rotateJpeg(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
+    private void rotateJpeg(final Context context, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.JPEG;
 
-        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(activity, path, uri);
+        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(context, path, uri);
         if (originalDocumentFile == null) {
             callback.onFailure(new Exception("failed to get document file for path=" + path + ", uri=" + uri));
             return;
@@ -148,7 +147,7 @@ public abstract class ImageProvider {
         Map<String, Object> newFields = new HashMap<>();
         newFields.put("orientationDegrees", orientationDegrees);
 
-//        ContentResolver contentResolver = activity.getContentResolver();
+//        ContentResolver contentResolver = context.getContentResolver();
 //        ContentValues values = new ContentValues();
 //        // from Android Q, media store update needs to be flagged IS_PENDING first
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -163,17 +162,17 @@ public abstract class ImageProvider {
 //        // TODO TLAD catch RecoverableSecurityException
 //        int updatedRowCount = contentResolver.update(uri, values, null, null);
 //        if (updatedRowCount > 0) {
-        MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
+        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
 //        } else {
 //            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
 //            callback.onSuccess(newFields);
 //        }
     }
 
-    private void rotatePng(final Activity activity, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
+    private void rotatePng(final Context context, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
         final String mimeType = MimeTypes.PNG;
 
-        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(activity, path, uri);
+        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(context, path, uri);
         if (originalDocumentFile == null) {
             callback.onFailure(new Exception("failed to get document file for path=" + path + ", uri=" + uri));
             return;
@@ -188,7 +187,7 @@ public abstract class ImageProvider {
 
         Bitmap originalImage;
         try {
-            originalImage = BitmapFactory.decodeStream(StorageUtils.openInputStream(activity, uri));
+            originalImage = BitmapFactory.decodeStream(StorageUtils.openInputStream(context, uri));
         } catch (FileNotFoundException e) {
             callback.onFailure(e);
             return;
@@ -220,7 +219,7 @@ public abstract class ImageProvider {
         newFields.put("width", rotatedWidth);
         newFields.put("height", rotatedHeight);
 
-//        ContentResolver contentResolver = activity.getContentResolver();
+//        ContentResolver contentResolver = context.getContentResolver();
 //        ContentValues values = new ContentValues();
 //        // from Android Q, media store update needs to be flagged IS_PENDING first
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -235,15 +234,15 @@ public abstract class ImageProvider {
 //        // TODO TLAD catch RecoverableSecurityException
 //        int updatedRowCount = contentResolver.update(uri, values, null, null);
 //        if (updatedRowCount > 0) {
-        MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
+        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
 //        } else {
 //            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
 //            callback.onSuccess(newFields);
 //        }
     }
 
-    protected void scanNewPath(final Activity activity, final String path, final String mimeType, final ImageOpCallback callback) {
-        MediaScannerConnection.scanFile(activity, new String[]{path}, new String[]{mimeType}, (newPath, newUri) -> {
+    protected void scanNewPath(final Context context, final String path, final String mimeType, final ImageOpCallback callback) {
+        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (newPath, newUri) -> {
             Log.d(LOG_TAG, "scanNewPath onScanCompleted with newPath=" + newPath + ", newUri=" + newUri);
 
             long contentId = 0;
@@ -267,7 +266,7 @@ public abstract class ImageProvider {
             // we retrieve updated fields as the renamed file became a new entry in the Media Store
             String[] projection = {MediaStore.MediaColumns.TITLE};
             try {
-                Cursor cursor = activity.getContentResolver().query(contentUri, projection, null, null, null);
+                Cursor cursor = context.getContentResolver().query(contentUri, projection, null, null, null);
                 if (cursor != null) {
                     if (cursor.moveToNext()) {
                         newFields.put("uri", contentUri.toString());
