@@ -57,7 +57,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   @override
   Widget buildSuggestions(BuildContext context) {
     final upQuery = query.trim().toUpperCase();
-    final containQuery = (String s) => s.toUpperCase().contains(upQuery);
+    bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
       child: ValueListenableBuilder<String>(
           valueListenable: expandedSectionNotifier,
@@ -70,10 +70,10 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
                   filters: [
                     _buildQueryFilter(false),
                     FavouriteFilter(),
-                    MimeFilter(MimeTypes.ANY_IMAGE),
-                    MimeFilter(MimeTypes.ANY_VIDEO),
+                    MimeFilter(MimeTypes.anyImage),
+                    MimeFilter(MimeTypes.anyVideo),
                     MimeFilter(MimeFilter.animated),
-                    MimeFilter(MimeTypes.SVG),
+                    MimeFilter(MimeTypes.svg),
                   ].where((f) => f != null && containQuery(f.label)),
                 ),
                 StreamBuilder(

@@ -32,13 +32,7 @@ ScrollThumbBuilder avesScrollThumbBuilder({
       clipper: ArrowClipper(),
     ),
   );
-  return (
-    Color backgroundColor,
-    Animation<double> thumbAnimation,
-    Animation<double> labelAnimation,
-    double height, {
-    Widget labelText,
-  }) {
+  return (backgroundColor, thumbAnimation, labelAnimation, height, {labelText}) {
     return DraggableScrollbar.buildScrollThumbAndLabel(
       scrollThumb: scrollThumb,
       backgroundColor: backgroundColor,

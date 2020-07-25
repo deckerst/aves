@@ -135,7 +135,7 @@ class DebugPageState extends State<DebugPage> {
             ),
             const SizedBox(width: 8),
             RaisedButton(
-              onPressed: () => ImageFileService.clearSizedThumbnailDiskCache(),
+              onPressed: ImageFileService.clearSizedThumbnailDiskCache,
               child: const Text('Clear'),
             ),
           ],

@@ -51,7 +51,7 @@ class MediaStoreSource extends CollectionSource {
     var refreshCount = 10;
     const refreshCountMax = 1000;
     final allNewEntries = <ImageEntry>[], pendingNewEntries = <ImageEntry>[];
-    final addPendingEntries = () {
+    void addPendingEntries() {
       allNewEntries.addAll(pendingNewEntries);
       addAll(pendingNewEntries);
       pendingNewEntries.clear();

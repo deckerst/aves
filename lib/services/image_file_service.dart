@@ -140,7 +140,7 @@ class ImageFileService {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
-        'entries': entries.map((entry) => _toPlatformEntryMap(entry)).toList(),
+        'entries': entries.map(_toPlatformEntryMap).toList(),
       }).map((event) => ImageOpEvent.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('delete failed with code=${e.code}, exception=${e.message}, details=${e.details}');
@@ -153,7 +153,7 @@ class ImageFileService {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
-        'entries': entries.map((entry) => _toPlatformEntryMap(entry)).toList(),
+        'entries': entries.map(_toPlatformEntryMap).toList(),
         'copy': copy,
         'destinationPath': destinationAlbum,
       }).map((event) => MoveOpEvent.fromMap(event));

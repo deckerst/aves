@@ -220,7 +220,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
           );
         }
         debugPrint('collection.filters=${collection.filters}');
-        if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)) {
+        if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.anyVideo)) {
           return const EmptyContent(
             icon: AIcons.video,
             text: 'No videos',

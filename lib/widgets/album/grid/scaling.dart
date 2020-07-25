@@ -62,7 +62,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         scrollableBox.hitTest(result, position: details.localFocalPoint);
 
         // find `RenderObject`s at the gesture focal point
-        final firstOf = <T>(BoxHitTestResult result) => result.path.firstWhere((el) => el.target is T, orElse: () => null)?.target as T;
+        T firstOf<T>(BoxHitTestResult result) => result.path.firstWhere((el) => el.target is T, orElse: () => null)?.target as T;
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;

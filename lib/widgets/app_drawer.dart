@@ -85,7 +85,7 @@ class _AppDrawerState extends State<AppDrawer> {
       source: source,
       leading: const Icon(AIcons.video),
       title: 'Videos',
-      filter: MimeFilter(MimeTypes.ANY_VIDEO),
+      filter: MimeFilter(MimeTypes.anyVideo),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,

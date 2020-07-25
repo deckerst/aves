@@ -67,7 +67,7 @@ class FilterTable extends StatelessWidget {
                       center: Text(NumberFormat.percentPattern().format(percent)),
                     ),
                   Text(
-                    '${count}',
+                    '$count',
                     style: const TextStyle(color: Colors.white70),
                     textAlign: TextAlign.end,
                   ),

@@ -155,7 +155,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         animation: collection.selectionChangeNotifier,
         builder: (context, child) {
           final count = collection.selection.length;
-          return Text(Intl.plural(count, zero: 'Select items', one: '${count} item', other: '${count} items'));
+          return Text(Intl.plural(count, zero: 'Select items', one: '$count item', other: '$count items'));
         },
       );
     }

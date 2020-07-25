@@ -151,7 +151,7 @@ class _TopOverlayRow extends StatelessWidget {
 
   Widget _buildOverlayButton(EntryAction action) {
     Widget child;
-    final onPressed = () => onActionSelected?.call(action);
+    void onPressed() => onActionSelected?.call(action);
     switch (action) {
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(

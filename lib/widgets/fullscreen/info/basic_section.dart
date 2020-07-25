@@ -53,7 +53,7 @@ class BasicSection extends StatelessWidget {
     final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
     final album = entry.directory;
     final filters = [
-      if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
+      if (entry.isVideo) MimeFilter(MimeTypes.anyVideo),
       if (entry.isAnimated) MimeFilter(MimeFilter.animated),
       if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
       ...tags.map((tag) => TagFilter(tag)),

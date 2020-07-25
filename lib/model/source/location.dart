@@ -75,7 +75,7 @@ mixin LocationMixin on SourceBase {
 
   void updateLocations() {
     final locations = rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails).toList();
-    final lister = (String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
+    List<String> lister(String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
     sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
     sortedPlaces = lister((address) => address.place);
 

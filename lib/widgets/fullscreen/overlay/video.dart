@@ -98,7 +98,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    final mq = context.select((MediaQueryData mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
+    final mq = context.select((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
     final mqWidth = mq.item1;
     final mqViewInsets = mq.item2;
     final mqViewPadding = mq.item3;
@@ -164,17 +164,17 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
       child: BlurredRRect(
         borderRadius: progressBarBorderRadius,
         child: GestureDetector(
-          onTapDown: (TapDownDetails details) {
+          onTapDown: (details) {
             _seekFromTap(details.globalPosition);
           },
-          onHorizontalDragStart: (DragStartDetails details) {
+          onHorizontalDragStart: (details) {
             _playingOnDragStart = isPlaying;
             if (_playingOnDragStart) controller.pause();
           },
-          onHorizontalDragUpdate: (DragUpdateDetails details) {
+          onHorizontalDragUpdate: (details) {
             _seekFromTap(details.globalPosition);
           },
-          onHorizontalDragEnd: (DragEndDetails details) {
+          onHorizontalDragEnd: (details) {
             if (_playingOnDragStart) controller.play();
           },
           child: Container(
