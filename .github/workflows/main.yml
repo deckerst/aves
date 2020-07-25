@@ -1,4 +1,4 @@
-name: Release an APK and an App Bundle on tagging
+name: Release on tag
 
 on:
   push:
