@@ -1,6 +1,14 @@
-![Aves logo][] [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt='Get it on Google Play' width="200">](https://play.google.com/store/apps/details?id=deckers.thibault.aves&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
+![Version badge][Version badge]
+![Build badge][Build badge]
+
+<br />
+<img src="https://raw.githubusercontent.com/deckerst/aves/develop/assets/aves_logo.svg" alt='Aves logo' width="200" />
+
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt='Get it on Google Play' width="200">](https://play.google.com/store/apps/details?id=deckers.thibault.aves&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
 
 Aves is a gallery and metadata explorer app. It is built for Android, with Flutter.
+
+<img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.0.0/S10/1-S10-collection.jpg" alt='Collection screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.0.0/S10/2-S10-image.jpg" alt='Image screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.0.0/S10/5-S10-stats.jpg" alt='Stats screenshot' height="400" />
 
 ## Features
 
@@ -48,4 +56,5 @@ If time permits, I intend to eventually add these:
 
 Create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See `<app dir>/android/key_template.properties` for the expected keys.
 
-[Aves logo]: https://github.com/deckerst/aves/blob/master/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+[Version badge]: https://img.shields.io/github/v/release/deckerst/aves?include_prereleases&sort=semver
+[Build badge]: https://img.shields.io/github/workflow/status/deckerst/aves/Release%20on%20tag
