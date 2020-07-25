@@ -129,50 +129,67 @@ class TitleSectionHeader extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
       constraints: const BoxConstraints(minHeight: leadingDimension),
-      child: Text.rich(
-        TextSpan(
-          children: [
-            WidgetSpan(
-              alignment: widgetSpanAlignment,
-              child: SectionSelectableLeading(
-                sectionKey: sectionKey,
-                browsingBuilder: leading != null
-                    ? (context) => Container(
-                          padding: leadingPadding,
-                          width: leadingDimension,
-                          height: leadingDimension,
-                          child: leading,
-                        )
-                    : null,
-              ),
-            ),
-            TextSpan(
-              text: title,
-              style: Constants.titleTextStyle,
-            ),
-            if (trailing != null)
+      child: GestureDetector(
+        onTap: () => _toggleSectionSelection(context),
+        child: Text.rich(
+          TextSpan(
+            children: [
               WidgetSpan(
                 alignment: widgetSpanAlignment,
-                child: Container(
-                  padding: trailingPadding,
-                  child: trailing,
+                child: SectionSelectableLeading(
+                  sectionKey: sectionKey,
+                  browsingBuilder: leading != null
+                      ? (context) => Container(
+                            padding: leadingPadding,
+                            width: leadingDimension,
+                            height: leadingDimension,
+                            child: leading,
+                          )
+                      : null,
+                  onPressed: () => _toggleSectionSelection(context),
                 ),
               ),
-          ],
+              TextSpan(
+                text: title,
+                style: Constants.titleTextStyle,
+              ),
+              if (trailing != null)
+                WidgetSpan(
+                  alignment: widgetSpanAlignment,
+                  child: Container(
+                    padding: trailingPadding,
+                    child: trailing,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _toggleSectionSelection(BuildContext context) {
+    final collection = Provider.of<CollectionLens>(context, listen: false);
+    final sectionEntries = collection.sections[sectionKey];
+    final selected = collection.isSelected(sectionEntries);
+    if (selected) {
+      collection.removeFromSelection(sectionEntries);
+    } else {
+      collection.addToSelection(sectionEntries);
+    }
   }
 }
 
 class SectionSelectableLeading extends StatelessWidget {
   final dynamic sectionKey;
   final WidgetBuilder browsingBuilder;
+  final VoidCallback onPressed;
 
   const SectionSelectableLeading({
     Key key,
     @required this.sectionKey,
     @required this.browsingBuilder,
+    @required this.onPressed,
   }) : super(key: key);
 
   static const leadingDimension = TitleSectionHeader.leadingDimension;
@@ -199,13 +216,7 @@ class SectionSelectableLeading extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 1),
                       alignment: Alignment.topLeft,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
-                      onPressed: () {
-                        if (selected) {
-                          collection.removeFromSelection(sectionEntries);
-                        } else {
-                          collection.addToSelection(sectionEntries);
-                        }
-                      },
+                      onPressed: onPressed,
                       tooltip: selected ? 'Deselect section' : 'Select section',
                       constraints: const BoxConstraints(
                         minHeight: leadingDimension,
