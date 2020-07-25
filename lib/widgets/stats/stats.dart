@@ -158,7 +158,7 @@ class StatsPage extends StatelessWidget {
             ),
             Center(
               child: Text(
-                '${sum}\n${label(sum)}',
+                '$sum\n${label(sum)}',
                 textAlign: TextAlign.center,
               ),
             ),

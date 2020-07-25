@@ -165,7 +165,7 @@ class SectionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const dim = 32.0;
-    final buildDivider = () => const SizedBox(
+    Widget buildDivider() => const SizedBox(
           width: dim,
           child: Divider(
             thickness: AvesFilterChip.outlineWidth,

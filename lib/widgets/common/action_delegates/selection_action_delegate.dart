@@ -116,10 +116,10 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           final count = movedCount;
-          showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (movedCount > 0) {
           final fromAlbums = <String>{};
@@ -187,9 +187,9 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these ${count} items')}?'),
+          content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these $count items')}?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),
@@ -217,7 +217,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
-          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (deletedCount > 0) {
           collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
@@ -242,9 +242,9 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     // do not handle completion inside `StreamBuilder`
     // as it could be called multiple times
-    final onComplete = () => _hideOpReportOverlay().then((_) => onDone(processed));
+    Future<void> onComplete() => _hideOpReportOverlay().then((_) => onDone(processed));
     opStream.listen(
-      (event) => processed.add(event),
+      processed.add,
       onError: (error) {
         debugPrint('_showOpReport error=$error');
         onComplete();

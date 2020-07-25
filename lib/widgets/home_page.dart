@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String pickMimeTypes = intentData['mimeType'];
-          debugPrint('pick mimeType=' + pickMimeTypes);
+          debugPrint('pick mimeType=$pickMimeTypes');
           break;
       }
     }

@@ -61,7 +61,7 @@ class ImageView extends StatelessWidget {
     // if the image is already in the cache it will show the final image, otherwise the thumbnail
     // in any case, we should use `Center` + `AspectRatio` + `Fill` so that the transition image
     // appears as the final image with `PhotoViewComputedScale.contained` for `initialScale`
-    final loadingBuilder = (BuildContext context, ImageProvider imageProvider) {
+    Widget loadingBuilder(BuildContext context, ImageProvider imageProvider) {
       return Center(
         child: AspectRatio(
           // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ

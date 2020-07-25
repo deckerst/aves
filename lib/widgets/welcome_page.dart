@@ -35,7 +35,7 @@ class _WelcomePageState extends State<WelcomePage> {
           padding: const EdgeInsets.all(16.0),
           child: FutureBuilder(
               future: _termsLoader,
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              builder: (context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 final terms = snapshot.data;
                 return Column(
