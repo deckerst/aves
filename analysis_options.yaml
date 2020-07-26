@@ -2,6 +2,7 @@ include: package:pedantic/analysis_options.yaml
 
 analyzer:
   exclude:
+    - lib/flutter_version.dart
     - lib/generated_plugin_registrant.dart
 
 #  strong-mode:
