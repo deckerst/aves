@@ -54,7 +54,7 @@ class SectionHeader extends StatelessWidget {
             height: height,
             child: header,
           )
-        : const SizedBox.shrink();
+        : SizedBox.shrink();
   }
 
   Widget _buildAlbumSectionHeader() {
@@ -128,7 +128,7 @@ class TitleSectionHeader extends StatelessWidget {
     return Container(
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
-      constraints: const BoxConstraints(minHeight: leadingDimension),
+      constraints: BoxConstraints(minHeight: leadingDimension),
       child: GestureDetector(
         onTap: () => _toggleSectionSelection(context),
         child: Text.rich(
@@ -213,12 +213,12 @@ class SectionSelectableLeading extends StatelessWidget {
                     ),
                     child: IconButton(
                       iconSize: 26,
-                      padding: const EdgeInsets.only(top: 1),
+                      padding: EdgeInsets.only(top: 1),
                       alignment: Alignment.topLeft,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
                       onPressed: onPressed,
                       tooltip: selected ? 'Deselect section' : 'Select section',
-                      constraints: const BoxConstraints(
+                      constraints: BoxConstraints(
                         minHeight: leadingDimension,
                         minWidth: leadingDimension,
                       ),
@@ -236,7 +236,7 @@ class SectionSelectableLeading extends StatelessWidget {
                   );
                 },
               )
-            : browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
+            : browsingBuilder?.call(context) ?? SizedBox(height: leadingDimension);
         return AnimatedSwitcher(
           duration: Durations.sectionHeaderAnimation,
           switchInCurve: Curves.easeInOut,

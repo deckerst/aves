@@ -34,7 +34,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('New Album'),
+      title: Text('New Album'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -42,8 +42,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Storage:'),
-                const SizedBox(width: 8),
+                Text('Storage:'),
+                SizedBox(width: 8),
                 Expanded(
                   child: DropdownButton<StorageVolume>(
                     isExpanded: true,
@@ -68,7 +68,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
           ],
           ValueListenableBuilder<bool>(
               valueListenable: _existsNotifier,
@@ -84,7 +84,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
               }),
         ],
       ),
-      contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
       actions: [
         FlatButton(
           onPressed: () => Navigator.pop(context),

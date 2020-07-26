@@ -81,7 +81,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   @override
   Widget build(BuildContext context) {
     final fastImage = Image(
-      key: const ValueKey('LQ'),
+      key: ValueKey('LQ'),
       image: _fastThumbnailProvider,
       width: extent,
       height: extent,
@@ -90,7 +90,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     final image = _sizedThumbnailProvider == null
         ? fastImage
         : Image(
-            key: const ValueKey('HQ'),
+            key: ValueKey('HQ'),
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               if (wasSynchronouslyLoaded) return child;
               return AnimatedSwitcher(

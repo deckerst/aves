@@ -87,7 +87,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       // no bounce at the bottom, to avoid video controller displacement
       curve: Curves.easeOutQuad,
     );
-    _bottomOverlayOffset = Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(CurvedAnimation(
+    _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     ));
@@ -178,7 +178,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     final child = ValueListenableBuilder<ImageEntry>(
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
-        if (entry == null) return const SizedBox.shrink();
+        if (entry == null) return SizedBox.shrink();
         return FullscreenTopOverlay(
           entry: entry,
           scale: _topOverlayScale,
@@ -459,7 +459,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   Widget build(BuildContext context) {
     final pages = [
       // fake page for opacity transition between collection and fullscreen views
-      const SizedBox(),
+      SizedBox(),
       hasCollection
           ? MultiImagePage(
               collection: collection,
@@ -494,7 +494,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
       child: PageView(
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
-        physics: const PhotoViewPageViewScrollPhysics(parent: PageScrollPhysics()),
+        physics: PhotoViewPageViewScrollPhysics(parent: PageScrollPhysics()),
         onPageChanged: (page) {
           widget.onVerticalPageChanged(page);
           _infoPageVisibleNotifier.value = page == pages.length - 1;

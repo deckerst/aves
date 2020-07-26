@@ -23,7 +23,7 @@ mixin PermissionAwareMixin {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Storage Volume Access'),
+            title: Text('Storage Volume Access'),
             content: Text('Please select the $dirDisplayName directory of “$volumeDescription” in the next screen, so that this app can access it and complete your request.'),
             actions: [
               FlatButton(

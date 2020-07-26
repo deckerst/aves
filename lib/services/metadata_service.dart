@@ -47,7 +47,7 @@ class MetadataService {
         debugPrint('getCatalogMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       }
       return null;
-    };
+    }
     return background
         ? servicePolicy.call(
             call,

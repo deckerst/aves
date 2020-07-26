@@ -11,7 +11,7 @@ mixin FeedbackMixin {
   void showFeedback(BuildContext context, String message) {
     _flushbar = Flushbar(
       message: message,
-      margin: const EdgeInsets.all(8),
+      margin: EdgeInsets.all(8),
       borderRadius: 8,
       borderColor: Colors.white30,
       borderWidth: 0.5,

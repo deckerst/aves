@@ -20,13 +20,13 @@ class MenuRow extends StatelessWidget {
         if (checked != null) ...[
           Opacity(
             opacity: checked ? 1 : 0,
-            child: const Icon(AIcons.checked),
+            child: Icon(AIcons.checked),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
         ],
         if (icon != null) ...[
           Icon(icon),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
         ],
         Expanded(child: Text(text)),
       ],

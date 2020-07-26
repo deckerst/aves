@@ -39,7 +39,7 @@ class _LicensesState extends State<Licenses> {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
           (context, index) {
@@ -69,7 +69,7 @@ class _LicensesState extends State<Licenses> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsetsDirectional.only(start: 8),
+          padding: EdgeInsetsDirectional.only(start: 8),
           child: Row(
             children: [
               Expanded(
@@ -95,13 +95,13 @@ class _LicensesState extends State<Licenses> {
                   setState(() {});
                 },
                 tooltip: 'Sort',
-                icon: const Icon(AIcons.sort),
+                icon: Icon(AIcons.sort),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 8),
-        const Padding(
+        SizedBox(height: 8),
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 8),
           child: Text('The following sets forth attribution notices for third party software that may be contained in this application.'),
         ),
@@ -122,17 +122,17 @@ class LicenseRow extends StatelessWidget {
     final subColor = bodyTextStyle.color.withOpacity(.6);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.only(top: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LinkChip(
             text: package.name,
             url: package.sourceUrl,
-            textStyle: const TextStyle(fontWeight: FontWeight.bold),
+            textStyle: TextStyle(fontWeight: FontWeight.bold),
           ),
           Padding(
-            padding: const EdgeInsetsDirectional.only(start: 16),
+            padding: EdgeInsetsDirectional.only(start: 16),
             child: LinkChip(
               text: package.license,
               url: package.licenseUrl,

@@ -23,7 +23,7 @@ class LinkChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
-      style: (textStyle ?? const TextStyle()).copyWith(color: color),
+      style: (textStyle ?? TextStyle()).copyWith(color: color),
       child: InkWell(
         borderRadius: borderRadius,
         onTap: () async {
@@ -32,16 +32,16 @@ class LinkChip extends StatelessWidget {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (leading != null) ...[
                 leading,
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
               ],
               Text(text),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Builder(
                 builder: (context) => Icon(
                   AIcons.openInNew,
