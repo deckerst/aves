@@ -90,7 +90,7 @@ class _LocationSectionState extends State<LocationSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.showTitle)
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 8),
               child: SectionRow(AIcons.location),
             ),
@@ -105,12 +105,12 @@ class _LocationSectionState extends State<LocationSection> {
           ),
           if (location.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 8),
               child: InfoRowGroup({'Address': location}),
             ),
           if (filters.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -126,7 +126,7 @@ class _LocationSectionState extends State<LocationSection> {
       );
     } else {
       _loadedUri = null;
-      return const SizedBox.shrink();
+      return SizedBox.shrink();
     }
   }
 
@@ -175,7 +175,7 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
               // and triggering by mistake a move to the image page above
             },
             child: ClipRRect(
-              borderRadius: const BorderRadius.all(
+              borderRadius: BorderRadius.all(
                 Radius.circular(16),
               ),
               child: Container(
@@ -208,24 +208,24 @@ class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
         TooltipTheme(
           data: TooltipTheme.of(context).copyWith(
             preferBelow: false,
           ),
           child: Column(children: [
             IconButton(
-              icon: const Icon(AIcons.zoomIn),
+              icon: Icon(AIcons.zoomIn),
               onPressed: _controller == null ? null : () => _zoomBy(1),
               tooltip: 'Zoom in',
             ),
             IconButton(
-              icon: const Icon(AIcons.zoomOut),
+              icon: Icon(AIcons.zoomOut),
               onPressed: _controller == null ? null : () => _zoomBy(-1),
               tooltip: 'Zoom out',
             ),
             IconButton(
-              icon: const Icon(AIcons.openInNew),
+              icon: Icon(AIcons.openInNew),
               onPressed: () => AndroidAppService.openMap(widget.geoUri),
               tooltip: 'Show on map...',
             ),

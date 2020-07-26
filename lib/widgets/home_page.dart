@@ -95,8 +95,8 @@ class _HomePageState extends State<HomePage> {
     return FutureBuilder<void>(
         future: _appSetup,
         builder: (context, snapshot) {
-          if (snapshot.hasError) return const Icon(AIcons.error);
-          if (snapshot.connectionState != ConnectionState.done) return const Scaffold();
+          if (snapshot.hasError) return Icon(AIcons.error);
+          if (snapshot.connectionState != ConnectionState.done) return Scaffold();
           if (AvesApp.mode == AppMode.view) {
             return SingleFullscreenPage(entry: _viewerEntry);
           }
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               sortFactor: settings.collectionSortFactor,
             ));
           }
-          return const SizedBox.shrink();
+          return SizedBox.shrink();
         });
   }
 }

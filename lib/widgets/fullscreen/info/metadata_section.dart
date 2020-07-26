@@ -65,7 +65,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   Widget build(BuildContext context) {
     super.build(context);
 
-    if (_metadata.isEmpty) return const SliverToBoxAdapter(child: SizedBox.shrink());
+    if (_metadata.isEmpty) return SliverToBoxAdapter(child: SizedBox.shrink());
 
     final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty).toList();
     final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty).toList();
@@ -74,7 +74,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           if (index == 0) {
-            return const SectionRow(AIcons.info);
+            return SectionRow(AIcons.info);
           }
           if (index < untitledDirectoryCount + 1) {
             final dir = directoriesWithoutTitle[index - 1];
@@ -91,10 +91,10 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
               expandedNotifier: _expandedDirectoryNotifier,
               title: _DirectoryTitle(dir.name),
               children: [
-                const Divider(thickness: 1.0, height: 1.0),
+                Divider(thickness: 1.0, height: 1.0),
                 Container(
                   alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(8),
                   child: InfoRowGroup(dir.tags),
                 ),
               ],
@@ -150,10 +150,10 @@ class _DirectoryTitle extends StatelessWidget {
         decoration: HighlightDecoration(
           color: stringToColor(name),
         ),
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
+        margin: EdgeInsets.symmetric(vertical: 4.0),
         child: Text(
           name,
-          style: const TextStyle(
+          style: TextStyle(
             shadows: [
               Shadow(
                 color: Colors.black,

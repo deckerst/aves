@@ -40,7 +40,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     return SafeArea(
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
-        padding: const EdgeInsets.all(padding),
+        padding: EdgeInsets.all(padding),
         child: Selector<MediaQueryData, Tuple2<double, Orientation>>(
           selector: (c, mq) => Tuple2(mq.size.width, mq.orientation),
           builder: (c, mq, child) {
@@ -126,19 +126,19 @@ class _TopOverlayRow extends StatelessWidget {
       children: [
         OverlayButton(
           scale: scale,
-          child: ModalRoute.of(context)?.canPop ?? true ? const BackButton() : const CloseButton(),
+          child: ModalRoute.of(context)?.canPop ?? true ? BackButton() : CloseButton(),
         ),
-        const Spacer(),
+        Spacer(),
         ...quickActions.map(_buildOverlayButton),
         OverlayButton(
           scale: scale,
           child: PopupMenuButton<EntryAction>(
             itemBuilder: (context) => [
               ...inAppActions.map(_buildPopupMenuItem),
-              const PopupMenuDivider(),
+              PopupMenuDivider(),
               ...externalAppActions.map(_buildPopupMenuItem),
               if (kDebugMode) ...[
-                const PopupMenuDivider(),
+                PopupMenuDivider(),
                 _buildPopupMenuItem(EntryAction.debug),
               ]
             ],
@@ -181,13 +181,13 @@ class _TopOverlayRow extends StatelessWidget {
     }
     return child != null
         ? Padding(
-            padding: const EdgeInsetsDirectional.only(end: padding),
+            padding: EdgeInsetsDirectional.only(end: padding),
             child: OverlayButton(
               scale: scale,
               child: child,
             ),
           )
-        : const SizedBox.shrink();
+        : SizedBox.shrink();
   }
 
   PopupMenuEntry<EntryAction> _buildPopupMenuItem(EntryAction action) {
@@ -269,11 +269,11 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
       builder: (context, isFavourite, child) {
         if (widget.isMenuItem) {
           return isFavourite
-              ? const MenuRow(
+              ? MenuRow(
                   text: 'Remove from favourites',
                   icon: AIcons.favouriteActive,
                 )
-              : const MenuRow(
+              : MenuRow(
                   text: 'Add to favourites',
                   icon: AIcons.favourite,
                 );
@@ -288,7 +288,7 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
             ),
             Sweeper(
               key: ValueKey(widget.entry),
-              builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
+              builder: (context) => Icon(AIcons.favourite, color: Colors.redAccent),
               toggledNotifier: isFavouriteNotifier,
             ),
           ],

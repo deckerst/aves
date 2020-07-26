@@ -69,7 +69,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
           return FilterGridPage(
             source: source,
             appBar: SliverAppBar(
-              leading: const BackButton(),
+              leading: BackButton(),
               title: Text(copy ? 'Copy to Album' : 'Move to Album'),
               actions: [
                 IconButton(
@@ -90,7 +90,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
             ),
             filterEntries: source.getAlbumEntries(),
             filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-            emptyBuilder: () => const EmptyContent(
+            emptyBuilder: () => EmptyContent(
               icon: AIcons.album,
               text: 'No albums',
             ),
@@ -258,7 +258,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
           child: StreamBuilder<T>(
               stream: opStream,
               builder: (context, snapshot) {
-                Widget child = const SizedBox.shrink();
+                Widget child = SizedBox.shrink();
                 if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
                   final percent = processed.length.toDouble() / selection.length;
                   child = CircularPercentIndicator(

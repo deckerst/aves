@@ -109,7 +109,7 @@ class SectionedListLayoutProvider extends StatelessWidget {
             sectionKey: sectionKey,
             height: headerExtent,
           )
-        : const SizedBox.shrink();
+        : SizedBox.shrink();
   }
 }
 

@@ -192,7 +192,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     ],
                   ),
                 )
-              : const BoxDecoration(
+              : BoxDecoration(
                   // provide dummy gradient to lerp to the other one during animation
                   gradient: RadialGradient(
                     colors: [

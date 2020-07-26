@@ -120,7 +120,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       context: context,
       builder: (context) {
         return AlertDialog(
-          content: const Text('Are you sure?'),
+          content: Text('Are you sure?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),

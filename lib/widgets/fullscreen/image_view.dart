@@ -41,7 +41,7 @@ class ImageView extends StatelessWidget {
                 entry: entry,
                 controller: videoController,
               )
-            : const SizedBox(),
+            : SizedBox(),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,
@@ -72,7 +72,7 @@ class ImageView extends StatelessWidget {
           ),
         ),
       );
-    };
+    }
 
     Widget child;
     if (entry.isSvg) {
@@ -107,7 +107,7 @@ class ImageView extends StatelessWidget {
           context,
           imageCache.statusForKey(uriImage).keepAlive ? uriImage : fastThumbnailProvider,
         ),
-        loadFailedChild: const EmptyContent(
+        loadFailedChild: EmptyContent(
           icon: AIcons.error,
           text: 'Oops!',
           alignment: Alignment.center,

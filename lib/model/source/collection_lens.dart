@@ -177,7 +177,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
           final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
           final vb = androidFileUtils.getStorageVolume(b)?.path ?? '';
           return compareAsciiUpperCase(va, vb);
-        };
+        }
         sections = SplayTreeMap.of(byAlbum, compare);
         break;
     }

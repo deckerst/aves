@@ -37,8 +37,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Debug'),
-          bottom: const TabBar(
+          title: Text('Debug'),
+          bottom: TabBar(
             tabs: [
               Tab(text: 'DB'),
               Tab(text: 'Content Resolver'),
@@ -60,13 +60,13 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Widget _buildDbTabView() {
     final catalog = widget.entry.catalogMetadata;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
         FutureBuilder<DateMetadata>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,12 +80,12 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         FutureBuilder<CatalogMetadata>(
           future: _dbMetadataLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,12 +106,12 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         FutureBuilder<AddressDetails>(
           future: _dbAddressLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +129,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        const Divider(),
+        Divider(),
         Text('Catalog metadata:${catalog == null ? ' no data' : ''}'),
         if (catalog != null)
           InfoRowGroup({
@@ -153,13 +153,13 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
 
   Widget _buildContentResolverTabView() {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = SplayTreeMap.of(snapshot.data.map((k, v) {
               final key = k.toString();
               var value = v?.toString() ?? 'null';

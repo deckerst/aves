@@ -65,9 +65,9 @@ class BasicSection extends StatelessWidget {
           ...filters,
           if (entry.isFavourite) FavouriteFilter(),
         ]..sort();
-        if (effectiveFilters.isEmpty) return const SizedBox.shrink();
+        if (effectiveFilters.isEmpty) return SizedBox.shrink();
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+          padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,

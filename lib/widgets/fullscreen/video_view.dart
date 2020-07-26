@@ -60,7 +60,7 @@ class AvesVideoState extends State<AvesVideo> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null) return const SizedBox();
+    if (controller == null) return SizedBox();
     return StreamBuilder<IjkStatus>(
         stream: widget.controller.ijkStatusStream,
         builder: (context, snapshot) {
@@ -68,8 +68,8 @@ class AvesVideoState extends State<AvesVideo> {
           return isPlayable(status)
               ? IjkPlayer(
                   mediaController: controller,
-                  controllerWidgetBuilder: (controller) => const SizedBox.shrink(),
-                  statusWidgetBuilder: (context, controller, status) => const SizedBox.shrink(),
+                  controllerWidgetBuilder: (controller) => SizedBox.shrink(),
+                  statusWidgetBuilder: (context, controller, status) => SizedBox.shrink(),
                   textureBuilder: (context, controller, info) {
                     var id = controller.textureId;
                     var child = id != null

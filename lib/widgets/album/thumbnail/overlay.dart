@@ -75,7 +75,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                           icon: selected ? AIcons.selected : AIcons.unselected,
                           size: iconSize,
                         )
-                      : const SizedBox.shrink();
+                      : SizedBox.shrink();
                   child = AnimatedSwitcher(
                     duration: duration,
                     switchInCurve: Curves.easeOutBack,
@@ -95,7 +95,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                   return child;
                 },
               )
-            : const SizedBox.shrink();
+            : SizedBox.shrink();
         return AnimatedSwitcher(
           duration: duration,
           child: child,

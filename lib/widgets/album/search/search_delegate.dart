@@ -44,7 +44,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: const Icon(AIcons.clear),
+          icon: Icon(AIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);
@@ -63,7 +63,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             return ListView(
-              padding: const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 8),
               children: [
                 _buildFilterRow(
                   context: context,
@@ -135,7 +135,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       // and possibly trigger a rebuild here
       _select(context, _buildQueryFilter(true));
     });
-    return const SizedBox.shrink();
+    return SizedBox.shrink();
   }
 
   QueryFilter _buildQueryFilter(bool colorful) {

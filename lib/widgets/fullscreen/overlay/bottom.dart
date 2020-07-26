@@ -90,7 +90,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
                     _lastEntry = entry;
                   }
                   return _lastEntry == null
-                      ? const SizedBox.shrink()
+                      ? SizedBox.shrink()
                       : Padding(
                           // keep padding inside `FutureBuilder` so that overlay takes no space until data is ready
                           padding: innerPadding,
@@ -134,7 +134,7 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2.copyWith(
-        shadows: const [
+        shadows: [
           Shadow(
             color: Colors.black87,
             offset: Offset(0.5, 1.0),
@@ -163,12 +163,12 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
                 if (positionTitle.isNotEmpty) Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
                 if (entry.hasGps)
                   Container(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    padding: EdgeInsets.only(top: _interRowPadding),
                     child: _LocationRow(entry: entry),
                   ),
                 if (twoColumns)
                   Padding(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    padding: EdgeInsets.only(top: _interRowPadding),
                     child: Row(
                       children: [
                         Container(width: subRowWidth, child: _DateRow(entry)),
@@ -178,13 +178,13 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
                   )
                 else ...[
                   Container(
-                    padding: const EdgeInsets.only(top: _interRowPadding),
+                    padding: EdgeInsets.only(top: _interRowPadding),
                     width: subRowWidth,
                     child: _DateRow(entry),
                   ),
                   if (hasShootingDetails)
                     Container(
-                      padding: const EdgeInsets.only(top: _interRowPadding),
+                      padding: EdgeInsets.only(top: _interRowPadding),
                       width: subRowWidth,
                       child: _ShootingRow(details),
                     ),
@@ -216,8 +216,8 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        const Icon(AIcons.location, size: _iconSize),
-        const SizedBox(width: _iconPadding),
+        Icon(AIcons.location, size: _iconSize),
+        SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
@@ -236,8 +236,8 @@ class _DateRow extends StatelessWidget {
     final resolution = '${entry.width ?? '?'} × ${entry.height ?? '?'}';
     return Row(
       children: [
-        const Icon(AIcons.date, size: _iconSize),
-        const SizedBox(width: _iconPadding),
+        Icon(AIcons.date, size: _iconSize),
+        SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         if (!entry.isSvg) Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -254,8 +254,8 @@ class _ShootingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(AIcons.shooting, size: _iconSize),
-        const SizedBox(width: _iconPadding),
+        Icon(AIcons.shooting, size: _iconSize),
+        SizedBox(width: _iconPadding),
         Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.focalLength, strutStyle: Constants.overflowStrutStyle)),
