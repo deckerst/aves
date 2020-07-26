@@ -21,7 +21,7 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 - favorites
 - statistics
 - handle intents to view or pick images
-- support Android API 24 ~ 29 (Nougat ~ Android 10)
+- support Android API 24 ~ 30 (Nougat ~ R)
 
 ## Roadmap
 
@@ -33,7 +33,6 @@ If time permits, I intend to eventually add these:
 - gesture: long press and drag thumbnails to select multiple items
 - gesture: double tap and drag image to zoom in/out (aka quick scale, one finger zoom)
 - support: burst groups
-- support: Android R
 - subsampling/tiling
 
 ## Known Issues
