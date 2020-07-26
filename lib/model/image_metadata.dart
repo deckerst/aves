@@ -179,11 +179,12 @@ class AddressDetails {
   }
 }
 
+@immutable
 class FavouriteRow {
   final int contentId;
   final String path;
 
-  FavouriteRow({
+  const FavouriteRow({
     this.contentId,
     this.path,
   });

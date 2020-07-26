@@ -63,7 +63,7 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
     _rawEntries.addAll(entries);
     addFolderPath(_rawEntries.map((entry) => entry.directory));
     invalidateFilterEntryCounts();
-    eventBus.fire(const EntryAddedEvent());
+    eventBus.fire(EntryAddedEvent());
   }
 
   void removeEntries(Iterable<ImageEntry> entries) {

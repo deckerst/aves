@@ -66,7 +66,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   Widget build(BuildContext context) {
     final hasBackground = widget.background != null;
     final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon);
-    final trailing = widget.removable ? const Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
+    final trailing = widget.removable ? Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
     Widget content = Row(
       mainAxisSize: hasBackground ? MainAxisSize.max : MainAxisSize.min,
@@ -74,7 +74,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       children: [
         if (leading != null) ...[
           leading,
-          const SizedBox(width: AvesFilterChip.padding),
+          SizedBox(width: AvesFilterChip.padding),
         ],
         Flexible(
           child: Text(
@@ -85,7 +85,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           ),
         ),
         if (trailing != null) ...[
-          const SizedBox(width: AvesFilterChip.padding),
+          SizedBox(width: AvesFilterChip.padding),
           trailing,
         ],
       ],
@@ -102,7 +102,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     }
 
     content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2, vertical: 2),
       child: content,
     );
 
@@ -112,7 +112,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           color: Colors.black54,
           child: DefaultTextStyle(
             style: Theme.of(context).textTheme.bodyText2.copyWith(
-              shadows: const [
+              shadows: [
                 Shadow(
                   color: Colors.black87,
                   offset: Offset(0.5, 1.0),
@@ -128,7 +128,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     final borderRadius = AvesFilterChip.borderRadius;
 
     Widget chip = Container(
-      constraints: const BoxConstraints(
+      constraints: BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
         maxWidth: AvesFilterChip.maxChipWidth,
         minHeight: AvesFilterChip.minChipHeight,
@@ -157,9 +157,9 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                       }
                     : null,
                 borderRadius: borderRadius,
-                child: FutureBuilder(
+                child: FutureBuilder<Color>(
                   future: _colorFuture,
-                  builder: (context, AsyncSnapshot<Color> snapshot) {
+                  builder: (context, snapshot) {
                     final outlineColor = snapshot.hasData ? snapshot.data : Colors.transparent;
                     return DecoratedBox(
                       decoration: BoxDecoration(
@@ -171,7 +171,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                       ),
                       position: DecorationPosition.foreground,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: EdgeInsets.symmetric(vertical: 8),
                         child: content,
                       ),
                     );

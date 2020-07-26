@@ -45,10 +45,10 @@ class _AvesAppState extends State<AvesApp> {
         scaffoldBackgroundColor: Colors.grey[900],
         buttonColor: accentColor,
         toggleableActiveColor: accentColor,
-        tooltipTheme: const TooltipThemeData(
+        tooltipTheme: TooltipThemeData(
           verticalOffset: 32,
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           textTheme: TextTheme(
             headline6: TextStyle(
               fontSize: 20,
@@ -58,12 +58,12 @@ class _AvesAppState extends State<AvesApp> {
           ),
         ),
       ),
-      home: FutureBuilder(
+      home: FutureBuilder<void>(
         future: _appSetup,
-        builder: (context, AsyncSnapshot<void> snapshot) {
-          if (snapshot.hasError) return const Icon(AIcons.error);
-          if (snapshot.connectionState != ConnectionState.done) return const Scaffold();
-          return settings.hasAcceptedTerms ? const HomePage() : const WelcomePage();
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return Icon(AIcons.error);
+          if (snapshot.connectionState != ConnectionState.done) return Scaffold();
+          return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
         },
       ),
     );

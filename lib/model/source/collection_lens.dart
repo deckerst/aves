@@ -168,8 +168,8 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         ]);
         break;
       case SortFactor.name:
-        final byAlbum = groupBy(_filteredEntries, (ImageEntry entry) => entry.directory);
-        final compare = (a, b) {
+        final byAlbum = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
+        int compare(a, b) {
           final ua = source.getUniqueAlbumName(a);
           final ub = source.getUniqueAlbumName(b);
           final c = compareAsciiUpperCase(ua, ub);
@@ -177,7 +177,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
           final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
           final vb = androidFileUtils.getStorageVolume(b)?.path ?? '';
           return compareAsciiUpperCase(va, vb);
-        };
+        }
         sections = SplayTreeMap.of(byAlbum, compare);
         break;
     }

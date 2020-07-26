@@ -36,6 +36,14 @@
     -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- from Android R, we should define <queries> to make other apps visible to this app -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"

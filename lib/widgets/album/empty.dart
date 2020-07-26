@@ -24,10 +24,10 @@ class EmptyContent extends StatelessWidget {
             size: 64,
             color: color,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: color,
               fontSize: 22,
               fontFamily: 'Concourse',

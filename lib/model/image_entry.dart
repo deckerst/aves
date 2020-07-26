@@ -152,10 +152,10 @@ class ImageEntry {
 
   bool get isFavourite => favourites.isFavourite(this);
 
-  bool get isSvg => mimeType == MimeTypes.SVG;
+  bool get isSvg => mimeType == MimeTypes.svg;
 
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
-  bool get isPhoto => [MimeTypes.HEIC, MimeTypes.HEIF, MimeTypes.JPEG].contains(mimeType);
+  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');
 
@@ -167,7 +167,7 @@ class ImageEntry {
 
   bool get canPrint => !isVideo;
 
-  bool get canRotate => canEdit && (mimeType == MimeTypes.JPEG || mimeType == MimeTypes.PNG);
+  bool get canRotate => canEdit && (mimeType == MimeTypes.jpeg || mimeType == MimeTypes.png);
 
   bool get rotated => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
 
@@ -270,7 +270,7 @@ class ImageEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final call = () => Geocoder.local.findAddressesFromCoordinates(coordinates);
+      Future<List<Address>> call() => Geocoder.local.findAddressesFromCoordinates(coordinates);
       final addresses = await (background
           ? servicePolicy.call(
               call,

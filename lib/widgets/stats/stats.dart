@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/album/empty.dart';
@@ -49,12 +49,12 @@ class StatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child;
     if (collection.isEmpty) {
-      child = const EmptyContent(
+      child = EmptyContent(
         icon: AIcons.image,
         text: 'No images',
       );
     } else {
-      final byMimeTypes = groupBy(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
+      final byMimeTypes = groupBy<ImageEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
       final mimeDonuts = Wrap(
@@ -71,7 +71,7 @@ class StatsPage extends StatelessWidget {
       final textScaleFactor = MediaQuery.textScaleFactorOf(context);
       final lineHeight = 16 * textScaleFactor;
       final locationIndicator = Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           children: [
             LinearPercentIndicator(
@@ -80,12 +80,12 @@ class StatsPage extends StatelessWidget {
               backgroundColor: Colors.white24,
               progressColor: Theme.of(context).accentColor,
               animation: true,
-              leading: const Icon(AIcons.location),
+              leading: Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below
-              padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
+              padding: EdgeInsets.symmetric(horizontal: lineHeight) + EdgeInsets.only(right: 24),
               center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
           ],
         ),
@@ -103,7 +103,7 @@ class StatsPage extends StatelessWidget {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Stats'),
+          title: Text('Stats'),
         ),
         body: SafeArea(
           child: child,
@@ -118,9 +118,9 @@ class StatsPage extends StatelessWidget {
   }
 
   Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
-    if (byMimeTypes.isEmpty) return const SizedBox.shrink();
+    if (byMimeTypes.isEmpty) return SizedBox.shrink();
 
-    final sum = byMimeTypes.values.fold(0, (prev, v) => prev + v);
+    final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
 
     final seriesData = byMimeTypes.entries.map((kv) => StringNumDatum(_cleanMime(kv.key), kv.value)).toList();
     seriesData.sort((kv1, kv2) {
@@ -158,7 +158,7 @@ class StatsPage extends StatelessWidget {
             ),
             Center(
               child: Text(
-                '${sum}\n${label(sum)}',
+                '$sum\n${label(sum)}',
                 textAlign: TextAlign.center,
               ),
             ),
@@ -177,12 +177,12 @@ class StatsPage extends StatelessWidget {
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.only(end: 8),
+                            padding: EdgeInsetsDirectional.only(end: 8),
                             child: Icon(AIcons.disc, color: stringToColor(kv.key)),
                           ),
                         ),
                         TextSpan(text: '${kv.key}   '),
-                        TextSpan(text: '${kv.value}', style: const TextStyle(color: Colors.white70)),
+                        TextSpan(text: '${kv.value}', style: TextStyle(color: Colors.white70)),
                       ],
                     ),
                     overflow: TextOverflow.fade,
@@ -217,7 +217,7 @@ class StatsPage extends StatelessWidget {
 
     return [
       Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Text(
           title,
           style: Constants.titleTextStyle,

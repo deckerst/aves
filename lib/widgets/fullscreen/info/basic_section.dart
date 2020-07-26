@@ -53,7 +53,7 @@ class BasicSection extends StatelessWidget {
     final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
     final album = entry.directory;
     final filters = [
-      if (entry.isVideo) MimeFilter(MimeTypes.ANY_VIDEO),
+      if (entry.isVideo) MimeFilter(MimeTypes.anyVideo),
       if (entry.isAnimated) MimeFilter(MimeFilter.animated),
       if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
       ...tags.map((tag) => TagFilter(tag)),
@@ -65,9 +65,9 @@ class BasicSection extends StatelessWidget {
           ...filters,
           if (entry.isFavourite) FavouriteFilter(),
         ]..sort();
-        if (effectiveFilters.isEmpty) return const SizedBox.shrink();
+        if (effectiveFilters.isEmpty) return SizedBox.shrink();
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
+          padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,

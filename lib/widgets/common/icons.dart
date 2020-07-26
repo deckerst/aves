@@ -131,10 +131,10 @@ class OverlayIcon extends StatelessWidget {
     );
 
     return Container(
-      margin: const EdgeInsets.all(1),
+      margin: EdgeInsets.all(1),
       padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
-        color: const Color(0xBB000000),
+        color: Color(0xBB000000),
         borderRadius: BorderRadius.all(
           Radius.circular(size),
         ),
@@ -146,7 +146,7 @@ class OverlayIcon extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 iconChild,
-                const SizedBox(width: 2),
+                SizedBox(width: 2),
                 Text(text),
               ],
             ),

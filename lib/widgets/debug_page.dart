@@ -7,7 +7,6 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -17,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
-import 'package:tuple/tuple.dart';
 
 class DebugPage extends StatefulWidget {
   final CollectionSource source;
@@ -35,7 +33,6 @@ class DebugPageState extends State<DebugPage> {
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
   Future<List<FavouriteRow>> _dbFavouritesLoader;
-  Future<List<Tuple2<String, bool>>> _volumePermissionLoader;
   Future<Map> _envLoader;
 
   List<ImageEntry> get entries => widget.source.rawEntries;
@@ -44,13 +41,6 @@ class DebugPageState extends State<DebugPage> {
   void initState() {
     super.initState();
     _startDbReport();
-    _volumePermissionLoader = Future.wait<Tuple2<String, bool>>(
-      androidFileUtils.storageVolumes.map(
-        (volume) => AndroidFileService.requireVolumeAccessDialog(volume.path).then(
-          (value) => Tuple2(volume.path, !value),
-        ),
-      ),
-    );
     _envLoader = AndroidAppService.getEnv();
   }
 
@@ -61,8 +51,8 @@ class DebugPageState extends State<DebugPage> {
         length: 4,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('Debug'),
-            bottom: const TabBar(
+            title: Text('Debug'),
+            bottom: TabBar(
               tabs: [
                 Tab(icon: Icon(OMIcons.whatshot)),
                 Tab(icon: Icon(OMIcons.settings)),
@@ -91,9 +81,9 @@ class DebugPageState extends State<DebugPage> {
     final withGps = catalogued.where((entry) => entry.hasGps);
     final located = withGps.where((entry) => entry.isLocated);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
-        const Text('Time dilation'),
+        Text('Time dilation'),
         Slider(
           value: timeDilation,
           onChanged: (v) => setState(() => timeDilation = v),
@@ -102,24 +92,24 @@ class DebugPageState extends State<DebugPage> {
           divisions: 9,
           label: '$timeDilation',
         ),
-        const Divider(),
+        Divider(),
         Text('Entries: ${entries.length}'),
         Text('Catalogued: ${catalogued.length}'),
         Text('With GPS: ${withGps.length}'),
         Text('With address: ${located.length}'),
-        const Divider(),
+        Divider(),
         Row(
           children: [
             Expanded(
               child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t${formatFilesize(imageCache.currentSizeBytes)}/${formatFilesize(imageCache.maximumSizeBytes)}'),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             RaisedButton(
               onPressed: () {
                 imageCache.clear();
                 setState(() {});
               },
-              child: const Text('Clear'),
+              child: Text('Clear'),
             ),
           ],
         ),
@@ -128,138 +118,138 @@ class DebugPageState extends State<DebugPage> {
             Expanded(
               child: Text('SVG cache: ${PictureProvider.cacheCount} items'),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             RaisedButton(
               onPressed: () {
                 PictureProvider.clearCache();
                 setState(() {});
               },
-              child: const Text('Clear'),
+              child: Text('Clear'),
             ),
           ],
         ),
         Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text('Glide disk cache: ?'),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             RaisedButton(
-              onPressed: () => ImageFileService.clearSizedThumbnailDiskCache(),
-              child: const Text('Clear'),
+              onPressed: ImageFileService.clearSizedThumbnailDiskCache,
+              child: Text('Clear'),
             ),
           ],
         ),
-        const Divider(),
-        FutureBuilder(
+        Divider(),
+        FutureBuilder<int>(
           future: _dbFileSizeLoader,
-          builder: (context, AsyncSnapshot<int> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             return Row(
               children: [
                 Expanded(
                   child: Text('DB file size: ${formatFilesize(snapshot.data)}'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
-                  child: const Text('Reset'),
+                  child: Text('Reset'),
                 ),
               ],
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbEntryLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             return Row(
               children: [
                 Expanded(
                   child: Text('DB entry rows: ${snapshot.data.length}'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearEntries().then((_) => _startDbReport()),
-                  child: const Text('Clear'),
+                  child: Text('Clear'),
                 ),
               ],
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbDateLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             return Row(
               children: [
                 Expanded(
                   child: Text('DB date rows: ${snapshot.data.length}'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearDates().then((_) => _startDbReport()),
-                  child: const Text('Clear'),
+                  child: Text('Clear'),
                 ),
               ],
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbMetadataLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             return Row(
               children: [
                 Expanded(
                   child: Text('DB metadata rows: ${snapshot.data.length}'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearMetadataEntries().then((_) => _startDbReport()),
-                  child: const Text('Clear'),
+                  child: Text('Clear'),
                 ),
               ],
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbAddressLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             return Row(
               children: [
                 Expanded(
                   child: Text('DB address rows: ${snapshot.data.length}'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
-                  child: const Text('Clear'),
+                  child: Text('Clear'),
                 ),
               ],
             );
           },
         ),
-        FutureBuilder(
+        FutureBuilder<List>(
           future: _dbFavouritesLoader,
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             return Row(
               children: [
                 Expanded(
                   child: Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 RaisedButton(
                   onPressed: () => favourites.clear().then((_) => _startDbReport()),
-                  child: const Text('Clear'),
+                  child: Text('Clear'),
                 ),
               ],
             );
@@ -271,17 +261,17 @@ class DebugPageState extends State<DebugPage> {
 
   Widget _buildSettingsTabView() {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
         Row(
           children: [
-            const Expanded(
+            Expanded(
               child: Text('Settings'),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             RaisedButton(
               onPressed: () => settings.reset().then((_) => setState(() {})),
-              child: const Text('Reset'),
+              child: Text('Reset'),
             ),
           ],
         ),
@@ -297,46 +287,32 @@ class DebugPageState extends State<DebugPage> {
 
   Widget _buildStorageTabView() {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
-        FutureBuilder(
-          future: _volumePermissionLoader,
-          builder: (context, AsyncSnapshot<List<Tuple2<String, bool>>> snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
-            final permissions = snapshot.data;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...androidFileUtils.storageVolumes.expand((v) => [
-                      Text(v.path),
-                      InfoRowGroup({
-                        'description': '${v.description}',
-                        'isEmulated': '${v.isEmulated}',
-                        'isPrimary': '${v.isPrimary}',
-                        'isRemovable': '${v.isRemovable}',
-                        'state': '${v.state}',
-                        'permission': '${permissions.firstWhere((t) => t.item1 == v.path, orElse: () => null)?.item2 ?? false}',
-                      }),
-                      const Divider(),
-                    ])
-              ],
-            );
-          },
-        ),
+        ...androidFileUtils.storageVolumes.expand((v) => [
+              Text(v.path),
+              InfoRowGroup({
+                'description': '${v.description}',
+                'isEmulated': '${v.isEmulated}',
+                'isPrimary': '${v.isPrimary}',
+                'isRemovable': '${v.isRemovable}',
+                'state': '${v.state}',
+              }),
+              Divider(),
+            ])
       ],
     );
   }
 
   Widget _buildEnvTabView() {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
-        FutureBuilder(
+        FutureBuilder<Map>(
           future: _envLoader,
-          builder: (context, AsyncSnapshot<Map> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = SplayTreeMap.of(snapshot.data.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));
             return InfoRowGroup(data);
           },

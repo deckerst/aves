@@ -36,7 +36,7 @@ class FilterTable extends StatelessWidget {
     final lineHeight = 16 * textScaleFactor;
 
     return Padding(
-      padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.outlineWidth / 2 + 6, end: 8),
+      padding: EdgeInsetsDirectional.only(start: AvesFilterChip.outlineWidth / 2 + 6, end: 8),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final showPercentIndicator = constraints.maxWidth - (chipWidth + countWidth) > percentIndicatorMinWidth;
@@ -49,7 +49,7 @@ class FilterTable extends StatelessWidget {
               return TableRow(
                 children: [
                   Container(
-                    padding: const EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.only(bottom: 8),
                     alignment: AlignmentDirectional.centerStart,
                     child: AvesFilterChip(
                       filter: filter,
@@ -67,14 +67,14 @@ class FilterTable extends StatelessWidget {
                       center: Text(NumberFormat.percentPattern().format(percent)),
                     ),
                   Text(
-                    '${count}',
-                    style: const TextStyle(color: Colors.white70),
+                    '$count',
+                    style: TextStyle(color: Colors.white70),
                     textAlign: TextAlign.end,
                   ),
                 ],
               );
             }).toList(),
-            columnWidths: const {
+            columnWidths: {
               0: MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(chipWidth)),
               2: MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(countWidth)),
             },

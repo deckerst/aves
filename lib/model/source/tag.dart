@@ -23,7 +23,7 @@ mixin TagMixin on SourceBase {
 
   Future<void> catalogEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final todo = rawEntries.where((entry) => !entry.isCatalogued).toList();
+    final todo = rawEntries.where((entry) => !entry.isCatalogued && !entry.isSvg).toList();
     if (todo.isEmpty) return;
 
     var progressDone = 0;
@@ -37,6 +37,7 @@ mixin TagMixin on SourceBase {
         newMetadata.add(entry.catalogMetadata);
         if (newMetadata.length >= _commitCountThreshold) {
           await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+          onCatalogMetadataChanged();
           newMetadata.clear();
         }
       }

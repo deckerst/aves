@@ -4,9 +4,30 @@ analyzer:
   exclude:
     - lib/generated_plugin_registrant.dart
 
+#  strong-mode:
+#    implicit-casts: false
+#    implicit-dynamic: false
+
 linter:
   rules:
-    - always_declare_return_types
-    - prefer_const_constructors
-    - prefer_const_constructors_in_immutables
-    - prefer_const_declarations
+    # from 'effective dart', excluded
+    avoid_function_literals_in_foreach_calls: false # benefit?
+    lines_longer_than_80_chars: false # nope
+    avoid_classes_with_only_static_members: false # too strict
+
+    # from 'effective dart', undecided
+    prefer_relative_imports: false # check IDE support (auto import, file move)
+    public_member_api_docs: false # maybe?
+
+    # from 'effective dart', included
+    avoid_types_on_closure_parameters: true
+    constant_identifier_names: true
+    prefer_function_declarations_over_variables: true
+    prefer_interpolation_to_compose_strings: true
+    unnecessary_brace_in_string_interps: true
+    unnecessary_lambdas: true
+
+    # misc
+    prefer_const_constructors: false # too noisy
+    prefer_const_constructors_in_immutables: true
+    prefer_const_declarations: true

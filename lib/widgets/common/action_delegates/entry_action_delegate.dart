@@ -118,9 +118,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
   Future<void> _showDeleteDialog(BuildContext context, ImageEntry entry) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          content: const Text('Are you sure?'),
+          content: Text('Are you sure?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),

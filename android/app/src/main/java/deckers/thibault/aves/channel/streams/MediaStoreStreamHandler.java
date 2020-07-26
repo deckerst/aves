@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.streams;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -12,14 +12,14 @@ import io.flutter.plugin.common.EventChannel;
 public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     public static final String CHANNEL = "deckers.thibault/aves/mediastorestream";
 
-    private Activity activity;
+    private Context context;
     private EventChannel.EventSink eventSink;
     private Handler handler;
     private Map<Integer, Integer> knownEntries;
 
     @SuppressWarnings("unchecked")
-    public MediaStoreStreamHandler(Activity activity, Object arguments) {
-        this.activity = activity;
+    public MediaStoreStreamHandler(Context context, Object arguments) {
+        this.context = context;
         if (arguments instanceof Map) {
             Map<String, Object> argMap = (Map<String, Object>) arguments;
             this.knownEntries = (Map<Integer, Integer>) argMap.get("knownEntries");
@@ -47,7 +47,7 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     }
 
     void fetchAll() {
-        new MediaStoreImageProvider().fetchAll(activity, knownEntries, this::success); // 350ms
+        new MediaStoreImageProvider().fetchAll(context, knownEntries, this::success); // 350ms
         endOfStream();
     }
 }

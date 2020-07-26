@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 class QueryFilter extends CollectionFilter {
   static const type = 'query';
 
-  static final exactRegex = RegExp('^"(.*)"\$');
+  static final RegExp exactRegex = RegExp('^"(.*)"\$');
 
   final String query;
   final bool colorful;
@@ -39,7 +39,7 @@ class QueryFilter extends CollectionFilter {
   bool get isUnique => false;
 
   @override
-  String get label => '${query}';
+  String get label => '$query';
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.text, size: size);

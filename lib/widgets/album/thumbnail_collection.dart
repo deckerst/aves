@@ -36,7 +36,7 @@ class ThumbnailCollection extends StatelessWidget {
           final mqSize = mq.item1;
           final mqHorizontalPadding = mq.item2;
 
-          if (mqSize.isEmpty) return const SizedBox.shrink();
+          if (mqSize.isEmpty) return SizedBox.shrink();
 
           TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
           final cacheExtent = TileExtentManager.extentMaxForSize(mqSize) * 2;
@@ -159,7 +159,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       primary: true,
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
-      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : const SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: collection.isEmpty ? NeverScrollableScrollPhysics() : SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       cacheExtent: widget.cacheExtent,
       slivers: [
         appBar,
@@ -168,7 +168,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
                 child: _buildEmptyCollectionPlaceholder(collection),
                 hasScrollBody: false,
               )
-            : const CollectionListSliver(),
+            : CollectionListSliver(),
         SliverToBoxAdapter(
           child: Selector<MediaQueryData, double>(
             selector: (context, mq) => mq.viewInsets.bottom,
@@ -211,22 +211,22 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       valueListenable: collection.source.stateNotifier,
       builder: (context, sourceState, child) {
         if (sourceState == SourceState.loading) {
-          return const SizedBox.shrink();
+          return SizedBox.shrink();
         }
         if (collection.filters.any((filter) => filter is FavouriteFilter)) {
-          return const EmptyContent(
+          return EmptyContent(
             icon: AIcons.favourite,
             text: 'No favourites',
           );
         }
         debugPrint('collection.filters=${collection.filters}');
-        if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.ANY_VIDEO)) {
-          return const EmptyContent(
+        if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.anyVideo)) {
+          return EmptyContent(
             icon: AIcons.video,
             text: 'No videos',
           );
         }
-        return const EmptyContent(
+        return EmptyContent(
           icon: AIcons.image,
           text: 'No images',
         );

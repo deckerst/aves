@@ -18,16 +18,18 @@ class AndroidFileService {
     return [];
   }
 
-  static Future<bool> requireVolumeAccessDialog(String path) async {
+  // returns a list of directories,
+  // each directory is a map with "volumePath", "volumeDescription", "relativeDir"
+  static Future<List<Map>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
-      final result = await platform.invokeMethod('requireVolumeAccessDialog', <String, dynamic>{
-        'path': path,
+      final result = await platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
+        'dirPaths': dirPaths.toList(),
       });
-      return result as bool;
+      return (result as List).cast<Map>();
     } on PlatformException catch (e) {
-      debugPrint('requireVolumeAccessDialog failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      debugPrint('getInaccessibleDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
-    return false;
+    return null;
   }
 
   // returns whether user granted access to volume root at `volumePath`

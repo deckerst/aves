@@ -44,7 +44,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: const Icon(AIcons.clear),
+          icon: Icon(AIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);
@@ -57,23 +57,23 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   @override
   Widget buildSuggestions(BuildContext context) {
     final upQuery = query.trim().toUpperCase();
-    final containQuery = (String s) => s.toUpperCase().contains(upQuery);
+    bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
       child: ValueListenableBuilder<String>(
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             return ListView(
-              padding: const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 8),
               children: [
                 _buildFilterRow(
                   context: context,
                   filters: [
                     _buildQueryFilter(false),
                     FavouriteFilter(),
-                    MimeFilter(MimeTypes.ANY_IMAGE),
-                    MimeFilter(MimeTypes.ANY_VIDEO),
+                    MimeFilter(MimeTypes.anyImage),
+                    MimeFilter(MimeTypes.anyVideo),
                     MimeFilter(MimeFilter.animated),
-                    MimeFilter(MimeTypes.SVG),
+                    MimeFilter(MimeTypes.svg),
                   ].where((f) => f != null && containQuery(f.label)),
                 ),
                 StreamBuilder(
@@ -135,7 +135,7 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       // and possibly trigger a rebuild here
       _select(context, _buildQueryFilter(true));
     });
-    return const SizedBox.shrink();
+    return SizedBox.shrink();
   }
 
   QueryFilter _buildQueryFilter(bool colorful) {

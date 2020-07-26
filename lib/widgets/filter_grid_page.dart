@@ -106,7 +106,7 @@ class FilterGridPage extends StatelessWidget {
                             hasScrollBody: false,
                           )
                         : SliverPadding(
-                            padding: const EdgeInsets.all(AvesFilterChip.outlineWidth),
+                            padding: EdgeInsets.all(AvesFilterChip.outlineWidth),
                             sliver: SliverGrid(
                               delegate: SliverChildBuilderDelegate(
                                 (context, i) {
@@ -132,7 +132,7 @@ class FilterGridPage extends StatelessWidget {
                                 },
                                 childCount: filterKeys.length,
                               ),
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                                 maxCrossAxisExtent: maxCrossAxisExtent,
                                 mainAxisSpacing: 8,
                                 crossAxisSpacing: 8,
@@ -201,18 +201,18 @@ class DecoratedFilterChip extends StatelessWidget {
   Widget _buildDetails(CollectionFilter filter) {
     final count = Text(
       '${source.count(filter)}',
-      style: const TextStyle(color: FilterGridPage.detailColor),
+      style: TextStyle(color: FilterGridPage.detailColor),
     );
     return filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)
         ? Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 AIcons.removableStorage,
                 size: 16,
                 color: FilterGridPage.detailColor,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               count,
             ],
           )

@@ -98,14 +98,14 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    final mq = context.select((MediaQueryData mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
+    final mq = context.select<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
     final mqWidth = mq.item1;
     final mqViewInsets = mq.item2;
     final mqViewPadding = mq.item3;
 
     final viewInsets = widget.viewInsets ?? mqViewInsets;
     final viewPadding = widget.viewPadding ?? mqViewPadding;
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
+    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
 
     return Padding(
       padding: safePadding,
@@ -127,7 +127,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                           OverlayButton(
                             scale: scale,
                             child: IconButton(
-                              icon: const Icon(AIcons.openInNew),
+                              icon: Icon(AIcons.openInNew),
                               onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                               tooltip: 'Open',
                             ),
@@ -137,7 +137,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                           Expanded(
                             child: _buildProgressBar(),
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: 8),
                           OverlayButton(
                             scale: scale,
                             child: IconButton(
@@ -164,25 +164,25 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
       child: BlurredRRect(
         borderRadius: progressBarBorderRadius,
         child: GestureDetector(
-          onTapDown: (TapDownDetails details) {
+          onTapDown: (details) {
             _seekFromTap(details.globalPosition);
           },
-          onHorizontalDragStart: (DragStartDetails details) {
+          onHorizontalDragStart: (details) {
             _playingOnDragStart = isPlaying;
             if (_playingOnDragStart) controller.pause();
           },
-          onHorizontalDragUpdate: (DragUpdateDetails details) {
+          onHorizontalDragUpdate: (details) {
             _seekFromTap(details.globalPosition);
           },
-          onHorizontalDragEnd: (DragEndDetails details) {
+          onHorizontalDragEnd: (details) {
             if (_playingOnDragStart) controller.play();
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16) + const EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: FullscreenOverlay.backgroundColor,
               border: FullscreenOverlay.buildBorder(context),
-              borderRadius: const BorderRadius.all(
+              borderRadius: BorderRadius.all(
                 Radius.circular(progressBarBorderRadius),
               ),
             ),
@@ -198,7 +198,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
                           final position = videoInfo.currentPosition?.floor() ?? 0;
                           return Text(formatDuration(Duration(seconds: position)));
                         }),
-                    const Spacer(),
+                    Spacer(),
                     Text(entry.durationText),
                   ],
                 ),

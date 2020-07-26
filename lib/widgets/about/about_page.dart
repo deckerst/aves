@@ -11,20 +11,20 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About'),
+        title: Text('About'),
       ),
       body: SafeArea(
         child: AnimationLimiter(
           child: CustomScrollView(
             slivers: [
               SliverPadding(
-                padding: const EdgeInsets.only(top: 16),
+                padding: EdgeInsets.only(top: 16),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
                     [
                       AppReference(),
-                      const SizedBox(height: 16),
-                      const Divider(),
+                      SizedBox(height: 16),
+                      Divider(),
                     ],
                   ),
                 ),
@@ -92,7 +92,7 @@ class _AppReferenceState extends State<AppReference> {
         children: [
           WidgetSpan(
             child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: 4),
+              padding: EdgeInsetsDirectional.only(end: 4),
               child: FlutterLogo(
                 size: style.fontSize * 1.25,
               ),

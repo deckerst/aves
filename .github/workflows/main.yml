@@ -1,4 +1,4 @@
-name: Release an APK and an App Bundle on tagging
+name: Release on tag
 
 on:
   push:
@@ -33,9 +33,11 @@ jobs:
         working-directory: ${{ github.workspace }}/scripts
         run: ./update_flutter_version.sh
 
-      # `flutter test` fails if test directory is missing
-      #- name: Run the unit tests.
-      #  run: flutter test
+      - name: Static analysis.
+        run: flutter analyze
+
+      - name: Unit tests.
+        run: flutter test
 
       - name: Build signed artifacts.
         # `KEY_JKS` should contain the result of:

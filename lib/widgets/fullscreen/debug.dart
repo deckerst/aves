@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -36,8 +37,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Debug'),
-          bottom: const TabBar(
+          title: Text('Debug'),
+          bottom: TabBar(
             tabs: [
               Tab(text: 'DB'),
               Tab(text: 'Content Resolver'),
@@ -59,13 +60,13 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Widget _buildDbTabView() {
     final catalog = widget.entry.catalogMetadata;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
-        FutureBuilder(
+        FutureBuilder<DateMetadata>(
           future: _dbDateLoader,
-          builder: (context, AsyncSnapshot<DateMetadata> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,12 +80,12 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        const SizedBox(height: 16),
-        FutureBuilder(
+        SizedBox(height: 16),
+        FutureBuilder<CatalogMetadata>(
           future: _dbMetadataLoader,
-          builder: (context, AsyncSnapshot<CatalogMetadata> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,12 +106,12 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        const SizedBox(height: 16),
-        FutureBuilder(
+        SizedBox(height: 16),
+        FutureBuilder<AddressDetails>(
           future: _dbAddressLoader,
-          builder: (context, AsyncSnapshot<AddressDetails> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,7 +129,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        const Divider(),
+        Divider(),
         Text('Catalog metadata:${catalog == null ? ' no data' : ''}'),
         if (catalog != null)
           InfoRowGroup({
@@ -152,13 +153,13 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
 
   Widget _buildContentResolverTabView() {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       children: [
-        FutureBuilder(
+        FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
-          builder: (context, AsyncSnapshot<Map> snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
             final data = SplayTreeMap.of(snapshot.data.map((k, v) {
               final key = k.toString();
               var value = v?.toString() ?? 'null';
@@ -167,6 +168,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                   v *= 1000;
                 }
                 value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+              }
+              if (key == 'xmp' && v != null && v is Uint8List) {
+                value = String.fromCharCodes(v);
               }
               return MapEntry(key, value);
             }));
