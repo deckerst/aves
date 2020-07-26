@@ -12,7 +12,7 @@ class TransitionImage extends StatefulWidget {
   final ImageProvider image;
   final double width, height;
   final ValueListenable<double> animation;
-  final gaplessPlayback = false;
+  final bool gaplessPlayback = false;
 
   const TransitionImage({
     @required this.image,

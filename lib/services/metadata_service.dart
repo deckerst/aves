@@ -26,7 +26,7 @@ class MetadataService {
   static Future<CatalogMetadata> getCatalogMetadata(ImageEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
-    final call = () async {
+    Future<CatalogMetadata> call() async {
       try {
         // return map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
@@ -47,7 +47,7 @@ class MetadataService {
         debugPrint('getCatalogMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       }
       return null;
-    };
+    }
     return background
         ? servicePolicy.call(
             call,

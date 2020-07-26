@@ -144,7 +144,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         // so that we can also detect taps around the title `Text`
         child: Container(
           alignment: AlignmentDirectional.centerStart,
-          padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
+          padding: EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
           color: Colors.transparent,
           height: kToolbarHeight,
           child: title,
@@ -155,7 +155,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         animation: collection.selectionChangeNotifier,
         builder: (context, child) {
           final count = collection.selection.length;
-          return Text(Intl.plural(count, zero: 'Select items', one: '${count} item', other: '${count} items'));
+          return Text(Intl.plural(count, zero: 'Select items', one: '$count item', other: '$count items'));
         },
       );
     }
@@ -166,7 +166,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       if (collection.isBrowsing)
         IconButton(
-          icon: const Icon(AIcons.search),
+          icon: Icon(AIcons.search),
           onPressed: _goToSearch,
         ),
       if (collection.isSelecting)
@@ -190,15 +190,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               if (collection.isBrowsing) ...[
                 if (AvesApp.mode == AppMode.main)
                   if (kDebugMode)
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: CollectionAction.refresh,
                       child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
                     ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: CollectionAction.select,
                   child: MenuRow(text: 'Select', icon: AIcons.select),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: CollectionAction.stats,
                   child: MenuRow(text: 'Stats', icon: AIcons.stats),
                 ),
@@ -207,27 +207,27 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 PopupMenuItem(
                   value: CollectionAction.copy,
                   enabled: hasSelection,
-                  child: const MenuRow(text: 'Copy to album'),
+                  child: MenuRow(text: 'Copy to album'),
                 ),
                 PopupMenuItem(
                   value: CollectionAction.move,
                   enabled: hasSelection,
-                  child: const MenuRow(text: 'Move to album'),
+                  child: MenuRow(text: 'Move to album'),
                 ),
                 PopupMenuItem(
                   value: CollectionAction.refreshMetadata,
                   enabled: hasSelection,
-                  child: const MenuRow(text: 'Refresh metadata'),
+                  child: MenuRow(text: 'Refresh metadata'),
                 ),
-                const PopupMenuDivider(),
-                const PopupMenuItem(
+                PopupMenuDivider(),
+                PopupMenuItem(
                   value: CollectionAction.selectAll,
                   child: MenuRow(text: 'Select all'),
                 ),
                 PopupMenuItem(
                   value: CollectionAction.selectNone,
                   enabled: hasSelection,
-                  child: const MenuRow(text: 'Select none'),
+                  child: MenuRow(text: 'Select none'),
                 ),
               ]
             ];
@@ -252,7 +252,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         value: CollectionAction.sortByName,
         child: MenuRow(text: 'Sort by name', checked: collection.sortFactor == SortFactor.name),
       ),
-      const PopupMenuDivider(),
+      PopupMenuDivider(),
     ];
   }
 
@@ -271,7 +271,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               value: CollectionAction.groupByDay,
               child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
             ),
-            const PopupMenuDivider(),
+            PopupMenuDivider(),
           ]
         : [];
   }

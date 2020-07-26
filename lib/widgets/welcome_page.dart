@@ -32,11 +32,11 @@ class _WelcomePageState extends State<WelcomePage> {
       body: SafeArea(
         child: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.all(16.0),
-          child: FutureBuilder(
+          padding: EdgeInsets.all(16.0),
+          child: FutureBuilder<String>(
               future: _termsLoader,
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+              builder: (context, snapshot) {
+                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
                 final terms = snapshot.data;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -73,21 +73,21 @@ class _WelcomePageState extends State<WelcomePage> {
     return [
       ...(MediaQuery.of(context).orientation == Orientation.portrait
           ? [
-              const AvesLogo(size: 64),
-              const SizedBox(height: 16),
+              AvesLogo(size: 64),
+              SizedBox(height: 16),
               message,
             ]
           : [
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const AvesLogo(size: 48),
-                  const SizedBox(width: 16),
+                  AvesLogo(size: 48),
+                  SizedBox(width: 16),
                   message,
                 ],
               )
             ]),
-      const SizedBox(height: 16),
+      SizedBox(height: 16),
     ];
   }
 
@@ -98,14 +98,14 @@ class _WelcomePageState extends State<WelcomePage> {
       text: 'I agree to the terms and conditions',
     );
     final button = RaisedButton(
-      child: const Text('Continue'),
+      child: Text('Continue'),
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HomePage(),
+                  builder: (context) => HomePage(),
                 ),
                 (route) => false,
               );
@@ -118,11 +118,11 @@ class _WelcomePageState extends State<WelcomePage> {
             button,
           ]
         : [
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Row(
               children: [
                 checkbox,
-                const Spacer(),
+                Spacer(),
                 button,
               ],
             ),
@@ -135,7 +135,7 @@ class _WelcomePageState extends State<WelcomePage> {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white10,
       ),
-      constraints: const BoxConstraints(maxWidth: 460),
+      constraints: BoxConstraints(maxWidth: 460),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Markdown(

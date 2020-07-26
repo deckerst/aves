@@ -39,7 +39,7 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
       child: PageView.builder(
         scrollDirection: Axis.horizontal,
         controller: widget.pageController,
-        physics: const PhotoViewPageViewScrollPhysics(parent: BouncingScrollPhysics()),
+        physics: PhotoViewPageViewScrollPhysics(parent: BouncingScrollPhysics()),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           final entry = entries[index];

@@ -40,11 +40,11 @@ class InfoPageState extends State<InfoPage> {
 
     final appBar = SliverAppBar(
       leading: IconButton(
-        icon: const Icon(AIcons.goUp),
+        icon: Icon(AIcons.goUp),
         onPressed: _goToImage,
         tooltip: 'Back to image',
       ),
-      title: const Text('Info'),
+      title: Text('Info'),
       floating: true,
     );
 
@@ -60,7 +60,7 @@ class InfoPageState extends State<InfoPage> {
                 final mqViewInsetsBottom = mq.item2;
                 final split = mqWidth > 400;
 
-                return ValueListenableBuilder(
+                return ValueListenableBuilder<ImageEntry>(
                   valueListenable: widget.entryNotifier,
                   builder: (context, entry, child) {
                     final locationAtTop = split && entry.hasGps;
@@ -77,7 +77,7 @@ class InfoPageState extends State<InfoPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
-                                const SizedBox(width: 8),
+                                SizedBox(width: 8),
                                 Expanded(child: locationSection),
                               ],
                             ),
@@ -100,7 +100,7 @@ class InfoPageState extends State<InfoPage> {
                       slivers: [
                         appBar,
                         SliverPadding(
-                          padding: horizontalPadding + const EdgeInsets.only(top: 8),
+                          padding: horizontalPadding + EdgeInsets.only(top: 8),
                           sliver: basicAndLocationSliver,
                         ),
                         SliverPadding(
@@ -165,7 +165,7 @@ class SectionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const dim = 32.0;
-    final buildDivider = () => const SizedBox(
+    Widget buildDivider() => SizedBox(
           width: dim,
           child: Divider(
             thickness: AvesFilterChip.outlineWidth,
@@ -177,7 +177,7 @@ class SectionRow extends StatelessWidget {
       children: [
         buildDivider(),
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           child: Icon(
             icon,
             size: dim,
@@ -196,7 +196,7 @@ class InfoRowGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (keyValues.isEmpty) return const SizedBox.shrink();
+    if (keyValues.isEmpty) return SizedBox.shrink();
     final lastKey = keyValues.keys.last;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,13 +206,13 @@ class InfoRowGroup extends StatelessWidget {
             children: keyValues.entries
                 .expand(
                   (kv) => [
-                    TextSpan(text: '${kv.key}     ', style: const TextStyle(color: Colors.white70, height: 1.7)),
+                    TextSpan(text: '${kv.key}     ', style: TextStyle(color: Colors.white70, height: 1.7)),
                     TextSpan(text: '${kv.value}${kv.key == lastKey ? '' : '\n'}'),
                   ],
                 )
                 .toList(),
           ),
-          style: const TextStyle(fontFamily: 'Concourse'),
+          style: TextStyle(fontFamily: 'Concourse'),
         ),
       ],
     );

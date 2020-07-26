@@ -69,7 +69,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
           return FilterGridPage(
             source: source,
             appBar: SliverAppBar(
-              leading: const BackButton(),
+              leading: BackButton(),
               title: Text(copy ? 'Copy to Album' : 'Move to Album'),
               actions: [
                 IconButton(
@@ -90,7 +90,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
             ),
             filterEntries: source.getAlbumEntries(),
             filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-            emptyBuilder: () => const EmptyContent(
+            emptyBuilder: () => EmptyContent(
               icon: AIcons.album,
               text: 'No albums',
             ),
@@ -100,26 +100,26 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
       ),
     );
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
-    if (!await checkStoragePermissionForPaths(context, [destinationAlbum])) return;
+    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;
 
-    _showOpReport(
+    _showOpReport<MoveOpEvent>(
       context: context,
       selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
-      onDone: (Set<MoveOpEvent> processed) async {
+      onDone: (processed) async {
         debugPrint('$runtimeType _moveSelection onDone');
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
         final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           final count = movedCount;
-          showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (movedCount > 0) {
           final fromAlbums = <String>{};
@@ -187,9 +187,9 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these ${count} items')}?'),
+          content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these $count items')}?'),
           actions: [
             FlatButton(
               onPressed: () => Navigator.pop(context),
@@ -207,17 +207,17 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     if (!await checkStoragePermission(context, selection)) return;
 
-    _showOpReport(
+    _showOpReport<ImageOpEvent>(
       context: context,
       selection: selection,
       opStream: ImageFileService.delete(selection),
-      onDone: (Set<ImageOpEvent> processed) {
+      onDone: (processed) {
         final deletedUris = processed.where((e) => e.success).map((e) => e.uri);
         final deletedCount = deletedUris.length;
         final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
-          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '${count} item', other: '${count} items')}');
+          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (deletedCount > 0) {
           collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
@@ -242,9 +242,9 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     // do not handle completion inside `StreamBuilder`
     // as it could be called multiple times
-    final onComplete = () => _hideOpReportOverlay().then((_) => onDone(processed));
+    Future<void> onComplete() => _hideOpReportOverlay().then((_) => onDone(processed));
     opStream.listen(
-      (event) => processed.add(event),
+      processed.add,
       onError: (error) {
         debugPrint('_showOpReport error=$error');
         onComplete();
@@ -258,7 +258,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
           child: StreamBuilder<T>(
               stream: opStream,
               builder: (context, snapshot) {
-                Widget child = const SizedBox.shrink();
+                Widget child = SizedBox.shrink();
                 if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
                   final percent = processed.length.toDouble() / selection.length;
                   child = CircularPercentIndicator(

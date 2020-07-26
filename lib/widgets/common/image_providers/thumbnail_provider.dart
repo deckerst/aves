@@ -54,7 +54,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   @override
-  void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, handleError) {
+  void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, ImageErrorListener handleError) {
     ImageFileService.resumeThumbnail(_cancellationKey);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }

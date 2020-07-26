@@ -46,7 +46,7 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
       ),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         color: Theme.of(context).accentColor,
         child: SafeArea(
           child: Column(
@@ -58,8 +58,8 @@ class _AppDrawerState extends State<AppDrawer> {
                   spacing: 16,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    const AvesLogo(size: 64),
-                    const Text(
+                    AvesLogo(size: 64),
+                    Text(
                       'Aves',
                       style: TextStyle(
                         fontSize: 44,
@@ -77,19 +77,19 @@ class _AppDrawerState extends State<AppDrawer> {
 
     final allMediaEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(AIcons.allMedia),
+      leading: Icon(AIcons.allMedia),
       title: 'All media',
       filter: null,
     );
     final videoEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(AIcons.video),
+      leading: Icon(AIcons.video),
       title: 'Videos',
-      filter: MimeFilter(MimeTypes.ANY_VIDEO),
+      filter: MimeFilter(MimeTypes.anyVideo),
     );
     final favouriteEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: const Icon(AIcons.favourite),
+      leading: Icon(AIcons.favourite),
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
@@ -97,8 +97,8 @@ class _AppDrawerState extends State<AppDrawer> {
       top: false,
       bottom: false,
       child: ListTile(
-        leading: const Icon(AIcons.info),
-        title: const Text('About'),
+        leading: Icon(AIcons.info),
+        title: Text('About'),
         onTap: () => _goToAbout(context),
       ),
     );
@@ -109,20 +109,20 @@ class _AppDrawerState extends State<AppDrawer> {
       videoEntry,
       favouriteEntry,
       _buildSpecialAlbumSection(),
-      const Divider(),
+      Divider(),
       _buildRegularAlbumSection(),
       _buildCountrySection(),
       _buildTagSection(),
-      const Divider(),
+      Divider(),
       aboutEntry,
       if (kDebugMode) ...[
-        const Divider(),
+        Divider(),
         SafeArea(
           top: false,
           bottom: false,
           child: ListTile(
-            leading: const Icon(AIcons.debug),
-            title: const Text('Debug'),
+            leading: Icon(AIcons.debug),
+            title: Text('Debug'),
             onTap: () => _goToDebug(context),
           ),
         ),
@@ -157,7 +157,7 @@ class _AppDrawerState extends State<AppDrawer> {
       leading: IconUtils.getAlbumIcon(context: context, album: album),
       title: uniqueName,
       trailing: androidFileUtils.isOnRemovableStorage(album)
-          ? const Icon(
+          ? Icon(
               AIcons.removableStorage,
               size: 16,
               color: Colors.grey,
@@ -177,10 +177,10 @@ class _AppDrawerState extends State<AppDrawer> {
             return type != AlbumType.regular && type != AlbumType.app;
           });
 
-          if (specialAlbums.isEmpty) return const SizedBox.shrink();
+          if (specialAlbums.isEmpty) return SizedBox.shrink();
           return Column(
             children: [
-              const Divider(),
+              Divider(),
               ...specialAlbums.map((album) => _buildAlbumEntry(album, dense: false)),
             ],
           );
@@ -192,8 +192,8 @@ class _AppDrawerState extends State<AppDrawer> {
       top: false,
       bottom: false,
       child: ListTile(
-        leading: const Icon(AIcons.album),
-        title: const Text('Albums'),
+        leading: Icon(AIcons.album),
+        title: Text('Albums'),
         trailing: StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) {
@@ -214,8 +214,8 @@ class _AppDrawerState extends State<AppDrawer> {
       top: false,
       bottom: false,
       child: ListTile(
-        leading: const Icon(AIcons.location),
-        title: const Text('Countries'),
+        leading: Icon(AIcons.location),
+        title: Text('Countries'),
         trailing: StreamBuilder(
             stream: source.eventBus.on<LocationsChangedEvent>(),
             builder: (context, snapshot) {
@@ -236,8 +236,8 @@ class _AppDrawerState extends State<AppDrawer> {
       top: false,
       bottom: false,
       child: ListTile(
-        leading: const Icon(AIcons.tag),
-        title: const Text('Tags'),
+        leading: Icon(AIcons.tag),
+        title: Text('Tags'),
         trailing: StreamBuilder(
             stream: source.eventBus.on<TagsChangedEvent>(),
             builder: (context, snapshot) {
@@ -263,7 +263,7 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Albums',
           filterEntries: source.getAlbumEntries(),
           filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-          emptyBuilder: () => const EmptyContent(
+          emptyBuilder: () => EmptyContent(
             icon: AIcons.album,
             text: 'No albums',
           ),
@@ -282,7 +282,7 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Countries',
           filterEntries: source.getCountryEntries(),
           filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
-          emptyBuilder: () => const EmptyContent(
+          emptyBuilder: () => EmptyContent(
             icon: AIcons.location,
             text: 'No countries',
           ),
@@ -301,7 +301,7 @@ class _AppDrawerState extends State<AppDrawer> {
           title: 'Tags',
           filterEntries: source.getTagEntries(),
           filterBuilder: (s) => TagFilter(s),
-          emptyBuilder: () => const EmptyContent(
+          emptyBuilder: () => EmptyContent(
             icon: AIcons.tag,
             text: 'No tags',
           ),

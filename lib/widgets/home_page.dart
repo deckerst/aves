@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String pickMimeTypes = intentData['mimeType'];
-          debugPrint('pick mimeType=' + pickMimeTypes);
+          debugPrint('pick mimeType=$pickMimeTypes');
           break;
       }
     }
@@ -92,11 +92,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<void>(
         future: _appSetup,
-        builder: (context, AsyncSnapshot<void> snapshot) {
-          if (snapshot.hasError) return const Icon(AIcons.error);
-          if (snapshot.connectionState != ConnectionState.done) return const Scaffold();
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return Icon(AIcons.error);
+          if (snapshot.connectionState != ConnectionState.done) return Scaffold();
           if (AvesApp.mode == AppMode.view) {
             return SingleFullscreenPage(entry: _viewerEntry);
           }
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               sortFactor: settings.collectionSortFactor,
             ));
           }
-          return const SizedBox.shrink();
+          return SizedBox.shrink();
         });
   }
 }

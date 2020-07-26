@@ -34,7 +34,7 @@ class MimeFilter extends CollectionFilter {
       _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
       _filter = (entry) => entry.mimeType == lowMime;
-      if (lowMime == MimeTypes.SVG) {
+      if (lowMime == MimeTypes.svg) {
         _label = 'SVG';
       }
       _label ??= lowMime.split('/')[1].toUpperCase();

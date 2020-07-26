@@ -41,7 +41,7 @@ class ImageView extends StatelessWidget {
                 entry: entry,
                 controller: videoController,
               )
-            : const SizedBox(),
+            : SizedBox(),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,
@@ -61,7 +61,7 @@ class ImageView extends StatelessWidget {
     // if the image is already in the cache it will show the final image, otherwise the thumbnail
     // in any case, we should use `Center` + `AspectRatio` + `Fill` so that the transition image
     // appears as the final image with `PhotoViewComputedScale.contained` for `initialScale`
-    final loadingBuilder = (BuildContext context, ImageProvider imageProvider) {
+    Widget loadingBuilder(BuildContext context, ImageProvider imageProvider) {
       return Center(
         child: AspectRatio(
           // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
@@ -72,7 +72,7 @@ class ImageView extends StatelessWidget {
           ),
         ),
       );
-    };
+    }
 
     Widget child;
     if (entry.isSvg) {
@@ -107,7 +107,7 @@ class ImageView extends StatelessWidget {
           context,
           imageCache.statusForKey(uriImage).keepAlive ? uriImage : fastThumbnailProvider,
         ),
-        loadFailedChild: const EmptyContent(
+        loadFailedChild: EmptyContent(
           icon: AIcons.error,
           text: 'Oops!',
           alignment: Alignment.center,

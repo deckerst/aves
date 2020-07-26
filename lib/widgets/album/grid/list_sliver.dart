@@ -26,7 +26,7 @@ class CollectionListSliver extends StatelessWidget {
         (context, index) {
           if (index >= childCount) return null;
           final sectionLayout = sectionLayouts.firstWhere((section) => section.hasChild(index), orElse: () => null);
-          return sectionLayout?.builder(context, index) ?? const SizedBox.shrink();
+          return sectionLayout?.builder(context, index) ?? SizedBox.shrink();
         },
         childCount: childCount,
         addAutomaticKeepAlives: false,
