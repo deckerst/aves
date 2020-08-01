@@ -85,6 +85,8 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   bool get showHeaders {
     if (sortFactor == SortFactor.size) return false;
 
+    if (sortFactor == SortFactor.date && groupFactor == GroupFactor.none) return false;
+
     final albumSections = sortFactor == SortFactor.name || (sortFactor == SortFactor.date && groupFactor == GroupFactor.album);
     final filterByAlbum = filters.any((f) => f is AlbumFilter);
     if (albumSections && filterByAlbum) return false;
@@ -160,6 +162,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
           case GroupFactor.day:
             sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.dayTaken);
             break;
+          case GroupFactor.none:
+            sections = Map.fromEntries([
+              MapEntry(null, _filteredEntries),
+            ]);
+            break;
         }
         break;
       case SortFactor.size:
@@ -209,7 +216,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
 
 enum SortFactor { date, size, name }
 
-enum GroupFactor { album, month, day }
+enum GroupFactor { none, album, month, day }
 
 enum Activity { browse, select }
 

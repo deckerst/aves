@@ -29,18 +29,18 @@ class SectionHeader extends StatelessWidget {
     Widget header;
     switch (collection.sortFactor) {
       case SortFactor.date:
-        if (collection.sortFactor == SortFactor.date) {
-          switch (collection.groupFactor) {
-            case GroupFactor.album:
-              header = _buildAlbumSectionHeader();
-              break;
-            case GroupFactor.month:
-              header = MonthSectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
-              break;
-            case GroupFactor.day:
-              header = DaySectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
-              break;
-          }
+        switch (collection.groupFactor) {
+          case GroupFactor.album:
+            header = _buildAlbumSectionHeader();
+            break;
+          case GroupFactor.month:
+            header = MonthSectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
+            break;
+          case GroupFactor.day:
+            header = DaySectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
+            break;
+          case GroupFactor.none:
+            break;
         }
         break;
       case SortFactor.size:

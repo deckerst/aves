@@ -271,6 +271,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
               value: CollectionAction.groupByDay,
               child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
             ),
+            PopupMenuItem(
+              value: CollectionAction.groupByNone,
+              child: MenuRow(text: 'Do not group', checked: collection.groupFactor == GroupFactor.none),
+            ),
             PopupMenuDivider(),
           ]
         : [];
@@ -329,6 +333,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         settings.collectionGroupFactor = GroupFactor.day;
         collection.group(GroupFactor.day);
         break;
+      case CollectionAction.groupByNone:
+        settings.collectionGroupFactor = GroupFactor.none;
+        collection.group(GroupFactor.none);
+        break;
       case CollectionAction.sortByDate:
         settings.collectionSortFactor = SortFactor.date;
         collection.sort(SortFactor.date);
@@ -375,6 +383,7 @@ enum CollectionAction {
   groupByAlbum,
   groupByMonth,
   groupByDay,
+  groupByNone,
   sortByDate,
   sortBySize,
   sortByName,
