@@ -45,7 +45,9 @@ class _FilterBarState extends State<FilterBar> {
       listState.removeItem(
         index,
         animate
-            ? (context, animation) => FadeTransition(
+            ? (context, animation) {
+                animation = animation.drive(CurveTween(curve: Curves.easeInOutBack));
+                return FadeTransition(
                   opacity: animation,
                   child: SizeTransition(
                     axis: Axis.horizontal,
@@ -55,7 +57,8 @@ class _FilterBarState extends State<FilterBar> {
                       child: _buildChip(filter),
                     ),
                   ),
-                )
+                );
+              }
             : (context, animation) => _buildChip(filter),
         duration: animate ? Durations.filterBarRemovalAnimation : Duration.zero,
       );
