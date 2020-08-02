@@ -1,5 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_file_service.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
@@ -35,6 +36,8 @@ mixin PermissionAwareMixin {
                 child: Text('OK'.toUpperCase()),
               ),
             ],
+            actionsPadding: Constants.dialogActionsPadding,
+            shape: Constants.dialogShape,
           );
         },
       );
