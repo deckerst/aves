@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -15,8 +16,6 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   Set<StorageVolume> _allVolumes;
   StorageVolume _primaryVolume, _selectedVolume;
-
-  static const EdgeInsets hPadding = EdgeInsets.symmetric(horizontal: 24);
 
   @override
   void initState() {
@@ -42,7 +41,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
         children: [
           if (_allVolumes.length > 1) ...[
             Padding(
-              padding: hPadding,
+              padding: Constants.dialogContentHorizontalPadding,
               child: Text('Storage:'),
             ),
             ..._allVolumes.map((volume) => RadioListTile<StorageVolume>(
@@ -69,7 +68,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
             SizedBox(height: 8),
           ],
           Padding(
-            padding: hPadding,
+            padding: Constants.dialogContentHorizontalPadding,
             child: ValueListenableBuilder<bool>(
                 valueListenable: _existsNotifier,
                 builder: (context, exists, child) {
@@ -96,6 +95,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
           child: Text('Create'.toUpperCase()),
         ),
       ],
+      actionsPadding: Constants.dialogActionsPadding,
+      shape: Constants.dialogShape,
     );
   }
 
