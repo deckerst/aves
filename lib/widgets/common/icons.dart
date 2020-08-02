@@ -32,6 +32,7 @@ class AIcons {
   static const IconData favourite = OMIcons.favoriteBorder;
   static const IconData favouriteActive = OMIcons.favorite;
   static const IconData goUp = OMIcons.arrowUpward;
+  static const IconData group = OMIcons.groupWork;
   static const IconData info = OMIcons.info;
   static const IconData openInNew = OMIcons.openInNew;
   static const IconData print = OMIcons.print;
