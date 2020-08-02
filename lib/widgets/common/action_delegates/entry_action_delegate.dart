@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
@@ -131,6 +132,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
               child: Text('Delete'.toUpperCase()),
             ),
           ],
+          actionsPadding: Constants.dialogActionsPadding,
+          shape: Constants.dialogShape,
         );
       },
     );

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -35,56 +36,55 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('New Album'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
+      content: ListView(
+        shrinkWrap: true,
         children: [
           if (_allVolumes.length > 1) ...[
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Storage:'),
-                SizedBox(width: 8),
-                Expanded(
-                  child: DropdownButton<StorageVolume>(
-                    isExpanded: true,
-                    items: _allVolumes
-                        .map((volume) => DropdownMenuItem(
-                              value: volume,
-                              child: Text(
-                                volume.description,
-                                softWrap: false,
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                              ),
-                            ))
-                        .toList(),
-                    value: _selectedVolume,
-                    onChanged: (volume) {
-                      _selectedVolume = volume;
-                      _checkAlbumExists();
-                      setState(() {});
-                    },
-                  ),
-                ),
-              ],
+            Padding(
+              padding: Constants.dialogContentHorizontalPadding,
+              child: Text('Storage:'),
             ),
-            SizedBox(height: 16),
-          ],
-          ValueListenableBuilder<bool>(
-              valueListenable: _existsNotifier,
-              builder: (context, exists, child) {
-                return TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    helperText: exists ? 'Album already exists' : '',
+            ..._allVolumes.map((volume) => RadioListTile<StorageVolume>(
+                  value: volume,
+                  groupValue: _selectedVolume,
+                  onChanged: (volume) {
+                    _selectedVolume = volume;
+                    _checkAlbumExists();
+                    setState(() {});
+                  },
+                  title: Text(
+                    volume.description,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
                   ),
-                  onChanged: (_) => _checkAlbumExists(),
-                  onSubmitted: (_) => _submit(context),
-                );
-              }),
+                  subtitle: Text(
+                    volume.path,
+                    softWrap: false,
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                  ),
+                )),
+            SizedBox(height: 8),
+          ],
+          Padding(
+            padding: Constants.dialogContentHorizontalPadding,
+            child: ValueListenableBuilder<bool>(
+                valueListenable: _existsNotifier,
+                builder: (context, exists, child) {
+                  return TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      helperText: exists ? 'Album already exists' : '',
+                    ),
+                    onChanged: (_) => _checkAlbumExists(),
+                    onSubmitted: (_) => _submit(context),
+                  );
+                }),
+          ),
         ],
       ),
-      contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+      contentPadding: EdgeInsets.only(top: 20),
       actions: [
         FlatButton(
           onPressed: () => Navigator.pop(context),
@@ -95,6 +95,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
           child: Text('Create'.toUpperCase()),
         ),
       ],
+      actionsPadding: Constants.dialogActionsPadding,
+      shape: Constants.dialogShape,
     );
   }
 
