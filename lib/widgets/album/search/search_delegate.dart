@@ -62,19 +62,23 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
       child: ValueListenableBuilder<String>(
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
+            var queryFilter = _buildQueryFilter(false);
             return ListView(
               padding: EdgeInsets.only(top: 8),
               children: [
                 _buildFilterRow(
                   context: context,
                   filters: [
-                    _buildQueryFilter(false),
+                    queryFilter,
                     FavouriteFilter(),
                     MimeFilter(MimeTypes.anyImage),
                     MimeFilter(MimeTypes.anyVideo),
                     MimeFilter(MimeFilter.animated),
                     MimeFilter(MimeTypes.svg),
                   ].where((f) => f != null && containQuery(f.label)),
+                  // usually perform hero animation only on tapped chips,
+                  // but we also need to animate the query chip when it is selected by submitting the search query
+                  heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
                 ),
                 StreamBuilder(
                     stream: source.eventBus.on<AlbumsChangedEvent>(),
@@ -118,11 +122,17 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     );
   }
 
-  Widget _buildFilterRow({@required BuildContext context, String title, @required Iterable<CollectionFilter> filters}) {
+  Widget _buildFilterRow({
+    @required BuildContext context,
+    String title,
+    @required Iterable<CollectionFilter> filters,
+    HeroType Function(CollectionFilter filter) heroTypeBuilder,
+  }) {
     return ExpandableFilterRow(
       title: title,
       filters: filters,
       expandedNotifier: expandedSectionNotifier,
+      heroTypeBuilder: heroTypeBuilder,
       onPressed: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
     );
   }
