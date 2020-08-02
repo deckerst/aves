@@ -9,12 +9,14 @@ class ExpandableFilterRow extends StatelessWidget {
   final String title;
   final Iterable<CollectionFilter> filters;
   final ValueNotifier<String> expandedNotifier;
+  final HeroType Function(CollectionFilter filter) heroTypeBuilder;
   final FilterCallback onPressed;
 
   const ExpandableFilterRow({
     this.title,
     @required this.filters,
     this.expandedNotifier,
+    this.heroTypeBuilder,
     @required this.onPressed,
   });
 
@@ -59,12 +61,7 @@ class ExpandableFilterRow extends StatelessWidget {
       child: Wrap(
         spacing: horizontalPadding,
         runSpacing: verticalPadding,
-        children: filtersList
-            .map((filter) => AvesFilterChip(
-                  filter: filter,
-                  onPressed: onPressed,
-                ))
-            .toList(),
+        children: filtersList.map(_buildFilterChip).toList(),
       ),
     );
     final list = Container(
@@ -78,12 +75,7 @@ class ExpandableFilterRow extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
-          if (index >= filtersList.length) return null;
-          final filter = filtersList[index];
-          return AvesFilterChip(
-            filter: filter,
-            onPressed: onPressed,
-          );
+          return index < filtersList.length ? _buildFilterChip(filtersList[index]) : null;
         },
         separatorBuilder: (context, index) => SizedBox(width: 8),
         itemCount: filtersList.length,
@@ -108,5 +100,13 @@ class ExpandableFilterRow extends StatelessWidget {
             ],
           )
         : filterChips;
+  }
+
+  Widget _buildFilterChip(CollectionFilter filter) {
+    return AvesFilterChip(
+      filter: filter,
+      heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,
+      onPressed: onPressed,
+    );
   }
 }

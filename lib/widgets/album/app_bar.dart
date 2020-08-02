@@ -6,7 +6,9 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
+import 'package:aves/widgets/common/action_delegates/group_collection_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
+import 'package:aves/widgets/common/action_delegates/sort_collection_dialog.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
@@ -185,8 +187,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           itemBuilder: (context) {
             final hasSelection = collection.selection.isNotEmpty;
             return [
-              ..._buildSortMenuItems(),
-              ..._buildGroupMenuItems(),
+              PopupMenuItem(
+                value: CollectionAction.sort,
+                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+              ),
+              if (collection.sortFactor == SortFactor.date)
+                PopupMenuItem(
+                  value: CollectionAction.group,
+                  child: MenuRow(text: 'Group...', icon: AIcons.group),
+                ),
               if (collection.isBrowsing) ...[
                 if (AvesApp.mode == AppMode.main)
                   if (kDebugMode)
@@ -204,6 +213,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 ),
               ],
               if (collection.isSelecting) ...[
+                PopupMenuDivider(),
                 PopupMenuItem(
                   value: CollectionAction.copy,
                   enabled: hasSelection,
@@ -236,44 +246,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         ),
       ),
     ];
-  }
-
-  List<PopupMenuEntry<CollectionAction>> _buildSortMenuItems() {
-    return [
-      PopupMenuItem(
-        value: CollectionAction.sortByDate,
-        child: MenuRow(text: 'Sort by date', checked: collection.sortFactor == SortFactor.date),
-      ),
-      PopupMenuItem(
-        value: CollectionAction.sortBySize,
-        child: MenuRow(text: 'Sort by size', checked: collection.sortFactor == SortFactor.size),
-      ),
-      PopupMenuItem(
-        value: CollectionAction.sortByName,
-        child: MenuRow(text: 'Sort by name', checked: collection.sortFactor == SortFactor.name),
-      ),
-      PopupMenuDivider(),
-    ];
-  }
-
-  List<PopupMenuEntry<CollectionAction>> _buildGroupMenuItems() {
-    return collection.sortFactor == SortFactor.date
-        ? [
-            PopupMenuItem(
-              value: CollectionAction.groupByAlbum,
-              child: MenuRow(text: 'Group by album', checked: collection.groupFactor == GroupFactor.album),
-            ),
-            PopupMenuItem(
-              value: CollectionAction.groupByMonth,
-              child: MenuRow(text: 'Group by month', checked: collection.groupFactor == GroupFactor.month),
-            ),
-            PopupMenuItem(
-              value: CollectionAction.groupByDay,
-              child: MenuRow(text: 'Group by day', checked: collection.groupFactor == GroupFactor.day),
-            ),
-            PopupMenuDivider(),
-          ]
-        : [];
   }
 
   void _onActivityChange() {
@@ -317,29 +289,25 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case CollectionAction.stats:
         unawaited(_goToStats());
         break;
-      case CollectionAction.groupByAlbum:
-        settings.collectionGroupFactor = GroupFactor.album;
-        collection.group(GroupFactor.album);
+      case CollectionAction.group:
+        final factor = await showDialog<GroupFactor>(
+          context: context,
+          builder: (context) => GroupCollectionDialog(),
+        );
+        if (factor != null) {
+          settings.collectionGroupFactor = factor;
+          collection.group(factor);
+        }
         break;
-      case CollectionAction.groupByMonth:
-        settings.collectionGroupFactor = GroupFactor.month;
-        collection.group(GroupFactor.month);
-        break;
-      case CollectionAction.groupByDay:
-        settings.collectionGroupFactor = GroupFactor.day;
-        collection.group(GroupFactor.day);
-        break;
-      case CollectionAction.sortByDate:
-        settings.collectionSortFactor = SortFactor.date;
-        collection.sort(SortFactor.date);
-        break;
-      case CollectionAction.sortBySize:
-        settings.collectionSortFactor = SortFactor.size;
-        collection.sort(SortFactor.size);
-        break;
-      case CollectionAction.sortByName:
-        settings.collectionSortFactor = SortFactor.name;
-        collection.sort(SortFactor.name);
+      case CollectionAction.sort:
+        final factor = await showDialog<SortFactor>(
+          context: context,
+          builder: (context) => SortCollectionDialog(),
+        );
+        if (factor != null) {
+          settings.collectionSortFactor = factor;
+          collection.sort(factor);
+        }
         break;
     }
   }
@@ -365,17 +333,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
 enum CollectionAction {
   copy,
+  group,
   move,
   refresh,
   refreshMetadata,
   select,
   selectAll,
   selectNone,
+  sort,
   stats,
-  groupByAlbum,
-  groupByMonth,
-  groupByDay,
-  sortByDate,
-  sortBySize,
-  sortByName,
 }

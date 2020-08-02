@@ -11,7 +11,7 @@ class Durations {
 
   // collection animations
   static const appBarTitleAnimation = Duration(milliseconds: 300);
-  static const filterBarRemovalAnimation = Duration(milliseconds: 200);
+  static const filterBarRemovalAnimation = Duration(milliseconds: 400);
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);
   static const collectionScalingBackgroundAnimation = Duration(milliseconds: 200);
   static const sectionHeaderAnimation = Duration(milliseconds: 200);

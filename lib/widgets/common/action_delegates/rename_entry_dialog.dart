@@ -1,4 +1,5 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class RenameEntryDialog extends StatefulWidget {
@@ -43,6 +44,8 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
           child: Text('Apply'.toUpperCase()),
         ),
       ],
+      actionsPadding: Constants.dialogActionsPadding,
+      shape: Constants.dialogShape,
     );
   }
 }
