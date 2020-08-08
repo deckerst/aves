@@ -36,53 +36,59 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('New Album'),
-      content: ListView(
-        shrinkWrap: true,
-        children: [
-          if (_allVolumes.length > 1) ...[
+      content: Container(
+        // workaround because the dialog tries
+        // to size itself to the content intrinsic size,
+        // but the `ListView` viewport does not have one
+        width: double.maxFinite,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            if (_allVolumes.length > 1) ...[
+              Padding(
+                padding: Constants.dialogContentHorizontalPadding,
+                child: Text('Storage:'),
+              ),
+              ..._allVolumes.map((volume) => RadioListTile<StorageVolume>(
+                    value: volume,
+                    groupValue: _selectedVolume,
+                    onChanged: (volume) {
+                      _selectedVolume = volume;
+                      _checkAlbumExists();
+                      setState(() {});
+                    },
+                    title: Text(
+                      volume.description,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                    ),
+                    subtitle: Text(
+                      volume.path,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                    ),
+                  )),
+              SizedBox(height: 8),
+            ],
             Padding(
               padding: Constants.dialogContentHorizontalPadding,
-              child: Text('Storage:'),
+              child: ValueListenableBuilder<bool>(
+                  valueListenable: _existsNotifier,
+                  builder: (context, exists, child) {
+                    return TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        helperText: exists ? 'Album already exists' : '',
+                      ),
+                      onChanged: (_) => _checkAlbumExists(),
+                      onSubmitted: (_) => _submit(context),
+                    );
+                  }),
             ),
-            ..._allVolumes.map((volume) => RadioListTile<StorageVolume>(
-                  value: volume,
-                  groupValue: _selectedVolume,
-                  onChanged: (volume) {
-                    _selectedVolume = volume;
-                    _checkAlbumExists();
-                    setState(() {});
-                  },
-                  title: Text(
-                    volume.description,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                  ),
-                  subtitle: Text(
-                    volume.path,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                  ),
-                )),
-            SizedBox(height: 8),
           ],
-          Padding(
-            padding: Constants.dialogContentHorizontalPadding,
-            child: ValueListenableBuilder<bool>(
-                valueListenable: _existsNotifier,
-                builder: (context, exists, child) {
-                  return TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      helperText: exists ? 'Album already exists' : '',
-                    ),
-                    onChanged: (_) => _checkAlbumExists(),
-                    onSubmitted: (_) => _submit(context),
-                  );
-                }),
-          ),
-        ],
+        ),
       ),
       contentPadding: EdgeInsets.only(top: 20),
       actions: [

@@ -22,13 +22,19 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Sort'),
-      content: ListView(
-        shrinkWrap: true,
-        children: [
-          _buildRadioListTile(SortFactor.date, 'By date'),
-          _buildRadioListTile(SortFactor.size, 'By size'),
-          _buildRadioListTile(SortFactor.name, 'By album & file name'),
-        ],
+      content: Container(
+        // workaround because the dialog tries
+        // to size itself to the content intrinsic size,
+        // but the `ListView` viewport does not have one
+        width: double.maxFinite,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            _buildRadioListTile(SortFactor.date, 'By date'),
+            _buildRadioListTile(SortFactor.size, 'By size'),
+            _buildRadioListTile(SortFactor.name, 'By album & file name'),
+          ],
+        ),
       ),
       contentPadding: EdgeInsets.only(top: 20),
       actions: [

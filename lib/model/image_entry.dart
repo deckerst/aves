@@ -289,7 +289,7 @@ class ImageEntry {
         );
       }
     } catch (exception, stack) {
-      debugPrint('$runtimeType addAddressToMetadata failed with path=$path coordinates=$coordinates exception=$exception\n$stack');
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates exception=$exception\n$stack');
     }
   }
 

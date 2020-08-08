@@ -22,14 +22,20 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Group'),
-      content: ListView(
-        shrinkWrap: true,
-        children: [
-          _buildRadioListTile(GroupFactor.album, 'By album'),
-          _buildRadioListTile(GroupFactor.month, 'By month'),
-          _buildRadioListTile(GroupFactor.day, 'By day'),
-          _buildRadioListTile(GroupFactor.none, 'Do not group'),
-        ],
+      content: Container(
+        // workaround because the dialog tries
+        // to size itself to the content intrinsic size,
+        // but the `ListView` viewport does not have one
+        width: double.maxFinite,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            _buildRadioListTile(GroupFactor.album, 'By album'),
+            _buildRadioListTile(GroupFactor.month, 'By month'),
+            _buildRadioListTile(GroupFactor.day, 'By day'),
+            _buildRadioListTile(GroupFactor.none, 'Do not group'),
+          ],
+        ),
       ),
       contentPadding: EdgeInsets.only(top: 20),
       actions: [
