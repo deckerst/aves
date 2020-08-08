@@ -155,10 +155,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e32cd834e1c76fa172efbd6600a3b1464416100c
+      resolved-ref: d5a827929882f06a30cb82de29feec545d8f00da
       url: "git://github.com/deckerst/flutter_ijkplayer.git"
     source: git
-    version: "0.3.6"
+    version: "0.3.7"
   flutter_markdown:
     dependency: "direct main"
     description:
