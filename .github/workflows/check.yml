@@ -1,0 +1,31 @@
+name: Quality check
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    name: Check code quality.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+
+      - name: Clone the repository.
+        uses: actions/checkout@v2
+
+      - name: Get packages for the Flutter project.
+        run: flutter pub get
+
+      - name: Update the flutter version file.
+        working-directory: ${{ github.workspace }}/scripts
+        run: ./update_flutter_version.sh
+
+      - name: Static analysis.
+        run: flutter analyze
+
+      - name: Unit tests.
+        run: flutter test

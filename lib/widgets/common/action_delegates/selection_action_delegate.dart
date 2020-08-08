@@ -8,7 +8,6 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/app_bar.dart';
 import 'package:aves/widgets/album/empty.dart';

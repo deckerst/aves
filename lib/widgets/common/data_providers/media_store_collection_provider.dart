@@ -56,6 +56,7 @@ class MediaStoreSource extends CollectionSource {
       addAll(pendingNewEntries);
       pendingNewEntries.clear();
     }
+
     ImageFileService.getImageEntries(knownEntryMap).listen(
       (entry) {
         pendingNewEntries.add(entry);
