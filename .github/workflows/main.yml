@@ -47,8 +47,8 @@ jobs:
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
-          flutter build apk
-          flutter build appbundle
+          flutter build apk --bundle-sksl-path shaders.sksl.json
+          flutter build appbundle --bundle-sksl-path shaders.sksl.json
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
@@ -61,7 +61,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/release/*.apk,build/app/outputs/bundle/release/*.aab"
-          token: ${{ secrets.RELEASE_WORKFLOW_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload app bundle
         uses: actions/upload-artifact@v2

@@ -1,5 +1,5 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/dialog.dart';
 import 'package:flutter/material.dart';
 
 class RenameEntryDialog extends StatefulWidget {
@@ -29,7 +29,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AvesDialog(
       content: TextField(
         controller: _nameController,
         autofocus: true,
@@ -44,8 +44,6 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
           child: Text('Apply'.toUpperCase()),
         ),
       ],
-      actionsPadding: Constants.dialogActionsPadding,
-      shape: Constants.dialogShape,
     );
   }
 }

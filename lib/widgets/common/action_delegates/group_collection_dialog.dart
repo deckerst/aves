@@ -1,8 +1,9 @@
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import '../dialog.dart';
 
 class GroupCollectionDialog extends StatefulWidget {
   @override
@@ -20,18 +21,14 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Group'),
-      content: ListView(
-        shrinkWrap: true,
-        children: [
-          _buildRadioListTile(GroupFactor.album, 'By album'),
-          _buildRadioListTile(GroupFactor.month, 'By month'),
-          _buildRadioListTile(GroupFactor.day, 'By day'),
-          _buildRadioListTile(GroupFactor.none, 'Do not group'),
-        ],
-      ),
-      contentPadding: EdgeInsets.only(top: 20),
+    return AvesDialog(
+      title: 'Group',
+      scrollableContent: [
+        _buildRadioListTile(GroupFactor.album, 'By album'),
+        _buildRadioListTile(GroupFactor.month, 'By month'),
+        _buildRadioListTile(GroupFactor.day, 'By day'),
+        _buildRadioListTile(GroupFactor.none, 'Do not group'),
+      ],
       actions: [
         FlatButton(
           onPressed: () => Navigator.pop(context),
@@ -42,8 +39,6 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
           child: Text('Apply'.toUpperCase()),
         ),
       ],
-      actionsPadding: Constants.dialogActionsPadding,
-      shape: Constants.dialogShape,
     );
   }
 

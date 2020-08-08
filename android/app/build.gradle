@@ -80,6 +80,9 @@ android {
         debug {
             applicationIdSuffix ".debug"
         }
+        profile {
+            applicationIdSuffix ".profile"
+        }
         release {
             signingConfig signingConfigs.release
         }

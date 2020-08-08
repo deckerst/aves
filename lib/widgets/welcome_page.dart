@@ -140,8 +140,7 @@ class _WelcomePageState extends State<WelcomePage> {
         borderRadius: BorderRadius.circular(16),
         child: Markdown(
           data: terms,
-          // TODO TLAD make it selectable when this fix (in 1.18.0-6.0.pre) lands on stable: https://github.com/flutter/flutter/pull/54479
-          selectable: false,
+          selectable: true,
           onTapLink: (url) async {
             if (await canLaunch(url)) {
               await launch(url);
