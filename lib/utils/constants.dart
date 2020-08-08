@@ -22,14 +22,6 @@ class Constants {
   static const svgBackground = Colors.white;
   static const svgColorFilter = ColorFilter.mode(svgBackground, BlendMode.dstOver);
 
-  static const dialogContentHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
-  static const dialogActionsPadding = EdgeInsets.symmetric(horizontal: 8);
-  static const dialogShape = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(
-      Radius.circular(24),
-    ),
-  );
-
   static const List<Dependency> androidDependencies = [
     Dependency(
       name: 'CWAC-Document',

@@ -1,7 +1,8 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_file_service.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
+
+import '../dialog.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Iterable<ImageEntry> entries) {
@@ -23,8 +24,8 @@ mixin PermissionAwareMixin {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text('Storage Volume Access'),
+          return AvesDialog(
+            title: 'Storage Volume Access',
             content: Text('Please select the $dirDisplayName directory of “$volumeDescription” in the next screen, so that this app can access it and complete your request.'),
             actions: [
               FlatButton(
@@ -36,8 +37,6 @@ mixin PermissionAwareMixin {
                 child: Text('OK'.toUpperCase()),
               ),
             ],
-            actionsPadding: Constants.dialogActionsPadding,
-            shape: Constants.dialogShape,
           );
         },
       );

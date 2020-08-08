@@ -15,6 +15,7 @@ import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
+import 'package:aves/widgets/common/dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grid_page.dart';
@@ -189,7 +190,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return AvesDialog(
           content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these $count items')}?'),
           actions: [
             FlatButton(
@@ -201,8 +202,6 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
               child: Text('Delete'.toUpperCase()),
             ),
           ],
-          actionsPadding: Constants.dialogActionsPadding,
-          shape: Constants.dialogShape,
         );
       },
     );

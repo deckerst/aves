@@ -4,10 +4,10 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
+import 'package:aves/widgets/common/dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/debug.dart';
@@ -120,7 +120,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
+        return AvesDialog(
           content: Text('Are you sure?'),
           actions: [
             FlatButton(
@@ -132,8 +132,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
               child: Text('Delete'.toUpperCase()),
             ),
           ],
-          actionsPadding: Constants.dialogActionsPadding,
-          shape: Constants.dialogShape,
         );
       },
     );
