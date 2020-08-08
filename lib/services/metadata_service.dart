@@ -48,6 +48,7 @@ class MetadataService {
       }
       return null;
     }
+
     return background
         ? servicePolicy.call(
             call,
