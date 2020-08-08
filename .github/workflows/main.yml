@@ -47,8 +47,8 @@ jobs:
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
-          flutter build apk
-          flutter build appbundle
+          flutter build apk --bundle-sksl-path shaders.sksl.json
+          flutter build appbundle --bundle-sksl-path shaders.sksl.json
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
