@@ -1,8 +1,9 @@
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+import '../dialog.dart';
 
 class SortCollectionDialog extends StatefulWidget {
   @override
@@ -20,23 +21,13 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Sort'),
-      content: Container(
-        // workaround because the dialog tries
-        // to size itself to the content intrinsic size,
-        // but the `ListView` viewport does not have one
-        width: double.maxFinite,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            _buildRadioListTile(SortFactor.date, 'By date'),
-            _buildRadioListTile(SortFactor.size, 'By size'),
-            _buildRadioListTile(SortFactor.name, 'By album & file name'),
-          ],
-        ),
-      ),
-      contentPadding: EdgeInsets.only(top: 20),
+    return AvesDialog(
+      title: 'Sort',
+      scrollableContent: [
+        _buildRadioListTile(SortFactor.date, 'By date'),
+        _buildRadioListTile(SortFactor.size, 'By size'),
+        _buildRadioListTile(SortFactor.name, 'By album & file name'),
+      ],
       actions: [
         FlatButton(
           onPressed: () => Navigator.pop(context),
@@ -47,8 +38,6 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
           child: Text('Apply'.toUpperCase()),
         ),
       ],
-      actionsPadding: Constants.dialogActionsPadding,
-      shape: Constants.dialogShape,
     );
   }
 
