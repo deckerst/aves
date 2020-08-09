@@ -48,9 +48,7 @@ class EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveC
               // and triggering by mistake a move to the image page above
             },
             child: ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
+              borderRadius: BorderRadius.circular(16),
               child: Container(
                 color: Colors.white70,
                 height: 200,

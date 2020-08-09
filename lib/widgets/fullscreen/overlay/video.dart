@@ -182,9 +182,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
             decoration: BoxDecoration(
               color: FullscreenOverlay.backgroundColor,
               border: FullscreenOverlay.buildBorder(context),
-              borderRadius: BorderRadius.all(
-                Radius.circular(progressBarBorderRadius),
-              ),
+              borderRadius: BorderRadius.circular(progressBarBorderRadius),
             ),
             child: Column(
               key: _progressBarKey,

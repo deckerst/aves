@@ -137,9 +137,7 @@ class OverlayIcon extends StatelessWidget {
       padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
         color: Color(0xBB000000),
-        borderRadius: BorderRadius.all(
-          Radius.circular(size),
-        ),
+        borderRadius: BorderRadius.circular(size),
       ),
       child: text == null
           ? iconChild
