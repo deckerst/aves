@@ -49,6 +49,7 @@ dependencies:
 #    path: ../flutter_ijkplayer
     git:
       url: git://github.com/deckerst/flutter_ijkplayer.git
+  flutter_map:
   flutter_markdown:
   flutter_native_timezone:
   flutter_staggered_animations:
@@ -56,6 +57,7 @@ dependencies:
   geocoder:
   google_maps_flutter:
   intl:
+  latlong: # for flutter_map
   outline_material_icons:
   package_info:
   palette_generator:
