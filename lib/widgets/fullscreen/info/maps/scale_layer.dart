@@ -1,6 +1,6 @@
 import 'dart:math';
-import 'dart:ui' as ui;
 
+import 'package:aves/labs/outlined_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -8,19 +8,20 @@ import 'package:flutter_map/plugin_api.dart';
 import 'scalebar_utils.dart' as util;
 
 class ScaleLayerOptions extends LayerOptions {
-  TextStyle textStyle;
-  Color lineColor;
-  double lineWidth;
-  final EdgeInsets padding;
+  final Widget Function(double width, String distance) builder;
 
   ScaleLayerOptions({
     Key key,
-    this.textStyle,
-    this.lineColor = Colors.white,
-    this.lineWidth = 2,
-    this.padding,
+    this.builder = defaultBuilder,
     rebuild,
   }) : super(key: key, rebuild: rebuild);
+
+  static Widget defaultBuilder(double width, String distance) {
+    return ScaleBar(
+      distance: distance,
+      width: width,
+    );
+  }
 }
 
 class ScaleLayerWidget extends StatelessWidget {
@@ -72,70 +73,68 @@ class ScaleLayer extends StatelessWidget {
     return StreamBuilder<Null>(
       stream: stream,
       builder: (context, snapshot) {
-        var zoom = map.zoom;
-        var distance = scale[max(0, min(20, zoom.round() + 2))].toDouble();
-        var center = map.center;
-        var start = map.project(center);
-        var targetPoint = util.calculateEndingGlobalCoordinates(center, 90, distance);
-        var end = map.project(targetPoint);
-        var displayDistance = distance > 999 ? '${(distance / 1000).toStringAsFixed(0)} km' : '${distance.toStringAsFixed(0)} m';
-        double width = (end.x - start.x);
+        final center = map.center;
+        final latitude = center.latitude.abs();
+        final level = map.zoom.round() + (latitude > 80 ? 4 : latitude > 60 ? 3 : 2);
+        final distance = scale[max(0, min(20, level))].toDouble();
+        final start = map.project(center);
+        final targetPoint = util.calculateEndingGlobalCoordinates(center, 90, distance);
+        final end = map.project(targetPoint);
+        final displayDistance = distance > 999 ? '${(distance / 1000).toStringAsFixed(0)} km' : '${distance.toStringAsFixed(0)} m';
+        final double width = (end.x - start.x);
 
-        return CustomPaint(
-          painter: ScalePainter(
-            width,
-            displayDistance,
-            lineColor: scaleLayerOpts.lineColor,
-            lineWidth: scaleLayerOpts.lineWidth,
-            padding: scaleLayerOpts.padding,
-            textStyle: scaleLayerOpts.textStyle,
-          ),
-        );
+        return scaleLayerOpts.builder(width, displayDistance);
       },
     );
   }
 }
 
-class ScalePainter extends CustomPainter {
-  ScalePainter(this.width, this.text, {this.padding, this.textStyle, this.lineWidth, this.lineColor});
-
+class ScaleBar extends StatelessWidget {
+  final String distance;
   final double width;
-  final EdgeInsets padding;
-  final String text;
-  TextStyle textStyle;
-  double lineWidth;
-  Color lineColor;
+
+  static const Color fillColor = Colors.black;
+  static const Color outlineColor = Colors.white;
+  static const double outlineWidth = .5;
+  static const double barThickness = 1;
+
+  const ScaleBar({
+    @required this.distance,
+    @required this.width,
+  });
 
   @override
-  void paint(ui.Canvas canvas, ui.Size size) {
-    final paint = Paint()
-      ..color = lineColor
-      ..strokeCap = StrokeCap.square
-      ..strokeWidth = lineWidth;
-
-    var sizeForStartEnd = 4;
-    var paddingLeft = padding == null ? 0 : padding.left + sizeForStartEnd / 2;
-    var paddingTop = padding == null ? 0 : padding.top;
-
-    var textSpan = TextSpan(style: textStyle, text: text);
-    var textPainter = TextPainter(text: textSpan, textDirection: TextDirection.ltr)..layout();
-    textPainter.paint(canvas, Offset(width / 2 - textPainter.width / 2 + paddingLeft, paddingTop));
-    paddingTop += textPainter.height;
-    var p1 = Offset(paddingLeft, sizeForStartEnd + paddingTop);
-    var p2 = Offset(paddingLeft + width, sizeForStartEnd + paddingTop);
-    // draw start line
-    canvas.drawLine(Offset(paddingLeft, paddingTop), Offset(paddingLeft, sizeForStartEnd + paddingTop), paint);
-    // draw middle line
-    var middleX = width / 2 + paddingLeft - lineWidth / 2;
-    canvas.drawLine(Offset(middleX, paddingTop + sizeForStartEnd / 2), Offset(middleX, sizeForStartEnd + paddingTop), paint);
-    // draw end line
-    canvas.drawLine(Offset(width + paddingLeft, paddingTop), Offset(width + paddingLeft, sizeForStartEnd + paddingTop), paint);
-    // draw bottom line
-    canvas.drawLine(p1, p2, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: AlignmentDirectional.bottomStart,
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          OutlinedText(
+            text: distance,
+            style: TextStyle(
+              color: fillColor,
+              fontSize: 11,
+            ),
+            outlineWidth: outlineWidth * 2,
+            outlineColor: outlineColor,
+          ),
+          Container(
+            height: barThickness + outlineWidth * 2,
+            width: width,
+            decoration: BoxDecoration(
+              color: fillColor,
+              border: Border.all(
+                color: outlineColor,
+                width: outlineWidth,
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
