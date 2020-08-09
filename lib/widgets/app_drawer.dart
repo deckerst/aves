@@ -21,6 +21,7 @@ import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
 import 'package:aves/widgets/filter_grid_page.dart';
+import 'package:aves/widgets/settings_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -93,6 +94,15 @@ class _AppDrawerState extends State<AppDrawer> {
       title: 'Favourites',
       filter: FavouriteFilter(),
     );
+    final settingsEntry = SafeArea(
+      top: false,
+      bottom: false,
+      child: ListTile(
+        leading: Icon(AIcons.settings),
+        title: Text('Preferences'),
+        onTap: () => _goToSettings(context),
+      ),
+    );
     final aboutEntry = SafeArea(
       top: false,
       bottom: false,
@@ -114,6 +124,7 @@ class _AppDrawerState extends State<AppDrawer> {
       _buildCountrySection(),
       _buildTagSection(),
       Divider(),
+      settingsEntry,
       aboutEntry,
       if (kDebugMode) ...[
         Divider(),
@@ -306,6 +317,16 @@ class _AppDrawerState extends State<AppDrawer> {
             text: 'No tags',
           ),
         ),
+      ),
+    );
+  }
+
+  void _goToSettings(BuildContext context) {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SettingsPage(),
       ),
     );
   }

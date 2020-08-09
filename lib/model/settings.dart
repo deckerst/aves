@@ -1,4 +1,5 @@
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,7 @@ class Settings {
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionTileExtentKey = 'collection_tile_extent';
+  static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
   static const catalogTimeZoneKey = 'catalog_time_zone';
   static const hasAcceptedTermsKey = 'has_accepted_terms';
@@ -49,6 +51,10 @@ class Settings {
       }
     }
   }
+
+  EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
+
+  set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
 
   double get infoMapZoom => _prefs.getDouble(infoMapZoomKey) ?? 12;
 

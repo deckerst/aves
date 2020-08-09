@@ -19,6 +19,7 @@ class AIcons {
   static const IconData location = OMIcons.place;
   static const IconData shooting = OMIcons.camera;
   static const IconData removableStorage = OMIcons.sdStorage;
+  static const IconData settings = OMIcons.settings;
   static const IconData text = OMIcons.formatQuote;
   static const IconData tag = OMIcons.localOffer;
 
