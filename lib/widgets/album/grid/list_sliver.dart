@@ -65,7 +65,7 @@ class GridThumbnail extends StatelessWidget {
         }
       },
       onLongPress: () {
-        if (AvesApp.mode == AppMode.main && collection.isBrowsing) {
+        if (AvesApp.mode == AppMode.main) {
           collection.toggleSelection(entry);
         }
       },
