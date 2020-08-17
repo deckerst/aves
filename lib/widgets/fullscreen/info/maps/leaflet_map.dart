@@ -1,5 +1,5 @@
 import 'package:aves/model/settings.dart';
-import 'package:aves/widgets/fullscreen/info/maps/buttons.dart';
+import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:aves/widgets/fullscreen/info/maps/scale_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -50,7 +50,9 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
       children: [
         Stack(
           children: [
-            _buildMap(),
+            MapDecorator(
+              child: _buildMap(),
+            ),
             MapButtonPanel(
               geoUri: widget.geoUri,
               zoomBy: _zoomBy,
@@ -63,51 +65,38 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
   }
 
   Widget _buildMap() {
-    return GestureDetector(
-      onScaleStart: (details) {
-        // absorb scale gesture here to prevent scrolling
-        // and triggering by mistake a move to the image page above
-      },
-      child: ClipRRect(
-        borderRadius: MapButtonPanel.mapBorderRadius,
-        child: Container(
-          color: Colors.white70,
-          height: 200,
-          child: FlutterMap(
-            options: MapOptions(
-              center: widget.latLng,
-              zoom: widget.initialZoom,
-              interactive: false,
-            ),
-            children: [
-              _buildMapLayer(),
-              ScaleLayerWidget(
-                options: ScaleLayerOptions(),
-              ),
-              MarkerLayerWidget(
-                options: MarkerLayerOptions(
-                  markers: [
-                    Marker(
-                      width: markerSize,
-                      height: markerSize,
-                      point: widget.latLng,
-                      builder: (ctx) {
-                        return Icon(
-                          Icons.place,
-                          size: markerSize,
-                          color: Theme.of(context).accentColor,
-                        );
-                      },
-                      anchorPos: AnchorPos.align(AnchorAlign.top),
-                    ),
-                  ],
-                ),
+    return FlutterMap(
+      options: MapOptions(
+        center: widget.latLng,
+        zoom: widget.initialZoom,
+        interactive: false,
+      ),
+      children: [
+        _buildMapLayer(),
+        ScaleLayerWidget(
+          options: ScaleLayerOptions(),
+        ),
+        MarkerLayerWidget(
+          options: MarkerLayerOptions(
+            markers: [
+              Marker(
+                width: markerSize,
+                height: markerSize,
+                point: widget.latLng,
+                builder: (ctx) {
+                  return Icon(
+                    Icons.place,
+                    size: markerSize,
+                    color: Theme.of(context).accentColor,
+                  );
+                },
+                anchorPos: AnchorPos.align(AnchorAlign.top),
               ),
             ],
-            mapController: _mapController,
           ),
         ),
-      ),
+      ],
+      mapController: _mapController,
     );
   }
 
