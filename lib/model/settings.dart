@@ -1,4 +1,5 @@
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,12 +16,14 @@ class Settings {
   Settings._private();
 
   // preferences
+  static const catalogTimeZoneKey = 'catalog_time_zone';
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionTileExtentKey = 'collection_tile_extent';
-  static const infoMapZoomKey = 'info_map_zoom';
-  static const catalogTimeZoneKey = 'catalog_time_zone';
   static const hasAcceptedTermsKey = 'has_accepted_terms';
+  static const infoMapStyleKey = 'info_map_style';
+  static const infoMapZoomKey = 'info_map_zoom';
+  static const launchPageKey = 'launch_page';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -50,10 +53,6 @@ class Settings {
     }
   }
 
-  double get infoMapZoom => _prefs.getDouble(infoMapZoomKey) ?? 12;
-
-  set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
-
   String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
@@ -70,9 +69,21 @@ class Settings {
 
   set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
 
+  EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
+
+  set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
+
+  double get infoMapZoom => _prefs.getDouble(infoMapZoomKey) ?? 12;
+
+  set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
+
   bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+
+  LaunchPage get launchPage => getEnumOrDefault(launchPageKey, LaunchPage.collection, LaunchPage.values);
+
+  set launchPage(LaunchPage newValue) => setAndNotify(launchPageKey, newValue.toString());
 
   // convenience methods
 
@@ -115,6 +126,21 @@ class Settings {
     }
     if (oldValue != newValue) {
       notifyListeners(key, oldValue, newValue);
+    }
+  }
+}
+
+enum LaunchPage { collection, albums }
+
+extension ExtraLaunchPage on LaunchPage {
+  String get name {
+    switch (this) {
+      case LaunchPage.collection:
+        return 'All Media';
+      case LaunchPage.albums:
+        return 'Albums';
+      default:
+        return toString();
     }
   }
 }

@@ -2,13 +2,14 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/maps/buttons.dart';
+import 'package:aves/widgets/fullscreen/info/maps/google_map.dart';
+import 'package:aves/widgets/fullscreen/info/maps/leaflet_map.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationSection extends StatefulWidget {
   final CollectionLens collection;
@@ -94,14 +95,24 @@ class _LocationSectionState extends State<LocationSection> {
               padding: EdgeInsets.only(bottom: 8),
               child: SectionRow(AIcons.location),
             ),
-          ImageMap(
-            markerId: entry.uri ?? entry.path,
-            latLng: LatLng(
-              entry.latLng.item1,
-              entry.latLng.item2,
-            ),
-            geoUri: entry.geoUri,
-            initialZoom: settings.infoMapZoom,
+          NotificationListener(
+            onNotification: (notification) {
+              if (notification is MapStyleChangedNotification) setState(() {});
+              return false;
+            },
+            child: settings.infoMapStyle == EntryMapStyle.google
+                ? EntryGoogleMap(
+                    markerId: entry.uri ?? entry.path,
+                    latLng: entry.latLng,
+                    geoUri: entry.geoUri,
+                    initialZoom: settings.infoMapZoom,
+                  )
+                : EntryLeafletMap(
+                    latLng: entry.latLng,
+                    geoUri: entry.geoUri,
+                    initialZoom: settings.infoMapZoom,
+                    style: settings.infoMapStyle,
+                  ),
           ),
           if (location.isNotEmpty)
             Padding(
@@ -133,113 +144,22 @@ class _LocationSectionState extends State<LocationSection> {
   void _handleChange() => setState(() {});
 }
 
-class ImageMap extends StatefulWidget {
-  final String markerId;
-  final LatLng latLng;
-  final String geoUri;
-  final double initialZoom;
+// browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
+enum EntryMapStyle { google, osmHot, stamenToner, stamenWatercolor }
 
-  const ImageMap({
-    Key key,
-    this.markerId,
-    this.latLng,
-    this.geoUri,
-    this.initialZoom,
-  }) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => ImageMapState();
-}
-
-class ImageMapState extends State<ImageMap> with AutomaticKeepAliveClientMixin {
-  GoogleMapController _controller;
-
-  @override
-  void didUpdateWidget(ImageMap oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.latLng != oldWidget.latLng && _controller != null) {
-      _controller.moveCamera(CameraUpdate.newLatLng(widget.latLng));
+extension ExtraEntryMapStyle on EntryMapStyle {
+  String get name {
+    switch (this) {
+      case EntryMapStyle.google:
+        return 'Google Maps';
+      case EntryMapStyle.osmHot:
+        return 'Humanitarian OpenStreetMap';
+      case EntryMapStyle.stamenToner:
+        return 'Stamen Toner';
+      case EntryMapStyle.stamenWatercolor:
+        return 'Stamen Watercolor';
+      default:
+        return toString();
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final accentHue = HSVColor.fromColor(Theme.of(context).accentColor).hue;
-    return Row(
-      children: [
-        Expanded(
-          child: GestureDetector(
-            onScaleStart: (details) {
-              // absorb scale gesture here to prevent scrolling
-              // and triggering by mistake a move to the image page above
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-              child: Container(
-                color: Colors.white70,
-                height: 200,
-                child: GoogleMap(
-                  // GoogleMap init perf issue: https://github.com/flutter/flutter/issues/28493
-                  initialCameraPosition: CameraPosition(
-                    target: widget.latLng,
-                    zoom: widget.initialZoom,
-                  ),
-                  onMapCreated: (controller) => setState(() => _controller = controller),
-                  rotateGesturesEnabled: false,
-                  scrollGesturesEnabled: false,
-                  zoomControlsEnabled: false,
-                  zoomGesturesEnabled: false,
-                  liteModeEnabled: false,
-                  tiltGesturesEnabled: false,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
-                  markers: {
-                    Marker(
-                      markerId: MarkerId(widget.markerId),
-                      icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
-                      position: widget.latLng,
-                    )
-                  },
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(width: 8),
-        TooltipTheme(
-          data: TooltipTheme.of(context).copyWith(
-            preferBelow: false,
-          ),
-          child: Column(children: [
-            IconButton(
-              icon: Icon(AIcons.zoomIn),
-              onPressed: _controller == null ? null : () => _zoomBy(1),
-              tooltip: 'Zoom in',
-            ),
-            IconButton(
-              icon: Icon(AIcons.zoomOut),
-              onPressed: _controller == null ? null : () => _zoomBy(-1),
-              tooltip: 'Zoom out',
-            ),
-            IconButton(
-              icon: Icon(AIcons.openInNew),
-              onPressed: () => AndroidAppService.openMap(widget.geoUri),
-              tooltip: 'Show on map...',
-            ),
-          ]),
-        )
-      ],
-    );
-  }
-
-  void _zoomBy(double amount) {
-    settings.infoMapZoom += amount;
-    _controller.animateCamera(CameraUpdate.zoomBy(amount));
-  }
-
-  @override
-  bool get wantKeepAlive => true;
 }

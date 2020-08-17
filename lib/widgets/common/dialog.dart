@@ -35,9 +35,7 @@ class AvesDialog extends AlertDialog {
           actions: actions,
           actionsPadding: EdgeInsets.symmetric(horizontal: 8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(24),
-            ),
+            borderRadius: BorderRadius.circular(24),
           ),
         );
 }

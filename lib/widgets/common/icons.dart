@@ -19,6 +19,7 @@ class AIcons {
   static const IconData location = OMIcons.place;
   static const IconData shooting = OMIcons.camera;
   static const IconData removableStorage = OMIcons.sdStorage;
+  static const IconData settings = OMIcons.settings;
   static const IconData text = OMIcons.formatQuote;
   static const IconData tag = OMIcons.localOffer;
 
@@ -45,6 +46,7 @@ class AIcons {
   static const IconData share = OMIcons.share;
   static const IconData sort = OMIcons.sort;
   static const IconData stats = OMIcons.pieChart;
+  static const IconData style = OMIcons.palette;
   static const IconData zoomIn = OMIcons.add;
   static const IconData zoomOut = OMIcons.remove;
 
@@ -136,9 +138,7 @@ class OverlayIcon extends StatelessWidget {
       padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
         color: Color(0xBB000000),
-        borderRadius: BorderRadius.all(
-          Radius.circular(size),
-        ),
+        borderRadius: BorderRadius.circular(size),
       ),
       child: text == null
           ? iconChild
