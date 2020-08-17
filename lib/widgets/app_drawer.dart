@@ -3,9 +3,7 @@ import 'dart:ui';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/album.dart';
@@ -16,7 +14,6 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/album/collection_page.dart';
-import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
@@ -100,7 +97,7 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListTile(
         leading: Icon(AIcons.settings),
         title: Text('Preferences'),
-        onTap: () => _goToSettings(context),
+        onTap: () => _goTo((_) => SettingsPage()),
       ),
     );
     final aboutEntry = SafeArea(
@@ -109,7 +106,7 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListTile(
         leading: Icon(AIcons.info),
         title: Text('About'),
-        onTap: () => _goToAbout(context),
+        onTap: () => _goTo((_) => AboutPage()),
       ),
     );
 
@@ -134,7 +131,7 @@ class _AppDrawerState extends State<AppDrawer> {
           child: ListTile(
             leading: Icon(AIcons.debug),
             title: Text('Debug'),
-            onTap: () => _goToDebug(context),
+            onTap: () => _goTo((_) => DebugPage(source: source)),
           ),
         ),
       ],
@@ -215,7 +212,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               );
             }),
-        onTap: () => _goToAlbums(context),
+        onTap: () => _goTo((_) => AlbumListPage(source: source)),
       ),
     );
   }
@@ -237,7 +234,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               );
             }),
-        onTap: () => _goToCountries(context),
+        onTap: () => _goTo((_) => CountryListPage(source: source)),
       ),
     );
   }
@@ -259,98 +256,14 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               );
             }),
-        onTap: () => _goToTags(context),
+        onTap: () => _goTo((_) => TagListPage(source: source)),
       ),
     );
   }
 
-  void _goToAlbums(BuildContext context) {
+  void _goTo(WidgetBuilder builder) {
     Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FilterNavigationPage(
-          source: source,
-          title: 'Albums',
-          filterEntries: source.getAlbumEntries(),
-          filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-          emptyBuilder: () => EmptyContent(
-            icon: AIcons.album,
-            text: 'No albums',
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _goToCountries(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FilterNavigationPage(
-          source: source,
-          title: 'Countries',
-          filterEntries: source.getCountryEntries(),
-          filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
-          emptyBuilder: () => EmptyContent(
-            icon: AIcons.location,
-            text: 'No countries',
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _goToTags(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FilterNavigationPage(
-          source: source,
-          title: 'Tags',
-          filterEntries: source.getTagEntries(),
-          filterBuilder: (s) => TagFilter(s),
-          emptyBuilder: () => EmptyContent(
-            icon: AIcons.tag,
-            text: 'No tags',
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _goToSettings(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SettingsPage(),
-      ),
-    );
-  }
-
-  void _goToAbout(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AboutPage(),
-      ),
-    );
-  }
-
-  void _goToDebug(BuildContext context) {
-    Navigator.pop(context);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DebugPage(
-          source: source,
-        ),
-      ),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: builder));
   }
 }
 

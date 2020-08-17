@@ -2,13 +2,19 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
+import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/album/thumbnail/raster.dart';
 import 'package:aves/widgets/album/thumbnail/vector.dart';
 import 'package:aves/widgets/app_drawer.dart';
@@ -19,6 +25,75 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
+
+class AlbumListPage extends StatelessWidget {
+  final CollectionSource source;
+
+  const AlbumListPage({@required this.source});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: source.eventBus.on<AlbumsChangedEvent>(),
+      builder: (context, snapshot) => FilterNavigationPage(
+        source: source,
+        title: 'Albums',
+        filterEntries: source.getAlbumEntries(),
+        filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
+        emptyBuilder: () => EmptyContent(
+          icon: AIcons.album,
+          text: 'No albums',
+        ),
+      ),
+    );
+  }
+}
+
+class CountryListPage extends StatelessWidget {
+  final CollectionSource source;
+
+  const CountryListPage({@required this.source});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: source.eventBus.on<LocationsChangedEvent>(),
+      builder: (context, snapshot) => FilterNavigationPage(
+        source: source,
+        title: 'Countries',
+        filterEntries: source.getCountryEntries(),
+        filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
+        emptyBuilder: () => EmptyContent(
+          icon: AIcons.location,
+          text: 'No countries',
+        ),
+      ),
+    );
+  }
+}
+
+class TagListPage extends StatelessWidget {
+  final CollectionSource source;
+
+  const TagListPage({@required this.source});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: source.eventBus.on<TagsChangedEvent>(),
+      builder: (context, snapshot) => FilterNavigationPage(
+        source: source,
+        title: 'Tags',
+        filterEntries: source.getTagEntries(),
+        filterBuilder: (s) => TagFilter(s),
+        emptyBuilder: () => EmptyContent(
+          icon: AIcons.tag,
+          text: 'No tags',
+        ),
+      ),
+    );
+  }
+}
 
 class FilterNavigationPage extends StatelessWidget {
   final CollectionSource source;
@@ -48,7 +123,12 @@ class FilterNavigationPage extends StatelessWidget {
       ),
       filterEntries: filterEntries,
       filterBuilder: filterBuilder,
-      emptyBuilder: emptyBuilder,
+      emptyBuilder: () => ValueListenableBuilder<SourceState>(
+        valueListenable: source.stateNotifier,
+        builder: (context, sourceState, child) {
+          return sourceState != SourceState.loading && emptyBuilder != null ? emptyBuilder() : SizedBox.shrink();
+        },
+      ),
       onPressed: (filter) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
