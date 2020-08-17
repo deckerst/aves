@@ -43,12 +43,14 @@ jobs:
         # `KEY_JKS` should contain the result of:
         # gpg -c --armor keystore.jks
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
+        # The SkSL bundle must be produced with the same Flutter engine as the one used to build the artifact
+        # flutter build <subcommand> --bundle-sksl-path shaders.sksl.json
         run: |
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
-          flutter build apk --bundle-sksl-path shaders.sksl.json
-          flutter build appbundle --bundle-sksl-path shaders.sksl.json
+          flutter build apk
+          flutter build appbundle
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks

@@ -6,7 +6,7 @@ import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
-import 'package:aves/widgets/fullscreen/info/maps/buttons.dart';
+import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:aves/widgets/fullscreen/info/maps/google_map.dart';
 import 'package:aves/widgets/fullscreen/info/maps/leaflet_map.dart';
 import 'package:flutter/material.dart';
