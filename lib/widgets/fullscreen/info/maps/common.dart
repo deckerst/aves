@@ -7,11 +7,36 @@ import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 
+class MapDecorator extends StatelessWidget {
+  final Widget child;
+
+  static const BorderRadius mapBorderRadius = BorderRadius.all(Radius.circular(24)); // to match button circles
+
+  const MapDecorator({@required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onScaleStart: (details) {
+        // absorb scale gesture here to prevent scrolling
+        // and triggering by mistake a move to the image page above
+      },
+      child: ClipRRect(
+        borderRadius: mapBorderRadius,
+        child: Container(
+          color: Colors.white70,
+          height: 200,
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class MapButtonPanel extends StatelessWidget {
   final String geoUri;
   final void Function(double amount) zoomBy;
 
-  static const BorderRadius mapBorderRadius = BorderRadius.all(Radius.circular(24)); // to match button circles
   static const double padding = 4;
 
   const MapButtonPanel({
