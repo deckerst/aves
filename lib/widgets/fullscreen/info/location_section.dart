@@ -138,6 +138,7 @@ class _LocationSectionState extends State<LocationSection> {
   void _handleChange() => setState(() {});
 }
 
+// browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
 enum EntryMapStyle { google, osmHot, stamenToner, stamenWatercolor }
 
 extension ExtraEntryMapStyle on EntryMapStyle {
