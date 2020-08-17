@@ -1,6 +1,5 @@
 import 'package:aves/model/settings.dart';
-import 'package:aves/services/android_app_service.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/fullscreen/info/maps/buttons.dart';
 import 'package:aves/widgets/fullscreen/info/maps/scale_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -46,87 +45,69 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final accentColor = Theme.of(context).accentColor;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Stack(
           children: [
-            Expanded(
-              child: GestureDetector(
-                onScaleStart: (details) {
-                  // absorb scale gesture here to prevent scrolling
-                  // and triggering by mistake a move to the image page above
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    color: Colors.white70,
-                    height: 200,
-                    child: FlutterMap(
-                      options: MapOptions(
-                        center: widget.latLng,
-                        zoom: widget.initialZoom,
-                        interactive: false,
-                      ),
-                      children: [
-                        _buildMapLayer(),
-                        ScaleLayerWidget(
-                          options: ScaleLayerOptions(),
-                        ),
-                        MarkerLayerWidget(
-                          options: MarkerLayerOptions(
-                            markers: [
-                              Marker(
-                                width: markerSize,
-                                height: markerSize,
-                                point: widget.latLng,
-                                builder: (ctx) {
-                                  return Icon(
-                                    Icons.place,
-                                    size: markerSize,
-                                    color: accentColor,
-                                  );
-                                },
-                                anchorPos: AnchorPos.align(AnchorAlign.top),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                      mapController: _mapController,
-                    ),
-                  ),
-                ),
-              ),
+            _buildMap(),
+            MapButtonPanel(
+              geoUri: widget.geoUri,
+              zoomBy: _zoomBy,
             ),
-            SizedBox(width: 8),
-            TooltipTheme(
-              data: TooltipTheme.of(context).copyWith(
-                preferBelow: false,
-              ),
-              child: Column(children: [
-                IconButton(
-                  icon: Icon(AIcons.zoomIn),
-                  onPressed: _mapController == null ? null : () => _zoomBy(1),
-                  tooltip: 'Zoom in',
-                ),
-                IconButton(
-                  icon: Icon(AIcons.zoomOut),
-                  onPressed: _mapController == null ? null : () => _zoomBy(-1),
-                  tooltip: 'Zoom out',
-                ),
-                IconButton(
-                  icon: Icon(AIcons.openInNew),
-                  onPressed: () => AndroidAppService.openMap(widget.geoUri),
-                  tooltip: 'Show on map...',
-                ),
-              ]),
-            )
           ],
         ),
         _buildAttribution(),
       ],
+    );
+  }
+
+  Widget _buildMap() {
+    return GestureDetector(
+      onScaleStart: (details) {
+        // absorb scale gesture here to prevent scrolling
+        // and triggering by mistake a move to the image page above
+      },
+      child: ClipRRect(
+        borderRadius: MapButtonPanel.mapBorderRadius,
+        child: Container(
+          color: Colors.white70,
+          height: 200,
+          child: FlutterMap(
+            options: MapOptions(
+              center: widget.latLng,
+              zoom: widget.initialZoom,
+              interactive: false,
+            ),
+            children: [
+              _buildMapLayer(),
+              ScaleLayerWidget(
+                options: ScaleLayerOptions(),
+              ),
+              MarkerLayerWidget(
+                options: MarkerLayerOptions(
+                  markers: [
+                    Marker(
+                      width: markerSize,
+                      height: markerSize,
+                      point: widget.latLng,
+                      builder: (ctx) {
+                        return Icon(
+                          Icons.place,
+                          size: markerSize,
+                          color: Theme.of(context).accentColor,
+                        );
+                      },
+                      anchorPos: AnchorPos.align(AnchorAlign.top),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            mapController: _mapController,
+          ),
+        ),
+      ),
     );
   }
 
@@ -144,39 +125,38 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
   }
 
   Widget _buildAttribution() {
-    final attribution = _getAttributionMarkdown();
-    return attribution != null
-        ? Markdown(
-            data: attribution,
-            selectable: true,
-            styleSheet: MarkdownStyleSheet(
-              a: TextStyle(color: Theme.of(context).accentColor),
-              p: TextStyle(fontSize: 13, fontFamily: 'Concourse'),
-            ),
-            onTapLink: (url) async {
-              if (await canLaunch(url)) {
-                await launch(url);
-              }
-            },
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            shrinkWrap: true,
-          )
-        : SizedBox.shrink();
-  }
-
-  String _getAttributionMarkdown() {
     switch (widget.style) {
       case EntryMapStyle.osmHot:
-        return '© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, Tiles style by [Humanitarian OpenStreetMap Team](https://www.hotosm.org/) hosted by [OpenStreetMap France](https://openstreetmap.fr/)';
+        return _buildAttributionMarkdown('© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, Tiles style by [Humanitarian OpenStreetMap Team](https://www.hotosm.org/) hosted by [OpenStreetMap France](https://openstreetmap.fr/)');
       case EntryMapStyle.stamenToner:
       case EntryMapStyle.stamenWatercolor:
-        return 'Map tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0) — Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors';
+        return _buildAttributionMarkdown('Map tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0) — Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors');
       default:
-        return null;
+        return SizedBox.shrink();
     }
   }
 
+  Widget _buildAttributionMarkdown(String data) {
+    return Markdown(
+      data: data,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        a: TextStyle(color: Theme.of(context).accentColor),
+        p: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Concourse'),
+      ),
+      onTapLink: (url) async {
+        if (await canLaunch(url)) {
+          await launch(url);
+        }
+      },
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 0),
+      shrinkWrap: true,
+    );
+  }
+
   void _zoomBy(double amount) {
+    if (_mapController == null) return;
+
     final endZoom = (settings.infoMapZoom + amount).clamp(1.0, 16.0);
     settings.infoMapZoom = endZoom;
 
