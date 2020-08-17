@@ -1,174 +1,97 @@
 name: aves
-description: A visual media gallery and metadata explorer app.
-repository: https://github.com/deckerst/aves
-# version bump checklist:
-# - pubspec version
-# - github changelog: /CHANGELOG.md
-# - play changelog:   /whatsnew/whatsnew-en-US
-# - izzy changelog:   /fastlane/metadata/android/en-US/changelogs/1XXX.txt
-version: 1.6.8+74
-publish_to: none
+description: A new Flutter application.
 
-environment:
-  sdk: ">=2.17.0 <3.0.0"
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.1.5+17
 
-# following https://github.blog/2021-09-01-improving-git-protocol-security-github/
-# dependency GitHub repos should be referenced via `https://`, not `git://`
+# video_player (as of v0.10.8+2, backed by ExoPlayer):
+# - does not support content URIs (by default, but trivial by fork)
+# - does not support AVI/XVID, AC3
+# - cannot play if only the video or audio stream is supported
 
-# use `scripts/apply_flavor_{flavor}.sh` to set the right dependencies for the flavor
+# fijkplayer (as of v0.7.1, backed by IJKPlayer & ffmpeg):
+# - support content URIs
+# - does not support XVID, AC3 (by default, but possible by custom build)
+# - can play if only the video or audio stream is supported
+# - crash when calling `seekTo` for some files (e.g. TED talk videos)
+
+# flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
+# - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
+# - does not support AC3 (by default, but possible by custom build)
+# - can play if only the video or audio stream is supported
+
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  aves_map:
-    path: plugins/aves_map
-  aves_report:
-    path: plugins/aves_report
-  aves_report_platform:
-    path: plugins/aves_report_crashlytics
-  aves_services:
-    path: plugins/aves_services
-  aves_services_platform:
-    path: plugins/aves_services_google
   charts_flutter:
   collection:
-  connectivity_plus:
-  country_code:
-  decorated_icon:
-  device_info_plus:
-  dynamic_color:
-  equatable:
+  draggable_scrollbar:
+#    path: ../flutter-draggable-scrollbar
+    git:
+      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   event_bus:
   expansion_tile_card:
+#    path: ../expansion_tile_card
     git:
-      url: https://github.com/deckerst/expansion_tile_card.git
-  fijkplayer:
+      url: git://github.com/deckerst/expansion_tile_card.git
+  firebase_crashlytics:
+  flushbar:
+  flutter_ijkplayer:
+#    path: ../flutter_ijkplayer
     git:
-      url: https://github.com/deckerst/fijkplayer.git
-      ref: aves
-  flex_color_picker:
-  fluster:
-  flutter_displaymode:
-  flutter_highlight:
-  flutter_map:
+      url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_markdown:
+  flutter_native_timezone:
   flutter_staggered_animations:
-  get_it:
+  flutter_svg:
+  geocoder:
+  google_maps_flutter:
   intl:
-  latlong2:
-  material_color_utilities:
-  material_design_icons_flutter:
-  overlay_support:
-  package_info_plus:
+  outline_material_icons:
+  package_info:
   palette_generator:
-# TODO TLAD as of 2022/02/22, latest version (v0.4.1) has this issue: https://github.com/zesage/panorama/issues/25
-  panorama: 0.4.0
-  path:
   pdf:
+  pedantic:
   percent_indicator:
   permission_handler:
+  photo_view:
+#    path: ../photo_view
+    git:
+      url: git://github.com/deckerst/photo_view.git
   printing:
-  proj4dart:
   provider:
-  screen_brightness:
+  screen:
   shared_preferences:
-# TODO TLAD as of 2022/02/22, latest version (v2.0.11) fails to load from analysis service (target wrong channel?)
-  shared_preferences_android: 2.0.10
   sqflite:
   streams_channel:
-    git:
-      url: https://github.com/deckerst/aves_streams_channel.git
-  transparent_image:
   tuple:
   url_launcher:
-  xml:
-
-dependency_overrides:
-  # TODO TLAD as of 2022/06/11, latest version (v9.0.2+1) does not support Android 13 storage permissions
-  permission_handler_android:
-    git:
-      url: https://github.com/deckerst/flutter-permission-handler
-      path: permission_handler_android
+  uuid:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_driver:
-    sdk: flutter
-  flutter_lints:
-  test:
 
 flutter:
-  assets:
-    - assets/
-  generate: true
+
   uses-material-design: true
 
-################################################################################
-# Build
+  assets:
+    - assets/
 
-# deckerst/fijkplayer
-
-# This fork depends on a local .aar, but Flutter does not support this well
-# cf https://github.com/flutter/flutter/issues/28195
-# so building an app with this plugin requires the file to be present at:
-# `<app-root>/android/app/libs/fijkplayer-full-release.aar`
-# The .aar file in the app will take precedence over the one in the plugin itself.
-
-# The reference file is available at:
-# - [git] https://github.com/deckerst/fijkplayer/blob/aves-config/android/libs/fijkplayer-full-release.aar
-# - [local/win] C:\Users\<user>\AppData\Local\Pub\Cache\git\fijkplayer-<version>\android\libs\fijkplayer-full-release.aar
-
-################################################################################
-# Localization
-
-# language files:
-# - /lib/l10n/app_{language}.arb
-# - /android/app/src/main/res/values-{language}/strings.xml
-# - edit locale name in /lib/widgets/settings/language/locales.dart
-
-# generate `AppLocalizations`
-# % flutter gen-l10n
-
-################################################################################
-# Test driver
-
-# capture shaders (profile mode, real device only):
-# % flutter drive --flavor play -t test_driver/driver_shaders.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
-
-# generate screenshots (profile mode, specific collection):
-# % flutter drive --flavor play -t test_driver/driver_screenshots.dart --profile
-
-################################################################################
-# Adaptations
-
-#  `DraggableScrollbar` in `/widgets/common/basic/draggable_scrollbar.dart`
-#  adapts from package `draggable_scrollbar` v0.0.4
-#
-#  `Magnifier` in `/widgets/common/magnifier/magnifier.dart`
-#  adapts from package `photo_view` v0.9.2
-#
-#  `AvesHighlightView` in `/widgets/common/aves_highlight.dart`
-#  adapts from package `flutter_highlight` v0.7.0
-#
-#  `OutputBuffer` in `/services/common/output_buffer.dart`
-#  adapts from Flutter `_OutputBuffer` in `/foundation/consolidate_response.dart`
-#
-#  `OverlaySnackBar` in `/widgets/common/action_mixins/overlay_snack_bar.dart`
-#  adapts from Flutter `SnackBar` in `/material/snack_bar.dart`
-#
-#  `EagerScaleGestureRecognizer` in `/widgets/common/behaviour/eager_scale_gesture_recognizer.dart`
-#  adapts from Flutter `ScaleGestureRecognizer` in `/gestures/scale.dart`
-#
-#  `KnownExtentScrollPhysics` in `/widgets/common/behaviour/known_extent_scroll_physics.dart`
-#  adapts from Flutter `FixedExtentScrollPhysics` in `/widgets/list_wheel_scroll_view.dart`
-#
-#  `TransitionImage` in `/widgets/common/fx/transition_image.dart`
-#  adapts from Flutter `RawImage` in `/widgets/basic.dart` and `DecorationImagePainter` in `/painting/decoration_image.dart`
-#
-#  `_RenderSliverKnownExtentBoxAdaptor` in `/widgets/common/grid/sliver.dart`
-#  adapts from Flutter `RenderSliverFixedExtentBoxAdaptor` in `/rendering/sliver_fixed_extent_list.dart`
-#
-#  `CollectionSearchDelegate`, `SearchPageRoute` in `/widgets/search/search_delegate.dart`
-#  adapts from Flutter `SearchDelegate`, `_SearchPageRoute` in `/material/search.dart`
+  fonts:
+    - family: Concourse
+      fonts:
+        - asset: fonts/ConcourseT3-Regular.ttf
+    - family: Concourse Caps
+      fonts:
+        - asset: fonts/ConcourseC3-Regular.ttf
