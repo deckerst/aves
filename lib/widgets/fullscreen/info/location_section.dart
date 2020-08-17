@@ -6,6 +6,7 @@ import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/maps/buttons.dart';
 import 'package:aves/widgets/fullscreen/info/maps/google_map.dart';
 import 'package:aves/widgets/fullscreen/info/maps/leaflet_map.dart';
 import 'package:flutter/material.dart';
@@ -94,20 +95,25 @@ class _LocationSectionState extends State<LocationSection> {
               padding: EdgeInsets.only(bottom: 8),
               child: SectionRow(AIcons.location),
             ),
-          if (settings.infoMapStyle == EntryMapStyle.google)
-            EntryGoogleMap(
-              markerId: entry.uri ?? entry.path,
-              latLng: entry.latLng,
-              geoUri: entry.geoUri,
-              initialZoom: settings.infoMapZoom,
-            )
-          else
-            EntryLeafletMap(
-              latLng: entry.latLng,
-              geoUri: entry.geoUri,
-              initialZoom: settings.infoMapZoom,
-              style: settings.infoMapStyle,
-            ),
+          NotificationListener(
+            onNotification: (notification) {
+              if (notification is MapStyleChangedNotification) setState(() {});
+              return false;
+            },
+            child: settings.infoMapStyle == EntryMapStyle.google
+                ? EntryGoogleMap(
+                    markerId: entry.uri ?? entry.path,
+                    latLng: entry.latLng,
+                    geoUri: entry.geoUri,
+                    initialZoom: settings.infoMapZoom,
+                  )
+                : EntryLeafletMap(
+                    latLng: entry.latLng,
+                    geoUri: entry.geoUri,
+                    initialZoom: settings.infoMapZoom,
+                    style: settings.infoMapStyle,
+                  ),
+          ),
           if (location.isNotEmpty)
             Padding(
               padding: EdgeInsets.only(top: 8),

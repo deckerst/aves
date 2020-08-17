@@ -46,6 +46,7 @@ class AIcons {
   static const IconData share = OMIcons.share;
   static const IconData sort = OMIcons.sort;
   static const IconData stats = OMIcons.pieChart;
+  static const IconData style = OMIcons.palette;
   static const IconData zoomIn = OMIcons.add;
   static const IconData zoomOut = OMIcons.remove;
 

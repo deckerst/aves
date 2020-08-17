@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
             return SingleFullscreenPage(entry: _viewerEntry);
           }
           if (_mediaStore != null) {
-            switch(settings.launchPage) {
+            switch (settings.launchPage) {
               case LaunchPage.albums:
                 return AlbumListPage(source: _mediaStore);
                 break;

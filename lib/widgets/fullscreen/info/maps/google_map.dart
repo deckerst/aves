@@ -1,6 +1,5 @@
 import 'package:aves/model/settings.dart';
-import 'package:aves/services/android_app_service.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/fullscreen/info/maps/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:tuple/tuple.dart';
@@ -38,71 +37,59 @@ class EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveC
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final accentHue = HSVColor.fromColor(Theme.of(context).accentColor).hue;
-    return Row(
+    return Stack(
       children: [
-        Expanded(
-          child: GestureDetector(
-            onScaleStart: (details) {
-              // absorb scale gesture here to prevent scrolling
-              // and triggering by mistake a move to the image page above
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                color: Colors.white70,
-                height: 200,
-                child: GoogleMap(
-                  // GoogleMap init perf issue: https://github.com/flutter/flutter/issues/28493
-                  initialCameraPosition: CameraPosition(
-                    target: widget.latLng,
-                    zoom: widget.initialZoom,
-                  ),
-                  onMapCreated: (controller) => setState(() => _controller = controller),
-                  rotateGesturesEnabled: false,
-                  scrollGesturesEnabled: false,
-                  zoomControlsEnabled: false,
-                  zoomGesturesEnabled: false,
-                  liteModeEnabled: false,
-                  tiltGesturesEnabled: false,
-                  myLocationEnabled: false,
-                  myLocationButtonEnabled: false,
-                  markers: {
-                    Marker(
-                      markerId: MarkerId(widget.markerId),
-                      icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
-                      position: widget.latLng,
-                    )
-                  },
-                ),
-              ),
+        _buildMap(),
+        Positioned.fill(
+          child: Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: MapButtonPanel(
+              geoUri: widget.geoUri,
+              zoomBy: _zoomBy,
             ),
           ),
-        ),
-        SizedBox(width: 8),
-        TooltipTheme(
-          data: TooltipTheme.of(context).copyWith(
-            preferBelow: false,
-          ),
-          child: Column(children: [
-            IconButton(
-              icon: Icon(AIcons.zoomIn),
-              onPressed: _controller == null ? null : () => _zoomBy(1),
-              tooltip: 'Zoom in',
-            ),
-            IconButton(
-              icon: Icon(AIcons.zoomOut),
-              onPressed: _controller == null ? null : () => _zoomBy(-1),
-              tooltip: 'Zoom out',
-            ),
-            IconButton(
-              icon: Icon(AIcons.openInNew),
-              onPressed: () => AndroidAppService.openMap(widget.geoUri),
-              tooltip: 'Show on map...',
-            ),
-          ]),
         )
       ],
+    );
+  }
+
+  Widget _buildMap() {
+    final accentHue = HSVColor.fromColor(Theme.of(context).accentColor).hue;
+    return GestureDetector(
+      onScaleStart: (details) {
+        // absorb scale gesture here to prevent scrolling
+        // and triggering by mistake a move to the image page above
+      },
+      child: ClipRRect(
+        borderRadius: MapButtonPanel.mapBorderRadius,
+        child: Container(
+          color: Colors.white70,
+          height: 200,
+          child: GoogleMap(
+            // GoogleMap init perf issue: https://github.com/flutter/flutter/issues/28493
+            initialCameraPosition: CameraPosition(
+              target: widget.latLng,
+              zoom: widget.initialZoom,
+            ),
+            onMapCreated: (controller) => setState(() => _controller = controller),
+            rotateGesturesEnabled: false,
+            scrollGesturesEnabled: false,
+            zoomControlsEnabled: false,
+            zoomGesturesEnabled: false,
+            liteModeEnabled: false,
+            tiltGesturesEnabled: false,
+            myLocationEnabled: false,
+            myLocationButtonEnabled: false,
+            markers: {
+              Marker(
+                markerId: MarkerId(widget.markerId),
+                icon: BitmapDescriptor.defaultMarkerWithHue(accentHue),
+                position: widget.latLng,
+              )
+            },
+          ),
+        ),
+      ),
     );
   }
 
