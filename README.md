@@ -23,18 +23,6 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 - handle intents to view or pick images
 - support Android API 24 ~ 30 (Nougat ~ R)
 
-## Roadmap
-
-If time permits, I intend to eventually add these:
-- settings & preferences
-- feature: XMP tag edition (likely with [pixymeta-android](https://github.com/dragon66/pixymeta-android))
-- feature: location edition
-- map view
-- gesture: long press and drag thumbnails to select multiple items
-- gesture: double tap and drag image to zoom in/out (aka quick scale, one finger zoom)
-- support: burst groups
-- subsampling/tiling
-
 ## Known Issues
 
 - privacy: cannot opt out of Crashlytics reporting (cf [flutterfire issue #1143](https://github.com/FirebaseExtended/flutterfire/issues/1143))
