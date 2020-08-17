@@ -35,6 +35,12 @@ class EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveC
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Stack(
