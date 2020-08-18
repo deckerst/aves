@@ -86,9 +86,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # flutter drive --target=test_driver/app.dart
+  flutter_driver:
+    sdk: flutter
+  test: any
 
 flutter:
-
   uses-material-design: true
 
   assets:
