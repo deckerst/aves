@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_driver/flutter_driver.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 
 String get adb {
   final env = Platform.environment;
   final sdkDir = env['ANDROID_SDK_ROOT'] ?? env['ANDROID_SDK'];
-  return join(sdkDir, 'platform-tools', Platform.isWindows ? 'adb.exe' : 'adb');
+  return path.join(sdkDir, 'platform-tools', Platform.isWindows ? 'adb.exe' : 'adb');
 }
 
 Future<void> createDirectory(String dir) async {

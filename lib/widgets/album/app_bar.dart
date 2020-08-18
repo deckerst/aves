@@ -169,6 +169,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       if (collection.isBrowsing)
         IconButton(
+          key: Key('search-button'),
           icon: Icon(AIcons.search),
           onPressed: _goToSearch,
         ),
