@@ -308,6 +308,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _updateEntry() {
+    if (_currentHorizontalPage != null && entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
+      // as of Flutter v1.20.2, `PageView` does not call `onPageChanged` when the last page is deleted
+      // so we manually track the page change, and let the entry update follow
+      _onHorizontalPageChanged(entries.length - 1);
+      return;
+    }
+
     final newEntry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (_entryNotifier.value == newEntry) return;
     _entryNotifier.value = newEntry;
