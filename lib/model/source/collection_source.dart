@@ -11,6 +11,8 @@ import 'package:aves/model/source/tag.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
+import 'enums.dart';
+
 mixin SourceBase {
   final List<ImageEntry> _rawEntries = [];
 

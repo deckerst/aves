@@ -1,5 +1,5 @@
 import 'package:aves/model/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -35,6 +35,7 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
           child: Text('Cancel'.toUpperCase()),
         ),
         FlatButton(
+          key: Key('apply-button'),
           onPressed: () => Navigator.pop(context, _selectedGroup),
           child: Text('Apply'.toUpperCase()),
         ),
@@ -42,8 +43,9 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
     );
   }
 
-  Widget _buildRadioListTile(GroupFactor group, String title) => RadioListTile<GroupFactor>(
-        value: group,
+  Widget _buildRadioListTile(GroupFactor value, String title) => RadioListTile<GroupFactor>(
+        key: Key(value.toString()),
+        value: value,
         groupValue: _selectedGroup,
         onChanged: (group) => setState(() => _selectedGroup = group),
         title: Text(

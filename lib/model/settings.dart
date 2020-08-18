@@ -1,8 +1,9 @@
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'source/enums.dart';
 
 final Settings settings = Settings._private();
 

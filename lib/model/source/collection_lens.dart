@@ -12,6 +12,8 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import 'enums.dart';
+
 class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSelectionMixin {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
@@ -213,12 +215,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     notifyListeners();
   }
 }
-
-enum SortFactor { date, size, name }
-
-enum GroupFactor { none, album, month, day }
-
-enum Activity { browse, select }
 
 mixin CollectionActivityMixin {
   final ValueNotifier<Activity> _activityNotifier = ValueNotifier(Activity.browse);
