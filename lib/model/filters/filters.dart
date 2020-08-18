@@ -38,6 +38,9 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   int get displayPriority => collectionFilterOrder.indexOf(typeKey);
 
+  // to be used as widget key
+  String get key => '$typeKey-$label';
+
   @override
   int compareTo(CollectionFilter other) {
     final c = displayPriority.compareTo(other.displayPriority);

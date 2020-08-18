@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:aves/model/source/enums.dart';
 import 'package:flutter_driver/flutter_driver.dart';
+import 'package:path/path.dart' as path;
 import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 
@@ -62,6 +65,23 @@ void main() {
 
       await driver.tap(find.byValueKey(GroupFactor.album.toString()));
       await driver.tap(find.byValueKey('apply-button'));
+    });
+
+    test('search album', () async {
+      await driver.tap(find.byValueKey('search-button'));
+      await driver.waitUntilNoTransientCallbacks();
+
+      final album = path.split(targetPicturesDir).last;
+      await driver.tap(find.byType('TextField'));
+      await driver.enterText(album);
+
+      final albumChipFinder = find.byValueKey('album-$album');
+      await driver.waitFor(albumChipFinder);
+      await driver.tap(albumChipFinder);
+    });
+
+    test('show fullscreen', () async {
+      sleep(Duration(seconds: 5));
     });
   }, timeout: Timeout(Duration(seconds: 10)));
 }
