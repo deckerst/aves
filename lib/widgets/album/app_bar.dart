@@ -186,7 +186,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             )),
       Builder(
         builder: (context) => PopupMenuButton<CollectionAction>(
-          key: Key('menu-button'),
+          key: Key('appbar-menu-button'),
           itemBuilder: (context) {
             final hasSelection = collection.selection.isNotEmpty;
             return [

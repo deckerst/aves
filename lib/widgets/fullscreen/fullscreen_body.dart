@@ -499,6 +499,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         child: child,
       ),
       child: PageView(
+        key: Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
         physics: PhotoViewPageViewScrollPhysics(parent: PageScrollPhysics()),

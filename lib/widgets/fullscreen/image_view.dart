@@ -20,12 +20,13 @@ class ImageView extends StatelessWidget {
   final List<Tuple2<String, IjkMediaController>> videoControllers;
 
   const ImageView({
+    Key key,
     this.entry,
     this.heroTag,
     this.onScaleChanged,
     this.onTap,
     this.videoControllers,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
