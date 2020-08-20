@@ -40,6 +40,7 @@ class InfoPageState extends State<InfoPage> {
 
     final appBar = SliverAppBar(
       leading: IconButton(
+        key: Key('back-button'),
         icon: Icon(AIcons.goUp),
         onPressed: _goToImage,
         tooltip: 'Back to image',
