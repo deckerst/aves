@@ -133,6 +133,7 @@ class _TopOverlayRow extends StatelessWidget {
         OverlayButton(
           scale: scale,
           child: PopupMenuButton<EntryAction>(
+            key: Key('entry-menu-button'),
             itemBuilder: (context) => [
               ...inAppActions.map(_buildPopupMenuItem),
               PopupMenuDivider(),

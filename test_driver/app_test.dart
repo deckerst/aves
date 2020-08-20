@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aves/model/source/enums.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:path/path.dart' as path;
@@ -14,6 +12,7 @@ void main() {
     FlutterDriver driver;
 
     setUpAll(() async {
+      print('adb=${[adb, ...adbDeviceParam].join(' ')}');
       await copyContent(sourcePicturesDir, targetPicturesDir);
       await grantPermissions('deckers.thibault.aves.debug', [
         'android.permission.READ_EXTERNAL_STORAGE',
@@ -30,8 +29,6 @@ void main() {
       }
     });
 
-    final appBarTitleFinder = find.byValueKey('appbar-title');
-
     test('agree to terms and reach home', () async {
       await driver.scroll(find.text('Terms of Service'), 0, -300, Duration(milliseconds: 500));
 
@@ -39,16 +36,17 @@ void main() {
       expect(await isEnabled(driver, buttonFinder), equals(false));
 
       await driver.tap(find.byValueKey('agree-checkbox'));
-      await driver.waitUntilNoTransientCallbacks();
+      await Future.delayed(Duration(seconds: 1));
       expect(await isEnabled(driver, buttonFinder), equals(true));
 
       await driver.tap(buttonFinder);
       await driver.waitUntilNoTransientCallbacks();
-      expect(await driver.getText(appBarTitleFinder), 'Aves');
+
+      expect(await driver.getText(find.byValueKey('appbar-title')), 'Aves');
     });
 
-    test('sort and group', () async {
-      await driver.tap(find.byValueKey('menu-button'));
+    test('sort collection', () async {
+      await driver.tap(find.byValueKey('appbar-menu-button'));
       await driver.waitUntilNoTransientCallbacks();
 
       await driver.tap(find.byValueKey('menu-sort'));
@@ -56,8 +54,10 @@ void main() {
 
       await driver.tap(find.byValueKey(SortFactor.date.toString()));
       await driver.tap(find.byValueKey('apply-button'));
+    });
 
-      await driver.tap(find.byValueKey('menu-button'));
+    test('group collection', () async {
+      await driver.tap(find.byValueKey('appbar-menu-button'));
       await driver.waitUntilNoTransientCallbacks();
 
       await driver.tap(find.byValueKey('menu-group'));
@@ -81,7 +81,32 @@ void main() {
     });
 
     test('show fullscreen', () async {
-      sleep(Duration(seconds: 5));
+      await driver.tap(find.byType('DecoratedThumbnail'));
+      await driver.waitUntilNoTransientCallbacks();
+      await Future.delayed(Duration(seconds: 2));
+
+      final imageViewFinder = find.byValueKey('imageview');
+
+      print('* hide overlay');
+      await driver.tap(imageViewFinder);
+      await Future.delayed(Duration(seconds: 1));
+
+      print('* show overlay');
+      await driver.tap(imageViewFinder);
+      await Future.delayed(Duration(seconds: 1));
+    });
+
+    test('show info', () async {
+      final verticalPageViewFinder = find.byValueKey('vertical-pageview');
+
+      print('* scroll to info');
+      await driver.scroll(verticalPageViewFinder, 0, -600, Duration(milliseconds: 400));
+      await Future.delayed(Duration(seconds: 1));
+
+      // TODO TLAD find.pageBack
+//      print('* back to image');
+//      await driver.tap(find.pageBack());
+//      await Future.delayed(Duration(seconds: 5));
     });
   }, timeout: Timeout(Duration(seconds: 10)));
 }
