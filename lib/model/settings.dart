@@ -1,7 +1,9 @@
+import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tuple/tuple.dart';
 
 import 'source/enums.dart';
 
@@ -25,6 +27,7 @@ class Settings {
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
   static const launchPageKey = 'launch_page';
+  static const coordinateFormatKey = 'coordinates_format';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -86,6 +89,10 @@ class Settings {
 
   set launchPage(LaunchPage newValue) => setAndNotify(launchPageKey, newValue.toString());
 
+  CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, CoordinateFormat.dms, CoordinateFormat.values);
+
+  set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
+
   // convenience methods
 
   // ignore: avoid_positional_boolean_parameters
@@ -140,6 +147,32 @@ extension ExtraLaunchPage on LaunchPage {
         return 'All Media';
       case LaunchPage.albums:
         return 'Albums';
+      default:
+        return toString();
+    }
+  }
+}
+
+enum CoordinateFormat { dms, decimal }
+
+extension ExtraCoordinateFormat on CoordinateFormat {
+  String get name {
+    switch (this) {
+      case CoordinateFormat.dms:
+        return 'DMS';
+      case CoordinateFormat.decimal:
+        return 'Decimal degrees';
+      default:
+        return toString();
+    }
+  }
+
+  String format(Tuple2<double, double> latLng) {
+    switch (this) {
+      case CoordinateFormat.dms:
+        return toDMS(latLng).join(', ');
+      case CoordinateFormat.decimal:
+        return [latLng.item1, latLng.item2].map((n) => n.toStringAsFixed(6)).join(', ');
       default:
         return toString();
     }
