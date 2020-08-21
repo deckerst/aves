@@ -86,9 +86,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  # flutter drive --target=test_driver/app.dart
+
+  # run on any device:
+  # % flutter drive -t test_driver/app.dart
+  # capture shaders in profile mode (real device only):
+  # % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
   flutter_driver:
     sdk: flutter
+
   test: any
 
 flutter:

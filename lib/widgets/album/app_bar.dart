@@ -123,6 +123,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(
+      key: Key('appbar-leading-button'),
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,

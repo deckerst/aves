@@ -200,6 +200,7 @@ class _AppDrawerState extends State<AppDrawer> {
       top: false,
       bottom: false,
       child: ListTile(
+        key: Key('albums-tile'),
         leading: Icon(AIcons.album),
         title: Text('Albums'),
         trailing: StreamBuilder(
