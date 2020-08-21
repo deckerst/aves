@@ -1,4 +1,5 @@
 import 'package:aves/model/settings.dart';
+import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -67,6 +68,7 @@ class EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveC
       onMapCreated: (controller) => setState(() => _controller = controller),
       compassEnabled: false,
       mapToolbarEnabled: false,
+      mapType: _toMapStyle(settings.infoMapStyle),
       rotateGesturesEnabled: false,
       scrollGesturesEnabled: false,
       zoomControlsEnabled: false,
@@ -89,6 +91,19 @@ class EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveC
   void _zoomBy(double amount) {
     settings.infoMapZoom += amount;
     _controller.animateCamera(CameraUpdate.zoomBy(amount));
+  }
+
+  MapType _toMapStyle(EntryMapStyle style) {
+    switch (style) {
+      case EntryMapStyle.googleNormal:
+        return MapType.normal;
+      case EntryMapStyle.googleHybrid:
+        return MapType.hybrid;
+      case EntryMapStyle.googleTerrain:
+        return MapType.terrain;
+      default:
+        return MapType.none;
+    }
   }
 
   @override

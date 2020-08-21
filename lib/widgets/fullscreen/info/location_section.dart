@@ -94,7 +94,7 @@ class _LocationSectionState extends State<LocationSection> {
               if (notification is MapStyleChangedNotification) setState(() {});
               return false;
             },
-            child: settings.infoMapStyle == EntryMapStyle.google
+            child: settings.infoMapStyle.isGoogleMaps
                 ? EntryGoogleMap(
                     markerId: entry.uri ?? entry.path,
                     latLng: entry.latLng,
@@ -136,13 +136,17 @@ class _LocationSectionState extends State<LocationSection> {
 }
 
 // browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
-enum EntryMapStyle { google, osmHot, stamenToner, stamenWatercolor }
+enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenToner, stamenWatercolor }
 
 extension ExtraEntryMapStyle on EntryMapStyle {
   String get name {
     switch (this) {
-      case EntryMapStyle.google:
+      case EntryMapStyle.googleNormal:
         return 'Google Maps';
+      case EntryMapStyle.googleHybrid:
+        return 'Google Maps (Hybrid)';
+      case EntryMapStyle.googleTerrain:
+        return 'Google Maps (Terrain)';
       case EntryMapStyle.osmHot:
         return 'Humanitarian OpenStreetMap';
       case EntryMapStyle.stamenToner:
@@ -151,6 +155,17 @@ extension ExtraEntryMapStyle on EntryMapStyle {
         return 'Stamen Watercolor';
       default:
         return toString();
+    }
+  }
+
+  bool get isGoogleMaps {
+    switch (this) {
+      case EntryMapStyle.googleNormal:
+      case EntryMapStyle.googleHybrid:
+      case EntryMapStyle.googleTerrain:
+        return true;
+      default:
+        return false;
     }
   }
 }
