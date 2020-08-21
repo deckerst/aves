@@ -37,6 +37,7 @@ Future<void> copyContent(String sourceDir, String targetDir) async {
   await runAdb(['push', sourceDir, targetDir]);
 }
 
+// only works in debug mode
 Future<void> grantPermissions(String packageName, Iterable<String> permissions) async {
   await Future.forEach(permissions, (permission) => runAdb(['shell', 'pm', 'grant', packageName, permission]));
 }
