@@ -83,18 +83,12 @@ class _LocationSectionState extends State<LocationSection> {
         if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country;${address.countryCode}'));
         final place = address.place;
         if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
-      } else if (entry.hasGps) {
-        location = toDMS(entry.latLng).join(', ');
       }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.showTitle)
-            Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: SectionRow(AIcons.location),
-            ),
+          if (widget.showTitle) SectionRow(AIcons.location),
           NotificationListener(
             onNotification: (notification) {
               if (notification is MapStyleChangedNotification) setState(() {});
@@ -114,11 +108,8 @@ class _LocationSectionState extends State<LocationSection> {
                     style: settings.infoMapStyle,
                   ),
           ),
-          if (location.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: InfoRowGroup({'Address': location}),
-            ),
+          if (entry.hasGps) InfoRowGroup({'Coordinates': toDMS(entry.latLng).join(', ')}),
+          if (location.isNotEmpty) InfoRowGroup({'Address': location}),
           if (filters.isNotEmpty)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
