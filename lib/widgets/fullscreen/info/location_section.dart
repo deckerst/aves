@@ -2,7 +2,6 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -108,7 +107,7 @@ class _LocationSectionState extends State<LocationSection> {
                     style: settings.infoMapStyle,
                   ),
           ),
-          if (entry.hasGps) InfoRowGroup({'Coordinates': toDMS(entry.latLng).join(', ')}),
+          if (entry.hasGps) InfoRowGroup({'Coordinates': settings.coordinateFormat.format(entry.latLng)}),
           if (location.isNotEmpty) InfoRowGroup({'Address': location}),
           if (filters.isNotEmpty)
             Padding(

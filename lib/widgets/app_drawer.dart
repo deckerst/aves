@@ -18,7 +18,7 @@ import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/debug_page.dart';
 import 'package:aves/widgets/filter_grid_page.dart';
-import 'package:aves/widgets/settings_page.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
