@@ -116,30 +116,31 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
   Widget _buildAttribution() {
     switch (widget.style) {
       case EntryMapStyle.osmHot:
-        return _buildAttributionMarkdown('© [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, Tiles style by [Humanitarian OpenStreetMap Team](https://www.hotosm.org/) hosted by [OpenStreetMap France](https://openstreetmap.fr/)');
+        return _buildAttributionMarkdown('Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, tiles by [Humanitarian OpenStreetMap Team](https://www.hotosm.org/) hosted by [OpenStreetMap France](https://openstreetmap.fr/)');
       case EntryMapStyle.stamenToner:
       case EntryMapStyle.stamenWatercolor:
-        return _buildAttributionMarkdown('Map tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0) — Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors');
+        return _buildAttributionMarkdown('Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)');
       default:
         return SizedBox.shrink();
     }
   }
 
   Widget _buildAttributionMarkdown(String data) {
-    return Markdown(
-      data: data,
-      selectable: true,
-      styleSheet: MarkdownStyleSheet(
-        a: TextStyle(color: Theme.of(context).accentColor),
-        p: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Concourse'),
+    return Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: MarkdownBody(
+        data: data,
+        selectable: true,
+        styleSheet: MarkdownStyleSheet(
+          a: TextStyle(color: Theme.of(context).accentColor),
+          p: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Concourse'),
+        ),
+        onTapLink: (url) async {
+          if (await canLaunch(url)) {
+            await launch(url);
+          }
+        },
       ),
-      onTapLink: (url) async {
-        if (await canLaunch(url)) {
-          await launch(url);
-        }
-      },
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 0),
-      shrinkWrap: true,
     );
   }
 
