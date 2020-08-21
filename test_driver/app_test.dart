@@ -5,8 +5,8 @@ import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 
 import 'constants.dart';
-import 'driver_extension.dart';
-import 'utils.dart';
+import 'utils/adb_utils.dart';
+import 'utils/driver_extension.dart';
 
 FlutterDriver driver;
 
@@ -32,11 +32,13 @@ void main() {
     agreeToTerms();
     sortCollection();
     groupCollection();
+    selectFirstAlbum();
     searchAlbum();
     showFullscreen();
     toggleOverlay();
     zoom();
     showInfoMetadata();
+    scrollOffImage();
 
     test('contemplation', () async {
       await Future.delayed(Duration(seconds: 5));
@@ -48,14 +50,10 @@ void agreeToTerms() {
   test('[welcome] agree to terms', () async {
     await driver.scroll(find.text('Terms of Service'), 0, -300, Duration(milliseconds: 500));
 
-    final buttonFinder = find.byValueKey('continue-button');
-    expect(await isEnabled(driver, buttonFinder), equals(false));
-
     await driver.tap(find.byValueKey('agree-checkbox'));
     await Future.delayed(Duration(seconds: 1));
-    expect(await isEnabled(driver, buttonFinder), equals(true));
 
-    await driver.tap(buttonFinder);
+    await driver.tap(find.byValueKey('continue-button'));
     await driver.waitUntilNoTransientCallbacks();
 
     expect(await driver.getText(find.byValueKey('appbar-title')), 'Aves');
@@ -88,6 +86,23 @@ void sortCollection() {
   });
 }
 
+void selectFirstAlbum() {
+  test('[collection] select first album', () async {
+    await driver.tap(find.byValueKey('appbar-leading-button'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.byValueKey('albums-tile'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.descendant(
+      of: find.byType('FilterGridPage'),
+      matching: find.byType('DecoratedFilterChip'),
+      firstMatchOnly: true,
+    ));
+    await driver.waitUntilNoTransientCallbacks();
+  });
+}
+
 void searchAlbum() {
   test('[collection] search album', () async {
     await driver.tap(find.byValueKey('search-button'));
@@ -97,9 +112,9 @@ void searchAlbum() {
     await driver.tap(find.byType('TextField'));
     await driver.enterText(album);
 
-    final albumChipFinder = find.byValueKey('album-$album');
-    await driver.waitFor(albumChipFinder);
-    await driver.tap(albumChipFinder);
+    final albumChip = find.byValueKey('album-$album');
+    await driver.waitFor(albumChip);
+    await driver.tap(albumChip);
   });
 }
 
@@ -113,60 +128,67 @@ void showFullscreen() {
 
 void toggleOverlay() {
   test('[fullscreen] toggle overlay', () async {
-    final imageViewFinder = find.byValueKey('imageview');
+    final imageView = find.byValueKey('imageview');
 
     print('* hide overlay');
-    await driver.tap(imageViewFinder);
+    await driver.tap(imageView);
     await Future.delayed(Duration(seconds: 1));
 
     print('* show overlay');
-    await driver.tap(imageViewFinder);
+    await driver.tap(imageView);
     await Future.delayed(Duration(seconds: 1));
   });
 }
 
 void zoom() {
   test('[fullscreen] zoom cycle', () async {
-    final imageViewFinder = find.byValueKey('imageview');
+    final imageView = find.byValueKey('imageview');
 
-    await driver.doubleTap(imageViewFinder);
+    await driver.doubleTap(imageView);
     await Future.delayed(Duration(seconds: 1));
 
-    await driver.doubleTap(imageViewFinder);
+    await driver.doubleTap(imageView);
     await Future.delayed(Duration(seconds: 1));
 
-    await driver.doubleTap(imageViewFinder);
+    await driver.doubleTap(imageView);
     await Future.delayed(Duration(seconds: 1));
   });
 }
 
 void showInfoMetadata() {
   test('[fullscreen] show info', () async {
-    final verticalPageViewFinder = find.byValueKey('vertical-pageview');
+    final verticalPageView = find.byValueKey('vertical-pageview');
 
     print('* scroll down to info');
-    await driver.scroll(verticalPageViewFinder, 0, -600, Duration(milliseconds: 400));
+    await driver.scroll(verticalPageView, 0, -600, Duration(milliseconds: 400));
     await Future.delayed(Duration(seconds: 2));
 
     print('* scroll down to metadata details');
-    await driver.scroll(verticalPageViewFinder, 0, -800, Duration(milliseconds: 600));
+    await driver.scroll(verticalPageView, 0, -800, Duration(milliseconds: 600));
     await Future.delayed(Duration(seconds: 1));
 
     print('* toggle GPS metadata');
-    final gpsTileFinder = find.descendant(
+    final gpsTile = find.descendant(
       of: find.byValueKey('tilecard-GPS'),
       matching: find.byType('ListTile'),
     );
-    await driver.tap(gpsTileFinder);
+    await driver.tap(gpsTile);
     await driver.waitUntilNoTransientCallbacks();
-    await driver.tap(gpsTileFinder);
+    await driver.tap(gpsTile);
     await driver.waitUntilNoTransientCallbacks();
 
     print('* scroll up to show app bar');
-    await driver.scroll(verticalPageViewFinder, 0, 100, Duration(milliseconds: 400));
+    await driver.scroll(verticalPageView, 0, 100, Duration(milliseconds: 400));
     await Future.delayed(Duration(seconds: 1));
 
     print('* back to image');
     await driver.tap(find.byValueKey('back-button'));
+  });
+}
+
+void scrollOffImage() {
+  test('[fullscreen] scroll off', () async {
+    await driver.scroll(find.byValueKey('imageview'), 0, 800, Duration(milliseconds: 600));
+    await Future.delayed(Duration(seconds: 1));
   });
 }

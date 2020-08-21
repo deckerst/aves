@@ -1,16 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_driver/flutter_driver.dart';
 import 'package:path/path.dart' as path;
-
-// conditions
-
-Future<bool> isEnabled(FlutterDriver driver, SerializableFinder widgetFinder) async {
-  Map widgetDiagnostics = await driver.getWidgetDiagnostics(widgetFinder);
-  return widgetDiagnostics['properties'].firstWhere((property) => property['name'] == 'enabled')['value'];
-}
-
-// ADB
 
 String get adb {
   final env = Platform.environment;
@@ -25,18 +15,18 @@ String get adb {
   you need to use the -d, -e, or -s option to specify the target device
   to which the command should be directed.
  */
-const List<String> adbDeviceParam = ['-e']; // '[-d]', '[-e]', or '[-s, <serial_number>]'
+const List<String> adbDeviceParam = []; // '[]', '[-d]', '[-e]', or '[-s, <serial_number>]'
 
 Future<void> runAdb(List<String> args) async {
   await Process.runSync(adb, [...adbDeviceParam, ...args]);
 }
 
 Future<void> createDirectory(String dir) async {
-  await runAdb(['shell', 'mkdir -p', dir.replaceAll(' ', '\\ ')]);
+  await runAdb(['shell', 'mkdir', '-p', dir.replaceAll(' ', '\\ ')]);
 }
 
 Future<void> removeDirectory(String dir) async {
-  await runAdb(['shell', 'rm -r', dir.replaceAll(' ', '\\ ')]);
+  await runAdb(['shell', 'rm', '-r', dir.replaceAll(' ', '\\ ')]);
 }
 
 Future<void> copyContent(String sourceDir, String targetDir) async {
