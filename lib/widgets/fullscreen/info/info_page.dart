@@ -178,7 +178,7 @@ class SectionRow extends StatelessWidget {
       children: [
         buildDivider(),
         Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16),
           child: Icon(
             icon,
             size: dim,
