@@ -7,6 +7,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
 class FullscreenDebugPage extends StatefulWidget {
   final ImageEntry entry;
@@ -23,7 +24,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Future<AddressDetails> _dbAddressLoader;
   Future<Map> _contentResolverMetadataLoader;
 
-  int get contentId => widget.entry.contentId;
+  ImageEntry get entry => widget.entry;
+
+  int get contentId => entry.contentId;
 
   @override
   void initState() {
@@ -33,32 +36,94 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
 
   @override
   Widget build(BuildContext context) {
+    final tabs = <Tuple2<Tab, Widget>>[
+      Tuple2(Tab(text: 'Entry'), _buildEntryTabView()),
+      Tuple2(Tab(text: 'DB'), _buildDbTabView()),
+      Tuple2(Tab(text: 'Content Resolver'), _buildContentResolverTabView()),
+    ];
     return DefaultTabController(
-      length: 2,
+      length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Debug'),
           bottom: TabBar(
-            tabs: [
-              Tab(text: 'DB'),
-              Tab(text: 'Content Resolver'),
-            ],
+            tabs: tabs.map((t) => t.item1).toList(),
           ),
         ),
         body: SafeArea(
           child: TabBarView(
-            children: [
-              _buildDbTabView(),
-              _buildContentResolverTabView(),
-            ],
+            children: tabs.map((t) => t.item2).toList(),
           ),
         ),
       ),
     );
   }
 
+  Widget _buildEntryTabView() {
+    return ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        InfoRowGroup({
+          'uri': '${entry.uri}',
+          'contentId': '${entry.contentId}',
+          'path': '${entry.path}',
+          'directory': '${entry.directory}',
+          'filenameWithoutExtension': '${entry.filenameWithoutExtension}',
+          'sourceTitle': '${entry.sourceTitle}',
+          'sourceMimeType': '${entry.sourceMimeType}',
+          'mimeType': '${entry.mimeType}',
+          'mimeTypeAnySubtype': '${entry.mimeTypeAnySubtype}',
+        }),
+        Divider(),
+        InfoRowGroup({
+          'dateModifiedSecs': '${entry.dateModifiedSecs} (${DateTime.fromMillisecondsSinceEpoch(entry.dateModifiedSecs * 1000)})',
+          'sourceDateTakenMillis': '${entry.sourceDateTakenMillis} (${DateTime.fromMillisecondsSinceEpoch(entry.sourceDateTakenMillis)})',
+          'bestDate': '${entry.bestDate}',
+          'monthTaken': '${entry.monthTaken}',
+          'dayTaken': '${entry.dayTaken}',
+        }),
+        Divider(),
+        InfoRowGroup({
+          'width': '${entry.width}',
+          'height': '${entry.height}',
+          'orientationDegrees': '${entry.orientationDegrees}',
+          'rotated': '${entry.rotated}',
+          'displayAspectRatio': '${entry.displayAspectRatio}',
+          'displaySize': '${entry.displaySize}',
+          'megaPixels': '${entry.megaPixels}',
+        }),
+        Divider(),
+        InfoRowGroup({
+          'durationMillis': '${entry.durationMillis}',
+          'durationText': '${entry.durationText}',
+        }),
+        Divider(),
+        InfoRowGroup({
+          'sizeBytes': '${entry.sizeBytes}',
+          'isFavourite': '${entry.isFavourite}',
+          'isSvg': '${entry.isSvg}',
+          'isPhoto': '${entry.isPhoto}',
+          'isVideo': '${entry.isVideo}',
+          'isCatalogued': '${entry.isCatalogued}',
+          'isAnimated': '${entry.isAnimated}',
+          'canEdit': '${entry.canEdit}',
+          'canPrint': '${entry.canPrint}',
+          'canRotate': '${entry.canRotate}',
+          'xmpSubjects': '${entry.xmpSubjects}',
+        }),
+        Divider(),
+        InfoRowGroup({
+          'hasGps': '${entry.hasGps}',
+          'isLocated': '${entry.isLocated}',
+          'latLng': '${entry.latLng}',
+          'geoUri': '${entry.geoUri}',
+        }),
+      ],
+    );
+  }
+
   Widget _buildDbTabView() {
-    final catalog = widget.entry.catalogMetadata;
+    final catalog = entry.catalogMetadata;
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
@@ -185,7 +250,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(widget.entry);
+    _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
     setState(() {});
   }
 }
