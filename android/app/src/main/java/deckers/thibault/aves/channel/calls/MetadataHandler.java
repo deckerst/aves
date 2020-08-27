@@ -246,14 +246,13 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
             // File type
-            FileTypeDirectory fileTypeDir = metadata.getFirstDirectoryOfType(FileTypeDirectory.class);
-            if (fileTypeDir != null) {
+            for (FileTypeDirectory dir : metadata.getDirectoriesOfType(FileTypeDirectory.class)) {
                 // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
                 // file extension is unreliable
                 // `context.getContentResolver().getType()` sometimes return incorrect value
                 // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-                if (fileTypeDir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                    metadataMap.put(KEY_MIME_TYPE, fileTypeDir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE));
+                if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                    metadataMap.put(KEY_MIME_TYPE, dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE));
                 }
             }
 
@@ -264,9 +263,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
 
             // GPS
-            GpsDirectory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-            if (gpsDir != null) {
-                GeoLocation geoLocation = gpsDir.getGeoLocation();
+            for (GpsDirectory dir : metadata.getDirectoriesOfType(GpsDirectory.class)) {
+                GeoLocation geoLocation = dir.getGeoLocation();
                 if (geoLocation != null) {
                     metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
                     metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
@@ -274,9 +272,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
 
             // XMP
-            XmpDirectory xmpDir = metadata.getFirstDirectoryOfType(XmpDirectory.class);
-            if (xmpDir != null) {
-                XMPMeta xmpMeta = xmpDir.getXMPMeta();
+            for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
+                XMPMeta xmpMeta = dir.getXMPMeta();
                 try {
                     if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
                         StringBuilder sb = new StringBuilder();
@@ -301,10 +298,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             if (MimeTypes.GIF.equals(mimeType)) {
                 metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
             } else if (MimeTypes.WEBP.equals(mimeType)) {
-                WebpDirectory webpDir = metadata.getFirstDirectoryOfType(WebpDirectory.class);
-                if (webpDir != null) {
-                    if (webpDir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
-                        metadataMap.put(KEY_IS_ANIMATED, webpDir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
+                for (WebpDirectory dir : metadata.getDirectoriesOfType(WebpDirectory.class)) {
+                    if (dir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
+                        metadataMap.put(KEY_IS_ANIMATED, dir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
                     }
                 }
             }
@@ -447,8 +443,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     // convenience methods
 
     private static <T extends Directory> void putDateFromDirectoryTag(Map<String, Object> metadataMap, String key, Metadata metadata, Class<T> dirClass, int tag) {
-        Directory dir = metadata.getFirstDirectoryOfType(dirClass);
-        if (dir != null) {
+        for (T dir : metadata.getDirectoriesOfType(dirClass)) {
             putDateFromTag(metadataMap, key, dir, tag);
         }
     }
