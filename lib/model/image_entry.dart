@@ -155,7 +155,9 @@ class ImageEntry {
   bool get isSvg => mimeType == MimeTypes.svg;
 
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
-  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType);
+  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
+
+  bool get isRaw => [MimeTypes.dng].contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');
 
