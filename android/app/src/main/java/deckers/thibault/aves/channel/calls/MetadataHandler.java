@@ -34,6 +34,7 @@ import com.drew.metadata.xmp.XmpDirectory;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -147,9 +148,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (Directory dir : metadata.getDirectories()) {
                 if (dir.getTagCount() > 0) {
-                    Map<String, String> dirMap = new HashMap<>();
                     // directory name
-                    metadataMap.put(dir.getName(), dirMap);
+                    String dirName = dir.getName();
+                    Map<String, String> dirMap = Objects.requireNonNull(metadataMap.getOrDefault(dirName, new HashMap<>()));
+                    metadataMap.put(dirName, dirMap);
+
                     // tags
                     for (Tag tag : dir.getTags()) {
                         dirMap.put(tag.getTagName(), tag.getDescription());
