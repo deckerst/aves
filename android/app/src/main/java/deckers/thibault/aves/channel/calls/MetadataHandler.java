@@ -373,8 +373,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
         try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
-            ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-            if (directory != null) {
+            for (ExifSubIFDDirectory directory : metadata.getDirectoriesOfType(ExifSubIFDDirectory.class)) {
                 putDescriptionFromTag(metadataMap, KEY_APERTURE, directory, ExifSubIFDDirectory.TAG_FNUMBER);
                 putStringFromTag(metadataMap, KEY_EXPOSURE_TIME, directory, ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
                 putDescriptionFromTag(metadataMap, KEY_FOCAL_LENGTH, directory, ExifSubIFDDirectory.TAG_FOCAL_LENGTH);
