@@ -20,6 +20,7 @@ import com.adobe.internal.xmp.properties.XMPProperty;
 import com.adobe.internal.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.lang.GeoLocation;
+import com.drew.lang.Rational;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
@@ -374,8 +375,23 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (ExifSubIFDDirectory directory : metadata.getDirectoriesOfType(ExifSubIFDDirectory.class)) {
                 putDescriptionFromTag(metadataMap, KEY_APERTURE, directory, ExifSubIFDDirectory.TAG_FNUMBER);
-                putStringFromTag(metadataMap, KEY_EXPOSURE_TIME, directory, ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
                 putDescriptionFromTag(metadataMap, KEY_FOCAL_LENGTH, directory, ExifSubIFDDirectory.TAG_FOCAL_LENGTH);
+                if (directory.containsTag(ExifSubIFDDirectory.TAG_EXPOSURE_TIME)) {
+                    // TAG_EXPOSURE_TIME as a string is sometimes a ratio, sometimes a decimal
+                    // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
+                    // and process it to make sure the numerator is `1` when the ratio value is less than 1
+                    Rational rational = directory.getRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
+                    long num = rational.getNumerator();
+                    long denom = rational.getDenominator();
+                    if (num > denom) {
+                        metadataMap.put(KEY_EXPOSURE_TIME, rational.toSimpleString(true) + "″");
+                    } else {
+                        if (num != 1 && num != 0) {
+                            rational = new Rational(1, Math.round(denom / (double) num));
+                        }
+                        metadataMap.put(KEY_EXPOSURE_TIME, rational.toString());
+                    }
+                }
                 if (directory.containsTag(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT)) {
                     metadataMap.put(KEY_ISO, "ISO" + directory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
                 }
@@ -460,12 +476,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private static void putDescriptionFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
         if (dir.containsTag(tag)) {
             metadataMap.put(key, dir.getDescription(tag));
-        }
-    }
-
-    private static void putStringFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
-        if (dir.containsTag(tag)) {
-            metadataMap.put(key, dir.getString(tag));
         }
     }
 
