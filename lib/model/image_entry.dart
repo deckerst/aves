@@ -41,15 +41,16 @@ class ImageEntry {
     String path,
     this.contentId,
     this.sourceMimeType,
-    this.width,
-    this.height,
+    @required this.width,
+    @required this.height,
     this.orientationDegrees,
     this.sizeBytes,
     this.sourceTitle,
     this.dateModifiedSecs,
     this.sourceDateTakenMillis,
     this.durationMillis,
-  }) {
+  })  : assert(width != null),
+        assert(height != null) {
     this.path = path;
   }
 
@@ -86,8 +87,8 @@ class ImageEntry {
       path: map['path'] as String,
       contentId: map['contentId'] as int,
       sourceMimeType: map['sourceMimeType'] as String,
-      width: map['width'] as int,
-      height: map['height'] as int,
+      width: map['width'] as int ?? 0,
+      height: map['height'] as int ?? 0,
       orientationDegrees: map['orientationDegrees'] as int,
       sizeBytes: map['sizeBytes'] as int,
       sourceTitle: map['title'] as String,
@@ -210,7 +211,7 @@ class ImageEntry {
   String _durationText;
 
   String get durationText {
-    _durationText ??= formatDuration(Duration(milliseconds: durationMillis));
+    _durationText ??= formatDuration(Duration(milliseconds: durationMillis ?? 0));
     return _durationText;
   }
 
@@ -268,7 +269,7 @@ class ImageEntry {
     await catalog(background: background);
     final latitude = _catalogMetadata?.latitude;
     final longitude = _catalogMetadata?.longitude;
-    if (latitude == null || longitude == null) return;
+    if (latitude == null || longitude == null || (latitude == 0 && longitude == 0)) return;
 
     final coordinates = Coordinates(latitude, longitude);
     try {

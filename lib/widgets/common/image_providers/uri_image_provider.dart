@@ -11,13 +11,14 @@ class UriImage extends ImageProvider<UriImage> {
   const UriImage({
     @required this.uri,
     @required this.mimeType,
+    @required this.orientationDegrees,
     this.expectedContentLength,
     this.scale = 1.0,
   })  : assert(uri != null),
         assert(scale != null);
 
   final String uri, mimeType;
-  final int expectedContentLength;
+  final int orientationDegrees, expectedContentLength;
   final double scale;
 
   @override
@@ -46,6 +47,7 @@ class UriImage extends ImageProvider<UriImage> {
       final bytes = await ImageFileService.getImage(
         uri,
         mimeType,
+        orientationDegrees: orientationDegrees,
         expectedContentLength: expectedContentLength,
         onBytesReceived: (cumulative, total) {
           chunkEvents.add(ImageChunkEvent(

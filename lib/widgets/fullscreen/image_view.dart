@@ -96,6 +96,7 @@ class ImageView extends StatelessWidget {
       final uriImage = UriImage(
         uri: entry.uri,
         mimeType: entry.mimeType,
+        orientationDegrees: entry.orientationDegrees,
         expectedContentLength: entry.sizeBytes,
       );
       child = PhotoView(
