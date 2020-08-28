@@ -530,7 +530,11 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
-    await UriImage(uri: entry.uri, mimeType: entry.mimeType).evict();
+    await UriImage(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      orientationDegrees: entry.orientationDegrees,
+    ).evict();
     // evict low quality thumbnail (without specified extents)
     await ThumbnailProvider(entry: entry).evict();
     // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)

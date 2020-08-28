@@ -66,7 +66,7 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> getImage(String uri, String mimeType, {int expectedContentLength, BytesReceivedCallback onBytesReceived}) {
+  static Future<Uint8List> getImage(String uri, String mimeType, {int orientationDegrees, int expectedContentLength, BytesReceivedCallback onBytesReceived}) {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = _OutputBuffer();
@@ -74,6 +74,7 @@ class ImageFileService {
       byteChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
+        'orientationDegrees': orientationDegrees ?? 0,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -103,6 +104,9 @@ class ImageFileService {
   }
 
   static Future<Uint8List> getThumbnail(ImageEntry entry, double width, double height, {Object taskKey, int priority}) {
+    if (entry.isSvg) {
+      return Future.sync(() => Uint8List(0));
+    }
     return servicePolicy.call(
       () async {
         try {

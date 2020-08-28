@@ -21,9 +21,9 @@ public class AvesImageEntry {
         this.uri = Uri.parse((String) map.get("uri"));
         this.path = (String) map.get("path");
         this.mimeType = (String) map.get("mimeType");
-        this.width = (int) map.get("width");
-        this.height = (int) map.get("height");
-        this.orientationDegrees = (int) map.get("orientationDegrees");
+        this.width = (Integer) map.get("width");
+        this.height = (Integer) map.get("height");
+        this.orientationDegrees = (Integer) map.get("orientationDegrees");
         this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));
     }
 

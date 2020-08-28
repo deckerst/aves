@@ -60,6 +60,14 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   }
 
   Widget _buildEntryTabView() {
+    String toDateValue(int time, {int factor = 1}) {
+      var value = '$time';
+      if (time != null && time > 0) {
+        value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';
+      }
+      return value;
+    }
+
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
@@ -76,8 +84,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
         }),
         Divider(),
         InfoRowGroup({
-          'dateModifiedSecs': '${entry.dateModifiedSecs} (${DateTime.fromMillisecondsSinceEpoch(entry.dateModifiedSecs * 1000)})',
-          'sourceDateTakenMillis': '${entry.sourceDateTakenMillis} (${DateTime.fromMillisecondsSinceEpoch(entry.sourceDateTakenMillis)})',
+          'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
+          'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
           'bestDate': '${entry.bestDate}',
           'monthTaken': '${entry.monthTaken}',
           'dayTaken': '${entry.dayTaken}',
