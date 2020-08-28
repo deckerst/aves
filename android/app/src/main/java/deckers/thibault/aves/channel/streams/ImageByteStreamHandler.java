@@ -3,17 +3,15 @@ package deckers.thibault.aves.channel.streams;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,6 +28,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private Activity activity;
     private Uri uri;
     private String mimeType;
+    private int orientationDegrees;
     private EventChannel.EventSink eventSink;
     private Handler handler;
 
@@ -40,6 +39,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             Map<String, Object> argMap = (Map<String, Object>) arguments;
             this.mimeType = (String) argMap.get("mimeType");
             this.uri = Uri.parse((String) argMap.get("uri"));
+            this.orientationDegrees = (int) argMap.get("orientationDegrees");
         }
     }
 
@@ -74,7 +74,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                     .asBitmap()
                     .apply(options)
                     .load(new VideoThumbnail(activity, uri))
-                    .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+                    .submit();
             try {
                 Bitmap bitmap = target.get();
                 if (bitmap != null) {
@@ -88,23 +88,34 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                 }
             } catch (Exception e) {
                 error("getImage-video-exception", "failed to get image from uri=" + uri, e.getMessage());
+            } finally {
+                Glide.with(activity).clear(target);
             }
-            Glide.with(activity).clear(target);
         } else {
             ContentResolver cr = activity.getContentResolver();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && (MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType))) {
-                // as of Flutter v1.15.17, Dart Image.memory cannot decode HEIF/HEIC images
-                // so we convert the image using Android native decoder
+            if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
+                // as of Flutter v1.20, Dart Image.memory cannot decode DNG/HEIC/HEIF images
+                // so we convert the image on platform side first
+                FutureTarget<Bitmap> target = Glide.with(activity)
+                        .asBitmap()
+                        .load(uri)
+                        .submit();
                 try {
-                    ImageDecoder.Source source = ImageDecoder.createSource(cr, uri);
-                    Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                    // Bitmap.CompressFormat.PNG is slower than JPEG
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                    success(stream.toByteArray());
-                } catch (IOException e) {
-                    error("getImage-image-decode-exception", "failed to decode image from uri=" + uri, e.getMessage());
+                    Bitmap bitmap = target.get();
+                    if (bitmap != null) {
+                        bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                        // Bitmap.CompressFormat.PNG is slower than JPEG
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                        success(stream.toByteArray());
+                    } else {
+                        error("getImage-image-decode-null", "failed to get image from uri=" + uri, null);
+                    }
+                } catch (Exception e) {
+                    error("getImage-image-decode-exception", "failed to get image from uri=" + uri, e.getMessage());
+                } finally {
+                    Glide.with(activity).clear(target);
                 }
             } else {
                 try (InputStream is = cr.openInputStream(uri)) {
