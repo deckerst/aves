@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -14,6 +13,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -196,11 +196,7 @@ public abstract class ImageProvider {
             callback.onFailure(new Exception("failed to decode image at path=" + path));
             return;
         }
-        Matrix matrix = new Matrix();
-        int originalWidth = originalImage.getWidth();
-        int originalHeight = originalImage.getHeight();
-        matrix.setRotate(clockwise ? 90 : -90, originalWidth >> 1, originalHeight >> 1);
-        Bitmap rotatedImage = Bitmap.createBitmap(originalImage, 0, 0, originalWidth, originalHeight, matrix, true);
+        Bitmap rotatedImage = TransformationUtils.rotateImage(originalImage, clockwise ? 90 : -90);
 
         try (FileOutputStream fos = new FileOutputStream(editablePath)) {
             rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -213,8 +209,8 @@ public abstract class ImageProvider {
         }
 
         // update fields in media store
-        @SuppressWarnings("SuspiciousNameCombination") int rotatedWidth = originalHeight;
-        @SuppressWarnings("SuspiciousNameCombination") int rotatedHeight = originalWidth;
+        @SuppressWarnings("SuspiciousNameCombination") int rotatedWidth = originalImage.getHeight();
+        @SuppressWarnings("SuspiciousNameCombination") int rotatedHeight = originalImage.getWidth();
         Map<String, Object> newFields = new HashMap<>();
         newFields.put("width", rotatedWidth);
         newFields.put("height", rotatedHeight);
