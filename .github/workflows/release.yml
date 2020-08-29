@@ -43,7 +43,6 @@ jobs:
         # `KEY_JKS` should contain the result of:
         # gpg -c --armor keystore.jks
         # `KEY_JKS_PASSPHRASE` should contain the passphrase used for the command above
-
         # The SkSL bundle must be produced with the same Flutter engine as the one used to build the artifact
         # flutter build <subcommand> --bundle-sksl-path shaders.sksl.json
         run: |
