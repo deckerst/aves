@@ -35,6 +35,7 @@ class AIcons {
   static const IconData goUp = OMIcons.arrowUpward;
   static const IconData group = OMIcons.groupWork;
   static const IconData info = OMIcons.info;
+  static const IconData layers = OMIcons.layers;
   static const IconData openInNew = OMIcons.openInNew;
   static const IconData print = OMIcons.print;
   static const IconData refresh = OMIcons.refresh;
@@ -46,7 +47,6 @@ class AIcons {
   static const IconData share = OMIcons.share;
   static const IconData sort = OMIcons.sort;
   static const IconData stats = OMIcons.pieChart;
-  static const IconData style = OMIcons.palette;
   static const IconData zoomIn = OMIcons.add;
   static const IconData zoomOut = OMIcons.remove;
 
