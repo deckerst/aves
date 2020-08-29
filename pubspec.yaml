@@ -1,5 +1,9 @@
 name: aves
-description: A new Flutter application.
+description: Aves is a gallery and metadata explorer app, built for Android.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -11,7 +15,7 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.6+18
+version: 1.1.7+19
 
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
@@ -83,8 +87,16 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter:
+  # run on any device:
+  # % flutter drive -t test_driver/app.dart
+  # capture shaders in profile mode (real device only):
+  # % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+  flutter_driver:
+    sdk: flutter
 
+  test: any
+
+flutter:
   uses-material-design: true
 
   assets:

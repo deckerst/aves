@@ -76,12 +76,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
   Future<void> _print(ImageEntry entry) async {
     final uri = entry.uri;
     final mimeType = entry.mimeType;
+    final orientationDegrees = entry.orientationDegrees;
     final documentName = entry.bestTitle ?? 'Aves';
     final doc = pdf.Document(title: documentName);
 
     PdfImage pdfImage;
     if (entry.isSvg) {
-      final bytes = await ImageFileService.getImage(uri, mimeType);
+      final bytes = await ImageFileService.getImage(uri, mimeType, orientationDegrees: entry.orientationDegrees);
       if (bytes != null && bytes.isNotEmpty) {
         final svgRoot = await svg.fromSvgBytes(bytes, uri);
         final viewBox = svgRoot.viewport.viewBox;
@@ -97,7 +98,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     } else {
       pdfImage = await pdfImageFromImageProvider(
         pdf: doc.document,
-        image: UriImage(uri: uri, mimeType: mimeType),
+        image: UriImage(
+          uri: uri,
+          mimeType: mimeType,
+          orientationDegrees: orientationDegrees,
+        ),
       );
     }
     if (pdfImage != null) {

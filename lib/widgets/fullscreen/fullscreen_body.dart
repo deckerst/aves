@@ -308,6 +308,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _updateEntry() {
+    if (_currentHorizontalPage != null && entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
+      // as of Flutter v1.20.2, `PageView` does not call `onPageChanged` when the last page is deleted
+      // so we manually track the page change, and let the entry update follow
+      _onHorizontalPageChanged(entries.length - 1);
+      return;
+    }
+
     final newEntry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (_entryNotifier.value == newEntry) return;
     _entryNotifier.value = newEntry;
@@ -492,6 +499,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         child: child,
       ),
       child: PageView(
+        key: Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
         physics: PhotoViewPageViewScrollPhysics(parent: PageScrollPhysics()),
@@ -522,7 +530,11 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
-    await UriImage(uri: entry.uri, mimeType: entry.mimeType).evict();
+    await UriImage(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      orientationDegrees: entry.orientationDegrees,
+    ).evict();
     // evict low quality thumbnail (without specified extents)
     await ThumbnailProvider(entry: entry).evict();
     // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)

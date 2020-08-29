@@ -1,5 +1,6 @@
 class MimeTypes {
   static const String anyImage = 'image/*';
+  static const String dng = 'image/x-adobe-dng';
   static const String gif = 'image/gif';
   static const String heic = 'image/heic';
   static const String heif = 'image/heif';

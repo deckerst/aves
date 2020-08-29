@@ -2,7 +2,6 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/utils/geo_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -83,24 +82,18 @@ class _LocationSectionState extends State<LocationSection> {
         if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country;${address.countryCode}'));
         final place = address.place;
         if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
-      } else if (entry.hasGps) {
-        location = toDMS(entry.latLng).join(', ');
       }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.showTitle)
-            Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: SectionRow(AIcons.location),
-            ),
+          if (widget.showTitle) SectionRow(AIcons.location),
           NotificationListener(
             onNotification: (notification) {
               if (notification is MapStyleChangedNotification) setState(() {});
               return false;
             },
-            child: settings.infoMapStyle == EntryMapStyle.google
+            child: settings.infoMapStyle.isGoogleMaps
                 ? EntryGoogleMap(
                     markerId: entry.uri ?? entry.path,
                     latLng: entry.latLng,
@@ -114,11 +107,8 @@ class _LocationSectionState extends State<LocationSection> {
                     style: settings.infoMapStyle,
                   ),
           ),
-          if (location.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: InfoRowGroup({'Address': location}),
-            ),
+          if (entry.hasGps) InfoRowGroup({'Coordinates': settings.coordinateFormat.format(entry.latLng)}),
+          if (location.isNotEmpty) InfoRowGroup({'Address': location}),
           if (filters.isNotEmpty)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
@@ -145,13 +135,17 @@ class _LocationSectionState extends State<LocationSection> {
 }
 
 // browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
-enum EntryMapStyle { google, osmHot, stamenToner, stamenWatercolor }
+enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenToner, stamenWatercolor }
 
 extension ExtraEntryMapStyle on EntryMapStyle {
   String get name {
     switch (this) {
-      case EntryMapStyle.google:
+      case EntryMapStyle.googleNormal:
         return 'Google Maps';
+      case EntryMapStyle.googleHybrid:
+        return 'Google Maps (Hybrid)';
+      case EntryMapStyle.googleTerrain:
+        return 'Google Maps (Terrain)';
       case EntryMapStyle.osmHot:
         return 'Humanitarian OpenStreetMap';
       case EntryMapStyle.stamenToner:
@@ -160,6 +154,17 @@ extension ExtraEntryMapStyle on EntryMapStyle {
         return 'Stamen Watercolor';
       default:
         return toString();
+    }
+  }
+
+  bool get isGoogleMaps {
+    switch (this) {
+      case EntryMapStyle.googleNormal:
+      case EntryMapStyle.googleHybrid:
+      case EntryMapStyle.googleTerrain:
+        return true;
+      default:
+        return false;
     }
   }
 }

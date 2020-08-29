@@ -2,11 +2,13 @@ import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -112,30 +114,25 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  String _cleanMime(String mime) {
-    mime = mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '').replaceFirst('VND.', '');
-    return mime;
-  }
-
   Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
     if (byMimeTypes.isEmpty) return SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
 
-    final seriesData = byMimeTypes.entries.map((kv) => StringNumDatum(_cleanMime(kv.key), kv.value)).toList();
-    seriesData.sort((kv1, kv2) {
-      final c = kv2.value.compareTo(kv1.value);
-      return c != 0 ? c : compareAsciiUpperCase(kv1.key, kv2.key);
+    final seriesData = byMimeTypes.entries.map((kv) => EntryByMimeDatum(mimeType: kv.key, entryCount: kv.value)).toList();
+    seriesData.sort((d1, d2) {
+      final c = d2.entryCount.compareTo(d1.entryCount);
+      return c != 0 ? c : compareAsciiUpperCase(d1.displayText, d2.displayText);
     });
 
     final series = [
-      charts.Series<StringNumDatum, String>(
+      charts.Series<EntryByMimeDatum, String>(
         id: 'mime',
-        colorFn: (d, i) => charts.ColorUtil.fromDartColor(stringToColor(d.key)),
-        domainFn: (d, i) => d.key,
-        measureFn: (d, i) => d.value,
+        colorFn: (d, i) => charts.ColorUtil.fromDartColor(d.color),
+        domainFn: (d, i) => d.displayText,
+        measureFn: (d, i) => d.entryCount,
         data: seriesData,
-        labelAccessorFn: (d, _) => '${d.key}: ${d.value}',
+        labelAccessorFn: (d, _) => '${d.displayText}: ${d.entryCount}',
       ),
     ];
 
@@ -171,23 +168,26 @@ class StatsPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: seriesData
-              .map((kv) => Text.rich(
-                    TextSpan(
-                      children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.only(end: 8),
-                            child: Icon(AIcons.disc, color: stringToColor(kv.key)),
+              .map((d) => GestureDetector(
+                    onTap: () => _goToCollection(context, MimeFilter(d.mimeType)),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.only(end: 8),
+                              child: Icon(AIcons.disc, color: d.color),
+                            ),
                           ),
-                        ),
-                        TextSpan(text: '${kv.key}   '),
-                        TextSpan(text: '${kv.value}', style: TextStyle(color: Colors.white70)),
-                      ],
+                          TextSpan(text: '${d.displayText}   '),
+                          TextSpan(text: '${d.entryCount}', style: TextStyle(color: Colors.white70)),
+                        ],
+                      ),
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                      maxLines: 1,
                     ),
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                    maxLines: 1,
                   ))
               .toList(),
         ),
@@ -230,16 +230,33 @@ class StatsPage extends StatelessWidget {
       ),
     ];
   }
+
+  void _goToCollection(BuildContext context, CollectionFilter filter) {
+    if (collection == null) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CollectionPage(collection.derive(filter)),
+      ),
+      (route) => false,
+    );
+  }
 }
 
-class StringNumDatum {
-  final String key;
-  final num value;
+class EntryByMimeDatum {
+  final String mimeType;
+  final String displayText;
+  final int entryCount;
 
-  const StringNumDatum(this.key, this.value);
+  EntryByMimeDatum({
+    @required this.mimeType,
+    @required this.entryCount,
+  }) : displayText = MimeFilter.displayType(mimeType);
+
+  Color get color => stringToColor(displayText);
 
   @override
   String toString() {
-    return '[$runtimeType#$hashCode: key=$key, value=$value]';
+    return '[$runtimeType#$hashCode: mimeType=$mimeType, displayText=$displayText, entryCount=$entryCount]';
   }
 }

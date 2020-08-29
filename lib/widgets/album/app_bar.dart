@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/main.dart';
 import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
@@ -122,6 +123,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(
+      key: Key('appbar-leading-button'),
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,
@@ -133,7 +135,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
-      Widget title = Text(AvesApp.mode == AppMode.pick ? 'Select' : 'Aves');
+      Widget title = Text(AvesApp.mode == AppMode.pick ? 'Select' : 'Aves', key: Key('appbar-title'));
       if (AvesApp.mode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
@@ -168,6 +170,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       if (collection.isBrowsing)
         IconButton(
+          key: Key('search-button'),
           icon: Icon(AIcons.search),
           onPressed: _goToSearch,
         ),
@@ -184,15 +187,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             )),
       Builder(
         builder: (context) => PopupMenuButton<CollectionAction>(
+          key: Key('appbar-menu-button'),
           itemBuilder: (context) {
             final hasSelection = collection.selection.isNotEmpty;
             return [
               PopupMenuItem(
+                key: Key('menu-sort'),
                 value: CollectionAction.sort,
                 child: MenuRow(text: 'Sort...', icon: AIcons.sort),
               ),
               if (collection.sortFactor == SortFactor.date)
                 PopupMenuItem(
+                  key: Key('menu-group'),
                   value: CollectionAction.group,
                   child: MenuRow(text: 'Group...', icon: AIcons.group),
                 ),

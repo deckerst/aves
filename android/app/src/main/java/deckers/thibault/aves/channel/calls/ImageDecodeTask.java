@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -18,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
 import deckers.thibault.aves.model.AvesImageEntry;
+import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -136,12 +137,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                Integer orientationDegrees = entry.orientationDegrees;
-                if (orientationDegrees != null && orientationDegrees != 0) {
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(orientationDegrees);
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                }
+                bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
             }
             return bitmap;
         }
@@ -151,7 +147,6 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         AvesImageEntry entry = params.entry;
         int width = params.width;
         int height = params.height;
-//        Log.d(LOG_TAG, "getThumbnailByGlide width=" + width + ", path=" + entry.path);
 
         // add signature to ignore cache for images which got modified but kept the same URI
         Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.orientationDegrees);
@@ -178,10 +173,22 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         }
 
         try {
-            return target.get();
+            Bitmap bitmap = target.get();
+            String mimeType = entry.mimeType;
+            if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
+                bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+            }
+            return bitmap;
         } finally {
             Glide.with(activity).clear(target);
         }
+    }
+
+    private Bitmap rotateBitmap(Bitmap bitmap, Integer orientationDegrees) {
+        if (bitmap != null && orientationDegrees != null) {
+            bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+        }
+        return bitmap;
     }
 
     @Override
