@@ -1,5 +1,5 @@
 import 'package:aves/model/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -34,6 +34,7 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
           child: Text('Cancel'.toUpperCase()),
         ),
         FlatButton(
+          key: Key('apply-button'),
           onPressed: () => Navigator.pop(context, _selectedSort),
           child: Text('Apply'.toUpperCase()),
         ),
@@ -41,8 +42,9 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
     );
   }
 
-  Widget _buildRadioListTile(SortFactor sort, String title) => RadioListTile<SortFactor>(
-        value: sort,
+  Widget _buildRadioListTile(SortFactor value, String title) => RadioListTile<SortFactor>(
+        key: Key(value.toString()),
+        value: value,
         groupValue: _selectedSort,
         onChanged: (sort) => setState(() => _selectedSort = sort),
         title: Text(

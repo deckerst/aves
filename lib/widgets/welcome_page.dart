@@ -93,11 +93,13 @@ class _WelcomePageState extends State<WelcomePage> {
 
   List<Widget> _buildBottomControls(BuildContext context) {
     final checkbox = LabeledCheckbox(
+      key: Key('agree-checkbox'),
       value: _hasAcceptedTerms,
       onChanged: (v) => setState(() => _hasAcceptedTerms = v),
       text: 'I agree to the terms and conditions',
     );
     final button = RaisedButton(
+      key: Key('continue-button'),
       child: Text('Continue'),
       onPressed: _hasAcceptedTerms
           ? () {

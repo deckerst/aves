@@ -59,7 +59,13 @@ class MapButtonPanel extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 MapOverlayButton(
-                  icon: AIcons.style,
+                  icon: AIcons.openInNew,
+                  onPressed: () => AndroidAppService.openMap(geoUri),
+                  tooltip: 'Show on map...',
+                ),
+                SizedBox(height: padding),
+                MapOverlayButton(
+                  icon: AIcons.layers,
                   onPressed: () async {
                     final style = await showDialog<EntryMapStyle>(
                       context: context,
@@ -71,12 +77,6 @@ class MapButtonPanel extends StatelessWidget {
                     }
                   },
                   tooltip: 'Style map...',
-                ),
-                SizedBox(height: padding),
-                MapOverlayButton(
-                  icon: AIcons.openInNew,
-                  onPressed: () => AndroidAppService.openMap(geoUri),
-                  tooltip: 'Show on map...',
                 ),
                 Spacer(),
                 MapOverlayButton(

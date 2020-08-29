@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls;
 
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -51,6 +52,10 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
                 }
                 break;
             }
+            case "scanFile": {
+                scanFile(call, new MethodResultWrapper(result));
+                break;
+            }
             default:
                 result.notImplemented();
                 break;
@@ -81,5 +86,13 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
             }
         }
         return volumes;
+    }
+
+    private void scanFile(MethodCall call, MethodChannel.Result result) {
+        String path = call.argument("path");
+        String mimeType = call.argument("mimeType");
+        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (p, uri) -> {
+            result.success(uri != null ? uri.toString() : null);
+        });
     }
 }

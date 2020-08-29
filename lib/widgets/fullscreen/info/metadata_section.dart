@@ -87,6 +87,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
               accentColor: Colors.white,
             ),
             child: ExpansionTileCard(
+              key: Key('tilecard-${dir.name}'),
               value: dir.name,
               expandedNotifier: _expandedDirectoryNotifier,
               title: _DirectoryTitle(dir.name),

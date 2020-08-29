@@ -52,4 +52,19 @@ class AndroidFileService {
     }
     return false;
   }
+
+  // return media URI
+  static Future<Uri> scanFile(String path, String mimeType) async {
+    debugPrint('scanFile with path=$path, mimeType=$mimeType');
+    try {
+      final uriString = await platform.invokeMethod('scanFile', <String, dynamic>{
+        'path': path,
+        'mimeType': mimeType,
+      });
+      return Uri.tryParse(uriString ?? '');
+    } on PlatformException catch (e) {
+      debugPrint('scanFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return null;
+  }
 }

@@ -20,6 +20,7 @@ import com.adobe.internal.xmp.properties.XMPProperty;
 import com.adobe.internal.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.lang.GeoLocation;
+import com.drew.lang.Rational;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
@@ -34,6 +35,7 @@ import com.drew.metadata.xmp.XmpDirectory;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -147,9 +149,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (Directory dir : metadata.getDirectories()) {
                 if (dir.getTagCount() > 0) {
-                    Map<String, String> dirMap = new HashMap<>();
                     // directory name
-                    metadataMap.put(dir.getName(), dirMap);
+                    String dirName = dir.getName();
+                    Map<String, String> dirMap = Objects.requireNonNull(metadataMap.getOrDefault(dirName, new HashMap<>()));
+                    metadataMap.put(dirName, dirMap);
+
                     // tags
                     for (Tag tag : dir.getTags()) {
                         dirMap.put(tag.getTagName(), tag.getDescription());
@@ -246,14 +250,13 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
             // File type
-            FileTypeDirectory fileTypeDir = metadata.getFirstDirectoryOfType(FileTypeDirectory.class);
-            if (fileTypeDir != null) {
+            for (FileTypeDirectory dir : metadata.getDirectoriesOfType(FileTypeDirectory.class)) {
                 // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
                 // file extension is unreliable
                 // `context.getContentResolver().getType()` sometimes return incorrect value
                 // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-                if (fileTypeDir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                    metadataMap.put(KEY_MIME_TYPE, fileTypeDir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE));
+                if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                    metadataMap.put(KEY_MIME_TYPE, dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE));
                 }
             }
 
@@ -264,9 +267,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
 
             // GPS
-            GpsDirectory gpsDir = metadata.getFirstDirectoryOfType(GpsDirectory.class);
-            if (gpsDir != null) {
-                GeoLocation geoLocation = gpsDir.getGeoLocation();
+            for (GpsDirectory dir : metadata.getDirectoriesOfType(GpsDirectory.class)) {
+                GeoLocation geoLocation = dir.getGeoLocation();
                 if (geoLocation != null) {
                     metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
                     metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
@@ -274,9 +276,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
 
             // XMP
-            XmpDirectory xmpDir = metadata.getFirstDirectoryOfType(XmpDirectory.class);
-            if (xmpDir != null) {
-                XMPMeta xmpMeta = xmpDir.getXMPMeta();
+            for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
+                XMPMeta xmpMeta = dir.getXMPMeta();
                 try {
                     if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
                         StringBuilder sb = new StringBuilder();
@@ -301,10 +302,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             if (MimeTypes.GIF.equals(mimeType)) {
                 metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
             } else if (MimeTypes.WEBP.equals(mimeType)) {
-                WebpDirectory webpDir = metadata.getFirstDirectoryOfType(WebpDirectory.class);
-                if (webpDir != null) {
-                    if (webpDir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
-                        metadataMap.put(KEY_IS_ANIMATED, webpDir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
+                for (WebpDirectory dir : metadata.getDirectoriesOfType(WebpDirectory.class)) {
+                    if (dir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
+                        metadataMap.put(KEY_IS_ANIMATED, dir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
                     }
                 }
             }
@@ -373,11 +373,25 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
         try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
-            ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-            if (directory != null) {
+            for (ExifSubIFDDirectory directory : metadata.getDirectoriesOfType(ExifSubIFDDirectory.class)) {
                 putDescriptionFromTag(metadataMap, KEY_APERTURE, directory, ExifSubIFDDirectory.TAG_FNUMBER);
-                putStringFromTag(metadataMap, KEY_EXPOSURE_TIME, directory, ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
                 putDescriptionFromTag(metadataMap, KEY_FOCAL_LENGTH, directory, ExifSubIFDDirectory.TAG_FOCAL_LENGTH);
+                if (directory.containsTag(ExifSubIFDDirectory.TAG_EXPOSURE_TIME)) {
+                    // TAG_EXPOSURE_TIME as a string is sometimes a ratio, sometimes a decimal
+                    // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
+                    // and process it to make sure the numerator is `1` when the ratio value is less than 1
+                    Rational rational = directory.getRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME);
+                    long num = rational.getNumerator();
+                    long denom = rational.getDenominator();
+                    if (num > denom) {
+                        metadataMap.put(KEY_EXPOSURE_TIME, rational.toSimpleString(true) + "″");
+                    } else {
+                        if (num != 1 && num != 0) {
+                            rational = new Rational(1, Math.round(denom / (double) num));
+                        }
+                        metadataMap.put(KEY_EXPOSURE_TIME, rational.toString());
+                    }
+                }
                 if (directory.containsTag(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT)) {
                     metadataMap.put(KEY_ISO, "ISO" + directory.getDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT));
                 }
@@ -448,8 +462,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     // convenience methods
 
     private static <T extends Directory> void putDateFromDirectoryTag(Map<String, Object> metadataMap, String key, Metadata metadata, Class<T> dirClass, int tag) {
-        Directory dir = metadata.getFirstDirectoryOfType(dirClass);
-        if (dir != null) {
+        for (T dir : metadata.getDirectoriesOfType(dirClass)) {
             putDateFromTag(metadataMap, key, dir, tag);
         }
     }
@@ -463,12 +476,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private static void putDescriptionFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
         if (dir.containsTag(tag)) {
             metadataMap.put(key, dir.getDescription(tag));
-        }
-    }
-
-    private static void putStringFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
-        if (dir.containsTag(tag)) {
-            metadataMap.put(key, dir.getString(tag));
         }
     }
 

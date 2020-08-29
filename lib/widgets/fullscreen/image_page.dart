@@ -37,6 +37,7 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
     return PhotoViewGestureDetectorScope(
       axis: [Axis.horizontal, Axis.vertical],
       child: PageView.builder(
+        key: Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
         controller: widget.pageController,
         physics: PhotoViewPageViewScrollPhysics(parent: BouncingScrollPhysics()),
@@ -45,6 +46,7 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
           final entry = entries[index];
           return ClipRect(
             child: ImageView(
+              key: Key('imageview'),
               entry: entry,
               heroTag: widget.collection.heroTag(entry),
               onScaleChanged: widget.onScaleChanged,

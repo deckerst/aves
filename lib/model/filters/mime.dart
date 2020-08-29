@@ -1,6 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/widgets.dart';
 
@@ -34,12 +33,13 @@ class MimeFilter extends CollectionFilter {
       _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
       _filter = (entry) => entry.mimeType == lowMime;
-      if (lowMime == MimeTypes.svg) {
-        _label = 'SVG';
-      }
-      _label ??= lowMime.split('/')[1].toUpperCase();
+      _label = displayType(lowMime);
     }
     _icon ??= AIcons.vector;
+  }
+
+  static String displayType(String mime) {
+    return mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '').replaceFirst('VND.', '');
   }
 
   @override

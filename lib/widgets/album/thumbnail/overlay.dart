@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';

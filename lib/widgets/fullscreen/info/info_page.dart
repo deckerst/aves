@@ -40,6 +40,7 @@ class InfoPageState extends State<InfoPage> {
 
     final appBar = SliverAppBar(
       leading: IconButton(
+        key: Key('back-button'),
         icon: Icon(AIcons.goUp),
         onPressed: _goToImage,
         tooltip: 'Back to image',
@@ -177,7 +178,7 @@ class SectionRow extends StatelessWidget {
       children: [
         buildDivider(),
         Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16),
           child: Icon(
             icon,
             size: dim,
