@@ -11,10 +11,8 @@ final Settings settings = Settings._private();
 
 typedef SettingsCallback = void Function(String key, dynamic oldValue, dynamic newValue);
 
-class Settings {
+class Settings extends ChangeNotifier {
   static SharedPreferences _prefs;
-
-  final ObserverList<SettingsCallback> _listeners = ObserverList<SettingsCallback>();
 
   Settings._private();
 
@@ -28,6 +26,7 @@ class Settings {
   static const infoMapZoomKey = 'info_map_zoom';
   static const launchPageKey = 'launch_page';
   static const coordinateFormatKey = 'coordinates_format';
+  static const svgBackgroundKey = 'svg_background';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -35,26 +34,6 @@ class Settings {
 
   Future<void> reset() {
     return _prefs.clear();
-  }
-
-  void addListener(SettingsCallback listener) => _listeners.add(listener);
-
-  void removeListener(SettingsCallback listener) => _listeners.remove(listener);
-
-  void notifyListeners(String key, dynamic oldValue, dynamic newValue) {
-    debugPrint('$runtimeType notifyListeners key=$key, old=$oldValue, new=$newValue');
-    if (_listeners != null) {
-      final localListeners = _listeners.toList();
-      for (final listener in localListeners) {
-        try {
-          if (_listeners.contains(listener)) {
-            listener(key, oldValue, newValue);
-          }
-        } catch (exception, stack) {
-          debugPrint('$runtimeType failed to notify listeners with exception=$exception\n$stack');
-        }
-      }
-    }
   }
 
   String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
@@ -92,6 +71,10 @@ class Settings {
   CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, CoordinateFormat.dms, CoordinateFormat.values);
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
+
+  int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
+
+  set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
 
   // convenience methods
 
@@ -133,7 +116,7 @@ class Settings {
       _prefs.setBool(key, newValue);
     }
     if (oldValue != newValue) {
-      notifyListeners(key, oldValue, newValue);
+      notifyListeners();
     }
   }
 }

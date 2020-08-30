@@ -87,7 +87,8 @@ class SectionHeader extends StatelessWidget {
               // force a higher first line to match leading icon/selector dimension
               style: TextStyle(height: 2.3 * textScaleFactor),
             ), // 23 hair spaces match a width of 40.0
-            if (hasTrailing) TextSpan(text: '\u200A' * 17),
+            if (hasTrailing)
+              TextSpan(text: '\u200A' * 17),
             TextSpan(
               text: text,
               style: Constants.titleTextStyle,

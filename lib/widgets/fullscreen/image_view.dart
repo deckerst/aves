@@ -1,5 +1,5 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
@@ -77,12 +77,13 @@ class ImageView extends StatelessWidget {
 
     Widget child;
     if (entry.isSvg) {
+      final colorFilter = ColorFilter.mode(Color(settings.svgBackground), BlendMode.dstOver);
       child = PhotoView.customChild(
         child: SvgPicture(
           UriPicture(
             uri: entry.uri,
             mimeType: entry.mimeType,
-            colorFilter: Constants.svgColorFilter,
+            colorFilter: colorFilter,
           ),
           placeholderBuilder: (context) => loadingBuilder(context, fastThumbnailProvider),
         ),

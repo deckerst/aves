@@ -1,6 +1,7 @@
 import 'package:aves/model/settings.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/widgets/common/action_delegates/map_style_dialog.dart';
+import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
@@ -115,10 +116,10 @@ class MapOverlayButton extends StatelessWidget {
     return BlurredOval(
       child: Material(
         type: MaterialType.circle,
-        color: FullscreenOverlay.backgroundColor,
+        color: kOverlayBackgroundColor,
         child: Ink(
           decoration: BoxDecoration(
-            border: FullscreenOverlay.buildBorder(context),
+            border: AvesCircleBorder.build(context),
             shape: BoxShape.circle,
           ),
           child: IconButton(

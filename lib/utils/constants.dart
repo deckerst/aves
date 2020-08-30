@@ -19,9 +19,6 @@ class Constants {
     ],
   );
 
-  static const svgBackground = Colors.white;
-  static const svgColorFilter = ColorFilter.mode(svgBackground, BlendMode.dstOver);
-
   static const List<Dependency> androidDependencies = [
     Dependency(
       name: 'CWAC-Document',

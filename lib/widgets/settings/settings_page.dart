@@ -2,6 +2,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/settings/coordinate_format.dart';
 import 'package:aves/widgets/settings/launch_page.dart';
+import 'package:aves/widgets/settings/svg_background.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -25,6 +26,14 @@ class SettingsPage extends StatelessWidget {
                     Text('Launch page:'),
                     SizedBox(width: 8),
                     Flexible(child: LaunchPageSelector()),
+                  ],
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('SVG background:'),
+                    SizedBox(width: 8),
+                    Flexible(child: SvgBackgroundSelector()),
                   ],
                 ),
                 Row(
