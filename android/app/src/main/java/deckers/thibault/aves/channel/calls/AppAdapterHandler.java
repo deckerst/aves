@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -27,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -110,14 +114,41 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-        PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> resolveInfoList = packageManager.queryIntentActivities(intent, 0);
+
+        // apps tend to use their name in English when creating folders
+        // so we get their names in English as well as the current locale
+        Configuration config = new Configuration();
+        config.setLocale(Locale.ENGLISH);
+
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resolveInfoList) {
-            ApplicationInfo applicationInfo = resolveInfo.activityInfo.applicationInfo;
-            boolean isSystemPackage = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            ApplicationInfo ai = resolveInfo.activityInfo.applicationInfo;
+            boolean isSystemPackage = (ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
             if (!isSystemPackage) {
-                String appName = String.valueOf(packageManager.getApplicationLabel(applicationInfo));
-                nameMap.put(appName, applicationInfo.packageName);
+                String packageName = ai.packageName;
+
+                String currentLabel = String.valueOf(pm.getApplicationLabel(ai));
+                nameMap.put(currentLabel, packageName);
+
+                int labelRes = ai.labelRes;
+                if (labelRes != 0) {
+                    try {
+                        Resources resources = pm.getResourcesForApplication(ai);
+                        // `updateConfiguration` is deprecated but it seems to be the only way
+                        // to query resources from another app with a specific locale.
+                        // The following methods do not work:
+                        // - `resources.getConfiguration().setLocale(...)`
+                        // - getting a package manager from a custom context with `context.createConfigurationContext(config)`
+                        resources.updateConfiguration(config, resources.getDisplayMetrics());
+                        String englishLabel = resources.getString(labelRes);
+                        if (!TextUtils.equals(englishLabel, currentLabel)) {
+                            nameMap.put(englishLabel, packageName);
+                        }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        Log.w(LOG_TAG, "failed to get app englishLabel for packageName=" + packageName, e);
+                    }
+                }
             }
         }
         return nameMap;

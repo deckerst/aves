@@ -11,10 +11,8 @@ final Settings settings = Settings._private();
 
 typedef SettingsCallback = void Function(String key, dynamic oldValue, dynamic newValue);
 
-class Settings {
+class Settings extends ChangeNotifier {
   static SharedPreferences _prefs;
-
-  final ObserverList<SettingsCallback> _listeners = ObserverList<SettingsCallback>();
 
   Settings._private();
 
@@ -28,6 +26,8 @@ class Settings {
   static const infoMapZoomKey = 'info_map_zoom';
   static const launchPageKey = 'launch_page';
   static const coordinateFormatKey = 'coordinates_format';
+  static const svgBackgroundKey = 'svg_background';
+  static const albumSortFactorKey = 'album_sort_factor';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -37,37 +37,17 @@ class Settings {
     return _prefs.clear();
   }
 
-  void addListener(SettingsCallback listener) => _listeners.add(listener);
-
-  void removeListener(SettingsCallback listener) => _listeners.remove(listener);
-
-  void notifyListeners(String key, dynamic oldValue, dynamic newValue) {
-    debugPrint('$runtimeType notifyListeners key=$key, old=$oldValue, new=$newValue');
-    if (_listeners != null) {
-      final localListeners = _listeners.toList();
-      for (final listener in localListeners) {
-        try {
-          if (_listeners.contains(listener)) {
-            listener(key, oldValue, newValue);
-          }
-        } catch (exception, stack) {
-          debugPrint('$runtimeType failed to notify listeners with exception=$exception\n$stack');
-        }
-      }
-    }
-  }
-
   String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
-  GroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, GroupFactor.month, GroupFactor.values);
+  EntryGroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
 
-  set collectionGroupFactor(GroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
+  set collectionGroupFactor(EntryGroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
 
-  SortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SortFactor.date, SortFactor.values);
+  EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, EntrySortFactor.date, EntrySortFactor.values);
 
-  set collectionSortFactor(SortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+  set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
   double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
 
@@ -92,6 +72,14 @@ class Settings {
   CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, CoordinateFormat.dms, CoordinateFormat.values);
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
+
+  int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
+
+  set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
+
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.date, ChipSortFactor.values);
+
+  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
 
   // convenience methods
 
@@ -133,7 +121,7 @@ class Settings {
       _prefs.setBool(key, newValue);
     }
     if (oldValue != newValue) {
-      notifyListeners(key, oldValue, newValue);
+      notifyListeners();
     }
   }
 }

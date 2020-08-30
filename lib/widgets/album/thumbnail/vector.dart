@@ -1,8 +1,9 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/constants.dart';
+import 'package:aves/model/settings.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class ThumbnailVectorImage extends StatelessWidget {
   final ImageEntry entry;
@@ -23,14 +24,20 @@ class ThumbnailVectorImage extends StatelessWidget {
       // so that `SvgPicture` doesn't get aligned by the `Stack` like the overlay icons
       width: extent,
       height: extent,
-      child: SvgPicture(
-        UriPicture(
-          uri: entry.uri,
-          mimeType: entry.mimeType,
-          colorFilter: Constants.svgColorFilter,
-        ),
-        width: extent,
-        height: extent,
+      child: Selector<Settings, int>(
+        selector: (context, s) => s.svgBackground,
+        builder: (context, svgBackground, child) {
+          final colorFilter = ColorFilter.mode(Color(svgBackground), BlendMode.dstOver);
+          return SvgPicture(
+            UriPicture(
+              uri: entry.uri,
+              mimeType: entry.mimeType,
+              colorFilter: colorFilter,
+            ),
+            width: extent,
+            height: extent,
+          );
+        },
       ),
     );
     return heroTag == null

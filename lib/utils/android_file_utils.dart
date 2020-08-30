@@ -1,5 +1,6 @@
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
+import 'package:aves/utils/change_notifier.dart';
 import 'package:path/path.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
@@ -8,6 +9,8 @@ class AndroidFileUtils {
   String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath;
   Set<StorageVolume> storageVolumes = {};
   Map appNameMap = {};
+
+  AChangeNotifier appNameChangeNotifier = AChangeNotifier();
 
   AndroidFileUtils._private();
 
@@ -19,8 +22,12 @@ class AndroidFileUtils {
     downloadPath = join(primaryStorage, 'Download');
     moviesPath = join(primaryStorage, 'Movies');
     picturesPath = join(primaryStorage, 'Pictures');
+  }
+
+  Future<void> initAppNames() async {
     appNameMap = await AndroidAppService.getAppNames()
       ..addAll({'KakaoTalkDownload': 'com.kakao.talk'});
+    appNameChangeNotifier.notifyListeners();
   }
 
   bool isCameraPath(String path) => path != null && path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));

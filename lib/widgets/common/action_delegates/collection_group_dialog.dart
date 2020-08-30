@@ -5,13 +5,13 @@ import 'package:flutter/widgets.dart';
 
 import '../dialog.dart';
 
-class GroupCollectionDialog extends StatefulWidget {
+class CollectionGroupDialog extends StatefulWidget {
   @override
-  _GroupCollectionDialogState createState() => _GroupCollectionDialogState();
+  _CollectionGroupDialogState createState() => _CollectionGroupDialogState();
 }
 
-class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
-  GroupFactor _selectedGroup;
+class _CollectionGroupDialogState extends State<CollectionGroupDialog> {
+  EntryGroupFactor _selectedGroup;
 
   @override
   void initState() {
@@ -24,10 +24,10 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
     return AvesDialog(
       title: 'Group',
       scrollableContent: [
-        _buildRadioListTile(GroupFactor.album, 'By album'),
-        _buildRadioListTile(GroupFactor.month, 'By month'),
-        _buildRadioListTile(GroupFactor.day, 'By day'),
-        _buildRadioListTile(GroupFactor.none, 'Do not group'),
+        _buildRadioListTile(EntryGroupFactor.album, 'By album'),
+        _buildRadioListTile(EntryGroupFactor.month, 'By month'),
+        _buildRadioListTile(EntryGroupFactor.day, 'By day'),
+        _buildRadioListTile(EntryGroupFactor.none, 'Do not group'),
       ],
       actions: [
         FlatButton(
@@ -43,7 +43,7 @@ class _GroupCollectionDialogState extends State<GroupCollectionDialog> {
     );
   }
 
-  Widget _buildRadioListTile(GroupFactor value, String title) => RadioListTile<GroupFactor>(
+  Widget _buildRadioListTile(EntryGroupFactor value, String title) => RadioListTile<EntryGroupFactor>(
         key: Key(value.toString()),
         value: value,
         groupValue: _selectedGroup,

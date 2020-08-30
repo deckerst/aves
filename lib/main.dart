@@ -1,4 +1,5 @@
 import 'package:aves/model/settings.dart';
+import 'package:aves/widgets/common/data_providers/settings_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
@@ -37,34 +38,38 @@ class _AvesAppState extends State<AvesApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Aves',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        accentColor: accentColor,
-        scaffoldBackgroundColor: Colors.grey[900],
-        buttonColor: accentColor,
-        toggleableActiveColor: accentColor,
-        tooltipTheme: TooltipThemeData(
-          verticalOffset: 32,
-        ),
-        appBarTheme: AppBarTheme(
-          textTheme: TextTheme(
-            headline6: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Concourse Caps',
+    // place the settings provider above `MaterialApp`
+    // so it can be used during navigation transitions
+    return SettingsProvider(
+      child: MaterialApp(
+        title: 'Aves',
+        theme: ThemeData(
+          brightness: Brightness.dark,
+          accentColor: accentColor,
+          scaffoldBackgroundColor: Colors.grey[900],
+          buttonColor: accentColor,
+          toggleableActiveColor: accentColor,
+          tooltipTheme: TooltipThemeData(
+            verticalOffset: 32,
+          ),
+          appBarTheme: AppBarTheme(
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Concourse Caps',
+              ),
             ),
           ),
         ),
-      ),
-      home: FutureBuilder<void>(
-        future: _appSetup,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return Icon(AIcons.error);
-          if (snapshot.connectionState != ConnectionState.done) return Scaffold();
-          return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
-        },
+        home: FutureBuilder<void>(
+          future: _appSetup,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Icon(AIcons.error);
+            if (snapshot.connectionState != ConnectionState.done) return Scaffold();
+            return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
+          },
+        ),
       ),
     );
   }

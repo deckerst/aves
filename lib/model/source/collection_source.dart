@@ -39,8 +39,8 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   @override
   List<ImageEntry> get sortedEntriesForFilterList => CollectionLens(
         source: this,
-        groupFactor: GroupFactor.month,
-        sortFactor: SortFactor.date,
+        groupFactor: EntryGroupFactor.none,
+        sortFactor: EntrySortFactor.date,
       ).sortedEntries;
 
   ValueNotifier<SourceState> stateNotifier = ValueNotifier<SourceState>(SourceState.ready);

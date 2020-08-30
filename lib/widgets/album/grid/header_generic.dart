@@ -29,24 +29,24 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget header;
     switch (collection.sortFactor) {
-      case SortFactor.date:
+      case EntrySortFactor.date:
         switch (collection.groupFactor) {
-          case GroupFactor.album:
+          case EntryGroupFactor.album:
             header = _buildAlbumSectionHeader();
             break;
-          case GroupFactor.month:
+          case EntryGroupFactor.month:
             header = MonthSectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
             break;
-          case GroupFactor.day:
+          case EntryGroupFactor.day:
             header = DaySectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
             break;
-          case GroupFactor.none:
+          case EntryGroupFactor.none:
             break;
         }
         break;
-      case SortFactor.size:
+      case EntrySortFactor.size:
         break;
-      case SortFactor.name:
+      case EntrySortFactor.name:
         header = _buildAlbumSectionHeader();
         break;
     }
@@ -87,7 +87,8 @@ class SectionHeader extends StatelessWidget {
               // force a higher first line to match leading icon/selector dimension
               style: TextStyle(height: 2.3 * textScaleFactor),
             ), // 23 hair spaces match a width of 40.0
-            if (hasTrailing) TextSpan(text: '\u200A' * 17),
+            if (hasTrailing)
+              TextSpan(text: '\u200A' * 17),
             TextSpan(
               text: text,
               style: Constants.titleTextStyle,
