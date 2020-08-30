@@ -7,9 +7,9 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
-import 'package:aves/widgets/common/action_delegates/group_collection_dialog.dart';
+import 'package:aves/widgets/common/action_delegates/collection_group_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
-import 'package:aves/widgets/common/action_delegates/sort_collection_dialog.dart';
+import 'package:aves/widgets/common/action_delegates/collection_sort_dialog.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
@@ -196,7 +196,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 value: CollectionAction.sort,
                 child: MenuRow(text: 'Sort...', icon: AIcons.sort),
               ),
-              if (collection.sortFactor == SortFactor.date)
+              if (collection.sortFactor == EntrySortFactor.date)
                 PopupMenuItem(
                   key: Key('menu-group'),
                   value: CollectionAction.group,
@@ -296,9 +296,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         unawaited(_goToStats());
         break;
       case CollectionAction.group:
-        final factor = await showDialog<GroupFactor>(
+        final factor = await showDialog<EntryGroupFactor>(
           context: context,
-          builder: (context) => GroupCollectionDialog(),
+          builder: (context) => CollectionGroupDialog(),
         );
         if (factor != null) {
           settings.collectionGroupFactor = factor;
@@ -306,9 +306,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         }
         break;
       case CollectionAction.sort:
-        final factor = await showDialog<SortFactor>(
+        final factor = await showDialog<EntrySortFactor>(
           context: context,
-          builder: (context) => SortCollectionDialog(),
+          builder: (context) => CollectionSortDialog(initialValue: settings.collectionSortFactor),
         );
         if (factor != null) {
           settings.collectionSortFactor = factor;

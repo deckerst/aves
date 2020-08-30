@@ -27,6 +27,7 @@ class Settings extends ChangeNotifier {
   static const launchPageKey = 'launch_page';
   static const coordinateFormatKey = 'coordinates_format';
   static const svgBackgroundKey = 'svg_background';
+  static const albumSortFactorKey = 'album_sort_factor';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -40,13 +41,13 @@ class Settings extends ChangeNotifier {
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
-  GroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, GroupFactor.month, GroupFactor.values);
+  EntryGroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
 
-  set collectionGroupFactor(GroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
+  set collectionGroupFactor(EntryGroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
 
-  SortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, SortFactor.date, SortFactor.values);
+  EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, EntrySortFactor.date, EntrySortFactor.values);
 
-  set collectionSortFactor(SortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
+  set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
 
   double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
 
@@ -75,6 +76,10 @@ class Settings extends ChangeNotifier {
   int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
 
   set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
+
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.date, ChipSortFactor.values);
+
+  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
 
   // convenience methods
 

@@ -68,7 +68,7 @@ void groupCollection() {
     await driver.tap(find.byValueKey('menu-group'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey(GroupFactor.album.toString()));
+    await driver.tap(find.byValueKey(EntryGroupFactor.album.toString()));
     await driver.tap(find.byValueKey('apply-button'));
   });
 }
@@ -81,7 +81,7 @@ void sortCollection() {
     await driver.tap(find.byValueKey('menu-sort'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey(SortFactor.date.toString()));
+    await driver.tap(find.byValueKey(EntrySortFactor.date.toString()));
     await driver.tap(find.byValueKey('apply-button'));
   });
 }
