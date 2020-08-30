@@ -16,7 +16,7 @@ jobs:
 
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
+          flutter-version: '1.17.5'
 
       # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
       # https://issuetracker.google.com/issues/144111441
