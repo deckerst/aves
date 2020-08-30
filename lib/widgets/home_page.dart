@@ -8,7 +8,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +47,8 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    await androidFileUtils.init(); // 170ms
+    await androidFileUtils.init();
+    unawaited(androidFileUtils.initAppNames());
 
     final intentData = await ViewerService.getIntentData();
     if (intentData != null) {

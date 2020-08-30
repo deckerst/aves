@@ -1,22 +1,25 @@
-import 'package:aves/model/settings.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../dialog.dart';
 
-class SortCollectionDialog extends StatefulWidget {
+class CollectionSortDialog extends StatefulWidget {
+  final EntrySortFactor initialValue;
+
+  const CollectionSortDialog({@required this.initialValue});
+
   @override
-  _SortCollectionDialogState createState() => _SortCollectionDialogState();
+  _CollectionSortDialogState createState() => _CollectionSortDialogState();
 }
 
-class _SortCollectionDialogState extends State<SortCollectionDialog> {
-  SortFactor _selectedSort;
+class _CollectionSortDialogState extends State<CollectionSortDialog> {
+  EntrySortFactor _selectedSort;
 
   @override
   void initState() {
     super.initState();
-    _selectedSort = settings.collectionSortFactor;
+    _selectedSort = widget.initialValue;
   }
 
   @override
@@ -24,9 +27,9 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
     return AvesDialog(
       title: 'Sort',
       scrollableContent: [
-        _buildRadioListTile(SortFactor.date, 'By date'),
-        _buildRadioListTile(SortFactor.size, 'By size'),
-        _buildRadioListTile(SortFactor.name, 'By album & file name'),
+        _buildRadioListTile(EntrySortFactor.date, 'By date'),
+        _buildRadioListTile(EntrySortFactor.size, 'By size'),
+        _buildRadioListTile(EntrySortFactor.name, 'By album & file name'),
       ],
       actions: [
         FlatButton(
@@ -42,7 +45,7 @@ class _SortCollectionDialogState extends State<SortCollectionDialog> {
     );
   }
 
-  Widget _buildRadioListTile(SortFactor value, String title) => RadioListTile<SortFactor>(
+  Widget _buildRadioListTile(EntrySortFactor value, String title) => RadioListTile<EntrySortFactor>(
         key: Key(value.toString()),
         value: value,
         groupValue: _selectedSort,

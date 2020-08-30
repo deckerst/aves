@@ -80,7 +80,7 @@ class _FullscreenBottomOverlayState extends State<FullscreenBottomOverlay> {
             final overlayContentMaxWidth = mqWidth - viewPadding.horizontal - innerPadding.horizontal;
 
             return Container(
-              color: FullscreenOverlay.backgroundColor,
+              color: kOverlayBackgroundColor,
               padding: viewInsets + viewPadding.copyWith(top: 0),
               child: FutureBuilder<OverlayMetadata>(
                 future: _detailLoader,

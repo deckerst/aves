@@ -4,6 +4,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
@@ -180,8 +181,8 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: FullscreenOverlay.backgroundColor,
-              border: FullscreenOverlay.buildBorder(context),
+              color: kOverlayBackgroundColor,
+              border: AvesCircleBorder.build(context),
               borderRadius: BorderRadius.circular(progressBarBorderRadius),
             ),
             child: Column(
