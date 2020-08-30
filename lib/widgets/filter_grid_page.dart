@@ -33,16 +33,19 @@ class AlbumListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: source.eventBus.on<AlbumsChangedEvent>(),
-      builder: (context, snapshot) => FilterNavigationPage(
-        source: source,
-        title: 'Albums',
-        filterEntries: source.getAlbumEntries(),
-        filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-        emptyBuilder: () => EmptyContent(
-          icon: AIcons.album,
-          text: 'No albums',
+    return AnimatedBuilder(
+      animation: androidFileUtils.appNameChangeNotifier,
+      builder: (context, child) => StreamBuilder(
+        stream: source.eventBus.on<AlbumsChangedEvent>(),
+        builder: (context, snapshot) => FilterNavigationPage(
+          source: source,
+          title: 'Albums',
+          filterEntries: source.getAlbumEntries(),
+          filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
+          emptyBuilder: () => EmptyContent(
+            icon: AIcons.album,
+            text: 'No albums',
+          ),
         ),
       ),
     );

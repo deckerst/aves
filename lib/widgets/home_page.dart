@@ -47,7 +47,8 @@ class _HomePageState extends State<HomePage> {
       return;
     }
 
-    await androidFileUtils.init(); // 170ms
+    await androidFileUtils.init();
+    unawaited(androidFileUtils.initAppNames());
 
     final intentData = await ViewerService.getIntentData();
     if (intentData != null) {
