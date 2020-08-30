@@ -17,8 +17,8 @@ import 'enums.dart';
 class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSelectionMixin {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
-  GroupFactor groupFactor;
-  SortFactor sortFactor;
+  EntryGroupFactor groupFactor;
+  EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
   final StreamController<ImageEntry> _highlightController = StreamController.broadcast();
 
@@ -30,11 +30,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   CollectionLens({
     @required this.source,
     Iterable<CollectionFilter> filters,
-    @required GroupFactor groupFactor,
-    @required SortFactor sortFactor,
+    @required EntryGroupFactor groupFactor,
+    @required EntrySortFactor sortFactor,
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
-        groupFactor = groupFactor ?? GroupFactor.month,
-        sortFactor = sortFactor ?? SortFactor.date {
+        groupFactor = groupFactor ?? EntryGroupFactor.month,
+        sortFactor = sortFactor ?? EntrySortFactor.date {
     _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
     _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
     _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
@@ -85,11 +85,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   void highlight(ImageEntry entry) => _highlightController.add(entry);
 
   bool get showHeaders {
-    if (sortFactor == SortFactor.size) return false;
+    if (sortFactor == EntrySortFactor.size) return false;
 
-    if (sortFactor == SortFactor.date && groupFactor == GroupFactor.none) return false;
+    if (sortFactor == EntrySortFactor.date && groupFactor == EntryGroupFactor.none) return false;
 
-    final albumSections = sortFactor == SortFactor.name || (sortFactor == SortFactor.date && groupFactor == GroupFactor.album);
+    final albumSections = sortFactor == EntrySortFactor.name || (sortFactor == EntrySortFactor.date && groupFactor == EntryGroupFactor.album);
     final filterByAlbum = filters.any((f) => f is AlbumFilter);
     if (albumSections && filterByAlbum) return false;
 
@@ -118,13 +118,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     filterChangeNotifier.notifyListeners();
   }
 
-  void sort(SortFactor sortFactor) {
+  void sort(EntrySortFactor sortFactor) {
     this.sortFactor = sortFactor;
     _applySort();
     _applyGroup();
   }
 
-  void group(GroupFactor groupFactor) {
+  void group(EntryGroupFactor groupFactor) {
     this.groupFactor = groupFactor;
     _applyGroup();
   }
@@ -136,16 +136,16 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
 
   void _applySort() {
     switch (sortFactor) {
-      case SortFactor.date:
+      case EntrySortFactor.date:
         _filteredEntries.sort((a, b) {
           final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
           return c != 0 ? c : compareAsciiUpperCase(a.bestTitle, b.bestTitle);
         });
         break;
-      case SortFactor.size:
+      case EntrySortFactor.size:
         _filteredEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
         break;
-      case SortFactor.name:
+      case EntrySortFactor.name:
         _filteredEntries.sort((a, b) => compareAsciiUpperCase(a.bestTitle, b.bestTitle));
         break;
     }
@@ -153,30 +153,30 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
 
   void _applyGroup() {
     switch (sortFactor) {
-      case SortFactor.date:
+      case EntrySortFactor.date:
         switch (groupFactor) {
-          case GroupFactor.album:
+          case EntryGroupFactor.album:
             sections = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
             break;
-          case GroupFactor.month:
+          case EntryGroupFactor.month:
             sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.monthTaken);
             break;
-          case GroupFactor.day:
+          case EntryGroupFactor.day:
             sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.dayTaken);
             break;
-          case GroupFactor.none:
+          case EntryGroupFactor.none:
             sections = Map.fromEntries([
               MapEntry(null, _filteredEntries),
             ]);
             break;
         }
         break;
-      case SortFactor.size:
+      case EntrySortFactor.size:
         sections = Map.fromEntries([
           MapEntry(null, _filteredEntries),
         ]);
         break;
-      case SortFactor.name:
+      case EntrySortFactor.name:
         final byAlbum = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
         int compare(a, b) {
           final ua = source.getUniqueAlbumName(a);
