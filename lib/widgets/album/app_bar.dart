@@ -7,10 +7,9 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/filter_bar.dart';
 import 'package:aves/widgets/album/search/search_delegate.dart';
-import 'package:aves/widgets/common/action_delegates/collection_group_dialog.dart';
-import 'package:aves/widgets/common/action_delegates/collection_sort_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -296,23 +295,40 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         unawaited(_goToStats());
         break;
       case CollectionAction.group:
-        final factor = await showDialog<EntryGroupFactor>(
+        final value = await showDialog<EntryGroupFactor>(
           context: context,
-          builder: (context) => CollectionGroupDialog(),
+          builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
+            initialValue: settings.collectionGroupFactor,
+            options: {
+              EntryGroupFactor.album: 'By album',
+              EntryGroupFactor.month: 'By month',
+              EntryGroupFactor.day: 'By day',
+              EntryGroupFactor.none: 'Do not group',
+            },
+            title: 'Group',
+          ),
         );
-        if (factor != null) {
-          settings.collectionGroupFactor = factor;
-          collection.group(factor);
+        if (value != null) {
+          settings.collectionGroupFactor = value;
+          collection.group(value);
         }
         break;
       case CollectionAction.sort:
-        final factor = await showDialog<EntrySortFactor>(
+        final value = await showDialog<EntrySortFactor>(
           context: context,
-          builder: (context) => CollectionSortDialog(initialValue: settings.collectionSortFactor),
+          builder: (context) => AvesSelectionDialog<EntrySortFactor>(
+            initialValue: settings.collectionSortFactor,
+            options: {
+              EntrySortFactor.date: 'By date',
+              EntrySortFactor.size: 'By size',
+              EntrySortFactor.name: 'By album & file name',
+            },
+            title: 'Sort',
+          ),
         );
-        if (factor != null) {
-          settings.collectionSortFactor = factor;
-          collection.sort(factor);
+        if (value != null) {
+          settings.collectionSortFactor = value;
+          collection.sort(value);
         }
         break;
     }

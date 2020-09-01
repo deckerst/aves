@@ -6,6 +6,7 @@ import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 void main() {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
@@ -41,34 +42,36 @@ class _AvesAppState extends State<AvesApp> {
     // place the settings provider above `MaterialApp`
     // so it can be used during navigation transitions
     return SettingsProvider(
-      child: MaterialApp(
-        title: 'Aves',
-        theme: ThemeData(
-          brightness: Brightness.dark,
-          accentColor: accentColor,
-          scaffoldBackgroundColor: Colors.grey[900],
-          buttonColor: accentColor,
-          toggleableActiveColor: accentColor,
-          tooltipTheme: TooltipThemeData(
-            verticalOffset: 32,
-          ),
-          appBarTheme: AppBarTheme(
-            textTheme: TextTheme(
-              headline6: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Concourse Caps',
+      child: OverlaySupport(
+        child: MaterialApp(
+          title: 'Aves',
+          theme: ThemeData(
+            brightness: Brightness.dark,
+            accentColor: accentColor,
+            scaffoldBackgroundColor: Colors.grey[900],
+            buttonColor: accentColor,
+            toggleableActiveColor: accentColor,
+            tooltipTheme: TooltipThemeData(
+              verticalOffset: 32,
+            ),
+            appBarTheme: AppBarTheme(
+              textTheme: TextTheme(
+                headline6: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Concourse Caps',
+                ),
               ),
             ),
           ),
-        ),
-        home: FutureBuilder<void>(
-          future: _appSetup,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Icon(AIcons.error);
-            if (snapshot.connectionState != ConnectionState.done) return Scaffold();
-            return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
-          },
+          home: FutureBuilder<void>(
+            future: _appSetup,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) return Icon(AIcons.error);
+              if (snapshot.connectionState != ConnectionState.done) return Scaffold();
+              return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
+            },
+          ),
         ),
       ),
     );

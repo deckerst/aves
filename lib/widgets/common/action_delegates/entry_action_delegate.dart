@@ -7,7 +7,7 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
-import 'package:aves/widgets/common/dialog.dart';
+import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/debug.dart';

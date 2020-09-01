@@ -63,6 +63,7 @@ dependencies:
   intl:
   latlong: # for flutter_map
   outline_material_icons:
+  overlay_support:
   package_info:
   palette_generator:
   pdf:
