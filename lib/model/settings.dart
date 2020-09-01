@@ -16,18 +16,27 @@ class Settings extends ChangeNotifier {
 
   Settings._private();
 
-  // preferences
+  // app
+  static const hasAcceptedTermsKey = 'has_accepted_terms';
+  static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
+  static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
+
+  // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionTileExtentKey = 'collection_tile_extent';
-  static const hasAcceptedTermsKey = 'has_accepted_terms';
+
+  // filter grids
+  static const albumSortFactorKey = 'album_sort_factor';
+
+  // info
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
-  static const launchPageKey = 'launch_page';
   static const coordinateFormatKey = 'coordinates_format';
+
+  // rendering
   static const svgBackgroundKey = 'svg_background';
-  static const albumSortFactorKey = 'album_sort_factor';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -37,9 +46,25 @@ class Settings extends ChangeNotifier {
     return _prefs.clear();
   }
 
+  // app
+
+  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
+
+  set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+
+  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
+
+  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
+
+  HomePageSetting get homePage => getEnumOrDefault(homePageKey, HomePageSetting.collection, HomePageSetting.values);
+
+  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
+
   String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
+
+  // collection
 
   EntryGroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
 
@@ -53,6 +78,14 @@ class Settings extends ChangeNotifier {
 
   set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
 
+  // filter grids
+
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+
+  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
+
+  // info
+
   EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
 
   set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
@@ -61,25 +94,15 @@ class Settings extends ChangeNotifier {
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
-  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
-
-  set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
-
-  LaunchPage get launchPage => getEnumOrDefault(launchPageKey, LaunchPage.collection, LaunchPage.values);
-
-  set launchPage(LaunchPage newValue) => setAndNotify(launchPageKey, newValue.toString());
-
   CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, CoordinateFormat.dms, CoordinateFormat.values);
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
 
+  // rendering
+
   int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
 
   set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
-
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.date, ChipSortFactor.values);
-
-  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
 
   // convenience methods
 
@@ -126,14 +149,14 @@ class Settings extends ChangeNotifier {
   }
 }
 
-enum LaunchPage { collection, albums }
+enum HomePageSetting { collection, albums }
 
-extension ExtraLaunchPage on LaunchPage {
+extension ExtraHomePageSetting on HomePageSetting {
   String get name {
     switch (this) {
-      case LaunchPage.collection:
+      case HomePageSetting.collection:
         return 'All Media';
-      case LaunchPage.albums:
+      case HomePageSetting.albums:
         return 'Albums';
       default:
         return toString();

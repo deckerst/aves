@@ -3,8 +3,7 @@ import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
-import 'package:aves/utils/color_utils.dart';
-import 'package:aves/widgets/common/fx/highlight_decoration.dart';
+import 'package:aves/widgets/common/highlight_title.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
@@ -90,7 +89,10 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
               key: Key('tilecard-${dir.name}'),
               value: dir.name,
               expandedNotifier: _expandedDirectoryNotifier,
-              title: _DirectoryTitle(dir.name),
+              title: HighlightTitle(
+                dir.name,
+                fontSize: 18,
+              ),
               children: [
                 Divider(thickness: 1.0, height: 1.0),
                 Container(
@@ -136,42 +138,6 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
   @override
   bool get wantKeepAlive => true;
-}
-
-class _DirectoryTitle extends StatelessWidget {
-  final String name;
-
-  const _DirectoryTitle(this.name);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        decoration: HighlightDecoration(
-          color: stringToColor(name),
-        ),
-        margin: EdgeInsets.symmetric(vertical: 4.0),
-        child: Text(
-          name,
-          style: TextStyle(
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                offset: Offset(1, 1),
-                blurRadius: 2,
-              )
-            ],
-            fontSize: 18,
-            fontFamily: 'Concourse Caps',
-          ),
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-      ),
-    );
-  }
 }
 
 class _MetadataDirectory {

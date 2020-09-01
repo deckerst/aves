@@ -31,4 +31,5 @@ class Durations {
   static const collectionScalingCompleteNotificationDelay = Duration(milliseconds: 300);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
+  static const doubleBackTimerDelay = Duration(milliseconds: 1000);
 }

@@ -1,6 +1,6 @@
 import 'package:aves/model/settings.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/widgets/common/action_delegates/map_style_dialog.dart';
+import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -70,7 +70,11 @@ class MapButtonPanel extends StatelessWidget {
                   onPressed: () async {
                     final style = await showDialog<EntryMapStyle>(
                       context: context,
-                      builder: (context) => MapStyleDialog(),
+                      builder: (context) => AvesSelectionDialog<EntryMapStyle>(
+                        initialValue: settings.infoMapStyle,
+                        options: Map.fromEntries(EntryMapStyle.values.map((v) => MapEntry(v, v.name))),
+                        title: 'Map Style',
+                      ),
                     );
                     if (style != null) {
                       settings.infoMapStyle = style;

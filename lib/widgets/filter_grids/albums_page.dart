@@ -7,7 +7,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/empty.dart';
-import 'package:aves/widgets/common/action_delegates/chip_sort_dialog.dart';
+import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
@@ -117,7 +117,14 @@ class AlbumListPage extends StatelessWidget {
       case ChipAction.sort:
         final factor = await showDialog<ChipSortFactor>(
           context: context,
-          builder: (context) => ChipSortDialog(initialValue: settings.albumSortFactor),
+          builder: (context) => AvesSelectionDialog<ChipSortFactor>(
+            initialValue: settings.albumSortFactor,
+            options: {
+              ChipSortFactor.date: 'By date',
+              ChipSortFactor.name: 'By name',
+            },
+            title: 'Sort',
+          ),
         );
         if (factor != null) {
           settings.albumSortFactor = factor;

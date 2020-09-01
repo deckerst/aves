@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 
-import '../dialog.dart';
+import '../aves_dialog.dart';
 
 class CreateAlbumDialog extends StatefulWidget {
   @override

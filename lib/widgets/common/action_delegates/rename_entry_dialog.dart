@@ -1,6 +1,7 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/dialog.dart';
 import 'package:flutter/material.dart';
+
+import '../aves_dialog.dart';
 
 class RenameEntryDialog extends StatefulWidget {
   final ImageEntry entry;

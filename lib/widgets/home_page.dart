@@ -103,11 +103,11 @@ class _HomePageState extends State<HomePage> {
             return SingleFullscreenPage(entry: _viewerEntry);
           }
           if (_mediaStore != null) {
-            switch (settings.launchPage) {
-              case LaunchPage.albums:
+            switch (settings.homePage) {
+              case HomePageSetting.albums:
                 return AlbumListPage(source: _mediaStore);
                 break;
-              case LaunchPage.collection:
+              case HomePageSetting.collection:
                 return CollectionPage(CollectionLens(
                   source: _mediaStore,
                   groupFactor: settings.collectionGroupFactor,
