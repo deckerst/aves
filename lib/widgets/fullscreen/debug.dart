@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 class FullscreenDebugPage extends StatefulWidget {
+  static const routeName = '/fullscreen/debug';
+
   final ImageEntry entry;
 
   const FullscreenDebugPage({@required this.entry});

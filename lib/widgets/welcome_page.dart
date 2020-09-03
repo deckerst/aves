@@ -107,6 +107,7 @@ class _WelcomePageState extends State<WelcomePage> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
+                  settings: RouteSettings(name: HomePage.routeName),
                   builder: (context) => HomePage(),
                 ),
                 (route) => false,

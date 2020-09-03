@@ -12,6 +12,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/flutter_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
@@ -75,10 +76,10 @@ class _AppDrawerState extends State<AppDrawer> {
       ),
     );
 
-    final allMediaEntry = _FilteredCollectionNavTile(
+    final allCollectionEntry = _FilteredCollectionNavTile(
       source: source,
-      leading: Icon(AIcons.allMedia),
-      title: 'All media',
+      leading: Icon(AIcons.allCollection),
+      title: 'All collection',
       filter: null,
     );
     final videoEntry = _FilteredCollectionNavTile(
@@ -99,7 +100,7 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListTile(
         leading: Icon(AIcons.settings),
         title: Text('Preferences'),
-        onTap: () => _goTo((_) => SettingsPage()),
+        onTap: () => _goTo(SettingsPage.routeName, (_) => SettingsPage()),
       ),
     );
     final aboutEntry = SafeArea(
@@ -108,20 +109,20 @@ class _AppDrawerState extends State<AppDrawer> {
       child: ListTile(
         leading: Icon(AIcons.info),
         title: Text('About'),
-        onTap: () => _goTo((_) => AboutPage()),
+        onTap: () => _goTo(AboutPage.routeName, (_) => AboutPage()),
       ),
     );
 
     final drawerItems = <Widget>[
       header,
-      allMediaEntry,
+      allCollectionEntry,
       videoEntry,
       favouriteEntry,
       _buildSpecialAlbumSection(),
       Divider(),
-      _buildRegularAlbumSection(),
-      _buildCountrySection(),
-      _buildTagSection(),
+      _buildAlbumListEntry(),
+      _buildCountryListEntry(),
+      _buildTagListEntry(),
       Divider(),
       settingsEntry,
       aboutEntry,
@@ -133,7 +134,7 @@ class _AppDrawerState extends State<AppDrawer> {
           child: ListTile(
             leading: Icon(AIcons.debug),
             title: Text('Debug'),
-            onTap: () => _goTo((_) => DebugPage(source: source)),
+            onTap: () => _goTo(DebugPage.routeName, (_) => DebugPage(source: source)),
           ),
         ),
       ],
@@ -184,7 +185,7 @@ class _AppDrawerState extends State<AppDrawer> {
         builder: (context, snapshot) {
           final specialAlbums = source.sortedAlbums.where((album) {
             final type = androidFileUtils.getAlbumType(album);
-            return type != AlbumType.regular && type != AlbumType.app;
+            return [AlbumType.camera, AlbumType.screenshots].contains(type);
           });
 
           if (specialAlbums.isEmpty) return SizedBox.shrink();
@@ -197,7 +198,7 @@ class _AppDrawerState extends State<AppDrawer> {
         });
   }
 
-  Widget _buildRegularAlbumSection() {
+  Widget _buildAlbumListEntry() {
     return SafeArea(
       top: false,
       bottom: false,
@@ -215,12 +216,12 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               );
             }),
-        onTap: () => _goTo((_) => AlbumListPage(source: source)),
+        onTap: () => _goTo(AlbumListPage.routeName, (_) => AlbumListPage(source: source)),
       ),
     );
   }
 
-  Widget _buildCountrySection() {
+  Widget _buildCountryListEntry() {
     return SafeArea(
       top: false,
       bottom: false,
@@ -237,12 +238,12 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               );
             }),
-        onTap: () => _goTo((_) => CountryListPage(source: source)),
+        onTap: () => _goTo(CountryListPage.routeName, (_) => CountryListPage(source: source)),
       ),
     );
   }
 
-  Widget _buildTagSection() {
+  Widget _buildTagListEntry() {
     return SafeArea(
       top: false,
       bottom: false,
@@ -259,14 +260,21 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
               );
             }),
-        onTap: () => _goTo((_) => TagListPage(source: source)),
+        onTap: () => _goTo(TagListPage.routeName, (_) => TagListPage(source: source)),
       ),
     );
   }
 
-  void _goTo(WidgetBuilder builder) {
+  void _goTo(String routeName, WidgetBuilder builder) {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: builder));
+    if (routeName != context.currentRouteName) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            settings: RouteSettings(name: routeName),
+            builder: builder,
+          ));
+    }
   }
 }
 
@@ -306,6 +314,7 @@ class _FilteredCollectionNavTile extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],

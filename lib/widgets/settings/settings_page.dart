@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatelessWidget {
+  static const routeName = '/settings';
+
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(

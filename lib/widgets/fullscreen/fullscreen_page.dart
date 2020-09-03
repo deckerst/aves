@@ -5,6 +5,8 @@ import 'package:aves/widgets/fullscreen/fullscreen_body.dart';
 import 'package:flutter/material.dart';
 
 class MultiFullscreenPage extends AnimatedWidget {
+  static const routeName = '/fullscreen';
+
   final CollectionLens collection;
   final ImageEntry initialEntry;
 
@@ -30,6 +32,8 @@ class MultiFullscreenPage extends AnimatedWidget {
 }
 
 class SingleFullscreenPage extends StatelessWidget {
+  static const routeName = '/fullscreen';
+
   final ImageEntry entry;
 
   const SingleFullscreenPage({

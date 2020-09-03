@@ -56,7 +56,7 @@ void agreeToTerms() {
     await driver.tap(find.byValueKey('continue-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    expect(await driver.getText(find.byValueKey('appbar-title')), 'Aves');
+    expect(await driver.getText(find.byValueKey('appbar-title')), 'Collection');
   });
 }
 

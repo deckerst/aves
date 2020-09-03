@@ -155,7 +155,7 @@ extension ExtraHomePageSetting on HomePageSetting {
   String get name {
     switch (this) {
       case HomePageSetting.collection:
-        return 'All Media';
+        return 'Collection';
       case HomePageSetting.albums:
         return 'Albums';
       default:

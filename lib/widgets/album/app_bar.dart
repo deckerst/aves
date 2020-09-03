@@ -134,7 +134,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
-      Widget title = Text(AvesApp.mode == AppMode.pick ? 'Select' : 'Aves', key: Key('appbar-title'));
+      Widget title = Text(
+        AvesApp.mode == AppMode.pick ? 'Select' : 'Collection',
+        key: Key('appbar-title'),
+      );
       if (AvesApp.mode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
@@ -345,6 +348,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return Navigator.push(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
           collection: collection,
         ),
