@@ -7,6 +7,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:package_info/package_info.dart';
 
 class AboutPage extends StatelessWidget {
+  static const routeName = '/about';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

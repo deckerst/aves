@@ -5,7 +5,7 @@ import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/album/grid/list_known_extent.dart';
 import 'package:aves/widgets/album/grid/list_section_layout.dart';
 import 'package:aves/widgets/album/thumbnail/decorated.dart';
-import 'package:aves/widgets/common/transparent_material_page_route.dart';
+import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -85,6 +85,7 @@ class GridThumbnail extends StatelessWidget {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
+        settings: RouteSettings(name: MultiFullscreenPage.routeName),
         pageBuilder: (c, a, sa) => MultiFullscreenPage(
           collection: collection,
           initialEntry: entry,

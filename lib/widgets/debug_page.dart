@@ -18,6 +18,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class DebugPage extends StatefulWidget {
+  static const routeName = '/debug';
+
   final CollectionSource source;
 
   const DebugPage({this.source});

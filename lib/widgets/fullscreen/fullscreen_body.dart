@@ -275,6 +275,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
       (route) => false,
@@ -323,7 +324,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _onLeave() {
-    if (!ModalRoute.of(context).canPop) {
+    if (!Navigator.canPop(context)) {
       // exit app when trying to pop a fullscreen page that is a viewer for a single entry
       exit(0);
     }

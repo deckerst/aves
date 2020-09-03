@@ -17,6 +17,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class AlbumListPage extends StatelessWidget {
+  static const routeName = '/albums';
+
   final CollectionSource source;
 
   const AlbumListPage({@required this.source});

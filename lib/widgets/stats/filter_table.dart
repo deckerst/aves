@@ -90,6 +90,7 @@ class FilterTable extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
       (route) => false,

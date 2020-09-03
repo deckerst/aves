@@ -56,6 +56,7 @@ class FilterNavigationPage extends StatelessWidget {
       onPressed: (filter) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
+          settings: RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(CollectionLens(
             source: source,
             filters: [filter],

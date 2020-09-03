@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CollectionPage extends StatelessWidget {
+  static const routeName = '/collection';
+
   final CollectionLens collection;
 
   const CollectionPage(this.collection);

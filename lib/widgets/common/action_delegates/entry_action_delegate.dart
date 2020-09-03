@@ -174,6 +174,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     Navigator.push(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: FullscreenDebugPage.routeName),
         builder: (context) => FullscreenDebugPage(entry: entry),
       ),
     );

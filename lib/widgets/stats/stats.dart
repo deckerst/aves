@@ -20,6 +20,8 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
+  static const routeName = '/collection/stats';
+
   final CollectionLens collection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
@@ -236,6 +238,7 @@ class StatsPage extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
       (route) => false,
