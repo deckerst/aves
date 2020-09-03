@@ -1,4 +1,6 @@
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/highlight_title.dart';

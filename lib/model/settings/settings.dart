@@ -1,11 +1,11 @@
-import 'package:aves/utils/geo_utils.dart';
+import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tuple/tuple.dart';
 
-import 'source/enums.dart';
+import '../source/enums.dart';
 
 final Settings settings = Settings._private();
 
@@ -145,47 +145,6 @@ class Settings extends ChangeNotifier {
     }
     if (oldValue != newValue) {
       notifyListeners();
-    }
-  }
-}
-
-enum HomePageSetting { collection, albums }
-
-extension ExtraHomePageSetting on HomePageSetting {
-  String get name {
-    switch (this) {
-      case HomePageSetting.collection:
-        return 'Collection';
-      case HomePageSetting.albums:
-        return 'Albums';
-      default:
-        return toString();
-    }
-  }
-}
-
-enum CoordinateFormat { dms, decimal }
-
-extension ExtraCoordinateFormat on CoordinateFormat {
-  String get name {
-    switch (this) {
-      case CoordinateFormat.dms:
-        return 'DMS';
-      case CoordinateFormat.decimal:
-        return 'Decimal degrees';
-      default:
-        return toString();
-    }
-  }
-
-  String format(Tuple2<double, double> latLng) {
-    switch (this) {
-      case CoordinateFormat.dms:
-        return toDMS(latLng).join(', ');
-      case CoordinateFormat.decimal:
-        return [latLng.item1, latLng.item2].map((n) => n.toStringAsFixed(6)).join(', ');
-      default:
-        return toString();
     }
   }
 }

@@ -1,4 +1,4 @@
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/borders.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/data_providers/settings_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/home_page.dart';

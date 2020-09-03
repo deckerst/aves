@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:flutter/foundation.dart';

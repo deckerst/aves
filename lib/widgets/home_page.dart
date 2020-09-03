@@ -1,6 +1,7 @@
 import 'package:aves/main.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/viewer_service.dart';
