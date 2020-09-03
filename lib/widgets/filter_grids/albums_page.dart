@@ -37,7 +37,7 @@ class AlbumListPage extends StatelessWidget {
                 source: source,
                 title: 'Albums',
                 actions: _buildActions(),
-                filterEntries: _getAlbumEntries(),
+                filterEntries: getAlbumEntries(source),
                 filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
                 emptyBuilder: () => EmptyContent(
                   icon: AIcons.album,
@@ -49,47 +49,6 @@ class AlbumListPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  Map<String, ImageEntry> _getAlbumEntries() {
-    final entriesByDate = source.sortedEntriesForFilterList;
-    final albumEntries = source.sortedAlbums.map((album) {
-      return MapEntry(
-        album,
-        entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
-      );
-    }).toList();
-
-    switch (settings.albumSortFactor) {
-      case ChipSortFactor.date:
-        albumEntries.sort((a, b) {
-          final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
-          return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
-        });
-        return Map.fromEntries(albumEntries);
-      case ChipSortFactor.name:
-      default:
-        final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
-        for (var album in source.sortedAlbums) {
-          switch (androidFileUtils.getAlbumType(album)) {
-            case AlbumType.regular:
-              regularAlbums.add(album);
-              break;
-            case AlbumType.app:
-              appAlbums.add(album);
-              break;
-            default:
-              specialAlbums.add(album);
-              break;
-          }
-        }
-        return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((album) {
-          return MapEntry(
-            album,
-            entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
-          );
-        }));
-    }
   }
 
   List<Widget> _buildActions() {
@@ -132,6 +91,49 @@ class AlbumListPage extends StatelessWidget {
           settings.albumSortFactor = factor;
         }
         break;
+    }
+  }
+
+  // common with album selection page to move/copy entries
+
+  static Map<String, ImageEntry> getAlbumEntries(CollectionSource source) {
+    final entriesByDate = source.sortedEntriesForFilterList;
+    final albumEntries = source.sortedAlbums.map((album) {
+      return MapEntry(
+        album,
+        entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
+      );
+    }).toList();
+
+    switch (settings.albumSortFactor) {
+      case ChipSortFactor.date:
+        albumEntries.sort((a, b) {
+          final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
+          return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
+        });
+        return Map.fromEntries(albumEntries);
+      case ChipSortFactor.name:
+      default:
+        final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
+        for (var album in source.sortedAlbums) {
+          switch (androidFileUtils.getAlbumType(album)) {
+            case AlbumType.regular:
+              regularAlbums.add(album);
+              break;
+            case AlbumType.app:
+              appAlbums.add(album);
+              break;
+            default:
+              specialAlbums.add(album);
+              break;
+          }
+        }
+        return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((album) {
+          return MapEntry(
+            album,
+            entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
+          );
+        }));
     }
   }
 }
