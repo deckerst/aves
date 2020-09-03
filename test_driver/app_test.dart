@@ -91,7 +91,7 @@ void selectFirstAlbum() {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('albums-tile'));
+    await driver.tap(find.byValueKey('Albums-tile'));
     await driver.waitUntilNoTransientCallbacks();
 
     await driver.tap(find.descendant(
