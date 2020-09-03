@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
