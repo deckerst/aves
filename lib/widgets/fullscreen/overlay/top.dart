@@ -126,7 +126,7 @@ class _TopOverlayRow extends StatelessWidget {
       children: [
         OverlayButton(
           scale: scale,
-          child: ModalRoute.of(context)?.canPop ?? true ? BackButton() : CloseButton(),
+          child: Navigator.canPop(context) ? BackButton() : CloseButton(),
         ),
         Spacer(),
         ...quickActions.map(_buildOverlayButton),

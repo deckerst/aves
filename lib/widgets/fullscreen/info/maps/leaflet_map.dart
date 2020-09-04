@@ -1,4 +1,4 @@
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:aves/widgets/fullscreen/info/maps/scale_layer.dart';
 import 'package:flutter/material.dart';

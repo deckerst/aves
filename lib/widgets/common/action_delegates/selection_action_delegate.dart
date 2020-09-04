@@ -14,9 +14,10 @@ import 'package:aves/widgets/album/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
-import 'package:aves/widgets/common/dialog.dart';
+import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
               ],
               floating: true,
             ),
-            filterEntries: source.getAlbumEntries(),
+            filterEntries: AlbumListPage.getAlbumEntries(source),
             filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
             emptyBuilder: () => EmptyContent(
               icon: AIcons.album,

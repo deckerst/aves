@@ -1,13 +1,13 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/album/empty.dart';
-import 'package:aves/widgets/common/action_delegates/chip_sort_dialog.dart';
+import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
@@ -17,6 +17,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class AlbumListPage extends StatelessWidget {
+  static const routeName = '/albums';
+
   final CollectionSource source;
 
   const AlbumListPage({@required this.source});
@@ -35,7 +37,7 @@ class AlbumListPage extends StatelessWidget {
                 source: source,
                 title: 'Albums',
                 actions: _buildActions(),
-                filterEntries: _getAlbumEntries(),
+                filterEntries: getAlbumEntries(source),
                 filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
                 emptyBuilder: () => EmptyContent(
                   icon: AIcons.album,
@@ -49,7 +51,52 @@ class AlbumListPage extends StatelessWidget {
     );
   }
 
-  Map<String, ImageEntry> _getAlbumEntries() {
+  List<Widget> _buildActions() {
+    return [
+      Builder(
+        builder: (context) => PopupMenuButton<ChipAction>(
+          key: Key('appbar-menu-button'),
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                key: Key('menu-sort'),
+                value: ChipAction.sort,
+                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+              ),
+            ];
+          },
+          onSelected: (action) => _onChipActionSelected(context, action),
+        ),
+      ),
+    ];
+  }
+
+  void _onChipActionSelected(BuildContext context, ChipAction action) async {
+    // wait for the popup menu to hide before proceeding with the action
+    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+    switch (action) {
+      case ChipAction.sort:
+        final factor = await showDialog<ChipSortFactor>(
+          context: context,
+          builder: (context) => AvesSelectionDialog<ChipSortFactor>(
+            initialValue: settings.albumSortFactor,
+            options: {
+              ChipSortFactor.date: 'By date',
+              ChipSortFactor.name: 'By name',
+            },
+            title: 'Sort',
+          ),
+        );
+        if (factor != null) {
+          settings.albumSortFactor = factor;
+        }
+        break;
+    }
+  }
+
+  // common with album selection page to move/copy entries
+
+  static Map<String, ImageEntry> getAlbumEntries(CollectionSource source) {
     final entriesByDate = source.sortedEntriesForFilterList;
     final albumEntries = source.sortedAlbums.map((album) {
       return MapEntry(
@@ -87,42 +134,6 @@ class AlbumListPage extends StatelessWidget {
             entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
           );
         }));
-    }
-  }
-
-  List<Widget> _buildActions() {
-    return [
-      Builder(
-        builder: (context) => PopupMenuButton<ChipAction>(
-          key: Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                key: Key('menu-sort'),
-                value: ChipAction.sort,
-                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
-              ),
-            ];
-          },
-          onSelected: (action) => _onChipActionSelected(context, action),
-        ),
-      ),
-    ];
-  }
-
-  void _onChipActionSelected(BuildContext context, ChipAction action) async {
-    // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-    switch (action) {
-      case ChipAction.sort:
-        final factor = await showDialog<ChipSortFactor>(
-          context: context,
-          builder: (context) => ChipSortDialog(initialValue: settings.albumSortFactor),
-        );
-        if (factor != null) {
-          settings.albumSortFactor = factor;
-        }
-        break;
     }
   }
 }

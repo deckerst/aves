@@ -1,11 +1,11 @@
-import 'package:aves/utils/geo_utils.dart';
+import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tuple/tuple.dart';
 
-import 'source/enums.dart';
+import '../source/enums.dart';
 
 final Settings settings = Settings._private();
 
@@ -16,18 +16,27 @@ class Settings extends ChangeNotifier {
 
   Settings._private();
 
-  // preferences
+  // app
+  static const hasAcceptedTermsKey = 'has_accepted_terms';
+  static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
+  static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
+
+  // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionTileExtentKey = 'collection_tile_extent';
-  static const hasAcceptedTermsKey = 'has_accepted_terms';
+
+  // filter grids
+  static const albumSortFactorKey = 'album_sort_factor';
+
+  // info
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
-  static const launchPageKey = 'launch_page';
   static const coordinateFormatKey = 'coordinates_format';
+
+  // rendering
   static const svgBackgroundKey = 'svg_background';
-  static const albumSortFactorKey = 'album_sort_factor';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -37,9 +46,25 @@ class Settings extends ChangeNotifier {
     return _prefs.clear();
   }
 
+  // app
+
+  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
+
+  set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+
+  bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
+
+  set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
+
+  HomePageSetting get homePage => getEnumOrDefault(homePageKey, HomePageSetting.collection, HomePageSetting.values);
+
+  set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
+
   String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
+
+  // collection
 
   EntryGroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
 
@@ -53,6 +78,14 @@ class Settings extends ChangeNotifier {
 
   set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
 
+  // filter grids
+
+  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+
+  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
+
+  // info
+
   EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
 
   set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
@@ -61,25 +94,23 @@ class Settings extends ChangeNotifier {
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
-  bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
-
-  set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
-
-  LaunchPage get launchPage => getEnumOrDefault(launchPageKey, LaunchPage.collection, LaunchPage.values);
-
-  set launchPage(LaunchPage newValue) => setAndNotify(launchPageKey, newValue.toString());
-
   CoordinateFormat get coordinateFormat => getEnumOrDefault(coordinateFormatKey, CoordinateFormat.dms, CoordinateFormat.values);
 
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
+
+  // rendering
 
   int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
 
   set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
 
-  ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.date, ChipSortFactor.values);
+  // utils
 
-  set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
+  // `RoutePredicate`
+  RoutePredicate navRemoveRoutePredicate(String pushedRouteName) {
+    final home = homePage.routeName;
+    return (route) => pushedRouteName != home && route.settings?.name == home;
+  }
 
   // convenience methods
 
@@ -122,47 +153,6 @@ class Settings extends ChangeNotifier {
     }
     if (oldValue != newValue) {
       notifyListeners();
-    }
-  }
-}
-
-enum LaunchPage { collection, albums }
-
-extension ExtraLaunchPage on LaunchPage {
-  String get name {
-    switch (this) {
-      case LaunchPage.collection:
-        return 'All Media';
-      case LaunchPage.albums:
-        return 'Albums';
-      default:
-        return toString();
-    }
-  }
-}
-
-enum CoordinateFormat { dms, decimal }
-
-extension ExtraCoordinateFormat on CoordinateFormat {
-  String get name {
-    switch (this) {
-      case CoordinateFormat.dms:
-        return 'DMS';
-      case CoordinateFormat.decimal:
-        return 'Decimal degrees';
-      default:
-        return toString();
-    }
-  }
-
-  String format(Tuple2<double, double> latLng) {
-    switch (this) {
-      case CoordinateFormat.dms:
-        return toDMS(latLng).join(', ');
-      case CoordinateFormat.decimal:
-        return [latLng.item1, latLng.item2].map((n) => n.toStringAsFixed(6)).join(', ');
-      default:
-        return toString();
     }
   }
 }

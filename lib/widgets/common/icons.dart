@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class AIcons {
-  static const IconData allMedia = OMIcons.collections;
+  static const IconData allCollection = OMIcons.collections;
   static const IconData image = OMIcons.photo;
   static const IconData video = OMIcons.movie;
   static const IconData vector = OMIcons.code;

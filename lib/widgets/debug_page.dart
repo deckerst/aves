@@ -4,7 +4,7 @@ import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -18,6 +18,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
 class DebugPage extends StatefulWidget {
+  static const routeName = '/debug';
+
   final CollectionSource source;
 
   const DebugPage({this.source});

@@ -1,12 +1,15 @@
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/album/thumbnail_collection.dart';
-import 'package:aves/widgets/app_drawer.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/double_back_pop.dart';
+import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CollectionPage extends StatelessWidget {
+  static const routeName = '/collection';
+
   final CollectionLens collection;
 
   const CollectionPage(this.collection);
@@ -26,7 +29,9 @@ class CollectionPage extends StatelessWidget {
               }
               return SynchronousFuture(true);
             },
-            child: ThumbnailCollection(),
+            child: DoubleBackPopScope(
+              child: ThumbnailCollection(),
+            ),
           ),
           drawer: AppDrawer(
             source: collection.source,

@@ -10,13 +10,6 @@ class Constants {
     color: Color(0xFFEEEEEE),
     fontSize: 20,
     fontFamily: 'Concourse Caps',
-    shadows: [
-      Shadow(
-        offset: Offset(0, 2),
-        blurRadius: 3,
-        color: Color(0xFF212121),
-      ),
-    ],
   );
 
   static const List<Dependency> androidDependencies = [

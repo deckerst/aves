@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/widgets.dart';
 
 class TileExtentManager {

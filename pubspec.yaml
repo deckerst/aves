@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.8+20
+version: 1.1.9+21
 
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
@@ -63,6 +63,7 @@ dependencies:
   intl:
   latlong: # for flutter_map
   outline_material_icons:
+  overlay_support:
   package_info:
   palette_generator:
   pdf:
