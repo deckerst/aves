@@ -18,7 +18,7 @@ class SettingsPage extends StatelessWidget {
         length: 4,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Preferences'),
+            title: Text('Settings'),
           ),
           body: SafeArea(
             child: Consumer<Settings>(
