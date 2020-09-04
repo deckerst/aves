@@ -37,11 +37,6 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text('Cancel'.toUpperCase()),
         ),
-        FlatButton(
-          key: Key('apply-button'),
-          onPressed: () => Navigator.pop(context, _selectedValue),
-          child: Text('Apply'.toUpperCase()),
-        ),
       ],
     );
   }
@@ -50,7 +45,11 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
         key: Key(value.toString()),
         value: value,
         groupValue: _selectedValue,
-        onChanged: (v) => setState(() => _selectedValue = v),
+        onChanged: (v) {
+          _selectedValue = v;
+          Navigator.pop(context, _selectedValue);
+          setState(() {});
+        },
         title: Text(
           title,
           softWrap: false,
