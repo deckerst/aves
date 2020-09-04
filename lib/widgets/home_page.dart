@@ -1,13 +1,14 @@
 import 'package:aves/main.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:screen/screen.dart';
 
 class HomePage extends StatefulWidget {
+  static const routeName = '/';
+
   const HomePage();
 
   @override
@@ -26,15 +29,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   MediaStoreSource _mediaStore;
   ImageEntry _viewerEntry;
-  Future<void> _appSetup;
 
   @override
   void initState() {
     super.initState();
-    _appSetup = _setup();
+    _setup();
     imageCache.maximumSizeBytes = 512 * (1 << 20);
     Screen.keepOn(true);
   }
+
+  @override
+  Widget build(BuildContext context) => Scaffold();
 
   Future<void> _setup() async {
     final permissions = await [
@@ -80,6 +85,8 @@ class _HomePageState extends State<HomePage> {
       await _mediaStore.init();
       unawaited(_mediaStore.refresh());
     }
+
+    unawaited(Navigator.pushReplacement(context, _getRedirectRoute()));
   }
 
   Future<ImageEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
@@ -92,30 +99,36 @@ class _HomePageState extends State<HomePage> {
     return entry;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-        future: _appSetup,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return Icon(AIcons.error);
-          if (snapshot.connectionState != ConnectionState.done) return Scaffold();
-          if (AvesApp.mode == AppMode.view) {
-            return SingleFullscreenPage(entry: _viewerEntry);
+  Route _getRedirectRoute() {
+    switch (AvesApp.mode) {
+      case AppMode.view:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: SingleFullscreenPage.routeName),
+          builder: (_) => SingleFullscreenPage(entry: _viewerEntry),
+        );
+      case AppMode.main:
+      case AppMode.pick:
+        if (_mediaStore != null) {
+          switch (settings.homePage) {
+            case HomePageSetting.albums:
+              return DirectMaterialPageRoute(
+                settings: RouteSettings(name: AlbumListPage.routeName),
+                builder: (_) => AlbumListPage(source: _mediaStore),
+              );
+            case HomePageSetting.collection:
+              return DirectMaterialPageRoute(
+                settings: RouteSettings(name: CollectionPage.routeName),
+                builder: (_) => CollectionPage(
+                  CollectionLens(
+                    source: _mediaStore,
+                    groupFactor: settings.collectionGroupFactor,
+                    sortFactor: settings.collectionSortFactor,
+                  ),
+                ),
+              );
           }
-          if (_mediaStore != null) {
-            switch (settings.launchPage) {
-              case LaunchPage.albums:
-                return AlbumListPage(source: _mediaStore);
-                break;
-              case LaunchPage.collection:
-                return CollectionPage(CollectionLens(
-                  source: _mediaStore,
-                  groupFactor: settings.collectionGroupFactor,
-                  sortFactor: settings.collectionSortFactor,
-                ));
-            }
-          }
-          return SizedBox.shrink();
-        });
+        }
+    }
+    return null;
   }
 }

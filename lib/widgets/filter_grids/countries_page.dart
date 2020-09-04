@@ -7,6 +7,8 @@ import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
 import 'package:flutter/material.dart';
 
 class CountryListPage extends StatelessWidget {
+  static const routeName = '/countries';
+
   final CollectionSource source;
 
   const CountryListPage({@required this.source});

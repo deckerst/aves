@@ -2,7 +2,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:flutter/material.dart';
 
-import '../dialog.dart';
+import '../aves_dialog.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Iterable<ImageEntry> entries) {

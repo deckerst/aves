@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/durations.dart';
@@ -275,9 +276,10 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
-      (route) => false,
+      settings.navRemoveRoutePredicate(CollectionPage.routeName),
     );
   }
 
@@ -323,7 +325,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _onLeave() {
-    if (!ModalRoute.of(context).canPop) {
+    if (!Navigator.canPop(context)) {
       // exit app when trying to pop a fullscreen page that is a viewer for a single entry
       exit(0);
     }

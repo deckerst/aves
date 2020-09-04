@@ -5,6 +5,8 @@ on:
     branches:
       - develop
 
+# TODO TLAD run `flutter format -l 1000 .` and fail if any
+
 jobs:
   build:
     name: Check code quality.

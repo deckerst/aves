@@ -7,6 +7,8 @@ import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
 import 'package:flutter/material.dart';
 
 class TagListPage extends StatelessWidget {
+  static const routeName = '/tags';
+
   final CollectionSource source;
 
   const TagListPage({@required this.source});

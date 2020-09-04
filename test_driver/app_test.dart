@@ -56,7 +56,7 @@ void agreeToTerms() {
     await driver.tap(find.byValueKey('continue-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    expect(await driver.getText(find.byValueKey('appbar-title')), 'Aves');
+    expect(await driver.getText(find.byValueKey('appbar-title')), 'Collection');
   });
 }
 
@@ -91,7 +91,7 @@ void selectFirstAlbum() {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('albums-tile'));
+    await driver.tap(find.byValueKey('Albums-tile'));
     await driver.waitUntilNoTransientCallbacks();
 
     await driver.tap(find.descendant(

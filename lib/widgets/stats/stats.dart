@@ -5,6 +5,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
@@ -20,6 +21,8 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class StatsPage extends StatelessWidget {
+  static const routeName = '/collection/stats';
+
   final CollectionLens collection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
@@ -236,9 +239,10 @@ class StatsPage extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
-      (route) => false,
+      settings.navRemoveRoutePredicate(CollectionPage.routeName),
     );
   }
 }

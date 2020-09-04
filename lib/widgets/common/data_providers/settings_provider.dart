@@ -1,4 +1,4 @@
-import 'package:aves/model/settings.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
