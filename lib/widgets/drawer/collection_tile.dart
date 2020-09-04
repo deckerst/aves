@@ -39,6 +39,7 @@ class CollectionNavTile extends StatelessWidget {
   }
 
   void _goToCollection(BuildContext context) {
+    Navigator.pop(context);
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -50,7 +51,7 @@ class CollectionNavTile extends StatelessWidget {
           sortFactor: settings.collectionSortFactor,
         )),
       ),
-      (route) => false,
+      settings.navRemoveRoutePredicate(CollectionPage.routeName),
     );
   }
 }

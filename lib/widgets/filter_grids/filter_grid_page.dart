@@ -10,6 +10,7 @@ import 'package:aves/widgets/album/collection_page.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/double_back_pop.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/decorated_filter_chip.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class FilterNavigationPage extends StatelessWidget {
             sortFactor: settings.collectionSortFactor,
           )),
         ),
-        (route) => false,
+        settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
     );
   }
@@ -96,66 +97,68 @@ class FilterGridPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
-        body: SafeArea(
-          child: Selector<MediaQueryData, double>(
-            selector: (c, mq) => mq.size.width,
-            builder: (c, mqWidth, child) {
-              final columnCount = (mqWidth / maxCrossAxisExtent).ceil();
-              return AnimationLimiter(
-                child: CustomScrollView(
-                  slivers: [
-                    appBar,
-                    filterKeys.isEmpty
-                        ? SliverFillRemaining(
-                            child: emptyBuilder(),
-                            hasScrollBody: false,
-                          )
-                        : SliverPadding(
-                            padding: EdgeInsets.all(AvesFilterChip.outlineWidth),
-                            sliver: SliverGrid(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, i) {
-                                  final key = filterKeys[i];
-                                  final child = DecoratedFilterChip(
-                                    source: source,
-                                    filter: filterBuilder(key),
-                                    entry: filterEntries[key],
-                                    onPressed: onPressed,
-                                  );
-                                  return AnimationConfiguration.staggeredGrid(
-                                    position: i,
-                                    columnCount: columnCount,
-                                    duration: Durations.staggeredAnimation,
-                                    delay: Durations.staggeredAnimationDelay,
-                                    child: SlideAnimation(
-                                      verticalOffset: 50.0,
-                                      child: FadeInAnimation(
-                                        child: child,
+        body: DoubleBackPopScope(
+          child: SafeArea(
+            child: Selector<MediaQueryData, double>(
+              selector: (c, mq) => mq.size.width,
+              builder: (c, mqWidth, child) {
+                final columnCount = (mqWidth / maxCrossAxisExtent).ceil();
+                return AnimationLimiter(
+                  child: CustomScrollView(
+                    slivers: [
+                      appBar,
+                      filterKeys.isEmpty
+                          ? SliverFillRemaining(
+                              child: emptyBuilder(),
+                              hasScrollBody: false,
+                            )
+                          : SliverPadding(
+                              padding: EdgeInsets.all(AvesFilterChip.outlineWidth),
+                              sliver: SliverGrid(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, i) {
+                                    final key = filterKeys[i];
+                                    final child = DecoratedFilterChip(
+                                      source: source,
+                                      filter: filterBuilder(key),
+                                      entry: filterEntries[key],
+                                      onPressed: onPressed,
+                                    );
+                                    return AnimationConfiguration.staggeredGrid(
+                                      position: i,
+                                      columnCount: columnCount,
+                                      duration: Durations.staggeredAnimation,
+                                      delay: Durations.staggeredAnimationDelay,
+                                      child: SlideAnimation(
+                                        verticalOffset: 50.0,
+                                        child: FadeInAnimation(
+                                          child: child,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                childCount: filterKeys.length,
-                              ),
-                              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: maxCrossAxisExtent,
-                                mainAxisSpacing: 8,
-                                crossAxisSpacing: 8,
+                                    );
+                                  },
+                                  childCount: filterKeys.length,
+                                ),
+                                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: maxCrossAxisExtent,
+                                  mainAxisSpacing: 8,
+                                  crossAxisSpacing: 8,
+                                ),
                               ),
                             ),
-                          ),
-                    SliverToBoxAdapter(
-                      child: Selector<MediaQueryData, double>(
-                        selector: (context, mq) => mq.viewInsets.bottom,
-                        builder: (context, mqViewInsetsBottom, child) {
-                          return SizedBox(height: mqViewInsetsBottom);
-                        },
+                      SliverToBoxAdapter(
+                        child: Selector<MediaQueryData, double>(
+                          selector: (context, mq) => mq.viewInsets.bottom,
+                          builder: (context, mqViewInsetsBottom, child) {
+                            return SizedBox(height: mqViewInsetsBottom);
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
         drawer: AppDrawer(
