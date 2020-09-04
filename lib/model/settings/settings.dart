@@ -104,6 +104,14 @@ class Settings extends ChangeNotifier {
 
   set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
 
+  // utils
+
+  // `RoutePredicate`
+  RoutePredicate navRemoveRoutePredicate(String pushedRouteName) {
+    final home = homePage.routeName;
+    return (route) => pushedRouteName != home && route.settings?.name == home;
+  }
+
   // convenience methods
 
   // ignore: avoid_positional_boolean_parameters

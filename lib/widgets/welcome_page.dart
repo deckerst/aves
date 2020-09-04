@@ -104,13 +104,12 @@ class _WelcomePageState extends State<WelcomePage> {
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;
-              Navigator.pushAndRemoveUntil(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   settings: RouteSettings(name: HomePage.routeName),
                   builder: (context) => HomePage(),
                 ),
-                (route) => false,
               );
             }
           : null,

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/durations.dart';
@@ -278,7 +279,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
-      (route) => false,
+      settings.navRemoveRoutePredicate(CollectionPage.routeName),
     );
   }
 

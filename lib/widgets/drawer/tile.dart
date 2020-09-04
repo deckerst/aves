@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/flutter_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,12 +42,14 @@ class NavTile extends StatelessWidget {
         onTap: () {
           Navigator.pop(context);
           if (routeName != context.currentRouteName) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  settings: RouteSettings(name: routeName),
-                  builder: pageBuilder,
-                ));
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                settings: RouteSettings(name: routeName),
+                builder: pageBuilder,
+              ),
+              settings.navRemoveRoutePredicate(routeName),
+            );
           }
         },
         selected: context.currentRouteName == routeName,

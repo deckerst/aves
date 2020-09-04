@@ -32,7 +32,7 @@ class _DoubleBackPopScopeState extends State<DoubleBackPopScope> with FeedbackMi
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        if (!Navigator.of(context).canPop() && settings.mustBackTwiceToExit && !_backOnce) {
+        if (!Navigator.canPop(context) && settings.mustBackTwiceToExit && !_backOnce) {
           _backOnce = true;
           _stopBackTimer();
           _backTimer = Timer(Durations.doubleBackTimerDelay, () => _backOnce = false);
