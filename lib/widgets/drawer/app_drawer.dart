@@ -207,7 +207,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget get settingsTile => NavTile(
         icon: AIcons.settings,
-        title: 'Preferences',
+        title: 'Settings',
         routeName: SettingsPage.routeName,
         pageBuilder: (_) => SettingsPage(),
       );
