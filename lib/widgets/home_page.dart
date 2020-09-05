@@ -6,7 +6,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';

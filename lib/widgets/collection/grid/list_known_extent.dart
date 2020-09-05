@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:aves/widgets/album/grid/list_section_layout.dart';
+import 'package:aves/widgets/collection/grid/list_section_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';

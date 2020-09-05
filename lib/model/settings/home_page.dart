@@ -1,4 +1,4 @@
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 
 enum HomePageSetting { collection, albums }
