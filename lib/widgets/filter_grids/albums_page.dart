@@ -6,7 +6,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';

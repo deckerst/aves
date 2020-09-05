@@ -10,7 +10,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/widgets/album/search/expandable_filter_row.dart';
+import 'package:aves/widgets/collection/search/expandable_filter_row.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
