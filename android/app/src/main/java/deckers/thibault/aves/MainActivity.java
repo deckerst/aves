@@ -1,10 +1,18 @@
 package deckers.thibault.aves;
 
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,7 +37,7 @@ public class MainActivity extends FlutterActivity {
 
     public static final String VIEWER_CHANNEL = "deckers.thibault/aves/viewer";
 
-    private Map<String, String> intentDataMap;
+    private Map<String, Object> intentDataMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,33 @@ public class MainActivity extends FlutterActivity {
                         finish();
                     }
                 });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            setupShortcuts();
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private void setupShortcuts() {
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+
+        Intent searchIntent = new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class);
+        searchIntent.putExtra("page", "search");
+        ShortcutInfo search = new ShortcutInfo.Builder(this, "search")
+                .setShortLabel(getString(R.string.search_shortcut_short_label))
+                .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_search))
+                .setIntent(searchIntent)
+                .build();
+
+        Intent videosIntent = new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class);
+        videosIntent.putExtra("page", "collection");
+        videosIntent.putExtra("filters", new String[]{"anyVideo"});
+        ShortcutInfo videos = new ShortcutInfo.Builder(this, "videos")
+                .setShortLabel(getString(R.string.videos_shortcut_short_label))
+                .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_movie))
+                .setIntent(videosIntent)
+                .build();
+        shortcutManager.setDynamicShortcuts(Arrays.asList(videos, search));
     }
 
     private void handleIntent(Intent intent) {
@@ -77,6 +112,15 @@ public class MainActivity extends FlutterActivity {
         String action = intent.getAction();
         if (action == null) return;
         switch (action) {
+            case Intent.ACTION_MAIN:
+                String page = intent.getStringExtra("page");
+                if (page != null) {
+                    intentDataMap = new HashMap<>();
+                    intentDataMap.put("page", page);
+                    String[] filters = intent.getStringArrayExtra("filters");
+                    intentDataMap.put("filters", filters != null ? new ArrayList<>(Arrays.asList(filters)) : null);
+                }
+                break;
             case Intent.ACTION_VIEW:
                 Uri uri = intent.getData();
                 String mimeType = intent.getType();
