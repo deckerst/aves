@@ -1,5 +1,8 @@
 import 'package:aves/main.dart';
+import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -29,6 +32,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   MediaStoreSource _mediaStore;
   ImageEntry _viewerEntry;
+  HomePageSetting _shortcutPage;
+  List<String> _shortcutFilters;
 
   @override
   void initState() {
@@ -77,6 +82,11 @@ class _HomePageState extends State<HomePage> {
           String pickMimeTypes = intentData['mimeType'];
           debugPrint('pick mimeType=$pickMimeTypes');
           break;
+        default:
+          final extraPage = intentData['page'];
+          _shortcutPage = HomePageSetting.values.firstWhere((v) => v.toString().split('.')[1] == extraPage, orElse: () => null);
+          final extraFilters = intentData['filters'];
+          _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
       }
     }
 
@@ -100,35 +110,48 @@ class _HomePageState extends State<HomePage> {
   }
 
   Route _getRedirectRoute() {
-    switch (AvesApp.mode) {
-      case AppMode.view:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: SingleFullscreenPage.routeName),
-          builder: (_) => SingleFullscreenPage(entry: _viewerEntry),
-        );
-      case AppMode.main:
-      case AppMode.pick:
-        if (_mediaStore != null) {
-          switch (settings.homePage) {
-            case HomePageSetting.albums:
-              return DirectMaterialPageRoute(
-                settings: RouteSettings(name: AlbumListPage.routeName),
-                builder: (_) => AlbumListPage(source: _mediaStore),
-              );
-            case HomePageSetting.collection:
-              return DirectMaterialPageRoute(
-                settings: RouteSettings(name: CollectionPage.routeName),
-                builder: (_) => CollectionPage(
-                  CollectionLens(
-                    source: _mediaStore,
-                    groupFactor: settings.collectionGroupFactor,
-                    sortFactor: settings.collectionSortFactor,
-                  ),
-                ),
-              );
-          }
-        }
+    if (AvesApp.mode == AppMode.view) {
+      return DirectMaterialPageRoute(
+        settings: RouteSettings(name: SingleFullscreenPage.routeName),
+        builder: (_) => SingleFullscreenPage(entry: _viewerEntry),
+      );
     }
-    return null;
+
+    HomePageSetting startPage;
+    Iterable<CollectionFilter> filters;
+    if (AvesApp.mode == AppMode.pick) {
+      startPage = HomePageSetting.collection;
+    } else {
+      startPage = _shortcutPage ?? settings.homePage;
+      filters = (_shortcutFilters ?? []).map((filterString) {
+        switch (filterString) {
+          case 'anyVideo':
+            return MimeFilter(MimeTypes.anyVideo);
+        }
+        debugPrint('failed to parse shortcut filter=$filterString');
+        return null;
+      });
+    }
+    switch (startPage) {
+      case HomePageSetting.albums:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: AlbumListPage.routeName),
+          builder: (_) => AlbumListPage(source: _mediaStore),
+        );
+      case HomePageSetting.search:
+      case HomePageSetting.collection:
+      default:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: CollectionPage.routeName),
+          builder: (_) => CollectionPage(
+            CollectionLens(
+              source: _mediaStore,
+              filters: filters,
+              groupFactor: settings.collectionGroupFactor,
+              sortFactor: settings.collectionSortFactor,
+            ),
+          ),
+        );
+    }
   }
 }
