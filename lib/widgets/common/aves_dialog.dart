@@ -24,9 +24,16 @@ class AvesDialog extends AlertDialog {
                     // to size itself to the content intrinsic size,
                     // but the `ListView` viewport does not have one
                     width: 1,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: scrollableContent,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: Divider.createBorderSide(context, width: 1),
+                        ),
+                      ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: scrollableContent,
+                      ),
                     ),
                   ),
                 )
@@ -47,20 +54,21 @@ class DialogTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Concourse Caps',
-            ),
-          ),
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: Divider.createBorderSide(context, width: 1),
         ),
-        Divider(height: 1),
-      ],
+      ),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Concourse Caps',
+        ),
+      ),
     );
   }
 }
