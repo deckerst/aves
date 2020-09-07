@@ -6,40 +6,46 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/mime_types.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/search/expandable_filter_row.dart';
+import 'package:aves/widgets/collection/search_page.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
+class ImageSearchDelegate {
   final CollectionSource source;
   final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
-  final FilterCallback onSelection;
+  final CollectionLens parentCollection;
 
-  ImageSearchDelegate(this.source, this.onSelection);
+  ImageSearchDelegate({@required this.source, this.parentCollection});
 
-  @override
   ThemeData appBarTheme(BuildContext context) {
     return Theme.of(context);
   }
 
-  @override
   Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
-        progress: transitionAnimation,
-      ),
-      onPressed: () => _select(context, null),
-      tooltip: 'Back',
-    );
+    return Navigator.canPop(context)
+        ? IconButton(
+            icon: AnimatedIcon(
+              icon: AnimatedIcons.menu_arrow,
+              progress: transitionAnimation,
+            ),
+            onPressed: () => _goBack(context),
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          )
+        : CloseButton(
+            onPressed: SystemNavigator.pop,
+          );
   }
 
-  @override
   List<Widget> buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
@@ -54,7 +60,6 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     ];
   }
 
-  @override
   Widget buildSuggestions(BuildContext context) {
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
@@ -137,7 +142,6 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
     );
   }
 
-  @override
   Widget buildResults(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // `buildResults` is called in the build phase,
@@ -154,14 +158,160 @@ class ImageSearchDelegate extends SearchDelegate<CollectionFilter> {
   }
 
   void _select(BuildContext context, CollectionFilter filter) {
+    if (parentCollection != null) {
+      _applyToParentCollectionPage(context, filter);
+    } else {
+      _goToCollectionPage(context, filter);
+    }
+  }
+
+  void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
     if (filter != null) {
-      onSelection(filter);
+      parentCollection.addFilter(filter);
     }
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      close(context, null);
+      _goBack(context);
     });
+  }
+
+  void _goBack(BuildContext context) {
+    _clean();
+    Navigator.of(context).pop();
+  }
+
+  void _goToCollectionPage(BuildContext context, CollectionFilter filter) {
+    _clean();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: CollectionPage.routeName),
+        builder: (context) => CollectionPage(CollectionLens(
+          source: source,
+          filters: [filter],
+          groupFactor: settings.collectionGroupFactor,
+          sortFactor: settings.collectionSortFactor,
+        )),
+      ),
+      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+    );
+  }
+
+  void _clean() {
+    currentBody = null;
+    focusNode?.unfocus();
+  }
+
+  // adapted from `SearchDelegate`
+
+  void showResults(BuildContext context) {
+    focusNode?.unfocus();
+    currentBody = SearchBody.results;
+  }
+
+  void showSuggestions(BuildContext context) {
+    assert(focusNode != null, '_focusNode must be set by route before showSuggestions is called.');
+    focusNode.requestFocus();
+    currentBody = SearchBody.suggestions;
+  }
+
+  Animation<double> get transitionAnimation => proxyAnimation;
+
+  FocusNode focusNode;
+
+  final TextEditingController queryTextController = TextEditingController();
+
+  final ProxyAnimation proxyAnimation = ProxyAnimation(kAlwaysDismissedAnimation);
+
+  String get query => queryTextController.text;
+
+  set query(String value) {
+    assert(query != null);
+    queryTextController.text = value;
+  }
+
+  final ValueNotifier<SearchBody> currentBodyNotifier = ValueNotifier<SearchBody>(null);
+
+  SearchBody get currentBody => currentBodyNotifier.value;
+
+  set currentBody(SearchBody value) {
+    currentBodyNotifier.value = value;
+  }
+
+  SearchPageRoute route;
+}
+
+// adapted from `SearchDelegate`
+enum SearchBody { suggestions, results }
+
+// adapted from `SearchDelegate`
+class SearchPageRoute<T> extends PageRoute<T> {
+  SearchPageRoute({
+    @required this.delegate,
+  })  : assert(delegate != null),
+        super(settings: RouteSettings(name: SearchPage.routeName)) {
+    assert(
+      delegate.route == null,
+      'The ${delegate.runtimeType} instance is currently used by another active '
+      'search. Please close that search by calling close() on the SearchDelegate '
+      'before openening another search with the same delegate instance.',
+    );
+    delegate.route = this;
+  }
+
+  final ImageSearchDelegate delegate;
+
+  @override
+  Color get barrierColor => null;
+
+  @override
+  String get barrierLabel => null;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 300);
+
+  @override
+  bool get maintainState => false;
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+  }
+
+  @override
+  Animation<double> createAnimation() {
+    final animation = super.createAnimation();
+    delegate.proxyAnimation.parent = animation;
+    return animation;
+  }
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    return SearchPage(
+      delegate: delegate,
+      animation: animation,
+    );
+  }
+
+  @override
+  void didComplete(T result) {
+    super.didComplete(result);
+    assert(delegate.route == this);
+    delegate.route = null;
+    delegate.currentBody = null;
   }
 }

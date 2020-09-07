@@ -119,6 +119,7 @@ class FilterGridPage extends StatelessWidget {
                                   (context, i) {
                                     final key = filterKeys[i];
                                     final child = DecoratedFilterChip(
+                                      key: Key(key),
                                       source: source,
                                       filter: filterBuilder(key),
                                       entry: filterEntries[key],

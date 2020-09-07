@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/search_button.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -36,7 +37,7 @@ class AlbumListPage extends StatelessWidget {
               return FilterNavigationPage(
                 source: source,
                 title: 'Albums',
-                actions: _buildActions(),
+                actions: _buildActions(context),
                 filterEntries: getAlbumEntries(source),
                 filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
                 emptyBuilder: () => EmptyContent(
@@ -51,22 +52,21 @@ class AlbumListPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(BuildContext context) {
     return [
-      Builder(
-        builder: (context) => PopupMenuButton<ChipAction>(
-          key: Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                key: Key('menu-sort'),
-                value: ChipAction.sort,
-                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
-              ),
-            ];
-          },
-          onSelected: (action) => _onChipActionSelected(context, action),
-        ),
+      SearchButton(source),
+      PopupMenuButton<ChipAction>(
+        key: Key('appbar-menu-button'),
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+              key: Key('menu-sort'),
+              value: ChipAction.sort,
+              child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+            ),
+          ];
+        },
+        onSelected: (action) => _onChipActionSelected(context, action),
       ),
     ];
   }

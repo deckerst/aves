@@ -19,11 +19,12 @@ class DecoratedFilterChip extends StatelessWidget {
   final FilterCallback onPressed;
 
   const DecoratedFilterChip({
+    Key key,
     @required this.source,
     @required this.filter,
     @required this.entry,
     @required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

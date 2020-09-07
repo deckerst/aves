@@ -1,7 +1,7 @@
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 
-enum HomePageSetting { collection, albums, search }
+enum HomePageSetting { collection, albums }
 
 extension ExtraHomePageSetting on HomePageSetting {
   String get name {
@@ -10,8 +10,6 @@ extension ExtraHomePageSetting on HomePageSetting {
         return 'Collection';
       case HomePageSetting.albums:
         return 'Albums';
-      case HomePageSetting.search:
-        return 'Search';
       default:
         return toString();
     }

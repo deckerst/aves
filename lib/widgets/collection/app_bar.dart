@@ -295,7 +295,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         collection.clearSelection();
         break;
       case CollectionAction.stats:
-        unawaited(_goToStats());
+        _goToStats();
         break;
       case CollectionAction.group:
         final value = await showDialog<EntryGroupFactor>(
@@ -338,14 +338,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _goToSearch() {
-    showSearch(
-      context: context,
-      delegate: ImageSearchDelegate(collection.source, collection.addFilter),
-    );
+    Navigator.push(
+        context,
+        SearchPageRoute(
+          delegate: ImageSearchDelegate(
+            source: collection.source,
+            parentCollection: collection,
+          ),
+        ));
   }
 
-  Future<void> _goToStats() {
-    return Navigator.push(
+  void _goToStats() {
+    Navigator.push(
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: StatsPage.routeName),
