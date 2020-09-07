@@ -10,6 +10,8 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/search/search_delegate.dart';
+import 'package:aves/widgets/collection/search_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -32,7 +34,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   MediaStoreSource _mediaStore;
   ImageEntry _viewerEntry;
-  HomePageSetting _shortcutPage;
+  String _shortcutRouteName;
   List<String> _shortcutFilters;
 
   @override
@@ -83,8 +85,14 @@ class _HomePageState extends State<HomePage> {
           debugPrint('pick mimeType=$pickMimeTypes');
           break;
         default:
-          final extraPage = intentData['page'];
-          _shortcutPage = HomePageSetting.values.firstWhere((v) => v.toString().split('.')[1] == extraPage, orElse: () => null);
+          // do not use 'route' as extra key, as the Flutter framework acts on it
+          final extraRoute = intentData['page'];
+          switch (extraRoute) {
+            case CollectionPage.routeName:
+            case AlbumListPage.routeName:
+            case SearchPage.routeName:
+              _shortcutRouteName = extraRoute;
+          }
           final extraFilters = intentData['filters'];
           _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
       }
@@ -117,12 +125,12 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    HomePageSetting startPage;
+    String routeName;
     Iterable<CollectionFilter> filters;
     if (AvesApp.mode == AppMode.pick) {
-      startPage = HomePageSetting.collection;
+      routeName = CollectionPage.routeName;
     } else {
-      startPage = _shortcutPage ?? settings.homePage;
+      routeName = _shortcutRouteName ?? settings.homePage.routeName;
       filters = (_shortcutFilters ?? []).map((filterString) {
         switch (filterString) {
           case 'anyVideo':
@@ -132,14 +140,17 @@ class _HomePageState extends State<HomePage> {
         return null;
       });
     }
-    switch (startPage) {
-      case HomePageSetting.albums:
+    switch (routeName) {
+      case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
           settings: RouteSettings(name: AlbumListPage.routeName),
           builder: (_) => AlbumListPage(source: _mediaStore),
         );
-      case HomePageSetting.search:
-      case HomePageSetting.collection:
+      case SearchPage.routeName:
+        return SearchPageRoute(
+          delegate: ImageSearchDelegate(source: _mediaStore),
+        );
+      case CollectionPage.routeName:
       default:
         return DirectMaterialPageRoute(
           settings: RouteSettings(name: CollectionPage.routeName),

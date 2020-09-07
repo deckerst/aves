@@ -87,21 +87,21 @@ public class MainActivity extends FlutterActivity {
     private void setupShortcuts() {
         ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
 
-        Intent searchIntent = new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class);
-        searchIntent.putExtra("page", "search");
+        // do not use 'route' as extra key, as the Flutter framework acts on it
+
         ShortcutInfo search = new ShortcutInfo.Builder(this, "search")
                 .setShortLabel(getString(R.string.search_shortcut_short_label))
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_search))
-                .setIntent(searchIntent)
+                .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
+                        .putExtra("page", "/search"))
                 .build();
 
-        Intent videosIntent = new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class);
-        videosIntent.putExtra("page", "collection");
-        videosIntent.putExtra("filters", new String[]{"anyVideo"});
         ShortcutInfo videos = new ShortcutInfo.Builder(this, "videos")
                 .setShortLabel(getString(R.string.videos_shortcut_short_label))
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_movie))
-                .setIntent(videosIntent)
+                .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
+                        .putExtra("page", "/collection")
+                        .putExtra("filters", new String[]{"anyVideo"}))
                 .build();
         shortcutManager.setDynamicShortcuts(Arrays.asList(videos, search));
     }

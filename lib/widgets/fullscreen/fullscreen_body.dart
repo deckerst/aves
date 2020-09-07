@@ -325,11 +325,12 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _onLeave() {
-    if (!Navigator.canPop(context)) {
+    if (Navigator.canPop(context)) {
+      _showSystemUI();
+    } else {
       // exit app when trying to pop a fullscreen page that is a viewer for a single entry
-      exit(0);
+      SystemNavigator.pop();
     }
-    _showSystemUI();
   }
 
   // system UI
