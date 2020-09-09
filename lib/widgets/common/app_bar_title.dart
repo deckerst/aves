@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class TappableAppBarTitle extends StatelessWidget {
   final GestureTapCallback onTap;
-  final Widget title;
+  final Widget child;
 
   const TappableAppBarTitle({
     this.onTap,
-    @required this.title,
+    @required this.child,
   });
 
   @override
@@ -20,7 +20,7 @@ class TappableAppBarTitle extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
         color: Colors.transparent,
         height: kToolbarHeight,
-        child: title,
+        child: child,
       ),
     );
   }
