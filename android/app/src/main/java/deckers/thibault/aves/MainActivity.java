@@ -1,15 +1,15 @@
 package deckers.thibault.aves;
 
 import android.content.Intent;
-import android.content.pm.ShortcutInfo;
-import android.content.pm.ShortcutManager;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,25 +85,24 @@ public class MainActivity extends FlutterActivity {
 
     @RequiresApi(Build.VERSION_CODES.N_MR1)
     private void setupShortcuts() {
-        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
-
         // do not use 'route' as extra key, as the Flutter framework acts on it
 
-        ShortcutInfo search = new ShortcutInfo.Builder(this, "search")
+        ShortcutInfoCompat search = new ShortcutInfoCompat.Builder(this, "search")
                 .setShortLabel(getString(R.string.search_shortcut_short_label))
-                .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_search))
+                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
                 .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
                         .putExtra("page", "/search"))
                 .build();
 
-        ShortcutInfo videos = new ShortcutInfo.Builder(this, "videos")
+        ShortcutInfoCompat videos = new ShortcutInfoCompat.Builder(this, "videos")
                 .setShortLabel(getString(R.string.videos_shortcut_short_label))
-                .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_movie))
+                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
                 .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
                         .putExtra("page", "/collection")
                         .putExtra("filters", new String[]{"{\"type\":\"mime\",\"mime\":\"video/*\"}"}))
                 .build();
-        shortcutManager.setDynamicShortcuts(Arrays.asList(videos, search));
+
+        ShortcutManagerCompat.setDynamicShortcuts(this, Arrays.asList(videos, search));
     }
 
     private void handleIntent(Intent intent) {
