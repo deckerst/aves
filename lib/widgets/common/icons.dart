@@ -24,6 +24,7 @@ class AIcons {
   static const IconData tag = OMIcons.localOffer;
 
   // actions
+  static const IconData addShortcut = OMIcons.bookmarkBorder;
   static const IconData clear = OMIcons.clear;
   static const IconData collapse = OMIcons.expandLess;
   static const IconData createAlbum = OMIcons.addCircleOutline;

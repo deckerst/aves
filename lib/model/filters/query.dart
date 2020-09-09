@@ -37,6 +37,7 @@ class QueryFilter extends CollectionFilter {
           json['query'],
         );
 
+  @override
   Map<String, dynamic> toJson() => {
         'type': type,
         'query': query,

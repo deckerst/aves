@@ -9,7 +9,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/collection/app_bar.dart';
+import 'package:aves/widgets/collection/collection_actions.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';

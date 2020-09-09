@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
 
+  @override
   Map<String, dynamic> toJson() => {
         'type': type,
       };

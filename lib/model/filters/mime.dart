@@ -43,6 +43,7 @@ class MimeFilter extends CollectionFilter {
           json['mime'],
         );
 
+  @override
   Map<String, dynamic> toJson() => {
         'type': type,
         'mime': mime,
