@@ -9,8 +9,8 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/album/collection_page.dart';
-import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
@@ -36,7 +36,7 @@ class StatsPage extends StatelessWidget {
         final address = entry.addressDetails;
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {
-          country += ';${address.countryCode}';
+          country += '${LocationFilter.locationSeparator}${address.countryCode}';
           entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
         }
         final place = address.place;

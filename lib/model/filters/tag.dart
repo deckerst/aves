@@ -10,6 +10,17 @@ class TagFilter extends CollectionFilter {
 
   const TagFilter(this.tag);
 
+  TagFilter.fromJson(Map<String, dynamic> json)
+      : this(
+          json['tag'],
+        );
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'tag': tag,
+      };
+
   @override
   bool filter(ImageEntry entry) => entry.xmpSubjects.contains(tag);
 

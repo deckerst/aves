@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/album/grid/header_generic.dart';
-import 'package:aves/widgets/album/grid/tile_extent_manager.dart';
+import 'package:aves/widgets/collection/grid/header_generic.dart';
+import 'package:aves/widgets/collection/grid/tile_extent_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

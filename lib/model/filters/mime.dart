@@ -38,6 +38,17 @@ class MimeFilter extends CollectionFilter {
     _icon ??= AIcons.vector;
   }
 
+  MimeFilter.fromJson(Map<String, dynamic> json)
+      : this(
+          json['mime'],
+        );
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'mime': mime,
+      };
+
   static String displayType(String mime) {
     return mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '').replaceFirst('VND.', '');
   }

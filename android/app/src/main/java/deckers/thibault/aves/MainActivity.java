@@ -2,15 +2,24 @@ package deckers.thibault.aves;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import app.loup.streams_channel.StreamsChannel;
 import deckers.thibault.aves.channel.calls.AppAdapterHandler;
+import deckers.thibault.aves.channel.calls.AppShortcutHandler;
 import deckers.thibault.aves.channel.calls.ImageFileHandler;
 import deckers.thibault.aves.channel.calls.MetadataHandler;
 import deckers.thibault.aves.channel.calls.StorageHandler;
@@ -29,7 +38,7 @@ public class MainActivity extends FlutterActivity {
 
     public static final String VIEWER_CHANNEL = "deckers.thibault/aves/viewer";
 
-    private Map<String, String> intentDataMap;
+    private Map<String, Object> intentDataMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public class MainActivity extends FlutterActivity {
         BinaryMessenger messenger = Objects.requireNonNull(getFlutterEngine()).getDartExecutor().getBinaryMessenger();
 
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
+        new MethodChannel(messenger, AppShortcutHandler.CHANNEL).setMethodCallHandler(new AppShortcutHandler(this));
         new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this));
         new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));
         new MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(new StorageHandler(this));
@@ -69,6 +79,32 @@ public class MainActivity extends FlutterActivity {
                         finish();
                     }
                 });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            setupShortcuts();
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N_MR1)
+    private void setupShortcuts() {
+        // do not use 'route' as extra key, as the Flutter framework acts on it
+
+        ShortcutInfoCompat search = new ShortcutInfoCompat.Builder(this, "search")
+                .setShortLabel(getString(R.string.search_shortcut_short_label))
+                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
+                .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
+                        .putExtra("page", "/search"))
+                .build();
+
+        ShortcutInfoCompat videos = new ShortcutInfoCompat.Builder(this, "videos")
+                .setShortLabel(getString(R.string.videos_shortcut_short_label))
+                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
+                .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
+                        .putExtra("page", "/collection")
+                        .putExtra("filters", new String[]{"{\"type\":\"mime\",\"mime\":\"video/*\"}"}))
+                .build();
+
+        ShortcutManagerCompat.setDynamicShortcuts(this, Arrays.asList(videos, search));
     }
 
     private void handleIntent(Intent intent) {
@@ -77,6 +113,15 @@ public class MainActivity extends FlutterActivity {
         String action = intent.getAction();
         if (action == null) return;
         switch (action) {
+            case Intent.ACTION_MAIN:
+                String page = intent.getStringExtra("page");
+                if (page != null) {
+                    intentDataMap = new HashMap<>();
+                    intentDataMap.put("page", page);
+                    String[] filters = intent.getStringArrayExtra("filters");
+                    intentDataMap.put("filters", filters != null ? new ArrayList<>(Arrays.asList(filters)) : null);
+                }
+                break;
             case Intent.ACTION_VIEW:
                 Uri uri = intent.getData();
                 String mimeType = intent.getType();

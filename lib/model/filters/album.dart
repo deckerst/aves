@@ -18,6 +18,19 @@ class AlbumFilter extends CollectionFilter {
 
   const AlbumFilter(this.album, this.uniqueName);
 
+  AlbumFilter.fromJson(Map<String, dynamic> json)
+      : this(
+          json['album'],
+          json['uniqueName'],
+        );
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'album': album,
+        'uniqueName': uniqueName,
+      };
+
   @override
   bool filter(ImageEntry entry) => entry.directory == album;
 

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
@@ -12,6 +10,7 @@ import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/debug.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdf;
@@ -154,7 +153,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       }
     } else {
       // leave viewer
-      exit(0);
+      unawaited(SystemNavigator.pop());
     }
   }
 

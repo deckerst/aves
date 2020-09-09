@@ -3,17 +3,22 @@ import 'dart:async';
 import 'package:aves/main.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/album/filter_bar.dart';
-import 'package:aves/widgets/album/search/search_delegate.dart';
+import 'package:aves/widgets/collection/collection_actions.dart';
+import 'package:aves/widgets/collection/filter_bar.dart';
+import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/filter_grids/search_button.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +44,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   final TextEditingController _searchFieldController = TextEditingController();
   SelectionActionDelegate _actionDelegate;
   AnimationController _browseToSelectAnimation;
+  Future<bool> _canAddShortcutsLoader;
 
   CollectionLens get collection => widget.collection;
+
+  CollectionSource get source => collection.source;
 
   bool get hasFilters => collection.filters.isNotEmpty;
 
@@ -54,6 +62,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       duration: Durations.iconAnimation,
       vsync: this,
     );
+    _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
     WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeight());
   }
@@ -91,7 +100,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         return AnimatedBuilder(
           animation: collection.filterChangeNotifier,
           builder: (context, child) => SliverAppBar(
-            titleSpacing: 0,
             leading: _buildAppBarLeading(),
             title: _buildAppBarTitle(),
             actions: _buildActions(),
@@ -101,6 +109,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     onPressed: collection.removeFilter,
                   )
                 : null,
+            titleSpacing: 0,
             floating: true,
           ),
         );
@@ -135,26 +144,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
       Widget title = Text(
-        AvesApp.mode == AppMode.pick ? 'Select' : 'Collection',
+        AvesApp.mode == AppMode.pick ? 'Pick' : 'Collection',
         key: Key('appbar-title'),
       );
       if (AvesApp.mode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
-          source: collection.source,
+          source: source,
         );
       }
-      return GestureDetector(
+      return TappableAppBarTitle(
         onTap: _goToSearch,
-        // use a `Container` with a dummy color to make it expand
-        // so that we can also detect taps around the title `Text`
-        child: Container(
-          alignment: AlignmentDirectional.centerStart,
-          padding: EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
-          color: Colors.transparent,
-          height: kToolbarHeight,
-          child: title,
-        ),
+        child: title,
       );
     } else if (collection.isSelecting) {
       return AnimatedBuilder(
@@ -171,10 +172,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   List<Widget> _buildActions() {
     return [
       if (collection.isBrowsing)
-        IconButton(
-          key: Key('search-button'),
-          icon: Icon(AIcons.search),
-          onPressed: _goToSearch,
+        SearchButton(
+          source,
+          parentCollection: collection,
         ),
       if (collection.isSelecting)
         ...EntryActions.selection.map((action) => AnimatedBuilder(
@@ -187,71 +187,80 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 );
               },
             )),
-      Builder(
-        builder: (context) => PopupMenuButton<CollectionAction>(
-          key: Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            final hasSelection = collection.selection.isNotEmpty;
-            return [
-              PopupMenuItem(
-                key: Key('menu-sort'),
-                value: CollectionAction.sort,
-                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
-              ),
-              if (collection.sortFactor == EntrySortFactor.date)
+      FutureBuilder<bool>(
+        future: _canAddShortcutsLoader,
+        builder: (context, snapshot) {
+          final canAddShortcuts = snapshot.data ?? false;
+          return PopupMenuButton<CollectionAction>(
+            key: Key('appbar-menu-button'),
+            itemBuilder: (context) {
+              final hasSelection = collection.selection.isNotEmpty;
+              return [
                 PopupMenuItem(
-                  key: Key('menu-group'),
-                  value: CollectionAction.group,
-                  child: MenuRow(text: 'Group...', icon: AIcons.group),
+                  key: Key('menu-sort'),
+                  value: CollectionAction.sort,
+                  child: MenuRow(text: 'Sort...', icon: AIcons.sort),
                 ),
-              if (collection.isBrowsing) ...[
-                if (AvesApp.mode == AppMode.main)
-                  if (kDebugMode)
+                if (collection.sortFactor == EntrySortFactor.date)
+                  PopupMenuItem(
+                    key: Key('menu-group'),
+                    value: CollectionAction.group,
+                    child: MenuRow(text: 'Group...', icon: AIcons.group),
+                  ),
+                if (collection.isBrowsing) ...[
+                  if (AvesApp.mode == AppMode.main)
+                    if (kDebugMode)
+                      PopupMenuItem(
+                        value: CollectionAction.refresh,
+                        child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                      ),
+                  PopupMenuItem(
+                    value: CollectionAction.select,
+                    child: MenuRow(text: 'Select', icon: AIcons.select),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.stats,
+                    child: MenuRow(text: 'Stats', icon: AIcons.stats),
+                  ),
+                  if (canAddShortcuts)
                     PopupMenuItem(
-                      value: CollectionAction.refresh,
-                      child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                      value: CollectionAction.addShortcut,
+                      child: MenuRow(text: 'Add shortcut', icon: AIcons.addShortcut),
                     ),
-                PopupMenuItem(
-                  value: CollectionAction.select,
-                  child: MenuRow(text: 'Select', icon: AIcons.select),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.stats,
-                  child: MenuRow(text: 'Stats', icon: AIcons.stats),
-                ),
-              ],
-              if (collection.isSelecting) ...[
-                PopupMenuDivider(),
-                PopupMenuItem(
-                  value: CollectionAction.copy,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Copy to album'),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.move,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Move to album'),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.refreshMetadata,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Refresh metadata'),
-                ),
-                PopupMenuDivider(),
-                PopupMenuItem(
-                  value: CollectionAction.selectAll,
-                  child: MenuRow(text: 'Select all'),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.selectNone,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Select none'),
-                ),
-              ]
-            ];
-          },
-          onSelected: _onCollectionActionSelected,
-        ),
+                ],
+                if (collection.isSelecting) ...[
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: CollectionAction.copy,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Copy to album'),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.move,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Move to album'),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.refreshMetadata,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Refresh metadata'),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: CollectionAction.selectAll,
+                    child: MenuRow(text: 'Select all'),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.selectNone,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Select none'),
+                  ),
+                ]
+              ];
+            },
+            onSelected: _onCollectionActionSelected,
+          );
+        },
       ),
     ];
   }
@@ -279,10 +288,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.refresh:
-        final source = collection.source;
         if (source is MediaStoreSource) {
           source.clearEntries();
-          unawaited(source.refresh());
+          unawaited((source as MediaStoreSource).refresh());
         }
         break;
       case CollectionAction.select:
@@ -295,7 +303,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         collection.clearSelection();
         break;
       case CollectionAction.stats:
-        unawaited(_goToStats());
+        _goToStats();
+        break;
+      case CollectionAction.addShortcut:
+        unawaited(AppShortcutService.pin('Collection', collection.filters));
         break;
       case CollectionAction.group:
         final value = await showDialog<EntryGroupFactor>(
@@ -338,14 +349,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _goToSearch() {
-    showSearch(
-      context: context,
-      delegate: ImageSearchDelegate(collection.source, collection.addFilter),
-    );
+    Navigator.push(
+        context,
+        SearchPageRoute(
+          delegate: ImageSearchDelegate(
+            source: collection.source,
+            parentCollection: collection,
+          ),
+        ));
   }
 
-  Future<void> _goToStats() {
-    return Navigator.push(
+  void _goToStats() {
+    Navigator.push(
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: StatsPage.routeName),
@@ -355,17 +370,4 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       ),
     );
   }
-}
-
-enum CollectionAction {
-  copy,
-  group,
-  move,
-  refresh,
-  refreshMetadata,
-  select,
-  selectAll,
-  selectNone,
-  sort,
-  stats,
 }

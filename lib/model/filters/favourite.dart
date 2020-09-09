@@ -8,6 +8,11 @@ class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
 
   @override
+  Map<String, dynamic> toJson() => {
+        'type': type,
+      };
+
+  @override
   bool filter(ImageEntry entry) => entry.isFavourite;
 
   @override

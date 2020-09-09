@@ -6,7 +6,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
@@ -36,7 +36,7 @@ class AlbumListPage extends StatelessWidget {
               return FilterNavigationPage(
                 source: source,
                 title: 'Albums',
-                actions: _buildActions(),
+                actions: _buildActions(context),
                 filterEntries: getAlbumEntries(source),
                 filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
                 emptyBuilder: () => EmptyContent(
@@ -51,22 +51,20 @@ class AlbumListPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(BuildContext context) {
     return [
-      Builder(
-        builder: (context) => PopupMenuButton<ChipAction>(
-          key: Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            return [
-              PopupMenuItem(
-                key: Key('menu-sort'),
-                value: ChipAction.sort,
-                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
-              ),
-            ];
-          },
-          onSelected: (action) => _onChipActionSelected(context, action),
-        ),
+      PopupMenuButton<ChipAction>(
+        key: Key('appbar-menu-button'),
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+              key: Key('menu-sort'),
+              value: ChipAction.sort,
+              child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+            ),
+          ];
+        },
+        onSelected: (action) => _onChipActionSelected(context, action),
       ),
     ];
   }
