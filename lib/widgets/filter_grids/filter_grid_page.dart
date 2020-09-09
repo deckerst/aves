@@ -7,12 +7,15 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/double_back_pop.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/decorated_filter_chip.dart';
+import 'package:aves/widgets/filter_grids/search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -40,10 +43,17 @@ class FilterNavigationPage extends StatelessWidget {
       source: source,
       appBar: SliverAppBar(
         title: SourceStateAwareAppBarTitle(
-          title: Text(title),
+          title: TappableAppBarTitle(
+            onTap: () => _goToSearch(context),
+            title: Text(title),
+          ),
           source: source,
         ),
-        actions: actions,
+        actions: [
+          SearchButton(source),
+          ...(actions ?? []),
+        ],
+        titleSpacing: 0,
         floating: true,
       ),
       filterEntries: filterEntries,
@@ -68,6 +78,16 @@ class FilterNavigationPage extends StatelessWidget {
         settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
     );
+  }
+
+  void _goToSearch(BuildContext context) {
+    Navigator.push(
+        context,
+        SearchPageRoute(
+          delegate: ImageSearchDelegate(
+            source: source,
+          ),
+        ));
   }
 }
 

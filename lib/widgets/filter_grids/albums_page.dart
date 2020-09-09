@@ -11,7 +11,6 @@ import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
-import 'package:aves/widgets/filter_grids/search_button.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -54,7 +53,6 @@ class AlbumListPage extends StatelessWidget {
 
   List<Widget> _buildActions(BuildContext context) {
     return [
-      SearchButton(source),
       PopupMenuButton<ChipAction>(
         key: Key('appbar-menu-button'),
         itemBuilder: (context) {

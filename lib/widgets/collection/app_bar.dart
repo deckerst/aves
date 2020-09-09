@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/main.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/utils/durations.dart';
@@ -11,11 +12,13 @@ import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/filter_grids/search_button.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +47,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Future<bool> _canAddShortcutsLoader;
 
   CollectionLens get collection => widget.collection;
+
+  CollectionSource get source => collection.source;
 
   bool get hasFilters => collection.filters.isNotEmpty;
 
@@ -95,7 +100,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         return AnimatedBuilder(
           animation: collection.filterChangeNotifier,
           builder: (context, child) => SliverAppBar(
-            titleSpacing: 0,
             leading: _buildAppBarLeading(),
             title: _buildAppBarTitle(),
             actions: _buildActions(),
@@ -105,6 +109,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     onPressed: collection.removeFilter,
                   )
                 : null,
+            titleSpacing: 0,
             floating: true,
           ),
         );
@@ -145,20 +150,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       if (AvesApp.mode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
-          source: collection.source,
+          source: source,
         );
       }
-      return GestureDetector(
+      return TappableAppBarTitle(
         onTap: _goToSearch,
-        // use a `Container` with a dummy color to make it expand
-        // so that we can also detect taps around the title `Text`
-        child: Container(
-          alignment: AlignmentDirectional.centerStart,
-          padding: EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
-          color: Colors.transparent,
-          height: kToolbarHeight,
-          child: title,
-        ),
+        title: title,
       );
     } else if (collection.isSelecting) {
       return AnimatedBuilder(
@@ -175,10 +172,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   List<Widget> _buildActions() {
     return [
       if (collection.isBrowsing)
-        IconButton(
-          key: Key('search-button'),
-          icon: Icon(AIcons.search),
-          onPressed: _goToSearch,
+        SearchButton(
+          source,
+          parentCollection: collection,
         ),
       if (collection.isSelecting)
         ...EntryActions.selection.map((action) => AnimatedBuilder(
@@ -292,10 +288,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.refresh:
-        final source = collection.source;
         if (source is MediaStoreSource) {
           source.clearEntries();
-          unawaited(source.refresh());
+          unawaited((source as MediaStoreSource).refresh());
         }
         break;
       case CollectionAction.select:
