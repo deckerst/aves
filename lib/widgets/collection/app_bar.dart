@@ -155,7 +155,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       }
       return TappableAppBarTitle(
         onTap: _goToSearch,
-        title: title,
+        child: title,
       );
     } else if (collection.isSelecting) {
       return AnimatedBuilder(

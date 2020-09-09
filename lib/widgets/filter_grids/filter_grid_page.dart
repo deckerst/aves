@@ -42,12 +42,12 @@ class FilterNavigationPage extends StatelessWidget {
     return FilterGridPage(
       source: source,
       appBar: SliverAppBar(
-        title: SourceStateAwareAppBarTitle(
-          title: TappableAppBarTitle(
-            onTap: () => _goToSearch(context),
+        title: TappableAppBarTitle(
+          onTap: () => _goToSearch(context),
+          child: SourceStateAwareAppBarTitle(
             title: Text(title),
+            source: source,
           ),
-          source: source,
         ),
         actions: [
           SearchButton(source),
