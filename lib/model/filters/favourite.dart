@@ -7,6 +7,10 @@ import 'package:flutter/widgets.dart';
 class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
 
+  Map<String, dynamic> toJson() => {
+        'type': type,
+      };
+
   @override
   bool filter(ImageEntry entry) => entry.isFavourite;
 

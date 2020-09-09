@@ -36,7 +36,7 @@ class StatsPage extends StatelessWidget {
         final address = entry.addressDetails;
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {
-          country += ';${address.countryCode}';
+          country += '${LocationFilter.locationSeparator}${address.countryCode}';
           entryCountPerCountry[country] = (entryCountPerCountry[country] ?? 0) + 1;
         }
         final place = address.place;
