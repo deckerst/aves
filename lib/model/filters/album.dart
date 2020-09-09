@@ -24,6 +24,7 @@ class AlbumFilter extends CollectionFilter {
           json['uniqueName'],
         );
 
+  @override
   Map<String, dynamic> toJson() => {
         'type': type,
         'album': album,

@@ -45,6 +45,8 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   const CollectionFilter();
 
+  Map<String, dynamic> toJson();
+
   bool filter(ImageEntry entry);
 
   bool get isUnique => true;

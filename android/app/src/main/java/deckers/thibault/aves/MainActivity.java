@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import app.loup.streams_channel.StreamsChannel;
 import deckers.thibault.aves.channel.calls.AppAdapterHandler;
+import deckers.thibault.aves.channel.calls.AppShortcutHandler;
 import deckers.thibault.aves.channel.calls.ImageFileHandler;
 import deckers.thibault.aves.channel.calls.MetadataHandler;
 import deckers.thibault.aves.channel.calls.StorageHandler;
@@ -48,6 +49,7 @@ public class MainActivity extends FlutterActivity {
         BinaryMessenger messenger = Objects.requireNonNull(getFlutterEngine()).getDartExecutor().getBinaryMessenger();
 
         new MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(new AppAdapterHandler(this));
+        new MethodChannel(messenger, AppShortcutHandler.CHANNEL).setMethodCallHandler(new AppShortcutHandler(this));
         new MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(new ImageFileHandler(this));
         new MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(new MetadataHandler(this));
         new MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(new StorageHandler(this));

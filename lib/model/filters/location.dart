@@ -23,6 +23,7 @@ class LocationFilter extends CollectionFilter {
           json['location'],
         );
 
+  @override
   Map<String, dynamic> toJson() => {
         'type': type,
         'level': level.toString(),

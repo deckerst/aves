@@ -15,6 +15,7 @@ class TagFilter extends CollectionFilter {
           json['tag'],
         );
 
+  @override
   Map<String, dynamic> toJson() => {
         'type': type,
         'tag': tag,

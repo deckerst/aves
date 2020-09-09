@@ -4,7 +4,9 @@ import 'package:aves/main.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/utils/durations.dart';
+import 'package:aves/widgets/collection/collection_actions.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
@@ -39,6 +41,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   final TextEditingController _searchFieldController = TextEditingController();
   SelectionActionDelegate _actionDelegate;
   AnimationController _browseToSelectAnimation;
+  Future<bool> _canAddShortcutsLoader;
 
   CollectionLens get collection => widget.collection;
 
@@ -54,6 +57,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       duration: Durations.iconAnimation,
       vsync: this,
     );
+    _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
     WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeight());
   }
@@ -187,71 +191,80 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 );
               },
             )),
-      Builder(
-        builder: (context) => PopupMenuButton<CollectionAction>(
-          key: Key('appbar-menu-button'),
-          itemBuilder: (context) {
-            final hasSelection = collection.selection.isNotEmpty;
-            return [
-              PopupMenuItem(
-                key: Key('menu-sort'),
-                value: CollectionAction.sort,
-                child: MenuRow(text: 'Sort...', icon: AIcons.sort),
-              ),
-              if (collection.sortFactor == EntrySortFactor.date)
+      FutureBuilder<bool>(
+        future: _canAddShortcutsLoader,
+        builder: (context, snapshot) {
+          final canAddShortcuts = snapshot.data ?? false;
+          return PopupMenuButton<CollectionAction>(
+            key: Key('appbar-menu-button'),
+            itemBuilder: (context) {
+              final hasSelection = collection.selection.isNotEmpty;
+              return [
                 PopupMenuItem(
-                  key: Key('menu-group'),
-                  value: CollectionAction.group,
-                  child: MenuRow(text: 'Group...', icon: AIcons.group),
+                  key: Key('menu-sort'),
+                  value: CollectionAction.sort,
+                  child: MenuRow(text: 'Sort...', icon: AIcons.sort),
                 ),
-              if (collection.isBrowsing) ...[
-                if (AvesApp.mode == AppMode.main)
-                  if (kDebugMode)
+                if (collection.sortFactor == EntrySortFactor.date)
+                  PopupMenuItem(
+                    key: Key('menu-group'),
+                    value: CollectionAction.group,
+                    child: MenuRow(text: 'Group...', icon: AIcons.group),
+                  ),
+                if (collection.isBrowsing) ...[
+                  if (AvesApp.mode == AppMode.main)
+                    if (kDebugMode)
+                      PopupMenuItem(
+                        value: CollectionAction.refresh,
+                        child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                      ),
+                  PopupMenuItem(
+                    value: CollectionAction.select,
+                    child: MenuRow(text: 'Select', icon: AIcons.select),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.stats,
+                    child: MenuRow(text: 'Stats', icon: AIcons.stats),
+                  ),
+                  if (canAddShortcuts)
                     PopupMenuItem(
-                      value: CollectionAction.refresh,
-                      child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                      value: CollectionAction.addShortcut,
+                      child: MenuRow(text: 'Add shortcut', icon: AIcons.addShortcut),
                     ),
-                PopupMenuItem(
-                  value: CollectionAction.select,
-                  child: MenuRow(text: 'Select', icon: AIcons.select),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.stats,
-                  child: MenuRow(text: 'Stats', icon: AIcons.stats),
-                ),
-              ],
-              if (collection.isSelecting) ...[
-                PopupMenuDivider(),
-                PopupMenuItem(
-                  value: CollectionAction.copy,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Copy to album'),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.move,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Move to album'),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.refreshMetadata,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Refresh metadata'),
-                ),
-                PopupMenuDivider(),
-                PopupMenuItem(
-                  value: CollectionAction.selectAll,
-                  child: MenuRow(text: 'Select all'),
-                ),
-                PopupMenuItem(
-                  value: CollectionAction.selectNone,
-                  enabled: hasSelection,
-                  child: MenuRow(text: 'Select none'),
-                ),
-              ]
-            ];
-          },
-          onSelected: _onCollectionActionSelected,
-        ),
+                ],
+                if (collection.isSelecting) ...[
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: CollectionAction.copy,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Copy to album'),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.move,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Move to album'),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.refreshMetadata,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Refresh metadata'),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem(
+                    value: CollectionAction.selectAll,
+                    child: MenuRow(text: 'Select all'),
+                  ),
+                  PopupMenuItem(
+                    value: CollectionAction.selectNone,
+                    enabled: hasSelection,
+                    child: MenuRow(text: 'Select none'),
+                  ),
+                ]
+              ];
+            },
+            onSelected: _onCollectionActionSelected,
+          );
+        },
       ),
     ];
   }
@@ -296,6 +309,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         break;
       case CollectionAction.stats:
         _goToStats();
+        break;
+      case CollectionAction.addShortcut:
+        unawaited(AppShortcutService.pin('Collection', collection.filters));
         break;
       case CollectionAction.group:
         final value = await showDialog<EntryGroupFactor>(
@@ -359,17 +375,4 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       ),
     );
   }
-}
-
-enum CollectionAction {
-  copy,
-  group,
-  move,
-  refresh,
-  refreshMetadata,
-  select,
-  selectAll,
-  selectNone,
-  sort,
-  stats,
 }
