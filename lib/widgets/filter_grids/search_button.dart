@@ -1,3 +1,4 @@
+import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -5,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class SearchButton extends StatelessWidget {
   final CollectionSource source;
+  final CollectionLens parentCollection;
 
-  const SearchButton(this.source);
+  const SearchButton(this.source, {this.parentCollection});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class SearchButton extends StatelessWidget {
         SearchPageRoute(
           delegate: ImageSearchDelegate(
             source: source,
+            parentCollection: parentCollection,
           ),
         ));
   }
