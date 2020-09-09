@@ -101,7 +101,7 @@ public class MainActivity extends FlutterActivity {
                 .setIcon(Icon.createWithResource(this, R.drawable.ic_outline_movie))
                 .setIntent(new Intent(Intent.ACTION_MAIN, null, this, MainActivity.class)
                         .putExtra("page", "/collection")
-                        .putExtra("filters", new String[]{"anyVideo"}))
+                        .putExtra("filters", new String[]{"{\"type\":\"mime\",\"mime\":\"video/*\"}"}))
                 .build();
         shortcutManager.setDynamicShortcuts(Arrays.asList(videos, search));
     }

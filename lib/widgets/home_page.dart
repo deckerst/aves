@@ -1,8 +1,6 @@
 import 'package:aves/main.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -36,6 +34,8 @@ class _HomePageState extends State<HomePage> {
   ImageEntry _viewerEntry;
   String _shortcutRouteName;
   List<String> _shortcutFilters;
+
+  static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
 
   @override
   void initState() {
@@ -87,11 +87,8 @@ class _HomePageState extends State<HomePage> {
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
           final extraRoute = intentData['page'];
-          switch (extraRoute) {
-            case CollectionPage.routeName:
-            case AlbumListPage.routeName:
-            case SearchPage.routeName:
-              _shortcutRouteName = extraRoute;
+          if (allowedShortcutRoutes.contains(extraRoute)) {
+            _shortcutRouteName = extraRoute;
           }
           final extraFilters = intentData['filters'];
           _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
@@ -131,14 +128,7 @@ class _HomePageState extends State<HomePage> {
       routeName = CollectionPage.routeName;
     } else {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;
-      filters = (_shortcutFilters ?? []).map((filterString) {
-        switch (filterString) {
-          case 'anyVideo':
-            return MimeFilter(MimeTypes.anyVideo);
-        }
-        debugPrint('failed to parse shortcut filter=$filterString');
-        return null;
-      });
+      filters = (_shortcutFilters ?? []).map(CollectionFilter.fromJson);
     }
     switch (routeName) {
       case AlbumListPage.routeName:
