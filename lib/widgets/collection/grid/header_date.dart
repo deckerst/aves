@@ -1,5 +1,5 @@
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/album/grid/header_generic.dart';
+import 'package:aves/widgets/collection/grid/header_generic.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

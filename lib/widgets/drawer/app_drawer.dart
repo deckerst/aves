@@ -208,6 +208,7 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget get settingsTile => NavTile(
         icon: AIcons.settings,
         title: 'Settings',
+        topLevel: false,
         routeName: SettingsPage.routeName,
         pageBuilder: (_) => SettingsPage(),
       );
@@ -215,6 +216,7 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget get aboutTile => NavTile(
         icon: AIcons.info,
         title: 'About',
+        topLevel: false,
         routeName: AboutPage.routeName,
         pageBuilder: (_) => AboutPage(),
       );
@@ -222,6 +224,7 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget get debugTile => NavTile(
         icon: AIcons.debug,
         title: 'Debug',
+        topLevel: false,
         routeName: DebugPage.routeName,
         pageBuilder: (_) => DebugPage(source: source),
       );

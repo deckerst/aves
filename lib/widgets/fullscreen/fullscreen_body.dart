@@ -7,7 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
@@ -325,11 +325,12 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   void _onLeave() {
-    if (!Navigator.canPop(context)) {
+    if (Navigator.canPop(context)) {
+      _showSystemUI();
+    } else {
       // exit app when trying to pop a fullscreen page that is a viewer for a single entry
-      exit(0);
+      SystemNavigator.pop();
     }
-    _showSystemUI();
   }
 
   // system UI

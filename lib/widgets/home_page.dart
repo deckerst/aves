@@ -1,4 +1,5 @@
 import 'package:aves/main.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -6,7 +7,9 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/search/search_delegate.dart';
+import 'package:aves/widgets/collection/search_page.dart';
 import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -29,6 +32,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   MediaStoreSource _mediaStore;
   ImageEntry _viewerEntry;
+  String _shortcutRouteName;
+  List<String> _shortcutFilters;
+
+  static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
 
   @override
   void initState() {
@@ -77,6 +84,14 @@ class _HomePageState extends State<HomePage> {
           String pickMimeTypes = intentData['mimeType'];
           debugPrint('pick mimeType=$pickMimeTypes');
           break;
+        default:
+          // do not use 'route' as extra key, as the Flutter framework acts on it
+          final extraRoute = intentData['page'];
+          if (allowedShortcutRoutes.contains(extraRoute)) {
+            _shortcutRouteName = extraRoute;
+          }
+          final extraFilters = intentData['filters'];
+          _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
       }
     }
 
@@ -100,35 +115,44 @@ class _HomePageState extends State<HomePage> {
   }
 
   Route _getRedirectRoute() {
-    switch (AvesApp.mode) {
-      case AppMode.view:
-        return DirectMaterialPageRoute(
-          settings: RouteSettings(name: SingleFullscreenPage.routeName),
-          builder: (_) => SingleFullscreenPage(entry: _viewerEntry),
-        );
-      case AppMode.main:
-      case AppMode.pick:
-        if (_mediaStore != null) {
-          switch (settings.homePage) {
-            case HomePageSetting.albums:
-              return DirectMaterialPageRoute(
-                settings: RouteSettings(name: AlbumListPage.routeName),
-                builder: (_) => AlbumListPage(source: _mediaStore),
-              );
-            case HomePageSetting.collection:
-              return DirectMaterialPageRoute(
-                settings: RouteSettings(name: CollectionPage.routeName),
-                builder: (_) => CollectionPage(
-                  CollectionLens(
-                    source: _mediaStore,
-                    groupFactor: settings.collectionGroupFactor,
-                    sortFactor: settings.collectionSortFactor,
-                  ),
-                ),
-              );
-          }
-        }
+    if (AvesApp.mode == AppMode.view) {
+      return DirectMaterialPageRoute(
+        settings: RouteSettings(name: SingleFullscreenPage.routeName),
+        builder: (_) => SingleFullscreenPage(entry: _viewerEntry),
+      );
     }
-    return null;
+
+    String routeName;
+    Iterable<CollectionFilter> filters;
+    if (AvesApp.mode == AppMode.pick) {
+      routeName = CollectionPage.routeName;
+    } else {
+      routeName = _shortcutRouteName ?? settings.homePage.routeName;
+      filters = (_shortcutFilters ?? []).map(CollectionFilter.fromJson);
+    }
+    switch (routeName) {
+      case AlbumListPage.routeName:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: AlbumListPage.routeName),
+          builder: (_) => AlbumListPage(source: _mediaStore),
+        );
+      case SearchPage.routeName:
+        return SearchPageRoute(
+          delegate: ImageSearchDelegate(source: _mediaStore),
+        );
+      case CollectionPage.routeName:
+      default:
+        return DirectMaterialPageRoute(
+          settings: RouteSettings(name: CollectionPage.routeName),
+          builder: (_) => CollectionPage(
+            CollectionLens(
+              source: _mediaStore,
+              filters: filters,
+              groupFactor: settings.collectionGroupFactor,
+              sortFactor: settings.collectionSortFactor,
+            ),
+          ),
+        );
+    }
   }
 }

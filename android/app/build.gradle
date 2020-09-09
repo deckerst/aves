@@ -103,6 +103,7 @@ dependencies {
     // enable support for Java 8 language APIs (stream, optional, etc.)
 //    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 
+    implementation 'androidx.core:core:1.5.0-alpha02' // v1.5.0-alpha02 for ShortcutManagerCompat.setDynamicShortcuts
     implementation "androidx.exifinterface:exifinterface:1.2.0"
     implementation 'com.commonsware.cwac:document:0.4.1'
     implementation 'com.drewnoakes:metadata-extractor:2.14.0'

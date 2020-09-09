@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -76,7 +77,7 @@ mixin LocationMixin on SourceBase {
   void updateLocations() {
     final locations = rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails).toList();
     List<String> lister(String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
-    sortedCountries = lister((address) => '${address.countryName};${address.countryCode}');
+    sortedCountries = lister((address) => '${address.countryName}${LocationFilter.locationSeparator}${address.countryCode}');
     sortedPlaces = lister((address) => address.place);
 
     invalidateFilterEntryCounts();
@@ -86,7 +87,7 @@ mixin LocationMixin on SourceBase {
   Map<String, ImageEntry> getCountryEntries() {
     final locatedEntries = sortedEntriesForFilterList.where((entry) => entry.isLocated);
     return Map.fromEntries(sortedCountries.map((countryNameAndCode) {
-      final split = countryNameAndCode.split(';');
+      final split = countryNameAndCode.split(LocationFilter.locationSeparator);
       ImageEntry entry;
       if (split.length > 1) {
         final countryCode = split[1];

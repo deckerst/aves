@@ -86,11 +86,14 @@ class SingleImagePageState extends State<SingleImagePage> with AutomaticKeepAliv
   Widget build(BuildContext context) {
     super.build(context);
 
-    return ImageView(
-      entry: widget.entry,
-      onScaleChanged: widget.onScaleChanged,
-      onTap: widget.onTap,
-      videoControllers: widget.videoControllers,
+    return PhotoViewGestureDetectorScope(
+      axis: [Axis.vertical],
+      child: ImageView(
+        entry: widget.entry,
+        onScaleChanged: widget.onScaleChanged,
+        onTap: widget.onTap,
+        videoControllers: widget.videoControllers,
+      ),
     );
   }
 

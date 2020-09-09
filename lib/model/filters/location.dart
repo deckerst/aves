@@ -5,16 +5,30 @@ import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter {
   static const type = 'country';
+  static const locationSeparator = ';';
 
   final LocationLevel level;
   String _location;
   String _countryCode;
 
   LocationFilter(this.level, this._location) {
-    final split = _location.split(';');
+    final split = _location.split(locationSeparator);
     if (split.isNotEmpty) _location = split[0];
     if (split.length > 1) _countryCode = split[1];
   }
+
+  LocationFilter.fromJson(Map<String, dynamic> json)
+      : this(
+          LocationLevel.values.firstWhere((v) => v.toString() == json['level'], orElse: () => null),
+          json['location'],
+        );
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'level': level.toString(),
+        'location': _countryCode != null ? '$_location$locationSeparator$_countryCode' : _location,
+      };
 
   @override
   bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryName == _location) || (level == LocationLevel.place && entry.addressDetails.place == _location));

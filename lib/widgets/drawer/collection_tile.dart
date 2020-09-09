@@ -2,7 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/widgets/album/collection_page.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

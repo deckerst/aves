@@ -1,7 +1,21 @@
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 
-enum EntryAction { delete, edit, info, open, openMap, print, rename, rotateCCW, rotateCW, setAs, share, toggleFavourite, debug }
+enum EntryAction {
+  delete,
+  edit,
+  info,
+  open,
+  openMap,
+  print,
+  rename,
+  rotateCCW,
+  rotateCW,
+  setAs,
+  share,
+  toggleFavourite,
+  debug,
+}
 
 class EntryActions {
   static const selection = [

@@ -1,6 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/album/empty.dart';
+import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';

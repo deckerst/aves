@@ -9,6 +9,7 @@ class NavTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final Widget trailing;
+  final bool topLevel;
   final String routeName;
   final WidgetBuilder pageBuilder;
 
@@ -16,6 +17,7 @@ class NavTile extends StatelessWidget {
     @required this.icon,
     @required this.title,
     this.trailing,
+    this.topLevel = true,
     @required this.routeName,
     @required this.pageBuilder,
   });
@@ -42,14 +44,19 @@ class NavTile extends StatelessWidget {
         onTap: () {
           Navigator.pop(context);
           if (routeName != context.currentRouteName) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                settings: RouteSettings(name: routeName),
-                builder: pageBuilder,
-              ),
-              settings.navRemoveRoutePredicate(routeName),
+            final route = MaterialPageRoute(
+              settings: RouteSettings(name: routeName),
+              builder: pageBuilder,
             );
+            if (topLevel) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                route,
+                settings.navRemoveRoutePredicate(routeName),
+              );
+            } else {
+              Navigator.push(context, route);
+            }
           }
         },
         selected: context.currentRouteName == routeName,
