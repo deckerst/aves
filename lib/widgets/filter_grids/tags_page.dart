@@ -5,8 +5,8 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/filter_grids/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +15,8 @@ class TagListPage extends StatelessWidget {
   static const routeName = '/tags';
 
   final CollectionSource source;
+
+  static final ChipActionDelegate actionDelegate = TagChipActionDelegate();
 
   const TagListPage({@required this.source});
 
@@ -28,7 +30,7 @@ class TagListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage(
             source: source,
             title: 'Tags',
-            onChipActionSelected: _onChipActionSelected,
+            actionDelegate: actionDelegate,
             filterEntries: _getTagEntries(),
             filterBuilder: (s) => TagFilter(s),
             emptyBuilder: () => EmptyContent(
@@ -39,27 +41,6 @@ class TagListPage extends StatelessWidget {
         );
       },
     );
-  }
-
-  void _onChipActionSelected(BuildContext context, ChipAction action) async {
-    switch (action) {
-      case ChipAction.sort:
-        final factor = await showDialog<ChipSortFactor>(
-          context: context,
-          builder: (context) => AvesSelectionDialog<ChipSortFactor>(
-            initialValue: settings.tagSortFactor,
-            options: {
-              ChipSortFactor.date: 'By date',
-              ChipSortFactor.name: 'By name',
-            },
-            title: 'Sort',
-          ),
-        );
-        if (factor != null) {
-          settings.tagSortFactor = factor;
-        }
-        break;
-    }
   }
 
   Map<String, ImageEntry> _getTagEntries() {
