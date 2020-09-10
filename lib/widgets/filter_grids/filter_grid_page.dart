@@ -13,17 +13,21 @@ import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/double_back_pop.dart';
+import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/decorated_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/search_button.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class FilterNavigationPage extends StatelessWidget {
   final CollectionSource source;
   final String title;
-  final List<Widget> actions;
+  final void Function(BuildContext context, ChipAction action) onChipActionSelected;
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
   final Widget Function() emptyBuilder;
@@ -31,7 +35,7 @@ class FilterNavigationPage extends StatelessWidget {
   const FilterNavigationPage({
     @required this.source,
     @required this.title,
-    this.actions,
+    @required this.onChipActionSelected,
     @required this.filterEntries,
     @required this.filterBuilder,
     @required this.emptyBuilder,
@@ -49,10 +53,7 @@ class FilterNavigationPage extends StatelessWidget {
             source: source,
           ),
         ),
-        actions: [
-          SearchButton(source),
-          ...(actions ?? []),
-        ],
+        actions: _buildActions(context),
         titleSpacing: 0,
         floating: true,
       ),
@@ -80,6 +81,29 @@ class FilterNavigationPage extends StatelessWidget {
     );
   }
 
+  List<Widget> _buildActions(BuildContext context) {
+    return [
+      SearchButton(source),
+      PopupMenuButton<ChipAction>(
+        key: Key('appbar-menu-button'),
+        itemBuilder: (context) {
+          return [
+            PopupMenuItem(
+              key: Key('menu-sort'),
+              value: ChipAction.sort,
+              child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+            ),
+          ];
+        },
+        onSelected: (action) async {
+          // wait for the popup menu to hide before proceeding with the action
+          await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+          onChipActionSelected(context, action);
+        },
+      ),
+    ];
+  }
+
   void _goToSearch(BuildContext context) {
     Navigator.push(
         context,
@@ -88,6 +112,11 @@ class FilterNavigationPage extends StatelessWidget {
             source: source,
           ),
         ));
+  }
+
+  static int compareChipByDate(MapEntry<String, ImageEntry> a, MapEntry<String, ImageEntry> b) {
+    final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
+    return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
   }
 }
 

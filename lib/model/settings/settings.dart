@@ -29,6 +29,8 @@ class Settings extends ChangeNotifier {
 
   // filter grids
   static const albumSortFactorKey = 'album_sort_factor';
+  static const countrySortFactorKey = 'country_sort_factor';
+  static const tagSortFactorKey = 'tag_sort_factor';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -83,6 +85,14 @@ class Settings extends ChangeNotifier {
   ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
+
+  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+
+  set countrySortFactor(ChipSortFactor newValue) => setAndNotify(countrySortFactorKey, newValue.toString());
+
+  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+
+  set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
   // info
 
