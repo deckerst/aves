@@ -10,16 +10,14 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as ppath;
 import 'package:tuple/tuple.dart';
 
 import 'mime_types.dart';
 
 class ImageEntry {
   String uri;
-  String _path;
-  String _directory;
-  String _filename;
+  String _path, _directory, _filename, _extension;
   int contentId;
   final String sourceMimeType;
   int width;
@@ -131,18 +129,24 @@ class ImageEntry {
     _path = path;
     _directory = null;
     _filename = null;
+    _extension = null;
   }
 
   String get path => _path;
 
   String get directory {
-    _directory ??= path != null ? dirname(path) : null;
+    _directory ??= path != null ? ppath.dirname(path) : null;
     return _directory;
   }
 
   String get filenameWithoutExtension {
-    _filename ??= path != null ? basenameWithoutExtension(path) : null;
+    _filename ??= path != null ? ppath.basenameWithoutExtension(path) : null;
     return _filename;
+  }
+
+  String get extension {
+    _extension ??= path != null ? ppath.extension(path) : null;
+    return _extension;
   }
 
   // the MIME type reported by the Media Store is unreliable
@@ -318,7 +322,7 @@ class ImageEntry {
   Future<bool> rename(String newName) async {
     if (newName == filenameWithoutExtension) return true;
 
-    final newFields = await ImageFileService.rename(this, '$newName${extension(this.path)}');
+    final newFields = await ImageFileService.rename(this, '$newName$extension');
     if (newFields.isEmpty) return false;
 
     final uri = newFields['uri'];

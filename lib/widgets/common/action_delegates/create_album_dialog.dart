@@ -77,6 +77,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                     helperText: exists ? 'Album already exists' : '',
                     hintText: 'Album name',
                   ),
+                  autofocus: _allVolumes.length == 1,
                   onChanged: (_) => _validate(),
                   onSubmitted: (_) => _submit(context),
                 );
@@ -96,7 +97,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
               child: Text('Create'.toUpperCase()),
             );
           },
-        )
+        ),
       ],
     );
   }
