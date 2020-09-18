@@ -199,27 +199,29 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private Map<String, String> getVideoAllMetadataByMediaMetadataRetriever(String uri) {
         Map<String, String> dirMap = new HashMap<>();
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
-        try {
-            for (Map.Entry<Integer, String> kv : VIDEO_MEDIA_METADATA_KEYS.entrySet()) {
-                Integer key = kv.getKey();
-                String value = retriever.extractMetadata(key);
-                if (value != null) {
-                    switch (key) {
-                        case MediaMetadataRetriever.METADATA_KEY_BITRATE:
-                            value = Formatter.formatFileSize(context, Long.parseLong(value)) + "/sec";
-                            break;
-                        case MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION:
-                            value += "°";
-                            break;
+        if (retriever != null) {
+            try {
+                for (Map.Entry<Integer, String> kv : VIDEO_MEDIA_METADATA_KEYS.entrySet()) {
+                    Integer key = kv.getKey();
+                    String value = retriever.extractMetadata(key);
+                    if (value != null) {
+                        switch (key) {
+                            case MediaMetadataRetriever.METADATA_KEY_BITRATE:
+                                value = Formatter.formatFileSize(context, Long.parseLong(value)) + "/sec";
+                                break;
+                            case MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION:
+                                value += "°";
+                                break;
+                        }
+                        dirMap.put(kv.getValue(), value);
                     }
-                    dirMap.put(kv.getValue(), value);
                 }
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=" + uri, e);
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release();
             }
-        } catch (Exception e) {
-            Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=" + uri, e);
-        } finally {
-            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-            retriever.release();
         }
         return dirMap;
     }
@@ -317,45 +319,47 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private Map<String, Object> getVideoCatalogMetadataByMediaMetadataRetriever(String uri) {
         Map<String, Object> metadataMap = new HashMap<>();
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
-        try {
-            String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-            String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-            String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+        if (retriever != null) {
+            try {
+                String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+                String rotationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                String locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
 
-            if (dateString != null) {
-                long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
-                // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
-                if (dateMillis > 0) {
-                    metadataMap.put(KEY_DATE_MILLIS, dateMillis);
+                if (dateString != null) {
+                    long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
+                    // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
+                    if (dateMillis > 0) {
+                        metadataMap.put(KEY_DATE_MILLIS, dateMillis);
+                    }
                 }
-            }
-            if (rotationString != null) {
-                metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
-            }
-            if (locationString != null) {
-                Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
-                if (locationMatcher.find() && locationMatcher.groupCount() >= 2) {
-                    String latitudeString = locationMatcher.group(1);
-                    String longitudeString = locationMatcher.group(2);
-                    if (latitudeString != null && longitudeString != null) {
-                        try {
-                            double latitude = Double.parseDouble(latitudeString);
-                            double longitude = Double.parseDouble(longitudeString);
-                            if (latitude != 0 && longitude != 0) {
-                                metadataMap.put(KEY_LATITUDE, latitude);
-                                metadataMap.put(KEY_LONGITUDE, longitude);
+                if (rotationString != null) {
+                    metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
+                }
+                if (locationString != null) {
+                    Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
+                    if (locationMatcher.find() && locationMatcher.groupCount() >= 2) {
+                        String latitudeString = locationMatcher.group(1);
+                        String longitudeString = locationMatcher.group(2);
+                        if (latitudeString != null && longitudeString != null) {
+                            try {
+                                double latitude = Double.parseDouble(latitudeString);
+                                double longitude = Double.parseDouble(longitudeString);
+                                if (latitude != 0 && longitude != 0) {
+                                    metadataMap.put(KEY_LATITUDE, latitude);
+                                    metadataMap.put(KEY_LONGITUDE, longitude);
+                                }
+                            } catch (NumberFormatException ex) {
+                                // ignore
                             }
-                        } catch (NumberFormatException ex) {
-                            // ignore
                         }
                     }
                 }
+            } catch (Exception e) {
+                Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for uri=" + uri, e);
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release();
             }
-        } catch (Exception e) {
-            Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for uri=" + uri, e);
-        } finally {
-            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-            retriever.release();
         }
         return metadataMap;
     }

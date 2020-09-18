@@ -25,25 +25,27 @@ class VideoThumbnailFetcher implements DataFetcher<InputStream> {
     @Override
     public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super InputStream> callback) {
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(model.getContext(), model.getUri());
-        try {
-            byte[] picture = retriever.getEmbeddedPicture();
-            if (picture != null) {
-                callback.onDataReady(new ByteArrayInputStream(picture));
-            } else {
-                // not ideal: bitmap -> byte[] -> bitmap
-                // but simple fallback and we cache result
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                Bitmap bitmap = retriever.getFrameAtTime();
-                if (bitmap != null) {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+        if (retriever != null) {
+            try {
+                byte[] picture = retriever.getEmbeddedPicture();
+                if (picture != null) {
+                    callback.onDataReady(new ByteArrayInputStream(picture));
+                } else {
+                    // not ideal: bitmap -> byte[] -> bitmap
+                    // but simple fallback and we cache result
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    Bitmap bitmap = retriever.getFrameAtTime();
+                    if (bitmap != null) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
+                    }
+                    callback.onDataReady(new ByteArrayInputStream(bos.toByteArray()));
                 }
-                callback.onDataReady(new ByteArrayInputStream(bos.toByteArray()));
+            } catch (Exception ex) {
+                callback.onLoadFailed(ex);
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release();
             }
-        } catch (Exception ex) {
-            callback.onLoadFailed(ex);
-        } finally {
-            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-            retriever.release();
         }
     }
 

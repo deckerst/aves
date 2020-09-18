@@ -83,19 +83,6 @@ mixin LocationMixin on SourceBase {
     invalidateFilterEntryCounts();
     eventBus.fire(LocationsChangedEvent());
   }
-
-  Map<String, ImageEntry> getCountryEntries() {
-    final locatedEntries = sortedEntriesForFilterList.where((entry) => entry.isLocated);
-    return Map.fromEntries(sortedCountries.map((countryNameAndCode) {
-      final split = countryNameAndCode.split(LocationFilter.locationSeparator);
-      ImageEntry entry;
-      if (split.length > 1) {
-        final countryCode = split[1];
-        entry = locatedEntries.firstWhere((entry) => entry.addressDetails.countryCode == countryCode, orElse: () => null);
-      }
-      return MapEntry(countryNameAndCode, entry);
-    }));
-  }
 }
 
 class AddressMetadataChangedEvent {}

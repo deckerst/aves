@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/data_providers/media_store_collection_provid
 import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedantic/pedantic.dart';
@@ -94,6 +95,7 @@ class _HomePageState extends State<HomePage> {
           _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
       }
     }
+    unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', AvesApp.mode.toString()));
 
     if (AvesApp.mode != AppMode.view) {
       _mediaStore = MediaStoreSource();

@@ -460,7 +460,8 @@ public class StorageUtils {
             }
             retriever.setDataSource(context, uri);
         } catch (Exception e) {
-            Log.e(LOG_TAG, "failed to open MediaMetadataRetriever for uri=" + uri, e);
+            // unsupported format
+            return null;
         }
         return retriever;
     }
