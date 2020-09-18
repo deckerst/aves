@@ -7,6 +7,7 @@ import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -47,7 +48,16 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   Future<void> _setup() async {
-    await Firebase.initializeApp().then((app) => FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError);
+    await Firebase.initializeApp().then((app) {
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      FirebaseCrashlytics.instance.setCustomKey(
+          'build_mode',
+          kReleaseMode
+              ? 'release'
+              : kProfileMode
+                  ? 'profile'
+                  : 'debug');
+    });
     await settings.init();
   }
 

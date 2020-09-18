@@ -64,7 +64,7 @@ class Settings extends ChangeNotifier {
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
 
-  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, false);
+  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, true);
 
   set isCrashlyticsEnabled(bool newValue) {
     setAndNotify(isCrashlyticsEnabledKey, newValue);
