@@ -15,6 +15,7 @@ class CreateAlbumDialog extends StatefulWidget {
 class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
   Set<StorageVolume> _allVolumes;
   StorageVolume _primaryVolume, _selectedVolume;
 
@@ -24,7 +25,6 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     _allVolumes = androidFileUtils.storageVolumes;
     _primaryVolume = _allVolumes.firstWhere((volume) => volume.isPrimary, orElse: () => _allVolumes.first);
     _selectedVolume = _primaryVolume;
-    _initAlbumName();
   }
 
   @override
@@ -48,7 +48,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                 groupValue: _selectedVolume,
                 onChanged: (volume) {
                   _selectedVolume = volume;
-                  _checkAlbumExists();
+                  _validate();
                   setState(() {});
                 },
                 title: Text(
@@ -67,7 +67,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
           SizedBox(height: 8),
         ],
         Padding(
-          padding: AvesDialog.contentHorizontalPadding,
+          padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(bottom: 8),
           child: ValueListenableBuilder<bool>(
               valueListenable: _existsNotifier,
               builder: (context, exists, child) {
@@ -75,8 +75,9 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                   controller: _nameController,
                   decoration: InputDecoration(
                     helperText: exists ? 'Album already exists' : '',
+                    hintText: 'Album name',
                   ),
-                  onChanged: (_) => _checkAlbumExists(),
+                  onChanged: (_) => _validate(),
                   onSubmitted: (_) => _submit(context),
                 );
               }),
@@ -87,10 +88,15 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text('Cancel'.toUpperCase()),
         ),
-        FlatButton(
-          onPressed: () => _submit(context),
-          child: Text('Create'.toUpperCase()),
-        ),
+        ValueListenableBuilder<bool>(
+          valueListenable: _isValidNotifier,
+          builder: (context, isValid, child) {
+            return FlatButton(
+              onPressed: isValid ? () => _submit(context) : null,
+              child: Text('Create'.toUpperCase()),
+            );
+          },
+        )
       ],
     );
   }
@@ -100,21 +106,10 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     return join(_selectedVolume.path, 'Pictures', name);
   }
 
-  Future<void> _initAlbumName() async {
-    var count = 1;
-    while (true) {
-      var name = 'Album $count';
-      if (!await Directory(_buildAlbumPath(name)).exists()) {
-        _nameController.text = name;
-        return;
-      }
-      count++;
-    }
-  }
-
-  Future<void> _checkAlbumExists() async {
+  Future<void> _validate() async {
     final path = _buildAlbumPath(_nameController.text);
     _existsNotifier.value = path.isEmpty ? false : await Directory(path).exists();
+    _isValidNotifier.value = (_nameController.text ?? '').isNotEmpty;
   }
 
   void _submit(BuildContext context) => Navigator.pop(context, _buildAlbumPath(_nameController.text));
