@@ -47,7 +47,8 @@ dependencies:
 #    path: ../expansion_tile_card
     git:
       url: git://github.com/deckerst/expansion_tile_card.git
-  firebase_crashlytics:
+  firebase_core: "^0.5.0"
+  firebase_crashlytics: "^0.2.0-dev.5"
   flushbar:
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer

@@ -70,6 +70,12 @@ class SettingsPage extends StatelessWidget {
                       }
                     },
                   ),
+                  SectionTitle('Privacy'),
+                  SwitchListTile(
+                    value: settings.isCrashlyticsEnabled,
+                    onChanged: (v) => settings.isCrashlyticsEnabled = v,
+                    title: Text('Allow anonymous crash reporting'),
+                  ),
                 ],
               ),
             ),

@@ -12,6 +12,8 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -94,6 +96,21 @@ class DebugPageState extends State<DebugPage> {
           divisions: 9,
           label: '$timeDilation',
         ),
+        Divider(),
+        Row(
+          children: [
+            Expanded(
+              child: Text('Crashlytics'),
+            ),
+            SizedBox(width: 8),
+            RaisedButton(
+              onPressed: FirebaseCrashlytics.instance.crash,
+              child: Text('Crash'),
+            ),
+          ],
+        ),
+        Text('Firebase data collection: ${Firebase.app().isAutomaticDataCollectionEnabled ? 'enabled' : 'disabled'}'),
+        Text('Crashlytics collection: ${FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled ? 'enabled' : 'disabled'}'),
         Divider(),
         Text('Entries: ${entries.length}'),
         Text('Catalogued: ${catalogued.length}'),

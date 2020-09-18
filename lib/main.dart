@@ -1,8 +1,11 @@
+import 'dart:isolate';
+
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/data_providers/settings_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +14,15 @@ import 'package:overlay_support/overlay_support.dart';
 void main() {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
 //  debugPrintGestureArenaDiagnostics = true;
-  Crashlytics.instance.enableInDevMode = true;
 
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  Isolate.current.addErrorListener(RawReceivePort((pair) async {
+    final List<dynamic> errorAndStacktrace = pair;
+    await FirebaseCrashlytics.instance.recordError(
+      errorAndStacktrace.first,
+      errorAndStacktrace.last,
+    );
+  }).sendPort);
+
   runApp(AvesApp());
 }
 
@@ -34,7 +43,12 @@ class _AvesAppState extends State<AvesApp> {
   @override
   void initState() {
     super.initState();
-    _appSetup = settings.init();
+    _appSetup = _setup();
+  }
+
+  Future<void> _setup() async {
+    await Firebase.initializeApp().then((app) => FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError);
+    await settings.init();
   }
 
   @override
@@ -67,7 +81,14 @@ class _AvesAppState extends State<AvesApp> {
           home: FutureBuilder<void>(
             future: _appSetup,
             builder: (context, snapshot) {
-              if (snapshot.hasError) return Icon(AIcons.error);
+              if (snapshot.hasError) {
+                return Column(
+                  children: [
+                    Icon(AIcons.error),
+                    Text(snapshot.error),
+                  ],
+                );
+              }
               if (snapshot.connectionState != ConnectionState.done) return Scaffold();
               return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
             },

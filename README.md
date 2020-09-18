@@ -24,7 +24,6 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 
 ## Known Issues
 
-- privacy: cannot opt out of Crashlytics reporting (cf [flutterfire issue #1143](https://github.com/FirebaseExtended/flutterfire/issues/1143))
 - gesture: double tap on image does not zoom on tapped area (cf [photo_view issue #82](https://github.com/renancaraujo/photo_view/issues/82))
 - performance: image info page stutters the first time it loads a Google Maps view (cf [flutter issue #28493](https://github.com/flutter/flutter/issues/28493))
 - performance: image decoding is slow
