@@ -1,8 +1,11 @@
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../source/enums.dart';
@@ -18,6 +21,7 @@ class Settings extends ChangeNotifier {
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
+  static const isCrashlyticsEnabledKey = 'is_crashlytics_enabled';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
@@ -29,6 +33,8 @@ class Settings extends ChangeNotifier {
 
   // filter grids
   static const albumSortFactorKey = 'album_sort_factor';
+  static const countrySortFactorKey = 'country_sort_factor';
+  static const tagSortFactorKey = 'tag_sort_factor';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -40,6 +46,12 @@ class Settings extends ChangeNotifier {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    await _setupCrashlytics();
+  }
+
+  Future<void> _setupCrashlytics() async {
+    await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
   }
 
   Future<void> reset() {
@@ -51,6 +63,13 @@ class Settings extends ChangeNotifier {
   bool get hasAcceptedTerms => getBoolOrDefault(hasAcceptedTermsKey, false);
 
   set hasAcceptedTerms(bool newValue) => setAndNotify(hasAcceptedTermsKey, newValue);
+
+  bool get isCrashlyticsEnabled => getBoolOrDefault(isCrashlyticsEnabledKey, true);
+
+  set isCrashlyticsEnabled(bool newValue) {
+    setAndNotify(isCrashlyticsEnabledKey, newValue);
+    unawaited(_setupCrashlytics());
+  }
 
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
 
@@ -83,6 +102,14 @@ class Settings extends ChangeNotifier {
   ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
+
+  ChipSortFactor get countrySortFactor => getEnumOrDefault(countrySortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+
+  set countrySortFactor(ChipSortFactor newValue) => setAndNotify(countrySortFactorKey, newValue.toString());
+
+  ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
+
+  set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
   // info
 

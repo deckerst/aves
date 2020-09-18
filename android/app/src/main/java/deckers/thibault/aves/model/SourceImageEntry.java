@@ -135,49 +135,51 @@ public class SourceImageEntry {
     // finds: width, height, orientation/rotation, date, title, duration
     private void fillByMediaMetadataRetriever(@NonNull Context context) {
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
-        try {
-            String width = null, height = null, rotation = null, durationMillis = null;
-            if (isImage()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_WIDTH);
-                    height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_HEIGHT);
-                    rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_ROTATION);
+        if (retriever != null) {
+            try {
+                String width = null, height = null, rotation = null, durationMillis = null;
+                if (isImage()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_WIDTH);
+                        height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_HEIGHT);
+                        rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_ROTATION);
+                    }
+                } else if (isVideo()) {
+                    width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+                    height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+                    rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                    durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                 }
-            } else if (isVideo()) {
-                width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-                height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-                rotation = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            }
-            if (width != null) {
-                this.width = Integer.parseInt(width);
-            }
-            if (height != null) {
-                this.height = Integer.parseInt(height);
-            }
-            if (rotation != null) {
-                this.orientationDegrees = Integer.parseInt(rotation);
-            }
-            if (durationMillis != null) {
-                this.durationMillis = Long.parseLong(durationMillis);
-            }
+                if (width != null) {
+                    this.width = Integer.parseInt(width);
+                }
+                if (height != null) {
+                    this.height = Integer.parseInt(height);
+                }
+                if (rotation != null) {
+                    this.orientationDegrees = Integer.parseInt(rotation);
+                }
+                if (durationMillis != null) {
+                    this.durationMillis = Long.parseLong(durationMillis);
+                }
 
-            String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
-            long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
-            // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
-            if (dateMillis > 0) {
-                this.sourceDateTakenMillis = dateMillis;
-            }
+                String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
+                long dateMillis = MetadataHelper.parseVideoMetadataDate(dateString);
+                // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
+                if (dateMillis > 0) {
+                    this.sourceDateTakenMillis = dateMillis;
+                }
 
-            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-            if (title != null) {
-                this.title = title;
+                String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+                if (title != null) {
+                    this.title = title;
+                }
+            } catch (Exception e) {
+                // ignore
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release();
             }
-        } catch (Exception e) {
-            // ignore
-        } finally {
-            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-            retriever.release();
         }
     }
 

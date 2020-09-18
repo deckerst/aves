@@ -83,9 +83,9 @@ class ImageView extends StatelessWidget {
           UriPicture(
             uri: entry.uri,
             mimeType: entry.mimeType,
-            colorFilter: colorFilter,
           ),
           placeholderBuilder: (context) => loadingBuilder(context, fastThumbnailProvider),
+          colorFilter: colorFilter,
         ),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,

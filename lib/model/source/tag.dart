@@ -59,14 +59,6 @@ mixin TagMixin on SourceBase {
     invalidateFilterEntryCounts();
     eventBus.fire(TagsChangedEvent());
   }
-
-  Map<String, ImageEntry> getTagEntries() {
-    final entries = sortedEntriesForFilterList;
-    return Map.fromEntries(sortedTags.map((tag) => MapEntry(
-          tag,
-          entries.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),
-        )));
-  }
 }
 
 class CatalogMetadataChangedEvent {}

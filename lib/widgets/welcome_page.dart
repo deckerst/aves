@@ -52,6 +52,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     children: [
                       ..._buildTop(context),
                       Flexible(child: _buildTerms(terms)),
+                      SizedBox(height: 16),
                       ..._buildBottomControls(context),
                     ],
                   ),
@@ -92,12 +93,23 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   List<Widget> _buildBottomControls(BuildContext context) {
-    final checkbox = LabeledCheckbox(
-      key: Key('agree-checkbox'),
-      value: _hasAcceptedTerms,
-      onChanged: (v) => setState(() => _hasAcceptedTerms = v),
-      text: 'I agree to the terms and conditions',
+    final checkboxes = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LabeledCheckbox(
+          value: settings.isCrashlyticsEnabled,
+          onChanged: (v) => setState(() => settings.isCrashlyticsEnabled = v),
+          text: 'Allow anonymous crash reporting',
+        ),
+        LabeledCheckbox(
+          key: Key('agree-termsCheckbox'),
+          value: _hasAcceptedTerms,
+          onChanged: (v) => setState(() => _hasAcceptedTerms = v),
+          text: 'I agree to the terms and conditions',
+        ),
+      ],
     );
+
     final button = RaisedButton(
       key: Key('continue-button'),
       child: Text('Continue'),
@@ -114,16 +126,17 @@ class _WelcomePageState extends State<WelcomePage> {
             }
           : null,
     );
+
     return MediaQuery.of(context).orientation == Orientation.portrait
         ? [
-            checkbox,
+            checkboxes,
             button,
           ]
         : [
-            SizedBox(height: 16),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                checkbox,
+                checkboxes,
                 Spacer(),
                 button,
               ],

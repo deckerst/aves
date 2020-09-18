@@ -32,10 +32,10 @@ class ThumbnailVectorImage extends StatelessWidget {
             UriPicture(
               uri: entry.uri,
               mimeType: entry.mimeType,
-              colorFilter: colorFilter,
             ),
             width: extent,
             height: extent,
+            colorFilter: colorFilter,
           );
         },
       ),
