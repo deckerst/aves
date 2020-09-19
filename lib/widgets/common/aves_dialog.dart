@@ -6,6 +6,7 @@ class AvesDialog extends AlertDialog {
 
   AvesDialog({
     String title,
+    ScrollController scrollController,
     List<Widget> scrollableContent,
     Widget content,
     @required List<Widget> actions,
@@ -31,6 +32,7 @@ class AvesDialog extends AlertDialog {
                         ),
                       ),
                       child: ListView(
+                        controller: scrollController ?? ScrollController(),
                         shrinkWrap: true,
                         children: scrollableContent,
                       ),
@@ -38,7 +40,7 @@ class AvesDialog extends AlertDialog {
                   ),
                 )
               : content,
-          contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(24, 20, 24, 24),
+          contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(24, 20, 24, 0),
           actions: actions,
           actionsPadding: EdgeInsets.symmetric(horizontal: 8),
           shape: RoundedRectangleBorder(

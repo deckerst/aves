@@ -8,6 +8,7 @@ class Durations {
   static const sweepingAnimation = Duration(milliseconds: 650);
   static const popupMenuAnimation = Duration(milliseconds: 300); // ref _PopupMenuRoute._kMenuDuration
   static const staggeredAnimation = Duration(milliseconds: 375);
+  static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
   // collection animations
   static const appBarTitleAnimation = Duration(milliseconds: 300);
@@ -32,4 +33,5 @@ class Durations {
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
+  static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
 }
