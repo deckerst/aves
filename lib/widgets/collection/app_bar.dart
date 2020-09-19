@@ -10,6 +10,7 @@ import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/collection_actions.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/collection/search/search_delegate.dart';
+import 'package:aves/widgets/common/action_delegates/add_shortcut_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
@@ -306,7 +307,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         _goToStats();
         break;
       case CollectionAction.addShortcut:
-        unawaited(AppShortcutService.pin('Collection', collection.filters));
+        unawaited(_showShortcutDialog(context));
         break;
       case CollectionAction.group:
         final value = await showDialog<EntryGroupFactor>(
@@ -346,6 +347,16 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         }
         break;
     }
+  }
+
+  Future<void> _showShortcutDialog(BuildContext context) async {
+    final name = await showDialog<String>(
+      context: context,
+      builder: (context) => AddShortcutDialog(collection.filters),
+    );
+    if (name == null || name.isEmpty) return;
+
+    unawaited(AppShortcutService.pin(name, collection.filters));
   }
 
   void _goToSearch() {
