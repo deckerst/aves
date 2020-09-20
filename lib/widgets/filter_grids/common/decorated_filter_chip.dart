@@ -5,11 +5,13 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 
 class DecoratedFilterChip extends StatelessWidget {
@@ -65,19 +67,21 @@ class DecoratedFilterChip extends StatelessWidget {
         if (pinned)
           Padding(
             padding: EdgeInsets.only(right: 8),
-            child: Icon(
+            child: DecoratedIcon(
               AIcons.pin,
-              size: 16,
               color: FilterGridPage.detailColor,
+              shadows: [Constants.embossShadow],
+              size: 16,
             ),
           ),
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           Padding(
             padding: EdgeInsets.only(right: 8),
-            child: Icon(
+            child: DecoratedIcon(
               AIcons.removableStorage,
-              size: 16,
               color: FilterGridPage.detailColor,
+              shadows: [Constants.embossShadow],
+              size: 16,
             ),
           ),
         count,

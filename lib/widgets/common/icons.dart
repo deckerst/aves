@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/image_providers/app_icon_image_provider.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 
 class AIcons {
@@ -162,15 +164,17 @@ class IconUtils {
     @required BuildContext context,
     @required String album,
     double size = 24,
+    bool embossed = false,
   }) {
+    Widget buildIcon(IconData icon) => embossed ? DecoratedIcon(icon, shadows: [Constants.embossShadow], size: size) : Icon(icon, size: size);
     switch (androidFileUtils.getAlbumType(album)) {
       case AlbumType.camera:
-        return Icon(AIcons.cameraAlbum, size: size);
+        return buildIcon(AIcons.cameraAlbum);
       case AlbumType.screenshots:
       case AlbumType.screenRecordings:
-        return Icon(AIcons.screenshotAlbum, size: size);
+        return buildIcon(AIcons.screenshotAlbum);
       case AlbumType.download:
-        return Icon(AIcons.downloadAlbum, size: size);
+        return buildIcon(AIcons.downloadAlbum);
       case AlbumType.app:
         return Image(
           image: AppIconImage(

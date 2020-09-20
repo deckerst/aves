@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -10,6 +9,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -135,12 +135,7 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2.copyWith(
-        shadows: [
-          Shadow(
-            color: Colors.black87,
-            offset: Offset(0.5, 1.0),
-          )
-        ],
+        shadows: [Constants.embossShadow],
       ),
       softWrap: false,
       overflow: TextOverflow.fade,
@@ -217,7 +212,7 @@ class _LocationRow extends AnimatedWidget {
     }
     return Row(
       children: [
-        Icon(AIcons.location, size: _iconSize),
+        DecoratedIcon(AIcons.location, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -237,7 +232,7 @@ class _DateRow extends StatelessWidget {
     final resolution = '${entry.width ?? '?'} × ${entry.height ?? '?'}';
     return Row(
       children: [
-        Icon(AIcons.date, size: _iconSize),
+        DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         if (!entry.isSvg) Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
@@ -255,7 +250,7 @@ class _ShootingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(AIcons.shooting, size: _iconSize),
+        DecoratedIcon(AIcons.shooting, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),

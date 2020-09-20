@@ -38,6 +38,7 @@ dependencies:
     sdk: flutter
   charts_flutter:
   collection:
+  decorated_icon:
   draggable_scrollbar:
 #    path: ../flutter-draggable-scrollbar
     git:
