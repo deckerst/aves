@@ -8,7 +8,7 @@ class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
       };
 

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +26,7 @@ class AppShortcutService {
     try {
       await platform.invokeMethod('pin', <String, dynamic>{
         'label': label,
-        'filters': filters.map((filter) => jsonEncode(filter.toJson())).toList(),
+        'filters': filters.map((filter) => filter.toJson()).toList(),
       });
     } on PlatformException catch (e) {
       debugPrint('pin failed with code=${e.code}, exception=${e.message}, details=${e.details}');
