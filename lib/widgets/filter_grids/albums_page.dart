@@ -8,10 +8,10 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/filter_grids/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/chip_actions.dart';
-import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
+import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +22,7 @@ class AlbumListPage extends StatelessWidget {
 
   final CollectionSource source;
 
+  static final ChipSetActionDelegate setActionDelegate = AlbumChipSetActionDelegate();
   static final ChipActionDelegate actionDelegate = AlbumChipActionDelegate();
 
   const AlbumListPage({@required this.source});
@@ -38,51 +39,23 @@ class AlbumListPage extends StatelessWidget {
             builder: (context, snapshot) => FilterNavigationPage(
               source: source,
               title: 'Albums',
-              actionDelegate: actionDelegate,
+              chipSetActionDelegate: setActionDelegate,
+              chipActionDelegate: actionDelegate,
+              chipActionsBuilder: (filter) => [
+                settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+                ChipAction.rename,
+              ],
               filterEntries: getAlbumEntries(source),
               filterBuilder: (album) => AlbumFilter(album, source.getUniqueAlbumName(album)),
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.album,
                 text: 'No albums',
               ),
-              onLongPress: (filter, tapPosition) => _showMenu(context, filter, tapPosition),
             ),
           ),
         );
       },
     );
-  }
-
-  Future<void> _showMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
-    final touchArea = Size(40, 40);
-    final selectedAction = await showMenu<AlbumAction>(
-      context: context,
-      position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
-      items: [settings.pinnedFilters.contains(filter) ? AlbumAction.unpin : AlbumAction.pin, AlbumAction.rename]
-          .map((action) => PopupMenuItem(
-                value: action,
-                child: MenuRow(text: action.getText(), icon: action.getIcon()),
-              ))
-          .toList(),
-    );
-    if (selectedAction != null) {
-      switch (selectedAction) {
-        case AlbumAction.pin:
-          final pinnedFilters = settings.pinnedFilters..add(filter);
-          settings.pinnedFilters = pinnedFilters;
-          break;
-        case AlbumAction.unpin:
-          final pinnedFilters = settings.pinnedFilters..remove(filter);
-          settings.pinnedFilters = pinnedFilters;
-          break;
-        case AlbumAction.rename:
-          // TODO TLAD rename album
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   // common with album selection page to move/copy entries
@@ -98,9 +71,9 @@ class AlbumListPage extends StatelessWidget {
               entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
             ));
         final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allAlbumMapEntries, (e) => pinned.contains(e.key));
-        final pinnedAlbumMapEntries = (byPin[true] ?? [])..sort(FilterNavigationPage.compareChipByDate);
-        final unpinnedAlbumMapEntries = (byPin[false] ?? [])..sort(FilterNavigationPage.compareChipByDate);
-        return Map.fromEntries([...pinnedAlbumMapEntries, ...unpinnedAlbumMapEntries]);
+        final pinnedMapEntries = (byPin[true] ?? [])..sort(FilterNavigationPage.compareChipByDate);
+        final unpinnedMapEntries = (byPin[false] ?? [])..sort(FilterNavigationPage.compareChipByDate);
+        return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
       case ChipSortFactor.name:
       default:
         final pinnedAlbums = <String>[], regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
