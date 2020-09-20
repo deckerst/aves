@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
@@ -49,6 +50,23 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Tap “back” twice to exit'),
                   ),
                   SectionTitle('Display'),
+                  ListTile(
+                    title: Text('Keep screen on'),
+                    subtitle: Text(settings.keepScreenOn.name),
+                    onTap: () async {
+                      final value = await showDialog<KeepScreenOn>(
+                        context: context,
+                        builder: (context) => AvesSelectionDialog<KeepScreenOn>(
+                          initialValue: settings.keepScreenOn,
+                          options: Map.fromEntries(KeepScreenOn.values.map((v) => MapEntry(v, v.name))),
+                          title: 'Keep Screen On',
+                        ),
+                      );
+                      if (value != null) {
+                        settings.keepScreenOn = value;
+                      }
+                    },
+                  ),
                   ListTile(
                     title: Text('SVG background'),
                     trailing: SvgBackgroundSelector(),
