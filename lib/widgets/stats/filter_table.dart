@@ -54,7 +54,7 @@ class FilterTable extends StatelessWidget {
                     alignment: AlignmentDirectional.centerStart,
                     child: AvesFilterChip(
                       filter: filter,
-                      onPressed: (filter) => _goToCollection(context, filter),
+                      onTap: (filter) => _goToCollection(context, filter),
                     ),
                   ),
                   if (showPercentIndicator)

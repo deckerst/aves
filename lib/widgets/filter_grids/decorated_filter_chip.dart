@@ -16,14 +16,16 @@ class DecoratedFilterChip extends StatelessWidget {
   final CollectionSource source;
   final CollectionFilter filter;
   final ImageEntry entry;
-  final FilterCallback onPressed;
+  final FilterCallback onTap;
+  final OffsetFilterCallback onLongPress;
 
   const DecoratedFilterChip({
     Key key,
     @required this.source,
     @required this.filter,
     @required this.entry,
-    @required this.onPressed,
+    @required this.onTap,
+    this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -45,7 +47,8 @@ class DecoratedFilterChip extends StatelessWidget {
       showGenericIcon: false,
       background: backgroundImage,
       details: _buildDetails(filter),
-      onPressed: onPressed,
+      onTap: onTap,
+      onLongPress: onLongPress,
     );
   }
 

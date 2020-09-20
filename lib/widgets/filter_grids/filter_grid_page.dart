@@ -32,6 +32,7 @@ class FilterNavigationPage extends StatelessWidget {
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
   final Widget Function() emptyBuilder;
+  final OffsetFilterCallback onLongPress;
 
   const FilterNavigationPage({
     @required this.source,
@@ -40,6 +41,7 @@ class FilterNavigationPage extends StatelessWidget {
     @required this.filterEntries,
     @required this.filterBuilder,
     @required this.emptyBuilder,
+    this.onLongPress,
   });
 
   @override
@@ -66,7 +68,7 @@ class FilterNavigationPage extends StatelessWidget {
           return sourceState != SourceState.loading && emptyBuilder != null ? emptyBuilder() : SizedBox.shrink();
         },
       ),
-      onPressed: (filter) => Navigator.pushAndRemoveUntil(
+      onTap: (filter) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           settings: RouteSettings(name: CollectionPage.routeName),
@@ -79,6 +81,7 @@ class FilterNavigationPage extends StatelessWidget {
         ),
         settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
+      onLongPress: onLongPress,
     );
   }
 
@@ -123,7 +126,8 @@ class FilterGridPage extends StatelessWidget {
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
   final Widget Function() emptyBuilder;
-  final FilterCallback onPressed;
+  final FilterCallback onTap;
+  final OffsetFilterCallback onLongPress;
 
   const FilterGridPage({
     @required this.source,
@@ -131,7 +135,8 @@ class FilterGridPage extends StatelessWidget {
     @required this.filterEntries,
     @required this.filterBuilder,
     @required this.emptyBuilder,
-    @required this.onPressed,
+    @required this.onTap,
+    this.onLongPress,
   });
 
   List<String> get filterKeys => filterEntries.keys.toList();
@@ -169,7 +174,8 @@ class FilterGridPage extends StatelessWidget {
                                       source: source,
                                       filter: filterBuilder(key),
                                       entry: filterEntries[key],
-                                      onPressed: onPressed,
+                                      onTap: onTap,
+                                      onLongPress: onLongPress,
                                     );
                                     return AnimationConfiguration.staggeredGrid(
                                       position: i,
