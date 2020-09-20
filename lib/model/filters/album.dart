@@ -18,14 +18,14 @@ class AlbumFilter extends CollectionFilter {
 
   const AlbumFilter(this.album, this.uniqueName);
 
-  AlbumFilter.fromJson(Map<String, dynamic> json)
+  AlbumFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['album'],
           json['uniqueName'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'album': album,
         'uniqueName': uniqueName,

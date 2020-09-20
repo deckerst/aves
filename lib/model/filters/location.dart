@@ -17,14 +17,14 @@ class LocationFilter extends CollectionFilter {
     if (split.length > 1) _countryCode = split[1];
   }
 
-  LocationFilter.fromJson(Map<String, dynamic> json)
+  LocationFilter.fromMap(Map<String, dynamic> json)
       : this(
           LocationLevel.values.firstWhere((v) => v.toString() == json['level'], orElse: () => null),
           json['location'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'level': level.toString(),
         'location': _countryCode != null ? '$_location$locationSeparator$_countryCode' : _location,

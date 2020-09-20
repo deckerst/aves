@@ -32,13 +32,13 @@ class QueryFilter extends CollectionFilter {
     _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
   }
 
-  QueryFilter.fromJson(Map<String, dynamic> json)
+  QueryFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['query'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'query': query,
       };

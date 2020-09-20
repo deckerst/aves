@@ -10,13 +10,13 @@ class TagFilter extends CollectionFilter {
 
   const TagFilter(this.tag);
 
-  TagFilter.fromJson(Map<String, dynamic> json)
+  TagFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['tag'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'tag': tag,
       };
