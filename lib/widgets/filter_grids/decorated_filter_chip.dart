@@ -16,6 +16,7 @@ class DecoratedFilterChip extends StatelessWidget {
   final CollectionSource source;
   final CollectionFilter filter;
   final ImageEntry entry;
+  final bool pinned;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
@@ -24,6 +25,7 @@ class DecoratedFilterChip extends StatelessWidget {
     @required this.source,
     @required this.filter,
     @required this.entry,
+    this.pinned = false,
     @required this.onTap,
     this.onLongPress,
   }) : super(key: key);
@@ -57,19 +59,29 @@ class DecoratedFilterChip extends StatelessWidget {
       '${source.count(filter)}',
       style: TextStyle(color: FilterGridPage.detailColor),
     );
-    return filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                AIcons.removableStorage,
-                size: 16,
-                color: FilterGridPage.detailColor,
-              ),
-              SizedBox(width: 8),
-              count,
-            ],
-          )
-        : count;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (pinned)
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: Icon(
+              AIcons.pin,
+              size: 16,
+              color: FilterGridPage.detailColor,
+            ),
+          ),
+        if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: Icon(
+              AIcons.removableStorage,
+              size: 16,
+              color: FilterGridPage.detailColor,
+            ),
+          ),
+        count,
+      ],
+    );
   }
 }
