@@ -76,9 +76,13 @@ mixin LocationMixin on SourceBase {
 
   void updateLocations() {
     final locations = rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails).toList();
-    List<String> lister(String Function(AddressDetails a) f) => List<String>.unmodifiable(locations.map(f).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
-    sortedCountries = lister((address) => '${address.countryName}${LocationFilter.locationSeparator}${address.countryCode}');
-    sortedPlaces = lister((address) => address.place);
+    sortedPlaces = List<String>.unmodifiable(locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
+
+    // the same country code could be found with different country names
+    // e.g. if the locale changed between geolocating calls
+    // so we merge countries by code, keeping only one name for each code
+    final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
+    sortedCountries = List<String>.unmodifiable(countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase));
 
     invalidateFilterEntryCounts();
     eventBus.fire(LocationsChangedEvent());

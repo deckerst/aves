@@ -31,7 +31,7 @@ class LocationFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryName == _location) || (level == LocationLevel.place && entry.addressDetails.place == _location));
+  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
 
   @override
   String get label => _location;
