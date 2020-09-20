@@ -27,8 +27,10 @@ class LocationFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'level': level.toString(),
-        'location': _countryCode != null ? '$_location$locationSeparator$_countryCode' : _location,
+        'location': _countryCode != null ? countryNameAndCode : _location,
       };
+
+  String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
 
   @override
   bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));

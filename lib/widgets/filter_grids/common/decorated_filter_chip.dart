@@ -9,7 +9,7 @@ import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/material.dart';
 
 class DecoratedFilterChip extends StatelessWidget {

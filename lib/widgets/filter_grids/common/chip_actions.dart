@@ -1,24 +1,24 @@
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/widgets.dart';
 
-enum ChipAction {
+enum ChipSetAction {
   sort,
 }
 
-enum AlbumAction {
+enum ChipAction {
   pin,
   unpin,
   rename,
 }
 
-extension ExtraAlbumAction on AlbumAction {
+extension ExtraChipAction on ChipAction {
   String getText() {
     switch (this) {
-      case AlbumAction.pin:
+      case ChipAction.pin:
         return 'Pin to top';
-      case AlbumAction.unpin:
+      case ChipAction.unpin:
         return 'Unpin from top';
-      case AlbumAction.rename:
+      case ChipAction.rename:
         return 'Rename';
     }
     return null;
@@ -26,10 +26,10 @@ extension ExtraAlbumAction on AlbumAction {
 
   IconData getIcon() {
     switch (this) {
-      case AlbumAction.pin:
-      case AlbumAction.unpin:
+      case ChipAction.pin:
+      case ChipAction.unpin:
         return AIcons.pin;
-      case AlbumAction.rename:
+      case ChipAction.rename:
         return AIcons.rename;
     }
     return null;

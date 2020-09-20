@@ -19,7 +19,7 @@ import 'package:aves/widgets/common/data_providers/media_store_collection_provid
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/filter_grids/search_button.dart';
+import 'package:aves/widgets/common/search_button.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
