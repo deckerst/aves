@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -23,6 +24,7 @@ class Settings extends ChangeNotifier {
   static const hasAcceptedTermsKey = 'has_accepted_terms';
   static const isCrashlyticsEnabledKey = 'is_crashlytics_enabled';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
+  static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
 
@@ -74,6 +76,13 @@ class Settings extends ChangeNotifier {
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
+
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.fullscreenOnly, KeepScreenOn.values);
+
+  set keepScreenOn(KeepScreenOn newValue) {
+    setAndNotify(keepScreenOnKey, newValue.toString());
+    newValue.apply();
+  }
 
   HomePageSetting get homePage => getEnumOrDefault(homePageKey, HomePageSetting.collection, HomePageSetting.values);
 
