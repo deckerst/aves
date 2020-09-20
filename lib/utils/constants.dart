@@ -77,10 +77,10 @@ class Constants {
       sourceUrl: 'https://github.com/Skylled/expansion_tile_card',
     ),
     Dependency(
-      name: 'Firebase Crashlytics',
+      name: 'FlutterFire',
       license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/FirebaseExtended/flutterfire/blob/master/packages/firebase_crashlytics/LICENSE',
-      sourceUrl: 'https://github.com/FirebaseExtended/flutterfire/tree/master/packages/firebase_crashlytics',
+      licenseUrl: 'https://github.com/FirebaseExtended/flutterfire/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
     ),
     Dependency(
       name: 'Flushbar',
@@ -93,6 +93,12 @@ class Constants {
       license: 'MIT',
       licenseUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer/blob/master/LICENSE',
       sourceUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer',
+    ),
+    Dependency(
+      name: 'Flutter Map',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/fleaflet/flutter_map/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/fleaflet/flutter_map',
     ),
     Dependency(
       name: 'Flutter Markdown',
@@ -137,10 +143,22 @@ class Constants {
       sourceUrl: 'https://github.com/dart-lang/intl',
     ),
     Dependency(
-      name: 'Outline Material Icons',
+      name: 'LatLong',
       license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/lucaslcode/outline_material_icons/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/lucaslcode/outline_material_icons',
+      licenseUrl: 'https://github.com/MikeMitterer/dart-latlong/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/MikeMitterer/dart-latlong',
+    ),
+    Dependency(
+      name: 'Overlay Support',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/boyan01/overlay_support/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/boyan01/overlay_support',
+    ),
+    Dependency(
+      name: 'Package info',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/package_info/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/package_info',
     ),
     Dependency(
       name: 'Palette Generator',
@@ -219,6 +237,12 @@ class Constants {
       license: 'BSD 2-Clause',
       licenseUrl: 'https://github.com/dart-lang/tuple/blob/master/LICENSE',
       sourceUrl: 'https://github.com/dart-lang/tuple',
+    ),
+    Dependency(
+      name: 'URL Launcher',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher',
     ),
     Dependency(
       name: 'UUID',
