@@ -138,7 +138,7 @@ class ImageSearchDelegate {
       filters: filters,
       expandedNotifier: expandedSectionNotifier,
       heroTypeBuilder: heroTypeBuilder,
-      onPressed: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
+      onTap: (filter) => _select(context, filter is QueryFilter ? QueryFilter(filter.query) : filter),
     );
   }
 

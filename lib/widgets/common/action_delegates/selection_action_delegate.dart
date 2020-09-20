@@ -96,7 +96,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
               icon: AIcons.album,
               text: 'No albums',
             ),
-            onPressed: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
+            onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           );
         },
       ),

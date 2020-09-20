@@ -74,7 +74,7 @@ class BasicSection extends StatelessWidget {
             children: effectiveFilters
                 .map((filter) => AvesFilterChip(
                       filter: filter,
-                      onPressed: onFilter,
+                      onTap: onFilter,
                     ))
                 .toList(),
           ),

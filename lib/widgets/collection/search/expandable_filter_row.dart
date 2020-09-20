@@ -10,14 +10,14 @@ class ExpandableFilterRow extends StatelessWidget {
   final Iterable<CollectionFilter> filters;
   final ValueNotifier<String> expandedNotifier;
   final HeroType Function(CollectionFilter filter) heroTypeBuilder;
-  final FilterCallback onPressed;
+  final FilterCallback onTap;
 
   const ExpandableFilterRow({
     this.title,
     @required this.filters,
     this.expandedNotifier,
     this.heroTypeBuilder,
-    @required this.onPressed,
+    @required this.onTap,
   });
 
   static const double horizontalPadding = 8;
@@ -107,7 +107,7 @@ class ExpandableFilterRow extends StatelessWidget {
       key: Key(filter.key),
       filter: filter,
       heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,
-      onPressed: onPressed,
+      onTap: onTap,
     );
   }
 }
