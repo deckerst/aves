@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -37,6 +38,7 @@ class Settings extends ChangeNotifier {
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
+  static const pinnedFiltersKey = 'pinned_filters';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -119,6 +121,10 @@ class Settings extends ChangeNotifier {
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
+
+  Set<CollectionFilter> get pinnedFilters => (_prefs.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
+
+  set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   // info
 

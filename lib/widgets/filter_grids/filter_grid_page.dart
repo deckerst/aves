@@ -146,6 +146,7 @@ class FilterGridPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pinnedFilters = settings.pinnedFilters;
     return MediaQueryDataProvider(
       child: Scaffold(
         body: DoubleBackPopScope(
@@ -169,11 +170,13 @@ class FilterGridPage extends StatelessWidget {
                                 delegate: SliverChildBuilderDelegate(
                                   (context, i) {
                                     final key = filterKeys[i];
+                                    final filter = filterBuilder(key);
                                     final child = DecoratedFilterChip(
                                       key: Key(key),
                                       source: source,
-                                      filter: filterBuilder(key),
+                                      filter: filter,
                                       entry: filterEntries[key],
+                                      pinned: pinnedFilters.contains(filter),
                                       onTap: onTap,
                                       onLongPress: onLongPress,
                                     );
