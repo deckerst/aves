@@ -12,6 +12,11 @@ class Constants {
     fontFamily: 'Concourse Caps',
   );
 
+  static const embossShadow = Shadow(
+    color: Colors.black87,
+    offset: Offset(0.5, 1.0),
+  );
+
   static const List<Dependency> androidDependencies = [
     Dependency(
       name: 'CWAC-Document',
@@ -57,6 +62,12 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/dart-lang/collection/blob/master/LICENSE',
       sourceUrl: 'https://github.com/dart-lang/collection',
+    ),
+    Dependency(
+      name: 'Decorated Icon',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/benPesso/flutter_decorated_icon/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
     ),
     Dependency(
       name: 'Draggable Scrollbar',

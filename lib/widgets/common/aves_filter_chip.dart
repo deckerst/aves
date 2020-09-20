@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 
@@ -79,7 +80,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   @override
   Widget build(BuildContext context) {
     final hasBackground = widget.background != null;
-    final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon);
+    final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon, embossed: hasBackground);
     final trailing = widget.removable ? Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
 
     Widget content = Row(
@@ -126,12 +127,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           color: Colors.black54,
           child: DefaultTextStyle(
             style: Theme.of(context).textTheme.bodyText2.copyWith(
-              shadows: [
-                Shadow(
-                  color: Colors.black87,
-                  offset: Offset(0.5, 1.0),
-                )
-              ],
+              shadows: [Constants.embossShadow],
             ),
             child: content,
           ),
