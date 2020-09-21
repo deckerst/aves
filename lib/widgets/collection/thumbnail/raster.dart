@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/durations.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/transition_image.dart';
@@ -91,6 +92,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
         ? fastImage
         : Image(
             key: ValueKey('HQ'),
+            image: _sizedThumbnailProvider,
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               if (wasSynchronouslyLoaded) return child;
               return AnimatedSwitcher(
@@ -111,7 +113,17 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                 child: frame == null ? fastImage : child,
               );
             },
-            image: _sizedThumbnailProvider,
+            errorBuilder: (context, error, stackTrace) => Center(
+              child: Tooltip(
+                message: error.toString(),
+                preferBelow: false,
+                child: Icon(
+                  AIcons.error,
+                  size: extent / 2,
+                  color: Colors.blueGrey,
+                ),
+              ),
+            ),
             width: extent,
             height: extent,
             fit: BoxFit.cover,
