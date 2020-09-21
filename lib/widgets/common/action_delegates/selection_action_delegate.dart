@@ -139,6 +139,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
                 dateModifiedSecs: newFields['dateModifiedSecs'] as int,
               ));
             });
+            await metadataDb.saveEntries(movedEntries);
             await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
             await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
           } else {
