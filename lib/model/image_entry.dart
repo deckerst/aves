@@ -25,7 +25,7 @@ class ImageEntry {
   int orientationDegrees;
   final int sizeBytes;
   String sourceTitle;
-  final int dateModifiedSecs;
+  int _dateModifiedSecs;
   final int sourceDateTakenMillis;
   final int durationMillis;
   int _catalogDateMillis;
@@ -44,18 +44,20 @@ class ImageEntry {
     this.orientationDegrees,
     this.sizeBytes,
     this.sourceTitle,
-    this.dateModifiedSecs,
+    int dateModifiedSecs,
     this.sourceDateTakenMillis,
     this.durationMillis,
   })  : assert(width != null),
         assert(height != null) {
     this.path = path;
+    this.dateModifiedSecs = dateModifiedSecs;
   }
 
   ImageEntry copyWith({
     @required String uri,
     @required String path,
     @required int contentId,
+    @required int dateModifiedSecs,
   }) {
     final copyContentId = contentId ?? this.contentId;
     final copied = ImageEntry(
@@ -200,6 +202,13 @@ class ImageEntry {
       }
     }
     return _bestDate;
+  }
+
+  int get dateModifiedSecs => _dateModifiedSecs;
+
+  set dateModifiedSecs(int dateModifiedSecs) {
+    _dateModifiedSecs = dateModifiedSecs;
+    _bestDate = null;
   }
 
   DateTime get monthTaken {
