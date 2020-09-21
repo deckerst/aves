@@ -22,9 +22,6 @@ class AlbumListPage extends StatelessWidget {
 
   final CollectionSource source;
 
-  static final ChipSetActionDelegate setActionDelegate = AlbumChipSetActionDelegate();
-  static final ChipActionDelegate actionDelegate = AlbumChipActionDelegate();
-
   const AlbumListPage({@required this.source});
 
   @override
@@ -39,8 +36,8 @@ class AlbumListPage extends StatelessWidget {
             builder: (context, snapshot) => FilterNavigationPage(
               source: source,
               title: 'Albums',
-              chipSetActionDelegate: setActionDelegate,
-              chipActionDelegate: actionDelegate,
+              chipSetActionDelegate: AlbumChipSetActionDelegate(),
+              chipActionDelegate: AlbumChipActionDelegate(source: source),
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
                 ChipAction.rename,
