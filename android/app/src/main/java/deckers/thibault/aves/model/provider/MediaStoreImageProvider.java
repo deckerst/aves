@@ -180,20 +180,13 @@ public class MediaStoreImageProvider extends ImageProvider {
                             // they are valid but miss some attributes, such as width, height, orientation
                             SourceImageEntry entry = new SourceImageEntry(entryMap).fillPreCatalogMetadata(context);
                             entryMap = entry.toMap();
-                            width = entry.width != null ? entry.width : 0;
-                            height = entry.height != null ? entry.height : 0;
                         }
 
-                        if ((width <= 0 || height <= 0) && needSize(mimeType)) {
-                            // this is probably not a real image, like "/storage/emulated/0", so we skip it
-                            Log.w(LOG_TAG, "failed to get size for uri=" + itemUri + ", path=" + path + ", mimeType=" + mimeType);
-                        } else {
-                            newEntryHandler.handleEntry(entryMap);
-                            if (newEntryCount % 30 == 0) {
-                                Thread.sleep(10);
-                            }
-                            newEntryCount++;
+                        newEntryHandler.handleEntry(entryMap);
+                        if (newEntryCount % 30 == 0) {
+                            Thread.sleep(10);
                         }
+                        newEntryCount++;
                     }
                 }
                 cursor.close();

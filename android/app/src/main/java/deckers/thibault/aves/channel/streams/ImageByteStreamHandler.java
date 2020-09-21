@@ -66,6 +66,10 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
         handler.post(() -> eventSink.endOfStream());
     }
 
+    // Supported image formats:
+    // - Flutter (as of v1.20): JPEG, PNG, GIF, Animated GIF, WebP, Animated WebP, BMP, and WBMP
+    // - Android: https://developer.android.com/guide/topics/media/media-formats#image-formats
+    // - Glide: https://github.com/bumptech/glide/blob/master/library/src/main/java/com/bumptech/glide/load/ImageHeaderParser.java
     private void getImage() {
         if (mimeType != null && mimeType.startsWith(MimeTypes.VIDEO)) {
             RequestOptions options = new RequestOptions()
@@ -91,42 +95,40 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } finally {
                 Glide.with(activity).clear(target);
             }
+        } else if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
+            // as of Flutter v1.20, Dart Image.memory cannot decode DNG/HEIC/HEIF images
+            // so we convert the image on platform side first
+            FutureTarget<Bitmap> target = Glide.with(activity)
+                    .asBitmap()
+                    .load(uri)
+                    .submit();
+            try {
+                Bitmap bitmap = target.get();
+                if (bitmap != null) {
+                    bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                    // Bitmap.CompressFormat.PNG is slower than JPEG
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                    success(stream.toByteArray());
+                } else {
+                    error("getImage-image-decode-null", "failed to get image from uri=" + uri, null);
+                }
+            } catch (Exception e) {
+                error("getImage-image-decode-exception", "failed to get image from uri=" + uri, e.getMessage());
+            } finally {
+                Glide.with(activity).clear(target);
+            }
         } else {
             ContentResolver cr = activity.getContentResolver();
-            if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
-                // as of Flutter v1.20, Dart Image.memory cannot decode DNG/HEIC/HEIF images
-                // so we convert the image on platform side first
-                FutureTarget<Bitmap> target = Glide.with(activity)
-                        .asBitmap()
-                        .load(uri)
-                        .submit();
-                try {
-                    Bitmap bitmap = target.get();
-                    if (bitmap != null) {
-                        bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                        // Bitmap.CompressFormat.PNG is slower than JPEG
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                        success(stream.toByteArray());
-                    } else {
-                        error("getImage-image-decode-null", "failed to get image from uri=" + uri, null);
-                    }
-                } catch (Exception e) {
-                    error("getImage-image-decode-exception", "failed to get image from uri=" + uri, e.getMessage());
-                } finally {
-                    Glide.with(activity).clear(target);
+            try (InputStream is = cr.openInputStream(uri)) {
+                if (is != null) {
+                    streamBytes(is);
+                } else {
+                    error("getImage-image-read-null", "failed to get image from uri=" + uri, null);
                 }
-            } else {
-                try (InputStream is = cr.openInputStream(uri)) {
-                    if (is != null) {
-                        streamBytes(is);
-                    } else {
-                        error("getImage-image-read-null", "failed to get image from uri=" + uri, null);
-                    }
-                } catch (IOException e) {
-                    error("getImage-image-read-exception", "failed to get image from uri=" + uri, e.getMessage());
-                }
+            } catch (IOException e) {
+                error("getImage-image-read-exception", "failed to get image from uri=" + uri, e.getMessage());
             }
         }
         endOfStream();

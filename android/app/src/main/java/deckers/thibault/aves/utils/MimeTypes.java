@@ -8,6 +8,7 @@ public class MimeTypes {
     public static final String HEIF = "image/heif";
     public static final String JPEG = "image/jpeg";
     public static final String PNG = "image/png";
+    public static final String PSD = "image/x-photoshop";
     public static final String SVG = "image/svg+xml";
     public static final String WEBP = "image/webp";
 
