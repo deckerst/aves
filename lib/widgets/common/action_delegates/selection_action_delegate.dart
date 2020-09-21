@@ -136,6 +136,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
                 uri: newFields['uri'] as String,
                 path: newFields['path'] as String,
                 contentId: newFields['contentId'] as int,
+                dateModifiedSecs: newFields['dateModifiedSecs'] as int,
               ));
             });
             await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
@@ -151,9 +152,13 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
                 final newContentId = newFields['contentId'] as int;
                 entry.uri = newFields['uri'] as String;
                 entry.path = newFields['path'] as String;
+                entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int;
                 entry.contentId = newContentId;
+                entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
+                entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
                 movedEntries.add(entry);
 
+                await metadataDb.updateEntryId(oldContentId, entry);
                 await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
                 await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
                 await favourites.move(oldContentId, entry);

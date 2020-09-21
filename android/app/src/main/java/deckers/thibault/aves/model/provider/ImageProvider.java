@@ -260,7 +260,10 @@ public abstract class ImageProvider {
 
             Map<String, Object> newFields = new HashMap<>();
             // we retrieve updated fields as the renamed file became a new entry in the Media Store
-            String[] projection = {MediaStore.MediaColumns.TITLE};
+            String[] projection = {
+                    MediaStore.MediaColumns.TITLE,
+                    MediaStore.MediaColumns.DATE_MODIFIED,
+            };
             try {
                 Cursor cursor = context.getContentResolver().query(contentUri, projection, null, null, null);
                 if (cursor != null) {
@@ -269,6 +272,7 @@ public abstract class ImageProvider {
                         newFields.put("contentId", contentId);
                         newFields.put("path", path);
                         newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
+                        newFields.put("dateModifiedSecs", cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)));
                     }
                     cursor.close();
                 }
