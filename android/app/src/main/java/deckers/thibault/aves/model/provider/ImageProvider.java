@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.MetadataHelper;
@@ -87,6 +89,7 @@ public abstract class ImageProvider {
         scanNewPath(context, newFile.getPath(), mimeType, callback);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public void renameDirectory(Context context, String oldDirPath, String newDirName, final AlbumRenameOpCallback callback) {
         if (!oldDirPath.endsWith(File.separator)) {
             oldDirPath += File.separator;
@@ -98,7 +101,7 @@ public abstract class ImageProvider {
             return;
         }
 
-        final ArrayList<Map<String, Object>> entries = new ArrayList<>();
+        List<Map<String, Object>> entries = new ArrayList<>();
         entries.addAll(listContentEntries(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, oldDirPath));
         entries.addAll(listContentEntries(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, oldDirPath));
 
@@ -115,6 +118,7 @@ public abstract class ImageProvider {
             return;
         }
 
+        List<SettableFuture<Map<String, Object>>> scanFutures = new ArrayList<>();
         String newDirPath = new File(oldDirPath).getParent() + File.separator + newDirName + File.separator;
         for (Map<String, Object> entry : entries) {
             String displayName = (String) entry.get("displayName");
@@ -123,27 +127,35 @@ public abstract class ImageProvider {
             String oldEntryPath = oldDirPath + displayName;
             MediaScannerConnection.scanFile(context, new String[]{oldEntryPath}, new String[]{mimeType}, null);
 
+            SettableFuture<Map<String, Object>> scanFuture = SettableFuture.create();
+            scanFutures.add(scanFuture);
             String newEntryPath = newDirPath + displayName;
             scanNewPath(context, newEntryPath, mimeType, new ImageProvider.ImageOpCallback() {
                 @Override
                 public void onSuccess(Map<String, Object> newFields) {
-                    // TODO TLAD process ID and report success
                     entry.putAll(newFields);
-                    Log.d(LOG_TAG, "success with entry=" + entry);
+                    entry.put("success", true);
+                    scanFuture.set(entry);
                 }
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    // TODO TLAD report failure
+                    Log.w(LOG_TAG, "failed to scan entry=" + displayName + " in new directory=" + newDirPath, throwable);
+                    entry.put("success", false);
+                    scanFuture.set(entry);
                 }
             });
         }
 
-        callback.onSuccess(entries);
+        try {
+            callback.onSuccess(Futures.allAsList(scanFutures).get());
+        } catch (ExecutionException | InterruptedException e) {
+            callback.onFailure(e);
+        }
     }
 
     private List<Map<String, Object>> listContentEntries(Context context, Uri contentUri, String dirPath) {
-        final ArrayList<Map<String, Object>> entries = new ArrayList<>();
+        List<Map<String, Object>> entries = new ArrayList<>();
         String[] projection = {
                 MediaStore.MediaColumns._ID,
                 MediaStore.MediaColumns.DISPLAY_NAME,
@@ -295,8 +307,8 @@ public abstract class ImageProvider {
         }
 
         // update fields in media store
-        @SuppressWarnings("SuspiciousNameCombination") int rotatedWidth = originalImage.getHeight();
-        @SuppressWarnings("SuspiciousNameCombination") int rotatedHeight = originalImage.getWidth();
+        int rotatedWidth = originalImage.getHeight();
+        int rotatedHeight = originalImage.getWidth();
         Map<String, Object> newFields = new HashMap<>();
         newFields.put("width", rotatedWidth);
         newFields.put("height", rotatedHeight);
@@ -325,8 +337,6 @@ public abstract class ImageProvider {
 
     protected void scanNewPath(final Context context, final String path, final String mimeType, final ImageOpCallback callback) {
         MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (newPath, newUri) -> {
-            Log.d(LOG_TAG, "scanNewPath onScanCompleted with newPath=" + newPath + ", newUri=" + newUri);
-
             long contentId = 0;
             Uri contentUri = null;
             if (newUri != null) {

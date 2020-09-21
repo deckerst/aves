@@ -21,9 +21,6 @@ class CountryListPage extends StatelessWidget {
 
   final CollectionSource source;
 
-  static final ChipSetActionDelegate setActionDelegate = CountryChipSetActionDelegate();
-  static final ChipActionDelegate actionDelegate = ChipActionDelegate();
-
   const CountryListPage({@required this.source});
 
   @override
@@ -36,8 +33,8 @@ class CountryListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage(
             source: source,
             title: 'Countries',
-            chipSetActionDelegate: setActionDelegate,
-            chipActionDelegate: actionDelegate,
+            chipSetActionDelegate: CountryChipSetActionDelegate(),
+            chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
             ],

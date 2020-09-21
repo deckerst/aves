@@ -21,9 +21,6 @@ class TagListPage extends StatelessWidget {
 
   final CollectionSource source;
 
-  static final ChipSetActionDelegate setActionDelegate = TagChipSetActionDelegate();
-  static final ChipActionDelegate actionDelegate = ChipActionDelegate();
-
   const TagListPage({@required this.source});
 
   @override
@@ -36,8 +33,8 @@ class TagListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage(
             source: source,
             title: 'Tags',
-            chipSetActionDelegate: setActionDelegate,
-            chipActionDelegate: actionDelegate,
+            chipSetActionDelegate: TagChipSetActionDelegate(),
+            chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
             ],
