@@ -40,7 +40,7 @@ class ImageFileService {
     }
   }
 
-  static Future<List> getObsoleteEntries(List<int> knownContentIds) async {
+  static Future<List<int>> getObsoleteEntries(List<int> knownContentIds) async {
     try {
       final result = await platform.invokeMethod('getObsoleteEntries', <String, dynamic>{
         'knownContentIds': knownContentIds,
@@ -193,6 +193,19 @@ class ImageFileService {
       debugPrint('rotate failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
+  }
+
+  static Future<List<Map>> renameDirectory(String path, String newName) async {
+    try {
+      final result = await platform.invokeMethod('renameDirectory', <String, dynamic>{
+        'path': path,
+        'newName': newName,
+      });
+      return (result as List).cast<Map>();
+    } on PlatformException catch (e) {
+      debugPrint('renameDirectory failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return [];
   }
 }
 

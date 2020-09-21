@@ -2,14 +2,14 @@ package deckers.thibault.aves.utils;
 
 public class MimeTypes {
     public static final String IMAGE = "image";
-    public static final String DNG = "image/x-adobe-dng";
+    public static final String DNG = "image/x-adobe-dng"; // .dng
     public static final String GIF = "image/gif";
     public static final String HEIC = "image/heic";
     public static final String HEIF = "image/heif";
     public static final String JPEG = "image/jpeg";
     public static final String PNG = "image/png";
-    public static final String PSD = "image/x-photoshop";
-    public static final String SVG = "image/svg+xml";
+    public static final String PSD = "image/x-photoshop"; // .psd
+    public static final String SVG = "image/svg+xml"; // .svg
     public static final String WEBP = "image/webp";
 
     public static final String VIDEO = "video";

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,91 @@ public abstract class ImageProvider {
 
         MediaScannerConnection.scanFile(context, new String[]{oldPath}, new String[]{mimeType}, null);
         scanNewPath(context, newFile.getPath(), mimeType, callback);
+    }
+
+    public void renameDirectory(Context context, String oldDirPath, String newDirName, final AlbumRenameOpCallback callback) {
+        if (!oldDirPath.endsWith(File.separator)) {
+            oldDirPath += File.separator;
+        }
+
+        DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(context, oldDirPath);
+        if (destinationDirDocFile == null) {
+            callback.onFailure(new Exception("failed to find directory at path=" + oldDirPath));
+            return;
+        }
+
+        final ArrayList<Map<String, Object>> entries = new ArrayList<>();
+        entries.addAll(listContentEntries(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, oldDirPath));
+        entries.addAll(listContentEntries(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, oldDirPath));
+
+        boolean renamed;
+        try {
+            renamed = destinationDirDocFile.renameTo(newDirName);
+        } catch (FileNotFoundException e) {
+            callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath, e));
+            return;
+        }
+
+        if (!renamed) {
+            callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath));
+            return;
+        }
+
+        String newDirPath = new File(oldDirPath).getParent() + File.separator + newDirName + File.separator;
+        for (Map<String, Object> entry : entries) {
+            String displayName = (String) entry.get("displayName");
+            String mimeType = (String) entry.get("mimeType");
+
+            String oldEntryPath = oldDirPath + displayName;
+            MediaScannerConnection.scanFile(context, new String[]{oldEntryPath}, new String[]{mimeType}, null);
+
+            String newEntryPath = newDirPath + displayName;
+            scanNewPath(context, newEntryPath, mimeType, new ImageProvider.ImageOpCallback() {
+                @Override
+                public void onSuccess(Map<String, Object> newFields) {
+                    // TODO TLAD process ID and report success
+                    entry.putAll(newFields);
+                    Log.d(LOG_TAG, "success with entry=" + entry);
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    // TODO TLAD report failure
+                }
+            });
+        }
+
+        callback.onSuccess(entries);
+    }
+
+    private List<Map<String, Object>> listContentEntries(Context context, Uri contentUri, String dirPath) {
+        final ArrayList<Map<String, Object>> entries = new ArrayList<>();
+        String[] projection = {
+                MediaStore.MediaColumns._ID,
+                MediaStore.MediaColumns.DISPLAY_NAME,
+                MediaStore.MediaColumns.MIME_TYPE,
+        };
+        String selection = MediaStore.MediaColumns.DATA + " like ?";
+
+        try {
+            Cursor cursor = context.getContentResolver().query(contentUri, projection, selection, new String[]{dirPath + "%"}, null);
+            if (cursor != null) {
+                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
+                int displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
+                int mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
+                while (cursor.moveToNext()) {
+                    entries.add(new HashMap<String, Object>() {{
+                        put("oldContentId", cursor.getInt(idColumn));
+                        put("displayName", cursor.getString(displayNameColumn));
+                        put("mimeType", cursor.getString(mimeTypeColumn));
+                    }});
+                }
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "failed to list entries in  contentUri=" + contentUri, e);
+        }
+        return entries;
     }
 
     public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
@@ -261,6 +347,7 @@ public abstract class ImageProvider {
             Map<String, Object> newFields = new HashMap<>();
             // we retrieve updated fields as the renamed file became a new entry in the Media Store
             String[] projection = {
+                    MediaStore.MediaColumns.DISPLAY_NAME,
                     MediaStore.MediaColumns.TITLE,
                     MediaStore.MediaColumns.DATE_MODIFIED,
             };
@@ -271,6 +358,7 @@ public abstract class ImageProvider {
                         newFields.put("uri", contentUri.toString());
                         newFields.put("contentId", contentId);
                         newFields.put("path", path);
+                        newFields.put("displayName", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)));
                         newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
                         newFields.put("dateModifiedSecs", cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)));
                     }
@@ -291,6 +379,12 @@ public abstract class ImageProvider {
 
     public interface ImageOpCallback {
         void onSuccess(Map<String, Object> fields);
+
+        void onFailure(Throwable throwable);
+    }
+
+    public interface AlbumRenameOpCallback {
+        void onSuccess(List<Map<String, Object>> fieldsByEntry);
 
         void onFailure(Throwable throwable);
     }
