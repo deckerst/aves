@@ -132,9 +132,11 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   }
 
   Future<void> _validate() async {
-    final path = _buildAlbumPath(_nameController.text);
-    _existsNotifier.value = path.isEmpty ? false : await Directory(path).exists();
-    _isValidNotifier.value = (_nameController.text ?? '').isNotEmpty;
+    final newName = _nameController.text ?? '';
+    final path = _buildAlbumPath(newName);
+    final exists = newName.isNotEmpty && await Directory(path).exists();
+    _existsNotifier.value = exists;
+    _isValidNotifier.value = newName.isNotEmpty;
   }
 
   void _submit(BuildContext context) => Navigator.pop(context, _buildAlbumPath(_nameController.text));
