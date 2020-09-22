@@ -93,7 +93,7 @@ class AnimatedImageIcon extends StatelessWidget {
     return OverlayIcon(
       icon: AIcons.animated,
       size: iconSize,
-      iconSize: iconSize * .8,
+      iconScale: .8,
     );
   }
 }
@@ -114,27 +114,31 @@ class GpsIcon extends StatelessWidget {
 
 class OverlayIcon extends StatelessWidget {
   final IconData icon;
-  final double size, iconSize;
+  final double size;
   final String text;
+  final double iconScale;
 
   const OverlayIcon({
     Key key,
     @required this.icon,
     @required this.size,
-    double iconSize,
+    this.iconScale = 1,
     this.text,
-  })  : iconSize = iconSize ?? size,
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final iconChild = SizedBox(
+    final iconChild = Icon(icon, size: size);
+    final iconBox = SizedBox(
       width: size,
       height: size,
-      child: Icon(
-        icon,
-        size: iconSize,
-      ),
+      // using a transform is better than modifying the icon size to properly center the scaled icon
+      child: iconScale != 1
+          ? Transform.scale(
+              scale: iconScale,
+              child: iconChild,
+            )
+          : iconChild,
     );
 
     return Container(
@@ -145,12 +149,12 @@ class OverlayIcon extends StatelessWidget {
         borderRadius: BorderRadius.circular(size),
       ),
       child: text == null
-          ? iconChild
+          ? iconBox
           : Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                iconChild,
+                iconBox,
                 SizedBox(width: 2),
                 Text(text),
               ],
