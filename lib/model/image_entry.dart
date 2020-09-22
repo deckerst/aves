@@ -7,6 +7,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
@@ -394,5 +395,20 @@ class ImageEntry {
     if (isFavourite) {
       favourites.remove([this]);
     }
+  }
+
+  static int compareByName(ImageEntry a, ImageEntry b) {
+    final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
+    return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
+  }
+
+  static int compareBySize(ImageEntry a, ImageEntry b) {
+    final c = b.sizeBytes.compareTo(a.sizeBytes);
+    return c != 0 ? c : compareByName(a, b);
+  }
+
+  static int compareByDate(ImageEntry a, ImageEntry b) {
+    final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
+    return c != 0 ? c : compareByName(a, b);
   }
 }

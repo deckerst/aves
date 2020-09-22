@@ -6,6 +6,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/common/highlight_title.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:collection/collection.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 
@@ -126,7 +127,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         }).where((kv) => kv != null)));
         return _MetadataDirectory(directoryName, tags);
       }).toList()
-        ..sort((a, b) => a.name.compareTo(b.name));
+        ..sort((a, b) => compareAsciiUpperCase(a.name, b.name));
       _loadedMetadataUri = widget.entry.uri;
     } else {
       _metadata = [];
