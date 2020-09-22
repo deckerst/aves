@@ -136,7 +136,7 @@ class FilterNavigationPage extends StatelessWidget {
         ));
   }
 
-  static int compareChipByDate(MapEntry<String, ImageEntry> a, MapEntry<String, ImageEntry> b) {
+  static int compareChipsByDate(MapEntry<String, ImageEntry> a, MapEntry<String, ImageEntry> b) {
     final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
     return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
   }

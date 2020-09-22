@@ -67,8 +67,8 @@ class TagListPage extends StatelessWidget {
 
     switch (settings.tagSortFactor) {
       case ChipSortFactor.date:
-        pinnedMapEntries.sort(FilterNavigationPage.compareChipByDate);
-        unpinnedMapEntries.sort(FilterNavigationPage.compareChipByDate);
+        pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
+        unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
         break;
       case ChipSortFactor.name:
         // already sorted by name at the source level

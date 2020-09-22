@@ -68,8 +68,8 @@ class AlbumListPage extends StatelessWidget {
               entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
             ));
         final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allAlbumMapEntries, (e) => pinned.contains(e.key));
-        final pinnedMapEntries = (byPin[true] ?? [])..sort(FilterNavigationPage.compareChipByDate);
-        final unpinnedMapEntries = (byPin[false] ?? [])..sort(FilterNavigationPage.compareChipByDate);
+        final pinnedMapEntries = (byPin[true] ?? [])..sort(FilterNavigationPage.compareChipsByDate);
+        final unpinnedMapEntries = (byPin[false] ?? [])..sort(FilterNavigationPage.compareChipsByDate);
         return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
       case ChipSortFactor.name:
       default:

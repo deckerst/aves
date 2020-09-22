@@ -7,7 +7,6 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -137,16 +136,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   void _applySort() {
     switch (sortFactor) {
       case EntrySortFactor.date:
-        _filteredEntries.sort((a, b) {
-          final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
-          return c != 0 ? c : compareAsciiUpperCase(a.bestTitle, b.bestTitle);
-        });
+        _filteredEntries.sort(ImageEntry.compareByDate);
         break;
       case EntrySortFactor.size:
-        _filteredEntries.sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
+        _filteredEntries.sort(ImageEntry.compareBySize);
         break;
       case EntrySortFactor.name:
-        _filteredEntries.sort((a, b) => compareAsciiUpperCase(a.bestTitle, b.bestTitle));
+        _filteredEntries.sort(ImageEntry.compareByName);
         break;
     }
   }
@@ -178,16 +174,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         break;
       case EntrySortFactor.name:
         final byAlbum = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
-        int compare(a, b) {
-          final ua = source.getUniqueAlbumName(a);
-          final ub = source.getUniqueAlbumName(b);
-          final c = compareAsciiUpperCase(ua, ub);
-          if (c != 0) return c;
-          final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
-          final vb = androidFileUtils.getStorageVolume(b)?.path ?? '';
-          return compareAsciiUpperCase(va, vb);
-        }
-        sections = SplayTreeMap.of(byAlbum, compare);
+        sections = SplayTreeMap<String, List<ImageEntry>>.of(byAlbum, source.compareAlbumsByName);
         break;
     }
     sections = Map.unmodifiable(sections);
