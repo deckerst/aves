@@ -3,14 +3,18 @@ import 'package:flutter/widgets.dart';
 
 import 'aves_dialog.dart';
 
+typedef TextBuilder<T> = String Function(T value);
+
 class AvesSelectionDialog<T> extends StatefulWidget {
   final T initialValue;
   final Map<T, String> options;
+  final TextBuilder<T> optionSubtitleBuilder;
   final String title;
 
   const AvesSelectionDialog({
     @required this.initialValue,
     @required this.options,
+    this.optionSubtitleBuilder,
     @required this.title,
   });
 
@@ -41,20 +45,30 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
     );
   }
 
-  Widget _buildRadioListTile(T value, String title) => RadioListTile<T>(
-        key: Key(value.toString()),
-        value: value,
-        groupValue: _selectedValue,
-        onChanged: (v) {
-          _selectedValue = v;
-          Navigator.pop(context, _selectedValue);
-          setState(() {});
-        },
-        title: Text(
-          title,
-          softWrap: false,
-          overflow: TextOverflow.fade,
-          maxLines: 1,
-        ),
-      );
+  Widget _buildRadioListTile(T value, String title) {
+    return RadioListTile<T>(
+      key: Key(value.toString()),
+      value: value,
+      groupValue: _selectedValue,
+      onChanged: (v) {
+        _selectedValue = v;
+        Navigator.pop(context, _selectedValue);
+        setState(() {});
+      },
+      title: Text(
+        title,
+        softWrap: false,
+        overflow: TextOverflow.fade,
+        maxLines: 1,
+      ),
+      subtitle: widget.optionSubtitleBuilder != null
+          ? Text(
+              widget.optionSubtitleBuilder(value),
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              maxLines: 1,
+            )
+          : null,
+    );
+  }
 }
