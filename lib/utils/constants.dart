@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:tuple/tuple.dart';
 
 class Constants {
   // as of Flutter v1.11.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
@@ -16,6 +17,8 @@ class Constants {
     color: Colors.black87,
     offset: Offset(0.5, 1.0),
   );
+
+  static const pointNemo = Tuple2(-48.876667, -123.393333);
 
   static const List<Dependency> androidDependencies = [
     Dependency(
