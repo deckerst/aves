@@ -15,28 +15,34 @@ import 'package:aves/widgets/common/data_providers/media_query_data_provider.dar
 import 'package:aves/widgets/common/double_back_pop.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/common/search_button.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
-import 'package:aves/widgets/filter_grids/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/chip_actions.dart';
-import 'package:aves/widgets/filter_grids/decorated_filter_chip.dart';
-import 'package:aves/widgets/filter_grids/search_button.dart';
+import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
+import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class FilterNavigationPage extends StatelessWidget {
   final CollectionSource source;
   final String title;
-  final ChipActionDelegate actionDelegate;
+  final ChipSetActionDelegate chipSetActionDelegate;
+  final ChipActionDelegate chipActionDelegate;
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
   final Widget Function() emptyBuilder;
+  final List<ChipAction> Function(CollectionFilter filter) chipActionsBuilder;
 
   const FilterNavigationPage({
     @required this.source,
     @required this.title,
-    @required this.actionDelegate,
+    @required this.chipSetActionDelegate,
+    @required this.chipActionDelegate,
+    @required this.chipActionsBuilder,
     @required this.filterEntries,
     @required this.filterBuilder,
     @required this.emptyBuilder,
@@ -66,7 +72,7 @@ class FilterNavigationPage extends StatelessWidget {
           return sourceState != SourceState.loading && emptyBuilder != null ? emptyBuilder() : SizedBox.shrink();
         },
       ),
-      onPressed: (filter) => Navigator.pushAndRemoveUntil(
+      onTap: (filter) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           settings: RouteSettings(name: CollectionPage.routeName),
@@ -79,24 +85,43 @@ class FilterNavigationPage extends StatelessWidget {
         ),
         settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
+      onLongPress: (filter, tapPosition) => _showMenu(context, filter, tapPosition),
     );
+  }
+
+  Future<void> _showMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+    final touchArea = Size(40, 40);
+    final selectedAction = await showMenu<ChipAction>(
+      context: context,
+      position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
+      items: chipActionsBuilder(filter)
+          .map((action) => PopupMenuItem(
+                value: action,
+                child: MenuRow(text: action.getText(), icon: action.getIcon()),
+              ))
+          .toList(),
+    );
+    if (selectedAction != null) {
+      unawaited(chipActionDelegate.onActionSelected(context, filter, selectedAction));
+    }
   }
 
   List<Widget> _buildActions(BuildContext context) {
     return [
       SearchButton(source),
-      PopupMenuButton<ChipAction>(
+      PopupMenuButton<ChipSetAction>(
         key: Key('appbar-menu-button'),
         itemBuilder: (context) {
           return [
             PopupMenuItem(
               key: Key('menu-sort'),
-              value: ChipAction.sort,
+              value: ChipSetAction.sort,
               child: MenuRow(text: 'Sort...', icon: AIcons.sort),
             ),
           ];
         },
-        onSelected: (action) => actionDelegate.onChipActionSelected(context, action),
+        onSelected: (action) => chipSetActionDelegate.onActionSelected(context, action),
       ),
     ];
   }
@@ -111,7 +136,7 @@ class FilterNavigationPage extends StatelessWidget {
         ));
   }
 
-  static int compareChipByDate(MapEntry<String, ImageEntry> a, MapEntry<String, ImageEntry> b) {
+  static int compareChipsByDate(MapEntry<String, ImageEntry> a, MapEntry<String, ImageEntry> b) {
     final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
     return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
   }
@@ -123,7 +148,8 @@ class FilterGridPage extends StatelessWidget {
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
   final Widget Function() emptyBuilder;
-  final FilterCallback onPressed;
+  final FilterCallback onTap;
+  final OffsetFilterCallback onLongPress;
 
   const FilterGridPage({
     @required this.source,
@@ -131,7 +157,8 @@ class FilterGridPage extends StatelessWidget {
     @required this.filterEntries,
     @required this.filterBuilder,
     @required this.emptyBuilder,
-    @required this.onPressed,
+    @required this.onTap,
+    this.onLongPress,
   });
 
   List<String> get filterKeys => filterEntries.keys.toList();
@@ -141,6 +168,7 @@ class FilterGridPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pinnedFilters = settings.pinnedFilters;
     return MediaQueryDataProvider(
       child: Scaffold(
         body: DoubleBackPopScope(
@@ -164,12 +192,15 @@ class FilterGridPage extends StatelessWidget {
                                 delegate: SliverChildBuilderDelegate(
                                   (context, i) {
                                     final key = filterKeys[i];
+                                    final filter = filterBuilder(key);
                                     final child = DecoratedFilterChip(
                                       key: Key(key),
                                       source: source,
-                                      filter: filterBuilder(key),
+                                      filter: filter,
                                       entry: filterEntries[key],
-                                      onPressed: onPressed,
+                                      pinned: pinnedFilters.contains(filter),
+                                      onTap: onTap,
+                                      onLongPress: onLongPress,
                                     );
                                     return AnimationConfiguration.staggeredGrid(
                                       position: i,

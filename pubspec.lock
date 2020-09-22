@@ -141,6 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
+  decorated_icon:
+    dependency: "direct main"
+    description:
+      name: decorated_icon
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   draggable_scrollbar:
     dependency: "direct main"
     description:
@@ -501,13 +508,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
-  outline_material_icons:
-    dependency: "direct main"
-    description:
-      name: outline_material_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
   overlay_support:
     dependency: "direct main"
     description:

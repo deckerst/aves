@@ -11,13 +11,13 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 class DebugPage extends StatefulWidget {
   static const routeName = '/debug';
@@ -58,10 +58,10 @@ class DebugPageState extends State<DebugPage> {
             title: Text('Debug'),
             bottom: TabBar(
               tabs: [
-                Tab(icon: Icon(OMIcons.whatshot)),
-                Tab(icon: Icon(OMIcons.settings)),
-                Tab(icon: Icon(OMIcons.sdStorage)),
-                Tab(icon: Icon(OMIcons.android)),
+                Tab(icon: Icon(AIcons.debug)),
+                Tab(icon: Icon(AIcons.settings)),
+                Tab(icon: Icon(AIcons.removableStorage)),
+                Tab(icon: Icon(AIcons.android)),
               ],
             ),
           ),

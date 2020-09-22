@@ -58,6 +58,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             case "rotate":
                 new Thread(() -> rotate(call, new MethodResultWrapper(result))).start();
                 break;
+            case "renameDirectory":
+                new Thread(() -> renameDirectory(call, new MethodResultWrapper(result))).start();
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -176,6 +179,28 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             @Override
             public void onFailure(Throwable throwable) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", throwable.getMessage()));
+            }
+        });
+    }
+
+    private void renameDirectory(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        String dirPath = call.argument("path");
+        String newName = call.argument("newName");
+        if (dirPath == null || newName == null) {
+            result.error("renameDirectory-args", "failed because of missing arguments", null);
+            return;
+        }
+
+        ImageProvider provider = new MediaStoreImageProvider();
+        provider.renameDirectory(activity, dirPath, newName, new ImageProvider.AlbumRenameOpCallback() {
+            @Override
+            public void onSuccess(List<Map<String, Object>> fieldsByEntry) {
+                result.success(fieldsByEntry);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                result.error("renameDirectory-failure", "failed to rename directory", throwable.getMessage());
             }
         });
     }

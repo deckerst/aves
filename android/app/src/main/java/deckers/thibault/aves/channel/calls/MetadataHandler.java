@@ -16,24 +16,36 @@ import androidx.annotation.Nullable;
 import com.adobe.internal.xmp.XMPException;
 import com.adobe.internal.xmp.XMPIterator;
 import com.adobe.internal.xmp.XMPMeta;
+import com.adobe.internal.xmp.XMPUtils;
 import com.adobe.internal.xmp.properties.XMPProperty;
 import com.adobe.internal.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
+import com.drew.imaging.jpeg.JpegSegmentType;
 import com.drew.lang.GeoLocation;
 import com.drew.lang.Rational;
+import com.drew.lang.annotations.NotNull;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileTypeDirectory;
 import com.drew.metadata.gif.GifAnimationDirectory;
 import com.drew.metadata.webp.WebpDirectory;
 import com.drew.metadata.xmp.XmpDirectory;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -70,9 +82,15 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     // XMP
     private static final String XMP_DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/";
+    private static final String XMP_XMP_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/";
+    private static final String XMP_IMG_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/g/img/";
+
     private static final String XMP_SUBJECT_PROP_NAME = "dc:subject";
     private static final String XMP_TITLE_PROP_NAME = "dc:title";
     private static final String XMP_DESCRIPTION_PROP_NAME = "dc:description";
+    private static final String XMP_THUMBNAIL_PROP_NAME = "xmp:Thumbnails";
+    private static final String XMP_THUMBNAIL_IMAGE_PROP_NAME = "xmpGImg:image";
+
     private static final String XMP_GENERIC_LANG = "";
     private static final String XMP_SPECIFIC_LANG = "en-US";
 
@@ -108,6 +126,49 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     // "+51.3328-000.7053+113.474/" (Apple)
     private static final Pattern VIDEO_LOCATION_PATTERN = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*");
 
+    private static int TAG_THUMBNAIL_DATA = 0x10000;
+
+    // modify metadata-extractor readers to store EXIF thumbnail data
+    // cf https://github.com/drewnoakes/metadata-extractor/issues/276#issuecomment-677767368
+    static {
+        List<JpegSegmentMetadataReader> allReaders = (List<JpegSegmentMetadataReader>) JpegMetadataReader.ALL_READERS;
+        for (int n = 0, cnt = allReaders.size(); n < cnt; n++) {
+            if (allReaders.get(n).getClass() != ExifReader.class) {
+                continue;
+            }
+
+            allReaders.set(n, new ExifReader() {
+                @Override
+                public void readJpegSegments(@NotNull final Iterable<byte[]> segments, @NotNull final Metadata metadata, @NotNull final JpegSegmentType segmentType) {
+                    super.readJpegSegments(segments, metadata, segmentType);
+
+                    for (byte[] segmentBytes : segments) {
+                        // Filter any segments containing unexpected preambles
+                        if (!startsWithJpegExifPreamble(segmentBytes)) {
+                            continue;
+                        }
+
+                        // Extract the thumbnail
+                        try {
+                            ExifThumbnailDirectory tnDirectory = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
+                            if (tnDirectory != null && tnDirectory.containsTag(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET)) {
+                                int offset = tnDirectory.getInt(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET);
+                                int length = tnDirectory.getInt(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH);
+
+                                byte[] tnData = new byte[length];
+                                System.arraycopy(segmentBytes, JPEG_SEGMENT_PREAMBLE.length() + offset, tnData, 0, length);
+                                tnDirectory.setObject(TAG_THUMBNAIL_DATA, tnData);
+                            }
+                        } catch (MetadataException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            break;
+        }
+    }
+
     private Context context;
 
     public MetadataHandler(Context context) {
@@ -128,6 +189,12 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "getContentResolverMetadata":
                 new Thread(() -> getContentResolverMetadata(call, new MethodResultWrapper(result))).start();
+                break;
+            case "getExifThumbnails":
+                new Thread(() -> getExifThumbnails(call, new MethodResultWrapper(result))).start();
+                break;
+            case "getXmpThumbnails":
+                new Thread(() -> getXmpThumbnails(call, new MethodResultWrapper(result))).start();
                 break;
             default:
                 result.notImplemented();
@@ -461,6 +528,50 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         } else {
             result.error("getContentResolverMetadata-null", "failed to get cursor for contentUri=" + contentUri, null);
         }
+    }
+
+    private void getExifThumbnails(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Uri uri = Uri.parse(call.argument("uri"));
+        List<byte[]> thumbnails = new ArrayList<>();
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+            Metadata metadata = ImageMetadataReader.readMetadata(is);
+            for (ExifThumbnailDirectory dir : metadata.getDirectoriesOfType(ExifThumbnailDirectory.class)) {
+                byte[] data = (byte[]) dir.getObject(TAG_THUMBNAIL_DATA);
+                if (data != null) {
+                    thumbnails.add(data);
+                }
+            }
+        } catch (IOException | ImageProcessingException | NoClassDefFoundError e) {
+            Log.w(LOG_TAG, "failed to extract exif thumbnail", e);
+        }
+        result.success(thumbnails);
+    }
+
+    private void getXmpThumbnails(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Uri uri = Uri.parse(call.argument("uri"));
+        List<byte[]> thumbnails = new ArrayList<>();
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+            Metadata metadata = ImageMetadataReader.readMetadata(is);
+            for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
+                XMPMeta xmpMeta = dir.getXMPMeta();
+                try {
+                    if (xmpMeta.doesPropertyExist(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME)) {
+                        int count = xmpMeta.countArrayItems(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME);
+                        for (int i = 1; i < count + 1; i++) {
+                            XMPProperty image = xmpMeta.getStructField(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME + "[" + i + "]", XMP_IMG_SCHEMA_NS, XMP_THUMBNAIL_IMAGE_PROP_NAME);
+                            if (image != null) {
+                                thumbnails.add(XMPUtils.decodeBase64(image.getValue()));
+                            }
+                        }
+                    }
+                } catch (XMPException e) {
+                    Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
+                }
+            }
+        } catch (IOException | ImageProcessingException | NoClassDefFoundError e) {
+            Log.w(LOG_TAG, "failed to extract xmp thumbnail", e);
+        }
+        result.success(thumbnails);
     }
 
     // convenience methods

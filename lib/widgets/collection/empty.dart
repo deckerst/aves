@@ -13,7 +13,7 @@ class EmptyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const color = Color(0xFF607D8B);
+    const color = Colors.blueGrey;
     return Align(
       alignment: alignment,
       child: Column(

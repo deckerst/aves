@@ -18,14 +18,14 @@ class AlbumFilter extends CollectionFilter {
 
   const AlbumFilter(this.album, this.uniqueName);
 
-  AlbumFilter.fromJson(Map<String, dynamic> json)
+  AlbumFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['album'],
           json['uniqueName'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'album': album,
         'uniqueName': uniqueName,
@@ -41,8 +41,14 @@ class AlbumFilter extends CollectionFilter {
   String get tooltip => album;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
-    return IconUtils.getAlbumIcon(context: context, album: album, size: size) ?? (showGenericIcon ? Icon(AIcons.album, size: size) : null);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
+    return IconUtils.getAlbumIcon(
+          context: context,
+          album: album,
+          size: size,
+          embossed: embossed,
+        ) ??
+        (showGenericIcon ? Icon(AIcons.album, size: size) : null);
   }
 
   @override

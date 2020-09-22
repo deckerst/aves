@@ -6,6 +6,8 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/common/highlight_title.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/metadata_thumbnail.dart';
+import 'package:collection/collection.dart';
 import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 
@@ -27,9 +29,15 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   String _loadedMetadataUri;
   final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
 
+  ImageEntry get entry => widget.entry;
+
   bool get isVisible => widget.visibleNotifier.value;
 
   static const int maxValueLength = 140;
+
+  // directory names from metadata-extractor
+  static const exifThumbnailDirectory = 'Exif Thumbnail';
+  static const xmpDirectory = 'XMP';
 
   @override
   void initState() {
@@ -94,10 +102,13 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
                 fontSize: 18,
               ),
               children: [
-                Divider(thickness: 1.0, height: 1.0),
+                Divider(thickness: 1, height: 1),
+                SizedBox(height: 4),
+                if (dir.name == exifThumbnailDirectory) MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry),
+                if (dir.name == xmpDirectory) MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry),
                 Container(
                   alignment: Alignment.topLeft,
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
                   child: InfoRowGroup(dir.tags),
                 ),
               ],
@@ -112,9 +123,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   Future<void> _getMetadata() async {
-    if (_loadedMetadataUri == widget.entry.uri) return;
+    if (_loadedMetadataUri == entry.uri) return;
     if (isVisible) {
-      final rawMetadata = await MetadataService.getAllMetadata(widget.entry) ?? {};
+      final rawMetadata = await MetadataService.getAllMetadata(entry) ?? {};
       _metadata = rawMetadata.entries.map((dirKV) {
         final directoryName = dirKV.key as String ?? '';
         final rawTags = dirKV.value as Map ?? {};
@@ -126,8 +137,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         }).where((kv) => kv != null)));
         return _MetadataDirectory(directoryName, tags);
       }).toList()
-        ..sort((a, b) => a.name.compareTo(b.name));
-      _loadedMetadataUri = widget.entry.uri;
+        ..sort((a, b) => compareAsciiUpperCase(a.name, b.name));
+      _loadedMetadataUri = entry.uri;
     } else {
       _metadata = [];
       _loadedMetadataUri = null;

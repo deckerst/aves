@@ -27,17 +27,17 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
     final type = jsonMap['type'];
     switch (type) {
       case AlbumFilter.type:
-        return AlbumFilter.fromJson(jsonMap);
+        return AlbumFilter.fromMap(jsonMap);
       case FavouriteFilter.type:
         return FavouriteFilter();
       case LocationFilter.type:
-        return LocationFilter.fromJson(jsonMap);
+        return LocationFilter.fromMap(jsonMap);
       case MimeFilter.type:
-        return MimeFilter.fromJson(jsonMap);
+        return MimeFilter.fromMap(jsonMap);
       case QueryFilter.type:
-        return QueryFilter.fromJson(jsonMap);
+        return QueryFilter.fromMap(jsonMap);
       case TagFilter.type:
-        return TagFilter.fromJson(jsonMap);
+        return TagFilter.fromMap(jsonMap);
     }
     debugPrint('failed to parse filter from json=$jsonString');
     return null;
@@ -45,7 +45,9 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   const CollectionFilter();
 
-  Map<String, dynamic> toJson();
+  Map<String, dynamic> toMap();
+
+  String toJson() => jsonEncode(toMap());
 
   bool filter(ImageEntry entry);
 
@@ -55,7 +57,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String get tooltip => label;
 
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true});
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false});
 
   Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(label));
 

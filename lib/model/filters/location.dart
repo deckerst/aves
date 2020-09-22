@@ -17,29 +17,33 @@ class LocationFilter extends CollectionFilter {
     if (split.length > 1) _countryCode = split[1];
   }
 
-  LocationFilter.fromJson(Map<String, dynamic> json)
+  LocationFilter.fromMap(Map<String, dynamic> json)
       : this(
           LocationLevel.values.firstWhere((v) => v.toString() == json['level'], orElse: () => null),
           json['location'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'level': level.toString(),
-        'location': _countryCode != null ? '$_location$locationSeparator$_countryCode' : _location,
+        'location': _countryCode != null ? countryNameAndCode : _location,
       };
 
+  String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
+
   @override
-  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryName == _location) || (level == LocationLevel.place && entry.addressDetails.place == _location));
+  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
 
   @override
   String get label => _location;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) {
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
     final flag = countryCodeToFlag(_countryCode);
-    if (flag != null) return Text(flag, style: TextStyle(fontSize: size));
+    // as of Flutter v1.22.0-12.1.pre emoji shadows are rendered as colorful duplicates,
+    // not filled with the shadow color as expected, so we remove them
+    if (flag != null) return Text(flag, style: TextStyle(fontSize: size, shadows: []));
     return Icon(AIcons.location, size: size);
   }
 

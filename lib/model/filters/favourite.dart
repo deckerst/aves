@@ -8,7 +8,7 @@ class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
       };
 
@@ -19,7 +19,7 @@ class FavouriteFilter extends CollectionFilter {
   String get label => 'Favourite';
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.favourite, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.favourite, size: size);
 
   @override
   String get typeKey => type;
