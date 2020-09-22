@@ -32,13 +32,13 @@ class QueryFilter extends CollectionFilter {
     _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
   }
 
-  QueryFilter.fromJson(Map<String, dynamic> json)
+  QueryFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['query'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'query': query,
       };
@@ -53,7 +53,7 @@ class QueryFilter extends CollectionFilter {
   String get label => '$query';
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(AIcons.text, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.text, size: size);
 
   @override
   Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(Colors.white);

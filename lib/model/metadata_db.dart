@@ -131,6 +131,14 @@ class MetadataDb {
     debugPrint('$runtimeType saveEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
   }
 
+  Future<void> updateEntryId(int oldId, ImageEntry entry) async {
+    final db = await _database;
+    final batch = db.batch();
+    batch.delete(entryTable, where: 'contentId = ?', whereArgs: [oldId]);
+    _batchInsertEntry(batch, entry);
+    await batch.commit(noResult: true);
+  }
+
   void _batchInsertEntry(Batch batch, ImageEntry entry) {
     if (entry == null) return;
     batch.insert(

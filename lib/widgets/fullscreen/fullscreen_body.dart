@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -23,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
+import 'package:screen/screen.dart';
 import 'package:tuple/tuple.dart';
 
 class FullscreenBody extends StatefulWidget {
@@ -97,10 +99,13 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       collection: collection,
       showInfo: () => _goToVerticalPage(infoPage),
     );
-    WidgetsBinding.instance.addObserver(this);
     _initVideoController();
     _registerWidget(widget);
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
+    if (settings.keepScreenOn == KeepScreenOn.fullscreenOnly) {
+      Screen.keepOn(true);
+    }
   }
 
   @override
@@ -327,6 +332,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   void _onLeave() {
     if (Navigator.canPop(context)) {
       _showSystemUI();
+      if (settings.keepScreenOn == KeepScreenOn.fullscreenOnly) {
+        Screen.keepOn(false);
+      }
     } else {
       // exit app when trying to pop a fullscreen page that is a viewer for a single entry
       SystemNavigator.pop();

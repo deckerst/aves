@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -13,7 +14,9 @@ class CreateAlbumDialog extends StatefulWidget {
 }
 
 class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
+  final ScrollController _scrollController = ScrollController();
   final TextEditingController _nameController = TextEditingController();
+  final FocusNode _nameFieldFocusNode = FocusNode();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
   Set<StorageVolume> _allVolumes;
@@ -25,11 +28,13 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     _allVolumes = androidFileUtils.storageVolumes;
     _primaryVolume = _allVolumes.firstWhere((volume) => volume.isPrimary, orElse: () => _allVolumes.first);
     _selectedVolume = _primaryVolume;
+    _nameFieldFocusNode.addListener(_onFocus);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _nameFieldFocusNode.removeListener(_onFocus);
     super.dispose();
   }
 
@@ -37,6 +42,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       title: 'New Album',
+      scrollController: _scrollController,
       scrollableContent: [
         if (_allVolumes.length > 1) ...[
           Padding(
@@ -73,9 +79,10 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
               builder: (context, exists, child) {
                 return TextField(
                   controller: _nameController,
+                  focusNode: _nameFieldFocusNode,
                   decoration: InputDecoration(
+                    labelText: 'Album name',
                     helperText: exists ? 'Album already exists' : '',
-                    hintText: 'Album name',
                   ),
                   autofocus: _allVolumes.length == 1,
                   onChanged: (_) => _validate(),
@@ -102,15 +109,34 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     );
   }
 
+  void _onFocus() async {
+    // when the field gets focus, we wait for the soft keyboard to appear
+    // then scroll to the bottom to make sure the field is in view
+    if (_nameFieldFocusNode.hasFocus) {
+      await Future.delayed(Durations.softKeyboardDisplayDelay);
+      _scrollToBottom();
+    }
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: Durations.dialogFieldReachAnimation,
+      curve: Curves.easeInOut,
+    );
+  }
+
   String _buildAlbumPath(String name) {
     if (name == null || name.isEmpty) return '';
     return join(_selectedVolume.path, 'Pictures', name);
   }
 
   Future<void> _validate() async {
-    final path = _buildAlbumPath(_nameController.text);
-    _existsNotifier.value = path.isEmpty ? false : await Directory(path).exists();
-    _isValidNotifier.value = (_nameController.text ?? '').isNotEmpty;
+    final newName = _nameController.text ?? '';
+    final path = _buildAlbumPath(newName);
+    final exists = newName.isNotEmpty && await Directory(path).exists();
+    _existsNotifier.value = exists;
+    _isValidNotifier.value = newName.isNotEmpty;
   }
 
   void _submit(BuildContext context) => Navigator.pop(context, _buildAlbumPath(_nameController.text));

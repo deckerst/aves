@@ -1,6 +1,8 @@
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/highlight_title.dart';
@@ -50,6 +52,23 @@ class SettingsPage extends StatelessWidget {
                   ),
                   SectionTitle('Display'),
                   ListTile(
+                    title: Text('Keep screen on'),
+                    subtitle: Text(settings.keepScreenOn.name),
+                    onTap: () async {
+                      final value = await showDialog<KeepScreenOn>(
+                        context: context,
+                        builder: (context) => AvesSelectionDialog<KeepScreenOn>(
+                          initialValue: settings.keepScreenOn,
+                          options: Map.fromEntries(KeepScreenOn.values.map((v) => MapEntry(v, v.name))),
+                          title: 'Keep Screen On',
+                        ),
+                      );
+                      if (value != null) {
+                        settings.keepScreenOn = value;
+                      }
+                    },
+                  ),
+                  ListTile(
                     title: Text('SVG background'),
                     trailing: SvgBackgroundSelector(),
                   ),
@@ -62,6 +81,11 @@ class SettingsPage extends StatelessWidget {
                         builder: (context) => AvesSelectionDialog<CoordinateFormat>(
                           initialValue: settings.coordinateFormat,
                           options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.name))),
+                          optionSubtitleBuilder: (dynamic value) {
+                            // dynamic declaration followed by cast, as workaround for generics limitation
+                            final formatter = (value as CoordinateFormat);
+                            return formatter.format(Constants.pointNemo);
+                          },
                           title: 'Coordinate Format',
                         ),
                       );
@@ -69,6 +93,22 @@ class SettingsPage extends StatelessWidget {
                         settings.coordinateFormat = value;
                       }
                     },
+                  ),
+                  SectionTitle('Thumbnails'),
+                  SwitchListTile(
+                    value: settings.showThumbnailLocation,
+                    onChanged: (v) => settings.showThumbnailLocation = v,
+                    title: Text('Show location icon'),
+                  ),
+                  SwitchListTile(
+                    value: settings.showThumbnailRaw,
+                    onChanged: (v) => settings.showThumbnailRaw = v,
+                    title: Text('Show raw icon'),
+                  ),
+                  SwitchListTile(
+                    value: settings.showThumbnailVideoDuration,
+                    onChanged: (v) => settings.showThumbnailVideoDuration = v,
+                    title: Text('Show video duration'),
                   ),
                   SectionTitle('Privacy'),
                   SwitchListTile(

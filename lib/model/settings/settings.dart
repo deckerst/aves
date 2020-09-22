@@ -1,5 +1,7 @@
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -23,6 +25,7 @@ class Settings extends ChangeNotifier {
   static const hasAcceptedTermsKey = 'has_accepted_terms';
   static const isCrashlyticsEnabledKey = 'is_crashlytics_enabled';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
+  static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
 
@@ -30,11 +33,15 @@ class Settings extends ChangeNotifier {
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionTileExtentKey = 'collection_tile_extent';
+  static const showThumbnailLocationKey = 'show_thumbnail_location';
+  static const showThumbnailRawKey = 'show_thumbnail_raw';
+  static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
+  static const pinnedFiltersKey = 'pinned_filters';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -75,6 +82,13 @@ class Settings extends ChangeNotifier {
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
 
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.fullscreenOnly, KeepScreenOn.values);
+
+  set keepScreenOn(KeepScreenOn newValue) {
+    setAndNotify(keepScreenOnKey, newValue.toString());
+    newValue.apply();
+  }
+
   HomePageSetting get homePage => getEnumOrDefault(homePageKey, HomePageSetting.collection, HomePageSetting.values);
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
@@ -97,6 +111,18 @@ class Settings extends ChangeNotifier {
 
   set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
 
+  bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, true);
+
+  set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
+
+  bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, true);
+
+  set showThumbnailRaw(bool newValue) => setAndNotify(showThumbnailRawKey, newValue);
+
+  bool get showThumbnailVideoDuration => getBoolOrDefault(showThumbnailVideoDurationKey, true);
+
+  set showThumbnailVideoDuration(bool newValue) => setAndNotify(showThumbnailVideoDurationKey, newValue);
+
   // filter grids
 
   ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
@@ -110,6 +136,10 @@ class Settings extends ChangeNotifier {
   ChipSortFactor get tagSortFactor => getEnumOrDefault(tagSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
+
+  Set<CollectionFilter> get pinnedFilters => (_prefs.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
+
+  set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   // info
 

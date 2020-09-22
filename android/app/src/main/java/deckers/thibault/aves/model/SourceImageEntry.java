@@ -20,6 +20,7 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.jpeg.JpegDirectory;
 import com.drew.metadata.mp4.Mp4Directory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
+import com.drew.metadata.photoshop.PsdHeaderDirectory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -191,48 +192,69 @@ public class SourceImageEntry {
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-            if (MimeTypes.JPEG.equals(sourceMimeType)) {
-                for (JpegDirectory dir : metadata.getDirectoriesOfType(JpegDirectory.class)) {
-                    if (dir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
-                        width = dir.getInt(JpegDirectory.TAG_IMAGE_WIDTH);
+            switch (sourceMimeType) {
+                case MimeTypes.JPEG:
+                    for (JpegDirectory dir : metadata.getDirectoriesOfType(JpegDirectory.class)) {
+                        if (dir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
+                            width = dir.getInt(JpegDirectory.TAG_IMAGE_WIDTH);
+                        }
+                        if (dir.containsTag(JpegDirectory.TAG_IMAGE_HEIGHT)) {
+                            height = dir.getInt(JpegDirectory.TAG_IMAGE_HEIGHT);
+                        }
                     }
-                    if (dir.containsTag(JpegDirectory.TAG_IMAGE_HEIGHT)) {
-                        height = dir.getInt(JpegDirectory.TAG_IMAGE_HEIGHT);
+                    break;
+                case MimeTypes.MP4:
+                    for (Mp4VideoDirectory dir : metadata.getDirectoriesOfType(Mp4VideoDirectory.class)) {
+                        if (dir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
+                            width = dir.getInt(Mp4VideoDirectory.TAG_WIDTH);
+                        }
+                        if (dir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
+                            height = dir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
+                        }
                     }
+                    for (Mp4Directory dir : metadata.getDirectoriesOfType(Mp4Directory.class)) {
+                        if (dir.containsTag(Mp4Directory.TAG_DURATION)) {
+                            durationMillis = dir.getLong(Mp4Directory.TAG_DURATION);
+                        }
+                    }
+                    break;
+                case MimeTypes.AVI:
+                    for (AviDirectory dir : metadata.getDirectoriesOfType(AviDirectory.class)) {
+                        if (dir.containsTag(AviDirectory.TAG_WIDTH)) {
+                            width = dir.getInt(AviDirectory.TAG_WIDTH);
+                        }
+                        if (dir.containsTag(AviDirectory.TAG_HEIGHT)) {
+                            height = dir.getInt(AviDirectory.TAG_HEIGHT);
+                        }
+                        if (dir.containsTag(AviDirectory.TAG_DURATION)) {
+                            durationMillis = dir.getLong(AviDirectory.TAG_DURATION);
+                        }
+                    }
+                    break;
+                case MimeTypes.PSD:
+                    for (PsdHeaderDirectory dir : metadata.getDirectoriesOfType(PsdHeaderDirectory.class)) {
+                        if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_WIDTH)) {
+                            width = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH);
+                        }
+                        if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_HEIGHT)) {
+                            height = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT);
+                        }
+                    }
+                    break;
+            }
+
+            for (ExifIFD0Directory dir : metadata.getDirectoriesOfType(ExifIFD0Directory.class)) {
+                if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_WIDTH)) {
+                    width = dir.getInt(ExifIFD0Directory.TAG_IMAGE_WIDTH);
                 }
-                for (ExifIFD0Directory dir : metadata.getDirectoriesOfType(ExifIFD0Directory.class)) {
-                    if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
-                        orientationDegrees = getOrientationDegreesForExifCode(dir.getInt(ExifIFD0Directory.TAG_ORIENTATION));
-                    }
-                    if (dir.containsTag(ExifIFD0Directory.TAG_DATETIME)) {
-                        sourceDateTakenMillis = dir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();
-                    }
+                if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_HEIGHT)) {
+                    height = dir.getInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT);
                 }
-            } else if (MimeTypes.MP4.equals(sourceMimeType)) {
-                for (Mp4VideoDirectory dir : metadata.getDirectoriesOfType(Mp4VideoDirectory.class)) {
-                    if (dir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
-                        width = dir.getInt(Mp4VideoDirectory.TAG_WIDTH);
-                    }
-                    if (dir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
-                        height = dir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
-                    }
+                if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                    orientationDegrees = getOrientationDegreesForExifCode(dir.getInt(ExifIFD0Directory.TAG_ORIENTATION));
                 }
-                for (Mp4Directory dir : metadata.getDirectoriesOfType(Mp4Directory.class)) {
-                    if (dir.containsTag(Mp4Directory.TAG_DURATION)) {
-                        durationMillis = dir.getLong(Mp4Directory.TAG_DURATION);
-                    }
-                }
-            } else if (MimeTypes.AVI.equals(sourceMimeType)) {
-                for (AviDirectory dir : metadata.getDirectoriesOfType(AviDirectory.class)) {
-                    if (dir.containsTag(AviDirectory.TAG_WIDTH)) {
-                        width = dir.getInt(AviDirectory.TAG_WIDTH);
-                    }
-                    if (dir.containsTag(AviDirectory.TAG_HEIGHT)) {
-                        height = dir.getInt(AviDirectory.TAG_HEIGHT);
-                    }
-                    if (dir.containsTag(AviDirectory.TAG_DURATION)) {
-                        durationMillis = dir.getLong(AviDirectory.TAG_DURATION);
-                    }
+                if (dir.containsTag(ExifIFD0Directory.TAG_DATETIME)) {
+                    sourceDateTakenMillis = dir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();
                 }
             }
         } catch (IOException | ImageProcessingException | MetadataException | NoClassDefFoundError e) {

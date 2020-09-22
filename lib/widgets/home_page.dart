@@ -2,6 +2,7 @@ import 'package:aves/main.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/home_page.dart';
+import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -19,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:screen/screen.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/';
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _setup();
     imageCache.maximumSizeBytes = 512 * (1 << 20);
-    Screen.keepOn(true);
+    settings.keepScreenOn.apply();
   }
 
   @override

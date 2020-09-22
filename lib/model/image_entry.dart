@@ -7,6 +7,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
@@ -25,7 +26,7 @@ class ImageEntry {
   int orientationDegrees;
   final int sizeBytes;
   String sourceTitle;
-  final int dateModifiedSecs;
+  int _dateModifiedSecs;
   final int sourceDateTakenMillis;
   final int durationMillis;
   int _catalogDateMillis;
@@ -44,18 +45,20 @@ class ImageEntry {
     this.orientationDegrees,
     this.sizeBytes,
     this.sourceTitle,
-    this.dateModifiedSecs,
+    int dateModifiedSecs,
     this.sourceDateTakenMillis,
     this.durationMillis,
   })  : assert(width != null),
         assert(height != null) {
     this.path = path;
+    this.dateModifiedSecs = dateModifiedSecs;
   }
 
   ImageEntry copyWith({
     @required String uri,
     @required String path,
     @required int contentId,
+    @required int dateModifiedSecs,
   }) {
     final copyContentId = contentId ?? this.contentId;
     final copied = ImageEntry(
@@ -200,6 +203,13 @@ class ImageEntry {
       }
     }
     return _bestDate;
+  }
+
+  int get dateModifiedSecs => _dateModifiedSecs;
+
+  set dateModifiedSecs(int dateModifiedSecs) {
+    _dateModifiedSecs = dateModifiedSecs;
+    _bestDate = null;
   }
 
   DateTime get monthTaken {
@@ -385,5 +395,20 @@ class ImageEntry {
     if (isFavourite) {
       favourites.remove([this]);
     }
+  }
+
+  static int compareByName(ImageEntry a, ImageEntry b) {
+    final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
+    return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
+  }
+
+  static int compareBySize(ImageEntry a, ImageEntry b) {
+    final c = b.sizeBytes.compareTo(a.sizeBytes);
+    return c != 0 ? c : compareByName(a, b);
+  }
+
+  static int compareByDate(ImageEntry a, ImageEntry b) {
+    final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
+    return c != 0 ? c : compareByName(a, b);
   }
 }

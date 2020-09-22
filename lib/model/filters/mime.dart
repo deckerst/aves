@@ -38,19 +38,27 @@ class MimeFilter extends CollectionFilter {
     _icon ??= AIcons.vector;
   }
 
-  MimeFilter.fromJson(Map<String, dynamic> json)
+  MimeFilter.fromMap(Map<String, dynamic> json)
       : this(
           json['mime'],
         );
 
   @override
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'type': type,
         'mime': mime,
       };
 
   static String displayType(String mime) {
-    return mime.toUpperCase().replaceFirst(RegExp('.*/(X-)?'), '').replaceFirst('+XML', '').replaceFirst('VND.', '');
+    final patterns = [
+      RegExp('.*/'), // remove type, keep subtype
+      RegExp('(X-|VND.)'), // noisy prefixes
+      '+XML', // noisy suffix
+      RegExp('ADOBE[-\.]'), // for DNG, PSD...
+    ];
+    mime = mime.toUpperCase();
+    patterns.forEach((pattern) => mime = mime.replaceFirst(pattern, ''));
+    return mime;
   }
 
   @override
@@ -60,7 +68,7 @@ class MimeFilter extends CollectionFilter {
   String get label => _label;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true}) => Icon(_icon, size: size);
+  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(_icon, size: size);
 
   @override
   String get typeKey => type;

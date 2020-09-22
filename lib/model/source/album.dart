@@ -9,13 +9,18 @@ mixin AlbumMixin on SourceBase {
 
   List<String> sortedAlbums = List.unmodifiable([]);
 
+  int compareAlbumsByName(String a, String b) {
+    final ua = getUniqueAlbumName(a);
+    final ub = getUniqueAlbumName(b);
+    final c = compareAsciiUpperCase(ua, ub);
+    if (c != 0) return c;
+    final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
+    final vb = androidFileUtils.getStorageVolume(b)?.path ?? '';
+    return compareAsciiUpperCase(va, vb);
+  }
+
   void updateAlbums() {
-    final sorted = _folderPaths.toList()
-      ..sort((a, b) {
-        final ua = getUniqueAlbumName(a);
-        final ub = getUniqueAlbumName(b);
-        return compareAsciiUpperCase(ua, ub);
-      });
+    final sorted = _folderPaths.toList()..sort(compareAlbumsByName);
     sortedAlbums = List.unmodifiable(sorted);
     invalidateFilterEntryCounts();
     eventBus.fire(AlbumsChangedEvent());

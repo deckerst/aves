@@ -5,25 +5,31 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 
 class DecoratedFilterChip extends StatelessWidget {
   final CollectionSource source;
   final CollectionFilter filter;
   final ImageEntry entry;
-  final FilterCallback onPressed;
+  final bool pinned;
+  final FilterCallback onTap;
+  final OffsetFilterCallback onLongPress;
 
   const DecoratedFilterChip({
     Key key,
     @required this.source,
     @required this.filter,
     @required this.entry,
-    @required this.onPressed,
+    this.pinned = false,
+    @required this.onTap,
+    this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -45,7 +51,8 @@ class DecoratedFilterChip extends StatelessWidget {
       showGenericIcon: false,
       background: backgroundImage,
       details: _buildDetails(filter),
-      onPressed: onPressed,
+      onTap: onTap,
+      onLongPress: onLongPress,
     );
   }
 
@@ -54,19 +61,31 @@ class DecoratedFilterChip extends StatelessWidget {
       '${source.count(filter)}',
       style: TextStyle(color: FilterGridPage.detailColor),
     );
-    return filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album)
-        ? Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                AIcons.removableStorage,
-                size: 16,
-                color: FilterGridPage.detailColor,
-              ),
-              SizedBox(width: 8),
-              count,
-            ],
-          )
-        : count;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (pinned)
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: DecoratedIcon(
+              AIcons.pin,
+              color: FilterGridPage.detailColor,
+              shadows: [Constants.embossShadow],
+              size: 16,
+            ),
+          ),
+        if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: DecoratedIcon(
+              AIcons.removableStorage,
+              color: FilterGridPage.detailColor,
+              shadows: [Constants.embossShadow],
+              size: 16,
+            ),
+          ),
+        count,
+      ],
+    );
   }
 }

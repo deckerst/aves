@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/services/service_policy.dart';
@@ -85,5 +87,29 @@ class MetadataService {
       debugPrint('getContentResolverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
+  }
+
+  static Future<List<Uint8List>> getExifThumbnails(String uri) async {
+    try {
+      final result = await platform.invokeMethod('getExifThumbnails', <String, dynamic>{
+        'uri': uri,
+      });
+      return (result as List).cast<Uint8List>();
+    } on PlatformException catch (e) {
+      debugPrint('getExifThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return [];
+  }
+
+  static Future<List<Uint8List>> getXmpThumbnails(String uri) async {
+    try {
+      final result = await platform.invokeMethod('getXmpThumbnails', <String, dynamic>{
+        'uri': uri,
+      });
+      return (result as List).cast<Uint8List>();
+    } on PlatformException catch (e) {
+      debugPrint('getXmpThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return [];
   }
 }

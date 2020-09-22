@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_db.dart';
@@ -18,7 +17,7 @@ import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/filter_grids/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -96,7 +95,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
               icon: AIcons.album,
               text: 'No albums',
             ),
-            onPressed: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
+            onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           );
         },
       ),
@@ -136,8 +135,10 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
                 uri: newFields['uri'] as String,
                 path: newFields['path'] as String,
                 contentId: newFields['contentId'] as int,
+                dateModifiedSecs: newFields['dateModifiedSecs'] as int,
               ));
             });
+            await metadataDb.saveEntries(movedEntries);
             await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
             await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
           } else {
@@ -147,20 +148,12 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
               final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
               if (entry != null) {
                 fromAlbums.add(entry.directory);
-                final oldContentId = entry.contentId;
-                final newContentId = newFields['contentId'] as int;
-                entry.uri = newFields['uri'] as String;
-                entry.path = newFields['path'] as String;
-                entry.contentId = newContentId;
                 movedEntries.add(entry);
-
-                await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
-                await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
-                await favourites.move(oldContentId, entry);
+                await source.moveEntry(entry, newFields);
               }
             });
           }
-          source.applyMove(
+          source.updateAfterMove(
             entries: movedEntries,
             fromAlbums: fromAlbums,
             toAlbum: destinationAlbum,

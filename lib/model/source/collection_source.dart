@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -87,7 +88,23 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
     invalidateFilterEntryCounts();
   }
 
-  void applyMove({
+  Future<void> moveEntry(ImageEntry entry, Map newFields) async {
+    final oldContentId = entry.contentId;
+    final newContentId = newFields['contentId'] as int;
+    entry.uri = newFields['uri'] as String;
+    entry.path = newFields['path'] as String;
+    entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    entry.contentId = newContentId;
+    entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
+    entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
+
+    await metadataDb.updateEntryId(oldContentId, entry);
+    await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
+    await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
+    await favourites.move(oldContentId, entry);
+  }
+
+  void updateAfterMove({
     @required Iterable<ImageEntry> entries,
     @required Set<String> fromAlbums,
     @required String toAlbum,

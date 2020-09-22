@@ -108,7 +108,7 @@ class _FilterBarState extends State<FilterBar> {
           filter: filter,
           removable: true,
           heroType: HeroType.always,
-          onPressed: (filter) {
+          onTap: (filter) {
             _userRemovedFilter = filter;
             widget.onPressed(filter);
           },
