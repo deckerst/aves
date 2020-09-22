@@ -33,6 +33,9 @@ class Settings extends ChangeNotifier {
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
   static const collectionTileExtentKey = 'collection_tile_extent';
+  static const showThumbnailLocationKey = 'show_thumbnail_location';
+  static const showThumbnailRawKey = 'show_thumbnail_raw';
+  static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
   static const albumSortFactorKey = 'album_sort_factor';
@@ -107,6 +110,18 @@ class Settings extends ChangeNotifier {
   double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
 
   set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
+
+  bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, true);
+
+  set showThumbnailLocation(bool newValue) => setAndNotify(showThumbnailLocationKey, newValue);
+
+  bool get showThumbnailRaw => getBoolOrDefault(showThumbnailRawKey, true);
+
+  set showThumbnailRaw(bool newValue) => setAndNotify(showThumbnailRawKey, newValue);
+
+  bool get showThumbnailVideoDuration => getBoolOrDefault(showThumbnailVideoDurationKey, true);
+
+  set showThumbnailVideoDuration(bool newValue) => setAndNotify(showThumbnailVideoDurationKey, newValue);
 
   // filter grids
 
