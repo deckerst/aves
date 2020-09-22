@@ -19,6 +19,7 @@ class AIcons {
   static const IconData disc = Icons.fiber_manual_record;
   static const IconData error = Icons.error_outline;
   static const IconData location = Icons.place_outlined;
+  static const IconData raw = Icons.camera_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
   static const IconData settings = Icons.settings_outlined;
@@ -70,15 +71,21 @@ class AIcons {
 class VideoIcon extends StatelessWidget {
   final ImageEntry entry;
   final double iconSize;
+  final bool showDuration;
 
-  const VideoIcon({Key key, this.entry, this.iconSize}) : super(key: key);
+  const VideoIcon({
+    Key key,
+    this.entry,
+    this.iconSize,
+    this.showDuration,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.play,
       size: iconSize,
-      text: entry.durationText,
+      text: showDuration ? entry.durationText : null,
     );
   }
 }
@@ -107,6 +114,20 @@ class GpsIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.location,
+      size: iconSize,
+    );
+  }
+}
+
+class RawIcon extends StatelessWidget {
+  final double iconSize;
+
+  const RawIcon({Key key, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: AIcons.raw,
       size: iconSize,
     );
   }

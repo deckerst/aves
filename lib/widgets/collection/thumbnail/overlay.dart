@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
@@ -8,6 +9,7 @@ import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class ThumbnailEntryOverlay extends StatelessWidget {
   final ImageEntry entry;
@@ -23,26 +25,32 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final fontSize = min(14.0, (extent / 8)).roundToDouble();
     final iconSize = fontSize * 2;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (entry.hasGps) GpsIcon(iconSize: iconSize),
-        if (entry.isAnimated)
-          AnimatedImageIcon(iconSize: iconSize)
-        else if (entry.isVideo)
-          DefaultTextStyle(
-            style: TextStyle(
-              color: Colors.grey[200],
-              fontSize: fontSize,
-            ),
-            child: VideoIcon(
-              entry: entry,
-              iconSize: iconSize,
-            ),
-          ),
-      ],
-    );
+    return Selector<Settings, Tuple3<bool, bool, bool>>(
+        selector: (context, s) => Tuple3(s.showThumbnailLocation, s.showThumbnailRaw, s.showThumbnailVideoDuration),
+        builder: (context, s, child) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (entry.hasGps && settings.showThumbnailLocation) GpsIcon(iconSize: iconSize),
+              if (entry.isRaw && settings.showThumbnailRaw) RawIcon(iconSize: iconSize),
+              if (entry.isAnimated)
+                AnimatedImageIcon(iconSize: iconSize)
+              else if (entry.isVideo)
+                DefaultTextStyle(
+                  style: TextStyle(
+                    color: Colors.grey[200],
+                    fontSize: fontSize,
+                  ),
+                  child: VideoIcon(
+                    entry: entry,
+                    iconSize: iconSize,
+                    showDuration: settings.showThumbnailVideoDuration,
+                  ),
+                ),
+            ],
+          );
+        });
   }
 }
 

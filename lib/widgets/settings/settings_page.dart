@@ -94,6 +94,22 @@ class SettingsPage extends StatelessWidget {
                       }
                     },
                   ),
+                  SectionTitle('Thumbnails'),
+                  SwitchListTile(
+                    value: settings.showThumbnailLocation,
+                    onChanged: (v) => settings.showThumbnailLocation = v,
+                    title: Text('Show location icon'),
+                  ),
+                  SwitchListTile(
+                    value: settings.showThumbnailRaw,
+                    onChanged: (v) => settings.showThumbnailRaw = v,
+                    title: Text('Show raw icon'),
+                  ),
+                  SwitchListTile(
+                    value: settings.showThumbnailVideoDuration,
+                    onChanged: (v) => settings.showThumbnailVideoDuration = v,
+                    title: Text('Show video duration'),
+                  ),
                   SectionTitle('Privacy'),
                   SwitchListTile(
                     value: settings.isCrashlyticsEnabled,
