@@ -15,6 +15,7 @@ import 'package:aves/widgets/common/data_providers/media_query_data_provider.dar
 import 'package:aves/widgets/common/double_back_pop.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/common/scroll_thumb.dart';
 import 'package:aves/widgets/common/search_button.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
@@ -22,6 +23,7 @@ import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
 import 'package:collection/collection.dart';
+import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pedantic/pedantic.dart';
@@ -168,7 +170,6 @@ class FilterGridPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pinnedFilters = settings.pinnedFilters;
     return MediaQueryDataProvider(
       child: Scaffold(
         body: DoubleBackPopScope(
@@ -177,63 +178,9 @@ class FilterGridPage extends StatelessWidget {
               selector: (c, mq) => mq.size.width,
               builder: (c, mqWidth, child) {
                 final columnCount = (mqWidth / maxCrossAxisExtent).ceil();
+                final scrollView = _buildScrollView(context, columnCount);
                 return AnimationLimiter(
-                  child: CustomScrollView(
-                    slivers: [
-                      appBar,
-                      filterKeys.isEmpty
-                          ? SliverFillRemaining(
-                              child: emptyBuilder(),
-                              hasScrollBody: false,
-                            )
-                          : SliverPadding(
-                              padding: EdgeInsets.all(AvesFilterChip.outlineWidth),
-                              sliver: SliverGrid(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, i) {
-                                    final key = filterKeys[i];
-                                    final filter = filterBuilder(key);
-                                    final child = DecoratedFilterChip(
-                                      key: Key(key),
-                                      source: source,
-                                      filter: filter,
-                                      entry: filterEntries[key],
-                                      pinned: pinnedFilters.contains(filter),
-                                      onTap: onTap,
-                                      onLongPress: onLongPress,
-                                    );
-                                    return AnimationConfiguration.staggeredGrid(
-                                      position: i,
-                                      columnCount: columnCount,
-                                      duration: Durations.staggeredAnimation,
-                                      delay: Durations.staggeredAnimationDelay,
-                                      child: SlideAnimation(
-                                        verticalOffset: 50.0,
-                                        child: FadeInAnimation(
-                                          child: child,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  childCount: filterKeys.length,
-                                ),
-                                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: maxCrossAxisExtent,
-                                  mainAxisSpacing: 8,
-                                  crossAxisSpacing: 8,
-                                ),
-                              ),
-                            ),
-                      SliverToBoxAdapter(
-                        child: Selector<MediaQueryData, double>(
-                          selector: (context, mq) => mq.viewInsets.bottom,
-                          builder: (context, mqViewInsetsBottom, child) {
-                            return SizedBox(height: mqViewInsetsBottom);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: _buildDraggableScrollView(scrollView),
                 );
               },
             ),
@@ -244,6 +191,88 @@ class FilterGridPage extends StatelessWidget {
         ),
         resizeToAvoidBottomInset: false,
       ),
+    );
+  }
+
+  Widget _buildDraggableScrollView(ScrollView scrollView) {
+    return Selector<MediaQueryData, double>(
+      selector: (context, mq) => mq.viewInsets.bottom,
+      builder: (context, mqViewInsetsBottom, child) => DraggableScrollbar(
+        heightScrollThumb: avesScrollThumbHeight,
+        backgroundColor: Colors.white,
+        scrollThumbBuilder: avesScrollThumbBuilder(
+          height: avesScrollThumbHeight,
+          backgroundColor: Colors.white,
+        ),
+        controller: PrimaryScrollController.of(context),
+        padding: EdgeInsets.only(
+          // padding to keep scroll thumb between app bar above and nav bar below
+          top: kToolbarHeight,
+          bottom: mqViewInsetsBottom,
+        ),
+        child: scrollView,
+      ),
+    );
+  }
+
+  ScrollView _buildScrollView(BuildContext context, int columnCount) {
+    final pinnedFilters = settings.pinnedFilters;
+    return CustomScrollView(
+      controller: PrimaryScrollController.of(context),
+      slivers: [
+        appBar,
+        filterKeys.isEmpty
+            ? SliverFillRemaining(
+                child: emptyBuilder(),
+                hasScrollBody: false,
+              )
+            : SliverPadding(
+                padding: EdgeInsets.all(AvesFilterChip.outlineWidth),
+                sliver: SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, i) {
+                      final key = filterKeys[i];
+                      final filter = filterBuilder(key);
+                      final child = DecoratedFilterChip(
+                        key: Key(key),
+                        source: source,
+                        filter: filter,
+                        entry: filterEntries[key],
+                        pinned: pinnedFilters.contains(filter),
+                        onTap: onTap,
+                        onLongPress: onLongPress,
+                      );
+                      return AnimationConfiguration.staggeredGrid(
+                        position: i,
+                        columnCount: columnCount,
+                        duration: Durations.staggeredAnimation,
+                        delay: Durations.staggeredAnimationDelay,
+                        child: SlideAnimation(
+                          verticalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: filterKeys.length,
+                  ),
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: maxCrossAxisExtent,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                  ),
+                ),
+              ),
+        SliverToBoxAdapter(
+          child: Selector<MediaQueryData, double>(
+            selector: (context, mq) => mq.viewInsets.bottom,
+            builder: (context, mqViewInsetsBottom, child) {
+              return SizedBox(height: mqViewInsetsBottom);
+            },
+          ),
+        ),
+      ],
     );
   }
 }
