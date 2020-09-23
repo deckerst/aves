@@ -63,19 +63,18 @@ class _HomePageState extends State<HomePage> {
     await androidFileUtils.init();
     unawaited(androidFileUtils.initAppNames());
 
+    AvesApp.mode = AppMode.main;
     final intentData = await ViewerService.getIntentData();
     if (intentData != null) {
       final action = intentData['action'];
       switch (action) {
         case 'view':
-          AvesApp.mode = AppMode.view;
           _viewerEntry = await _initViewerEntry(
             uri: intentData['uri'],
             mimeType: intentData['mimeType'],
           );
-          if (_viewerEntry == null) {
-            // fallback to default mode when we fail to retrieve the entry
-            AvesApp.mode = AppMode.main;
+          if (_viewerEntry != null) {
+            AvesApp.mode = AppMode.view;
           }
           break;
         case 'pick':
