@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -25,19 +26,23 @@ import deckers.thibault.aves.channel.calls.MetadataHandler;
 import deckers.thibault.aves.channel.calls.StorageHandler;
 import deckers.thibault.aves.channel.streams.ImageByteStreamHandler;
 import deckers.thibault.aves.channel.streams.ImageOpStreamHandler;
+import deckers.thibault.aves.channel.streams.IntentStreamHandler;
 import deckers.thibault.aves.channel.streams.MediaStoreStreamHandler;
 import deckers.thibault.aves.channel.streams.StorageAccessStreamHandler;
 import deckers.thibault.aves.utils.PermissionManager;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
     private static final String LOG_TAG = Utils.createLogTag(MainActivity.class);
 
+    public static final String INTENT_CHANNEL = "deckers.thibault/aves/intent";
     public static final String VIEWER_CHANNEL = "deckers.thibault/aves/viewer";
 
+    private IntentStreamHandler intentStreamHandler;
     private Map<String, Object> intentDataMap;
 
     @Override
@@ -79,6 +84,8 @@ public class MainActivity extends FlutterActivity {
                         finish();
                     }
                 });
+        intentStreamHandler = new IntentStreamHandler();
+        new EventChannel(messenger, INTENT_CHANNEL).setStreamHandler(intentStreamHandler);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             setupShortcuts();
@@ -105,6 +112,13 @@ public class MainActivity extends FlutterActivity {
                 .build();
 
         ShortcutManagerCompat.setDynamicShortcuts(this, Arrays.asList(videos, search));
+    }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+        intentStreamHandler.notifyNewIntent();
     }
 
     private void handleIntent(Intent intent) {

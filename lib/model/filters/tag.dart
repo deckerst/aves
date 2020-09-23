@@ -43,7 +43,7 @@ class TagFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => hashValues('TagFilter', tag);
+  int get hashCode => hashValues(type, tag);
 
   @override
   String toString() {

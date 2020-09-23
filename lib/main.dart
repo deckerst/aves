@@ -5,6 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/route_tracker.dart';
 import 'package:aves/widgets/common/data_providers/settings_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,7 +33,7 @@ void main() {
 enum AppMode { main, pick, view }
 
 class AvesApp extends StatefulWidget {
-  static AppMode mode = AppMode.main;
+  static AppMode mode;
 
   @override
   _AvesAppState createState() => _AvesAppState();
@@ -41,6 +42,8 @@ class AvesApp extends StatefulWidget {
 class _AvesAppState extends State<AvesApp> {
   Future<void> _appSetup;
   final NavigatorObserver _routeTracker = CrashlyticsRouteTracker();
+  final _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
+  final _navigatorKey = GlobalKey<NavigatorState>();
 
   static const accentColor = Colors.indigoAccent;
 
@@ -64,10 +67,13 @@ class _AvesAppState extends State<AvesApp> {
     ),
   );
 
+  Widget get firstPage => settings.hasAcceptedTerms ? HomePage() : WelcomePage();
+
   @override
   void initState() {
     super.initState();
     _appSetup = _setup();
+    _newIntentChannel.receiveBroadcastStream().listen((_) => _onNewIntent());
   }
 
   Future<void> _setup() async {
@@ -87,6 +93,14 @@ class _AvesAppState extends State<AvesApp> {
     await settings.init();
   }
 
+  void _onNewIntent() {
+    FirebaseCrashlytics.instance.log('New intent');
+    _navigatorKey.currentState.pushReplacement(DirectMaterialPageRoute(
+      settings: RouteSettings(name: HomePage.routeName),
+      builder: (_) => firstPage,
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     // place the settings provider above `MaterialApp`
@@ -95,23 +109,10 @@ class _AvesAppState extends State<AvesApp> {
       future: _appSetup,
       builder: (context, snapshot) {
         if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-          return settings.hasAcceptedTerms ? HomePage() : WelcomePage();
+          return firstPage;
         }
         return Scaffold(
-          body: snapshot.hasError
-              ? Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(AIcons.error),
-                      SizedBox(height: 16),
-                      Text(snapshot.error.toString()),
-                    ],
-                  ),
-                )
-              : SizedBox.shrink(),
+          body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
         );
       },
     );
@@ -121,6 +122,7 @@ class _AvesAppState extends State<AvesApp> {
           future: _appSetup,
           builder: (context, snapshot) {
             return MaterialApp(
+              navigatorKey: _navigatorKey,
               home: home,
               navigatorObservers: [
                 if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) _routeTracker,
@@ -131,6 +133,21 @@ class _AvesAppState extends State<AvesApp> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildError(Object error) {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(AIcons.error),
+          SizedBox(height: 16),
+          Text(error.toString()),
+        ],
       ),
     );
   }
