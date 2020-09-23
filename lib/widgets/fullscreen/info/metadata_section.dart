@@ -85,7 +85,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           }
           if (index < untitledDirectoryCount + 1) {
             final dir = directoriesWithoutTitle[index - 1];
-            return InfoRowGroup(dir.tags);
+            return InfoRowGroup(dir.tags, maxValueLength: maxValueLength);
           }
           final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
           return Theme(
@@ -109,7 +109,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
                 Container(
                   alignment: Alignment.topLeft,
                   padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: InfoRowGroup(dir.tags),
+                  child: InfoRowGroup(dir.tags, maxValueLength: maxValueLength),
                 ),
               ],
               baseColor: Colors.grey[900],
@@ -133,7 +133,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           final value = tagKV.value as String ?? '';
           if (value.isEmpty) return null;
           final tagName = tagKV.key as String ?? '';
-          return MapEntry(tagName, value.length > maxValueLength ? '${value.substring(0, maxValueLength)}…' : value);
+          return MapEntry(tagName, value);
         }).where((kv) => kv != null)));
         return _MetadataDirectory(directoryName, tags);
       }).toList()
