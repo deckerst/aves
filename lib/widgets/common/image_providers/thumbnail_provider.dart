@@ -66,24 +66,27 @@ class ThumbnailProviderKey {
   final ImageEntry entry;
   final double extent;
   final double scale;
+  // do not access `contentId` via `entry` for hashCode and equality purposes
+  // as an entry is not constant and its contentId can change
+  final int contentId;
 
-  const ThumbnailProviderKey({
+  ThumbnailProviderKey({
     @required this.entry,
     @required this.extent,
     this.scale,
-  });
+  }) : contentId = entry.contentId;
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.entry.contentId == entry.contentId && other.extent == extent && other.scale == scale;
+    return other is ThumbnailProviderKey && other.contentId == contentId && other.extent == extent && other.scale == scale;
   }
 
   @override
-  int get hashCode => hashValues(entry.contentId, extent, scale);
+  int get hashCode => hashValues(contentId, extent, scale);
 
   @override
   String toString() {
-    return 'ThumbnailProviderKey{contentId=${entry.contentId}, extent=$extent, scale=$scale}';
+    return 'ThumbnailProviderKey{contentId=$contentId, extent=$extent, scale=$scale}';
   }
 }
