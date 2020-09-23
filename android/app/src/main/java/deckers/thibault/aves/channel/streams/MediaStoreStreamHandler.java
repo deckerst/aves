@@ -27,7 +27,7 @@ public class MediaStoreStreamHandler implements EventChannel.StreamHandler {
     }
 
     @Override
-    public void onListen(Object args, final EventChannel.EventSink eventSink) {
+    public void onListen(Object args, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         this.handler = new Handler(Looper.getMainLooper());
         new Thread(this::fetchAll).start();
