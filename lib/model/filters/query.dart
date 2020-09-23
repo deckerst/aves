@@ -68,5 +68,5 @@ class QueryFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => hashValues('QueryFilter', query);
+  int get hashCode => hashValues(type, query);
 }

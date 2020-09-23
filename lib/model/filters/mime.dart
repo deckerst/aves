@@ -80,5 +80,5 @@ class MimeFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => hashValues('MimeFilter', mime);
+  int get hashCode => hashValues(type, mime);
 }
