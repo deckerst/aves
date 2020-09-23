@@ -23,12 +23,10 @@ class ChipActionDelegate {
 
     switch (action) {
       case ChipAction.pin:
-        final pinnedFilters = settings.pinnedFilters..add(filter);
-        settings.pinnedFilters = pinnedFilters;
+        settings.pinnedFilters = settings.pinnedFilters..add(filter);
         break;
       case ChipAction.unpin:
-        final pinnedFilters = settings.pinnedFilters..remove(filter);
-        settings.pinnedFilters = pinnedFilters;
+        settings.pinnedFilters = settings.pinnedFilters..remove(filter);
         break;
       default:
         break;
@@ -78,12 +76,17 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         await source.moveEntry(entry, newFields);
       }
     });
+    final newAlbum = path.join(path.dirname(album), newName);
     source.updateAfterMove(
       entries: movedEntries,
       fromAlbums: {album},
-      toAlbum: path.join(path.dirname(album), newName),
+      toAlbum: newAlbum,
       copy: false,
     );
+    final newFilter = AlbumFilter(newAlbum, source.getUniqueAlbumName(newAlbum));
+    settings.pinnedFilters = settings.pinnedFilters
+      ..remove(filter)
+      ..add(newFilter);
 
     final failed = bySuccess[false]?.length ?? 0;
     if (failed > 0) {
