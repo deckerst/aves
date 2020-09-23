@@ -108,8 +108,11 @@ class _LocationSectionState extends State<LocationSection> {
                     style: settings.infoMapStyle,
                   ),
           ),
-          if (entry.hasGps) InfoRowGroup({'Coordinates': settings.coordinateFormat.format(entry.latLng)}),
-          if (location.isNotEmpty) InfoRowGroup({'Address': location}),
+          if (entry.hasGps)
+            InfoRowGroup(Map.fromEntries([
+              MapEntry('Coordinates', settings.coordinateFormat.format(entry.latLng)),
+              if (location.isNotEmpty) MapEntry('Address', location),
+            ])),
           if (filters.isNotEmpty)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),

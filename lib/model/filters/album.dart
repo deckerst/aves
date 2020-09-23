@@ -83,7 +83,7 @@ class AlbumFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => hashValues('AlbumFilter', album);
+  int get hashCode => hashValues(type, album);
 
   @override
   String toString() {

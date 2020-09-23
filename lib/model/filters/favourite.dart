@@ -31,5 +31,5 @@ class FavouriteFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => 'FavouriteFilter'.hashCode;
+  int get hashCode => type.hashCode;
 }

@@ -29,7 +29,7 @@ public class StorageAccessStreamHandler implements EventChannel.StreamHandler {
     }
 
     @Override
-    public void onListen(Object o, final EventChannel.EventSink eventSink) {
+    public void onListen(Object args, EventChannel.EventSink eventSink) {
         this.eventSink = eventSink;
         this.handler = new Handler(Looper.getMainLooper());
         Runnable onGranted = () -> success(true); // user gave access to a directory, with no guarantee that it matches the specified `path`
