@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter {
-  static const type = 'country';
+  static const type = 'location';
   static const locationSeparator = ';';
 
   final LocationLevel level;
@@ -57,7 +57,7 @@ class LocationFilter extends CollectionFilter {
   }
 
   @override
-  int get hashCode => hashValues('LocationFilter', level, _location);
+  int get hashCode => hashValues(type, level, _location);
 
   @override
   String toString() {

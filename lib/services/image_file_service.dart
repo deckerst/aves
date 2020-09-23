@@ -233,7 +233,7 @@ class ImageOpEvent {
   }
 
   @override
-  int get hashCode => hashValues('ImageOpEvent', success, uri);
+  int get hashCode => hashValues(success, uri);
 
   @override
   String toString() {
