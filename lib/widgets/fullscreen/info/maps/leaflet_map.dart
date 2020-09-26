@@ -15,6 +15,8 @@ class EntryLeafletMap extends StatefulWidget {
   final String geoUri;
   final double initialZoom;
   final EntryMapStyle style;
+  final Size markerSize;
+  final WidgetBuilder markerBuilder;
 
   EntryLeafletMap({
     Key key,
@@ -22,6 +24,8 @@ class EntryLeafletMap extends StatefulWidget {
     this.geoUri,
     this.initialZoom,
     this.style,
+    this.markerBuilder,
+    this.markerSize,
   })  : latLng = LatLng(latLng.item1, latLng.item2),
         super(key: key);
 
@@ -31,8 +35,6 @@ class EntryLeafletMap extends StatefulWidget {
 
 class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   final MapController _mapController = MapController();
-
-  static const markerSize = 40.0;
 
   @override
   void didUpdateWidget(EntryLeafletMap oldWidget) {
@@ -80,16 +82,10 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
           options: MarkerLayerOptions(
             markers: [
               Marker(
-                width: markerSize,
-                height: markerSize,
+                width: widget.markerSize.width,
+                height: widget.markerSize.height,
                 point: widget.latLng,
-                builder: (ctx) {
-                  return Icon(
-                    Icons.place,
-                    size: markerSize,
-                    color: Theme.of(context).accentColor,
-                  );
-                },
+                builder: widget.markerBuilder,
                 anchorPos: AnchorPos.align(AnchorAlign.top),
               ),
             ],
