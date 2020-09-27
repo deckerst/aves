@@ -24,10 +24,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.MetadataHelper;
@@ -97,10 +102,14 @@ public abstract class ImageProvider {
             return;
         }
 
-        List<Map<String, Object>> entries = new ArrayList<>();
-        entries.addAll(listContentEntries(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, oldDirPath));
-        entries.addAll(listContentEntries(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, oldDirPath));
+        // list entries with their content IDs before renaming
+        Uri[] baseContentUris = new Uri[]{MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Video.Media.EXTERNAL_CONTENT_URI};
+        Map<Uri, List<Map<String, Object>>> entriesByBaseContentUri = Arrays.stream(baseContentUris).collect(Collectors.toMap(
+                uri -> uri,
+                uri -> listContentEntries(context, uri, oldDirPath)
+        ));
 
+        // rename directory
         boolean renamed;
         try {
             renamed = destinationDirDocFile.renameTo(newDirName);
@@ -108,44 +117,44 @@ public abstract class ImageProvider {
             callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath, e));
             return;
         }
-
         if (!renamed) {
             callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath));
             return;
         }
-
-        String[] oldEntryPaths = entries.stream().map(entry -> oldDirPath + entry.get("displayName")).toArray(String[]::new);
-        String[] mimeTypes = entries.stream().map(entry -> (String) entry.get("mimeType")).toArray(String[]::new);
-        MediaScannerConnection.scanFile(context, oldEntryPaths, mimeTypes, null);
-
-        List<SettableFuture<Map<String, Object>>> scanFutures = new ArrayList<>();
         String newDirPath = new File(oldDirPath).getParent() + File.separator + newDirName + File.separator;
-        for (Map<String, Object> entry : entries) {
-            String displayName = (String) entry.get("displayName");
-            String mimeType = (String) entry.get("mimeType");
 
-            SettableFuture<Map<String, Object>> scanFuture = SettableFuture.create();
-            scanFutures.add(scanFuture);
-            String newEntryPath = newDirPath + displayName;
-            scanNewPath(context, newEntryPath, mimeType, new ImageProvider.ImageOpCallback() {
-                @Override
-                public void onSuccess(Map<String, Object> newFields) {
-                    entry.putAll(newFields);
-                    entry.put("success", true);
-                    scanFuture.set(entry);
+        // scan old paths for cleanup, and new paths to fetch content IDs
+        Collection<SettableFuture<Map<String, Object>>> scanFutures = new ArrayList<>();
+        entriesByBaseContentUri.forEach((baseContentUri, entries) -> {
+            int count = entries.size();
+            if (count > 0) {
+                String[] oldPaths = new String[count];
+                String[] newPaths = new String[count];
+                String[] mimeTypes = new String[count];
+                for (int i = 0; i < count; i++) {
+                    Map<String, Object> entry = entries.get(i);
+                    String displayName = (String) entry.get("displayName");
+                    oldPaths[i] = oldDirPath + displayName;
+                    newPaths[i] = newDirPath + displayName;
+                    mimeTypes[i] = (String) entry.get("mimeType");
                 }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Log.w(LOG_TAG, "failed to scan entry=" + displayName + " in new directory=" + newDirPath, throwable);
-                    entry.put("success", false);
-                    scanFuture.set(entry);
-                }
-            });
-        }
+                MediaScannerConnection.scanFile(context, oldPaths, mimeTypes, null);
+                scanFutures.addAll(scanNewPaths(context, newPaths, mimeTypes, baseContentUri));
+            }
+        });
 
         try {
-            callback.onSuccess(Futures.allAsList(scanFutures).get());
+            List<Map<String, Object>> scanResults = Futures.allAsList(scanFutures).get();
+            Stream<Map<String, Object>> allEntries = entriesByBaseContentUri.values().stream().flatMap(Collection::stream);
+            Map<String, Integer> oldContentIdByDisplayName = allEntries.collect(Collectors.toMap(
+                    fields -> (String) fields.get("displayName"),
+                    fields -> (Integer) Objects.requireNonNull(fields.get("oldContentId"))
+            ));
+            scanResults.forEach(newFields -> {
+                String displayName = (String) newFields.get("displayName");
+                newFields.put("oldContentId", oldContentIdByDisplayName.get(displayName));
+            });
+            callback.onSuccess(scanResults);
         } catch (ExecutionException | InterruptedException e) {
             callback.onFailure(e);
         }
@@ -332,6 +341,64 @@ public abstract class ImageProvider {
 //        }
     }
 
+    protected Collection<SettableFuture<Map<String, Object>>> scanNewPaths(final Context context, final String[] paths, final String[] mimeTypes, final Uri baseContentUri) {
+        Map<String, SettableFuture<Map<String, Object>>> scanFutures = new HashMap<>();
+        for (String path : paths) {
+            scanFutures.put(path, SettableFuture.create());
+        }
+
+        MediaScannerConnection.scanFile(context, paths, mimeTypes, (path, rawUri) -> {
+            SettableFuture<Map<String, Object>> future = scanFutures.get(path);
+            if (future == null) {
+                Log.e(LOG_TAG, "no future for path=" + path);
+                return;
+            }
+
+            if (rawUri == null) {
+                future.setException(new Exception("failed to get URI of item at path=" + path));
+                return;
+            }
+
+            // newURI is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+            // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+            long contentId = ContentUris.parseId(rawUri);
+            Uri contentUri = ContentUris.withAppendedId(baseContentUri, contentId);
+
+            Map<String, Object> newFields = new HashMap<>();
+            // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
+            String[] projection = {
+                    MediaStore.MediaColumns.DISPLAY_NAME,
+                    MediaStore.MediaColumns.TITLE,
+                    MediaStore.MediaColumns.DATE_MODIFIED,
+            };
+            try {
+                Cursor cursor = context.getContentResolver().query(contentUri, projection, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToNext()) {
+                        newFields.put("uri", contentUri.toString());
+                        newFields.put("contentId", contentId);
+                        newFields.put("path", path);
+                        newFields.put("displayName", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)));
+                        newFields.put("title", cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)));
+                        newFields.put("dateModifiedSecs", cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)));
+                    }
+                    cursor.close();
+                }
+            } catch (Exception e) {
+                future.setException(e);
+                return;
+            }
+
+            if (newFields.isEmpty()) {
+                future.setException(new Exception("failed to get item details from provider at contentUri=" + contentUri));
+            } else {
+                future.set(newFields);
+            }
+        });
+
+        return scanFutures.values();
+    }
+
     protected void scanNewPath(final Context context, final String path, final String mimeType, final ImageOpCallback callback) {
         MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (newPath, newUri) -> {
             long contentId = 0;
@@ -352,7 +419,7 @@ public abstract class ImageProvider {
             }
 
             Map<String, Object> newFields = new HashMap<>();
-            // we retrieve updated fields as the renamed file became a new entry in the Media Store
+            // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
             String[] projection = {
                     MediaStore.MediaColumns.DISPLAY_NAME,
                     MediaStore.MediaColumns.TITLE,

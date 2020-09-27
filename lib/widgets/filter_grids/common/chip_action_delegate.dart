@@ -9,10 +9,8 @@ import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:pedantic/pedantic.dart';
 
@@ -64,11 +62,10 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
     final result = await ImageFileService.renameDirectory(album, newName);
-    final bySuccess = groupBy<Map, bool>(result, (fields) => fields['success']);
 
     final albumEntries = source.rawEntries.where(filter.filter);
     final movedEntries = <ImageEntry>[];
-    await Future.forEach<Map>(bySuccess[true], (newFields) async {
+    await Future.forEach<Map>(result, (newFields) async {
       final oldContentId = newFields['oldContentId'];
       final entry = albumEntries.firstWhere((entry) => entry.contentId == oldContentId, orElse: () => null);
       if (entry != null) {
@@ -88,11 +85,6 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       ..remove(filter)
       ..add(newFilter);
 
-    final failed = bySuccess[false]?.length ?? 0;
-    if (failed > 0) {
-      showFeedback(context, 'Failed to move ${Intl.plural(failed, one: '$failed item', other: '$failed items')}');
-    } else {
-      showFeedback(context, 'Done!');
-    }
+    showFeedback(context, 'Done!');
   }
 }
