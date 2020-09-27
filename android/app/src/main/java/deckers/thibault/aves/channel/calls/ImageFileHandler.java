@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -189,6 +190,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         if (dirPath == null || newName == null) {
             result.error("renameDirectory-args", "failed because of missing arguments", null);
             return;
+        }
+        if (!dirPath.endsWith(File.separator)) {
+            dirPath += File.separator;
         }
 
         ImageProvider provider = new MediaStoreImageProvider();
