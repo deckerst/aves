@@ -90,11 +90,7 @@ public abstract class ImageProvider {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public void renameDirectory(Context context, String oldDirPath, String newDirName, final AlbumRenameOpCallback callback) {
-        if (!oldDirPath.endsWith(File.separator)) {
-            oldDirPath += File.separator;
-        }
-
+    public void renameDirectory(Context context, final String oldDirPath, String newDirName, final AlbumRenameOpCallback callback) {
         DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(context, oldDirPath);
         if (destinationDirDocFile == null) {
             callback.onFailure(new Exception("failed to find directory at path=" + oldDirPath));
@@ -118,14 +114,15 @@ public abstract class ImageProvider {
             return;
         }
 
+        String[] oldEntryPaths = entries.stream().map(entry -> oldDirPath + entry.get("displayName")).toArray(String[]::new);
+        String[] mimeTypes = entries.stream().map(entry -> (String) entry.get("mimeType")).toArray(String[]::new);
+        MediaScannerConnection.scanFile(context, oldEntryPaths, mimeTypes, null);
+
         List<SettableFuture<Map<String, Object>>> scanFutures = new ArrayList<>();
         String newDirPath = new File(oldDirPath).getParent() + File.separator + newDirName + File.separator;
         for (Map<String, Object> entry : entries) {
             String displayName = (String) entry.get("displayName");
             String mimeType = (String) entry.get("mimeType");
-
-            String oldEntryPath = oldDirPath + displayName;
-            MediaScannerConnection.scanFile(context, new String[]{oldEntryPath}, new String[]{mimeType}, null);
 
             SettableFuture<Map<String, Object>> scanFuture = SettableFuture.create();
             scanFutures.add(scanFuture);
