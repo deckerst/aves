@@ -120,10 +120,14 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         AvesImageEntry entry = params.entry;
         Integer width = params.width;
         Integer height = params.height;
-//        Log.d(LOG_TAG, "getThumbnailBytesByResolver width=" + width + ", path=" + entry.path);
 
         ContentResolver resolver = activity.getContentResolver();
-        return resolver.loadThumbnail(entry.uri, new Size(width, height), null);
+        Bitmap bitmap = resolver.loadThumbnail(entry.uri, new Size(width, height), null);
+        String mimeType = entry.mimeType;
+        if (MimeTypes.DNG.equals(mimeType)) {
+            bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+        }
+        return bitmap;
     }
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
