@@ -34,18 +34,17 @@ class DecoratedFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget backgroundImage;
-    if (entry != null) {
-      backgroundImage = entry.isSvg
-          ? ThumbnailVectorImage(
-              entry: entry,
-              extent: FilterGridPage.maxCrossAxisExtent,
-            )
-          : ThumbnailRasterImage(
-              entry: entry,
-              extent: FilterGridPage.maxCrossAxisExtent,
-            );
-    }
+    final backgroundImage = entry == null
+        ? Container(color: Colors.white)
+        : entry.isSvg
+            ? ThumbnailVectorImage(
+                entry: entry,
+                extent: FilterGridPage.maxCrossAxisExtent,
+              )
+            : ThumbnailRasterImage(
+                entry: entry,
+                extent: FilterGridPage.maxCrossAxisExtent,
+              );
     return AvesFilterChip(
       filter: filter,
       showGenericIcon: false,
