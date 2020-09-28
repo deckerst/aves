@@ -89,6 +89,18 @@ class MetadataService {
     return {};
   }
 
+  static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
+    try {
+      final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
+        'uri': uri,
+      });
+      return (result as List).cast<Uint8List>();
+    } on PlatformException catch (e) {
+      debugPrint('getEmbeddedPictures failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return [];
+  }
+
   static Future<List<Uint8List>> getExifThumbnails(String uri) async {
     try {
       final result = await platform.invokeMethod('getExifThumbnails', <String, dynamic>{

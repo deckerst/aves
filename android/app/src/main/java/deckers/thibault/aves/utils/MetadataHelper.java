@@ -55,7 +55,7 @@ public class MetadataHelper {
             DateFormat parser = new SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.US);
             parser.setTimeZone((timeZone != null) ? timeZone : TimeZone.getTimeZone("GMT"));
             date = parser.parse(dateString);
-        } catch (ParseException ex) {
+        } catch (ParseException e) {
             // ignore
         }
 
