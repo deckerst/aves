@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/model/filters/album.dart';
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
@@ -108,7 +106,6 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
       selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
       onDone: (processed) async {
-        debugPrint('$runtimeType _moveSelection onDone');
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
         final selectionCount = selection.length;
@@ -119,44 +116,12 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
           final count = movedCount;
           showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
-        if (movedCount > 0) {
-          final fromAlbums = <String>{};
-          final movedEntries = <ImageEntry>[];
-          if (copy) {
-            movedOps.forEach((movedOp) {
-              final sourceUri = movedOp.uri;
-              final newFields = movedOp.newFields;
-              final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-              fromAlbums.add(sourceEntry.directory);
-              movedEntries.add(sourceEntry?.copyWith(
-                uri: newFields['uri'] as String,
-                path: newFields['path'] as String,
-                contentId: newFields['contentId'] as int,
-                dateModifiedSecs: newFields['dateModifiedSecs'] as int,
-              ));
-            });
-            await metadataDb.saveEntries(movedEntries);
-            await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
-            await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
-          } else {
-            await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
-              final sourceUri = movedOp.uri;
-              final newFields = movedOp.newFields;
-              final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-              if (entry != null) {
-                fromAlbums.add(entry.directory);
-                movedEntries.add(entry);
-                await source.moveEntry(entry, newFields);
-              }
-            });
-          }
-          source.updateAfterMove(
-            entries: movedEntries,
-            fromAlbums: fromAlbums,
-            toAlbum: destinationAlbum,
-            copy: copy,
-          );
-        }
+        await source.updateAfterMove(
+          selection: selection,
+          copy: copy,
+          destinationAlbum: destinationAlbum,
+          movedOps: movedOps,
+        );
         collection.clearSelection();
         collection.browse();
       },

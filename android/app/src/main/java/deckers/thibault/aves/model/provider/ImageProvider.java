@@ -17,20 +17,14 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.MetadataHelper;
@@ -90,122 +84,6 @@ public abstract class ImageProvider {
 
         MediaScannerConnection.scanFile(context, new String[]{oldPath}, new String[]{mimeType}, null);
         scanNewPath(context, newFile.getPath(), mimeType, callback);
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void renameDirectory(Context context, final String oldDirPath, String newDirName, final AlbumRenameOpCallback callback) {
-        DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(context, oldDirPath);
-        if (destinationDirDocFile == null) {
-            callback.onFailure(new Exception("failed to find directory at path=" + oldDirPath));
-            return;
-        }
-
-        // list entries with their content IDs before renaming
-        Uri[] baseContentUris = new Uri[]{MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Video.Media.EXTERNAL_CONTENT_URI};
-        Map<Uri, List<Map<String, Object>>> entriesByBaseContentUri = Arrays.stream(baseContentUris).collect(Collectors.toMap(
-                uri -> uri,
-                uri -> listContentEntries(context, uri, oldDirPath)
-        ));
-
-        // rename directory
-        boolean renamed;
-        try {
-            renamed = destinationDirDocFile.renameTo(newDirName);
-        } catch (FileNotFoundException e) {
-            callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath, e));
-            return;
-        }
-        if (!renamed) {
-            callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath));
-            return;
-        }
-        String newDirPath = new File(oldDirPath).getParent() + File.separator + newDirName + File.separator;
-
-        // scan old paths for cleanup, and new paths to fetch content IDs
-        Collection<SettableFuture<Map<String, Object>>> scanFutures = new ArrayList<>();
-        entriesByBaseContentUri.forEach((baseContentUri, entries) -> {
-            int count = entries.size();
-            if (count > 0) {
-                String[] mimeTypes = new String[count];
-                String[] oldPaths = new String[count];
-                String[] newPaths = new String[count];
-                Map<String, Integer> oldContentIdByPath = new HashMap<>();
-                Map<String, SettableFuture<Map<String, Object>>> scanFutureByPath = new HashMap<>();
-                for (int i = 0; i < count; i++) {
-                    Map<String, Object> entry = entries.get(i);
-                    String displayName = (String) entry.get("displayName");
-                    String newPath = newDirPath + displayName;
-                    mimeTypes[i] = (String) entry.get("mimeType");
-                    oldPaths[i] = oldDirPath + displayName;
-                    newPaths[i] = newPath;
-                    oldContentIdByPath.put(newPath, (Integer) entry.get("oldContentId"));
-                    scanFutureByPath.put(newPath, SettableFuture.create());
-                }
-                MediaScannerConnection.scanFile(context, oldPaths, mimeTypes, null);
-                MediaScannerConnection.scanFile(context, newPaths, mimeTypes, (path, rawUri) -> {
-                    SettableFuture<Map<String, Object>> future = scanFutureByPath.get(path);
-                    if (future == null) {
-                        Log.e(LOG_TAG, "no future for path=" + path);
-                        return;
-                    }
-
-                    if (rawUri == null) {
-                        future.setException(new Exception("failed to get URI of item at path=" + path));
-                        return;
-                    }
-
-                    // newURI is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                    // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                    long contentId = ContentUris.parseId(rawUri);
-                    Uri contentUri = ContentUris.withAppendedId(baseContentUri, contentId);
-                    Map<String, Object> newFields = new HashMap<String, Object>() {{
-                        put("path", path);
-                        put("uri", contentUri.toString());
-                        put("contentId", contentId);
-                        put("oldContentId", oldContentIdByPath.get(path));
-                    }};
-                    future.set(newFields);
-                });
-
-                scanFutures.addAll(scanFutureByPath.values());
-            }
-        });
-
-        try {
-            callback.onSuccess(Futures.allAsList(scanFutures).get());
-        } catch (ExecutionException | InterruptedException e) {
-            callback.onFailure(e);
-        }
-    }
-
-    private List<Map<String, Object>> listContentEntries(Context context, Uri contentUri, String dirPath) {
-        List<Map<String, Object>> entries = new ArrayList<>();
-        String[] projection = {
-                MediaStore.MediaColumns._ID,
-                MediaStore.MediaColumns.DISPLAY_NAME,
-                MediaStore.MediaColumns.MIME_TYPE,
-        };
-        String selection = MediaStore.MediaColumns.DATA + " like ?";
-
-        try {
-            Cursor cursor = context.getContentResolver().query(contentUri, projection, selection, new String[]{dirPath + "%"}, null);
-            if (cursor != null) {
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
-                int displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
-                int mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
-                while (cursor.moveToNext()) {
-                    entries.add(new HashMap<String, Object>() {{
-                        put("oldContentId", cursor.getInt(idColumn));
-                        put("displayName", cursor.getString(displayNameColumn));
-                        put("mimeType", cursor.getString(mimeTypeColumn));
-                    }});
-                }
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "failed to list entries in  contentUri=" + contentUri, e);
-        }
-        return entries;
     }
 
     public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
@@ -413,12 +291,6 @@ public abstract class ImageProvider {
 
     public interface ImageOpCallback {
         void onSuccess(Map<String, Object> fields);
-
-        void onFailure(Throwable throwable);
-    }
-
-    public interface AlbumRenameOpCallback {
-        void onSuccess(List<Map<String, Object>> fieldsByEntry);
 
         void onFailure(Throwable throwable);
     }

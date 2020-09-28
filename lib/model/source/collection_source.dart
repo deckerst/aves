@@ -9,6 +9,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/services/image_file_service.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
@@ -108,20 +109,53 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   }
 
   void updateAfterMove({
-    @required Iterable<ImageEntry> entries,
-    @required Set<String> fromAlbums,
-    @required String toAlbum,
+    @required List<ImageEntry> selection,
     @required bool copy,
-  }) {
+    @required String destinationAlbum,
+    @required Iterable<MoveOpEvent> movedOps,
+  }) async {
+    if (movedOps.isEmpty) return;
+
+    final fromAlbums = <String>{};
+    final movedEntries = <ImageEntry>[];
     if (copy) {
-      addAll(entries);
+      movedOps.forEach((movedOp) {
+        final sourceUri = movedOp.uri;
+        final newFields = movedOp.newFields;
+        final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+        fromAlbums.add(sourceEntry.directory);
+        movedEntries.add(sourceEntry?.copyWith(
+          uri: newFields['uri'] as String,
+          path: newFields['path'] as String,
+          contentId: newFields['contentId'] as int,
+          dateModifiedSecs: newFields['dateModifiedSecs'] as int,
+        ));
+      });
+      await metadataDb.saveEntries(movedEntries);
+      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
+      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
+    } else {
+      await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
+        final sourceUri = movedOp.uri;
+        final newFields = movedOp.newFields;
+        final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+        if (entry != null) {
+          fromAlbums.add(entry.directory);
+          movedEntries.add(entry);
+          await moveEntry(entry, newFields);
+        }
+      });
+    }
+
+    if (copy) {
+      addAll(movedEntries);
     } else {
       cleanEmptyAlbums(fromAlbums);
-      addFolderPath({toAlbum});
+      addFolderPath({destinationAlbum});
     }
     updateAlbums();
     invalidateFilterEntryCounts();
-    eventBus.fire(EntryMovedEvent(entries));
+    eventBus.fire(EntryMovedEvent(movedEntries));
   }
 
   int count(CollectionFilter filter) {
