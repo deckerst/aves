@@ -41,6 +41,7 @@ class AlbumListPage extends StatelessWidget {
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
                 ChipAction.rename,
+                ChipAction.delete,
               ],
               filterEntries: getAlbumEntries(source),
               filterBuilder: (album) => AlbumFilter(album, source.getUniqueAlbumName(album)),

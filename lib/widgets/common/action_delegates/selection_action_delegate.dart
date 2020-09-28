@@ -7,7 +7,6 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/collection_actions.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
@@ -20,10 +19,8 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
   final CollectionLens collection;
@@ -61,7 +58,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     }
   }
 
-  Future _moveSelection(BuildContext context, {@required bool copy}) async {
+  Future<void> _moveSelection(BuildContext context, {@required bool copy}) async {
     final source = collection.source;
     final destinationAlbum = await Navigator.push(
       context,
@@ -106,7 +103,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;
 
-    _showOpReport<MoveOpEvent>(
+    showOpReport<MoveOpEvent>(
       context: context,
       selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
@@ -166,7 +163,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     );
   }
 
-  void _refreshSelectionMetadata() async {
+  Future<void> _refreshSelectionMetadata() async {
     collection.selection.forEach((entry) => entry.clearMetadata());
     final source = collection.source;
     source.stateNotifier.value = SourceState.cataloguing;
@@ -176,7 +173,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
     source.stateNotifier.value = SourceState.ready;
   }
 
-  void _showDeleteDialog(BuildContext context) async {
+  Future<void> _showDeleteDialog(BuildContext context) async {
     final selection = collection.selection.toList();
     final count = selection.length;
 
@@ -202,7 +199,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     if (!await checkStoragePermission(context, selection)) return;
 
-    _showOpReport<ImageOpEvent>(
+    showOpReport<ImageOpEvent>(
       context: context,
       selection: selection,
       opStream: ImageFileService.delete(selection),
@@ -221,66 +218,5 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         collection.browse();
       },
     );
-  }
-
-  // selection action report overlay
-
-  OverlayEntry _opReportOverlayEntry;
-
-  void _showOpReport<T extends ImageOpEvent>({
-    @required BuildContext context,
-    @required List<ImageEntry> selection,
-    @required Stream<T> opStream,
-    @required void Function(Set<T> processed) onDone,
-  }) {
-    final processed = <T>{};
-
-    // do not handle completion inside `StreamBuilder`
-    // as it could be called multiple times
-    Future<void> onComplete() => _hideOpReportOverlay().then((_) => onDone(processed));
-    opStream.listen(
-      processed.add,
-      onError: (error) {
-        debugPrint('_showOpReport error=$error');
-        onComplete();
-      },
-      onDone: onComplete,
-    );
-
-    _opReportOverlayEntry = OverlayEntry(
-      builder: (context) {
-        return AbsorbPointer(
-          child: StreamBuilder<T>(
-              stream: opStream,
-              builder: (context, snapshot) {
-                Widget child = SizedBox.shrink();
-                if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
-                  final percent = processed.length.toDouble() / selection.length;
-                  child = CircularPercentIndicator(
-                    percent: percent,
-                    lineWidth: 16,
-                    radius: 160,
-                    backgroundColor: Colors.white24,
-                    progressColor: Theme.of(context).accentColor,
-                    animation: true,
-                    center: Text(NumberFormat.percentPattern().format(percent)),
-                    animateFromLastPercent: true,
-                  );
-                }
-                return AnimatedSwitcher(
-                  duration: Durations.collectionOpOverlayAnimation,
-                  child: child,
-                );
-              }),
-        );
-      },
-    );
-    Overlay.of(context).insert(_opReportOverlayEntry);
-  }
-
-  Future<void> _hideOpReportOverlay() async {
-    await Future.delayed(Durations.collectionOpOverlayAnimation * timeDilation);
-    _opReportOverlayEntry.remove();
-    _opReportOverlayEntry = null;
   }
 }

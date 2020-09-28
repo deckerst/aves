@@ -8,9 +8,11 @@ import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_album_dialog.dart';
+import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:pedantic/pedantic.dart';
 
@@ -43,12 +45,62 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   Future<void> onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) async {
     await super.onActionSelected(context, filter, action);
     switch (action) {
+      case ChipAction.delete:
+        unawaited(_showDeleteDialog(context, filter as AlbumFilter));
+        break;
       case ChipAction.rename:
         unawaited(_showRenameDialog(context, filter as AlbumFilter));
         break;
       default:
         break;
     }
+  }
+
+  Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
+    final selection = source.rawEntries.where(filter.filter).toList();
+    final count = selection.length;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          content: Text('Are you sure you want to delete this album and its ${Intl.plural(count, one: 'item', other: '$count items')}?'),
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'.toUpperCase()),
+            ),
+            FlatButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('Delete'.toUpperCase()),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    if (!await checkStoragePermission(context, selection)) return;
+
+    showOpReport<ImageOpEvent>(
+      context: context,
+      selection: selection,
+      opStream: ImageFileService.delete(selection),
+      onDone: (processed) {
+        final deletedUris = processed.where((e) => e.success).map((e) => e.uri);
+        final deletedCount = deletedUris.length;
+        final selectionCount = selection.length;
+        if (deletedCount < selectionCount) {
+          final count = selectionCount - deletedCount;
+          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
+        } else {
+          settings.pinnedFilters = settings.pinnedFilters..remove(filter);
+        }
+        if (deletedCount > 0) {
+          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
+        }
+      },
+    );
   }
 
   Future<void> _showRenameDialog(BuildContext context, AlbumFilter filter) async {
