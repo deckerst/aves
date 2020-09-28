@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -25,7 +27,11 @@ class AppShortcutService {
   }
 
   static Future<void> pin(String label, ImageEntry iconEntry, Set<CollectionFilter> filters) async {
-    final iconBytes = iconEntry != null ? await ImageFileService.getThumbnail(iconEntry, 256, 256) : null;
+    Uint8List iconBytes;
+    if (iconEntry != null) {
+      final size = iconEntry.isVideo ? 0.0 : 256.0;
+      iconBytes = await ImageFileService.getThumbnail(iconEntry, size, size);
+    }
     try {
       await platform.invokeMethod('pin', <String, dynamic>{
         'label': label,
