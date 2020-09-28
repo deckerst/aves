@@ -127,16 +127,18 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         } else {
           showFeedback(context, 'Done!');
         }
+        final pinned = settings.pinnedFilters.contains(filter);
         await source.updateAfterMove(
           selection: selection,
           copy: false,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
         );
-        final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(destinationAlbum));
-        settings.pinnedFilters = settings.pinnedFilters
-          ..remove(filter)
-          ..add(newFilter);
+        // repin new album after obsolete album got removed and unpinned
+        if (pinned) {
+          final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(destinationAlbum));
+          settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
+        }
       },
     );
   }
