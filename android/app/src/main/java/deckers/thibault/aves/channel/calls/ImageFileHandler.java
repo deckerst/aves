@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +57,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "rotate":
                 new Thread(() -> rotate(call, new MethodResultWrapper(result))).start();
-                break;
-            case "renameDirectory":
-                new Thread(() -> renameDirectory(call, new MethodResultWrapper(result))).start();
                 break;
             default:
                 result.notImplemented();
@@ -180,31 +176,6 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             @Override
             public void onFailure(Throwable throwable) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", throwable.getMessage()));
-            }
-        });
-    }
-
-    private void renameDirectory(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        String dirPath = call.argument("path");
-        String newName = call.argument("newName");
-        if (dirPath == null || newName == null) {
-            result.error("renameDirectory-args", "failed because of missing arguments", null);
-            return;
-        }
-        if (!dirPath.endsWith(File.separator)) {
-            dirPath += File.separator;
-        }
-
-        ImageProvider provider = new MediaStoreImageProvider();
-        provider.renameDirectory(activity, dirPath, newName, new ImageProvider.AlbumRenameOpCallback() {
-            @Override
-            public void onSuccess(List<Map<String, Object>> fieldsByEntry) {
-                result.success(fieldsByEntry);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                result.error("renameDirectory-failure", "failed to rename directory", throwable.getMessage());
             }
         });
     }

@@ -1,6 +1,5 @@
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -113,30 +112,34 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final result = await ImageFileService.renameDirectory(album, newName);
+    final selection = source.rawEntries.where(filter.filter).toList();
+    final destinationAlbum = path.join(path.dirname(album), newName);
 
-    final albumEntries = source.rawEntries.where(filter.filter);
-    final movedEntries = <ImageEntry>[];
-    await Future.forEach<Map>(result, (newFields) async {
-      final oldContentId = newFields['oldContentId'];
-      final entry = albumEntries.firstWhere((entry) => entry.contentId == oldContentId, orElse: () => null);
-      if (entry != null) {
-        movedEntries.add(entry);
-        await source.moveEntry(entry, newFields);
-      }
-    });
-    final newAlbum = path.join(path.dirname(album), newName);
-    source.updateAfterMove(
-      entries: movedEntries,
-      fromAlbums: {album},
-      toAlbum: newAlbum,
-      copy: false,
+    showOpReport<MoveOpEvent>(
+      context: context,
+      selection: selection,
+      opStream: ImageFileService.move(selection, copy: false, destinationAlbum: destinationAlbum),
+      onDone: (processed) async {
+        final movedOps = processed.where((e) => e.success);
+        final movedCount = movedOps.length;
+        final selectionCount = selection.length;
+        if (movedCount < selectionCount) {
+          final count = selectionCount - movedCount;
+          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
+        } else {
+          showFeedback(context, 'Done!');
+        }
+        await source.updateAfterMove(
+          selection: selection,
+          copy: false,
+          destinationAlbum: destinationAlbum,
+          movedOps: movedOps,
+        );
+        final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(destinationAlbum));
+        settings.pinnedFilters = settings.pinnedFilters
+          ..remove(filter)
+          ..add(newFilter);
+      },
     );
-    final newFilter = AlbumFilter(newAlbum, source.getUniqueAlbumName(newAlbum));
-    settings.pinnedFilters = settings.pinnedFilters
-      ..remove(filter)
-      ..add(newFilter);
-
-    showFeedback(context, 'Done!');
   }
 }

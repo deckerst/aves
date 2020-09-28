@@ -194,19 +194,6 @@ class ImageFileService {
     }
     return {};
   }
-
-  static Future<List<Map>> renameDirectory(String path, String newName) async {
-    try {
-      final result = await platform.invokeMethod('renameDirectory', <String, dynamic>{
-        'path': path,
-        'newName': newName,
-      });
-      return (result as List).cast<Map>();
-    } on PlatformException catch (e) {
-      debugPrint('renameDirectory failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return [];
-  }
 }
 
 @immutable
