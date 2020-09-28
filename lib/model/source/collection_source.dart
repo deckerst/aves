@@ -70,7 +70,7 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
     eventBus.fire(EntryAddedEvent());
   }
 
-  void removeEntries(Iterable<ImageEntry> entries) {
+  void removeEntries(List<ImageEntry> entries) {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());

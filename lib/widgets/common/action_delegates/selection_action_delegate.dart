@@ -169,7 +169,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
       selection: selection,
       opStream: ImageFileService.delete(selection),
       onDone: (processed) {
-        final deletedUris = processed.where((e) => e.success).map((e) => e.uri);
+        final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
         final deletedCount = deletedUris.length;
         final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
@@ -177,7 +177,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (deletedCount > 0) {
-          collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
+          collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
         }
         collection.clearSelection();
         collection.browse();

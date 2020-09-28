@@ -1,4 +1,6 @@
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
@@ -67,6 +69,10 @@ mixin AlbumMixin on SourceBase {
     if (emptyAlbums.isNotEmpty) {
       _folderPaths.removeAll(emptyAlbums);
       updateAlbums();
+
+      final pinnedFilters = settings.pinnedFilters;
+      emptyAlbums.forEach((album) => pinnedFilters.remove(AlbumFilter(album, getUniqueAlbumName(album))));
+      settings.pinnedFilters = pinnedFilters;
     }
   }
 
