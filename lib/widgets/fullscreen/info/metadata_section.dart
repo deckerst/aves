@@ -36,8 +36,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   static const int maxValueLength = 140;
 
   // directory names from metadata-extractor
-  static const exifThumbnailDirectory = 'Exif Thumbnail';
-  static const xmpDirectory = 'XMP';
+  static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
+  static const xmpDirectory = 'XMP'; // from metadata-extractor
+  static const videoDirectory = 'Video'; // additional generic video directory
 
   @override
   void initState() {
@@ -106,6 +107,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
                 SizedBox(height: 4),
                 if (dir.name == exifThumbnailDirectory) MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry),
                 if (dir.name == xmpDirectory) MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry),
+                if (dir.name == videoDirectory) MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry),
                 Container(
                   alignment: Alignment.topLeft,
                   padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),

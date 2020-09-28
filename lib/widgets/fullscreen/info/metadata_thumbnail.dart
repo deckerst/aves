@@ -5,7 +5,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:flutter/material.dart';
 
-enum MetadataThumbnailSource { exif, xmp }
+enum MetadataThumbnailSource { embedded, exif, xmp }
 
 class MetadataThumbnails extends StatefulWidget {
   final MetadataThumbnailSource source;
@@ -24,15 +24,22 @@ class MetadataThumbnails extends StatefulWidget {
 class _MetadataThumbnailsState extends State<MetadataThumbnails> {
   Future<List<Uint8List>> _loader;
 
+  ImageEntry get entry => widget.entry;
+
+  String get uri => entry.uri;
+
   @override
   void initState() {
     super.initState();
     switch (widget.source) {
+      case MetadataThumbnailSource.embedded:
+        _loader = MetadataService.getEmbeddedPictures(uri);
+        break;
       case MetadataThumbnailSource.exif:
-        _loader = MetadataService.getExifThumbnails(widget.entry.uri);
+        _loader = MetadataService.getExifThumbnails(uri);
         break;
       case MetadataThumbnailSource.xmp:
-        _loader = MetadataService.getXmpThumbnails(widget.entry.uri);
+        _loader = MetadataService.getXmpThumbnails(uri);
         break;
     }
   }
@@ -43,7 +50,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         future: _loader,
         builder: (context, snapshot) {
           if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data.isNotEmpty) {
-            final turns = (widget.entry.orientationDegrees / 90).round();
+            final turns = (entry.orientationDegrees / 90).round();
             final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
             return Container(
               alignment: AlignmentDirectional.topStart,
