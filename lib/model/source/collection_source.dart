@@ -88,12 +88,15 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
     invalidateFilterEntryCounts();
   }
 
+  // `dateModifiedSecs` changes when moving entries to another directory,
+  // but it does not change when renaming the containing directory
   Future<void> moveEntry(ImageEntry entry, Map newFields) async {
     final oldContentId = entry.contentId;
     final newContentId = newFields['contentId'] as int;
-    entry.uri = newFields['uri'] as String;
+    final newDateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    if (newDateModifiedSecs != null) entry.dateModifiedSecs = newDateModifiedSecs;
     entry.path = newFields['path'] as String;
-    entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    entry.uri = newFields['uri'] as String;
     entry.contentId = newContentId;
     entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
     entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
