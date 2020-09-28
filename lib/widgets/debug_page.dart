@@ -299,6 +299,7 @@ class DebugPageState extends State<DebugPage> {
           'collectionSortFactor': '${settings.collectionSortFactor}',
           'collectionTileExtent': '${settings.collectionTileExtent}',
           'infoMapZoom': '${settings.infoMapZoom}',
+          'pinnedFilters': '${settings.pinnedFilters}',
         }),
       ],
     );

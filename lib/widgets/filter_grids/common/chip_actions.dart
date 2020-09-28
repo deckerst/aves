@@ -6,6 +6,7 @@ enum ChipSetAction {
 }
 
 enum ChipAction {
+  delete,
   pin,
   unpin,
   rename,
@@ -14,6 +15,8 @@ enum ChipAction {
 extension ExtraChipAction on ChipAction {
   String getText() {
     switch (this) {
+      case ChipAction.delete:
+        return 'Delete';
       case ChipAction.pin:
         return 'Pin to top';
       case ChipAction.unpin:
@@ -26,6 +29,8 @@ extension ExtraChipAction on ChipAction {
 
   IconData getIcon() {
     switch (this) {
+      case ChipAction.delete:
+        return AIcons.delete;
       case ChipAction.pin:
       case ChipAction.unpin:
         return AIcons.pin;
