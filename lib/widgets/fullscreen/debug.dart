@@ -5,8 +5,12 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/metadata_service.dart';
+import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
+import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
 
 class FullscreenDebugPage extends StatefulWidget {
@@ -41,7 +45,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     final tabs = <Tuple2<Tab, Widget>>[
       Tuple2(Tab(text: 'Entry'), _buildEntryTabView()),
       Tuple2(Tab(text: 'DB'), _buildDbTabView()),
-      Tuple2(Tab(text: 'Content Resolver'), _buildContentResolverTabView()),
+      Tuple2(Tab(icon: Icon(AIcons.android)), _buildContentResolverTabView()),
+      Tuple2(Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
     ];
     return DefaultTabController(
       length: tabs.length,
@@ -128,6 +133,33 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'latLng': '${entry.latLng}',
           'geoUri': '${entry.geoUri}',
         }),
+      ],
+    );
+  }
+
+  Widget _buildThumbnailsTabView() {
+    const extent = 128.0;
+    return ListView(
+      padding: EdgeInsets.all(16),
+      children: [
+        if (entry.isSvg) ...[
+          Text('SVG ($extent)'),
+          SvgPicture(
+            UriPicture(
+              uri: entry.uri,
+              mimeType: entry.mimeType,
+            ),
+            width: extent,
+            height: extent,
+          )
+        ],
+        if (!entry.isSvg) ...[
+          Text('Raster (fast)'),
+          Center(child: Image(image: ThumbnailProvider(entry: entry))),
+          SizedBox(height: 16),
+          Text('Raster ($extent)'),
+          Center(child: Image(image: ThumbnailProvider(entry: entry, extent: extent))),
+        ],
       ],
     );
   }
@@ -230,6 +262,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
+        Text('Content Resolver (Media Store):'),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
           builder: (context, snapshot) {
