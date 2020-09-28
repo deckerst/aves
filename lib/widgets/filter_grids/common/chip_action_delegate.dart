@@ -86,17 +86,15 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       selection: selection,
       opStream: ImageFileService.delete(selection),
       onDone: (processed) {
-        final deletedUris = processed.where((e) => e.success).map((e) => e.uri);
+        final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
         final deletedCount = deletedUris.length;
         final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
-        } else {
-          settings.pinnedFilters = settings.pinnedFilters..remove(filter);
         }
         if (deletedCount > 0) {
-          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)));
+          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
         }
       },
     );
