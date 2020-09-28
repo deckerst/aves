@@ -43,7 +43,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
           labelText: 'Shortcut label',
         ),
         autofocus: true,
-        maxLength: 10,
+        maxLength: 25,
         onChanged: (_) => _validate(),
         onSubmitted: (_) => _submit(context),
       ),

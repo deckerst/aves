@@ -38,8 +38,6 @@ import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
-import static com.bumptech.glide.request.RequestOptions.centerCropTransform;
-
 public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
     private static final String LOG_TAG = Utils.createLogTag(AppAdapterHandler.class);
 
@@ -184,7 +182,7 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
             FutureTarget<Bitmap> target = Glide.with(context)
                     .asBitmap()
                     .apply(options)
-                    .apply(centerCropTransform())
+                    .centerCrop()
                     .load(uri)
                     .signature(signature)
                     .submit(size, size);

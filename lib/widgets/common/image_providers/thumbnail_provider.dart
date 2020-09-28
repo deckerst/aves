@@ -66,6 +66,7 @@ class ThumbnailProviderKey {
   final ImageEntry entry;
   final double extent;
   final double scale;
+
   // do not access `contentId` via `entry` for hashCode and equality purposes
   // as an entry is not constant and its contentId can change
   final int contentId;

@@ -1,4 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/image_entry.dart';
+import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -22,10 +24,12 @@ class AppShortcutService {
     return false;
   }
 
-  static Future<void> pin(String label, Set<CollectionFilter> filters) async {
+  static Future<void> pin(String label, ImageEntry iconEntry, Set<CollectionFilter> filters) async {
+    final iconBytes = iconEntry != null ? await ImageFileService.getThumbnail(iconEntry, 256, 256) : null;
     try {
       await platform.invokeMethod('pin', <String, dynamic>{
         'label': label,
+        'iconBytes': iconBytes,
         'filters': filters.map((filter) => filter.toJson()).toList(),
       });
     } on PlatformException catch (e) {
