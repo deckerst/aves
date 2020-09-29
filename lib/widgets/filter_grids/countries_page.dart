@@ -33,7 +33,7 @@ class CountryListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage(
             source: source,
             title: 'Countries',
-            chipSetActionDelegate: CountryChipSetActionDelegate(),
+            chipSetActionDelegate: CountryChipSetActionDelegate(source: source),
             chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,

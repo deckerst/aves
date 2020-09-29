@@ -33,7 +33,7 @@ class TagListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage(
             source: source,
             title: 'Tags',
-            chipSetActionDelegate: TagChipSetActionDelegate(),
+            chipSetActionDelegate: TagChipSetActionDelegate(source: source),
             chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,

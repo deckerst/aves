@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 enum ChipSetAction {
   sort,
+  refresh,
+  stats,
 }
 
 enum ChipAction {
