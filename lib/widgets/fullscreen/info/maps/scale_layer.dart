@@ -75,7 +75,12 @@ class ScaleLayer extends StatelessWidget {
       builder: (context, snapshot) {
         final center = map.center;
         final latitude = center.latitude.abs();
-        final level = map.zoom.round() + (latitude > 80 ? 4 : latitude > 60 ? 3 : 2);
+        final level = map.zoom.round() +
+            (latitude > 80
+                ? 4
+                : latitude > 60
+                    ? 3
+                    : 2);
         final distance = scale[max(0, min(20, level))].toDouble();
         final start = map.project(center);
         final targetPoint = util.calculateEndingGlobalCoordinates(center, 90, distance);

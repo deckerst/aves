@@ -219,7 +219,6 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
             text: 'No favourites',
           );
         }
-        debugPrint('collection.filters=${collection.filters}');
         if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.anyVideo)) {
           return EmptyContent(
             icon: AIcons.video,

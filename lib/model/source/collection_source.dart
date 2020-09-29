@@ -9,6 +9,7 @@ import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/services/image_file_service.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
@@ -69,7 +70,7 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
     eventBus.fire(EntryAddedEvent());
   }
 
-  void removeEntries(Iterable<ImageEntry> entries) {
+  void removeEntries(List<ImageEntry> entries) {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
@@ -88,12 +89,15 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
     invalidateFilterEntryCounts();
   }
 
+  // `dateModifiedSecs` changes when moving entries to another directory,
+  // but it does not change when renaming the containing directory
   Future<void> moveEntry(ImageEntry entry, Map newFields) async {
     final oldContentId = entry.contentId;
     final newContentId = newFields['contentId'] as int;
-    entry.uri = newFields['uri'] as String;
+    final newDateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    if (newDateModifiedSecs != null) entry.dateModifiedSecs = newDateModifiedSecs;
     entry.path = newFields['path'] as String;
-    entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    entry.uri = newFields['uri'] as String;
     entry.contentId = newContentId;
     entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
     entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
@@ -105,20 +109,53 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   }
 
   void updateAfterMove({
-    @required Iterable<ImageEntry> entries,
-    @required Set<String> fromAlbums,
-    @required String toAlbum,
+    @required List<ImageEntry> selection,
     @required bool copy,
-  }) {
+    @required String destinationAlbum,
+    @required Iterable<MoveOpEvent> movedOps,
+  }) async {
+    if (movedOps.isEmpty) return;
+
+    final fromAlbums = <String>{};
+    final movedEntries = <ImageEntry>[];
     if (copy) {
-      addAll(entries);
+      movedOps.forEach((movedOp) {
+        final sourceUri = movedOp.uri;
+        final newFields = movedOp.newFields;
+        final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+        fromAlbums.add(sourceEntry.directory);
+        movedEntries.add(sourceEntry?.copyWith(
+          uri: newFields['uri'] as String,
+          path: newFields['path'] as String,
+          contentId: newFields['contentId'] as int,
+          dateModifiedSecs: newFields['dateModifiedSecs'] as int,
+        ));
+      });
+      await metadataDb.saveEntries(movedEntries);
+      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
+      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
+    } else {
+      await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
+        final sourceUri = movedOp.uri;
+        final newFields = movedOp.newFields;
+        final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+        if (entry != null) {
+          fromAlbums.add(entry.directory);
+          movedEntries.add(entry);
+          await moveEntry(entry, newFields);
+        }
+      });
+    }
+
+    if (copy) {
+      addAll(movedEntries);
     } else {
       cleanEmptyAlbums(fromAlbums);
-      addFolderPath({toAlbum});
+      addFolderPath({destinationAlbum});
     }
     updateAlbums();
     invalidateFilterEntryCounts();
-    eventBus.fire(EntryMovedEvent(entries));
+    eventBus.fire(EntryMovedEvent(movedEntries));
   }
 
   int count(CollectionFilter filter) {

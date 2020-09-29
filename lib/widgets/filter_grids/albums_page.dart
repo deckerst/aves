@@ -36,11 +36,12 @@ class AlbumListPage extends StatelessWidget {
             builder: (context, snapshot) => FilterNavigationPage(
               source: source,
               title: 'Albums',
-              chipSetActionDelegate: AlbumChipSetActionDelegate(),
+              chipSetActionDelegate: AlbumChipSetActionDelegate(source: source),
               chipActionDelegate: AlbumChipActionDelegate(source: source),
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
                 ChipAction.rename,
+                ChipAction.delete,
               ],
               filterEntries: getAlbumEntries(source),
               filterBuilder: (album) => AlbumFilter(album, source.getUniqueAlbumName(album)),

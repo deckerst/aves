@@ -190,6 +190,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             case "getContentResolverMetadata":
                 new Thread(() -> getContentResolverMetadata(call, new MethodResultWrapper(result))).start();
                 break;
+            case "getEmbeddedPictures":
+                new Thread(() -> getEmbeddedPictures(call, new MethodResultWrapper(result))).start();
+                break;
             case "getExifThumbnails":
                 new Thread(() -> getExifThumbnails(call, new MethodResultWrapper(result))).start();
                 break;
@@ -415,7 +418,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                                     metadataMap.put(KEY_LATITUDE, latitude);
                                     metadataMap.put(KEY_LONGITUDE, longitude);
                                 }
-                            } catch (NumberFormatException ex) {
+                            } catch (NumberFormatException e) {
                                 // ignore
                             }
                         }
@@ -528,6 +531,26 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         } else {
             result.error("getContentResolverMetadata-null", "failed to get cursor for contentUri=" + contentUri, null);
         }
+    }
+
+    private void getEmbeddedPictures(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Uri uri = Uri.parse(call.argument("uri"));
+        List<byte[]> pictures = new ArrayList<>();
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
+        if (retriever != null) {
+            try {
+                byte[] picture = retriever.getEmbeddedPicture();
+                if (picture != null) {
+                    pictures.add(picture);
+                }
+            } catch (Exception e) {
+                result.error("getVideoEmbeddedPictures-failure", "failed to get embedded picture for uri=" + uri, e);
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release();
+            }
+        }
+        result.success(pictures);
     }
 
     private void getExifThumbnails(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {

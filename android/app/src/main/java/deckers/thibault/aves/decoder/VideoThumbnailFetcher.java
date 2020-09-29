@@ -40,8 +40,8 @@ class VideoThumbnailFetcher implements DataFetcher<InputStream> {
                     }
                     callback.onDataReady(new ByteArrayInputStream(bos.toByteArray()));
                 }
-            } catch (Exception ex) {
-                callback.onLoadFailed(ex);
+            } catch (Exception e) {
+                callback.onLoadFailed(e);
             } finally {
                 // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
                 retriever.release();

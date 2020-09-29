@@ -146,7 +146,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       child: Stack(
         fit: StackFit.passthrough,
         children: [
-          if (widget.background != null)
+          if (hasBackground)
             ClipRRect(
               borderRadius: borderRadius,
               child: widget.background,
