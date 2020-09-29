@@ -62,7 +62,7 @@ class MapButtonPanel extends StatelessWidget {
                 MapOverlayButton(
                   icon: AIcons.openInNew,
                   onPressed: () => AndroidAppService.openMap(geoUri),
-                  tooltip: 'Show on map...',
+                  tooltip: 'Show on map…',
                 ),
                 SizedBox(height: padding),
                 MapOverlayButton(
@@ -81,7 +81,7 @@ class MapButtonPanel extends StatelessWidget {
                       MapStyleChangedNotification().dispatch(context);
                     }
                   },
-                  tooltip: 'Style map...',
+                  tooltip: 'Style map…',
                 ),
                 Spacer(),
                 MapOverlayButton(
