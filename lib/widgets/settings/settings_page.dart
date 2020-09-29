@@ -6,6 +6,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/highlight_title.dart';
+import 'package:aves/widgets/settings/access_grants.dart';
 import 'package:aves/widgets/settings/svg_background.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -116,6 +117,7 @@ class SettingsPage extends StatelessWidget {
                     onChanged: (v) => settings.isCrashlyticsEnabled = v,
                     title: Text('Allow anonymous crash reporting'),
                   ),
+                  GrantedDirectories(),
                 ],
               ),
             ),
