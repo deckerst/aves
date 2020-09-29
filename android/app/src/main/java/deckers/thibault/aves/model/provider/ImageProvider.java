@@ -17,17 +17,14 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.MetadataHelper;
@@ -87,101 +84,6 @@ public abstract class ImageProvider {
 
         MediaScannerConnection.scanFile(context, new String[]{oldPath}, new String[]{mimeType}, null);
         scanNewPath(context, newFile.getPath(), mimeType, callback);
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void renameDirectory(Context context, String oldDirPath, String newDirName, final AlbumRenameOpCallback callback) {
-        if (!oldDirPath.endsWith(File.separator)) {
-            oldDirPath += File.separator;
-        }
-
-        DocumentFileCompat destinationDirDocFile = StorageUtils.createDirectoryIfAbsent(context, oldDirPath);
-        if (destinationDirDocFile == null) {
-            callback.onFailure(new Exception("failed to find directory at path=" + oldDirPath));
-            return;
-        }
-
-        List<Map<String, Object>> entries = new ArrayList<>();
-        entries.addAll(listContentEntries(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, oldDirPath));
-        entries.addAll(listContentEntries(context, MediaStore.Video.Media.EXTERNAL_CONTENT_URI, oldDirPath));
-
-        boolean renamed;
-        try {
-            renamed = destinationDirDocFile.renameTo(newDirName);
-        } catch (FileNotFoundException e) {
-            callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath, e));
-            return;
-        }
-
-        if (!renamed) {
-            callback.onFailure(new Exception("failed to rename to name=" + newDirName + " directory at path=" + oldDirPath));
-            return;
-        }
-
-        List<SettableFuture<Map<String, Object>>> scanFutures = new ArrayList<>();
-        String newDirPath = new File(oldDirPath).getParent() + File.separator + newDirName + File.separator;
-        for (Map<String, Object> entry : entries) {
-            String displayName = (String) entry.get("displayName");
-            String mimeType = (String) entry.get("mimeType");
-
-            String oldEntryPath = oldDirPath + displayName;
-            MediaScannerConnection.scanFile(context, new String[]{oldEntryPath}, new String[]{mimeType}, null);
-
-            SettableFuture<Map<String, Object>> scanFuture = SettableFuture.create();
-            scanFutures.add(scanFuture);
-            String newEntryPath = newDirPath + displayName;
-            scanNewPath(context, newEntryPath, mimeType, new ImageProvider.ImageOpCallback() {
-                @Override
-                public void onSuccess(Map<String, Object> newFields) {
-                    entry.putAll(newFields);
-                    entry.put("success", true);
-                    scanFuture.set(entry);
-                }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Log.w(LOG_TAG, "failed to scan entry=" + displayName + " in new directory=" + newDirPath, throwable);
-                    entry.put("success", false);
-                    scanFuture.set(entry);
-                }
-            });
-        }
-
-        try {
-            callback.onSuccess(Futures.allAsList(scanFutures).get());
-        } catch (ExecutionException | InterruptedException e) {
-            callback.onFailure(e);
-        }
-    }
-
-    private List<Map<String, Object>> listContentEntries(Context context, Uri contentUri, String dirPath) {
-        List<Map<String, Object>> entries = new ArrayList<>();
-        String[] projection = {
-                MediaStore.MediaColumns._ID,
-                MediaStore.MediaColumns.DISPLAY_NAME,
-                MediaStore.MediaColumns.MIME_TYPE,
-        };
-        String selection = MediaStore.MediaColumns.DATA + " like ?";
-
-        try {
-            Cursor cursor = context.getContentResolver().query(contentUri, projection, selection, new String[]{dirPath + "%"}, null);
-            if (cursor != null) {
-                int idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
-                int displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
-                int mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
-                while (cursor.moveToNext()) {
-                    entries.add(new HashMap<String, Object>() {{
-                        put("oldContentId", cursor.getInt(idColumn));
-                        put("displayName", cursor.getString(displayNameColumn));
-                        put("mimeType", cursor.getString(mimeTypeColumn));
-                    }});
-                }
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "failed to list entries in  contentUri=" + contentUri, e);
-        }
-        return entries;
     }
 
     public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
@@ -355,7 +257,7 @@ public abstract class ImageProvider {
             }
 
             Map<String, Object> newFields = new HashMap<>();
-            // we retrieve updated fields as the renamed file became a new entry in the Media Store
+            // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
             String[] projection = {
                     MediaStore.MediaColumns.DISPLAY_NAME,
                     MediaStore.MediaColumns.TITLE,
@@ -389,12 +291,6 @@ public abstract class ImageProvider {
 
     public interface ImageOpCallback {
         void onSuccess(Map<String, Object> fields);
-
-        void onFailure(Throwable throwable);
-    }
-
-    public interface AlbumRenameOpCallback {
-        void onSuccess(List<Map<String, Object>> fieldsByEntry);
 
         void onFailure(Throwable throwable);
     }

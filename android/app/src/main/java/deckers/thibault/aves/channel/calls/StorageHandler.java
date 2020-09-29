@@ -52,10 +52,17 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
                 }
                 break;
             }
-            case "scanFile": {
+            case "revokeDirectoryAccess":
+                String path = call.argument("path");
+                PermissionManager.revokeDirectoryAccess(context, path);
+                result.success(true);
+                break;
+            case "getGrantedDirectories":
+                result.success(new ArrayList<>(PermissionManager.getGrantedDirs(context)));
+                break;
+            case "scanFile":
                 scanFile(call, new MethodResultWrapper(result));
                 break;
-            }
             default:
                 result.notImplemented();
                 break;

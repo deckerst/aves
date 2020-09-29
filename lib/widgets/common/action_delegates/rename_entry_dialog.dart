@@ -74,7 +74,6 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
     final newName = _nameController.text ?? '';
     final path = _buildEntryPath(newName);
     final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
-    debugPrint('TLAD path=$path exists=$exists');
     _isValidNotifier.value = newName.isNotEmpty && !exists;
   }
 

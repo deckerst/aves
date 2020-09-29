@@ -9,6 +9,7 @@ import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:aves/widgets/fullscreen/info/maps/google_map.dart';
 import 'package:aves/widgets/fullscreen/info/maps/leaflet_map.dart';
+import 'package:aves/widgets/fullscreen/info/maps/marker.dart';
 import 'package:flutter/material.dart';
 
 class LocationSection extends StatefulWidget {
@@ -33,6 +34,9 @@ class LocationSection extends StatefulWidget {
 
 class _LocationSectionState extends State<LocationSection> {
   String _loadedUri;
+
+  static const extent = 48.0;
+  static const pointerSize = Size(8.0, 6.0);
 
   CollectionLens get collection => widget.collection;
 
@@ -85,6 +89,14 @@ class _LocationSectionState extends State<LocationSection> {
         if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
       }
 
+      Widget buildMarker(BuildContext context) {
+        return ImageMarker(
+          entry: entry,
+          extent: extent,
+          pointerSize: pointerSize,
+        );
+      }
+
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -96,16 +108,19 @@ class _LocationSectionState extends State<LocationSection> {
             },
             child: settings.infoMapStyle.isGoogleMaps
                 ? EntryGoogleMap(
-                    markerId: entry.uri ?? entry.path,
                     latLng: entry.latLng,
                     geoUri: entry.geoUri,
                     initialZoom: settings.infoMapZoom,
+                    markerId: entry.uri ?? entry.path,
+                    markerBuilder: buildMarker,
                   )
                 : EntryLeafletMap(
                     latLng: entry.latLng,
                     geoUri: entry.geoUri,
                     initialZoom: settings.infoMapZoom,
                     style: settings.infoMapStyle,
+                    markerSize: Size(extent, extent + pointerSize.height),
+                    markerBuilder: buildMarker,
                   ),
           ),
           if (entry.hasGps)

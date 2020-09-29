@@ -200,33 +200,33 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 PopupMenuItem(
                   key: Key('menu-sort'),
                   value: CollectionAction.sort,
-                  child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+                  child: MenuRow(text: 'Sort…', icon: AIcons.sort),
                 ),
                 if (collection.sortFactor == EntrySortFactor.date)
                   PopupMenuItem(
                     key: Key('menu-group'),
                     value: CollectionAction.group,
-                    child: MenuRow(text: 'Group...', icon: AIcons.group),
+                    child: MenuRow(text: 'Group…', icon: AIcons.group),
                   ),
                 if (collection.isBrowsing) ...[
+                  if (kDebugMode)
+                    PopupMenuItem(
+                      value: CollectionAction.refresh,
+                      child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                    ),
                   if (AvesApp.mode == AppMode.main)
-                    if (kDebugMode)
-                      PopupMenuItem(
-                        value: CollectionAction.refresh,
-                        child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
-                      ),
-                  PopupMenuItem(
-                    value: CollectionAction.select,
-                    child: MenuRow(text: 'Select', icon: AIcons.select),
-                  ),
+                    PopupMenuItem(
+                      value: CollectionAction.select,
+                      child: MenuRow(text: 'Select', icon: AIcons.select),
+                    ),
                   PopupMenuItem(
                     value: CollectionAction.stats,
                     child: MenuRow(text: 'Stats', icon: AIcons.stats),
                   ),
-                  if (canAddShortcuts)
+                  if (AvesApp.mode == AppMode.main && canAddShortcuts)
                     PopupMenuItem(
                       value: CollectionAction.addShortcut,
-                      child: MenuRow(text: 'Add shortcut', icon: AIcons.addShortcut),
+                      child: MenuRow(text: 'Add shortcut…', icon: AIcons.addShortcut),
                     ),
                 ],
                 if (collection.isSelecting) ...[
@@ -356,7 +356,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
     if (name == null || name.isEmpty) return;
 
-    unawaited(AppShortcutService.pin(name, collection.filters));
+    final iconEntry = collection.sortedEntries.isNotEmpty ? collection.sortedEntries.first : null;
+    unawaited(AppShortcutService.pin(name, iconEntry, collection.filters));
   }
 
   void _goToSearch() {

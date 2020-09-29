@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/main.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -24,6 +25,7 @@ import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
 import 'package:collection/collection.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pedantic/pedantic.dart';
@@ -87,7 +89,7 @@ class FilterNavigationPage extends StatelessWidget {
         ),
         settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
-      onLongPress: (filter, tapPosition) => _showMenu(context, filter, tapPosition),
+      onLongPress: AvesApp.mode == AppMode.main ? (filter, tapPosition) => _showMenu(context, filter, tapPosition) : null,
     );
   }
 
@@ -119,7 +121,16 @@ class FilterNavigationPage extends StatelessWidget {
             PopupMenuItem(
               key: Key('menu-sort'),
               value: ChipSetAction.sort,
-              child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+              child: MenuRow(text: 'Sort…', icon: AIcons.sort),
+            ),
+            if (kDebugMode)
+              PopupMenuItem(
+                value: ChipSetAction.refresh,
+                child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+              ),
+            PopupMenuItem(
+              value: ChipSetAction.stats,
+              child: MenuRow(text: 'Stats', icon: AIcons.stats),
             ),
           ];
         },
