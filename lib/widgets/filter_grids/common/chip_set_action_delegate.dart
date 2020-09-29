@@ -1,12 +1,19 @@
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
+import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
+import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:pedantic/pedantic.dart';
 
 abstract class ChipSetActionDelegate {
+  CollectionSource get source;
+
   ChipSortFactor get sortFactor;
 
   set sortFactor(ChipSortFactor factor);
@@ -18,6 +25,15 @@ abstract class ChipSetActionDelegate {
     switch (action) {
       case ChipSetAction.sort:
         await _showSortDialog(context);
+        break;
+      case ChipSetAction.refresh:
+        if (source is MediaStoreSource) {
+          source.clearEntries();
+          unawaited((source as MediaStoreSource).refresh());
+        }
+        break;
+      case ChipSetAction.stats:
+        _goToStats(context);
         break;
     }
   }
@@ -38,9 +54,32 @@ abstract class ChipSetActionDelegate {
       sortFactor = factor;
     }
   }
+
+  void _goToStats(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: StatsPage.routeName),
+        builder: (context) => StatsPage(
+          collection: CollectionLens(
+            source: source,
+            groupFactor: settings.collectionGroupFactor,
+            sortFactor: settings.collectionSortFactor,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
+  @override
+  final CollectionSource source;
+
+  AlbumChipSetActionDelegate({
+    @required this.source,
+  });
+
   @override
   ChipSortFactor get sortFactor => settings.albumSortFactor;
 
@@ -50,6 +89,13 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
 
 class CountryChipSetActionDelegate extends ChipSetActionDelegate {
   @override
+  final CollectionSource source;
+
+  CountryChipSetActionDelegate({
+    @required this.source,
+  });
+
+  @override
   ChipSortFactor get sortFactor => settings.countrySortFactor;
 
   @override
@@ -57,6 +103,13 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate {
 }
 
 class TagChipSetActionDelegate extends ChipSetActionDelegate {
+  @override
+  final CollectionSource source;
+
+  TagChipSetActionDelegate({
+    @required this.source,
+  });
+
   @override
   ChipSortFactor get sortFactor => settings.tagSortFactor;
 
