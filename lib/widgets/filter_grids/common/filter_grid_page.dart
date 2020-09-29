@@ -87,7 +87,7 @@ class FilterNavigationPage extends StatelessWidget {
         ),
         settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
-      onLongPress: (filter, tapPosition) => _showMenu(context, filter, tapPosition),
+      onLongPress: AvesApp.mode == AppMode.main ? (filter, tapPosition) => _showMenu(context, filter, tapPosition) : null,
     );
   }
 
@@ -119,7 +119,7 @@ class FilterNavigationPage extends StatelessWidget {
             PopupMenuItem(
               key: Key('menu-sort'),
               value: ChipSetAction.sort,
-              child: MenuRow(text: 'Sort...', icon: AIcons.sort),
+              child: MenuRow(text: 'Sort…', icon: AIcons.sort),
             ),
           ];
         },
