@@ -18,6 +18,27 @@ class AndroidFileService {
     return [];
   }
 
+  static Future<List<String>> getGrantedDirectories() async {
+    try {
+      final result = await platform.invokeMethod('getGrantedDirectories');
+      return (result as List).cast<String>();
+    } on PlatformException catch (e) {
+      debugPrint('getGrantedDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return [];
+  }
+
+  static Future<void> revokeDirectoryAccess(String path) async {
+    try {
+      await platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
+        'path': path,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('revokeDirectoryAccess failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return;
+  }
+
   // returns a list of directories,
   // each directory is a map with "volumePath", "volumeDescription", "relativeDir"
   static Future<List<Map>> getInaccessibleDirectories(Iterable<String> dirPaths) async {

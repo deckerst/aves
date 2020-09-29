@@ -71,11 +71,11 @@ public class PermissionManager {
     }
 
     public static Optional<String> getGrantedDirForPath(@NonNull Context context, @NonNull String anyPath) {
-        return getGrantedDirs(context).stream().filter(anyPath::startsWith).findFirst();
+        return getAccessibleDirs(context).stream().filter(anyPath::startsWith).findFirst();
     }
 
     public static List<Map<String, String>> getInaccessibleDirectories(@NonNull Context context, @NonNull List<String> dirPaths) {
-        Set<String> grantedDirs = getGrantedDirs(context);
+        Set<String> accessibleDirs = getAccessibleDirs(context);
 
         // find set of inaccessible directories for each volume
         Map<String, Set<String>> dirsPerVolume = new HashMap<>();
@@ -83,7 +83,7 @@ public class PermissionManager {
             if (!dirPath.endsWith(File.separator)) {
                 dirPath += File.separator;
             }
-            if (grantedDirs.stream().noneMatch(dirPath::startsWith)) {
+            if (accessibleDirs.stream().noneMatch(dirPath::startsWith)) {
                 // inaccessible dirs
                 StorageUtils.PathSegments segments = new StorageUtils.PathSegments(context, dirPath);
                 Set<String> dirSet = dirsPerVolume.getOrDefault(segments.volumePath, new HashSet<>());
@@ -135,22 +135,34 @@ public class PermissionManager {
         return inaccessibleDirs;
     }
 
-    private static Set<String> getGrantedDirs(Context context) {
-        HashSet<String> accessibleDirs = new HashSet<>();
 
-        // find paths matching URIs granted by the user
+    public static void revokeDirectoryAccess(Context context, String path) {
+        Optional<Uri> uri = StorageUtils.convertDirPathToTreeUri(context, path);
+        if (uri.isPresent()) {
+            int flags = Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+            context.getContentResolver().releasePersistableUriPermission(uri.get(), flags);
+        }
+    }
+
+    // returns paths matching URIs granted by the user
+    public static Set<String> getGrantedDirs(Context context) {
+        Set<String> grantedDirs = new HashSet<>();
         for (UriPermission uriPermission : context.getContentResolver().getPersistedUriPermissions()) {
             Optional<String> dirPath = StorageUtils.convertTreeUriToDirPath(context, uriPermission.getUri());
-            dirPath.ifPresent(accessibleDirs::add);
+            dirPath.ifPresent(grantedDirs::add);
         }
+        return grantedDirs;
+    }
 
+    // returns paths accessible to the app (granted by the user or by default)
+    private static Set<String> getAccessibleDirs(Context context) {
+        Set<String> accessibleDirs = new HashSet<>(getGrantedDirs(context));
         // from Android R, we no longer have access permission by default on primary volume
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             String primaryPath = StorageUtils.getPrimaryVolumePath();
             accessibleDirs.add(primaryPath);
         }
-
-        Log.d(LOG_TAG, "getGrantedDirs accessibleDirs=" + accessibleDirs);
+        Log.d(LOG_TAG, "getAccessibleDirs accessibleDirs=" + accessibleDirs);
         return accessibleDirs;
     }
 
