@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
@@ -28,7 +29,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Future<DateMetadata> _dbDateLoader;
   Future<CatalogMetadata> _dbMetadataLoader;
   Future<AddressDetails> _dbAddressLoader;
-  Future<Map> _contentResolverMetadataLoader;
+  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader;
 
   ImageEntry get entry => widget.entry;
 
@@ -259,31 +260,38 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   static const millisecondTimestampKeys = ['datetaken', 'datetime'];
 
   Widget _buildContentResolverTabView() {
+    Widget builder(BuildContext context, AsyncSnapshot<Map> snapshot) {
+      if (snapshot.hasError) return Text(snapshot.error.toString());
+      if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+      final data = SplayTreeMap.of(snapshot.data.map((k, v) {
+        final key = k.toString();
+        var value = v?.toString() ?? 'null';
+        if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
+          if (secondTimestampKeys.contains(key)) {
+            v *= 1000;
+          }
+          value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+        }
+        if (key == 'xmp' && v != null && v is Uint8List) {
+          value = String.fromCharCodes(v);
+        }
+        return MapEntry(key, value);
+      }));
+      return InfoRowGroup(data);
+    }
+
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
-        Text('Content Resolver (Media Store):'),
+        SectionTitle('Content Resolver (Media Store)'),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-            final data = SplayTreeMap.of(snapshot.data.map((k, v) {
-              final key = k.toString();
-              var value = v?.toString() ?? 'null';
-              if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
-                if (secondTimestampKeys.contains(key)) {
-                  v *= 1000;
-                }
-                value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
-              }
-              if (key == 'xmp' && v != null && v is Uint8List) {
-                value = String.fromCharCodes(v);
-              }
-              return MapEntry(key, value);
-            }));
-            return InfoRowGroup(data);
-          },
+          builder: builder,
+        ),
+        SectionTitle('Exif Interface'),
+        FutureBuilder<Map>(
+          future: _exifInterfaceMetadataLoader,
+          builder: builder,
         ),
       ],
     );
@@ -294,6 +302,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
+    _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
     setState(() {});
   }
 }

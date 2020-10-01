@@ -12,6 +12,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.adobe.internal.xmp.XMPException;
 import com.adobe.internal.xmp.XMPIterator;
@@ -189,6 +190,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 break;
             case "getContentResolverMetadata":
                 new Thread(() -> getContentResolverMetadata(call, new MethodResultWrapper(result))).start();
+                break;
+            case "getExifInterfaceMetadata":
+                new Thread(() -> getExifInterfaceMetadata(call, new MethodResultWrapper(result))).start();
                 break;
             case "getEmbeddedPictures":
                 new Thread(() -> getEmbeddedPictures(call, new MethodResultWrapper(result))).start();
@@ -533,6 +537,27 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         }
     }
 
+    private void getExifInterfaceMetadata(MethodCall call, MethodChannel.Result result) {
+        String uriString = call.argument("uri");
+        if (uriString == null) {
+            result.error("getExifInterfaceMetadata-args", "failed because of missing arguments", null);
+            return;
+        }
+
+        try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uriString))) {
+            ExifInterface exif = new ExifInterface(is);
+            Map<String, Object> metadataMap = new HashMap<>();
+            for (String tag : MetadataHelper.ExifInterfaceTags) {
+                if (exif.hasAttribute(tag)) {
+                    metadataMap.put(tag, exif.getAttribute(tag));
+                }
+            }
+            result.success(metadataMap);
+        } catch (IOException e) {
+            result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=" + uriString, e.getMessage());
+        }
+    }
+
     private void getEmbeddedPictures(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Uri uri = Uri.parse(call.argument("uri"));
         List<byte[]> pictures = new ArrayList<>();
@@ -544,7 +569,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     pictures.add(picture);
                 }
             } catch (Exception e) {
-                result.error("getVideoEmbeddedPictures-failure", "failed to get embedded picture for uri=" + uri, e);
+                result.error("getVideoEmbeddedPictures-failure", "failed to get embedded picture for uri=" + uri, e.getMessage());
             } finally {
                 // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
                 retriever.release();

@@ -89,6 +89,19 @@ class MetadataService {
     return {};
   }
 
+  static Future<Map> getExifInterfaceMetadata(ImageEntry entry) async {
+    try {
+      // return map with all data available from the ExifInterface library
+      final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getExifInterfaceMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
   static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
     try {
       final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
