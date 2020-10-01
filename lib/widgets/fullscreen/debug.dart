@@ -103,7 +103,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'width': '${entry.width}',
           'height': '${entry.height}',
           'orientationDegrees': '${entry.orientationDegrees}',
-          'rotated': '${entry.rotated}',
+          'portrait': '${entry.portrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
           'displaySize': '${entry.displaySize}',
           'megaPixels': '${entry.megaPixels}',

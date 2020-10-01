@@ -32,8 +32,6 @@ import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
 
-import static deckers.thibault.aves.utils.MetadataHelper.getOrientationDegreesForExifCode;
-
 public class SourceImageEntry {
     public Uri uri; // content or file URI
     public String path; // best effort to get local path
@@ -42,7 +40,7 @@ public class SourceImageEntry {
     @Nullable
     public String title;
     @Nullable
-    public Integer width, height, orientationDegrees;
+    public Integer width, height, rotationDegrees;
     @Nullable
     public Long sizeBytes;
     @Nullable
@@ -61,7 +59,7 @@ public class SourceImageEntry {
         this.sourceMimeType = (String) map.get("sourceMimeType");
         this.width = (int) map.get("width");
         this.height = (int) map.get("height");
-        this.orientationDegrees = (int) map.get("orientationDegrees");
+        this.rotationDegrees = (int) map.get("orientationDegrees");
         this.sizeBytes = toLong(map.get("sizeBytes"));
         this.title = (String) map.get("title");
         this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));
@@ -76,7 +74,7 @@ public class SourceImageEntry {
             put("sourceMimeType", sourceMimeType);
             put("width", width);
             put("height", height);
-            put("orientationDegrees", orientationDegrees != null ? orientationDegrees : 0);
+            put("orientationDegrees", rotationDegrees != null ? rotationDegrees : 0);
             put("sizeBytes", sizeBytes);
             put("title", title);
             put("dateModifiedSecs", dateModifiedSecs);
@@ -158,7 +156,7 @@ public class SourceImageEntry {
                     this.height = Integer.parseInt(height);
                 }
                 if (rotation != null) {
-                    this.orientationDegrees = Integer.parseInt(rotation);
+                    this.rotationDegrees = Integer.parseInt(rotation);
                 }
                 if (durationMillis != null) {
                     this.durationMillis = Long.parseLong(durationMillis);
@@ -251,7 +249,8 @@ public class SourceImageEntry {
                     height = dir.getInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT);
                 }
                 if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
-                    orientationDegrees = getOrientationDegreesForExifCode(dir.getInt(ExifIFD0Directory.TAG_ORIENTATION));
+                    int exifOrientation = dir.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                    rotationDegrees = MetadataHelper.getRotationDegreesForExifCode(exifOrientation);
                 }
                 if (dir.containsTag(ExifIFD0Directory.TAG_DATETIME)) {
                     sourceDateTakenMillis = dir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();

@@ -105,6 +105,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             try {
                 Bitmap bitmap = target.get();
                 if (bitmap != null) {
+                    // TODO TLAD use exif orientation to rotate & flip?
                     bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
