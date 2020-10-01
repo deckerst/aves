@@ -13,7 +13,7 @@ public class AvesImageEntry {
     public String path; // best effort to get local path
     public String mimeType;
     @Nullable
-    public Integer width, height, orientationDegrees;
+    public Integer width, height, rotationDegrees;
     @Nullable
     public Long dateModifiedSecs;
 
@@ -23,7 +23,7 @@ public class AvesImageEntry {
         this.mimeType = (String) map.get("mimeType");
         this.width = (Integer) map.get("width");
         this.height = (Integer) map.get("height");
-        this.orientationDegrees = (Integer) map.get("orientationDegrees");
+        this.rotationDegrees = (Integer) map.get("orientationDegrees");
         this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));
     }
 

@@ -125,7 +125,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         Bitmap bitmap = resolver.loadThumbnail(entry.uri, new Size(width, height), null);
         String mimeType = entry.mimeType;
         if (MimeTypes.DNG.equals(mimeType)) {
-            bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+            bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
         }
         return bitmap;
     }
@@ -141,7 +141,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
             }
             return bitmap;
         }
@@ -153,7 +153,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         int height = params.height;
 
         // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.orientationDegrees);
+        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.rotationDegrees);
         RequestOptions options = new RequestOptions()
                 .signature(signature)
                 .override(width, height);
@@ -180,7 +180,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             Bitmap bitmap = target.get();
             String mimeType = entry.mimeType;
             if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
-                bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
             }
             return bitmap;
         } finally {
@@ -188,9 +188,10 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         }
     }
 
-    private Bitmap rotateBitmap(Bitmap bitmap, Integer orientationDegrees) {
-        if (bitmap != null && orientationDegrees != null) {
-            bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+    private Bitmap rotateBitmap(Bitmap bitmap, Integer rotationDegrees) {
+        if (bitmap != null && rotationDegrees != null) {
+            // TODO TLAD use exif orientation to rotate & flip?
+            bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
         }
         return bitmap;
     }

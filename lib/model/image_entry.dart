@@ -179,14 +179,14 @@ class ImageEntry {
 
   bool get canRotate => canEdit && (mimeType == MimeTypes.jpeg || mimeType == MimeTypes.png);
 
-  bool get rotated => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
+  bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
-    return rotated ? height / width : width / height;
+    return portrait ? height / width : width / height;
   }
 
-  Size get displaySize => rotated ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
+  Size get displaySize => portrait ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 
