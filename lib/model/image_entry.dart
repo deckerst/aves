@@ -90,7 +90,7 @@ class ImageEntry {
       sourceMimeType: map['sourceMimeType'] as String,
       width: map['width'] as int ?? 0,
       height: map['height'] as int ?? 0,
-      orientationDegrees: map['orientationDegrees'] as int,
+      orientationDegrees: map['orientationDegrees'] as int ?? 0,
       sizeBytes: map['sizeBytes'] as int,
       sourceTitle: map['title'] as String,
       dateModifiedSecs: map['dateModifiedSecs'] as int,
@@ -165,7 +165,7 @@ class ImageEntry {
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
   bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
 
-  bool get isRaw => [MimeTypes.dng].contains(mimeType);
+  bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');
 

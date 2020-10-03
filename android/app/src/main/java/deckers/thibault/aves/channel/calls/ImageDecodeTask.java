@@ -198,12 +198,14 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
     @Override
     protected void onPostExecute(Result result) {
-        MethodChannel.Result r = result.params.result;
-        String uri = result.params.entry.uri.toString();
+        Params params = result.params;
+        MethodChannel.Result r = params.result;
+        AvesImageEntry entry = params.entry;
+        String uri = entry.uri.toString();
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri, null);
+            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri + ", path=" + entry.path, null);
         }
     }
 }

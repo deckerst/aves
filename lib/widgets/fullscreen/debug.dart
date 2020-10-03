@@ -5,11 +5,12 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/metadata_service.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
-import 'package:aves/widgets/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
@@ -260,7 +261,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   static const millisecondTimestampKeys = ['datetaken', 'datetime'];
 
   Widget _buildContentResolverTabView() {
-    Widget builder(BuildContext context, AsyncSnapshot<Map> snapshot) {
+    Widget builder(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
       if (snapshot.hasError) return Text(snapshot.error.toString());
       if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
       final data = SplayTreeMap.of(snapshot.data.map((k, v) {
@@ -277,21 +278,30 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
         }
         return MapEntry(key, value);
       }));
-      return InfoRowGroup(data);
+      return AvesExpansionTile(
+        title: title,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            child: InfoRowGroup(
+              data,
+              maxValueLength: Constants.infoGroupMaxValueLength,
+            ),
+          )
+        ],
+      );
     }
 
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(8),
       children: [
-        SectionTitle('Content Resolver (Media Store)'),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
-          builder: builder,
+          builder: (context, snapshot) => builder(context, snapshot, 'Content Resolver'),
         ),
-        SectionTitle('Exif Interface'),
         FutureBuilder<Map>(
           future: _exifInterfaceMetadataLoader,
-          builder: builder,
+          builder: (context, snapshot) => builder(context, snapshot, 'Exif Interface'),
         ),
       ],
     );

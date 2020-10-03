@@ -16,6 +16,8 @@ import com.bumptech.glide.request.RequestOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
@@ -31,6 +33,17 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private int orientationDegrees;
     private EventChannel.EventSink eventSink;
     private Handler handler;
+
+    private static final List<String> flutterSupportedTypes = Arrays.asList(
+            MimeTypes.JPEG,
+            MimeTypes.PNG,
+            MimeTypes.GIF,
+            MimeTypes.WEBP,
+            MimeTypes.BMP,
+            MimeTypes.WBMP,
+            MimeTypes.ICO,
+            MimeTypes.SVG
+    );
 
     @SuppressWarnings("unchecked")
     public ImageByteStreamHandler(Activity activity, Object arguments) {
@@ -95,9 +108,8 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } finally {
                 Glide.with(activity).clear(target);
             }
-        } else if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
-            // as of Flutter v1.20, Dart Image.memory cannot decode DNG/HEIC/HEIF images
-            // so we convert the image on platform side first
+        } else if (!flutterSupportedTypes.contains(mimeType)) {
+            // we convert the image on platform side first, when Dart Image.memory does not support it
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()
                     .load(uri)
