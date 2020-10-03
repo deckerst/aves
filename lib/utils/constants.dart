@@ -20,6 +20,8 @@ class Constants {
 
   static const pointNemo = Tuple2(-48.876667, -123.393333);
 
+  static const int infoGroupMaxValueLength = 140;
+
   static const List<Dependency> androidDependencies = [
     Dependency(
       name: 'CWAC-Document',

@@ -59,7 +59,7 @@ public class SourceImageEntry {
         this.sourceMimeType = (String) map.get("sourceMimeType");
         this.width = (int) map.get("width");
         this.height = (int) map.get("height");
-        this.rotationDegrees = (int) map.get("orientationDegrees");
+        this.rotationDegrees = (int) map.get("rotationDegrees");
         this.sizeBytes = toLong(map.get("sizeBytes"));
         this.title = (String) map.get("title");
         this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));

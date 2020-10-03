@@ -163,7 +163,7 @@ public class MediaStoreImageProvider extends ImageProvider {
                             put("uri", itemUri.toString());
                             put("path", path);
                             put("sourceMimeType", mimeType);
-                            put("orientationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
+                            put("rotationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
                             put("sizeBytes", cursor.getLong(sizeColumn));
                             put("title", cursor.getString(titleColumn));
                             put("dateModifiedSecs", dateModifiedSecs);

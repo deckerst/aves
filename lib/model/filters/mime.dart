@@ -52,9 +52,9 @@ class MimeFilter extends CollectionFilter {
   static String displayType(String mime) {
     final patterns = [
       RegExp('.*/'), // remove type, keep subtype
-      RegExp('(X-|VND.)'), // noisy prefixes
+      RegExp('(X-|VND.(WAP.)?)'), // noisy prefixes
       '+XML', // noisy suffix
-      RegExp('ADOBE[-\.]'), // for DNG, PSD...
+      RegExp('ADOBE\.'), // for PSD
     ];
     mime = mime.toUpperCase();
     patterns.forEach((pattern) => mime = mime.replaceFirst(pattern, ''));
