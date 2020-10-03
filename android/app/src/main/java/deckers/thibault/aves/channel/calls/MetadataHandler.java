@@ -303,36 +303,44 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     private void getCatalogMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
         String uri = call.argument("uri");
+        String extension = call.argument("extension");
 
-        Map<String, Object> metadataMap = new HashMap<>(getCatalogMetadataByImageMetadataReader(uri, mimeType));
+        Map<String, Object> metadataMap = new HashMap<>(getCatalogMetadataByImageMetadataReader(uri, mimeType, extension));
         if (isVideo(mimeType)) {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri));
         }
 
         if (metadataMap.isEmpty()) {
-            result.error("getCatalogMetadata-failure", "failed to get catalog metadata for uri=" + uri, null);
+            result.error("getCatalogMetadata-failure", "failed to get catalog metadata for uri=" + uri + ", extension=" + extension, null);
         } else {
             result.success(metadataMap);
         }
     }
 
-    private Map<String, Object> getCatalogMetadataByImageMetadataReader(String uri, String mimeType) {
+    private Map<String, Object> getCatalogMetadataByImageMetadataReader(String uri, String mimeType, String extension) {
         Map<String, Object> metadataMap = new HashMap<>();
 
-        // as of metadata-extractor 2.14.0, MP2T files are not supported
-        if (MimeTypes.MP2T.equals(mimeType)) return metadataMap;
+        // as of metadata-extractor v2.14.0, MP2T/WBMP files are not supported
+        if (MimeTypes.MP2T.equals(mimeType) || MimeTypes.WBMP.equals(mimeType)) return metadataMap;
 
         try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
             // File type
             for (FileTypeDirectory dir : metadata.getDirectoriesOfType(FileTypeDirectory.class)) {
-                // the reported `mimeType` (e.g. from Media Store) is sometimes incorrect
-                // file extension is unreliable
+                // `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
+                // the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`)
                 // `context.getContentResolver().getType()` sometimes return incorrect value
                 // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
                 if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                    metadataMap.put(KEY_MIME_TYPE, dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE));
+                    String detectedMimeType = dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE);
+                    if (detectedMimeType != null && !detectedMimeType.equals(mimeType)) {
+                        // file extension is unreliable, but we use it as a tie breaker
+                        String extensionMimeType = MimeTypes.getMimeTypeForExtension(extension.toLowerCase());
+                        if (detectedMimeType.equals(extensionMimeType)) {
+                            metadataMap.put(KEY_MIME_TYPE, detectedMimeType);
+                        }
+                    }
                 }
             }
 
@@ -385,7 +393,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
         } catch (Exception | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to get catalog metadata by ImageMetadataReader for uri=" + uri, e);
+            Log.w(LOG_TAG, "failed to get catalog metadata by ImageMetadataReader for uri=" + uri + ", mimeType=" + mimeType, e);
         }
         return metadataMap;
     }
