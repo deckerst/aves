@@ -16,8 +16,8 @@ jobs:
 
       - uses: subosito/flutter-action@v1
         with:
-          channel: beta
-          flutter-version: '1.22.0-12.1.pre'
+          channel: stable
+          flutter-version: '1.22.0'
 
       # Workaround for this Android Gradle Plugin issue (supposedly fixed in AGP 4.1):
       # https://issuetracker.google.com/issues/144111441
@@ -50,8 +50,8 @@ jobs:
           echo "${{ secrets.KEY_JKS }}" > release.keystore.asc
           gpg -d --passphrase "${{ secrets.KEY_JKS_PASSPHRASE }}" --batch release.keystore.asc > $AVES_STORE_FILE
           rm release.keystore.asc
-          flutter build apk --bundle-sksl-path shaders_1.22.0-12.1.pre.sksl.json
-          flutter build appbundle --bundle-sksl-path shaders_1.22.0-12.1.pre.sksl.json
+          flutter build apk --bundle-sksl-path shaders_1.22.0.sksl.json
+          flutter build appbundle --bundle-sksl-path shaders_1.22.0.sksl.json
           rm $AVES_STORE_FILE
         env:
           AVES_STORE_FILE: ${{ github.workspace }}/key.jks
