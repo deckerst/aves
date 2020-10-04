@@ -177,7 +177,20 @@ class ImageEntry {
 
   bool get canPrint => !isVideo;
 
-  bool get canRotate => canEdit && (mimeType == MimeTypes.jpeg || mimeType == MimeTypes.png);
+  bool get canRotate => canEdit && canEditExif;
+
+  // support for writing EXIF
+  // as of androidx.exifinterface:exifinterface:1.3.0
+  bool get canEditExif {
+    switch (mimeType.toLowerCase()) {
+      case MimeTypes.jpeg:
+      case MimeTypes.png:
+      case MimeTypes.webp:
+        return true;
+      default:
+        return false;
+    }
+  }
 
   bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
 

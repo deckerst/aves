@@ -54,7 +54,7 @@ class MimeFilter extends CollectionFilter {
       RegExp('.*/'), // remove type, keep subtype
       RegExp('(X-|VND.(WAP.)?)'), // noisy prefixes
       '+XML', // noisy suffix
-      RegExp('ADOBE\.'), // for PSD
+      RegExp('ADOBE\\\.'), // for PSD
     ];
     mime = mime.toUpperCase();
     patterns.forEach((pattern) => mime = mime.replaceFirst(pattern, ''));
