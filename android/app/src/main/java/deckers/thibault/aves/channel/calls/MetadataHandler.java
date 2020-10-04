@@ -32,6 +32,7 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
+import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
@@ -53,6 +54,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import deckers.thibault.aves.utils.ExifInterfaceHelper;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
@@ -215,14 +217,18 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getAllMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
-        String uri = call.argument("uri");
+        String uriString = call.argument("uri");
+        Uri uri = Uri.parse(uriString);
 
         Map<String, Map<String, String>> metadataMap = new HashMap<>();
 
-        try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
+        boolean foundExif = false;
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (Directory dir : metadata.getDirectories()) {
                 if (dir.getTagCount() > 0) {
+                    foundExif |= dir instanceof ExifDirectoryBase;
+
                     // directory name
                     String dirName = dir.getName();
                     Map<String, String> dirMap = Objects.requireNonNull(metadataMap.getOrDefault(dirName, new HashMap<>()));
@@ -247,24 +253,34 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                                 }
                             }
                         } catch (XMPException e) {
-                            Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
+                            Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uriString, e);
                         }
                     }
                 }
             }
         } catch (Exception | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to get video metadata by ImageMetadataReader for uri=" + uri, e);
+            Log.w(LOG_TAG, "failed to get metadata by ImageMetadataReader for uri=" + uriString, e);
+        }
+
+        if (!foundExif) {
+            // fallback to read EXIF via ExifInterface
+            try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+                ExifInterface exif = new ExifInterface(is);
+                metadataMap.putAll(ExifInterfaceHelper.describeAll(exif));
+            } catch (IOException e) {
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=" + uriString, e);
+            }
         }
 
         if (isVideo(mimeType)) {
-            Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uri);
+            Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uriString);
             if (!videoDir.isEmpty()) {
                 metadataMap.put("Video", videoDir);
             }
         }
 
         if (metadataMap.isEmpty()) {
-            result.error("getAllMetadata-failure", "failed to get metadata for uri=" + uri, null);
+            result.error("getAllMetadata-failure", "failed to get metadata for uri=" + uriString, null);
         } else {
             result.success(metadataMap);
         }
@@ -555,7 +571,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uriString))) {
             ExifInterface exif = new ExifInterface(is);
             Map<String, Object> metadataMap = new HashMap<>();
-            for (String tag : MetadataHelper.ExifInterfaceTags) {
+            for (String tag : ExifInterfaceHelper.allTags.keySet()) {
                 if (exif.hasAttribute(tag)) {
                     metadataMap.put(tag, exif.getAttribute(tag));
                 }
