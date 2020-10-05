@@ -11,7 +11,7 @@ import 'utils/driver_extension.dart';
 FlutterDriver driver;
 
 void main() {
-  group('Aves app', () {
+  group('[Aves app]', () {
     print('adb=${[adb, ...adbDeviceParam].join(' ')}');
 
     setUpAll(() async {
@@ -60,19 +60,6 @@ void agreeToTerms() {
   });
 }
 
-void groupCollection() {
-  test('[collection] group', () async {
-    await driver.tap(find.byValueKey('appbar-menu-button'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey('menu-group'));
-    await driver.waitUntilNoTransientCallbacks();
-
-    await driver.tap(find.byValueKey(EntryGroupFactor.album.toString()));
-    await driver.tap(find.byValueKey('apply-button'));
-  });
-}
-
 void sortCollection() {
   test('[collection] sort', () async {
     await driver.tap(find.byValueKey('appbar-menu-button'));
@@ -82,7 +69,18 @@ void sortCollection() {
     await driver.waitUntilNoTransientCallbacks();
 
     await driver.tap(find.byValueKey(EntrySortFactor.date.toString()));
-    await driver.tap(find.byValueKey('apply-button'));
+  });
+}
+
+void groupCollection() {
+  test('[collection] group', () async {
+    await driver.tap(find.byValueKey('appbar-menu-button'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.byValueKey('menu-group'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.byValueKey(EntryGroupFactor.album.toString()));
   });
 }
 

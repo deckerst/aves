@@ -53,10 +53,11 @@ class Settings extends ChangeNotifier {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
-    await _setupCrashlytics();
   }
 
-  Future<void> _setupCrashlytics() async {
+  // Crashlytics initialization is separated from the main settings initialization
+  // to allow settings customization without Firebase context (e.g. before a Flutter Driver test)
+  Future<void> initCrashlytics() async {
     await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
   }
@@ -75,7 +76,7 @@ class Settings extends ChangeNotifier {
 
   set isCrashlyticsEnabled(bool newValue) {
     setAndNotify(isCrashlyticsEnabledKey, newValue);
-    unawaited(_setupCrashlytics());
+    unawaited(initCrashlytics());
   }
 
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
