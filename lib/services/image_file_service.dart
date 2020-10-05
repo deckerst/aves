@@ -100,12 +100,12 @@ class ImageFileService {
     } on PlatformException catch (e) {
       debugPrint('getImage failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return Future.sync(() => Uint8List(0));
+    return Future.sync(() => null);
   }
 
   static Future<Uint8List> getThumbnail(ImageEntry entry, double width, double height, {Object taskKey, int priority}) {
     if (entry.isSvg) {
-      return Future.sync(() => Uint8List(0));
+      return Future.sync(() => null);
     }
     return servicePolicy.call(
       () async {
@@ -120,7 +120,7 @@ class ImageFileService {
         } on PlatformException catch (e) {
           debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
         }
-        return Uint8List(0);
+        return null;
       },
 //      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
       priority: priority ?? (width == 0 || height == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),

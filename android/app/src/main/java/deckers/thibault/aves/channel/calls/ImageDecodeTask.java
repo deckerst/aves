@@ -52,10 +52,12 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     static class Result {
         Params params;
         byte[] data;
+        String errorDetails;
 
-        Result(Params params, byte[] data) {
+        Result(Params params, byte[] data, String errorDetails) {
             this.params = params;
             this.data = data;
+            this.errorDetails = errorDetails;
         }
     }
 
@@ -70,8 +72,8 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     protected Result doInBackground(Params... params) {
         Params p = params[0];
         Bitmap bitmap = null;
+        Exception exception = null;
         if (!this.isCancelled()) {
-            Exception exception = null;
             Integer w = p.width;
             Integer h = p.height;
             // fetch low quality thumbnails when size is not specified
@@ -97,13 +99,10 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             } catch (Exception e) {
                 exception = e;
             }
-
-            if (bitmap == null) {
-                Log.e(LOG_TAG, "failed to load thumbnail for uri=" + p.entry.uri + ", path=" + p.entry.path, exception);
-            }
         } else {
             Log.d(LOG_TAG, "getThumbnail with uri=" + p.entry.uri + " cancelled");
         }
+
         byte[] data = null;
         if (bitmap != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -112,7 +111,15 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
             data = stream.toByteArray();
         }
-        return new Result(p, data);
+
+        String errorDetails = null;
+        if (exception != null) {
+            errorDetails = exception.getMessage();
+            if (errorDetails != null && !errorDetails.isEmpty()) {
+                errorDetails = errorDetails.split("\n", 2)[0];
+            }
+        }
+        return new Result(p, data, errorDetails);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -205,7 +212,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri + ", path=" + entry.path, null);
+            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri + ", path=" + entry.path, result.errorDetails);
         }
     }
 }

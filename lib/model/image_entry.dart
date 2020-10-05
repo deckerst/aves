@@ -318,8 +318,8 @@ class ImageEntry {
           locality: address.locality,
         );
       }
-    } catch (exception, stack) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates exception=$exception\n$stack');
+    } catch (error, stackTrace) {
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
     }
   }
 

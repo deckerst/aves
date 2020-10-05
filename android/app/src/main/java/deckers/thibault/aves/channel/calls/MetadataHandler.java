@@ -326,11 +326,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri));
         }
 
-        if (metadataMap.isEmpty()) {
-            result.error("getCatalogMetadata-failure", "failed to get catalog metadata for uri=" + uri + ", extension=" + extension, null);
-        } else {
-            result.success(metadataMap);
-        }
+        // report success even when empty
+        result.success(metadataMap);
     }
 
     private Map<String, Object> getCatalogMetadataByImageMetadataReader(String uri, String mimeType, String extension) {

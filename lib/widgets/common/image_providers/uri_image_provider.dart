@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/image_file_service.dart';
@@ -56,7 +55,11 @@ class UriImage extends ImageProvider<UriImage> {
           ));
         },
       );
-      return await decode(bytes ?? Uint8List(0));
+      if (bytes == null) return null;
+      return await decode(bytes);
+    } catch (error) {
+      debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
+      return null;
     } finally {
       unawaited(chunkEvents.close());
     }
