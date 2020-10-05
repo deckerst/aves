@@ -128,7 +128,11 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                     error("getImage-image-decode-null", "failed to get image from uri=" + uri, null);
                 }
             } catch (Exception e) {
-                error("getImage-image-decode-exception", "failed to get image from uri=" + uri, e.getMessage());
+                String errorDetails = e.getMessage();
+                if (errorDetails != null && !errorDetails.isEmpty()) {
+                    errorDetails = errorDetails.split("\n", 2)[0];
+                }
+                error("getImage-image-decode-exception", "failed to get image from uri=" + uri, errorDetails);
             } finally {
                 Glide.with(activity).clear(target);
             }
