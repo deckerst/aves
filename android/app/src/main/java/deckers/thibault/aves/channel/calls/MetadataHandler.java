@@ -22,21 +22,14 @@ import com.adobe.internal.xmp.properties.XMPProperty;
 import com.adobe.internal.xmp.properties.XMPPropertyInfo;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
-import com.drew.imaging.jpeg.JpegMetadataReader;
-import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
-import com.drew.imaging.jpeg.JpegSegmentType;
 import com.drew.lang.GeoLocation;
 import com.drew.lang.Rational;
-import com.drew.lang.annotations.NotNull;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
-import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import com.drew.metadata.file.FileTypeDirectory;
 import com.drew.metadata.gif.GifAnimationDirectory;
@@ -129,49 +122,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     // "+51.3328-000.7053+113.474/" (Apple)
     private static final Pattern VIDEO_LOCATION_PATTERN = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*");
 
-    private static int TAG_THUMBNAIL_DATA = 0x10000;
-
-    // modify metadata-extractor readers to store EXIF thumbnail data
-    // cf https://github.com/drewnoakes/metadata-extractor/issues/276#issuecomment-677767368
-    static {
-        List<JpegSegmentMetadataReader> allReaders = (List<JpegSegmentMetadataReader>) JpegMetadataReader.ALL_READERS;
-        for (int n = 0, cnt = allReaders.size(); n < cnt; n++) {
-            if (allReaders.get(n).getClass() != ExifReader.class) {
-                continue;
-            }
-
-            allReaders.set(n, new ExifReader() {
-                @Override
-                public void readJpegSegments(@NotNull final Iterable<byte[]> segments, @NotNull final Metadata metadata, @NotNull final JpegSegmentType segmentType) {
-                    super.readJpegSegments(segments, metadata, segmentType);
-
-                    for (byte[] segmentBytes : segments) {
-                        // Filter any segments containing unexpected preambles
-                        if (!startsWithJpegExifPreamble(segmentBytes)) {
-                            continue;
-                        }
-
-                        // Extract the thumbnail
-                        try {
-                            ExifThumbnailDirectory tnDirectory = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
-                            if (tnDirectory != null && tnDirectory.containsTag(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET)) {
-                                int offset = tnDirectory.getInt(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET);
-                                int length = tnDirectory.getInt(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH);
-
-                                byte[] tnData = new byte[length];
-                                System.arraycopy(segmentBytes, JPEG_SEGMENT_PREAMBLE.length() + offset, tnData, 0, length);
-                                tnDirectory.setObject(TAG_THUMBNAIL_DATA, tnData);
-                            }
-                        } catch (MetadataException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            });
-            break;
-        }
-    }
-
     private Context context;
 
     public MetadataHandler(Context context) {
@@ -226,7 +176,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (Directory dir : metadata.getDirectories()) {
-                if (dir.getTagCount() > 0) {
+                if (dir.getTagCount() > 0 && !(dir instanceof FileTypeDirectory)) {
                     foundExif |= dir instanceof ExifDirectoryBase;
 
                     // directory name
@@ -603,16 +553,14 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         Uri uri = Uri.parse(call.argument("uri"));
         List<byte[]> thumbnails = new ArrayList<>();
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
-            for (ExifThumbnailDirectory dir : metadata.getDirectoriesOfType(ExifThumbnailDirectory.class)) {
-                byte[] data = (byte[]) dir.getObject(TAG_THUMBNAIL_DATA);
-                if (data != null) {
-                    thumbnails.add(data);
-                }
+            ExifInterface exif = new ExifInterface(is);
+            if (exif.hasThumbnail()) {
+                thumbnails.add(exif.getThumbnailBytes());
             }
-        } catch (IOException | ImageProcessingException | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to extract exif thumbnail", e);
+        } catch (IOException e) {
+            Log.w(LOG_TAG, "failed to extract exif thumbnail with ExifInterface for uri=" + uri, e);
         }
+
         result.success(thumbnails);
     }
 
