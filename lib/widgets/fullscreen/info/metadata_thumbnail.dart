@@ -39,7 +39,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         _loader = MetadataService.getExifThumbnails(uri);
         break;
       case MetadataThumbnailSource.xmp:
-        _loader = MetadataService.getXmpThumbnails(uri);
+        _loader = MetadataService.getXmpThumbnails(entry);
         break;
     }
   }
@@ -50,7 +50,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         future: _loader,
         builder: (context, snapshot) {
           if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data.isNotEmpty) {
-            final turns = (entry.orientationDegrees / 90).round();
+            final turns = (entry.rotationDegrees / 90).round();
             final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
             return Container(
               alignment: AlignmentDirectional.topStart,

@@ -23,7 +23,7 @@ class ImageEntry {
   final String sourceMimeType;
   int width;
   int height;
-  int orientationDegrees;
+  int rotationDegrees;
   final int sizeBytes;
   String sourceTitle;
   int _dateModifiedSecs;
@@ -42,7 +42,7 @@ class ImageEntry {
     this.sourceMimeType,
     @required this.width,
     @required this.height,
-    this.orientationDegrees,
+    this.rotationDegrees,
     this.sizeBytes,
     this.sourceTitle,
     int dateModifiedSecs,
@@ -68,7 +68,7 @@ class ImageEntry {
       sourceMimeType: sourceMimeType,
       width: width,
       height: height,
-      orientationDegrees: orientationDegrees,
+      rotationDegrees: rotationDegrees,
       sizeBytes: sizeBytes,
       sourceTitle: sourceTitle,
       dateModifiedSecs: dateModifiedSecs,
@@ -90,7 +90,7 @@ class ImageEntry {
       sourceMimeType: map['sourceMimeType'] as String,
       width: map['width'] as int ?? 0,
       height: map['height'] as int ?? 0,
-      orientationDegrees: map['orientationDegrees'] as int ?? 0,
+      rotationDegrees: map['rotationDegrees'] as int ?? 0,
       sizeBytes: map['sizeBytes'] as int,
       sourceTitle: map['title'] as String,
       dateModifiedSecs: map['dateModifiedSecs'] as int,
@@ -108,7 +108,7 @@ class ImageEntry {
       'sourceMimeType': sourceMimeType,
       'width': width,
       'height': height,
-      'orientationDegrees': orientationDegrees,
+      'rotationDegrees': rotationDegrees,
       'sizeBytes': sizeBytes,
       'title': sourceTitle,
       'dateModifiedSecs': dateModifiedSecs,
@@ -171,6 +171,8 @@ class ImageEntry {
 
   bool get isCatalogued => _catalogMetadata != null;
 
+  bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
+
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
   bool get canEdit => path != null;
@@ -192,7 +194,7 @@ class ImageEntry {
     }
   }
 
-  bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
+  bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : rotationDegrees) % 180 == 90;
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
@@ -369,8 +371,8 @@ class ImageEntry {
     if (width is int) this.width = width;
     final height = newFields['height'];
     if (height is int) this.height = height;
-    final orientationDegrees = newFields['orientationDegrees'];
-    if (orientationDegrees is int) this.orientationDegrees = orientationDegrees;
+    final rotationDegrees = newFields['rotationDegrees'];
+    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
 
     imageChangeNotifier.notifyListeners();
     return true;

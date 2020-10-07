@@ -23,7 +23,7 @@ class ImageFileService {
       'mimeType': entry.mimeType,
       'width': entry.width,
       'height': entry.height,
-      'orientationDegrees': entry.orientationDegrees,
+      'rotationDegrees': entry.rotationDegrees,
       'dateModifiedSecs': entry.dateModifiedSecs,
     };
   }
@@ -66,7 +66,7 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> getImage(String uri, String mimeType, {int orientationDegrees, int expectedContentLength, BytesReceivedCallback onBytesReceived}) {
+  static Future<Uint8List> getImage(String uri, String mimeType, {int rotationDegrees, int expectedContentLength, BytesReceivedCallback onBytesReceived}) {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = _OutputBuffer();
@@ -74,7 +74,7 @@ class ImageFileService {
       byteChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
-        'orientationDegrees': orientationDegrees ?? 0,
+        'rotationDegrees': rotationDegrees ?? 0,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -183,7 +183,7 @@ class ImageFileService {
 
   static Future<Map> rotate(ImageEntry entry, {@required bool clockwise}) async {
     try {
-      // return map with: 'width' 'height' 'orientationDegrees' (all optional)
+      // return map with: 'width' 'height' 'rotationDegrees' (all optional)
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'clockwise': clockwise,

@@ -130,7 +130,8 @@ public abstract class ImageProvider {
             // copy the edited temporary file back to the original
             DocumentFileCompat.fromFile(new File(editablePath)).copyTo(originalDocumentFile);
 
-            newFields.put("orientationDegrees", exif.getRotationDegrees());
+            newFields.put("rotationDegrees", exif.getRotationDegrees());
+            newFields.put("isFlipped", exif.isFlipped());
         } catch (IOException e) {
             callback.onFailure(e);
             return;
@@ -147,7 +148,7 @@ public abstract class ImageProvider {
 //            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
 //        }
 //        // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
-//        values.put(MediaStore.Images.Media.ORIENTATION, orientationDegrees);
+//        values.put(MediaStore.Images.Media.ORIENTATION, rotationDegrees);
 //        // TODO TLAD catch RecoverableSecurityException
 //        int updatedRowCount = contentResolver.update(uri, values, null, null);
 //        if (updatedRowCount > 0) {

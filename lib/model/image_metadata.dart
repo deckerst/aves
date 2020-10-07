@@ -29,7 +29,7 @@ class DateMetadata {
 
 class CatalogMetadata {
   final int contentId, dateMillis, videoRotation;
-  final bool isAnimated;
+  final bool isFlipped, isAnimated;
   final String mimeType, xmpSubjects, xmpTitleDescription;
   final double latitude, longitude;
   Address address;
@@ -38,13 +38,14 @@ class CatalogMetadata {
     this.contentId,
     this.mimeType,
     this.dateMillis,
+    this.isFlipped,
     this.isAnimated,
     this.videoRotation,
     this.xmpSubjects,
     this.xmpTitleDescription,
     double latitude,
     double longitude,
-  })  
+  })
   // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
   : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
         longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
@@ -56,6 +57,7 @@ class CatalogMetadata {
       contentId: contentId ?? this.contentId,
       mimeType: mimeType,
       dateMillis: dateMillis,
+      isFlipped: isFlipped,
       isAnimated: isAnimated,
       videoRotation: videoRotation,
       xmpSubjects: xmpSubjects,
@@ -66,11 +68,13 @@ class CatalogMetadata {
   }
 
   factory CatalogMetadata.fromMap(Map map, {bool boolAsInteger = false}) {
+    final isFlipped = map['isFlipped'] ?? (boolAsInteger ? 0 : false);
     final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
     return CatalogMetadata(
       contentId: map['contentId'],
       mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
+      isFlipped: boolAsInteger ? isFlipped != 0 : isFlipped,
       isAnimated: boolAsInteger ? isAnimated != 0 : isAnimated,
       videoRotation: map['videoRotation'] ?? 0,
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -84,6 +88,7 @@ class CatalogMetadata {
         'contentId': contentId,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
+        'isFlipped': boolAsInteger ? (isFlipped ? 1 : 0) : isFlipped,
         'isAnimated': boolAsInteger ? (isAnimated ? 1 : 0) : isAnimated,
         'videoRotation': videoRotation,
         'xmpSubjects': xmpSubjects,
@@ -94,7 +99,7 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isFlipped=$isFlipped, isAnimated=$isAnimated, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

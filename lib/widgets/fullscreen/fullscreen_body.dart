@@ -544,7 +544,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
     await UriImage(
       uri: entry.uri,
       mimeType: entry.mimeType,
-      orientationDegrees: entry.orientationDegrees,
+      rotationDegrees: entry.rotationDegrees,
     ).evict();
     // evict low quality thumbnail (without specified extents)
     await ThumbnailProvider(entry: entry).evict();

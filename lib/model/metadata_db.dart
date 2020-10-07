@@ -33,7 +33,7 @@ class MetadataDb {
             ', sourceMimeType TEXT'
             ', width INTEGER'
             ', height INTEGER'
-            ', orientationDegrees INTEGER'
+            ', rotationDegrees INTEGER'
             ', sizeBytes INTEGER'
             ', title TEXT'
             ', dateModifiedSecs INTEGER'
@@ -48,6 +48,7 @@ class MetadataDb {
             'contentId INTEGER PRIMARY KEY'
             ', mimeType TEXT'
             ', dateMillis INTEGER'
+            ', isFlipped INTEGER'
             ', isAnimated INTEGER'
             ', videoRotation INTEGER'
             ', xmpSubjects TEXT'
@@ -68,7 +69,43 @@ class MetadataDb {
             ', path TEXT'
             ')');
       },
-      version: 1,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
+        // on SQLite <3.25.0, bundled on older Android devices
+        while (oldVersion < newVersion) {
+          if (oldVersion == 1) {
+            await db.transaction((txn) async {
+              // rename column 'orientationDegrees' to 'rotationDegrees'
+              const newEntryTable = '${entryTable}TEMP';
+              await db.execute('CREATE TABLE $newEntryTable('
+                  'contentId INTEGER PRIMARY KEY'
+                  ', uri TEXT'
+                  ', path TEXT'
+                  ', sourceMimeType TEXT'
+                  ', width INTEGER'
+                  ', height INTEGER'
+                  ', rotationDegrees INTEGER'
+                  ', sizeBytes INTEGER'
+                  ', title TEXT'
+                  ', dateModifiedSecs INTEGER'
+                  ', sourceDateTakenMillis INTEGER'
+                  ', durationMillis INTEGER'
+                  ')');
+              await db.rawInsert('INSERT INTO $newEntryTable(contentId,uri,path,sourceMimeType,width,height,rotationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis)'
+                  ' SELECT contentId,uri,path,sourceMimeType,width,height,orientationDegrees,sizeBytes,title,dateModifiedSecs,sourceDateTakenMillis,durationMillis'
+                  ' FROM $entryTable;');
+              await db.execute('DROP TABLE $entryTable;');
+              await db.execute('ALTER TABLE $newEntryTable RENAME TO $entryTable;');
+            });
+
+            // new column 'isFlipped'
+            await db.execute('ALTER TABLE $metadataTable ADD COLUMN isFlipped INTEGER;');
+
+            oldVersion++;
+          }
+        }
+      },
+      version: 2,
     );
   }
 
