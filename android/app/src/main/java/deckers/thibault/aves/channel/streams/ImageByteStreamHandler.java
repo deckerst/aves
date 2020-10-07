@@ -30,7 +30,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private Activity activity;
     private Uri uri;
     private String mimeType;
-    private int orientationDegrees;
+    private int rotationDegrees;
     private EventChannel.EventSink eventSink;
     private Handler handler;
 
@@ -52,7 +52,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             Map<String, Object> argMap = (Map<String, Object>) arguments;
             this.mimeType = (String) argMap.get("mimeType");
             this.uri = Uri.parse((String) argMap.get("uri"));
-            this.orientationDegrees = (int) argMap.get("orientationDegrees");
+            this.rotationDegrees = (int) argMap.get("rotationDegrees");
         }
     }
 
@@ -118,7 +118,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                 Bitmap bitmap = target.get();
                 if (bitmap != null) {
                     // TODO TLAD use exif orientation to rotate & flip?
-                    bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+                    bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
                     // Bitmap.CompressFormat.PNG is slower than JPEG

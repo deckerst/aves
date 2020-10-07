@@ -23,7 +23,7 @@ public class AvesImageEntry {
         this.mimeType = (String) map.get("mimeType");
         this.width = (Integer) map.get("width");
         this.height = (Integer) map.get("height");
-        this.rotationDegrees = (Integer) map.get("orientationDegrees");
+        this.rotationDegrees = (Integer) map.get("rotationDegrees");
         this.dateModifiedSecs = toLong(map.get("dateModifiedSecs"));
     }
 

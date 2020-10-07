@@ -97,12 +97,12 @@ class ImageView extends StatelessWidget {
       final uriImage = UriImage(
         uri: entry.uri,
         mimeType: entry.mimeType,
-        orientationDegrees: entry.orientationDegrees,
+        rotationDegrees: entry.rotationDegrees,
         expectedContentLength: entry.sizeBytes,
       );
       child = PhotoView(
         // key includes size and orientation to refresh when the image is rotated
-        key: ValueKey('${entry.orientationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
+        key: ValueKey('${entry.rotationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
         imageProvider: uriImage,
         // when the full image is ready, we use it in the `loadingBuilder`
         // we still provide a `loadingBuilder` in that case to avoid a black frame after hero animation

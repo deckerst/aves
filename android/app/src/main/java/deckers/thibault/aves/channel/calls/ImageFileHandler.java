@@ -95,17 +95,17 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getImageEntry(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        String uriString = call.argument("uri");
         String mimeType = call.argument("mimeType");
-        if (uriString == null || mimeType == null) {
+        Uri uri = Uri.parse(call.argument("uri"));
+
+        if (uri == null || mimeType == null) {
             result.error("getImageEntry-args", "failed because of missing arguments", null);
             return;
         }
 
-        Uri uri = Uri.parse(uriString);
         ImageProvider provider = ImageProviderFactory.getProvider(uri);
         if (provider == null) {
-            result.error("getImageEntry-provider", "failed to find provider for uri=" + uriString, null);
+            result.error("getImageEntry-provider", "failed to find provider for uri=" + uri, null);
             return;
         }
 
@@ -117,7 +117,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
 
             @Override
             public void onFailure(Throwable throwable) {
-                result.error("getImageEntry-failure", "failed to get entry for uri=" + uriString, throwable.getMessage());
+                result.error("getImageEntry-failure", "failed to get entry for uri=" + uri, throwable.getMessage());
             }
         });
     }

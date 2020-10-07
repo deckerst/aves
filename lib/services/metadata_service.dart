@@ -33,6 +33,7 @@ class MetadataService {
         // return map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
+        // 'isFlipped': flipped according to EXIF orientation (bool)
         // 'isAnimated': animated gif/webp (bool)
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
@@ -103,6 +104,19 @@ class MetadataService {
     return {};
   }
 
+  static Future<Map> getMediaMetadataRetrieverMetadata(ImageEntry entry) async {
+    try {
+      // return map with all data available from the MediaMetadataRetriever
+      final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getMediaMetadataRetrieverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
   static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
     try {
       final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
@@ -127,10 +141,11 @@ class MetadataService {
     return [];
   }
 
-  static Future<List<Uint8List>> getXmpThumbnails(String uri) async {
+  static Future<List<Uint8List>> getXmpThumbnails(ImageEntry entry) async {
     try {
       final result = await platform.invokeMethod('getXmpThumbnails', <String, dynamic>{
-        'uri': uri,
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
       });
       return (result as List).cast<Uint8List>();
     } on PlatformException catch (e) {

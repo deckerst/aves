@@ -48,6 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import deckers.thibault.aves.utils.ExifInterfaceHelper;
+import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper;
 import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
@@ -63,6 +64,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     // catalog metadata
     private static final String KEY_MIME_TYPE = "mimeType";
     private static final String KEY_DATE_MILLIS = "dateMillis";
+    private static final String KEY_IS_FLIPPED = "isFlipped";
     private static final String KEY_IS_ANIMATED = "isAnimated";
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
@@ -146,6 +148,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             case "getExifInterfaceMetadata":
                 new Thread(() -> getExifInterfaceMetadata(call, new MethodResultWrapper(result))).start();
                 break;
+            case "getMediaMetadataRetrieverMetadata":
+                new Thread(() -> getMediaMetadataRetrieverMetadata(call, new MethodResultWrapper(result))).start();
+                break;
             case "getEmbeddedPictures":
                 new Thread(() -> getEmbeddedPictures(call, new MethodResultWrapper(result))).start();
                 break;
@@ -167,49 +172,50 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getAllMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
-        String uriString = call.argument("uri");
-        Uri uri = Uri.parse(uriString);
+        Uri uri = Uri.parse(call.argument("uri"));
 
         Map<String, Map<String, String>> metadataMap = new HashMap<>();
-
         boolean foundExif = false;
-        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
-            for (Directory dir : metadata.getDirectories()) {
-                if (dir.getTagCount() > 0 && !(dir instanceof FileTypeDirectory)) {
-                    foundExif |= dir instanceof ExifDirectoryBase;
 
-                    // directory name
-                    String dirName = dir.getName();
-                    Map<String, String> dirMap = Objects.requireNonNull(metadataMap.getOrDefault(dirName, new HashMap<>()));
-                    metadataMap.put(dirName, dirMap);
+        if (MimeTypes.isSupportedByMetadataExtractor(mimeType)) {
+            try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+                Metadata metadata = ImageMetadataReader.readMetadata(is);
+                for (Directory dir : metadata.getDirectories()) {
+                    if (dir.getTagCount() > 0 && !(dir instanceof FileTypeDirectory)) {
+                        foundExif |= dir instanceof ExifDirectoryBase;
 
-                    // tags
-                    for (Tag tag : dir.getTags()) {
-                        dirMap.put(tag.getTagName(), tag.getDescription());
-                    }
-                    if (dir instanceof XmpDirectory) {
-                        try {
-                            XmpDirectory xmpDir = (XmpDirectory) dir;
-                            XMPMeta xmpMeta = xmpDir.getXMPMeta();
-                            xmpMeta.sort();
-                            XMPIterator xmpIterator = xmpMeta.iterator();
-                            while (xmpIterator.hasNext()) {
-                                XMPPropertyInfo prop = (XMPPropertyInfo) xmpIterator.next();
-                                String xmpPath = prop.getPath();
-                                String xmpValue = prop.getValue();
-                                if (xmpPath != null && !xmpPath.isEmpty() && xmpValue != null && !xmpValue.isEmpty()) {
-                                    dirMap.put(xmpPath, xmpValue);
+                        // directory name
+                        String dirName = dir.getName();
+                        Map<String, String> dirMap = Objects.requireNonNull(metadataMap.getOrDefault(dirName, new HashMap<>()));
+                        metadataMap.put(dirName, dirMap);
+
+                        // tags
+                        for (Tag tag : dir.getTags()) {
+                            dirMap.put(tag.getTagName(), tag.getDescription());
+                        }
+                        if (dir instanceof XmpDirectory) {
+                            try {
+                                XmpDirectory xmpDir = (XmpDirectory) dir;
+                                XMPMeta xmpMeta = xmpDir.getXMPMeta();
+                                xmpMeta.sort();
+                                XMPIterator xmpIterator = xmpMeta.iterator();
+                                while (xmpIterator.hasNext()) {
+                                    XMPPropertyInfo prop = (XMPPropertyInfo) xmpIterator.next();
+                                    String xmpPath = prop.getPath();
+                                    String xmpValue = prop.getValue();
+                                    if (xmpPath != null && !xmpPath.isEmpty() && xmpValue != null && !xmpValue.isEmpty()) {
+                                        dirMap.put(xmpPath, xmpValue);
+                                    }
                                 }
+                            } catch (XMPException e) {
+                                Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
                             }
-                        } catch (XMPException e) {
-                            Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uriString, e);
                         }
                     }
                 }
+            } catch (Exception | NoClassDefFoundError e) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=" + uri, e);
             }
-        } catch (Exception | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to get metadata by ImageMetadataReader for uri=" + uriString, e);
         }
 
         if (!foundExif) {
@@ -218,27 +224,27 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 ExifInterface exif = new ExifInterface(is);
                 metadataMap.putAll(ExifInterfaceHelper.describeAll(exif));
             } catch (IOException e) {
-                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=" + uriString, e);
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=" + uri, e);
             }
         }
 
         if (isVideo(mimeType)) {
-            Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uriString);
+            Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uri);
             if (!videoDir.isEmpty()) {
                 metadataMap.put("Video", videoDir);
             }
         }
 
         if (metadataMap.isEmpty()) {
-            result.error("getAllMetadata-failure", "failed to get metadata for uri=" + uriString, null);
+            result.error("getAllMetadata-failure", "failed to get metadata for uri=" + uri, null);
         } else {
             result.success(metadataMap);
         }
     }
 
-    private Map<String, String> getVideoAllMetadataByMediaMetadataRetriever(String uri) {
+    private Map<String, String> getVideoAllMetadataByMediaMetadataRetriever(Uri uri) {
         Map<String, String> dirMap = new HashMap<>();
-        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
         if (retriever != null) {
             try {
                 for (Map.Entry<Integer, String> kv : VIDEO_MEDIA_METADATA_KEYS.entrySet()) {
@@ -268,7 +274,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getCatalogMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
-        String uri = call.argument("uri");
+        Uri uri = Uri.parse(call.argument("uri"));
         String extension = call.argument("extension");
 
         Map<String, Object> metadataMap = new HashMap<>(getCatalogMetadataByImageMetadataReader(uri, mimeType, extension));
@@ -280,13 +286,12 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         result.success(metadataMap);
     }
 
-    private Map<String, Object> getCatalogMetadataByImageMetadataReader(String uri, String mimeType, String extension) {
+    private Map<String, Object> getCatalogMetadataByImageMetadataReader(Uri uri, String mimeType, String extension) {
         Map<String, Object> metadataMap = new HashMap<>();
 
-        // as of metadata-extractor v2.14.0, MP2T/WBMP files are not supported
-        if (MimeTypes.MP2T.equals(mimeType) || MimeTypes.WBMP.equals(mimeType)) return metadataMap;
+        if (!MimeTypes.isSupportedByMetadataExtractor(mimeType)) return metadataMap;
 
-        try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
             // File type
@@ -356,14 +361,14 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                 }
             }
         } catch (Exception | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to get catalog metadata by ImageMetadataReader for uri=" + uri + ", mimeType=" + mimeType, e);
+            Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for uri=" + uri + ", mimeType=" + mimeType, e);
         }
         return metadataMap;
     }
 
-    private Map<String, Object> getVideoCatalogMetadataByMediaMetadataRetriever(String uri) {
+    private Map<String, Object> getVideoCatalogMetadataByMediaMetadataRetriever(Uri uri) {
         Map<String, Object> metadataMap = new HashMap<>();
-        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, Uri.parse(uri));
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
         if (retriever != null) {
             try {
                 String dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE);
@@ -411,16 +416,16 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getOverlayMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
-        String uri = call.argument("uri");
+        Uri uri = Uri.parse(call.argument("uri"));
 
         Map<String, Object> metadataMap = new HashMap<>();
 
-        if (isVideo(mimeType)) {
+        if (isVideo(mimeType) || !MimeTypes.isSupportedByMetadataExtractor(mimeType)) {
             result.success(metadataMap);
             return;
         }
 
-        try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uri))) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
             for (ExifSubIFDDirectory directory : metadata.getDirectoriesOfType(ExifSubIFDDirectory.class)) {
                 putDescriptionFromTag(metadataMap, KEY_APERTURE, directory, ExifSubIFDDirectory.TAG_FNUMBER);
@@ -453,13 +458,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getContentResolverMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
-        String uriString = call.argument("uri");
-        if (mimeType == null || uriString == null) {
-            result.error("getContentResolverMetadata-args", "failed because of missing arguments", null);
-            return;
-        }
+        Uri uri = Uri.parse(call.argument("uri"));
 
-        Uri uri = Uri.parse(uriString);
         long id = ContentUris.parseId(uri);
         Uri contentUri = uri;
         if (mimeType.startsWith(MimeTypes.IMAGE)) {
@@ -509,13 +509,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getExifInterfaceMetadata(MethodCall call, MethodChannel.Result result) {
-        String uriString = call.argument("uri");
-        if (uriString == null) {
-            result.error("getExifInterfaceMetadata-args", "failed because of missing arguments", null);
-            return;
-        }
+        Uri uri = Uri.parse(call.argument("uri"));
 
-        try (InputStream is = StorageUtils.openInputStream(context, Uri.parse(uriString))) {
+        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             ExifInterface exif = new ExifInterface(is);
             Map<String, Object> metadataMap = new HashMap<>();
             for (String tag : ExifInterfaceHelper.allTags.keySet()) {
@@ -525,12 +521,39 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
             result.success(metadataMap);
         } catch (IOException e) {
-            result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=" + uriString, e.getMessage());
+            result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=" + uri, e.getMessage());
+        }
+    }
+
+    private void getMediaMetadataRetrieverMetadata(MethodCall call, MethodChannel.Result result) {
+        Uri uri = Uri.parse(call.argument("uri"));
+
+        MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
+        if (retriever == null) {
+            result.error("getMediaMetadataRetrieverMetadata-null", "failed to open retriever for uri=" + uri, null);
+            return;
+        }
+
+        try {
+            Map<String, String> metadataMap = new HashMap<>();
+            for (Map.Entry<String, Integer> kv : MediaMetadataRetrieverHelper.allKeys.entrySet()) {
+                String value = retriever.extractMetadata(kv.getValue());
+                if (value != null) {
+                    metadataMap.put(kv.getKey(), value);
+                }
+            }
+            result.success(metadataMap);
+        } catch (Exception e) {
+            result.error("getMediaMetadataRetrieverMetadata-failure", "failed to extract metadata for uri=" + uri, e.getMessage());
+        } finally {
+            // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+            retriever.release();
         }
     }
 
     private void getEmbeddedPictures(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Uri uri = Uri.parse(call.argument("uri"));
+
         List<byte[]> pictures = new ArrayList<>();
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
         if (retriever != null) {
@@ -551,6 +574,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
     private void getExifThumbnails(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Uri uri = Uri.parse(call.argument("uri"));
+
         List<byte[]> thumbnails = new ArrayList<>();
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             ExifInterface exif = new ExifInterface(is);
@@ -560,33 +584,41 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         } catch (IOException e) {
             Log.w(LOG_TAG, "failed to extract exif thumbnail with ExifInterface for uri=" + uri, e);
         }
-
         result.success(thumbnails);
     }
 
     private void getXmpThumbnails(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        String mimeType = call.argument("mimeType");
         Uri uri = Uri.parse(call.argument("uri"));
+
+        if (uri == null || mimeType == null) {
+            result.error("getXmpThumbnails-args", "failed because of missing arguments", null);
+            return;
+        }
+
         List<byte[]> thumbnails = new ArrayList<>();
-        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
-            for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
-                XMPMeta xmpMeta = dir.getXMPMeta();
-                try {
-                    if (xmpMeta.doesPropertyExist(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME)) {
-                        int count = xmpMeta.countArrayItems(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME);
-                        for (int i = 1; i < count + 1; i++) {
-                            XMPProperty image = xmpMeta.getStructField(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME + "[" + i + "]", XMP_IMG_SCHEMA_NS, XMP_THUMBNAIL_IMAGE_PROP_NAME);
-                            if (image != null) {
-                                thumbnails.add(XMPUtils.decodeBase64(image.getValue()));
+        if (MimeTypes.isSupportedByMetadataExtractor(mimeType)) {
+            try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+                Metadata metadata = ImageMetadataReader.readMetadata(is);
+                for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
+                    XMPMeta xmpMeta = dir.getXMPMeta();
+                    try {
+                        if (xmpMeta.doesPropertyExist(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME)) {
+                            int count = xmpMeta.countArrayItems(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME);
+                            for (int i = 1; i < count + 1; i++) {
+                                XMPProperty image = xmpMeta.getStructField(XMP_XMP_SCHEMA_NS, XMP_THUMBNAIL_PROP_NAME + "[" + i + "]", XMP_IMG_SCHEMA_NS, XMP_THUMBNAIL_IMAGE_PROP_NAME);
+                                if (image != null) {
+                                    thumbnails.add(XMPUtils.decodeBase64(image.getValue()));
+                                }
                             }
                         }
+                    } catch (XMPException e) {
+                        Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
                     }
-                } catch (XMPException e) {
-                    Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
                 }
+            } catch (IOException | ImageProcessingException | NoClassDefFoundError e) {
+                Log.w(LOG_TAG, "failed to extract xmp thumbnail", e);
             }
-        } catch (IOException | ImageProcessingException | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to extract xmp thumbnail", e);
         }
         result.success(thumbnails);
     }

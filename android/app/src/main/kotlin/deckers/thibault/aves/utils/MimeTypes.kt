@@ -50,6 +50,13 @@ object MimeTypes {
     const val MOV = "video/quicktime"
     const val MP2T = "video/mp2t"
     const val MP4 = "video/mp4"
+    const val WEBM = "video/webm"
+
+    // as of metadata-extractor v2.14.0, the following formats are not supported
+    private val unsupportedMetadataExtractorFormats = listOf(WBMP, MP2T, WEBM)
+
+    @JvmStatic
+    fun isSupportedByMetadataExtractor(mimeType: String) = !unsupportedMetadataExtractorFormats.contains(mimeType)
 
     @JvmStatic
     fun getMimeTypeForExtension(extension: String?): String? = when (extension?.toLowerCase(Locale.ROOT)) {

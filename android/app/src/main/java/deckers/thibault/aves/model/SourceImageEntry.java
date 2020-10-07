@@ -42,6 +42,8 @@ public class SourceImageEntry {
     @Nullable
     public Integer width, height, rotationDegrees;
     @Nullable
+    public Boolean isFlipped;
+    @Nullable
     public Long sizeBytes;
     @Nullable
     public Long dateModifiedSecs;
@@ -74,7 +76,8 @@ public class SourceImageEntry {
             put("sourceMimeType", sourceMimeType);
             put("width", width);
             put("height", height);
-            put("orientationDegrees", rotationDegrees != null ? rotationDegrees : 0);
+            put("rotationDegrees", rotationDegrees != null ? rotationDegrees : 0);
+            put("isFlipped", isFlipped != null ? isFlipped : false);
             put("sizeBytes", sizeBytes);
             put("title", title);
             put("dateModifiedSecs", dateModifiedSecs);
@@ -101,6 +104,10 @@ public class SourceImageEntry {
         return width != null && width > 0 && height != null && height > 0;
     }
 
+    public boolean hasOrientation() {
+        return rotationDegrees != null;
+    }
+
     private boolean hasDuration() {
         return durationMillis != null && durationMillis > 0;
     }
@@ -122,8 +129,9 @@ public class SourceImageEntry {
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
     public SourceImageEntry fillPreCatalogMetadata(@NonNull Context context) {
+        if (isSvg()) return this;
         fillByMediaMetadataRetriever(context);
-        if (hasSize() && (!isVideo() || hasDuration())) return this;
+        if (hasSize() && hasOrientation() && (!isVideo() || hasDuration())) return this;
         fillByMetadataExtractor(context);
         if (hasSize()) return this;
         fillByBitmapDecode(context);
@@ -133,6 +141,8 @@ public class SourceImageEntry {
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
     private void fillByMediaMetadataRetriever(@NonNull Context context) {
+        if (isImage()) return;
+
         MediaMetadataRetriever retriever = StorageUtils.openMetadataRetriever(context, uri);
         if (retriever != null) {
             try {
@@ -185,75 +195,72 @@ public class SourceImageEntry {
     // expects entry with: uri, mimeType
     // finds: width, height, orientation, date
     private void fillByMetadataExtractor(@NonNull Context context) {
-        if (isSvg()) return;
+        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) return;
 
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-            switch (sourceMimeType) {
-                case MimeTypes.JPEG:
-                    for (JpegDirectory dir : metadata.getDirectoriesOfType(JpegDirectory.class)) {
-                        if (dir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
-                            width = dir.getInt(JpegDirectory.TAG_IMAGE_WIDTH);
-                        }
-                        if (dir.containsTag(JpegDirectory.TAG_IMAGE_HEIGHT)) {
-                            height = dir.getInt(JpegDirectory.TAG_IMAGE_HEIGHT);
-                        }
+            // do not switch on specific mime types, as the reported mime type could be wrong
+            // (e.g. PNG registered as JPG)
+            if (isVideo()) {
+                for (AviDirectory dir : metadata.getDirectoriesOfType(AviDirectory.class)) {
+                    if (dir.containsTag(AviDirectory.TAG_WIDTH)) {
+                        width = dir.getInt(AviDirectory.TAG_WIDTH);
                     }
-                    break;
-                case MimeTypes.MP4:
-                    for (Mp4VideoDirectory dir : metadata.getDirectoriesOfType(Mp4VideoDirectory.class)) {
-                        if (dir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
-                            width = dir.getInt(Mp4VideoDirectory.TAG_WIDTH);
-                        }
-                        if (dir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
-                            height = dir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
-                        }
+                    if (dir.containsTag(AviDirectory.TAG_HEIGHT)) {
+                        height = dir.getInt(AviDirectory.TAG_HEIGHT);
                     }
-                    for (Mp4Directory dir : metadata.getDirectoriesOfType(Mp4Directory.class)) {
-                        if (dir.containsTag(Mp4Directory.TAG_DURATION)) {
-                            durationMillis = dir.getLong(Mp4Directory.TAG_DURATION);
-                        }
+                    if (dir.containsTag(AviDirectory.TAG_DURATION)) {
+                        durationMillis = dir.getLong(AviDirectory.TAG_DURATION);
                     }
-                    break;
-                case MimeTypes.AVI:
-                    for (AviDirectory dir : metadata.getDirectoriesOfType(AviDirectory.class)) {
-                        if (dir.containsTag(AviDirectory.TAG_WIDTH)) {
-                            width = dir.getInt(AviDirectory.TAG_WIDTH);
-                        }
-                        if (dir.containsTag(AviDirectory.TAG_HEIGHT)) {
-                            height = dir.getInt(AviDirectory.TAG_HEIGHT);
-                        }
-                        if (dir.containsTag(AviDirectory.TAG_DURATION)) {
-                            durationMillis = dir.getLong(AviDirectory.TAG_DURATION);
-                        }
+                }
+                for (Mp4VideoDirectory dir : metadata.getDirectoriesOfType(Mp4VideoDirectory.class)) {
+                    if (dir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
+                        width = dir.getInt(Mp4VideoDirectory.TAG_WIDTH);
                     }
-                    break;
-                case MimeTypes.PSD:
-                    for (PsdHeaderDirectory dir : metadata.getDirectoriesOfType(PsdHeaderDirectory.class)) {
-                        if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_WIDTH)) {
-                            width = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH);
-                        }
-                        if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_HEIGHT)) {
-                            height = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT);
-                        }
+                    if (dir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
+                        height = dir.getInt(Mp4VideoDirectory.TAG_HEIGHT);
                     }
-                    break;
-            }
+                }
+                for (Mp4Directory dir : metadata.getDirectoriesOfType(Mp4Directory.class)) {
+                    if (dir.containsTag(Mp4Directory.TAG_DURATION)) {
+                        durationMillis = dir.getLong(Mp4Directory.TAG_DURATION);
+                    }
+                }
+            } else {
+                for (JpegDirectory dir : metadata.getDirectoriesOfType(JpegDirectory.class)) {
+                    if (dir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
+                        width = dir.getInt(JpegDirectory.TAG_IMAGE_WIDTH);
+                    }
+                    if (dir.containsTag(JpegDirectory.TAG_IMAGE_HEIGHT)) {
+                        height = dir.getInt(JpegDirectory.TAG_IMAGE_HEIGHT);
+                    }
+                }
+                for (PsdHeaderDirectory dir : metadata.getDirectoriesOfType(PsdHeaderDirectory.class)) {
+                    if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_WIDTH)) {
+                        width = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH);
+                    }
+                    if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_HEIGHT)) {
+                        height = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT);
+                    }
+                }
 
-            for (ExifIFD0Directory dir : metadata.getDirectoriesOfType(ExifIFD0Directory.class)) {
-                if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_WIDTH)) {
-                    width = dir.getInt(ExifIFD0Directory.TAG_IMAGE_WIDTH);
-                }
-                if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_HEIGHT)) {
-                    height = dir.getInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT);
-                }
-                if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
-                    int exifOrientation = dir.getInt(ExifIFD0Directory.TAG_ORIENTATION);
-                    rotationDegrees = MetadataHelper.getRotationDegreesForExifCode(exifOrientation);
-                }
-                if (dir.containsTag(ExifIFD0Directory.TAG_DATETIME)) {
-                    sourceDateTakenMillis = dir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();
+                // EXIF, if defined, should override metadata found in other directories
+                for (ExifIFD0Directory dir : metadata.getDirectoriesOfType(ExifIFD0Directory.class)) {
+                    if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_WIDTH)) {
+                        width = dir.getInt(ExifIFD0Directory.TAG_IMAGE_WIDTH);
+                    }
+                    if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_HEIGHT)) {
+                        height = dir.getInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT);
+                    }
+                    if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                        int exifOrientation = dir.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                        rotationDegrees = MetadataHelper.getRotationDegreesForExifCode(exifOrientation);
+                        isFlipped = MetadataHelper.isFlippedForExifCode(exifOrientation);
+                    }
+                    if (dir.containsTag(ExifIFD0Directory.TAG_DATETIME)) {
+                        sourceDateTakenMillis = dir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).getTime();
+                    }
                 }
             }
         } catch (IOException | ImageProcessingException | MetadataException | NoClassDefFoundError e) {
@@ -264,8 +271,6 @@ public class SourceImageEntry {
     // expects entry with: uri
     // finds: width, height
     private void fillByBitmapDecode(@NonNull Context context) {
-        if (isSvg()) return;
-
         try (InputStream is = StorageUtils.openInputStream(context, uri)) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;

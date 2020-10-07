@@ -30,7 +30,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Future<DateMetadata> _dbDateLoader;
   Future<CatalogMetadata> _dbMetadataLoader;
   Future<AddressDetails> _dbAddressLoader;
-  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader;
+  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
 
   ImageEntry get entry => widget.entry;
 
@@ -89,25 +89,21 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'sourceTitle': '${entry.sourceTitle}',
           'sourceMimeType': '${entry.sourceMimeType}',
           'mimeType': '${entry.mimeType}',
-          'mimeTypeAnySubtype': '${entry.mimeTypeAnySubtype}',
         }),
         Divider(),
         InfoRowGroup({
           'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
           'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
           'bestDate': '${entry.bestDate}',
-          'monthTaken': '${entry.monthTaken}',
-          'dayTaken': '${entry.dayTaken}',
         }),
         Divider(),
         InfoRowGroup({
           'width': '${entry.width}',
           'height': '${entry.height}',
-          'orientationDegrees': '${entry.orientationDegrees}',
+          'rotationDegrees': '${entry.rotationDegrees}',
           'portrait': '${entry.portrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
           'displaySize': '${entry.displaySize}',
-          'megaPixels': '${entry.megaPixels}',
         }),
         Divider(),
         InfoRowGroup({
@@ -122,8 +118,10 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'isPhoto': '${entry.isPhoto}',
           'isVideo': '${entry.isVideo}',
           'isCatalogued': '${entry.isCatalogued}',
+          'isFlipped': '${entry.isFlipped}',
           'isAnimated': '${entry.isAnimated}',
           'canEdit': '${entry.canEdit}',
+          'canEditExif': '${entry.canEditExif}',
           'canPrint': '${entry.canPrint}',
           'canRotate': '${entry.canRotate}',
           'xmpSubjects': '${entry.xmpSubjects}',
@@ -204,6 +202,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                   InfoRowGroup({
                     'mimeType': '${data.mimeType}',
                     'dateMillis': '${data.dateMillis}',
+                    'isFlipped': '${data.isFlipped}',
                     'isAnimated': '${data.isAnimated}',
                     'videoRotation': '${data.videoRotation}',
                     'latitude': '${data.latitude}',
@@ -245,6 +244,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             'contentId': '${catalog.contentId}',
             'mimeType': '${catalog.mimeType}',
             'dateMillis': '${catalog.dateMillis}',
+            'isFlipped': '${catalog.isFlipped}',
             'isAnimated': '${catalog.isAnimated}',
             'videoRotation': '${catalog.videoRotation}',
             'latitude': '${catalog.latitude}',
@@ -281,7 +281,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
       return AvesExpansionTile(
         title: title,
         children: [
-          Padding(
+          Container(
+            alignment: AlignmentDirectional.topStart,
             padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: InfoRowGroup(
               data,
@@ -303,6 +304,10 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           future: _exifInterfaceMetadataLoader,
           builder: (context, snapshot) => builder(context, snapshot, 'Exif Interface'),
         ),
+        FutureBuilder<Map>(
+          future: _mediaMetadataLoader,
+          builder: (context, snapshot) => builder(context, snapshot, 'Media Metadata Retriever'),
+        ),
       ],
     );
   }
@@ -313,6 +318,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
     _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
+    _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
     setState(() {});
   }
 }
