@@ -257,24 +257,22 @@ object ExifInterfaceHelper {
     private fun fillMetadataExtractorDir(exif: ExifInterface, metadataExtractorDirs: Map<DirType, Directory>, tags: Map<String, TagMapper?>) {
         for (kv in tags) {
             val exifInterfaceTag: String = kv.key
-            if (exif.hasAttribute(exifInterfaceTag)) {
+            val mapper = kv.value
+            if (exif.hasAttribute(exifInterfaceTag) && mapper != null) {
                 val value: String? = exif.getAttribute(exifInterfaceTag)
                 if (value != null && (value != "0" || !neverNullTags.contains(exifInterfaceTag))) {
-                    val mapper = kv.value
-                    if (mapper != null) {
-                        val obj: Any? = when (mapper.format) {
-                            TagFormat.ASCII, TagFormat.COMMENT, TagFormat.UNDEFINED -> value
-                            TagFormat.BYTE -> value.toByteArray()
-                            TagFormat.SHORT -> value.toShortOrNull()
-                            TagFormat.LONG -> value.toLongOrNull()
-                            TagFormat.RATIONAL -> toRational(value)
-                            TagFormat.RATIONAL_ARRAY -> toRationalArray(value)
-                            null -> null
-                        }
-                        if (obj != null) {
-                            val dir = metadataExtractorDirs[mapper.dirType] ?: error("Directory type ${mapper.dirType} does not have a matching Directory instance")
-                            dir.setObject(mapper.type, obj)
-                        }
+                    val obj: Any? = when (mapper.format) {
+                        TagFormat.ASCII, TagFormat.COMMENT, TagFormat.UNDEFINED -> value
+                        TagFormat.BYTE -> value.toByteArray()
+                        TagFormat.SHORT -> value.toShortOrNull()
+                        TagFormat.LONG -> value.toLongOrNull()
+                        TagFormat.RATIONAL -> toRational(value)
+                        TagFormat.RATIONAL_ARRAY -> toRationalArray(value)
+                        null -> null
+                    }
+                    if (obj != null) {
+                        val dir = metadataExtractorDirs[mapper.dirType] ?: error("Directory type ${mapper.dirType} does not have a matching Directory instance")
+                        dir.setObject(mapper.type, obj)
                     }
                 }
             }
@@ -313,6 +311,28 @@ object ExifInterfaceHelper {
         val list = s.split(",").mapNotNull { toRational(it) }
         if (list.isEmpty()) return null
         return list.toTypedArray()
+    }
+
+    // extensions
+
+    fun ExifInterface.getSafeInt(tag: String, acceptZero: Boolean = true, save: (value: Int) -> Unit) {
+        if (this.hasAttribute(tag)) {
+            val value = this.getAttributeInt(tag, 0)
+            if (acceptZero || value != 0) {
+                save(value)
+            }
+        }
+    }
+
+    fun ExifInterface.getSafeDate(tag: String, save: (value: Long) -> Unit) {
+        if (this.hasAttribute(tag)) {
+            // TODO TLAD parse date with "yyyy:MM:dd HH:mm:ss" or find the original long
+            val formattedDate = this.getAttribute(tag)
+            val value = formattedDate?.toLongOrNull()
+            if (value != null && value > 0) {
+                save(value)
+            }
+        }
     }
 }
 

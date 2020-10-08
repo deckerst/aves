@@ -33,11 +33,11 @@ class MetadataService {
         // return map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
-        // 'isFlipped': flipped according to EXIF orientation (bool)
         // 'isAnimated': animated gif/webp (bool)
+        // 'isFlipped': flipped according to EXIF orientation (bool)
+        // 'rotationDegrees': rotation degrees according to EXIF orientation or other metadata (int)
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
-        // 'videoRotation': video rotation degrees (int)
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitleDescription': XMP title or XMP description (string)
         final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{

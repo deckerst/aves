@@ -16,8 +16,6 @@ import com.bumptech.glide.request.RequestOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
@@ -33,17 +31,6 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private int rotationDegrees;
     private EventChannel.EventSink eventSink;
     private Handler handler;
-
-    private static final List<String> flutterSupportedTypes = Arrays.asList(
-            MimeTypes.JPEG,
-            MimeTypes.PNG,
-            MimeTypes.GIF,
-            MimeTypes.WEBP,
-            MimeTypes.BMP,
-            MimeTypes.WBMP,
-            MimeTypes.ICO,
-            MimeTypes.SVG
-    );
 
     @SuppressWarnings("unchecked")
     public ImageByteStreamHandler(Activity activity, Object arguments) {
@@ -84,7 +71,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     // - Android: https://developer.android.com/guide/topics/media/media-formats#image-formats
     // - Glide: https://github.com/bumptech/glide/blob/master/library/src/main/java/com/bumptech/glide/load/ImageHeaderParser.java
     private void getImage() {
-        if (mimeType != null && mimeType.startsWith(MimeTypes.VIDEO)) {
+        if (MimeTypes.isVideo(mimeType)) {
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             FutureTarget<Bitmap> target = Glide.with(activity)
@@ -108,7 +95,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } finally {
                 Glide.with(activity).clear(target);
             }
-        } else if (!flutterSupportedTypes.contains(mimeType)) {
+        } else if (!MimeTypes.isSupportedByFlutter(mimeType)) {
             // we convert the image on platform side first, when Dart Image.memory does not support it
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()

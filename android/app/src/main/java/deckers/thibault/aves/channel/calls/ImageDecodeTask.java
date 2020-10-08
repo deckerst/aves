@@ -131,7 +131,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         ContentResolver resolver = activity.getContentResolver();
         Bitmap bitmap = resolver.loadThumbnail(entry.uri, new Size(width, height), null);
         String mimeType = entry.mimeType;
-        if (MimeTypes.DNG.equals(mimeType)) {
+        if (MimeTypes.needRotationAfterContentResolverThumbnail(mimeType)) {
             bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
         }
         return bitmap;
@@ -186,7 +186,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         try {
             Bitmap bitmap = target.get();
             String mimeType = entry.mimeType;
-            if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
+            if (MimeTypes.needRotationAfterGlide(mimeType)) {
                 bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
             }
             return bitmap;
