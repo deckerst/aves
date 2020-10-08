@@ -85,10 +85,10 @@ public class MediaStoreImageProvider extends ImageProvider {
             callback.onSuccess(entry);
         };
         NewEntryChecker alwaysValid = (contentId, dateModifiedSecs) -> true;
-        if (mimeType.startsWith(MimeTypes.IMAGE)) {
+        if (MimeTypes.isImage(mimeType)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
             entryCount = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION);
-        } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+        } else if (MimeTypes.isVideo(mimeType)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
             entryCount = fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION);
         }
@@ -126,10 +126,6 @@ public class MediaStoreImageProvider extends ImageProvider {
         int newEntryCount = 0;
         final String orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC";
 
-        // it is reasonable to assume a default orientation when it is missing for videos,
-        // but not so for images, often containing with metadata ignored by the Media Store
-        final boolean needOrientation = projection == IMAGE_PROJECTION;
-
         final boolean needDuration = projection == VIDEO_PROJECTION;
 
         try {
@@ -164,18 +160,15 @@ public class MediaStoreImageProvider extends ImageProvider {
                         int height = cursor.getInt(heightColumn);
                         final long durationMillis = durationColumn != -1 ? cursor.getLong(durationColumn) : 0;
 
-                        Integer rotationDegrees = null;
                         // check whether the field may be `null` to distinguish it from a legitimate `0`
                         // this can happen for specific formats (e.g. for PNG, WEBP)
                         // or for JPEG that were not properly registered
-                        if (orientationColumn != -1 && cursor.getType(orientationColumn) == Cursor.FIELD_TYPE_INTEGER) {
-                            rotationDegrees = cursor.getInt(orientationColumn);
-                        }
 
                         Map<String, Object> entryMap = new HashMap<String, Object>() {{
                             put("uri", itemUri.toString());
                             put("path", path);
                             put("sourceMimeType", mimeType);
+                            put("sourceRotationDegrees", orientationColumn != -1 ? cursor.getInt(orientationColumn) : 0);
                             put("sizeBytes", cursor.getLong(sizeColumn));
                             put("title", cursor.getString(titleColumn));
                             put("dateModifiedSecs", dateModifiedSecs);
@@ -186,10 +179,8 @@ public class MediaStoreImageProvider extends ImageProvider {
                         entryMap.put("width", width);
                         entryMap.put("height", height);
                         entryMap.put("durationMillis", durationMillis);
-                        entryMap.put("rotationDegrees", rotationDegrees != null ? rotationDegrees : 0);
 
                         if (((width <= 0 || height <= 0) && needSize(mimeType))
-                                || (rotationDegrees == null && needOrientation)
                                 || (durationMillis == 0 && needDuration)) {
                             // some images are incorrectly registered in the Media Store,
                             // they are valid but miss some attributes, such as width, height, orientation
@@ -331,7 +322,7 @@ public class MediaStoreImageProvider extends ImageProvider {
             contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, destination.relativePath);
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName);
             String volumeName = destination.volumeNameForMediaStore;
-            Uri tableUrl = mimeType.startsWith(MimeTypes.VIDEO) ?
+            Uri tableUrl = MimeTypes.isVideo(mimeType) ?
                     MediaStore.Video.Media.getContentUri(volumeName) :
                     MediaStore.Images.Media.getContentUri(volumeName);
             Uri destinationUri = context.getContentResolver().insert(tableUrl, contentValues);

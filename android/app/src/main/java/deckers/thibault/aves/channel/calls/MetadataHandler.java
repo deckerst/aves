@@ -11,7 +11,6 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.adobe.internal.xmp.XMPException;
@@ -64,11 +63,11 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     // catalog metadata
     private static final String KEY_MIME_TYPE = "mimeType";
     private static final String KEY_DATE_MILLIS = "dateMillis";
-    private static final String KEY_IS_FLIPPED = "isFlipped";
     private static final String KEY_IS_ANIMATED = "isAnimated";
+    private static final String KEY_IS_FLIPPED = "isFlipped";
+    private static final String KEY_ROTATION_DEGREES = "rotationDegrees";
     private static final String KEY_LATITUDE = "latitude";
     private static final String KEY_LONGITUDE = "longitude";
-    private static final String KEY_VIDEO_ROTATION = "videoRotation";
     private static final String KEY_XMP_SUBJECTS = "xmpSubjects";
     private static final String KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription";
 
@@ -166,10 +165,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         }
     }
 
-    private boolean isVideo(@Nullable String mimeType) {
-        return mimeType != null && mimeType.startsWith(MimeTypes.VIDEO);
-    }
-
     private void getAllMetadata(MethodCall call, MethodChannel.Result result) {
         String mimeType = call.argument("mimeType");
         Uri uri = Uri.parse(call.argument("uri"));
@@ -228,7 +223,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
             }
         }
 
-        if (isVideo(mimeType)) {
+        if (MimeTypes.isVideo(mimeType)) {
             Map<String, String> videoDir = getVideoAllMetadataByMediaMetadataRetriever(uri);
             if (!videoDir.isEmpty()) {
                 metadataMap.put("Video", videoDir);
@@ -277,8 +272,8 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         Uri uri = Uri.parse(call.argument("uri"));
         String extension = call.argument("extension");
 
-        Map<String, Object> metadataMap = new HashMap<>(getCatalogMetadataByImageMetadataReader(uri, mimeType, extension));
-        if (isVideo(mimeType)) {
+        Map<String, Object> metadataMap = new HashMap<>(getCatalogMetadataByMetadataExtractor(uri, mimeType, extension));
+        if (MimeTypes.isVideo(mimeType)) {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri));
         }
 
@@ -286,83 +281,119 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
         result.success(metadataMap);
     }
 
-    private Map<String, Object> getCatalogMetadataByImageMetadataReader(Uri uri, String mimeType, String extension) {
+    private Map<String, Object> getCatalogMetadataByMetadataExtractor(Uri uri, String mimeType, String extension) {
         Map<String, Object> metadataMap = new HashMap<>();
 
-        if (!MimeTypes.isSupportedByMetadataExtractor(mimeType)) return metadataMap;
+        boolean foundExif = false;
 
-        try (InputStream is = StorageUtils.openInputStream(context, uri)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(is);
+        if (MimeTypes.isSupportedByMetadataExtractor(mimeType)) {
+            try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+                Metadata metadata = ImageMetadataReader.readMetadata(is);
 
-            // File type
-            for (FileTypeDirectory dir : metadata.getDirectoriesOfType(FileTypeDirectory.class)) {
-                // `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
-                // the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`)
-                // `context.getContentResolver().getType()` sometimes return incorrect value
-                // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-                if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                    String detectedMimeType = dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE);
-                    if (detectedMimeType != null && !detectedMimeType.equals(mimeType)) {
-                        // file extension is unreliable, but we use it as a tie breaker
-                        String extensionMimeType = MimeTypes.getMimeTypeForExtension(extension.toLowerCase());
-                        if (detectedMimeType.equals(extensionMimeType)) {
-                            metadataMap.put(KEY_MIME_TYPE, detectedMimeType);
+                // File type
+                for (FileTypeDirectory dir : metadata.getDirectoriesOfType(FileTypeDirectory.class)) {
+                    // `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
+                    // the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`)
+                    // `context.getContentResolver().getType()` sometimes return incorrect value
+                    // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
+                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                        String detectedMimeType = dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE);
+                        if (detectedMimeType != null && !detectedMimeType.equals(mimeType)) {
+                            // file extension is unreliable, but we use it as a tie breaker
+                            String extensionMimeType = MimeTypes.getMimeTypeForExtension(extension.toLowerCase());
+                            if (detectedMimeType.equals(extensionMimeType)) {
+                                metadataMap.put(KEY_MIME_TYPE, detectedMimeType);
+                            }
                         }
                     }
                 }
-            }
 
-            // EXIF
-            putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifSubIFDDirectory.class, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
-                putDateFromDirectoryTag(metadataMap, KEY_DATE_MILLIS, metadata, ExifIFD0Directory.class, ExifIFD0Directory.TAG_DATETIME);
-            }
-
-            // GPS
-            for (GpsDirectory dir : metadata.getDirectoriesOfType(GpsDirectory.class)) {
-                GeoLocation geoLocation = dir.getGeoLocation();
-                if (geoLocation != null) {
-                    metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
-                    metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
+                // EXIF
+                for (ExifSubIFDDirectory dir : metadata.getDirectoriesOfType(ExifSubIFDDirectory.class)) {
+                    putDateFromTag(metadataMap, KEY_DATE_MILLIS, dir, ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
                 }
-            }
+                for (ExifIFD0Directory dir : metadata.getDirectoriesOfType(ExifIFD0Directory.class)) {
+                    foundExif = true;
+                    if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                        putDateFromTag(metadataMap, KEY_DATE_MILLIS, dir, ExifIFD0Directory.TAG_DATETIME);
+                    }
+                    if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                        int orientation = dir.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                        metadataMap.put(KEY_IS_FLIPPED, MetadataHelper.isFlippedForExifCode(orientation));
+                        metadataMap.put(KEY_ROTATION_DEGREES, MetadataHelper.getRotationDegreesForExifCode(orientation));
+                    }
+                }
 
-            // XMP
-            for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
-                XMPMeta xmpMeta = dir.getXMPMeta();
-                try {
-                    if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
-                        StringBuilder sb = new StringBuilder();
-                        int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
-                        for (int i = 1; i < count + 1; i++) {
-                            XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
-                            sb.append(";").append(item.getValue());
+                // GPS
+                for (GpsDirectory dir : metadata.getDirectoriesOfType(GpsDirectory.class)) {
+                    GeoLocation geoLocation = dir.getGeoLocation();
+                    if (geoLocation != null) {
+                        metadataMap.put(KEY_LATITUDE, geoLocation.getLatitude());
+                        metadataMap.put(KEY_LONGITUDE, geoLocation.getLongitude());
+                    }
+                }
+
+                // XMP
+                for (XmpDirectory dir : metadata.getDirectoriesOfType(XmpDirectory.class)) {
+                    XMPMeta xmpMeta = dir.getXMPMeta();
+                    try {
+                        if (xmpMeta.doesPropertyExist(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME)) {
+                            StringBuilder sb = new StringBuilder();
+                            int count = xmpMeta.countArrayItems(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME);
+                            for (int i = 1; i < count + 1; i++) {
+                                XMPProperty item = xmpMeta.getArrayItem(XMP_DC_SCHEMA_NS, XMP_SUBJECT_PROP_NAME, i);
+                                sb.append(";").append(item.getValue());
+                            }
+                            metadataMap.put(KEY_XMP_SUBJECTS, sb.toString());
                         }
-                        metadataMap.put(KEY_XMP_SUBJECTS, sb.toString());
-                    }
 
-                    putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_TITLE_PROP_NAME);
-                    if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                        putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_DESCRIPTION_PROP_NAME);
-                    }
-                } catch (XMPException e) {
-                    Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
-                }
-            }
-
-            // Animated GIF & WEBP
-            if (MimeTypes.GIF.equals(mimeType)) {
-                metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
-            } else if (MimeTypes.WEBP.equals(mimeType)) {
-                for (WebpDirectory dir : metadata.getDirectoriesOfType(WebpDirectory.class)) {
-                    if (dir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
-                        metadataMap.put(KEY_IS_ANIMATED, dir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
+                        putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_TITLE_PROP_NAME);
+                        if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
+                            putLocalizedTextFromXmp(metadataMap, KEY_XMP_TITLE_DESCRIPTION, xmpMeta, XMP_DESCRIPTION_PROP_NAME);
+                        }
+                    } catch (XMPException e) {
+                        Log.w(LOG_TAG, "failed to read XMP directory for uri=" + uri, e);
                     }
                 }
+
+                // Animated GIF & WEBP
+                if (MimeTypes.GIF.equals(mimeType)) {
+                    metadataMap.put(KEY_IS_ANIMATED, metadata.containsDirectoryOfType(GifAnimationDirectory.class));
+                } else if (MimeTypes.WEBP.equals(mimeType)) {
+                    for (WebpDirectory dir : metadata.getDirectoriesOfType(WebpDirectory.class)) {
+                        if (dir.containsTag(WebpDirectory.TAG_IS_ANIMATION)) {
+                            metadataMap.put(KEY_IS_ANIMATED, dir.getBoolean(WebpDirectory.TAG_IS_ANIMATION));
+                        }
+                    }
+                }
+            } catch (Exception | NoClassDefFoundError e) {
+                Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for uri=" + uri + ", mimeType=" + mimeType, e);
             }
-        } catch (Exception | NoClassDefFoundError e) {
-            Log.w(LOG_TAG, "failed to get catalog metadata by metadata-extractor for uri=" + uri + ", mimeType=" + mimeType, e);
         }
+
+        if (!foundExif) {
+            // fallback to read EXIF via ExifInterface
+            try (InputStream is = StorageUtils.openInputStream(context, uri)) {
+                ExifInterface exif = new ExifInterface(is);
+
+                // TODO TLAD get KEY_DATE_MILLIS from ExifInterface.TAG_DATETIME_ORIGINAL/TAG_DATETIME after Kotlin migration
+                if (exif.hasAttribute(ExifInterface.TAG_ORIENTATION)) {
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                    if (orientation != 0) {
+                        metadataMap.put(KEY_IS_FLIPPED, exif.isFlipped());
+                        metadataMap.put(KEY_ROTATION_DEGREES, exif.getRotationDegrees());
+                    }
+                }
+                double[] latLong = exif.getLatLong();
+                if (latLong != null && latLong.length == 2) {
+                    metadataMap.put(KEY_LATITUDE, latLong[0]);
+                    metadataMap.put(KEY_LONGITUDE, latLong[1]);
+                }
+            } catch (IOException e) {
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=" + uri, e);
+            }
+        }
+
         return metadataMap;
     }
 
@@ -383,7 +414,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
                     }
                 }
                 if (rotationString != null) {
-                    metadataMap.put(KEY_VIDEO_ROTATION, Integer.parseInt(rotationString));
+                    metadataMap.put(KEY_ROTATION_DEGREES, Integer.parseInt(rotationString));
                 }
                 if (locationString != null) {
                     Matcher locationMatcher = VIDEO_LOCATION_PATTERN.matcher(locationString);
@@ -420,7 +451,7 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
         Map<String, Object> metadataMap = new HashMap<>();
 
-        if (isVideo(mimeType) || !MimeTypes.isSupportedByMetadataExtractor(mimeType)) {
+        if (MimeTypes.isVideo(mimeType) || !MimeTypes.isSupportedByMetadataExtractor(mimeType)) {
             result.success(metadataMap);
             return;
         }
@@ -462,9 +493,9 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
         long id = ContentUris.parseId(uri);
         Uri contentUri = uri;
-        if (mimeType.startsWith(MimeTypes.IMAGE)) {
+        if (MimeTypes.isImage(mimeType)) {
             contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-        } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+        } else if (MimeTypes.isVideo(mimeType)) {
             contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -536,10 +567,10 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
 
         try {
             Map<String, String> metadataMap = new HashMap<>();
-            for (Map.Entry<String, Integer> kv : MediaMetadataRetrieverHelper.allKeys.entrySet()) {
-                String value = retriever.extractMetadata(kv.getValue());
+            for (Map.Entry<Integer, String> kv : MediaMetadataRetrieverHelper.allKeys.entrySet()) {
+                String value = retriever.extractMetadata(kv.getKey());
                 if (value != null) {
-                    metadataMap.put(kv.getKey(), value);
+                    metadataMap.put(kv.getValue(), value);
                 }
             }
             result.success(metadataMap);
@@ -624,12 +655,6 @@ public class MetadataHandler implements MethodChannel.MethodCallHandler {
     }
 
     // convenience methods
-
-    private static <T extends Directory> void putDateFromDirectoryTag(Map<String, Object> metadataMap, String key, Metadata metadata, Class<T> dirClass, int tag) {
-        for (T dir : metadata.getDirectoriesOfType(dirClass)) {
-            putDateFromTag(metadataMap, key, dir, tag);
-        }
-    }
 
     private static void putDateFromTag(Map<String, Object> metadataMap, String key, Directory dir, int tag) {
         if (dir.containsTag(tag)) {

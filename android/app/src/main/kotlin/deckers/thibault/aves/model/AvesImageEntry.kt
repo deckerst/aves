@@ -26,7 +26,7 @@ class AvesImageEntry(map: Map<String?, Any?>) {
     val dateModifiedSecs = toLong(map["dateModifiedSecs"])
 
     val isVideo: Boolean
-        get() = mimeType.startsWith(MimeTypes.VIDEO)
+        get() = MimeTypes.isVideo(mimeType)
 
     companion object {
         // convenience method

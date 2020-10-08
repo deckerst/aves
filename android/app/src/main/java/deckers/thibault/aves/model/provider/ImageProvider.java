@@ -167,9 +167,9 @@ public abstract class ImageProvider {
                 // newURI is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
                 // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
                 contentId = ContentUris.parseId(newUri);
-                if (mimeType.startsWith(MimeTypes.IMAGE)) {
+                if (MimeTypes.isImage(mimeType)) {
                     contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId);
-                } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+                } else if (MimeTypes.isVideo(mimeType)) {
                     contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId);
                 }
             }

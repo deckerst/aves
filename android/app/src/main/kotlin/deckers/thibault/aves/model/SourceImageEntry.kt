@@ -6,7 +6,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
+import androidx.exifinterface.media.ExifInterface
 import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.ExifIFD0Directory
@@ -14,28 +14,34 @@ import com.drew.metadata.jpeg.JpegDirectory
 import com.drew.metadata.mp4.Mp4Directory
 import com.drew.metadata.mp4.media.Mp4VideoDirectory
 import com.drew.metadata.photoshop.PsdHeaderDirectory
+import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeDate
+import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeDateMillis
+import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeLong
+import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeString
+import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDateMillis
+import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeInt
+import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeLong
 import deckers.thibault.aves.utils.MetadataHelper.getRotationDegreesForExifCode
-import deckers.thibault.aves.utils.MetadataHelper.isFlippedForExifCode
-import deckers.thibault.aves.utils.MetadataHelper.parseVideoMetadataDate
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.IOException
-import java.util.*
 
 class SourceImageEntry {
     val uri: Uri // content or file URI
     var path: String? = null // best effort to get local path
     private val sourceMimeType: String
-    var title: String? = null
+    private var title: String? = null
     var width: Int? = null
     var height: Int? = null
-    private var rotationDegrees: Int? = null
-    private var isFlipped: Boolean? = null
-    var sizeBytes: Long? = null
-    var dateModifiedSecs: Long? = null
+    private var sourceRotationDegrees: Int? = null
+    private var sizeBytes: Long? = null
+    private var dateModifiedSecs: Long? = null
     private var sourceDateTakenMillis: Long? = null
     private var durationMillis: Long? = null
+
+    private var foundExif: Boolean = false
 
     constructor(uri: Uri, sourceMimeType: String) {
         this.uri = uri
@@ -46,9 +52,9 @@ class SourceImageEntry {
         uri = Uri.parse(map["uri"] as String)
         path = map["path"] as String?
         sourceMimeType = map["sourceMimeType"] as String
-        width = map["width"] as Int
-        height = map["height"] as Int
-        rotationDegrees = map["rotationDegrees"] as Int
+        width = map["width"] as Int?
+        height = map["height"] as Int?
+        sourceRotationDegrees = map["sourceRotationDegrees"] as Int?
         sizeBytes = toLong(map["sizeBytes"])
         title = map["title"] as String?
         dateModifiedSecs = toLong(map["dateModifiedSecs"])
@@ -70,8 +76,7 @@ class SourceImageEntry {
                 "sourceMimeType" to sourceMimeType,
                 "width" to width,
                 "height" to height,
-                "rotationDegrees" to (rotationDegrees ?: 0),
-                "isFlipped" to (isFlipped ?: false),
+                "sourceRotationDegrees" to (sourceRotationDegrees ?: 0),
                 "sizeBytes" to sizeBytes,
                 "title" to title,
                 "dateModifiedSecs" to dateModifiedSecs,
@@ -99,17 +104,14 @@ class SourceImageEntry {
     val hasSize: Boolean
         get() = width ?: 0 > 0 && height ?: 0 > 0
 
-    private val hasOrientation: Boolean
-        get() = rotationDegrees != null
-
     private val hasDuration: Boolean
         get() = durationMillis ?: 0 > 0
 
     private val isImage: Boolean
-        get() = sourceMimeType.startsWith(MimeTypes.IMAGE)
+        get() = MimeTypes.isImage(sourceMimeType)
 
     private val isVideo: Boolean
-        get() = sourceMimeType.startsWith(MimeTypes.VIDEO)
+        get() = MimeTypes.isVideo(sourceMimeType)
 
     val isSvg: Boolean
         get() = sourceMimeType == MimeTypes.SVG
@@ -119,58 +121,32 @@ class SourceImageEntry {
     // finds: width, height, orientation/rotation, date, title, duration
     fun fillPreCatalogMetadata(context: Context): SourceImageEntry {
         if (isSvg) return this
-        fillByMediaMetadataRetriever(context)
-        if (hasSize && hasOrientation && (!isVideo || hasDuration)) return this
-        fillByMetadataExtractor(context)
-        if (hasSize) return this
+        if (isVideo) {
+            fillVideoByMediaMetadataRetriever(context)
+            if (hasSize && hasDuration) return this
+        }
+        if (MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) {
+            fillByMetadataExtractor(context)
+            if (hasSize && foundExif) return this
+        }
+        if (ExifInterface.isSupportedMimeType(sourceMimeType)) {
+            fillByExifInterface(context)
+            if (hasSize) return this
+        }
         fillByBitmapDecode(context)
         return this
     }
 
-    // expects entry with: uri, mimeType
-    // finds: width, height, orientation/rotation, date, title, duration
-    private fun fillByMediaMetadataRetriever(context: Context) {
-        if (isImage) return
+    // finds: width, height, orientation, date, duration, title
+    private fun fillVideoByMediaMetadataRetriever(context: Context) {
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return
         try {
-            var width: String? = null
-            var height: String? = null
-            var rotationDegrees: String? = null
-            var durationMillis: String? = null
-            if (isImage) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_WIDTH)
-                    height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_HEIGHT)
-                    rotationDegrees = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_IMAGE_ROTATION)
-                }
-            } else if (isVideo) {
-                width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                rotationDegrees = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-                durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-            }
-            if (width != null) {
-                this.width = width.toInt()
-            }
-            if (height != null) {
-                this.height = height.toInt()
-            }
-            if (rotationDegrees != null) {
-                this.rotationDegrees = rotationDegrees.toInt()
-            }
-            if (durationMillis != null) {
-                this.durationMillis = durationMillis.toLong()
-            }
-            val dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE)
-            val dateMillis = parseVideoMetadataDate(dateString)
-            // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
-            if (dateMillis > 0) {
-                sourceDateTakenMillis = dateMillis
-            }
-            val title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
-            if (title != null) {
-                this.title = title
-            }
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) { width = it }
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) { height = it }
+            retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { sourceRotationDegrees = it }
+            retriever.getSafeLong(MediaMetadataRetriever.METADATA_KEY_DURATION) { durationMillis = it }
+            retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { sourceDateTakenMillis = it }
+            retriever.getSafeString(MediaMetadataRetriever.METADATA_KEY_TITLE) { title = it }
         } catch (e: Exception) {
             // ignore
         } finally {
@@ -179,10 +155,8 @@ class SourceImageEntry {
         }
     }
 
-    // expects entry with: uri, mimeType
-    // finds: width, height, orientation, date
+    // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
-        if (!isSupportedByMetadataExtractor(sourceMimeType)) return
         try {
             StorageUtils.openInputStream(context, uri).use { input ->
                 val metadata = ImageMetadataReader.readMetadata(input)
@@ -191,62 +165,36 @@ class SourceImageEntry {
                 // (e.g. PNG registered as JPG)
                 if (isVideo) {
                     for (dir in metadata.getDirectoriesOfType(AviDirectory::class.java)) {
-                        if (dir.containsTag(AviDirectory.TAG_WIDTH)) {
-                            width = dir.getInt(AviDirectory.TAG_WIDTH)
-                        }
-                        if (dir.containsTag(AviDirectory.TAG_HEIGHT)) {
-                            height = dir.getInt(AviDirectory.TAG_HEIGHT)
-                        }
-                        if (dir.containsTag(AviDirectory.TAG_DURATION)) {
-                            durationMillis = dir.getLong(AviDirectory.TAG_DURATION)
-                        }
+                        dir.getSafeInt(AviDirectory.TAG_WIDTH) { width = it }
+                        dir.getSafeInt(AviDirectory.TAG_HEIGHT) { height = it }
+                        dir.getSafeLong(AviDirectory.TAG_DURATION) { durationMillis = it }
                     }
                     for (dir in metadata.getDirectoriesOfType(Mp4VideoDirectory::class.java)) {
-                        if (dir.containsTag(Mp4VideoDirectory.TAG_WIDTH)) {
-                            width = dir.getInt(Mp4VideoDirectory.TAG_WIDTH)
-                        }
-                        if (dir.containsTag(Mp4VideoDirectory.TAG_HEIGHT)) {
-                            height = dir.getInt(Mp4VideoDirectory.TAG_HEIGHT)
-                        }
+                        dir.getSafeInt(Mp4VideoDirectory.TAG_WIDTH) { width = it }
+                        dir.getSafeInt(Mp4VideoDirectory.TAG_HEIGHT) { height = it }
                     }
                     for (dir in metadata.getDirectoriesOfType(Mp4Directory::class.java)) {
-                        if (dir.containsTag(Mp4Directory.TAG_DURATION)) {
-                            durationMillis = dir.getLong(Mp4Directory.TAG_DURATION)
-                        }
+                        dir.getSafeInt(Mp4Directory.TAG_ROTATION) { sourceRotationDegrees = it }
+                        dir.getSafeLong(Mp4Directory.TAG_DURATION) { durationMillis = it }
                     }
                 } else {
-                    for (dir in metadata.getDirectoriesOfType(JpegDirectory::class.java)) {
-                        if (dir.containsTag(JpegDirectory.TAG_IMAGE_WIDTH)) {
-                            width = dir.getInt(JpegDirectory.TAG_IMAGE_WIDTH)
-                        }
-                        if (dir.containsTag(JpegDirectory.TAG_IMAGE_HEIGHT)) {
-                            height = dir.getInt(JpegDirectory.TAG_IMAGE_HEIGHT)
-                        }
-                    }
-                    for (dir in metadata.getDirectoriesOfType(PsdHeaderDirectory::class.java)) {
-                        if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_WIDTH)) {
-                            width = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH)
-                        }
-                        if (dir.containsTag(PsdHeaderDirectory.TAG_IMAGE_HEIGHT)) {
-                            height = dir.getInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT)
-                        }
-                    }
-
                     // EXIF, if defined, should override metadata found in other directories
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
-                        if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_WIDTH)) {
-                            width = dir.getInt(ExifIFD0Directory.TAG_IMAGE_WIDTH)
+                        foundExif = true
+                        dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_WIDTH) { width = it }
+                        dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT) { height = it }
+                        dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) { sourceRotationDegrees = getRotationDegreesForExifCode(it) }
+                        dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME) { sourceDateTakenMillis = it }
+                    }
+
+                    if (!foundExif) {
+                        for (dir in metadata.getDirectoriesOfType(JpegDirectory::class.java)) {
+                            dir.getSafeInt(JpegDirectory.TAG_IMAGE_WIDTH) { width = it }
+                            dir.getSafeInt(JpegDirectory.TAG_IMAGE_HEIGHT) { height = it }
                         }
-                        if (dir.containsTag(ExifIFD0Directory.TAG_IMAGE_HEIGHT)) {
-                            height = dir.getInt(ExifIFD0Directory.TAG_IMAGE_HEIGHT)
-                        }
-                        if (dir.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
-                            val exifOrientation = dir.getInt(ExifIFD0Directory.TAG_ORIENTATION)
-                            rotationDegrees = getRotationDegreesForExifCode(exifOrientation)
-                            isFlipped = isFlippedForExifCode(exifOrientation)
-                        }
-                        if (dir.containsTag(ExifIFD0Directory.TAG_DATETIME)) {
-                            sourceDateTakenMillis = dir.getDate(ExifIFD0Directory.TAG_DATETIME, null, TimeZone.getDefault()).time
+                        for (dir in metadata.getDirectoriesOfType(PsdHeaderDirectory::class.java)) {
+                            dir.getSafeInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH) { width = it }
+                            dir.getSafeInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT) { height = it }
                         }
                     }
                 }
@@ -258,7 +206,22 @@ class SourceImageEntry {
         }
     }
 
-    // expects entry with: uri
+    // finds: width, height, orientation, date
+    private fun fillByExifInterface(context: Context) {
+        try {
+            StorageUtils.openInputStream(context, uri).use { input ->
+                val exif = ExifInterface(input)
+                foundExif = true
+                exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
+                exif.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
+                exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
+                exif.getSafeDate(ExifInterface.TAG_DATETIME) { sourceDateTakenMillis = it }
+            }
+        } catch (e: IOException) {
+            // ignore
+        }
+    }
+
     // finds: width, height
     private fun fillByBitmapDecode(context: Context) {
         try {

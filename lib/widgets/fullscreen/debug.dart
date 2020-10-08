@@ -39,7 +39,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   @override
   void initState() {
     super.initState();
-    _initFutures();
+    _loadDatabase();
+    _loadMetadata();
   }
 
   @override
@@ -100,6 +101,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
         InfoRowGroup({
           'width': '${entry.width}',
           'height': '${entry.height}',
+          'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
           'rotationDegrees': '${entry.rotationDegrees}',
           'portrait': '${entry.portrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
@@ -118,8 +120,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'isPhoto': '${entry.isPhoto}',
           'isVideo': '${entry.isVideo}',
           'isCatalogued': '${entry.isCatalogued}',
-          'isFlipped': '${entry.isFlipped}',
           'isAnimated': '${entry.isAnimated}',
+          'isFlipped': '${entry.isFlipped}',
           'canEdit': '${entry.canEdit}',
           'canEditExif': '${entry.canEditExif}',
           'canPrint': '${entry.canPrint}',
@@ -165,10 +167,24 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   }
 
   Widget _buildDbTabView() {
-    final catalog = entry.catalogMetadata;
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text('DB'),
+            ),
+            SizedBox(width: 8),
+            RaisedButton(
+              onPressed: () async {
+                await metadataDb.removeIds([entry.contentId]);
+                _loadDatabase();
+              },
+              child: Text('Remove from DB'),
+            ),
+          ],
+        ),
         FutureBuilder<DateMetadata>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
@@ -202,9 +218,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                   InfoRowGroup({
                     'mimeType': '${data.mimeType}',
                     'dateMillis': '${data.dateMillis}',
-                    'isFlipped': '${data.isFlipped}',
                     'isAnimated': '${data.isAnimated}',
-                    'videoRotation': '${data.videoRotation}',
+                    'isFlipped': '${data.isFlipped}',
+                    'rotationDegrees': '${data.rotationDegrees}',
                     'latitude': '${data.latitude}',
                     'longitude': '${data.longitude}',
                     'xmpSubjects': '${data.xmpSubjects}',
@@ -237,21 +253,6 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        Divider(),
-        Text('Catalog metadata:${catalog == null ? ' no data' : ''}'),
-        if (catalog != null)
-          InfoRowGroup({
-            'contentId': '${catalog.contentId}',
-            'mimeType': '${catalog.mimeType}',
-            'dateMillis': '${catalog.dateMillis}',
-            'isFlipped': '${catalog.isFlipped}',
-            'isAnimated': '${catalog.isAnimated}',
-            'videoRotation': '${catalog.videoRotation}',
-            'latitude': '${catalog.latitude}',
-            'longitude': '${catalog.longitude}',
-            'xmpSubjects': '${catalog.xmpSubjects}',
-            'xmpTitleDescription': '${catalog.xmpTitleDescription}',
-          }),
       ],
     );
   }
@@ -312,10 +313,14 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
     );
   }
 
-  void _initFutures() {
+  void _loadDatabase() {
     _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
+    setState(() {});
+  }
+
+  void _loadMetadata() {
     _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
     _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
     _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
