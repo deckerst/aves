@@ -14,7 +14,7 @@ import com.drew.metadata.jpeg.JpegDirectory
 import com.drew.metadata.mp4.Mp4Directory
 import com.drew.metadata.mp4.media.Mp4VideoDirectory
 import com.drew.metadata.photoshop.PsdHeaderDirectory
-import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeDate
+import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeInt
@@ -23,7 +23,7 @@ import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeString
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeLong
-import deckers.thibault.aves.utils.MetadataHelper.getRotationDegreesForExifCode
+import deckers.thibault.aves.utils.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.IOException
@@ -215,7 +215,7 @@ class SourceImageEntry {
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_LENGTH, acceptZero = false) { height = it }
                 exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
-                exif.getSafeDate(ExifInterface.TAG_DATETIME) { sourceDateTakenMillis = it }
+                exif.getSafeDateMillis(ExifInterface.TAG_DATETIME) { sourceDateTakenMillis = it }
             }
         } catch (e: IOException) {
             // ignore

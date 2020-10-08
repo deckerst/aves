@@ -6,7 +6,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
-object MetadataHelper {
+object Metadata {
+    // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
+    // Examples:
+    // "+37.5090+127.0243/" (Samsung)
+    // "+51.3328-000.7053+113.474/" (Apple)
+    val VIDEO_LOCATION_PATTERN: Pattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*")
+
+    // directory names, as shown when listing all metadata
+    const val DIR_GPS = "GPS" // from metadata-extractor
+    const val DIR_XMP = "XMP" // from metadata-extractor
+    const val DIR_MEDIA = "Media"
+
     // interpret EXIF code to angle (0, 90, 180 or 270 degrees)
     @JvmStatic
     fun getRotationDegreesForExifCode(exifOrientation: Int): Int = when (exifOrientation) {
