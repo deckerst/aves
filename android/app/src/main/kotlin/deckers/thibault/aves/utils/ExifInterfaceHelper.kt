@@ -216,8 +216,8 @@ object ExifInterfaceHelper {
         return HashMap<String, Map<String, String>>().apply {
             put("Exif", describeDir(exif, dirs, baseTags))
             put("Exif Thumbnail", describeDir(exif, dirs, thumbnailTags))
-            put("GPS", describeDir(exif, dirs, gpsTags))
-            put("XMP", describeDir(exif, dirs, xmpTags))
+            put(Metadata.DIR_GPS, describeDir(exif, dirs, gpsTags))
+            put(Metadata.DIR_XMP, describeDir(exif, dirs, xmpTags))
             put("Exif Raw", describeDir(exif, dirs, rawTags))
         }.filterValues { it.isNotEmpty() }
     }
@@ -227,12 +227,10 @@ object ExifInterfaceHelper {
 
         fillMetadataExtractorDir(exif, metadataExtractorDirs, tags)
 
-        for (kv in tags) {
-            val exifInterfaceTag: String = kv.key
+        for ((exifInterfaceTag, mapper) in tags) {
             if (exif.hasAttribute(exifInterfaceTag)) {
                 val value: String? = exif.getAttribute(exifInterfaceTag)
                 if (value != null && (value != "0" || !neverNullTags.contains(exifInterfaceTag))) {
-                    val mapper = kv.value
                     if (mapper != null) {
                         val dir = metadataExtractorDirs[mapper.dirType] ?: error("Directory type ${mapper.dirType} does not have a matching Directory instance")
                         val type = mapper.type
@@ -255,9 +253,7 @@ object ExifInterfaceHelper {
     }
 
     private fun fillMetadataExtractorDir(exif: ExifInterface, metadataExtractorDirs: Map<DirType, Directory>, tags: Map<String, TagMapper?>) {
-        for (kv in tags) {
-            val exifInterfaceTag: String = kv.key
-            val mapper = kv.value
+        for ((exifInterfaceTag, mapper) in tags) {
             if (exif.hasAttribute(exifInterfaceTag) && mapper != null) {
                 val value: String? = exif.getAttribute(exifInterfaceTag)
                 if (value != null && (value != "0" || !neverNullTags.contains(exifInterfaceTag))) {
@@ -324,7 +320,7 @@ object ExifInterfaceHelper {
         }
     }
 
-    fun ExifInterface.getSafeDate(tag: String, save: (value: Long) -> Unit) {
+    fun ExifInterface.getSafeDateMillis(tag: String, save: (value: Long) -> Unit) {
         if (this.hasAttribute(tag)) {
             // TODO TLAD parse date with "yyyy:MM:dd HH:mm:ss" or find the original long
             val formattedDate = this.getAttribute(tag)
