@@ -121,7 +121,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             // fallback to read EXIF via ExifInterface
             try {
                 StorageUtils.openInputStream(context, uri).use { input ->
-                    val allTags = describeAll(ExifInterface(input)).toMutableMap()
+                    val exif = ExifInterface(input)
+                    val allTags = describeAll(exif).toMutableMap()
                     if (foundXmp) {
                         // do not overwrite XMP parsed by metadata-extractor
                         // with raw XMP found by ExifInterface
@@ -129,7 +130,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     }
                     metadataMap.putAll(allTags.mapValues { it.value.toMutableMap() })
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
             }
         }
@@ -291,7 +294,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[KEY_LONGITUDE] = latLong[1]
                     }
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
             }
         }
@@ -446,7 +451,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 }
                 result.success(metadataMap)
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
+            // ExifInterface initialization can fail with a RuntimeException
+            // caused by an internal MediaMetadataRetriever failure
             result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=$uri", e.message)
         }
     }
@@ -507,10 +514,12 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val thumbnails = ArrayList<ByteArray>()
         try {
             StorageUtils.openInputStream(context, uri).use { input ->
-                ExifInterface(input).thumbnailBytes?.let { thumbnails.add(it) }
+                val exif = ExifInterface(input)
+                exif.thumbnailBytes?.let { thumbnails.add(it) }
             }
-        } catch (e: IOException) {
-            // ignore
+        } catch (e: Exception) {
+            // ExifInterface initialization can fail with a RuntimeException
+            // caused by an internal MediaMetadataRetriever failure
         }
         result.success(thumbnails)
     }
