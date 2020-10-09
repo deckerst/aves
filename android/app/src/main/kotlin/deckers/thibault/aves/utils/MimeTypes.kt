@@ -60,8 +60,9 @@ object MimeTypes {
 
     // as of Flutter v1.22.0
     @JvmStatic
-    fun isSupportedByFlutter(mimeType: String) = when (mimeType) {
-        JPEG, PNG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
+    fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?) = when (mimeType) {
+        JPEG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
+        PNG -> rotationDegrees ?: 0 == 0
         else -> false
     }
 
