@@ -7,7 +7,6 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.text.format.Formatter
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
@@ -28,6 +27,7 @@ import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeDescription
 import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.utils.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.utils.Metadata.isFlippedForExifCode
@@ -151,17 +151,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return dirMap
         try {
             for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {
-                val value = retriever.extractMetadata(code)
-                if (value != null) {
-                    when (code) {
-                        MediaMetadataRetriever.METADATA_KEY_BITRATE -> Formatter.formatFileSize(context, value.toLong()) + "/sec"
-                        MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION -> "$value°"
-                        MediaMetadataRetriever.METADATA_KEY_DURATION -> "$value ms"
-                        MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT, MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH -> "$value pixels"
-                        MediaMetadataRetriever.METADATA_KEY_LOCATION, MediaMetadataRetriever.METADATA_KEY_MIMETYPE -> null
-                        else -> value
-                    }?.let { dirMap[name] = it }
-                }
+                retriever.getSafeDescription(code, context) { dirMap[name] = it }
             }
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=$uri", e)
@@ -333,7 +323,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         try {
                             val latitude = latitudeString.toDoubleOrNull() ?: 0
                             val longitude = longitudeString.toDoubleOrNull() ?: 0
-                            if (latitude != 0 && longitude != 0) {
+                            // keep `0.0` as `0.0`, not `0`
+                            if (latitude != 0.0 || longitude != 0.0) {
                                 metadataMap[KEY_LATITUDE] = latitude
                                 metadataMap[KEY_LONGITUDE] = longitude
                             }
@@ -379,7 +370,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         val num = it.numerator
                         val denom = it.denominator
                         metadataMap[KEY_EXPOSURE_TIME] = when {
-                            num > denom -> it.toSimpleString(true) + "″"
+                            num >= denom -> it.toSimpleString(true) + "″"
                             num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
                             else -> it.toString()
                         }
