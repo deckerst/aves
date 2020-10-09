@@ -95,7 +95,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } finally {
                 Glide.with(activity).clear(target);
             }
-        } else if (!MimeTypes.isSupportedByFlutter(mimeType)) {
+        } else if (!MimeTypes.isSupportedByFlutter(mimeType, rotationDegrees)) {
             // we convert the image on platform side first, when Dart Image.memory does not support it
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()
