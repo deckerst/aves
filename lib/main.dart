@@ -91,6 +91,7 @@ class _AvesAppState extends State<AvesApp> {
                   : 'debug');
     });
     await settings.init();
+    await settings.initCrashlytics();
   }
 
   void _onNewIntent() {

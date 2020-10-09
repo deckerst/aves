@@ -13,19 +13,14 @@ import deckers.thibault.aves.utils.FileUtils;
 class FileImageProvider extends ImageProvider {
     @Override
     public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
-        SourceImageEntry entry = new SourceImageEntry();
-        entry.uri = uri;
-        entry.sourceMimeType = mimeType;
+        SourceImageEntry entry = new SourceImageEntry(uri, mimeType);
 
         String path = FileUtils.getPathFromUri(context, uri);
         if (path != null) {
             try {
                 File file = new File(path);
                 if (file.exists()) {
-                    entry.path = path;
-                    entry.title = file.getName();
-                    entry.sizeBytes = file.length();
-                    entry.dateModifiedSecs = file.lastModified() / 1000;
+                    entry.initFromFile(path, file.getName(), file.length(), file.lastModified() / 1000);
                 }
             } catch (SecurityException e) {
                 callback.onFailure(e);
@@ -33,7 +28,7 @@ class FileImageProvider extends ImageProvider {
         }
         entry.fillPreCatalogMetadata(context);
 
-        if (entry.hasSize() || entry.isSvg()) {
+        if (entry.getHasSize() || entry.isSvg()) {
             callback.onSuccess(entry.toMap());
         } else {
             callback.onFailure(new Exception("entry has no size"));

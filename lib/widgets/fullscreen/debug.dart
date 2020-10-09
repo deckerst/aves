@@ -5,6 +5,8 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/metadata_service.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
@@ -28,7 +30,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Future<DateMetadata> _dbDateLoader;
   Future<CatalogMetadata> _dbMetadataLoader;
   Future<AddressDetails> _dbAddressLoader;
-  Future<Map> _contentResolverMetadataLoader;
+  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
 
   ImageEntry get entry => widget.entry;
 
@@ -37,7 +39,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   @override
   void initState() {
     super.initState();
-    _initFutures();
+    _loadDatabase();
+    _loadMetadata();
   }
 
   @override
@@ -87,25 +90,22 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'sourceTitle': '${entry.sourceTitle}',
           'sourceMimeType': '${entry.sourceMimeType}',
           'mimeType': '${entry.mimeType}',
-          'mimeTypeAnySubtype': '${entry.mimeTypeAnySubtype}',
         }),
         Divider(),
         InfoRowGroup({
           'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
           'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
           'bestDate': '${entry.bestDate}',
-          'monthTaken': '${entry.monthTaken}',
-          'dayTaken': '${entry.dayTaken}',
         }),
         Divider(),
         InfoRowGroup({
           'width': '${entry.width}',
           'height': '${entry.height}',
-          'orientationDegrees': '${entry.orientationDegrees}',
-          'rotated': '${entry.rotated}',
+          'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
+          'rotationDegrees': '${entry.rotationDegrees}',
+          'portrait': '${entry.portrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
           'displaySize': '${entry.displaySize}',
-          'megaPixels': '${entry.megaPixels}',
         }),
         Divider(),
         InfoRowGroup({
@@ -121,7 +121,9 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'isVideo': '${entry.isVideo}',
           'isCatalogued': '${entry.isCatalogued}',
           'isAnimated': '${entry.isAnimated}',
+          'isFlipped': '${entry.isFlipped}',
           'canEdit': '${entry.canEdit}',
+          'canEditExif': '${entry.canEditExif}',
           'canPrint': '${entry.canPrint}',
           'canRotate': '${entry.canRotate}',
           'xmpSubjects': '${entry.xmpSubjects}',
@@ -165,10 +167,24 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   }
 
   Widget _buildDbTabView() {
-    final catalog = entry.catalogMetadata;
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text('DB'),
+            ),
+            SizedBox(width: 8),
+            RaisedButton(
+              onPressed: () async {
+                await metadataDb.removeIds([entry.contentId]);
+                _loadDatabase();
+              },
+              child: Text('Remove from DB'),
+            ),
+          ],
+        ),
         FutureBuilder<DateMetadata>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
@@ -203,7 +219,8 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                     'mimeType': '${data.mimeType}',
                     'dateMillis': '${data.dateMillis}',
                     'isAnimated': '${data.isAnimated}',
-                    'videoRotation': '${data.videoRotation}',
+                    'isFlipped': '${data.isFlipped}',
+                    'rotationDegrees': '${data.rotationDegrees}',
                     'latitude': '${data.latitude}',
                     'longitude': '${data.longitude}',
                     'xmpSubjects': '${data.xmpSubjects}',
@@ -236,20 +253,6 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
             );
           },
         ),
-        Divider(),
-        Text('Catalog metadata:${catalog == null ? ' no data' : ''}'),
-        if (catalog != null)
-          InfoRowGroup({
-            'contentId': '${catalog.contentId}',
-            'mimeType': '${catalog.mimeType}',
-            'dateMillis': '${catalog.dateMillis}',
-            'isAnimated': '${catalog.isAnimated}',
-            'videoRotation': '${catalog.videoRotation}',
-            'latitude': '${catalog.latitude}',
-            'longitude': '${catalog.longitude}',
-            'xmpSubjects': '${catalog.xmpSubjects}',
-            'xmpTitleDescription': '${catalog.xmpTitleDescription}',
-          }),
       ],
     );
   }
@@ -259,41 +262,68 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   static const millisecondTimestampKeys = ['datetaken', 'datetime'];
 
   Widget _buildContentResolverTabView() {
+    Widget builder(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
+      if (snapshot.hasError) return Text(snapshot.error.toString());
+      if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+      final data = SplayTreeMap.of(snapshot.data.map((k, v) {
+        final key = k.toString();
+        var value = v?.toString() ?? 'null';
+        if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
+          if (secondTimestampKeys.contains(key)) {
+            v *= 1000;
+          }
+          value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
+        }
+        if (key == 'xmp' && v != null && v is Uint8List) {
+          value = String.fromCharCodes(v);
+        }
+        return MapEntry(key, value);
+      }));
+      return AvesExpansionTile(
+        title: title,
+        children: [
+          Container(
+            alignment: AlignmentDirectional.topStart,
+            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            child: InfoRowGroup(
+              data,
+              maxValueLength: Constants.infoGroupMaxValueLength,
+            ),
+          )
+        ],
+      );
+    }
+
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(8),
       children: [
-        Text('Content Resolver (Media Store):'),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-            final data = SplayTreeMap.of(snapshot.data.map((k, v) {
-              final key = k.toString();
-              var value = v?.toString() ?? 'null';
-              if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
-                if (secondTimestampKeys.contains(key)) {
-                  v *= 1000;
-                }
-                value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
-              }
-              if (key == 'xmp' && v != null && v is Uint8List) {
-                value = String.fromCharCodes(v);
-              }
-              return MapEntry(key, value);
-            }));
-            return InfoRowGroup(data);
-          },
+          builder: (context, snapshot) => builder(context, snapshot, 'Content Resolver'),
+        ),
+        FutureBuilder<Map>(
+          future: _exifInterfaceMetadataLoader,
+          builder: (context, snapshot) => builder(context, snapshot, 'Exif Interface'),
+        ),
+        FutureBuilder<Map>(
+          future: _mediaMetadataLoader,
+          builder: (context, snapshot) => builder(context, snapshot, 'Media Metadata Retriever'),
         ),
       ],
     );
   }
 
-  void _initFutures() {
+  void _loadDatabase() {
     _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
+    setState(() {});
+  }
+
+  void _loadMetadata() {
     _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
+    _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
+    _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
     setState(() {});
   }
 }

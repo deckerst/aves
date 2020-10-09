@@ -34,14 +34,16 @@ class MetadataService {
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
         // 'isAnimated': animated gif/webp (bool)
+        // 'isFlipped': flipped according to EXIF orientation (bool)
+        // 'rotationDegrees': rotation degrees according to EXIF orientation or other metadata (int)
         // 'latitude': latitude (double)
         // 'longitude': longitude (double)
-        // 'videoRotation': video rotation degrees (int)
         // 'xmpSubjects': ';' separated XMP subjects (string)
         // 'xmpTitleDescription': XMP title or XMP description (string)
         final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,
+          'extension': entry.extension,
         }) as Map;
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
@@ -89,6 +91,32 @@ class MetadataService {
     return {};
   }
 
+  static Future<Map> getExifInterfaceMetadata(ImageEntry entry) async {
+    try {
+      // return map with all data available from the ExifInterface library
+      final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getExifInterfaceMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
+  static Future<Map> getMediaMetadataRetrieverMetadata(ImageEntry entry) async {
+    try {
+      // return map with all data available from the MediaMetadataRetriever
+      final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getMediaMetadataRetrieverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
   static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
     try {
       final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
@@ -113,10 +141,11 @@ class MetadataService {
     return [];
   }
 
-  static Future<List<Uint8List>> getXmpThumbnails(String uri) async {
+  static Future<List<Uint8List>> getXmpThumbnails(ImageEntry entry) async {
     try {
       final result = await platform.invokeMethod('getXmpThumbnails', <String, dynamic>{
-        'uri': uri,
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
       });
       return (result as List).cast<Uint8List>();
     } on PlatformException catch (e) {

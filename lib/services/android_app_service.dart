@@ -28,7 +28,7 @@ class AndroidAppService {
     } on PlatformException catch (e) {
       debugPrint('getAppIcon failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return Uint8List(0);
+    return null;
   }
 
   static Future<Map> getEnv() async {

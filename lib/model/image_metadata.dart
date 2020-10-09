@@ -28,8 +28,10 @@ class DateMetadata {
 }
 
 class CatalogMetadata {
-  final int contentId, dateMillis, videoRotation;
+  final int contentId, dateMillis;
   final bool isAnimated;
+  bool isFlipped;
+  int rotationDegrees;
   final String mimeType, xmpSubjects, xmpTitleDescription;
   final double latitude, longitude;
   Address address;
@@ -39,12 +41,13 @@ class CatalogMetadata {
     this.mimeType,
     this.dateMillis,
     this.isAnimated,
-    this.videoRotation,
+    this.isFlipped,
+    this.rotationDegrees,
     this.xmpSubjects,
     this.xmpTitleDescription,
     double latitude,
     double longitude,
-  })  
+  })
   // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
   : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
         longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
@@ -57,7 +60,8 @@ class CatalogMetadata {
       mimeType: mimeType,
       dateMillis: dateMillis,
       isAnimated: isAnimated,
-      videoRotation: videoRotation,
+      isFlipped: isFlipped,
+      rotationDegrees: rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
       latitude: latitude,
@@ -67,12 +71,15 @@ class CatalogMetadata {
 
   factory CatalogMetadata.fromMap(Map map, {bool boolAsInteger = false}) {
     final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
+    final isFlipped = map['isFlipped'] ?? (boolAsInteger ? 0 : false);
     return CatalogMetadata(
       contentId: map['contentId'],
       mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
       isAnimated: boolAsInteger ? isAnimated != 0 : isAnimated,
-      videoRotation: map['videoRotation'] ?? 0,
+      isFlipped: boolAsInteger ? isFlipped != 0 : isFlipped,
+      // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
+      rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
       xmpTitleDescription: map['xmpTitleDescription'] ?? '',
       latitude: map['latitude'],
@@ -85,7 +92,8 @@ class CatalogMetadata {
         'mimeType': mimeType,
         'dateMillis': dateMillis,
         'isAnimated': boolAsInteger ? (isAnimated ? 1 : 0) : isAnimated,
-        'videoRotation': videoRotation,
+        'isFlipped': boolAsInteger ? (isFlipped ? 1 : 0) : isFlipped,
+        'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
         'xmpTitleDescription': xmpTitleDescription,
         'latitude': latitude,
@@ -94,7 +102,7 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, videoRotation=$videoRotation, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

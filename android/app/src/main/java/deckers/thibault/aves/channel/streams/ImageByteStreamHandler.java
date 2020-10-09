@@ -28,7 +28,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private Activity activity;
     private Uri uri;
     private String mimeType;
-    private int orientationDegrees;
+    private int rotationDegrees;
     private EventChannel.EventSink eventSink;
     private Handler handler;
 
@@ -39,7 +39,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             Map<String, Object> argMap = (Map<String, Object>) arguments;
             this.mimeType = (String) argMap.get("mimeType");
             this.uri = Uri.parse((String) argMap.get("uri"));
-            this.orientationDegrees = (int) argMap.get("orientationDegrees");
+            this.rotationDegrees = (int) argMap.get("rotationDegrees");
         }
     }
 
@@ -71,7 +71,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     // - Android: https://developer.android.com/guide/topics/media/media-formats#image-formats
     // - Glide: https://github.com/bumptech/glide/blob/master/library/src/main/java/com/bumptech/glide/load/ImageHeaderParser.java
     private void getImage() {
-        if (mimeType != null && mimeType.startsWith(MimeTypes.VIDEO)) {
+        if (MimeTypes.isVideo(mimeType)) {
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             FutureTarget<Bitmap> target = Glide.with(activity)
@@ -95,9 +95,8 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } finally {
                 Glide.with(activity).clear(target);
             }
-        } else if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
-            // as of Flutter v1.20, Dart Image.memory cannot decode DNG/HEIC/HEIF images
-            // so we convert the image on platform side first
+        } else if (!MimeTypes.isSupportedByFlutter(mimeType, rotationDegrees)) {
+            // we convert the image on platform side first, when Dart Image.memory does not support it
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()
                     .load(uri)
@@ -105,7 +104,8 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             try {
                 Bitmap bitmap = target.get();
                 if (bitmap != null) {
-                    bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+                    // TODO TLAD use exif orientation to rotate & flip?
+                    bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
                     // Bitmap.CompressFormat.PNG is slower than JPEG
@@ -115,7 +115,11 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                     error("getImage-image-decode-null", "failed to get image from uri=" + uri, null);
                 }
             } catch (Exception e) {
-                error("getImage-image-decode-exception", "failed to get image from uri=" + uri, e.getMessage());
+                String errorDetails = e.getMessage();
+                if (errorDetails != null && !errorDetails.isEmpty()) {
+                    errorDetails = errorDetails.split("\n", 2)[0];
+                }
+                error("getImage-image-decode-exception", "failed to get image from uri=" + uri, errorDetails);
             } finally {
                 Glide.with(activity).clear(target);
             }
