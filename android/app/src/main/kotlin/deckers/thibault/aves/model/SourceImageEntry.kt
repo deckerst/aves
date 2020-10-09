@@ -217,8 +217,9 @@ class SourceImageEntry {
                 exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) { sourceRotationDegrees = exif.rotationDegrees }
                 exif.getSafeDateMillis(ExifInterface.TAG_DATETIME) { sourceDateTakenMillis = it }
             }
-        } catch (e: IOException) {
-            // ignore
+        } catch (e: Exception) {
+            // ExifInterface initialization can fail with a RuntimeException
+            // caused by an internal MediaMetadataRetriever failure
         }
     }
 
