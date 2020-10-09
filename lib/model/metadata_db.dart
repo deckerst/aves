@@ -115,6 +115,7 @@ class MetadataDb {
               await db.rawInsert('INSERT INTO $newMetadataTable(contentId,mimeType,dateMillis,isAnimated,rotationDegrees,xmpSubjects,xmpTitleDescription,latitude,longitude)'
                   ' SELECT contentId,mimeType,dateMillis,isAnimated,videoRotation,xmpSubjects,xmpTitleDescription,latitude,longitude'
                   ' FROM $metadataTable;');
+              await db.rawInsert('UPDATE $newMetadataTable SET rotationDegrees = NULL WHERE rotationDegrees = 0;');
               await db.execute('DROP TABLE $metadataTable;');
               await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
             });
