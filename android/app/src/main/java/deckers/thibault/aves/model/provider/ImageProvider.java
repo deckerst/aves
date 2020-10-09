@@ -3,8 +3,6 @@ package deckers.thibault.aves.model.provider;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -13,21 +11,18 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.exifinterface.media.ExifInterface;
 
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.commonsware.cwac.document.DocumentFileCompat;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.AvesImageEntry;
-import deckers.thibault.aves.utils.MetadataHelper;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
 import deckers.thibault.aves.utils.Utils;
@@ -86,21 +81,24 @@ public abstract class ImageProvider {
         scanNewPath(context, newFile.getPath(), mimeType, callback);
     }
 
-    public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
+    // support for writing EXIF
+    // as of androidx.exifinterface:exifinterface:1.3.0
+    private boolean canEditExif(@NonNull String mimeType) {
         switch (mimeType) {
-            case MimeTypes.JPEG:
-                rotateJpeg(context, path, uri, clockwise, callback);
-                break;
-            case MimeTypes.PNG:
-                rotatePng(context, path, uri, clockwise, callback);
-                break;
+            case "image/jpeg":
+            case "image/png":
+            case "image/webp":
+                return true;
             default:
-                callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + mimeType));
+                return false;
         }
     }
 
-    private void rotateJpeg(final Context context, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
-        final String mimeType = MimeTypes.JPEG;
+    public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
+        if (!canEditExif(mimeType)) {
+            callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + mimeType));
+            return;
+        }
 
         final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(context, path, uri);
         if (originalDocumentFile == null) {
@@ -115,37 +113,29 @@ public abstract class ImageProvider {
             return;
         }
 
-        int newOrientationCode;
+        Map<String, Object> newFields = new HashMap<>();
         try {
             ExifInterface exif = new ExifInterface(editablePath);
-            switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    newOrientationCode = clockwise ? ExifInterface.ORIENTATION_ROTATE_180 : ExifInterface.ORIENTATION_NORMAL;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    newOrientationCode = clockwise ? ExifInterface.ORIENTATION_ROTATE_270 : ExifInterface.ORIENTATION_ROTATE_90;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    newOrientationCode = clockwise ? ExifInterface.ORIENTATION_NORMAL : ExifInterface.ORIENTATION_ROTATE_180;
-                    break;
-                default:
-                    newOrientationCode = clockwise ? ExifInterface.ORIENTATION_ROTATE_90 : ExifInterface.ORIENTATION_ROTATE_270;
-                    break;
+            // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
+            // in that case we explicitely set it to `normal` first
+            // because ExifInterface fails to rotate an image with undefined orientation
+            // as of androidx.exifinterface:exifinterface:1.3.0
+            int currentOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
+                exif.setAttribute(ExifInterface.TAG_ORIENTATION, Integer.toString(ExifInterface.ORIENTATION_NORMAL));
             }
-            exif.setAttribute(ExifInterface.TAG_ORIENTATION, Integer.toString(newOrientationCode));
+            exif.rotate(clockwise ? 90 : -90);
             exif.saveAttributes();
 
             // copy the edited temporary file back to the original
             DocumentFileCompat.fromFile(new File(editablePath)).copyTo(originalDocumentFile);
+
+            newFields.put("rotationDegrees", exif.getRotationDegrees());
+            newFields.put("isFlipped", exif.isFlipped());
         } catch (IOException e) {
             callback.onFailure(e);
             return;
         }
-
-        // update fields in media store
-        int orientationDegrees = MetadataHelper.getOrientationDegreesForExifCode(newOrientationCode);
-        Map<String, Object> newFields = new HashMap<>();
-        newFields.put("orientationDegrees", orientationDegrees);
 
 //        ContentResolver contentResolver = context.getContentResolver();
 //        ContentValues values = new ContentValues();
@@ -158,75 +148,7 @@ public abstract class ImageProvider {
 //            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
 //        }
 //        // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
-//        values.put(MediaStore.Images.Media.ORIENTATION, orientationDegrees);
-//        // TODO TLAD catch RecoverableSecurityException
-//        int updatedRowCount = contentResolver.update(uri, values, null, null);
-//        if (updatedRowCount > 0) {
-        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
-//        } else {
-//            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
-//            callback.onSuccess(newFields);
-//        }
-    }
-
-    private void rotatePng(final Context context, final String path, final Uri uri, boolean clockwise, final ImageOpCallback callback) {
-        final String mimeType = MimeTypes.PNG;
-
-        final DocumentFileCompat originalDocumentFile = StorageUtils.getDocumentFile(context, path, uri);
-        if (originalDocumentFile == null) {
-            callback.onFailure(new Exception("failed to get document file for path=" + path + ", uri=" + uri));
-            return;
-        }
-
-        // copy original file to a temporary file for editing
-        final String editablePath = StorageUtils.copyFileToTemp(originalDocumentFile, path);
-        if (editablePath == null) {
-            callback.onFailure(new Exception("failed to create a temporary file for path=" + path));
-            return;
-        }
-
-        Bitmap originalImage;
-        try {
-            originalImage = BitmapFactory.decodeStream(StorageUtils.openInputStream(context, uri));
-        } catch (FileNotFoundException e) {
-            callback.onFailure(e);
-            return;
-        }
-        if (originalImage == null) {
-            callback.onFailure(new Exception("failed to decode image at path=" + path));
-            return;
-        }
-        Bitmap rotatedImage = TransformationUtils.rotateImage(originalImage, clockwise ? 90 : -90);
-
-        try (FileOutputStream fos = new FileOutputStream(editablePath)) {
-            rotatedImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-
-            // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(new File(editablePath)).copyTo(originalDocumentFile);
-        } catch (IOException e) {
-            callback.onFailure(e);
-            return;
-        }
-
-        // update fields in media store
-        int rotatedWidth = originalImage.getHeight();
-        int rotatedHeight = originalImage.getWidth();
-        Map<String, Object> newFields = new HashMap<>();
-        newFields.put("width", rotatedWidth);
-        newFields.put("height", rotatedHeight);
-
-//        ContentResolver contentResolver = context.getContentResolver();
-//        ContentValues values = new ContentValues();
-//        // from Android Q, media store update needs to be flagged IS_PENDING first
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
-//            // TODO TLAD catch RecoverableSecurityException
-//            contentResolver.update(uri, values, null, null);
-//            values.clear();
-//            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
-//        }
-//        values.put(MediaStore.MediaColumns.WIDTH, rotatedWidth);
-//        values.put(MediaStore.MediaColumns.HEIGHT, rotatedHeight);
+//        values.put(MediaStore.Images.Media.ORIENTATION, rotationDegrees);
 //        // TODO TLAD catch RecoverableSecurityException
 //        int updatedRowCount = contentResolver.update(uri, values, null, null);
 //        if (updatedRowCount > 0) {
@@ -245,9 +167,9 @@ public abstract class ImageProvider {
                 // newURI is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
                 // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
                 contentId = ContentUris.parseId(newUri);
-                if (mimeType.startsWith(MimeTypes.IMAGE)) {
+                if (MimeTypes.isImage(mimeType)) {
                     contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId);
-                } else if (mimeType.startsWith(MimeTypes.VIDEO)) {
+                } else if (MimeTypes.isVideo(mimeType)) {
                     contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId);
                 }
             }

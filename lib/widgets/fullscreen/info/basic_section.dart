@@ -84,10 +84,8 @@ class BasicSection extends StatelessWidget {
   }
 
   Map<String, String> _buildVideoRows() {
-    final rotation = entry.catalogMetadata?.videoRotation;
     return {
       'Duration': entry.durationText,
-      if (rotation != null) 'Rotation': '$rotation°',
     };
   }
 }

@@ -10,12 +10,9 @@ import deckers.thibault.aves.model.SourceImageEntry;
 class ContentImageProvider extends ImageProvider {
     @Override
     public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
-        SourceImageEntry entry = new SourceImageEntry();
-        entry.uri = uri;
-        entry.sourceMimeType = mimeType;
-        entry.fillPreCatalogMetadata(context);
+        SourceImageEntry entry = new SourceImageEntry(uri, mimeType).fillPreCatalogMetadata(context);
 
-        if (entry.hasSize() || entry.isSvg()) {
+        if (entry.getHasSize() || entry.isSvg()) {
             callback.onSuccess(entry.toMap());
         } else {
             callback.onFailure(new Exception("entry has no size"));

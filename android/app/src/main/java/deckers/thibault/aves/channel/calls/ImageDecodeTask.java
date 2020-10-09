@@ -52,10 +52,12 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     static class Result {
         Params params;
         byte[] data;
+        String errorDetails;
 
-        Result(Params params, byte[] data) {
+        Result(Params params, byte[] data, String errorDetails) {
             this.params = params;
             this.data = data;
+            this.errorDetails = errorDetails;
         }
     }
 
@@ -70,8 +72,8 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     protected Result doInBackground(Params... params) {
         Params p = params[0];
         Bitmap bitmap = null;
+        Exception exception = null;
         if (!this.isCancelled()) {
-            Exception exception = null;
             Integer w = p.width;
             Integer h = p.height;
             // fetch low quality thumbnails when size is not specified
@@ -97,13 +99,10 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             } catch (Exception e) {
                 exception = e;
             }
-
-            if (bitmap == null) {
-                Log.e(LOG_TAG, "failed to load thumbnail for uri=" + p.entry.uri + ", path=" + p.entry.path, exception);
-            }
         } else {
             Log.d(LOG_TAG, "getThumbnail with uri=" + p.entry.uri + " cancelled");
         }
+
         byte[] data = null;
         if (bitmap != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -112,7 +111,15 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
             data = stream.toByteArray();
         }
-        return new Result(p, data);
+
+        String errorDetails = null;
+        if (exception != null) {
+            errorDetails = exception.getMessage();
+            if (errorDetails != null && !errorDetails.isEmpty()) {
+                errorDetails = errorDetails.split("\n", 2)[0];
+            }
+        }
+        return new Result(p, data, errorDetails);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -124,8 +131,8 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         ContentResolver resolver = activity.getContentResolver();
         Bitmap bitmap = resolver.loadThumbnail(entry.uri, new Size(width, height), null);
         String mimeType = entry.mimeType;
-        if (MimeTypes.DNG.equals(mimeType)) {
-            bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+        if (MimeTypes.needRotationAfterContentResolverThumbnail(mimeType)) {
+            bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
         }
         return bitmap;
     }
@@ -141,7 +148,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
             }
             return bitmap;
         }
@@ -153,7 +160,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         int height = params.height;
 
         // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.orientationDegrees);
+        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.rotationDegrees);
         RequestOptions options = new RequestOptions()
                 .signature(signature)
                 .override(width, height);
@@ -179,8 +186,8 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         try {
             Bitmap bitmap = target.get();
             String mimeType = entry.mimeType;
-            if (MimeTypes.DNG.equals(mimeType) || MimeTypes.HEIC.equals(mimeType) || MimeTypes.HEIF.equals(mimeType)) {
-                bitmap = rotateBitmap(bitmap, entry.orientationDegrees);
+            if (MimeTypes.needRotationAfterGlide(mimeType)) {
+                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
             }
             return bitmap;
         } finally {
@@ -188,21 +195,24 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         }
     }
 
-    private Bitmap rotateBitmap(Bitmap bitmap, Integer orientationDegrees) {
-        if (bitmap != null && orientationDegrees != null) {
-            bitmap = TransformationUtils.rotateImage(bitmap, orientationDegrees);
+    private Bitmap rotateBitmap(Bitmap bitmap, Integer rotationDegrees) {
+        if (bitmap != null && rotationDegrees != null) {
+            // TODO TLAD use exif orientation to rotate & flip?
+            bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
         }
         return bitmap;
     }
 
     @Override
     protected void onPostExecute(Result result) {
-        MethodChannel.Result r = result.params.result;
-        String uri = result.params.entry.uri.toString();
+        Params params = result.params;
+        MethodChannel.Result r = params.result;
+        AvesImageEntry entry = params.entry;
+        String uri = entry.uri.toString();
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri, null);
+            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri + ", path=" + entry.path, result.errorDetails);
         }
     }
 }

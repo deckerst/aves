@@ -23,7 +23,7 @@ class ImageEntry {
   final String sourceMimeType;
   int width;
   int height;
-  int orientationDegrees;
+  int sourceRotationDegrees;
   final int sizeBytes;
   String sourceTitle;
   int _dateModifiedSecs;
@@ -42,7 +42,7 @@ class ImageEntry {
     this.sourceMimeType,
     @required this.width,
     @required this.height,
-    this.orientationDegrees,
+    this.sourceRotationDegrees,
     this.sizeBytes,
     this.sourceTitle,
     int dateModifiedSecs,
@@ -68,7 +68,7 @@ class ImageEntry {
       sourceMimeType: sourceMimeType,
       width: width,
       height: height,
-      orientationDegrees: orientationDegrees,
+      sourceRotationDegrees: sourceRotationDegrees,
       sizeBytes: sizeBytes,
       sourceTitle: sourceTitle,
       dateModifiedSecs: dateModifiedSecs,
@@ -90,7 +90,7 @@ class ImageEntry {
       sourceMimeType: map['sourceMimeType'] as String,
       width: map['width'] as int ?? 0,
       height: map['height'] as int ?? 0,
-      orientationDegrees: map['orientationDegrees'] as int,
+      sourceRotationDegrees: map['sourceRotationDegrees'] as int ?? 0,
       sizeBytes: map['sizeBytes'] as int,
       sourceTitle: map['title'] as String,
       dateModifiedSecs: map['dateModifiedSecs'] as int,
@@ -108,7 +108,7 @@ class ImageEntry {
       'sourceMimeType': sourceMimeType,
       'width': width,
       'height': height,
-      'orientationDegrees': orientationDegrees,
+      'sourceRotationDegrees': sourceRotationDegrees,
       'sizeBytes': sizeBytes,
       'title': sourceTitle,
       'dateModifiedSecs': dateModifiedSecs,
@@ -165,7 +165,7 @@ class ImageEntry {
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
   bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
 
-  bool get isRaw => [MimeTypes.dng].contains(mimeType);
+  bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');
 
@@ -173,20 +173,35 @@ class ImageEntry {
 
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
+  bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
+
   bool get canEdit => path != null;
 
   bool get canPrint => !isVideo;
 
-  bool get canRotate => canEdit && (mimeType == MimeTypes.jpeg || mimeType == MimeTypes.png);
+  bool get canRotate => canEdit && canEditExif;
 
-  bool get rotated => ((isVideo && isCatalogued) ? _catalogMetadata.videoRotation : orientationDegrees) % 180 == 90;
+  // support for writing EXIF
+  // as of androidx.exifinterface:exifinterface:1.3.0
+  bool get canEditExif {
+    switch (mimeType.toLowerCase()) {
+      case MimeTypes.jpeg:
+      case MimeTypes.png:
+      case MimeTypes.webp:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.rotationDegrees : rotationDegrees) % 180 == 90;
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
-    return rotated ? height / width : width / height;
+    return portrait ? height / width : width / height;
   }
 
-  Size get displaySize => rotated ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
+  Size get displaySize => portrait ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 
@@ -203,6 +218,13 @@ class ImageEntry {
       }
     }
     return _bestDate;
+  }
+
+  int get rotationDegrees => catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
+
+  set rotationDegrees(int rotationDegrees) {
+    sourceRotationDegrees = rotationDegrees;
+    catalogMetadata?.rotationDegrees = rotationDegrees;
   }
 
   int get dateModifiedSecs => _dateModifiedSecs;
@@ -242,7 +264,7 @@ class ImageEntry {
   String _bestTitle;
 
   String get bestTitle {
-    _bestTitle ??= (_catalogMetadata != null && _catalogMetadata.xmpTitleDescription.isNotEmpty) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= (isCatalogued && _catalogMetadata.xmpTitleDescription.isNotEmpty) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
     return _bestTitle;
   }
 
@@ -305,8 +327,8 @@ class ImageEntry {
           locality: address.locality,
         );
       }
-    } catch (exception, stack) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates exception=$exception\n$stack');
+    } catch (error, stackTrace) {
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
     }
   }
 
@@ -356,8 +378,8 @@ class ImageEntry {
     if (width is int) this.width = width;
     final height = newFields['height'];
     if (height is int) this.height = height;
-    final orientationDegrees = newFields['orientationDegrees'];
-    if (orientationDegrees is int) this.orientationDegrees = orientationDegrees;
+    final rotationDegrees = newFields['rotationDegrees'];
+    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
 
     imageChangeNotifier.notifyListeners();
     return true;

@@ -3,12 +3,12 @@ import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
-import 'package:aves/widgets/common/highlight_title.dart';
+import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_thumbnail.dart';
 import 'package:collection/collection.dart';
-import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
@@ -32,8 +32,6 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   ImageEntry get entry => widget.entry;
 
   bool get isVisible => widget.visibleNotifier.value;
-
-  static const int maxValueLength = 140;
 
   // directory names from metadata-extractor
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
@@ -86,37 +84,22 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           }
           if (index < untitledDirectoryCount + 1) {
             final dir = directoriesWithoutTitle[index - 1];
-            return InfoRowGroup(dir.tags, maxValueLength: maxValueLength);
+            return InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength);
           }
           final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
-          return Theme(
-            data: Theme.of(context).copyWith(
-              // color used by the `ExpansionTileCard` for selected text and icons
-              accentColor: Colors.white,
-            ),
-            child: ExpansionTileCard(
-              key: Key('tilecard-${dir.name}'),
-              value: dir.name,
-              expandedNotifier: _expandedDirectoryNotifier,
-              title: HighlightTitle(
-                dir.name,
-                fontSize: 18,
+          return AvesExpansionTile(
+            title: dir.name,
+            expandedNotifier: _expandedDirectoryNotifier,
+            children: [
+              if (dir.name == exifThumbnailDirectory) MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry),
+              if (dir.name == xmpDirectory) MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry),
+              if (dir.name == videoDirectory) MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry),
+              Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
               ),
-              children: [
-                Divider(thickness: 1, height: 1),
-                SizedBox(height: 4),
-                if (dir.name == exifThumbnailDirectory) MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry),
-                if (dir.name == xmpDirectory) MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry),
-                if (dir.name == videoDirectory) MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry),
-                Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: InfoRowGroup(dir.tags, maxValueLength: maxValueLength),
-                ),
-              ],
-              baseColor: Colors.grey[900],
-              expandedColor: Colors.grey[850],
-            ),
+            ],
           );
         },
         childCount: 1 + _metadata.length,

@@ -102,7 +102,7 @@ class _WelcomePageState extends State<WelcomePage> {
           text: 'Allow anonymous crash reporting',
         ),
         LabeledCheckbox(
-          key: Key('agree-termsCheckbox'),
+          key: Key('agree-checkbox'),
           value: _hasAcceptedTerms,
           onChanged: (v) => setState(() => _hasAcceptedTerms = v),
           text: 'I agree to the terms and conditions',
