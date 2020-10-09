@@ -21,6 +21,7 @@ void main() {
 Future<void> configureAndLaunch() async {
   await settings.init();
   settings.keepScreenOn = KeepScreenOn.always;
+  settings.hasAcceptedTerms = false;
 
   app.main();
 }
