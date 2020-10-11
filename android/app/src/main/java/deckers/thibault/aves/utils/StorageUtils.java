@@ -340,7 +340,7 @@ public class StorageUtils {
             dirPath += File.separator;
         }
         if (requireAccessPermission(dirPath)) {
-            String grantedDir = PermissionManager.getGrantedDirForPath(context, dirPath).orElse(null);
+            String grantedDir = PermissionManager.getGrantedDirForPath(context, dirPath);
             if (grantedDir == null) return null;
 
             Uri rootTreeUri = convertDirPathToTreeUri(context, grantedDir).orElse(null);

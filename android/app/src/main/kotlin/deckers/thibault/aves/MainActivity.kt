@@ -139,7 +139,7 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == PermissionManager.VOLUME_ROOT_PERMISSION_REQUEST_CODE) {
+        if (requestCode == PermissionManager.VOLUME_ACCESS_REQUEST_CODE) {
             val treeUri = data.data
             if (resultCode != RESULT_OK || treeUri == null) {
                 PermissionManager.onPermissionResult(requestCode, null)
