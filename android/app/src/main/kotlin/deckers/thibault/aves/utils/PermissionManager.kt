@@ -62,23 +62,27 @@ object PermissionManager {
             if (accessibleDirs.none { dirPath.startsWith(it) }) {
                 // inaccessible dirs
                 val segments = PathSegments(context, dirPath)
-                val dirSet = dirsPerVolume.getOrDefault(segments.volumePath, HashSet())
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    // request primary directory on volume from Android R
-                    segments.relativeDir?.let { relativeDir ->
-                        relativeDir.split(File.separatorChar).firstOrNull { it.isNotEmpty() }?.let { dirSet.add(it) }
+                segments.volumePath?.let { volumePath ->
+                    val dirSet = dirsPerVolume.getOrDefault(volumePath, HashSet())
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        // request primary directory on volume from Android R
+                        segments.relativeDir?.apply {
+                            val primaryDir = split(File.separator).firstOrNull { it.isNotEmpty() }
+                            primaryDir?.let { dirSet.add(it) }
+                        }
+                    } else {
+                        // request volume root until Android Q
+                        dirSet.add("")
                     }
-                } else {
-                    // request volume root until Android Q
-                    dirSet.add("")
+                    dirsPerVolume[volumePath] = dirSet
                 }
-                dirsPerVolume[segments.volumePath] = dirSet
             }
         }
 
         // format for easier handling on Flutter
         val inaccessibleDirs = ArrayList<Map<String, String>>()
-        context.getSystemService(StorageManager::class.java)?.let { sm ->
+        val sm = context.getSystemService(StorageManager::class.java)
+        if (sm != null) {
             for ((volumePath, relativeDirs) in dirsPerVolume) {
                 var volumeDescription: String? = null
                 try {
@@ -101,10 +105,9 @@ object PermissionManager {
 
     @JvmStatic
     fun revokeDirectoryAccess(context: Context, path: String) {
-        val uri = StorageUtils.convertDirPathToTreeUri(context, path)
-        if (uri.isPresent) {
+        StorageUtils.convertDirPathToTreeUri(context, path)?.let {
             val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            context.contentResolver.releasePersistableUriPermission(uri.get(), flags)
+            context.contentResolver.releasePersistableUriPermission(it, flags)
         }
     }
 
@@ -114,7 +117,7 @@ object PermissionManager {
         val grantedDirs = HashSet<String>()
         for (uriPermission in context.contentResolver.persistedUriPermissions) {
             val dirPath = StorageUtils.convertTreeUriToDirPath(context, uriPermission.uri)
-            dirPath.ifPresent { grantedDirs.add(it) }
+            dirPath?.let { grantedDirs.add(it) }
         }
         return grantedDirs
     }
@@ -124,7 +127,7 @@ object PermissionManager {
         val accessibleDirs = HashSet(getGrantedDirs(context))
         // from Android R, we no longer have access permission by default on primary volume
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            accessibleDirs.add(StorageUtils.getPrimaryVolumePath())
+            accessibleDirs.add(StorageUtils.primaryVolumePath)
         }
         Log.d(LOG_TAG, "getAccessibleDirs accessibleDirs=$accessibleDirs")
         return accessibleDirs

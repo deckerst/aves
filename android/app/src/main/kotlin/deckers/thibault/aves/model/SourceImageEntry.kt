@@ -20,10 +20,10 @@ import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeDateMilli
 import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeLong
 import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeString
+import deckers.thibault.aves.utils.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeLong
-import deckers.thibault.aves.utils.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.IOException
@@ -158,7 +158,7 @@ class SourceImageEntry {
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val metadata = ImageMetadataReader.readMetadata(input)
 
                 // do not switch on specific mime types, as the reported mime type could be wrong
@@ -209,7 +209,7 @@ class SourceImageEntry {
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
                 foundExif = true
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
@@ -226,7 +226,7 @@ class SourceImageEntry {
     // finds: width, height
     private fun fillByBitmapDecode(context: Context) {
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val options = BitmapFactory.Options()
                 options.inJustDecodeBounds = true
                 BitmapFactory.decodeStream(input, null, options)

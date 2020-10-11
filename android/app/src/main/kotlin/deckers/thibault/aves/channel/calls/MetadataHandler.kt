@@ -79,7 +79,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
         if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri).use { input ->
+                StorageUtils.openInputStream(context, uri)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
@@ -120,7 +120,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         if (!foundExif) {
             // fallback to read EXIF via ExifInterface
             try {
-                StorageUtils.openInputStream(context, uri).use { input ->
+                StorageUtils.openInputStream(context, uri)?.use { input ->
                     val exif = ExifInterface(input)
                     val allTags = describeAll(exif).toMutableMap()
                     if (foundXmp) {
@@ -190,7 +190,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
         if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri).use { input ->
+                StorageUtils.openInputStream(context, uri)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
 
@@ -278,7 +278,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         if (!foundExif) {
             // fallback to read EXIF via ExifInterface
             try {
-                StorageUtils.openInputStream(context, uri).use { input ->
+                StorageUtils.openInputStream(context, uri)?.use { input ->
                     val exif = ExifInterface(input)
                     exif.getSafeDateMillis(ExifInterface.TAG_DATETIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
                     if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
@@ -289,7 +289,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[KEY_ROTATION_DEGREES] = exif.rotationDegrees
                     }
                     val latLong = exif.latLong
-                    if (latLong != null && latLong.size == 2) {
+                    if (latLong?.size == 2) {
                         metadataMap[KEY_LATITUDE] = latLong[0]
                         metadataMap[KEY_LONGITUDE] = latLong[1]
                     }
@@ -320,22 +320,14 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
             val locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION)
             if (locationString != null) {
-                val locationMatcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
-                if (locationMatcher.find() && locationMatcher.groupCount() >= 2) {
-                    val latitudeString = locationMatcher.group(1)
-                    val longitudeString = locationMatcher.group(2)
-                    if (latitudeString != null && longitudeString != null) {
-                        try {
-                            val latitude = latitudeString.toDoubleOrNull() ?: 0
-                            val longitude = longitudeString.toDoubleOrNull() ?: 0
-                            // keep `0.0` as `0.0`, not `0`
-                            if (latitude != 0.0 || longitude != 0.0) {
-                                metadataMap[KEY_LATITUDE] = latitude
-                                metadataMap[KEY_LONGITUDE] = longitude
-                            }
-                        } catch (e: NumberFormatException) {
-                            // ignore
-                        }
+                val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
+                if (matcher.find() && matcher.groupCount() >= 2) {
+                    // keep `0.0` as `0.0`, not `0`
+                    val latitude = matcher.group(1)?.toDoubleOrNull() ?: 0.0
+                    val longitude = matcher.group(2)?.toDoubleOrNull() ?: 0.0
+                    if (latitude != 0.0 || longitude != 0.0) {
+                        metadataMap[KEY_LATITUDE] = latitude
+                        metadataMap[KEY_LONGITUDE] = longitude
                     }
                 }
             }
@@ -362,7 +354,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             return
         }
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val metadata = ImageMetadataReader.readMetadata(input)
                 for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                     dir.getSafeDescription(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it }
@@ -382,7 +374,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
                 result.success(metadataMap)
-            }
+            } ?: result.error("getOverlayMetadata-noinput", "failed to get metadata for uri=$uri", null)
         } catch (e: Exception) {
             result.error("getOverlayMetadata-exception", "failed to get metadata for uri=$uri", e.message)
         } catch (e: NoClassDefFoundError) {
@@ -443,14 +435,14 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
                 val metadataMap = HashMap<String, String?>()
                 for (tag in ExifInterfaceHelper.allTags.keys.filter { exif.hasAttribute(it) }) {
                     metadataMap[tag] = exif.getAttribute(tag)
                 }
                 result.success(metadataMap)
-            }
+            } ?: result.error("getExifInterfaceMetadata-noinput", "failed to get exif for uri=$uri", null)
         } catch (e: Exception) {
             // ExifInterface initialization can fail with a RuntimeException
             // caused by an internal MediaMetadataRetriever failure
@@ -513,7 +505,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
         val thumbnails = ArrayList<ByteArray>()
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
                 exif.thumbnailBytes?.let { thumbnails.add(it) }
             }
@@ -535,7 +527,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val thumbnails = ArrayList<ByteArray>()
         if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri).use { input ->
+                StorageUtils.openInputStream(context, uri)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                         val xmpMeta = dir.xmpMeta
