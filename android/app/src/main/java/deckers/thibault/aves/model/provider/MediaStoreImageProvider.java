@@ -437,7 +437,7 @@ public class MediaStoreImageProvider extends ImageProvider {
         MediaStoreMoveDestination(@NonNull Context context, @NonNull String destinationDir) {
             fullPath = destinationDir;
             volumeNameForMediaStore = getVolumeNameForMediaStore(context, destinationDir);
-            volumePath = StorageUtils.getVolumePath(context, destinationDir).orElse(null);
+            volumePath = StorageUtils.getVolumePath(context, destinationDir);
             relativePath = volumePath != null ? destinationDir.replaceFirst(volumePath, "") : null;
         }
     }
