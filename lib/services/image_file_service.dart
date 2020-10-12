@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -103,15 +104,25 @@ class ImageFileService {
     return Future.sync(() => null);
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, double width, double height, {Object taskKey, int priority}) {
-    if (entry.isSvg) {
+  static Future<Uint8List> getThumbnail(
+    String uri,
+    String mimeType,
+    int rotationDegrees,
+    double width,
+    double height, {
+    Object taskKey,
+    int priority,
+  }) {
+    if (mimeType == MimeTypes.svg) {
       return Future.sync(() => null);
     }
     return servicePolicy.call(
       () async {
         try {
           final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
-            'entry': _toPlatformEntryMap(entry),
+            'uri': uri,
+            'mimeType': mimeType,
+            'rotationDegrees': rotationDegrees,
             'widthDip': width,
             'heightDip': height,
             'defaultSizeDip': thumbnailDefaultSize,

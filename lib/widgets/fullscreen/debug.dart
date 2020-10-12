@@ -157,10 +157,27 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
         ],
         if (!entry.isSvg) ...[
           Text('Raster (fast)'),
-          Center(child: Image(image: ThumbnailProvider(entry: entry))),
+          Center(
+            child: Image(
+              image: ThumbnailProvider(
+                uri: entry.uri,
+                mimeType: entry.mimeType,
+                rotationDegrees: entry.rotationDegrees,
+              ),
+            ),
+          ),
           SizedBox(height: 16),
           Text('Raster ($extent)'),
-          Center(child: Image(image: ThumbnailProvider(entry: entry, extent: extent))),
+          Center(
+            child: Image(
+              image: ThumbnailProvider(
+                uri: entry.uri,
+                mimeType: entry.mimeType,
+                rotationDegrees: entry.rotationDegrees,
+                extent: extent,
+              ),
+            ),
+          ),
         ],
       ],
     );

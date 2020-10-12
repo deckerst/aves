@@ -43,28 +43,47 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   @override
   void initState() {
     super.initState();
-    _initProvider();
+    _registerWidget(widget);
   }
 
   @override
   void didUpdateWidget(ThumbnailRasterImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != entry) {
-      _pauseProvider();
-      _initProvider();
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
     }
   }
 
   @override
   void dispose() {
-    _pauseProvider();
+    _unregisterWidget(widget);
     super.dispose();
   }
 
+  void _registerWidget(ThumbnailRasterImage widget) {
+    widget.entry.imageChangeNotifier.addListener(_onImageChanged);
+    _initProvider();
+  }
+
+  void _unregisterWidget(ThumbnailRasterImage widget) {
+    widget.entry.imageChangeNotifier?.removeListener(_onImageChanged);
+    _pauseProvider();
+  }
+
   void _initProvider() {
-    _fastThumbnailProvider = ThumbnailProvider(entry: entry);
+    _fastThumbnailProvider = ThumbnailProvider(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      rotationDegrees: entry.rotationDegrees,
+    );
     if (!entry.isVideo) {
-      _sizedThumbnailProvider = ThumbnailProvider(entry: entry, extent: requestExtent);
+      _sizedThumbnailProvider = ThumbnailProvider(
+        uri: entry.uri,
+        mimeType: entry.mimeType,
+        rotationDegrees: entry.rotationDegrees,
+        extent: requestExtent,
+      );
     }
   }
 
@@ -152,5 +171,13 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
             },
             child: image,
           );
+  }
+
+  // when the entry image itself changed (e.g. after rotation)
+  void _onImageChanged() async {
+    // rebuild to refresh the thumbnails
+    _pauseProvider();
+    _initProvider();
+    setState(() {});
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -276,10 +277,16 @@ class ImageEntry {
   }
 
   set catalogMetadata(CatalogMetadata newMetadata) {
+    final oldRotationDegrees = rotationDegrees;
+
     catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
+
+    if (oldRotationDegrees != rotationDegrees) {
+      _onImageChanged(oldRotationDegrees);
+    }
   }
 
   void clearMetadata() {
@@ -374,6 +381,8 @@ class ImageEntry {
     final newFields = await ImageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
+    final oldRotationDegrees = this.rotationDegrees;
+
     final width = newFields['width'];
     if (width is int) this.width = width;
     final height = newFields['height'];
@@ -381,7 +390,9 @@ class ImageEntry {
     final rotationDegrees = newFields['rotationDegrees'];
     if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
 
-    imageChangeNotifier.notifyListeners();
+    if (oldRotationDegrees != rotationDegrees) {
+      _onImageChanged(oldRotationDegrees);
+    }
     return true;
   }
 
@@ -398,6 +409,14 @@ class ImageEntry {
     );
     return completer.future;
   }
+
+  // when the entry image itself changed (e.g. after rotation)
+  void _onImageChanged(int oldRotationDegrees) async {
+    await EntryCache.evict(uri, mimeType, oldRotationDegrees);
+    imageChangeNotifier.notifyListeners();
+  }
+
+  // favourites
 
   void toggleFavourite() {
     if (isFavourite) {

@@ -1,22 +1,27 @@
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   ThumbnailProvider({
-    @required this.entry,
+    @required this.uri,
+    @required this.mimeType,
+    @required this.rotationDegrees,
     this.extent = 0,
     this.scale = 1,
-  })  : assert(entry != null),
+  })  : assert(uri != null),
+        assert(mimeType != null),
+        assert(rotationDegrees != null),
         assert(extent != null),
         assert(scale != null) {
     _cancellationKey = _buildKey(ImageConfiguration.empty);
   }
 
-  final ImageEntry entry;
+  final String uri;
+  final String mimeType;
+  final int rotationDegrees;
   final double extent;
   final double scale;
 
@@ -31,7 +36,9 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   ThumbnailProviderKey _buildKey(ImageConfiguration configuration) => ThumbnailProviderKey(
-        entry: entry,
+        uri: uri,
+        mimeType: mimeType,
+        rotationDegrees: rotationDegrees,
         extent: extent,
         scale: scale,
       );
@@ -42,21 +49,21 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${entry.uri}, extent=$extent');
+        yield ErrorDescription('uri=$uri, extent=$extent');
       },
     );
   }
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
     try {
-      final bytes = await ImageFileService.getThumbnail(key.entry, extent, extent, taskKey: _cancellationKey);
+      final bytes = await ImageFileService.getThumbnail(key.uri, key.mimeType, key.rotationDegrees, extent, extent, taskKey: _cancellationKey);
       if (bytes == null) {
-        throw StateError('${entry.uri} (${entry.mimeType}) loading failed');
+        throw StateError('$uri ($mimeType) loading failed');
       }
       return await decode(bytes);
     } catch (error) {
-      debugPrint('$runtimeType _loadAsync failed with path=${entry.path}, error=$error');
-      throw StateError('${entry.mimeType} decoding failed');
+      debugPrint('$runtimeType _loadAsync failed with uri=$uri, error=$error');
+      throw StateError('$mimeType decoding failed');
     }
   }
 
@@ -70,31 +77,31 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 }
 
 class ThumbnailProviderKey {
-  final ImageEntry entry;
+  final String uri;
+  final String mimeType;
+  final int rotationDegrees;
   final double extent;
   final double scale;
 
-  // do not access `contentId` via `entry` for hashCode and equality purposes
-  // as an entry is not constant and its contentId can change
-  final int contentId;
-
   ThumbnailProviderKey({
-    @required this.entry,
+    @required this.uri,
+    @required this.mimeType,
+    @required this.rotationDegrees,
     @required this.extent,
     this.scale,
-  }) : contentId = entry.contentId;
+  });
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.contentId == contentId && other.extent == extent && other.scale == scale;
+    return other is ThumbnailProviderKey && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.extent == extent && other.scale == scale;
   }
 
   @override
-  int get hashCode => hashValues(contentId, extent, scale);
+  int get hashCode => hashValues(uri, mimeType, rotationDegrees, extent, scale);
 
   @override
   String toString() {
-    return 'ThumbnailProviderKey{contentId=$contentId, extent=$extent, scale=$scale}';
+    return 'ThumbnailProviderKey{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, extent=$extent, scale=$scale}';
   }
 }

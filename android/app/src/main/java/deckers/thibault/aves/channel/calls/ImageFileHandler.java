@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Map;
 
-import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
@@ -65,12 +64,14 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map<String, Object> entryMap = call.argument("entry");
+        String uri = call.argument("uri");
+        String mimeType = call.argument("mimeType");
+        Integer rotationDegrees = call.argument("rotationDegrees");
         Double widthDip = call.argument("widthDip");
         Double heightDip = call.argument("heightDip");
         Double defaultSizeDip = call.argument("defaultSizeDip");
 
-        if (entryMap == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
+        if (uri == null || mimeType == null || rotationDegrees == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
             result.error("getThumbnail-args", "failed because of missing arguments", null);
             return;
         }
@@ -80,8 +81,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         int height = (int) Math.round(heightDip * density);
         int defaultSize = (int) Math.round(defaultSizeDip * density);
 
-        AvesImageEntry entry = new AvesImageEntry(entryMap);
-        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, defaultSize, result));
+        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(uri, mimeType, rotationDegrees, width, height, defaultSize, result));
     }
 
     private void getObsoleteEntries(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
