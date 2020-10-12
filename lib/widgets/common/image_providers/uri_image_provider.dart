@@ -55,11 +55,13 @@ class UriImage extends ImageProvider<UriImage> {
           ));
         },
       );
-      if (bytes == null) return null;
+      if (bytes == null) {
+        throw StateError('$uri ($mimeType) loading failed');
+      }
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      return null;
+      throw StateError('$mimeType decoding failed');
     } finally {
       unawaited(chunkEvents.close());
     }

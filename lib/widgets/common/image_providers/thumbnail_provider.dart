@@ -50,11 +50,13 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
     try {
       final bytes = await ImageFileService.getThumbnail(key.entry, extent, extent, taskKey: _cancellationKey);
-      if (bytes == null) return null;
+      if (bytes == null) {
+        throw StateError('${entry.uri} (${entry.mimeType}) loading failed');
+      }
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with path=${entry.path}, error=$error');
-      return null;
+      throw StateError('${entry.mimeType} decoding failed');
     }
   }
 
