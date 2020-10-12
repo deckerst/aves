@@ -37,7 +37,7 @@ import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDescription
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeRational
-import deckers.thibault.aves.utils.MimeTypes.getMimeTypeForExtension
+import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -200,14 +200,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         // the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`)
                         // `context.getContentResolver().getType()` sometimes return incorrect value
                         // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-                        if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                            val detectedMimeType = dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
-                            if (detectedMimeType != null && detectedMimeType != mimeType) {
-                                // file extension is unreliable, but we use it as a tie breaker
-                                val extensionMimeType = extension?.toLowerCase(Locale.ROOT)?.let { getMimeTypeForExtension(it) }
-                                if (extensionMimeType == null || detectedMimeType == extensionMimeType) {
-                                    metadataMap[KEY_MIME_TYPE] = detectedMimeType
-                                }
+                        // file extension is unreliable
+                        // in the end, `metadata-extractor` is the most reliable, unless it reports `tiff`
+                        dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
+                            if (it != MimeTypes.TIFF) {
+                                metadataMap[KEY_MIME_TYPE] = it
                             }
                         }
                     }
