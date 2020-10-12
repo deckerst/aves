@@ -75,8 +75,8 @@ class ImageEntry {
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
     )
-      .._catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
-      .._addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
+      ..catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
+      ..addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
 
     return copied;
   }
@@ -154,7 +154,7 @@ class ImageEntry {
 
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible
-  String get mimeType => catalogMetadata?.mimeType ?? sourceMimeType;
+  String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
 
@@ -194,7 +194,7 @@ class ImageEntry {
     }
   }
 
-  bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.rotationDegrees : rotationDegrees) % 180 == 90;
+  bool get portrait => rotationDegrees % 180 == 90;
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
@@ -220,11 +220,11 @@ class ImageEntry {
     return _bestDate;
   }
 
-  int get rotationDegrees => catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
+  int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees ?? 0;
 
   set rotationDegrees(int rotationDegrees) {
     sourceRotationDegrees = rotationDegrees;
-    catalogMetadata?.rotationDegrees = rotationDegrees;
+    _catalogMetadata?.rotationDegrees = rotationDegrees;
   }
 
   int get dateModifiedSecs => _dateModifiedSecs;
