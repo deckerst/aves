@@ -419,18 +419,29 @@ class ImageEntry {
     }
   }
 
+  // compare by:
+  // 1) title ascending
+  // 2) extension ascending
   static int compareByName(ImageEntry a, ImageEntry b) {
     final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
     return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
   }
 
+  // compare by:
+  // 1) size descending
+  // 2) name ascending
   static int compareBySize(ImageEntry a, ImageEntry b) {
     final c = b.sizeBytes.compareTo(a.sizeBytes);
     return c != 0 ? c : compareByName(a, b);
   }
 
+  static final _epoch = DateTime.fromMillisecondsSinceEpoch(0);
+
+  // compare by:
+  // 1) date descending
+  // 2) name ascending
   static int compareByDate(ImageEntry a, ImageEntry b) {
-    final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
+    final c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     return c != 0 ? c : compareByName(a, b);
   }
 }
