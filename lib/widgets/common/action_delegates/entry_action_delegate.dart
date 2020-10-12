@@ -127,11 +127,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         return AvesDialog(
           content: Text('Are you sure?'),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'.toUpperCase()),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text('Delete'.toUpperCase()),
             ),

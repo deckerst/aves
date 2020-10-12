@@ -38,7 +38,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
       title: widget.title,
       scrollableContent: widget.options.entries.map((kv) => _buildRadioListTile(kv.key, kv.value)).toList(),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text('Cancel'.toUpperCase()),
         ),

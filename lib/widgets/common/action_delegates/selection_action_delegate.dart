@@ -148,11 +148,11 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         return AvesDialog(
           content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these $count items')}?'),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'.toUpperCase()),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text('Delete'.toUpperCase()),
             ),

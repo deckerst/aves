@@ -110,7 +110,7 @@ class _WelcomePageState extends State<WelcomePage> {
       ],
     );
 
-    final button = RaisedButton(
+    final button = ElevatedButton(
       key: Key('continue-button'),
       child: Text('Continue'),
       onPressed: _hasAcceptedTerms
