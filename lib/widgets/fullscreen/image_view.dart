@@ -57,7 +57,11 @@ class ImageView extends StatelessWidget {
     // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
     // there's a black frame between the hero animation and the final image, even when it's cached.
 
-    final fastThumbnailProvider = ThumbnailProvider(entry: entry);
+    final fastThumbnailProvider = ThumbnailProvider(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      rotationDegrees: entry.rotationDegrees,
+    );
     // this loading builder shows a transition image until the final image is ready
     // if the image is already in the cache it will show the final image, otherwise the thumbnail
     // in any case, we should use `Center` + `AspectRatio` + `Fill` so that the transition image

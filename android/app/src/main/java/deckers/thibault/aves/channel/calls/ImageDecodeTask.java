@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
-import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
@@ -36,12 +36,15 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     private static final String LOG_TAG = Utils.createLogTag(ImageDecodeTask.class);
 
     static class Params {
-        AvesImageEntry entry;
-        Integer width, height, defaultSize;
+        Uri uri;
+        String mimeType;
+        Integer rotationDegrees, width, height, defaultSize;
         MethodChannel.Result result;
 
-        Params(AvesImageEntry entry, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
-            this.entry = entry;
+        Params(String uri, String mimeType, Integer rotationDegrees, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
+            this.uri = Uri.parse(uri);
+            this.mimeType = mimeType;
+            this.rotationDegrees = rotationDegrees;
             this.width = width;
             this.height = height;
             this.result = result;
@@ -100,7 +103,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                 exception = e;
             }
         } else {
-            Log.d(LOG_TAG, "getThumbnail with uri=" + p.entry.uri + " cancelled");
+            Log.d(LOG_TAG, "getThumbnail with uri=" + p.uri + " cancelled");
         }
 
         byte[] data = null;
@@ -124,70 +127,66 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private Bitmap getThumbnailBytesByResolver(Params params) throws IOException {
-        AvesImageEntry entry = params.entry;
-        Integer width = params.width;
-        Integer height = params.height;
-
         ContentResolver resolver = activity.getContentResolver();
-        Bitmap bitmap = resolver.loadThumbnail(entry.uri, new Size(width, height), null);
-        String mimeType = entry.mimeType;
+        Bitmap bitmap = resolver.loadThumbnail(params.uri, new Size(params.width, params.height), null);
+        String mimeType = params.mimeType;
         if (MimeTypes.needRotationAfterContentResolverThumbnail(mimeType)) {
-            bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
+            bitmap = rotateBitmap(bitmap, params.rotationDegrees);
         }
         return bitmap;
     }
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
-        AvesImageEntry entry = params.entry;
-        long contentId = ContentUris.parseId(entry.uri);
+        long contentId = ContentUris.parseId(params.uri);
 
         ContentResolver resolver = activity.getContentResolver();
-        if (entry.isVideo()) {
+        if (MimeTypes.isVideo(params.mimeType)) {
             return MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null);
         } else {
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
+                bitmap = rotateBitmap(bitmap, params.rotationDegrees);
             }
             return bitmap;
         }
     }
 
     private Bitmap getThumbnailByGlide(Params params) throws ExecutionException, InterruptedException {
-        AvesImageEntry entry = params.entry;
+        Uri uri = params.uri;
+        String mimeType = params.mimeType;
+        Integer rotationDegrees = params.rotationDegrees;
         int width = params.width;
         int height = params.height;
 
         // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.rotationDegrees);
+        Key signature = new ObjectKey("" + rotationDegrees + width);
         RequestOptions options = new RequestOptions()
                 .signature(signature)
                 .override(width, height);
 
         FutureTarget<Bitmap> target;
-        if (entry.isVideo()) {
+        if (MimeTypes.isVideo(mimeType)) {
             options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
-                    .load(new VideoThumbnail(activity, entry.uri))
+                    .load(new VideoThumbnail(activity, uri))
                     .signature(signature)
                     .submit(width, height);
         } else {
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
-                    .load(entry.uri)
+                    .load(uri)
                     .signature(signature)
                     .submit(width, height);
         }
 
         try {
             Bitmap bitmap = target.get();
-            String mimeType = entry.mimeType;
             if (MimeTypes.needRotationAfterGlide(mimeType)) {
-                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
+                bitmap = rotateBitmap(bitmap, rotationDegrees);
             }
             return bitmap;
         } finally {
@@ -207,12 +206,11 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     protected void onPostExecute(Result result) {
         Params params = result.params;
         MethodChannel.Result r = params.result;
-        AvesImageEntry entry = params.entry;
-        String uri = entry.uri.toString();
+        String uri = params.uri.toString();
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri + ", path=" + entry.path, result.errorDetails);
+            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri, result.errorDetails);
         }
     }
 }

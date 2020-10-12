@@ -30,7 +30,7 @@ class AppShortcutService {
     Uint8List iconBytes;
     if (iconEntry != null) {
       final size = iconEntry.isVideo ? 0.0 : 256.0;
-      iconBytes = await ImageFileService.getThumbnail(iconEntry, size, size);
+      iconBytes = await ImageFileService.getThumbnail(iconEntry.uri, iconEntry.mimeType, iconEntry.rotationDegrees, size, size);
     }
     try {
       await platform.invokeMethod('pin', <String, dynamic>{
