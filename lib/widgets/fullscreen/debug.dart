@@ -176,7 +176,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
               child: Text('DB'),
             ),
             SizedBox(width: 8),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () async {
                 await metadataDb.removeIds([entry.contentId]);
                 _loadDatabase();

@@ -46,13 +46,13 @@ class _GrantedDirectoriesState extends State<GrantedDirectories> {
                     children: [
                       Expanded(child: Text(path, style: textTheme.caption)),
                       SizedBox(width: 8),
-                      OutlineButton(
+                      OutlinedButton(
                         onPressed: () async {
                           await AndroidFileService.revokeDirectoryAccess(path);
                           _load();
                           setState(() {});
                         },
-                        child: Text('Revoke'),
+                        child: Text('Revoke'.toUpperCase()),
                       ),
                     ],
                   )),

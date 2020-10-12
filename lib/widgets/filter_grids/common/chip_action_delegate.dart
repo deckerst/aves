@@ -65,11 +65,11 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         return AvesDialog(
           content: Text('Are you sure you want to delete this album and its ${Intl.plural(count, one: 'item', other: '$count items')}?'),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'.toUpperCase()),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text('Delete'.toUpperCase()),
             ),

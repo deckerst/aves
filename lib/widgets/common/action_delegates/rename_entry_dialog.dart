@@ -48,14 +48,14 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
         onSubmitted: (_) => _submit(context),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text('Cancel'.toUpperCase()),
         ),
         ValueListenableBuilder<bool>(
           valueListenable: _isValidNotifier,
           builder: (context, isValid, child) {
-            return FlatButton(
+            return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
               child: Text('Apply'.toUpperCase()),
             );
