@@ -73,16 +73,11 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
 
   void _initProvider() {
     _fastThumbnailProvider = ThumbnailProvider(
-      uri: entry.uri,
-      mimeType: entry.mimeType,
-      rotationDegrees: entry.rotationDegrees,
+      ThumbnailProviderKey.fromEntry(entry),
     );
     if (!entry.isVideo) {
       _sizedThumbnailProvider = ThumbnailProvider(
-        uri: entry.uri,
-        mimeType: entry.mimeType,
-        rotationDegrees: entry.rotationDegrees,
-        extent: requestExtent,
+        ThumbnailProviderKey.fromEntry(entry, extent: requestExtent),
       );
     }
   }
@@ -158,6 +153,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                   uri: entry.uri,
                   mimeType: entry.mimeType,
                   rotationDegrees: entry.rotationDegrees,
+                  isFlipped: entry.isFlipped,
                   expectedContentLength: entry.sizeBytes,
                 );
                 if (imageCache.statusForKey(imageProvider).keepAlive) {

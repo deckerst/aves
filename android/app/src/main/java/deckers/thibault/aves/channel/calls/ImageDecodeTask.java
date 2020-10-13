@@ -12,13 +12,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
@@ -28,23 +28,28 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
+import deckers.thibault.aves.utils.BitmapUtils;
+import deckers.thibault.aves.utils.LogUtils;
 import deckers.thibault.aves.utils.MimeTypes;
-import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
 
 public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, ImageDecodeTask.Result> {
-    private static final String LOG_TAG = Utils.createLogTag(ImageDecodeTask.class);
+    private static final String LOG_TAG = LogUtils.createTag(ImageDecodeTask.class);
 
     static class Params {
         Uri uri;
         String mimeType;
+        Long dateModifiedSecs;
         Integer rotationDegrees, width, height, defaultSize;
+        Boolean isFlipped;
         MethodChannel.Result result;
 
-        Params(String uri, String mimeType, Integer rotationDegrees, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
+        Params(@NonNull String uri, @NonNull String mimeType, @NonNull Long dateModifiedSecs, @NonNull Integer rotationDegrees, @NonNull Boolean isFlipped, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
             this.uri = Uri.parse(uri);
             this.mimeType = mimeType;
+            this.dateModifiedSecs = dateModifiedSecs;
             this.rotationDegrees = rotationDegrees;
+            this.isFlipped = isFlipped;
             this.width = width;
             this.height = height;
             this.result = result;
@@ -131,7 +136,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         Bitmap bitmap = resolver.loadThumbnail(params.uri, new Size(params.width, params.height), null);
         String mimeType = params.mimeType;
         if (MimeTypes.needRotationAfterContentResolverThumbnail(mimeType)) {
-            bitmap = rotateBitmap(bitmap, params.rotationDegrees);
+            bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, params.rotationDegrees, params.isFlipped);
         }
         return bitmap;
     }
@@ -146,7 +151,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                bitmap = rotateBitmap(bitmap, params.rotationDegrees);
+                bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, params.rotationDegrees, params.isFlipped);
             }
             return bitmap;
         }
@@ -155,12 +160,14 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     private Bitmap getThumbnailByGlide(Params params) throws ExecutionException, InterruptedException {
         Uri uri = params.uri;
         String mimeType = params.mimeType;
+        Long dateModifiedSecs = params.dateModifiedSecs;
         Integer rotationDegrees = params.rotationDegrees;
+        Boolean isFlipped = params.isFlipped;
         int width = params.width;
         int height = params.height;
 
         // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + rotationDegrees + width);
+        Key signature = new ObjectKey("" + dateModifiedSecs + rotationDegrees + isFlipped + width);
         RequestOptions options = new RequestOptions()
                 .signature(signature)
                 .override(width, height);
@@ -186,20 +193,12 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         try {
             Bitmap bitmap = target.get();
             if (MimeTypes.needRotationAfterGlide(mimeType)) {
-                bitmap = rotateBitmap(bitmap, rotationDegrees);
+                bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped);
             }
             return bitmap;
         } finally {
             Glide.with(activity).clear(target);
         }
-    }
-
-    private Bitmap rotateBitmap(Bitmap bitmap, Integer rotationDegrees) {
-        if (bitmap != null && rotationDegrees != null) {
-            // TODO TLAD use exif orientation to rotate & flip?
-            bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
-        }
-        return bitmap;
     }
 
     @Override

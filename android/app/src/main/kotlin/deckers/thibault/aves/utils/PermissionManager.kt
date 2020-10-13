@@ -8,14 +8,14 @@ import android.os.Build
 import android.os.storage.StorageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import deckers.thibault.aves.utils.LogUtils.createTag
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
-import deckers.thibault.aves.utils.Utils.createLogTag
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 object PermissionManager {
-    private val LOG_TAG = createLogTag(PermissionManager::class.java)
+    private val LOG_TAG = createTag(PermissionManager::class.java)
 
     const val VOLUME_ACCESS_REQUEST_CODE = 1
 

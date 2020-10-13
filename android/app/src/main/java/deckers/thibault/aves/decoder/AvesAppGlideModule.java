@@ -14,12 +14,10 @@ import com.bumptech.glide.load.resource.bitmap.ExifInterfaceImageHeaderParser;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
 
-import org.jetbrains.annotations.NotNull;
-
 @GlideModule
 public class AvesAppGlideModule extends AppGlideModule {
     @Override
-    public void applyOptions(@NotNull Context context, @NonNull GlideBuilder builder) {
+    public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         builder.setDefaultRequestOptions(new RequestOptions().format(DecodeFormat.PREFER_RGB_565));
 
         // hide noisy warning (e.g. for images that can't be decoded)

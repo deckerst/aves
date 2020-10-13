@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -174,13 +175,11 @@ class ImageEntry {
 
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
-  bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
-
   bool get canEdit => path != null;
 
   bool get canPrint => !isVideo;
 
-  bool get canRotate => canEdit && canEditExif;
+  bool get canRotateAndFlip => canEdit && canEditExif;
 
   // support for writing EXIF
   // as of androidx.exifinterface:exifinterface:1.3.0
@@ -227,6 +226,10 @@ class ImageEntry {
     sourceRotationDegrees = rotationDegrees;
     _catalogMetadata?.rotationDegrees = rotationDegrees;
   }
+
+  bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
+
+  set isFlipped(bool isFlipped) => _catalogMetadata?.isFlipped = isFlipped;
 
   int get dateModifiedSecs => _dateModifiedSecs;
 
@@ -277,16 +280,16 @@ class ImageEntry {
   }
 
   set catalogMetadata(CatalogMetadata newMetadata) {
+    final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
+    final oldIsFlipped = isFlipped;
 
     catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
 
-    if (oldRotationDegrees != rotationDegrees) {
-      _onImageChanged(oldRotationDegrees);
-    }
+    _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -358,12 +361,7 @@ class ImageEntry {
     return false;
   }
 
-  Future<bool> rename(String newName) async {
-    if (newName == filenameWithoutExtension) return true;
-
-    final newFields = await ImageFileService.rename(this, '$newName$extension');
-    if (newFields.isEmpty) return false;
-
+  Future<void> _applyNewFields(Map newFields) async {
     final uri = newFields['uri'];
     if (uri is String) this.uri = uri;
     final path = newFields['path'];
@@ -372,6 +370,24 @@ class ImageEntry {
     if (contentId is int) this.contentId = contentId;
     final sourceTitle = newFields['title'];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
+    final dateModifiedSecs = newFields['dateModifiedSecs'];
+    if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
+    final rotationDegrees = newFields['rotationDegrees'];
+    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
+    final isFlipped = newFields['isFlipped'];
+    if (isFlipped is bool) this.isFlipped = isFlipped;
+
+    await metadataDb.saveEntries({this});
+    await metadataDb.saveMetadata({catalogMetadata});
+  }
+
+  Future<bool> rename(String newName) async {
+    if (newName == filenameWithoutExtension) return true;
+
+    final newFields = await ImageFileService.rename(this, '$newName$extension');
+    if (newFields.isEmpty) return false;
+
+    _applyNewFields(newFields);
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
     return true;
@@ -381,18 +397,23 @@ class ImageEntry {
     final newFields = await ImageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
-    final oldRotationDegrees = this.rotationDegrees;
+    final oldDateModifiedSecs = dateModifiedSecs;
+    final oldRotationDegrees = rotationDegrees;
+    final oldIsFlipped = isFlipped;
+    _applyNewFields(newFields);
+    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    return true;
+  }
 
-    final width = newFields['width'];
-    if (width is int) this.width = width;
-    final height = newFields['height'];
-    if (height is int) this.height = height;
-    final rotationDegrees = newFields['rotationDegrees'];
-    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
+  Future<bool> flip() async {
+    final newFields = await ImageFileService.flip(this);
+    if (newFields.isEmpty) return false;
 
-    if (oldRotationDegrees != rotationDegrees) {
-      _onImageChanged(oldRotationDegrees);
-    }
+    final oldDateModifiedSecs = dateModifiedSecs;
+    final oldRotationDegrees = rotationDegrees;
+    final oldIsFlipped = isFlipped;
+    _applyNewFields(newFields);
+    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -411,9 +432,11 @@ class ImageEntry {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  void _onImageChanged(int oldRotationDegrees) async {
-    await EntryCache.evict(uri, mimeType, oldRotationDegrees);
-    imageChangeNotifier.notifyListeners();
+  void _onImageChanged(int oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+    if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
+      await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+      imageChangeNotifier.notifyListeners();
+    }
   }
 
   // favourites

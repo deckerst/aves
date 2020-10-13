@@ -34,6 +34,7 @@ class AIcons {
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
   static const IconData expand = Icons.expand_more_outlined;
+  static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
   static const IconData favouriteActive = Icons.favorite;
   static const IconData goUp = Icons.arrow_upward_outlined;

@@ -5,30 +5,41 @@ import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 
 class EntryCache {
-  static Future<void> evict(String uri, String mimeType, int oldRotationDegrees) async {
+  static Future<void> evict(
+    String uri,
+    String mimeType,
+    int dateModifiedSecs,
+    int oldRotationDegrees,
+    bool oldIsFlipped,
+  ) async {
     // evict fullscreen image
     await UriImage(
       uri: uri,
       mimeType: mimeType,
       rotationDegrees: oldRotationDegrees,
+      isFlipped: oldIsFlipped,
     ).evict();
 
     // evict low quality thumbnail (without specified extents)
-    await ThumbnailProvider(
+    await ThumbnailProvider(ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
+      dateModifiedSecs: dateModifiedSecs,
       rotationDegrees: oldRotationDegrees,
-    ).evict();
+      isFlipped: oldIsFlipped,
+    )).evict();
 
     // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)
     final extents = List.generate(6, (index) => pow(2, index + 5).toDouble());
     await Future.forEach<double>(
         extents,
-        (extent) => ThumbnailProvider(
+        (extent) => ThumbnailProvider(ThumbnailProviderKey(
               uri: uri,
               mimeType: mimeType,
+              dateModifiedSecs: dateModifiedSecs,
               rotationDegrees: oldRotationDegrees,
+              isFlipped: oldIsFlipped,
               extent: extent,
-            ).evict());
+            )).evict());
   }
 }

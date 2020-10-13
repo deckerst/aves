@@ -58,9 +58,7 @@ class ImageView extends StatelessWidget {
     // there's a black frame between the hero animation and the final image, even when it's cached.
 
     final fastThumbnailProvider = ThumbnailProvider(
-      uri: entry.uri,
-      mimeType: entry.mimeType,
-      rotationDegrees: entry.rotationDegrees,
+      ThumbnailProviderKey.fromEntry(entry)
     );
     // this loading builder shows a transition image until the final image is ready
     // if the image is already in the cache it will show the final image, otherwise the thumbnail
@@ -102,11 +100,12 @@ class ImageView extends StatelessWidget {
         uri: entry.uri,
         mimeType: entry.mimeType,
         rotationDegrees: entry.rotationDegrees,
+        isFlipped: entry.isFlipped,
         expectedContentLength: entry.sizeBytes,
       );
       child = PhotoView(
         // key includes size and orientation to refresh when the image is rotated
-        key: ValueKey('${entry.rotationDegrees}_${entry.width}_${entry.height}_${entry.path}'),
+        key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
         imageProvider: uriImage,
         // when the full image is ready, we use it in the `loadingBuilder`
         // we still provide a `loadingBuilder` in that case to avoid a black frame after hero animation

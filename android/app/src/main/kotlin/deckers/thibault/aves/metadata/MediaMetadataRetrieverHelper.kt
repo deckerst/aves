@@ -1,4 +1,4 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.media.MediaFormat

@@ -31,12 +31,12 @@ import java.util.stream.Stream;
 
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.SourceImageEntry;
+import deckers.thibault.aves.utils.LogUtils;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
-import deckers.thibault.aves.utils.Utils;
 
 public class MediaStoreImageProvider extends ImageProvider {
-    private static final String LOG_TAG = Utils.createLogTag(MediaStoreImageProvider.class);
+    private static final String LOG_TAG = LogUtils.createTag(MediaStoreImageProvider.class);
 
     private static final String[] BASE_PROJECTION = {
             MediaStore.MediaColumns._ID,

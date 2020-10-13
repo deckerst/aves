@@ -14,8 +14,8 @@ import android.text.TextUtils
 import android.util.Log
 import android.webkit.MimeTypeMap
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.utils.LogUtils.createTag
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
-import deckers.thibault.aves.utils.Utils.createLogTag
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -24,7 +24,7 @@ import java.util.*
 import java.util.regex.Pattern
 
 object StorageUtils {
-    private val LOG_TAG = createLogTag(StorageUtils::class.java)
+    private val LOG_TAG = createTag(StorageUtils::class.java)
 
     /**
      * Volume paths

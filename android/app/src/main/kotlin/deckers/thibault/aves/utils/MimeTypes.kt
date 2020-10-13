@@ -34,9 +34,9 @@ object MimeTypes {
 
     // as of Flutter v1.22.0
     @JvmStatic
-    fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?) = when (mimeType) {
+    fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {
         JPEG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
-        PNG -> rotationDegrees ?: 0 == 0
+        PNG -> rotationDegrees ?: 0 == 0 && !(isFlipped ?: false)
         else -> false
     }
 
@@ -49,6 +49,8 @@ object MimeTypes {
 
     // Glide automatically applies EXIF orientation when decoding images of known formats
     // but we need to rotate the decoded bitmap for the other formats
+    // maybe related to ExifInterface version used by Glide:
+    // https://github.com/bumptech/glide/blob/master/gradle.properties#L21
     @JvmStatic
     fun needRotationAfterGlide(mimeType: String) = when (mimeType) {
         DNG, HEIC, HEIF, PNG, WEBP -> true

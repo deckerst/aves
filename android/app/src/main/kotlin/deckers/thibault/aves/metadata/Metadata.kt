@@ -1,4 +1,4 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.metadata
 
 import androidx.exifinterface.media.ExifInterface
 import java.text.ParseException
@@ -32,6 +32,16 @@ object Metadata {
     fun isFlippedForExifCode(exifOrientation: Int): Boolean = when (exifOrientation) {
         ExifInterface.ORIENTATION_FLIP_HORIZONTAL, ExifInterface.ORIENTATION_TRANSVERSE, ExifInterface.ORIENTATION_FLIP_VERTICAL, ExifInterface.ORIENTATION_TRANSPOSE -> true
         else -> false
+    }
+
+    @JvmStatic
+    fun getExifCode(rotationDegrees: Int, isFlipped: Boolean): Int {
+        return when (rotationDegrees) {
+            90 -> if (isFlipped) ExifInterface.ORIENTATION_TRANSVERSE else ExifInterface.ORIENTATION_ROTATE_90
+            180 -> if (isFlipped) ExifInterface.ORIENTATION_FLIP_VERTICAL else ExifInterface.ORIENTATION_ROTATE_180
+            270 -> if (isFlipped) ExifInterface.ORIENTATION_TRANSPOSE else ExifInterface.ORIENTATION_ROTATE_270
+            else -> if (isFlipped) ExifInterface.ORIENTATION_FLIP_HORIZONTAL else ExifInterface.ORIENTATION_NORMAL
+        }
     }
 
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
