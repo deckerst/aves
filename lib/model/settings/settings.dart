@@ -110,7 +110,9 @@ class Settings extends ChangeNotifier {
 
   double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
 
-  set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue);
+  // do not notify, as `collectionTileExtent` is only used internally by `TileExtentManager`
+  // and should not trigger rebuilding by change notification
+  set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue, notify: false);
 
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, true);
 
@@ -189,7 +191,7 @@ class Settings extends ChangeNotifier {
     return _prefs.getStringList(key)?.map((s) => values.firstWhere((el) => el.toString() == s, orElse: () => null))?.where((el) => el != null)?.toList() ?? defaultValue;
   }
 
-  void setAndNotify(String key, dynamic newValue) {
+  void setAndNotify(String key, dynamic newValue, {bool notify = true}) {
     var oldValue = _prefs.get(key);
     if (newValue == null) {
       _prefs.remove(key);
@@ -209,7 +211,7 @@ class Settings extends ChangeNotifier {
       oldValue = _prefs.getBool(key);
       _prefs.setBool(key, newValue);
     }
-    if (oldValue != newValue) {
+    if (oldValue != newValue && notify) {
       notifyListeners();
     }
   }
