@@ -387,7 +387,7 @@ class ImageEntry {
     final newFields = await ImageFileService.rename(this, '$newName$extension');
     if (newFields.isEmpty) return false;
 
-    _applyNewFields(newFields);
+    await _applyNewFields(newFields);
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
     return true;
@@ -400,7 +400,7 @@ class ImageEntry {
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
-    _applyNewFields(newFields);
+    await _applyNewFields(newFields);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
@@ -412,7 +412,7 @@ class ImageEntry {
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
-    _applyNewFields(newFields);
+    await _applyNewFields(newFields);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
