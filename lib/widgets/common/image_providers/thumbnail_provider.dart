@@ -90,7 +90,7 @@ class ThumbnailProviderKey {
     return ThumbnailProviderKey(
       uri: entry.uri,
       mimeType: entry.mimeType,
-      dateModifiedSecs: entry.dateModifiedSecs,
+      dateModifiedSecs: entry.dateModifiedSecs ?? -1, // can happen in viewer mode
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
       extent: extent,

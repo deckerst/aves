@@ -1,21 +1,16 @@
-import 'dart:collection';
-import 'dart:typed_data';
-
+import 'package:aves/main.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
-import 'package:aves/model/metadata_db.dart';
-import 'package:aves/services/metadata_service.dart';
-import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
+import 'package:aves/widgets/fullscreen/debug/db.dart';
+import 'package:aves/widgets/fullscreen/debug/metadata.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
 
-class FullscreenDebugPage extends StatefulWidget {
+class FullscreenDebugPage extends StatelessWidget {
   static const routeName = '/fullscreen/debug';
 
   final ImageEntry entry;
@@ -23,33 +18,11 @@ class FullscreenDebugPage extends StatefulWidget {
   const FullscreenDebugPage({@required this.entry});
 
   @override
-  _FullscreenDebugPageState createState() => _FullscreenDebugPageState();
-}
-
-class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
-  Future<DateMetadata> _dbDateLoader;
-  Future<ImageEntry> _dbEntryLoader;
-  Future<CatalogMetadata> _dbMetadataLoader;
-  Future<AddressDetails> _dbAddressLoader;
-  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
-
-  ImageEntry get entry => widget.entry;
-
-  int get contentId => entry.contentId;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadDatabase();
-    _loadMetadata();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final tabs = <Tuple2<Tab, Widget>>[
       Tuple2(Tab(text: 'Entry'), _buildEntryTabView()),
-      Tuple2(Tab(text: 'DB'), _buildDbTabView()),
-      Tuple2(Tab(icon: Icon(AIcons.android)), _buildContentResolverTabView()),
+      if (AvesApp.mode != AppMode.view) Tuple2(Tab(text: 'DB'), DbTab(entry: entry)),
+      Tuple2(Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
       Tuple2(Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
     ];
     return DefaultTabController(
@@ -177,196 +150,5 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
         ],
       ],
     );
-  }
-
-  Widget _buildDbTabView() {
-    return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text('DB'),
-            ),
-            SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () async {
-                await metadataDb.removeIds([entry.contentId]);
-                _loadDatabase();
-              },
-              child: Text('Remove from DB'),
-            ),
-          ],
-        ),
-        FutureBuilder<DateMetadata>(
-          future: _dbDateLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-            final data = snapshot.data;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('DB date:${data == null ? ' no row' : ''}'),
-                if (data != null)
-                  InfoRowGroup({
-                    'dateMillis': '${data.dateMillis}',
-                  }),
-              ],
-            );
-          },
-        ),
-        SizedBox(height: 16),
-        FutureBuilder<ImageEntry>(
-          future: _dbEntryLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-            final data = snapshot.data;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('DB entry:${data == null ? ' no row' : ''}'),
-                if (data != null)
-                  InfoRowGroup({
-                    'uri': '${data.uri}',
-                    'path': '${data.path}',
-                    'sourceMimeType': '${data.sourceMimeType}',
-                    'width': '${data.width}',
-                    'height': '${data.height}',
-                    'sourceRotationDegrees': '${data.sourceRotationDegrees}',
-                    'sizeBytes': '${data.sizeBytes}',
-                    'sourceTitle': '${data.sourceTitle}',
-                    'dateModifiedSecs': '${data.dateModifiedSecs}',
-                    'sourceDateTakenMillis': '${data.sourceDateTakenMillis}',
-                    'durationMillis': '${data.durationMillis}',
-                  }),
-              ],
-            );
-          },
-        ),
-        SizedBox(height: 16),
-        FutureBuilder<CatalogMetadata>(
-          future: _dbMetadataLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-            final data = snapshot.data;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('DB metadata:${data == null ? ' no row' : ''}'),
-                if (data != null)
-                  InfoRowGroup({
-                    'mimeType': '${data.mimeType}',
-                    'dateMillis': '${data.dateMillis}',
-                    'isAnimated': '${data.isAnimated}',
-                    'isFlipped': '${data.isFlipped}',
-                    'rotationDegrees': '${data.rotationDegrees}',
-                    'latitude': '${data.latitude}',
-                    'longitude': '${data.longitude}',
-                    'xmpSubjects': '${data.xmpSubjects}',
-                    'xmpTitleDescription': '${data.xmpTitleDescription}',
-                  }),
-              ],
-            );
-          },
-        ),
-        SizedBox(height: 16),
-        FutureBuilder<AddressDetails>(
-          future: _dbAddressLoader,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-            final data = snapshot.data;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('DB address:${data == null ? ' no row' : ''}'),
-                if (data != null)
-                  InfoRowGroup({
-                    'addressLine': '${data.addressLine}',
-                    'countryCode': '${data.countryCode}',
-                    'countryName': '${data.countryName}',
-                    'adminArea': '${data.adminArea}',
-                    'locality': '${data.locality}',
-                  }),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  // MediaStore timestamp keys
-  static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
-  static const millisecondTimestampKeys = ['datetaken', 'datetime'];
-
-  Widget _buildContentResolverTabView() {
-    Widget builder(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
-      if (snapshot.hasError) return Text(snapshot.error.toString());
-      if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-      final data = SplayTreeMap.of(snapshot.data.map((k, v) {
-        final key = k.toString();
-        var value = v?.toString() ?? 'null';
-        if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
-          if (secondTimestampKeys.contains(key)) {
-            v *= 1000;
-          }
-          value += ' (${DateTime.fromMillisecondsSinceEpoch(v)})';
-        }
-        if (key == 'xmp' && v != null && v is Uint8List) {
-          value = String.fromCharCodes(v);
-        }
-        return MapEntry(key, value);
-      }));
-      return AvesExpansionTile(
-        title: title,
-        children: [
-          Container(
-            alignment: AlignmentDirectional.topStart,
-            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: InfoRowGroup(
-              data,
-              maxValueLength: Constants.infoGroupMaxValueLength,
-            ),
-          )
-        ],
-      );
-    }
-
-    return ListView(
-      padding: EdgeInsets.all(8),
-      children: [
-        FutureBuilder<Map>(
-          future: _contentResolverMetadataLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Content Resolver'),
-        ),
-        FutureBuilder<Map>(
-          future: _exifInterfaceMetadataLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Exif Interface'),
-        ),
-        FutureBuilder<Map>(
-          future: _mediaMetadataLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Media Metadata Retriever'),
-        ),
-      ],
-    );
-  }
-
-  void _loadDatabase() {
-    _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    setState(() {});
-  }
-
-  void _loadMetadata() {
-    _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
-    _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
-    _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
-    setState(() {});
   }
 }

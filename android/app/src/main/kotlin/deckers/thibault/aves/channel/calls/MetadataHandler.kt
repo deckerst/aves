@@ -1,5 +1,6 @@
 package deckers.thibault.aves.channel.calls
 
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -393,14 +394,21 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val id = ContentUris.parseId(uri)
-        var contentUri = when {
-            isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-            isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-            else -> uri
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            contentUri = MediaStore.setRequireOriginal(contentUri)
+        var contentUri: Uri = uri
+        if (uri.scheme == ContentResolver.SCHEME_CONTENT && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)) {
+            try {
+                val id = ContentUris.parseId(uri)
+                contentUri = when {
+                    isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                    else -> uri
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentUri = MediaStore.setRequireOriginal(contentUri)
+                }
+            } catch (e: NumberFormatException) {
+                // ignore
+            }
         }
 
         val cursor = context.contentResolver.query(contentUri, null, null, null, null)
