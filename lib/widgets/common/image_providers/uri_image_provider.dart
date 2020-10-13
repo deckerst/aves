@@ -11,6 +11,7 @@ class UriImage extends ImageProvider<UriImage> {
     @required this.uri,
     @required this.mimeType,
     @required this.rotationDegrees,
+    @required this.isFlipped,
     this.expectedContentLength,
     this.scale = 1.0,
   })  : assert(uri != null),
@@ -18,6 +19,7 @@ class UriImage extends ImageProvider<UriImage> {
 
   final String uri, mimeType;
   final int rotationDegrees, expectedContentLength;
+  final bool isFlipped;
   final double scale;
 
   @override
@@ -46,7 +48,8 @@ class UriImage extends ImageProvider<UriImage> {
       final bytes = await ImageFileService.getImage(
         uri,
         mimeType,
-        rotationDegrees: rotationDegrees,
+        rotationDegrees,
+        isFlipped,
         expectedContentLength: expectedContentLength,
         onBytesReceived: (cumulative, total) {
           chunkEvents.add(ImageChunkEvent(

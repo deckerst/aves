@@ -34,12 +34,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import deckers.thibault.aves.utils.Utils;
+import deckers.thibault.aves.utils.LogUtils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
-    private static final String LOG_TAG = Utils.createLogTag(AppAdapterHandler.class);
+    private static final String LOG_TAG = LogUtils.createTag(AppAdapterHandler.class);
 
     public static final String CHANNEL = "deckers.thibault/aves/app";
 

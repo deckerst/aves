@@ -1,4 +1,4 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.metadata
 
 import com.drew.lang.Rational
 import com.drew.metadata.Directory

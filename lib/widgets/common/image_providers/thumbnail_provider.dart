@@ -1,47 +1,22 @@
 import 'dart:ui' as ui show Codec;
 
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
-  ThumbnailProvider({
-    @required this.uri,
-    @required this.mimeType,
-    @required this.rotationDegrees,
-    this.extent = 0,
-    this.scale = 1,
-  })  : assert(uri != null),
-        assert(mimeType != null),
-        assert(rotationDegrees != null),
-        assert(extent != null),
-        assert(scale != null) {
-    _cancellationKey = _buildKey(ImageConfiguration.empty);
-  }
+  final ThumbnailProviderKey key;
 
-  final String uri;
-  final String mimeType;
-  final int rotationDegrees;
-  final double extent;
-  final double scale;
-
-  Object _cancellationKey;
+  ThumbnailProvider(this.key) : assert(key != null);
 
   @override
   Future<ThumbnailProviderKey> obtainKey(ImageConfiguration configuration) {
     // configuration can be empty (e.g. when obtaining key for eviction)
     // so we do not compute the target width/height here
     // and pass it to the key, to use it later for image loading
-    return SynchronousFuture<ThumbnailProviderKey>(_buildKey(configuration));
+    return SynchronousFuture<ThumbnailProviderKey>(key);
   }
-
-  ThumbnailProviderKey _buildKey(ImageConfiguration configuration) => ThumbnailProviderKey(
-        uri: uri,
-        mimeType: mimeType,
-        rotationDegrees: rotationDegrees,
-        extent: extent,
-        scale: scale,
-      );
 
   @override
   ImageStreamCompleter load(ThumbnailProviderKey key, DecoderCallback decode) {
@@ -49,14 +24,25 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=$uri, extent=$extent');
+        yield ErrorDescription('uri=${key.uri}, extent=${key.extent}');
       },
     );
   }
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
+    var uri = key.uri;
+    var mimeType = key.mimeType;
     try {
-      final bytes = await ImageFileService.getThumbnail(key.uri, key.mimeType, key.rotationDegrees, extent, extent, taskKey: _cancellationKey);
+      final bytes = await ImageFileService.getThumbnail(
+        uri,
+        mimeType,
+        key.dateModifiedSecs,
+        key.rotationDegrees,
+        key.isFlipped,
+        key.extent,
+        key.extent,
+        taskKey: key,
+      );
       if (bytes == null) {
         throw StateError('$uri ($mimeType) loading failed');
       }
@@ -69,39 +55,59 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, ImageErrorListener handleError) {
-    ImageFileService.resumeThumbnail(_cancellationKey);
+    ImageFileService.resumeThumbnail(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => ImageFileService.cancelThumbnail(_cancellationKey);
+  void pause() => ImageFileService.cancelThumbnail(key);
 }
 
 class ThumbnailProviderKey {
-  final String uri;
-  final String mimeType;
-  final int rotationDegrees;
-  final double extent;
-  final double scale;
+  final String uri, mimeType;
+  final int dateModifiedSecs, rotationDegrees;
+  final bool isFlipped;
+  final double extent, scale;
 
-  ThumbnailProviderKey({
+  const ThumbnailProviderKey({
     @required this.uri,
     @required this.mimeType,
+    @required this.dateModifiedSecs,
     @required this.rotationDegrees,
-    @required this.extent,
-    this.scale,
-  });
+    @required this.isFlipped,
+    this.extent = 0,
+    this.scale = 1,
+  })  : assert(uri != null),
+        assert(mimeType != null),
+        assert(dateModifiedSecs != null),
+        assert(rotationDegrees != null),
+        assert(isFlipped != null),
+        assert(extent != null),
+        assert(scale != null);
+
+  // do not store the entry as it is, because the key should be constant
+  // but the entry attributes may change over time
+  factory ThumbnailProviderKey.fromEntry(ImageEntry entry, {double extent = 0}) {
+    return ThumbnailProviderKey(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      dateModifiedSecs: entry.dateModifiedSecs,
+      rotationDegrees: entry.rotationDegrees,
+      isFlipped: entry.isFlipped,
+      extent: extent,
+    );
+  }
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.extent == extent && other.scale == scale;
+    return other is ThumbnailProviderKey && other.uri == uri && other.extent == extent && other.mimeType == mimeType && other.dateModifiedSecs == dateModifiedSecs && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.scale == scale;
   }
 
   @override
-  int get hashCode => hashValues(uri, mimeType, rotationDegrees, extent, scale);
+  int get hashCode => hashValues(uri, mimeType, dateModifiedSecs, rotationDegrees, isFlipped, extent, scale);
 
   @override
   String toString() {
-    return 'ThumbnailProviderKey{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, extent=$extent, scale=$scale}';
+    return 'ThumbnailProviderKey{uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, extent=$extent, scale=$scale}';
   }
 }

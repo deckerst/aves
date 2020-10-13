@@ -1,4 +1,4 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.metadata
 
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
@@ -8,12 +8,13 @@ import com.drew.metadata.exif.*
 import com.drew.metadata.exif.makernotes.OlympusCameraSettingsMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusImageProcessingMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusMakernoteDirectory
+import deckers.thibault.aves.utils.LogUtils
 import java.util.*
 import kotlin.math.floor
 import kotlin.math.roundToLong
 
 object ExifInterfaceHelper {
-    private val LOG_TAG = Utils.createLogTag(ExifInterfaceHelper::class.java)
+    private val LOG_TAG = LogUtils.createTag(ExifInterfaceHelper::class.java)
 
     // ExifInterface always states it has the following attributes
     // and returns "0" instead of "null" when they are actually missing

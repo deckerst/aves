@@ -82,7 +82,8 @@ class FullscreenTopOverlay extends StatelessWidget {
         return entry.canEdit;
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
-        return entry.canRotate;
+      case EntryAction.flip:
+        return entry.canRotateAndFlip;
       case EntryAction.print:
         return entry.canPrint;
       case EntryAction.openMap:
@@ -166,6 +167,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rename:
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
+      case EntryAction.flip:
       case EntryAction.print:
         child = IconButton(
           icon: Icon(action.getIcon()),
@@ -207,6 +209,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rename:
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
+      case EntryAction.flip:
       case EntryAction.print:
       case EntryAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());

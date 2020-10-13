@@ -1,11 +1,12 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.metadata
 
 import android.util.Log
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
+import deckers.thibault.aves.utils.LogUtils
 
 object XMP {
-    private val LOG_TAG = Utils.createLogTag(XMP::class.java)
+    private val LOG_TAG = LogUtils.createTag(XMP::class.java)
 
     const val DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/"
     const val XMP_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/"

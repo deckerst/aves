@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 import deckers.thibault.aves.model.AvesImageEntry;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
-import deckers.thibault.aves.utils.Utils;
+import deckers.thibault.aves.utils.LogUtils;
 import io.flutter.plugin.common.EventChannel;
 
 public class ImageOpStreamHandler implements EventChannel.StreamHandler {
-    private static final String LOG_TAG = Utils.createLogTag(ImageOpStreamHandler.class);
+    private static final String LOG_TAG = LogUtils.createTag(ImageOpStreamHandler.class);
 
     public static final String CHANNEL = "deckers.thibault/aves/imageopstream";
 

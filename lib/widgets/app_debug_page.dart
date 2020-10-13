@@ -19,18 +19,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class DebugPage extends StatefulWidget {
+class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
 
   final CollectionSource source;
 
-  const DebugPage({this.source});
+  const AppDebugPage({this.source});
 
   @override
-  State<StatefulWidget> createState() => DebugPageState();
+  State<StatefulWidget> createState() => AppDebugPageState();
 }
 
-class DebugPageState extends State<DebugPage> {
+class AppDebugPageState extends State<AppDebugPage> {
   Future<int> _dbFileSizeLoader;
   Future<List<ImageEntry>> _dbEntryLoader;
   Future<List<DateMetadata>> _dbDateLoader;

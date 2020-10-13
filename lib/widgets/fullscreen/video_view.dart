@@ -102,6 +102,7 @@ class AvesVideoState extends State<AvesVideo> {
                     uri: entry.uri,
                     mimeType: entry.mimeType,
                     rotationDegrees: entry.rotationDegrees,
+                    isFlipped: entry.isFlipped,
                     expectedContentLength: entry.sizeBytes,
                   ),
                   width: entry.width.toDouble(),

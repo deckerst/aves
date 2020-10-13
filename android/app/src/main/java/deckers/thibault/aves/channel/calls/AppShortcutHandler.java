@@ -12,13 +12,11 @@ import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 
-import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
-
 import java.util.List;
 
 import deckers.thibault.aves.MainActivity;
 import deckers.thibault.aves.R;
+import deckers.thibault.aves.utils.BitmapUtils;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
@@ -57,12 +55,15 @@ public class AppShortcutHandler implements MethodChannel.MethodCallHandler {
             return;
         }
 
-        IconCompat icon;
+        IconCompat icon = null;
         if (iconBytes != null && iconBytes.length > 0) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length);
-            bitmap = TransformationUtils.centerCrop(new LruBitmapPool(2 << 24), bitmap, 256, 256);
-            icon = IconCompat.createWithBitmap(bitmap);
-        } else {
+            bitmap = BitmapUtils.centerSquareCrop(context, bitmap, 256);
+            if (bitmap != null) {
+                icon = IconCompat.createWithBitmap(bitmap);
+            }
+        }
+        if (icon == null) {
             icon = IconCompat.createWithResource(context, R.mipmap.ic_shortcut_collection);
         }
 

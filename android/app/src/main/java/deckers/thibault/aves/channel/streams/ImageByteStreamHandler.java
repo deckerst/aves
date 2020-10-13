@@ -9,7 +9,6 @@ import android.os.Looper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -19,6 +18,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
+import deckers.thibault.aves.utils.BitmapUtils;
 import deckers.thibault.aves.utils.MimeTypes;
 import io.flutter.plugin.common.EventChannel;
 
@@ -29,6 +29,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     private Uri uri;
     private String mimeType;
     private int rotationDegrees;
+    private boolean isFlipped;
     private EventChannel.EventSink eventSink;
     private Handler handler;
 
@@ -40,6 +41,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             this.mimeType = (String) argMap.get("mimeType");
             this.uri = Uri.parse((String) argMap.get("uri"));
             this.rotationDegrees = (int) argMap.get("rotationDegrees");
+            this.isFlipped = (boolean) argMap.get("isFlipped");
         }
     }
 
@@ -95,7 +97,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             } finally {
                 Glide.with(activity).clear(target);
             }
-        } else if (!MimeTypes.isSupportedByFlutter(mimeType, rotationDegrees)) {
+        } else if (!MimeTypes.isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // we convert the image on platform side first, when Dart Image.memory does not support it
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()
@@ -103,9 +105,10 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                     .submit();
             try {
                 Bitmap bitmap = target.get();
+                if (MimeTypes.needRotationAfterGlide(mimeType)) {
+                    bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped);
+                }
                 if (bitmap != null) {
-                    // TODO TLAD use exif orientation to rotate & flip?
-                    bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
                     // Bitmap.CompressFormat.PNG is slower than JPEG

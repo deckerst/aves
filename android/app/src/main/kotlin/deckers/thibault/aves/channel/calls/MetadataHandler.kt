@@ -23,25 +23,31 @@ import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
-import deckers.thibault.aves.utils.*
-import deckers.thibault.aves.utils.ExifInterfaceHelper.describeAll
-import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeDateMillis
-import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeInt
-import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeDescription
-import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeInt
-import deckers.thibault.aves.utils.Metadata.getRotationDegreesForExifCode
-import deckers.thibault.aves.utils.Metadata.isFlippedForExifCode
-import deckers.thibault.aves.utils.Metadata.parseVideoMetadataDate
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeBoolean
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDateMillis
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDescription
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeInt
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeRational
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.metadata.ExifInterfaceHelper
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.metadata.Metadata
+import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
+import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
+import deckers.thibault.aves.metadata.Metadata.parseVideoMetadataDate
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDescription
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.metadata.XMP
+import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
+import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.XMP.getSafeLocalizedText
+import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -67,7 +73,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (mimeType == null || uri == null) {
             result.error("getAllMetadata-args", "failed because of missing arguments", null)
             return
@@ -167,7 +173,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val extension = call.argument<String>("extension")
         if (mimeType == null || uri == null) {
             result.error("getCatalogMetadata-args", "failed because of missing arguments", null)
@@ -339,7 +345,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
     private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (mimeType == null || uri == null) {
             result.error("getOverlayMetadata-args", "failed because of missing arguments", null)
             return
@@ -381,7 +387,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
     private fun getContentResolverMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (mimeType == null || uri == null) {
             result.error("getContentResolverMetadata-args", "failed because of missing arguments", null)
             return
@@ -425,7 +431,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getExifInterfaceMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
             result.error("getExifInterfaceMetadata-args", "failed because of missing arguments", null)
             return
@@ -448,7 +454,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMediaMetadataRetrieverMetadata(call: MethodCall, result: MethodChannel.Result) {
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
             result.error("getMediaMetadataRetrieverMetadata-args", "failed because of missing arguments", null)
             return
@@ -472,7 +478,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
             result.error("getEmbeddedPictures-args", "failed because of missing arguments", null)
             return
@@ -494,7 +500,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
             result.error("getExifThumbnails-args", "failed because of missing arguments", null)
             return
@@ -515,7 +521,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
     private fun getXmpThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
-        val uri = Uri.parse(call.argument("uri"))
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (mimeType == null || uri == null) {
             result.error("getXmpThumbnails-args", "failed because of missing arguments", null)
             return
@@ -556,7 +562,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = Utils.createLogTag(MetadataHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag(MetadataHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/metadata"
 
         // catalog metadata

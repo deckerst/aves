@@ -12,15 +12,15 @@ import androidx.core.graphics.drawable.IconCompat
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.PermissionManager
-import deckers.thibault.aves.utils.Utils
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     companion object {
-        private val LOG_TAG = Utils.createLogTag(MainActivity::class.java)
+        private val LOG_TAG = LogUtils.createTag(MainActivity::class.java)
         const val INTENT_CHANNEL = "deckers.thibault/aves/intent"
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
     }

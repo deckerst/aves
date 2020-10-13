@@ -28,6 +28,7 @@ class FullscreenDebugPage extends StatefulWidget {
 
 class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
   Future<DateMetadata> _dbDateLoader;
+  Future<ImageEntry> _dbEntryLoader;
   Future<CatalogMetadata> _dbMetadataLoader;
   Future<AddressDetails> _dbAddressLoader;
   Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
@@ -103,6 +104,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'height': '${entry.height}',
           'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
           'rotationDegrees': '${entry.rotationDegrees}',
+          'isFlipped': '${entry.isFlipped}',
           'portrait': '${entry.portrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
           'displaySize': '${entry.displaySize}',
@@ -121,11 +123,10 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           'isVideo': '${entry.isVideo}',
           'isCatalogued': '${entry.isCatalogued}',
           'isAnimated': '${entry.isAnimated}',
-          'isFlipped': '${entry.isFlipped}',
           'canEdit': '${entry.canEdit}',
           'canEditExif': '${entry.canEditExif}',
           'canPrint': '${entry.canPrint}',
-          'canRotate': '${entry.canRotate}',
+          'canRotateAndFlip': '${entry.canRotateAndFlip}',
           'xmpSubjects': '${entry.xmpSubjects}',
         }),
         Divider(),
@@ -160,9 +161,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           Center(
             child: Image(
               image: ThumbnailProvider(
-                uri: entry.uri,
-                mimeType: entry.mimeType,
-                rotationDegrees: entry.rotationDegrees,
+                ThumbnailProviderKey.fromEntry(entry),
               ),
             ),
           ),
@@ -171,10 +170,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
           Center(
             child: Image(
               image: ThumbnailProvider(
-                uri: entry.uri,
-                mimeType: entry.mimeType,
-                rotationDegrees: entry.rotationDegrees,
-                extent: extent,
+                ThumbnailProviderKey.fromEntry(entry, extent: extent),
               ),
             ),
           ),
@@ -215,6 +211,35 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
                 if (data != null)
                   InfoRowGroup({
                     'dateMillis': '${data.dateMillis}',
+                  }),
+              ],
+            );
+          },
+        ),
+        SizedBox(height: 16),
+        FutureBuilder<ImageEntry>(
+          future: _dbEntryLoader,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+            final data = snapshot.data;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('DB entry:${data == null ? ' no row' : ''}'),
+                if (data != null)
+                  InfoRowGroup({
+                    'uri': '${data.uri}',
+                    'path': '${data.path}',
+                    'sourceMimeType': '${data.sourceMimeType}',
+                    'width': '${data.width}',
+                    'height': '${data.height}',
+                    'sourceRotationDegrees': '${data.sourceRotationDegrees}',
+                    'sizeBytes': '${data.sizeBytes}',
+                    'sourceTitle': '${data.sourceTitle}',
+                    'dateModifiedSecs': '${data.dateModifiedSecs}',
+                    'sourceDateTakenMillis': '${data.sourceDateTakenMillis}',
+                    'durationMillis': '${data.durationMillis}',
                   }),
               ],
             );
@@ -332,6 +357,7 @@ class _FullscreenDebugPageState extends State<FullscreenDebugPage> {
 
   void _loadDatabase() {
     _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
+    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
     setState(() {});
