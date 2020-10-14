@@ -30,9 +30,6 @@ class EntryActions {
     EntryAction.share,
     EntryAction.delete,
     EntryAction.rename,
-    EntryAction.rotateCCW,
-    EntryAction.rotateCW,
-    EntryAction.flip,
     EntryAction.print,
   ];
 
@@ -58,9 +55,9 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.rename:
         return 'Rename';
       case EntryAction.rotateCCW:
-        return 'Rotate left';
+        return 'Rotate counterclockwise';
       case EntryAction.rotateCW:
-        return 'Rotate right';
+        return 'Rotate clockwise';
       case EntryAction.flip:
         return 'Flip horizontally';
       case EntryAction.print:

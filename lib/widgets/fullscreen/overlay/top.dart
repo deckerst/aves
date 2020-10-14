@@ -137,6 +137,7 @@ class _TopOverlayRow extends StatelessWidget {
             key: Key('entry-menu-button'),
             itemBuilder: (context) => [
               ...inAppActions.map(_buildPopupMenuItem),
+              if (entry.canRotateAndFlip) _buildRotateAndFlipMenuItems(),
               PopupMenuDivider(),
               ...externalAppActions.map(_buildPopupMenuItem),
               if (kDebugMode) ...[
@@ -225,6 +226,40 @@ class _TopOverlayRow extends StatelessWidget {
     return PopupMenuItem(
       value: action,
       child: child,
+    );
+  }
+
+  PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems() {
+    Widget buildDivider() => SizedBox(
+          height: 16,
+          child: VerticalDivider(
+            width: 1,
+            thickness: 1,
+          ),
+        );
+
+    Widget buildItem(EntryAction action) => Expanded(
+          child: PopupMenuItem(
+            value: action,
+            child: Tooltip(
+              message: action.getText(),
+              child: Center(child: Icon(action.getIcon())),
+            ),
+          ),
+        );
+
+    return PopupMenuItem(
+      child: Row(
+        children: [
+          buildDivider(),
+          buildItem(EntryAction.rotateCCW),
+          buildDivider(),
+          buildItem(EntryAction.rotateCW),
+          buildDivider(),
+          buildItem(EntryAction.flip),
+          buildDivider(),
+        ],
+      ),
     );
   }
 }
