@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
@@ -73,9 +74,13 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
     // - Android: https://developer.android.com/guide/topics/media/media-formats#image-formats
     // - Glide: https://github.com/bumptech/glide/blob/master/library/src/main/java/com/bumptech/glide/load/ImageHeaderParser.java
     private void getImage() {
+        // request a fresh image with the highest quality format
+        RequestOptions options = new RequestOptions()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true);
+
         if (MimeTypes.isVideo(mimeType)) {
-            RequestOptions options = new RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
@@ -101,6 +106,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
             // we convert the image on platform side first, when Dart Image.memory does not support it
             FutureTarget<Bitmap> target = Glide.with(activity)
                     .asBitmap()
+                    .apply(options)
                     .load(uri)
                     .submit();
             try {
@@ -111,8 +117,12 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                 if (bitmap != null) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                    // Bitmap.CompressFormat.PNG is slower than JPEG
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                    // Bitmap.CompressFormat.PNG is slower than JPEG, but it allows transparency
+                    if (MimeTypes.canHaveAlpha(mimeType)) {
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    } else {
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    }
                     success(stream.toByteArray());
                 } else {
                     error("getImage-image-decode-null", "failed to get image from uri=" + uri, null);

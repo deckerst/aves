@@ -50,20 +50,15 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         future: _loader,
         builder: (context, snapshot) {
           if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data.isNotEmpty) {
-            // TODO TLAD apply the rotation to Exif thumbnail only, on Android side
-            final turns = (entry.rotationDegrees / 90).round();
             final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
             return Container(
               alignment: AlignmentDirectional.topStart,
               padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 4),
               child: Wrap(
                 children: snapshot.data.map((bytes) {
-                  return RotatedBox(
-                    quarterTurns: turns,
-                    child: Image.memory(
-                      bytes,
-                      scale: devicePixelRatio,
-                    ),
+                  return Image.memory(
+                    bytes,
+                    scale: devicePixelRatio,
                   );
                 }).toList(),
               ),

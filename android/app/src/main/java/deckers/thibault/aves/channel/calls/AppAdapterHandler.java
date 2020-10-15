@@ -18,10 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -173,25 +172,21 @@ public class AppAdapterHandler implements MethodChannel.MethodCallHandler {
                     .path(String.valueOf(iconResourceId))
                     .build();
 
-            // add signature to ignore cache for images which got modified but kept the same URI
-            Key signature = new ObjectKey(packageName + size);
             RequestOptions options = new RequestOptions()
-                    .signature(signature)
+                    .format(DecodeFormat.PREFER_RGB_565)
+                    .centerCrop()
                     .override(size, size);
-
             FutureTarget<Bitmap> target = Glide.with(context)
                     .asBitmap()
                     .apply(options)
-                    .centerCrop()
                     .load(uri)
-                    .signature(signature)
                     .submit(size, size);
 
             try {
-                Bitmap bmp = target.get();
-                if (bmp != null) {
+                Bitmap bitmap = target.get();
+                if (bitmap != null) {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
                     data = stream.toByteArray();
                 }
             } catch (Exception e) {

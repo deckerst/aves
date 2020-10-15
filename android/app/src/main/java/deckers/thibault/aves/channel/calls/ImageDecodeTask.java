@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
@@ -166,10 +166,10 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         int width = params.width;
         int height = params.height;
 
-        // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + dateModifiedSecs + rotationDegrees + isFlipped + width);
         RequestOptions options = new RequestOptions()
-                .signature(signature)
+                .format(DecodeFormat.PREFER_RGB_565)
+                // add signature to ignore cache for images which got modified but kept the same URI
+                .signature(new ObjectKey("" + dateModifiedSecs + rotationDegrees + isFlipped + width))
                 .override(width, height);
 
         FutureTarget<Bitmap> target;
@@ -179,14 +179,12 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                     .asBitmap()
                     .apply(options)
                     .load(new VideoThumbnail(activity, uri))
-                    .signature(signature)
                     .submit(width, height);
         } else {
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
                     .load(uri)
-                    .signature(signature)
                     .submit(width, height);
         }
 

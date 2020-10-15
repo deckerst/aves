@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -13,6 +14,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPUtils
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.imaging.ImageProcessingException
 import com.drew.lang.Rational
@@ -43,6 +45,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
@@ -52,6 +55,7 @@ import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import kotlin.math.roundToLong
@@ -175,13 +179,12 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        val extension = call.argument<String>("extension")
         if (mimeType == null || uri == null) {
             result.error("getCatalogMetadata-args", "failed because of missing arguments", null)
             return
         }
 
-        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, extension))
+        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType))
         if (isVideo(mimeType)) {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri))
         }
@@ -190,7 +193,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
-    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, extension: String?): Map<String, Any> {
+    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
         var foundExif = false
@@ -518,7 +521,17 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
-                exif.thumbnailBytes?.let { thumbnails.add(it) }
+                val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                exif.thumbnailBitmap?.let {
+                    val bitmap = TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), it, orientation)
+                    if (bitmap != null) {
+                        val stream = ByteArrayOutputStream()
+                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                        // Bitmap.CompressFormat.PNG is slower than JPEG
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+                        thumbnails.add(stream.toByteArray())
+                    }
+                }
             }
         } catch (e: Exception) {
             // ExifInterface initialization can fail with a RuntimeException
