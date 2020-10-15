@@ -32,6 +32,14 @@ object MimeTypes {
     @JvmStatic
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith(VIDEO)
 
+    @JvmStatic
+    // returns whether the specified MIME type represents
+    // a raster image format that allows an alpha channel
+    fun canHaveAlpha(mimeType: String?) = when (mimeType) {
+        BMP, GIF, ICO, PNG, TIFF, WEBP -> true
+        else -> false
+    }
+
     // as of Flutter v1.22.0
     @JvmStatic
     fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {

@@ -21,5 +21,6 @@ object BitmapUtils {
         return TransformationUtils.centerCrop(getBitmapPool(context), bitmap, size, size)
     }
 
-    private fun getBitmapPool(context: Context) = Glide.get(context).bitmapPool
+    @JvmStatic
+    fun getBitmapPool(context: Context) = Glide.get(context).bitmapPool
 }
