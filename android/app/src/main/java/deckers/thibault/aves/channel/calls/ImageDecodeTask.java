@@ -88,14 +88,19 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             if (w == null || h == null || w == 0 || h == 0) {
                 p.width = p.defaultSize;
                 p.height = p.defaultSize;
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        bitmap = getThumbnailBytesByResolver(p);
-                    } else {
-                        bitmap = getThumbnailBytesByMediaStore(p);
+                // EXIF orientations with flipping are not well supported by the Media Store:
+                // the content resolver may return a thumbnail that is automatically rotated
+                // according to EXIF orientation, but not flip it when necessary
+                if (!p.isFlipped) {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            bitmap = getThumbnailBytesByResolver(p);
+                        } else {
+                            bitmap = getThumbnailBytesByMediaStore(p);
+                        }
+                    } catch (Exception e) {
+                        exception = e;
                     }
-                } catch (Exception e) {
-                    exception = e;
                 }
             }
 
