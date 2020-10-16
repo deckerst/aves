@@ -8,7 +8,7 @@
 
 Aves is a gallery and metadata explorer app. It is built for Android, with Flutter.
 
-<img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.0.0/S10/1-S10-collection.jpg" alt='Collection screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.0.0/S10/2-S10-image.jpg" alt='Image screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.0.0/S10/5-S10-stats.jpg" alt='Stats screenshot' height="400" />
+<img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.2.1/S10/1-S10-collection.png" alt='Collection screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.2.1/S10/2-S10-image.png" alt='Image screenshot' height="400" /><img src="https://raw.githubusercontent.com/deckerst/aves/develop/extra/play/screenshots%20v1.2.1/S10/5-S10-stats.png" alt='Stats screenshot' height="400" />
 
 ## Features
 
