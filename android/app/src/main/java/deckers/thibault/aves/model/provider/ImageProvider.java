@@ -23,9 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import deckers.thibault.aves.model.AvesImageEntry;
+import deckers.thibault.aves.model.ExifOrientationOp;
+import deckers.thibault.aves.utils.LogUtils;
 import deckers.thibault.aves.utils.MimeTypes;
 import deckers.thibault.aves.utils.StorageUtils;
-import deckers.thibault.aves.utils.Utils;
 
 // *** about file access to write/rename/delete
 // * primary volume
@@ -37,7 +38,7 @@ import deckers.thibault.aves.utils.Utils;
 // from 21/Lollipop, use `DocumentFile` (not `File`) after getting permission to the volume root
 
 public abstract class ImageProvider {
-    private static final String LOG_TAG = Utils.createLogTag(ImageProvider.class);
+    private static final String LOG_TAG = LogUtils.createTag(ImageProvider.class);
 
     public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
         callback.onFailure(new UnsupportedOperationException());
@@ -94,7 +95,7 @@ public abstract class ImageProvider {
         }
     }
 
-    public void rotate(final Context context, final String path, final Uri uri, final String mimeType, final boolean clockwise, final ImageOpCallback callback) {
+    public void changeOrientation(final Context context, final String path, final Uri uri, final String mimeType, final ExifOrientationOp op, final ImageOpCallback callback) {
         if (!canEditExif(mimeType)) {
             callback.onFailure(new UnsupportedOperationException("unsupported mimeType=" + mimeType));
             return;
@@ -124,7 +125,17 @@ public abstract class ImageProvider {
             if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
                 exif.setAttribute(ExifInterface.TAG_ORIENTATION, Integer.toString(ExifInterface.ORIENTATION_NORMAL));
             }
-            exif.rotate(clockwise ? 90 : -90);
+            switch (op) {
+                case ROTATE_CW:
+                    exif.rotate(90);
+                    break;
+                case ROTATE_CCW:
+                    exif.rotate(-90);
+                    break;
+                case FLIP:
+                    exif.flipHorizontally();
+                    break;
+            }
             exif.saveAttributes();
 
             // copy the edited temporary file back to the original
@@ -137,26 +148,22 @@ public abstract class ImageProvider {
             return;
         }
 
-//        ContentResolver contentResolver = context.getContentResolver();
-//        ContentValues values = new ContentValues();
-//        // from Android Q, media store update needs to be flagged IS_PENDING first
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
-//            // TODO TLAD catch RecoverableSecurityException
-//            contentResolver.update(uri, values, null, null);
-//            values.clear();
-//            values.put(MediaStore.MediaColumns.IS_PENDING, 0);
-//        }
-//        // uses MediaStore.Images.Media instead of MediaStore.MediaColumns for APIs < Q
-//        values.put(MediaStore.Images.Media.ORIENTATION, rotationDegrees);
-//        // TODO TLAD catch RecoverableSecurityException
-//        int updatedRowCount = contentResolver.update(uri, values, null, null);
-//        if (updatedRowCount > 0) {
-        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (p, u) -> callback.onSuccess(newFields));
-//        } else {
-//            Log.w(LOG_TAG, "failed to update fields in Media Store for uri=" + uri);
-//            callback.onSuccess(newFields);
-//        }
+        MediaScannerConnection.scanFile(context, new String[]{path}, new String[]{mimeType}, (p, u) -> {
+            String[] projection = {MediaStore.MediaColumns.DATE_MODIFIED};
+            try {
+                Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToNext()) {
+                        newFields.put("dateModifiedSecs", cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)));
+                    }
+                    cursor.close();
+                }
+            } catch (Exception e) {
+                callback.onFailure(e);
+                return;
+            }
+            callback.onSuccess(newFields);
+        });
     }
 
     protected void scanNewPath(final Context context, final String path, final String mimeType, final ImageOpCallback callback) {

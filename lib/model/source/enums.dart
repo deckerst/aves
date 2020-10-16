@@ -1,6 +1,6 @@
 enum Activity { browse, select }
 
-enum ChipSortFactor { date, name }
+enum ChipSortFactor { date, name, count }
 
 enum EntrySortFactor { date, size, name }
 

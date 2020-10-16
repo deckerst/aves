@@ -82,7 +82,8 @@ class FullscreenTopOverlay extends StatelessWidget {
         return entry.canEdit;
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
-        return entry.canRotate;
+      case EntryAction.flip:
+        return entry.canRotateAndFlip;
       case EntryAction.print:
         return entry.canPrint;
       case EntryAction.openMap:
@@ -136,6 +137,7 @@ class _TopOverlayRow extends StatelessWidget {
             key: Key('entry-menu-button'),
             itemBuilder: (context) => [
               ...inAppActions.map(_buildPopupMenuItem),
+              if (entry.canRotateAndFlip) _buildRotateAndFlipMenuItems(),
               PopupMenuDivider(),
               ...externalAppActions.map(_buildPopupMenuItem),
               if (kDebugMode) ...[
@@ -166,6 +168,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rename:
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
+      case EntryAction.flip:
       case EntryAction.print:
         child = IconButton(
           icon: Icon(action.getIcon()),
@@ -207,6 +210,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rename:
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
+      case EntryAction.flip:
       case EntryAction.print:
       case EntryAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());
@@ -222,6 +226,40 @@ class _TopOverlayRow extends StatelessWidget {
     return PopupMenuItem(
       value: action,
       child: child,
+    );
+  }
+
+  PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems() {
+    Widget buildDivider() => SizedBox(
+          height: 16,
+          child: VerticalDivider(
+            width: 1,
+            thickness: 1,
+          ),
+        );
+
+    Widget buildItem(EntryAction action) => Expanded(
+          child: PopupMenuItem(
+            value: action,
+            child: Tooltip(
+              message: action.getText(),
+              child: Center(child: Icon(action.getIcon())),
+            ),
+          ),
+        );
+
+    return PopupMenuItem(
+      child: Row(
+        children: [
+          buildDivider(),
+          buildItem(EntryAction.rotateCCW),
+          buildDivider(),
+          buildItem(EntryAction.rotateCW),
+          buildDivider(),
+          buildItem(EntryAction.flip),
+          buildDivider(),
+        ],
+      ),
     );
   }
 }

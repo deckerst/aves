@@ -28,11 +28,11 @@ mixin PermissionAwareMixin {
             title: 'Storage Volume Access',
             content: Text('Please select the $dirDisplayName directory of “$volumeDescription” in the next screen, so that this app can access it and complete your request.'),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text('Cancel'.toUpperCase()),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.pop(context, true),
                 child: Text('OK'.toUpperCase()),
               ),

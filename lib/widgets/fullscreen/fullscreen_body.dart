@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
@@ -10,8 +9,6 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
-import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
-import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
@@ -541,19 +538,6 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
-    await UriImage(
-      uri: entry.uri,
-      mimeType: entry.mimeType,
-      rotationDegrees: entry.rotationDegrees,
-    ).evict();
-    // evict low quality thumbnail (without specified extents)
-    await ThumbnailProvider(entry: entry).evict();
-    // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)
-    final extents = List.generate(6, (index) => pow(2, index + 5).toDouble());
-    await Future.forEach<double>(extents, (extent) => ThumbnailProvider(entry: entry, extent: extent).evict());
-
-    await ThumbnailProvider(entry: entry).evict();
-    if (entry.path != null) await FileImage(File(entry.path)).evict();
     // rebuild to refresh the Image inside ImagePage
     setState(() {});
   }

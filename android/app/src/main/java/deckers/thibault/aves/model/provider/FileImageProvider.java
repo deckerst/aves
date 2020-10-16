@@ -8,14 +8,13 @@ import androidx.annotation.NonNull;
 import java.io.File;
 
 import deckers.thibault.aves.model.SourceImageEntry;
-import deckers.thibault.aves.utils.FileUtils;
 
 class FileImageProvider extends ImageProvider {
     @Override
     public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
         SourceImageEntry entry = new SourceImageEntry(uri, mimeType);
 
-        String path = FileUtils.getPathFromUri(context, uri);
+        String path = uri.getPath();
         if (path != null) {
             try {
                 File file = new File(path);
@@ -28,7 +27,7 @@ class FileImageProvider extends ImageProvider {
         }
         entry.fillPreCatalogMetadata(context);
 
-        if (entry.getHasSize() || entry.isSvg()) {
+        if (entry.isSized() || entry.isSvg()) {
             callback.onSuccess(entry.toMap());
         } else {
             callback.onFailure(new Exception("entry has no size"));

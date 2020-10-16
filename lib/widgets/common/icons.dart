@@ -11,6 +11,7 @@ class AIcons {
   static const IconData allCollection = Icons.collections_outlined;
   static const IconData image = Icons.photo_outlined;
   static const IconData video = Icons.movie_outlined;
+  static const IconData audio = Icons.audiotrack_outlined;
   static const IconData vector = Icons.code_outlined;
 
   static const IconData android = Icons.android;
@@ -34,6 +35,7 @@ class AIcons {
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
   static const IconData expand = Icons.expand_more_outlined;
+  static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
   static const IconData favouriteActive = Icons.favorite;
   static const IconData goUp = Icons.arrow_upward_outlined;

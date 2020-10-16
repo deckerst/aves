@@ -62,42 +62,56 @@ class AlbumListPage extends StatelessWidget {
     final pinned = settings.pinnedFilters.whereType<AlbumFilter>().map((f) => f.album);
     final entriesByDate = source.sortedEntriesForFilterList;
 
-    switch (settings.albumSortFactor) {
-      case ChipSortFactor.date:
-        final allAlbumMapEntries = source.sortedAlbums.map((album) => MapEntry(
-              album,
-              entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
-            ));
-        final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allAlbumMapEntries, (e) => pinned.contains(e.key));
-        final pinnedMapEntries = (byPin[true] ?? [])..sort(FilterNavigationPage.compareChipsByDate);
-        final unpinnedMapEntries = (byPin[false] ?? [])..sort(FilterNavigationPage.compareChipsByDate);
-        return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
-      case ChipSortFactor.name:
-      default:
-        final pinnedAlbums = <String>[], regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
-        for (var album in source.sortedAlbums) {
-          if (pinned.contains(album)) {
-            pinnedAlbums.add(album);
-          } else {
-            switch (androidFileUtils.getAlbumType(album)) {
-              case AlbumType.regular:
-                regularAlbums.add(album);
-                break;
-              case AlbumType.app:
-                appAlbums.add(album);
-                break;
-              default:
-                specialAlbums.add(album);
-                break;
-            }
+    // albums are initially sorted by name at the source level
+    var sortedAlbums = source.sortedAlbums;
+
+    if (settings.albumSortFactor == ChipSortFactor.name) {
+      final pinnedAlbums = <String>[], regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
+      for (var album in sortedAlbums) {
+        if (pinned.contains(album)) {
+          pinnedAlbums.add(album);
+        } else {
+          switch (androidFileUtils.getAlbumType(album)) {
+            case AlbumType.regular:
+              regularAlbums.add(album);
+              break;
+            case AlbumType.app:
+              appAlbums.add(album);
+              break;
+            default:
+              specialAlbums.add(album);
+              break;
           }
         }
-        return Map.fromEntries([...pinnedAlbums, ...specialAlbums, ...appAlbums, ...regularAlbums].map((album) {
-          return MapEntry(
-            album,
-            entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
-          );
-        }));
+      }
+      return Map.fromEntries([...pinnedAlbums, ...specialAlbums, ...appAlbums, ...regularAlbums].map((album) {
+        return MapEntry(
+          album,
+          entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
+        );
+      }));
     }
+
+    if (settings.albumSortFactor == ChipSortFactor.count) {
+      CollectionFilter _buildFilter(String album) => AlbumFilter(album, source.getUniqueAlbumName(album));
+      var filtersWithCount = List.of(sortedAlbums.map((s) => MapEntry(s, source.count(_buildFilter(s)))));
+      filtersWithCount.sort(FilterNavigationPage.compareChipsByEntryCount);
+      sortedAlbums = filtersWithCount.map((kv) => kv.key).toList();
+    }
+
+    final allMapEntries = sortedAlbums.map((album) => MapEntry(
+          album,
+          entriesByDate.firstWhere((entry) => entry.directory == album, orElse: () => null),
+        ));
+    final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allMapEntries, (e) => pinned.contains(e.key));
+    final pinnedMapEntries = (byPin[true] ?? []);
+    final unpinnedMapEntries = (byPin[false] ?? []);
+
+    if (settings.albumSortFactor == ChipSortFactor.date) {
+      pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
+      unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
+    }
+
+    return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
   }
 }

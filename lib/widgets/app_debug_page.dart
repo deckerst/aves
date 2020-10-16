@@ -19,18 +19,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class DebugPage extends StatefulWidget {
+class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
 
   final CollectionSource source;
 
-  const DebugPage({this.source});
+  const AppDebugPage({this.source});
 
   @override
-  State<StatefulWidget> createState() => DebugPageState();
+  State<StatefulWidget> createState() => AppDebugPageState();
 }
 
-class DebugPageState extends State<DebugPage> {
+class AppDebugPageState extends State<AppDebugPage> {
   Future<int> _dbFileSizeLoader;
   Future<List<ImageEntry>> _dbEntryLoader;
   Future<List<DateMetadata>> _dbDateLoader;
@@ -103,7 +103,7 @@ class DebugPageState extends State<DebugPage> {
               child: Text('Crashlytics'),
             ),
             SizedBox(width: 8),
-            RaisedButton(
+            ElevatedButton(
               onPressed: FirebaseCrashlytics.instance.crash,
               child: Text('Crash'),
             ),
@@ -123,7 +123,7 @@ class DebugPageState extends State<DebugPage> {
               child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t${formatFilesize(imageCache.currentSizeBytes)}/${formatFilesize(imageCache.maximumSizeBytes)}'),
             ),
             SizedBox(width: 8),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 imageCache.clear();
                 setState(() {});
@@ -138,7 +138,7 @@ class DebugPageState extends State<DebugPage> {
               child: Text('SVG cache: ${PictureProvider.cacheCount} items'),
             ),
             SizedBox(width: 8),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 PictureProvider.clearCache();
                 setState(() {});
@@ -153,7 +153,7 @@ class DebugPageState extends State<DebugPage> {
               child: Text('Glide disk cache: ?'),
             ),
             SizedBox(width: 8),
-            RaisedButton(
+            ElevatedButton(
               onPressed: ImageFileService.clearSizedThumbnailDiskCache,
               child: Text('Clear'),
             ),
@@ -171,7 +171,7 @@ class DebugPageState extends State<DebugPage> {
                   child: Text('DB file size: ${formatFilesize(snapshot.data)}'),
                 ),
                 SizedBox(width: 8),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
                   child: Text('Reset'),
                 ),
@@ -190,7 +190,7 @@ class DebugPageState extends State<DebugPage> {
                   child: Text('DB entry rows: ${snapshot.data.length}'),
                 ),
                 SizedBox(width: 8),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => metadataDb.clearEntries().then((_) => _startDbReport()),
                   child: Text('Clear'),
                 ),
@@ -209,7 +209,7 @@ class DebugPageState extends State<DebugPage> {
                   child: Text('DB date rows: ${snapshot.data.length}'),
                 ),
                 SizedBox(width: 8),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => metadataDb.clearDates().then((_) => _startDbReport()),
                   child: Text('Clear'),
                 ),
@@ -228,7 +228,7 @@ class DebugPageState extends State<DebugPage> {
                   child: Text('DB metadata rows: ${snapshot.data.length}'),
                 ),
                 SizedBox(width: 8),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => metadataDb.clearMetadataEntries().then((_) => _startDbReport()),
                   child: Text('Clear'),
                 ),
@@ -247,7 +247,7 @@ class DebugPageState extends State<DebugPage> {
                   child: Text('DB address rows: ${snapshot.data.length}'),
                 ),
                 SizedBox(width: 8),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
                   child: Text('Clear'),
                 ),
@@ -266,7 +266,7 @@ class DebugPageState extends State<DebugPage> {
                   child: Text('DB favourite rows: ${snapshot.data.length} (${favourites.count} in memory)'),
                 ),
                 SizedBox(width: 8),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => favourites.clear().then((_) => _startDbReport()),
                   child: Text('Clear'),
                 ),
@@ -288,7 +288,7 @@ class DebugPageState extends State<DebugPage> {
               child: Text('Settings'),
             ),
             SizedBox(width: 8),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () => settings.reset().then((_) => setState(() {})),
               child: Text('Reset'),
             ),

@@ -14,16 +14,16 @@ import com.drew.metadata.jpeg.JpegDirectory
 import com.drew.metadata.mp4.Mp4Directory
 import com.drew.metadata.mp4.media.Mp4VideoDirectory
 import com.drew.metadata.photoshop.PsdHeaderDirectory
-import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeDateMillis
-import deckers.thibault.aves.utils.ExifInterfaceHelper.getSafeInt
-import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeDateMillis
-import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeInt
-import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeLong
-import deckers.thibault.aves.utils.MediaMetadataRetrieverHelper.getSafeString
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeDateMillis
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeInt
-import deckers.thibault.aves.utils.MetadataExtractorHelper.getSafeLong
-import deckers.thibault.aves.utils.Metadata.getRotationDegreesForExifCode
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeString
+import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.IOException
@@ -101,14 +101,11 @@ class SourceImageEntry {
             return null
         }
 
-    val hasSize: Boolean
+    val isSized: Boolean
         get() = width ?: 0 > 0 && height ?: 0 > 0
 
     private val hasDuration: Boolean
         get() = durationMillis ?: 0 > 0
-
-    private val isImage: Boolean
-        get() = MimeTypes.isImage(sourceMimeType)
 
     private val isVideo: Boolean
         get() = MimeTypes.isVideo(sourceMimeType)
@@ -123,15 +120,15 @@ class SourceImageEntry {
         if (isSvg) return this
         if (isVideo) {
             fillVideoByMediaMetadataRetriever(context)
-            if (hasSize && hasDuration) return this
+            if (isSized && hasDuration) return this
         }
         if (MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) {
             fillByMetadataExtractor(context)
-            if (hasSize && foundExif) return this
+            if (isSized && foundExif) return this
         }
         if (ExifInterface.isSupportedMimeType(sourceMimeType)) {
             fillByExifInterface(context)
-            if (hasSize) return this
+            if (isSized) return this
         }
         fillByBitmapDecode(context)
         return this
@@ -158,7 +155,7 @@ class SourceImageEntry {
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val metadata = ImageMetadataReader.readMetadata(input)
 
                 // do not switch on specific mime types, as the reported mime type could be wrong
@@ -209,7 +206,7 @@ class SourceImageEntry {
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
                 foundExif = true
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }
@@ -226,7 +223,7 @@ class SourceImageEntry {
     // finds: width, height
     private fun fillByBitmapDecode(context: Context) {
         try {
-            StorageUtils.openInputStream(context, uri).use { input ->
+            StorageUtils.openInputStream(context, uri)?.use { input ->
                 val options = BitmapFactory.Options()
                 options.inJustDecodeBounds = true
                 BitmapFactory.decodeStream(input, null, options)

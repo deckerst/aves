@@ -39,11 +39,13 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
     try {
       final bytes = await AndroidAppService.getAppIcon(key.packageName, key.size);
-      if (bytes == null) return null;
+      if (bytes == null) {
+        throw StateError('$packageName app icon loading failed');
+      }
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with packageName=$packageName, error=$error');
-      return null;
+      throw StateError('$packageName app icon decoding failed');
     }
   }
 }

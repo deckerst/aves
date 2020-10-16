@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Map;
 
-import deckers.thibault.aves.model.AvesImageEntry;
+import deckers.thibault.aves.model.ExifOrientationOp;
 import deckers.thibault.aves.model.provider.ImageProvider;
 import deckers.thibault.aves.model.provider.ImageProviderFactory;
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider;
@@ -58,6 +58,9 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             case "rotate":
                 new Thread(() -> rotate(call, new MethodResultWrapper(result))).start();
                 break;
+            case "flip":
+                new Thread(() -> flip(call, new MethodResultWrapper(result))).start();
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -65,12 +68,16 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Map<String, Object> entryMap = call.argument("entry");
+        String uri = call.argument("uri");
+        String mimeType = call.argument("mimeType");
+        Number dateModifiedSecs = (Number)call.argument("dateModifiedSecs");
+        Integer rotationDegrees = call.argument("rotationDegrees");
+        Boolean isFlipped = call.argument("isFlipped");
         Double widthDip = call.argument("widthDip");
         Double heightDip = call.argument("heightDip");
         Double defaultSizeDip = call.argument("defaultSizeDip");
 
-        if (entryMap == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
+        if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
             result.error("getThumbnail-args", "failed because of missing arguments", null);
             return;
         }
@@ -80,8 +87,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         int height = (int) Math.round(heightDip * density);
         int defaultSize = (int) Math.round(defaultSizeDip * density);
 
-        AvesImageEntry entry = new AvesImageEntry(entryMap);
-        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(entry, width, height, defaultSize, result));
+        new ImageDecodeTask(activity).execute(new ImageDecodeTask.Params(uri, mimeType, dateModifiedSecs.longValue(), rotationDegrees, isFlipped, width, height, defaultSize, result));
     }
 
     private void getObsoleteEntries(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
@@ -167,7 +173,8 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             result.error("rotate-provider", "failed to find provider for uri=" + uri, null);
             return;
         }
-        provider.rotate(activity, path, uri, mimeType, clockwise, new ImageProvider.ImageOpCallback() {
+        ExifOrientationOp op = clockwise ? ExifOrientationOp.ROTATE_CW : ExifOrientationOp.ROTATE_CCW;
+        provider.changeOrientation(activity, path, uri, mimeType, op, new ImageProvider.ImageOpCallback() {
             @Override
             public void onSuccess(Map<String, Object> newFields) {
                 new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
@@ -176,6 +183,34 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
             @Override
             public void onFailure(Throwable throwable) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", throwable.getMessage()));
+            }
+        });
+    }
+
+    private void flip(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+        Map<String, Object> entryMap = call.argument("entry");
+        if (entryMap == null) {
+            result.error("flip-args", "failed because of missing arguments", null);
+            return;
+        }
+        Uri uri = Uri.parse((String) entryMap.get("uri"));
+        String path = (String) entryMap.get("path");
+        String mimeType = (String) entryMap.get("mimeType");
+
+        ImageProvider provider = ImageProviderFactory.getProvider(uri);
+        if (provider == null) {
+            result.error("flip-provider", "failed to find provider for uri=" + uri, null);
+            return;
+        }
+        provider.changeOrientation(activity, path, uri, mimeType, ExifOrientationOp.FLIP, new ImageProvider.ImageOpCallback() {
+            @Override
+            public void onSuccess(Map<String, Object> newFields) {
+                new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                new Handler(Looper.getMainLooper()).post(() -> result.error("flip-failure", "failed to flip", throwable.getMessage()));
             }
         });
     }
