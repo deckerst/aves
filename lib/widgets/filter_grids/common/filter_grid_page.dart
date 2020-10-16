@@ -153,6 +153,11 @@ class FilterNavigationPage extends StatelessWidget {
     final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
     return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
   }
+
+  static int compareChipsByEntryCount(MapEntry<String, num> a, MapEntry<String, num> b) {
+    final c = b.value.compareTo(a.value) ?? -1;
+    return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
+  }
 }
 
 class FilterGridPage extends StatelessWidget {
