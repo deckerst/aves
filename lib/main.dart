@@ -65,6 +65,21 @@ class _AvesAppState extends State<AvesApp> {
         ),
       ),
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        primary: accentColor,
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        primary: accentColor,
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+      ),
+    ),
   );
 
   Widget get firstPage => settings.hasAcceptedTerms ? HomePage() : WelcomePage();

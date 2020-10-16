@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 enum EntryAction {
   delete,
   edit,
+  flip,
   info,
   open,
   openMap,
@@ -29,8 +30,6 @@ class EntryActions {
     EntryAction.share,
     EntryAction.delete,
     EntryAction.rename,
-    EntryAction.rotateCCW,
-    EntryAction.rotateCW,
     EntryAction.print,
   ];
 
@@ -56,9 +55,11 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.rename:
         return 'Rename';
       case EntryAction.rotateCCW:
-        return 'Rotate left';
+        return 'Rotate counterclockwise';
       case EntryAction.rotateCW:
-        return 'Rotate right';
+        return 'Rotate clockwise';
+      case EntryAction.flip:
+        return 'Flip horizontally';
       case EntryAction.print:
         return 'Print';
       case EntryAction.share:
@@ -94,6 +95,8 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.rotateLeft;
       case EntryAction.rotateCW:
         return AIcons.rotateRight;
+      case EntryAction.flip:
+        return AIcons.flip;
       case EntryAction.print:
         return AIcons.print;
       case EntryAction.share:

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -75,8 +77,8 @@ class ImageEntry {
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
     )
-      .._catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
-      .._addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
+      ..catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
+      ..addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
 
     return copied;
   }
@@ -154,7 +156,7 @@ class ImageEntry {
 
   // the MIME type reported by the Media Store is unreliable
   // so we use the one found during cataloguing if possible
-  String get mimeType => catalogMetadata?.mimeType ?? sourceMimeType;
+  String get mimeType => _catalogMetadata?.mimeType ?? sourceMimeType;
 
   String get mimeTypeAnySubtype => mimeType.replaceAll(RegExp('/.*'), '/*');
 
@@ -173,13 +175,11 @@ class ImageEntry {
 
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
-  bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
-
   bool get canEdit => path != null;
 
   bool get canPrint => !isVideo;
 
-  bool get canRotate => canEdit && canEditExif;
+  bool get canRotateAndFlip => canEdit && canEditExif;
 
   // support for writing EXIF
   // as of androidx.exifinterface:exifinterface:1.3.0
@@ -194,7 +194,7 @@ class ImageEntry {
     }
   }
 
-  bool get portrait => ((isVideo && isCatalogued) ? _catalogMetadata.rotationDegrees : rotationDegrees) % 180 == 90;
+  bool get portrait => rotationDegrees % 180 == 90;
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
@@ -220,12 +220,16 @@ class ImageEntry {
     return _bestDate;
   }
 
-  int get rotationDegrees => catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
+  int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees ?? 0;
 
   set rotationDegrees(int rotationDegrees) {
     sourceRotationDegrees = rotationDegrees;
-    catalogMetadata?.rotationDegrees = rotationDegrees;
+    _catalogMetadata?.rotationDegrees = rotationDegrees;
   }
+
+  bool get isFlipped => _catalogMetadata?.isFlipped ?? false;
+
+  set isFlipped(bool isFlipped) => _catalogMetadata?.isFlipped = isFlipped;
 
   int get dateModifiedSecs => _dateModifiedSecs;
 
@@ -276,10 +280,16 @@ class ImageEntry {
   }
 
   set catalogMetadata(CatalogMetadata newMetadata) {
+    final oldDateModifiedSecs = dateModifiedSecs;
+    final oldRotationDegrees = rotationDegrees;
+    final oldIsFlipped = isFlipped;
+
     catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
+
+    _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
   }
 
   void clearMetadata() {
@@ -351,12 +361,7 @@ class ImageEntry {
     return false;
   }
 
-  Future<bool> rename(String newName) async {
-    if (newName == filenameWithoutExtension) return true;
-
-    final newFields = await ImageFileService.rename(this, '$newName$extension');
-    if (newFields.isEmpty) return false;
-
+  Future<void> _applyNewFields(Map newFields) async {
     final uri = newFields['uri'];
     if (uri is String) this.uri = uri;
     final path = newFields['path'];
@@ -365,6 +370,24 @@ class ImageEntry {
     if (contentId is int) this.contentId = contentId;
     final sourceTitle = newFields['title'];
     if (sourceTitle is String) this.sourceTitle = sourceTitle;
+    final dateModifiedSecs = newFields['dateModifiedSecs'];
+    if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
+    final rotationDegrees = newFields['rotationDegrees'];
+    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
+    final isFlipped = newFields['isFlipped'];
+    if (isFlipped is bool) this.isFlipped = isFlipped;
+
+    await metadataDb.saveEntries({this});
+    await metadataDb.saveMetadata({catalogMetadata});
+  }
+
+  Future<bool> rename(String newName) async {
+    if (newName == filenameWithoutExtension) return true;
+
+    final newFields = await ImageFileService.rename(this, '$newName$extension');
+    if (newFields.isEmpty) return false;
+
+    await _applyNewFields(newFields);
     _bestTitle = null;
     metadataChangeNotifier.notifyListeners();
     return true;
@@ -374,14 +397,23 @@ class ImageEntry {
     final newFields = await ImageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
-    final width = newFields['width'];
-    if (width is int) this.width = width;
-    final height = newFields['height'];
-    if (height is int) this.height = height;
-    final rotationDegrees = newFields['rotationDegrees'];
-    if (rotationDegrees is int) this.rotationDegrees = rotationDegrees;
+    final oldDateModifiedSecs = dateModifiedSecs;
+    final oldRotationDegrees = rotationDegrees;
+    final oldIsFlipped = isFlipped;
+    await _applyNewFields(newFields);
+    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+    return true;
+  }
 
-    imageChangeNotifier.notifyListeners();
+  Future<bool> flip() async {
+    final newFields = await ImageFileService.flip(this);
+    if (newFields.isEmpty) return false;
+
+    final oldDateModifiedSecs = dateModifiedSecs;
+    final oldRotationDegrees = rotationDegrees;
+    final oldIsFlipped = isFlipped;
+    await _applyNewFields(newFields);
+    await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
@@ -398,6 +430,16 @@ class ImageEntry {
     );
     return completer.future;
   }
+
+  // when the entry image itself changed (e.g. after rotation)
+  void _onImageChanged(int oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+    if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
+      await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
+      imageChangeNotifier.notifyListeners();
+    }
+  }
+
+  // favourites
 
   void toggleFavourite() {
     if (isFavourite) {
@@ -419,18 +461,29 @@ class ImageEntry {
     }
   }
 
+  // compare by:
+  // 1) title ascending
+  // 2) extension ascending
   static int compareByName(ImageEntry a, ImageEntry b) {
     final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
     return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
   }
 
+  // compare by:
+  // 1) size descending
+  // 2) name ascending
   static int compareBySize(ImageEntry a, ImageEntry b) {
     final c = b.sizeBytes.compareTo(a.sizeBytes);
     return c != 0 ? c : compareByName(a, b);
   }
 
+  static final _epoch = DateTime.fromMillisecondsSinceEpoch(0);
+
+  // compare by:
+  // 1) date descending
+  // 2) name ascending
   static int compareByDate(ImageEntry a, ImageEntry b) {
-    final c = b.bestDate?.compareTo(a.bestDate) ?? -1;
+    final c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     return c != 0 ? c : compareByName(a, b);
   }
 }

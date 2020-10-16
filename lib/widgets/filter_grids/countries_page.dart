@@ -39,7 +39,7 @@ class CountryListPage extends StatelessWidget {
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
             ],
             filterEntries: _getCountryEntries(),
-            filterBuilder: (s) => LocationFilter(LocationLevel.country, s),
+            filterBuilder: _buildFilter,
             emptyBuilder: () => EmptyContent(
               icon: AIcons.location,
               text: 'No countries',
@@ -50,12 +50,22 @@ class CountryListPage extends StatelessWidget {
     );
   }
 
+  CollectionFilter _buildFilter(String location) => LocationFilter(LocationLevel.country, location);
+
   Map<String, ImageEntry> _getCountryEntries() {
     final pinned = settings.pinnedFilters.whereType<LocationFilter>().map((f) => f.countryNameAndCode);
 
     final entriesByDate = source.sortedEntriesForFilterList;
+    // countries are initially sorted by name at the source level
+    var sortedCountries = source.sortedCountries;
+    if (settings.countrySortFactor == ChipSortFactor.count) {
+      var filtersWithCount = List.of(sortedCountries.map((s) => MapEntry(s, source.count(_buildFilter(s)))));
+      filtersWithCount.sort(FilterNavigationPage.compareChipsByEntryCount);
+      sortedCountries = filtersWithCount.map((kv) => kv.key).toList();
+    }
+
     final locatedEntries = entriesByDate.where((entry) => entry.isLocated);
-    final allMapEntries = source.sortedCountries.map((countryNameAndCode) {
+    final allMapEntries = sortedCountries.map((countryNameAndCode) {
       final split = countryNameAndCode.split(LocationFilter.locationSeparator);
       ImageEntry entry;
       if (split.length > 1) {
@@ -63,21 +73,16 @@ class CountryListPage extends StatelessWidget {
         entry = locatedEntries.firstWhere((entry) => entry.addressDetails.countryCode == countryCode, orElse: () => null);
       }
       return MapEntry(countryNameAndCode, entry);
-    }).toList();
-
+    });
     final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allMapEntries, (e) => pinned.contains(e.key));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 
-    switch (settings.countrySortFactor) {
-      case ChipSortFactor.date:
-        pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
-        unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
-        break;
-      case ChipSortFactor.name:
-        // already sorted by name at the source level
-        break;
+    if (settings.countrySortFactor == ChipSortFactor.date) {
+      pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
+      unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
     }
+
     return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
   }
 }

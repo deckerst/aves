@@ -1,4 +1,4 @@
-package deckers.thibault.aves.utils
+package deckers.thibault.aves.metadata
 
 import com.drew.lang.Rational
 import com.drew.metadata.Directory
@@ -9,6 +9,10 @@ object MetadataExtractorHelper {
 
     fun Directory.getSafeDescription(tag: Int, save: (value: String) -> Unit) {
         if (this.containsTag(tag)) save(this.getDescription(tag))
+    }
+
+    fun Directory.getSafeString(tag: Int, save: (value: String) -> Unit) {
+        if (this.containsTag(tag)) save(this.getString(tag))
     }
 
     fun Directory.getSafeBoolean(tag: Int, save: (value: Boolean) -> Unit) {

@@ -39,7 +39,7 @@ class TagListPage extends StatelessWidget {
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
             ],
             filterEntries: _getTagEntries(),
-            filterBuilder: (s) => TagFilter(s),
+            filterBuilder: _buildFilter,
             emptyBuilder: () => EmptyContent(
               icon: AIcons.tag,
               text: 'No tags',
@@ -50,30 +50,33 @@ class TagListPage extends StatelessWidget {
     );
   }
 
+  CollectionFilter _buildFilter(String tag) => TagFilter(tag);
+
   Map<String, ImageEntry> _getTagEntries() {
     final pinned = settings.pinnedFilters.whereType<TagFilter>().map((f) => f.tag);
 
     final entriesByDate = source.sortedEntriesForFilterList;
-    final allMapEntries = source.sortedTags
-        .map((tag) => MapEntry(
-              tag,
-              entriesByDate.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),
-            ))
-        .toList();
+    // tags are initially sorted by name at the source level
+    var sortedTags = source.sortedTags;
+    if (settings.tagSortFactor == ChipSortFactor.count) {
+      var filtersWithCount = List.of(sortedTags.map((s) => MapEntry(s, source.count(_buildFilter(s)))));
+      filtersWithCount.sort(FilterNavigationPage.compareChipsByEntryCount);
+      sortedTags = filtersWithCount.map((kv) => kv.key).toList();
+    }
 
+    final allMapEntries = sortedTags.map((tag) => MapEntry(
+          tag,
+          entriesByDate.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),
+        ));
     final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allMapEntries, (e) => pinned.contains(e.key));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 
-    switch (settings.tagSortFactor) {
-      case ChipSortFactor.date:
-        pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
-        unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
-        break;
-      case ChipSortFactor.name:
-        // already sorted by name at the source level
-        break;
+    if (settings.tagSortFactor == ChipSortFactor.date) {
+      pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
+      unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
     }
+
     return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
   }
 }

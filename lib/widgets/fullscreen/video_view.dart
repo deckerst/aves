@@ -80,7 +80,7 @@ class AvesVideoState extends State<AvesVideo> {
                             color: Colors.black,
                           );
 
-                    final degree = entry.catalogMetadata?.rotationDegrees ?? 0;
+                    final degree = entry.rotationDegrees ?? 0;
                     if (degree != 0) {
                       child = RotatedBox(
                         quarterTurns: degree ~/ 90,
@@ -102,6 +102,7 @@ class AvesVideoState extends State<AvesVideo> {
                     uri: entry.uri,
                     mimeType: entry.mimeType,
                     rotationDegrees: entry.rotationDegrees,
+                    isFlipped: entry.isFlipped,
                     expectedContentLength: entry.sizeBytes,
                   ),
                   width: entry.width.toDouble(),

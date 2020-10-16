@@ -5,19 +5,20 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
@@ -27,21 +28,28 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import deckers.thibault.aves.decoder.VideoThumbnail;
-import deckers.thibault.aves.model.AvesImageEntry;
+import deckers.thibault.aves.utils.BitmapUtils;
+import deckers.thibault.aves.utils.LogUtils;
 import deckers.thibault.aves.utils.MimeTypes;
-import deckers.thibault.aves.utils.Utils;
 import io.flutter.plugin.common.MethodChannel;
 
 public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, ImageDecodeTask.Result> {
-    private static final String LOG_TAG = Utils.createLogTag(ImageDecodeTask.class);
+    private static final String LOG_TAG = LogUtils.createTag(ImageDecodeTask.class);
 
     static class Params {
-        AvesImageEntry entry;
-        Integer width, height, defaultSize;
+        Uri uri;
+        String mimeType;
+        Long dateModifiedSecs;
+        Integer rotationDegrees, width, height, defaultSize;
+        Boolean isFlipped;
         MethodChannel.Result result;
 
-        Params(AvesImageEntry entry, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
-            this.entry = entry;
+        Params(@NonNull String uri, @NonNull String mimeType, @NonNull Long dateModifiedSecs, @NonNull Integer rotationDegrees, @NonNull Boolean isFlipped, @Nullable Integer width, @Nullable Integer height, Integer defaultSize, MethodChannel.Result result) {
+            this.uri = Uri.parse(uri);
+            this.mimeType = mimeType;
+            this.dateModifiedSecs = dateModifiedSecs;
+            this.rotationDegrees = rotationDegrees;
+            this.isFlipped = isFlipped;
             this.width = width;
             this.height = height;
             this.result = result;
@@ -80,14 +88,19 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
             if (w == null || h == null || w == 0 || h == 0) {
                 p.width = p.defaultSize;
                 p.height = p.defaultSize;
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        bitmap = getThumbnailBytesByResolver(p);
-                    } else {
-                        bitmap = getThumbnailBytesByMediaStore(p);
+                // EXIF orientations with flipping are not well supported by the Media Store:
+                // the content resolver may return a thumbnail that is automatically rotated
+                // according to EXIF orientation, but not flip it when necessary
+                if (!p.isFlipped) {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            bitmap = getThumbnailBytesByResolver(p);
+                        } else {
+                            bitmap = getThumbnailBytesByMediaStore(p);
+                        }
+                    } catch (Exception e) {
+                        exception = e;
                     }
-                } catch (Exception e) {
-                    exception = e;
                 }
             }
 
@@ -100,7 +113,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
                 exception = e;
             }
         } else {
-            Log.d(LOG_TAG, "getThumbnail with uri=" + p.entry.uri + " cancelled");
+            Log.d(LOG_TAG, "getThumbnail with uri=" + p.uri + " cancelled");
         }
 
         byte[] data = null;
@@ -124,70 +137,66 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private Bitmap getThumbnailBytesByResolver(Params params) throws IOException {
-        AvesImageEntry entry = params.entry;
-        Integer width = params.width;
-        Integer height = params.height;
-
         ContentResolver resolver = activity.getContentResolver();
-        Bitmap bitmap = resolver.loadThumbnail(entry.uri, new Size(width, height), null);
-        String mimeType = entry.mimeType;
+        Bitmap bitmap = resolver.loadThumbnail(params.uri, new Size(params.width, params.height), null);
+        String mimeType = params.mimeType;
         if (MimeTypes.needRotationAfterContentResolverThumbnail(mimeType)) {
-            bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
+            bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, params.rotationDegrees, params.isFlipped);
         }
         return bitmap;
     }
 
     private Bitmap getThumbnailBytesByMediaStore(Params params) {
-        AvesImageEntry entry = params.entry;
-        long contentId = ContentUris.parseId(entry.uri);
+        long contentId = ContentUris.parseId(params.uri);
 
         ContentResolver resolver = activity.getContentResolver();
-        if (entry.isVideo()) {
+        if (MimeTypes.isVideo(params.mimeType)) {
             return MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null);
         } else {
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null);
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
+                bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, params.rotationDegrees, params.isFlipped);
             }
             return bitmap;
         }
     }
 
     private Bitmap getThumbnailByGlide(Params params) throws ExecutionException, InterruptedException {
-        AvesImageEntry entry = params.entry;
+        Uri uri = params.uri;
+        String mimeType = params.mimeType;
+        Long dateModifiedSecs = params.dateModifiedSecs;
+        Integer rotationDegrees = params.rotationDegrees;
+        Boolean isFlipped = params.isFlipped;
         int width = params.width;
         int height = params.height;
 
-        // add signature to ignore cache for images which got modified but kept the same URI
-        Key signature = new ObjectKey("" + entry.dateModifiedSecs + entry.width + entry.rotationDegrees);
         RequestOptions options = new RequestOptions()
-                .signature(signature)
+                .format(DecodeFormat.PREFER_RGB_565)
+                // add signature to ignore cache for images which got modified but kept the same URI
+                .signature(new ObjectKey("" + dateModifiedSecs + rotationDegrees + isFlipped + width))
                 .override(width, height);
 
         FutureTarget<Bitmap> target;
-        if (entry.isVideo()) {
+        if (MimeTypes.isVideo(mimeType)) {
             options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
-                    .load(new VideoThumbnail(activity, entry.uri))
-                    .signature(signature)
+                    .load(new VideoThumbnail(activity, uri))
                     .submit(width, height);
         } else {
             target = Glide.with(activity)
                     .asBitmap()
                     .apply(options)
-                    .load(entry.uri)
-                    .signature(signature)
+                    .load(uri)
                     .submit(width, height);
         }
 
         try {
             Bitmap bitmap = target.get();
-            String mimeType = entry.mimeType;
             if (MimeTypes.needRotationAfterGlide(mimeType)) {
-                bitmap = rotateBitmap(bitmap, entry.rotationDegrees);
+                bitmap = BitmapUtils.applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped);
             }
             return bitmap;
         } finally {
@@ -195,24 +204,15 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
         }
     }
 
-    private Bitmap rotateBitmap(Bitmap bitmap, Integer rotationDegrees) {
-        if (bitmap != null && rotationDegrees != null) {
-            // TODO TLAD use exif orientation to rotate & flip?
-            bitmap = TransformationUtils.rotateImage(bitmap, rotationDegrees);
-        }
-        return bitmap;
-    }
-
     @Override
     protected void onPostExecute(Result result) {
         Params params = result.params;
         MethodChannel.Result r = params.result;
-        AvesImageEntry entry = params.entry;
-        String uri = entry.uri.toString();
+        String uri = params.uri.toString();
         if (result.data != null) {
             r.success(result.data);
         } else {
-            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri + ", path=" + entry.path, result.errorDetails);
+            r.error("getThumbnail-null", "failed to get thumbnail for uri=" + uri, result.errorDetails);
         }
     }
 }

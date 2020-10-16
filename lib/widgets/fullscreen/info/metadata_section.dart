@@ -33,10 +33,10 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
   bool get isVisible => widget.visibleNotifier.value;
 
-  // directory names from metadata-extractor
+  // special directory names
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
-  static const videoDirectory = 'Video'; // additional generic video directory
+  static const mediaDirectory = 'Media'; // additional media (video/audio/images) directory
 
   @override
   void initState() {
@@ -87,13 +87,43 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
             return InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength);
           }
           final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
+          Widget thumbnail;
+          final prefixChildren = <Widget>[];
+          switch (dir.name) {
+            case exifThumbnailDirectory:
+              thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry);
+              break;
+            case xmpDirectory:
+              thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
+              break;
+            case mediaDirectory:
+              thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry);
+              Widget builder(IconData data) => Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Icon(data),
+                  );
+              if (dir.tags['Has Video'] == 'yes') prefixChildren.add(builder(AIcons.video));
+              if (dir.tags['Has Audio'] == 'yes') prefixChildren.add(builder(AIcons.audio));
+              if (dir.tags['Has Image'] == 'yes') {
+                int count;
+                if (dir.tags.containsKey('Image Count')) {
+                  count = int.tryParse(dir.tags['Image Count']);
+                }
+                prefixChildren.addAll(List.generate(count ?? 1, (i) => builder(AIcons.image)));
+              }
+              break;
+          }
+
           return AvesExpansionTile(
             title: dir.name,
             expandedNotifier: _expandedDirectoryNotifier,
             children: [
-              if (dir.name == exifThumbnailDirectory) MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry),
-              if (dir.name == xmpDirectory) MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry),
-              if (dir.name == videoDirectory) MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry),
+              if (prefixChildren.isNotEmpty)
+                Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: Wrap(children: prefixChildren),
+                ),
+              if (thumbnail != null) thumbnail,
               Container(
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),

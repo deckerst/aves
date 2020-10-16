@@ -46,6 +46,7 @@ abstract class ChipSetActionDelegate {
         options: {
           ChipSortFactor.date: 'By date',
           ChipSortFactor.name: 'By name',
+          ChipSortFactor.count: 'By entry count',
         },
         title: 'Sort',
       ),

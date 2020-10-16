@@ -8,7 +8,7 @@ import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
 import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
-import 'package:aves/widgets/fullscreen/debug.dart';
+import 'package:aves/widgets/fullscreen/fullscreen_debug_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,6 +60,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       case EntryAction.rotateCW:
         _rotate(context, entry, clockwise: true);
         break;
+      case EntryAction.flip:
+        _flip(context, entry);
+        break;
       case EntryAction.setAs:
         AndroidAppService.setAs(entry.uri, entry.mimeType);
         break;
@@ -76,12 +79,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final uri = entry.uri;
     final mimeType = entry.mimeType;
     final rotationDegrees = entry.rotationDegrees;
+    final isFlipped = entry.isFlipped;
     final documentName = entry.bestTitle ?? 'Aves';
     final doc = pdf.Document(title: documentName);
 
     PdfImage pdfImage;
     if (entry.isSvg) {
-      final bytes = await ImageFileService.getImage(uri, mimeType, rotationDegrees: entry.rotationDegrees);
+      final bytes = await ImageFileService.getImage(uri, mimeType, entry.rotationDegrees, entry.isFlipped);
       if (bytes != null && bytes.isNotEmpty) {
         final svgRoot = await svg.fromSvgBytes(bytes, uri);
         final viewBox = svgRoot.viewport.viewBox;
@@ -101,6 +105,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
           uri: uri,
           mimeType: mimeType,
           rotationDegrees: rotationDegrees,
+          isFlipped: isFlipped,
         ),
       );
     }
@@ -111,6 +116,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         name: documentName,
       ));
     }
+  }
+
+  Future<void> _flip(BuildContext context, ImageEntry entry) async {
+    if (!await checkStoragePermission(context, [entry])) return;
+
+    final success = await entry.flip();
+    if (!success) showFeedback(context, 'Failed');
   }
 
   Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
@@ -127,11 +139,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         return AvesDialog(
           content: Text('Are you sure?'),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text('Cancel'.toUpperCase()),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.pop(context, true),
               child: Text('Delete'.toUpperCase()),
             ),

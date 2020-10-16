@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class ImageFileService {
       'width': entry.width,
       'height': entry.height,
       'rotationDegrees': entry.rotationDegrees,
+      'isFlipped': entry.isFlipped,
       'dateModifiedSecs': entry.dateModifiedSecs,
     };
   }
@@ -66,7 +68,14 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> getImage(String uri, String mimeType, {int rotationDegrees, int expectedContentLength, BytesReceivedCallback onBytesReceived}) {
+  static Future<Uint8List> getImage(
+    String uri,
+    String mimeType,
+    int rotationDegrees,
+    bool isFlipped, {
+    int expectedContentLength,
+    BytesReceivedCallback onBytesReceived,
+  }) {
     try {
       final completer = Completer<Uint8List>.sync();
       final sink = _OutputBuffer();
@@ -75,6 +84,7 @@ class ImageFileService {
         'uri': uri,
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
+        'isFlipped': isFlipped ?? false,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -103,15 +113,29 @@ class ImageFileService {
     return Future.sync(() => null);
   }
 
-  static Future<Uint8List> getThumbnail(ImageEntry entry, double width, double height, {Object taskKey, int priority}) {
-    if (entry.isSvg) {
+  static Future<Uint8List> getThumbnail(
+    String uri,
+    String mimeType,
+    int dateModifiedSecs,
+    int rotationDegrees,
+    bool isFlipped,
+    double width,
+    double height, {
+    Object taskKey,
+    int priority,
+  }) {
+    if (mimeType == MimeTypes.svg) {
       return Future.sync(() => null);
     }
     return servicePolicy.call(
       () async {
         try {
           final result = await platform.invokeMethod('getThumbnail', <String, dynamic>{
-            'entry': _toPlatformEntryMap(entry),
+            'uri': uri,
+            'mimeType': mimeType,
+            'dateModifiedSecs': dateModifiedSecs,
+            'rotationDegrees': rotationDegrees,
+            'isFlipped': isFlipped,
             'widthDip': width,
             'heightDip': height,
             'defaultSizeDip': thumbnailDefaultSize,
@@ -183,7 +207,7 @@ class ImageFileService {
 
   static Future<Map> rotate(ImageEntry entry, {@required bool clockwise}) async {
     try {
-      // return map with: 'width' 'height' 'rotationDegrees' (all optional)
+      // return map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'clockwise': clockwise,
@@ -191,6 +215,19 @@ class ImageFileService {
       return result;
     } on PlatformException catch (e) {
       debugPrint('rotate failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
+  static Future<Map> flip(ImageEntry entry) async {
+    try {
+      // return map with: 'rotationDegrees' 'isFlipped'
+      final result = await platform.invokeMethod('flip', <String, dynamic>{
+        'entry': _toPlatformEntryMap(entry),
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('flip failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }
