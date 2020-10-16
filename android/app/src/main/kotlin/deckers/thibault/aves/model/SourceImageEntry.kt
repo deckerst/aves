@@ -101,14 +101,11 @@ class SourceImageEntry {
             return null
         }
 
-    val hasSize: Boolean
+    val isSized: Boolean
         get() = width ?: 0 > 0 && height ?: 0 > 0
 
     private val hasDuration: Boolean
         get() = durationMillis ?: 0 > 0
-
-    private val isImage: Boolean
-        get() = MimeTypes.isImage(sourceMimeType)
 
     private val isVideo: Boolean
         get() = MimeTypes.isVideo(sourceMimeType)
@@ -123,15 +120,15 @@ class SourceImageEntry {
         if (isSvg) return this
         if (isVideo) {
             fillVideoByMediaMetadataRetriever(context)
-            if (hasSize && hasDuration) return this
+            if (isSized && hasDuration) return this
         }
         if (MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) {
             fillByMetadataExtractor(context)
-            if (hasSize && foundExif) return this
+            if (isSized && foundExif) return this
         }
         if (ExifInterface.isSupportedMimeType(sourceMimeType)) {
             fillByExifInterface(context)
-            if (hasSize) return this
+            if (isSized) return this
         }
         fillByBitmapDecode(context)
         return this

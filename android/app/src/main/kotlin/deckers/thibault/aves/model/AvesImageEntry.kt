@@ -1,7 +1,6 @@
 package deckers.thibault.aves.model
 
 import android.net.Uri
-import deckers.thibault.aves.utils.MimeTypes
 
 class AvesImageEntry(map: Map<String?, Any?>) {
     @JvmField
@@ -21,18 +20,4 @@ class AvesImageEntry(map: Map<String?, Any?>) {
 
     @JvmField
     val rotationDegrees = map["rotationDegrees"] as Int
-
-    @JvmField
-    val dateModifiedSecs = toLong(map["dateModifiedSecs"])
-
-    val isVideo: Boolean
-        get() = MimeTypes.isVideo(mimeType)
-
-    companion object {
-        // convenience method
-        private fun toLong(o: Any?): Long? = when (o) {
-            is Int -> o.toLong()
-            else -> o as? Long
-        }
-    }
 }
