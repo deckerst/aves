@@ -114,7 +114,7 @@ dependencies {
     implementation 'com.commonsware.cwac:document:0.4.1'
     implementation 'com.drewnoakes:metadata-extractor:2.15.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    implementation 'com.google.guava:guava:29.0-android'
+    implementation 'com.google.guava:guava:30.0-android'
 
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
