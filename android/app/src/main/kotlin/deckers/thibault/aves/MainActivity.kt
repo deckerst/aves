@@ -120,12 +120,11 @@ class MainActivity : FlutterActivity() {
             }
             Intent.ACTION_VIEW -> {
                 val uri = intent.data
-                val mimeType = intent.type
-                if (uri != null && mimeType != null) {
+                if (uri != null) {
                     intentDataMap = hashMapOf(
                             "action" to "view",
                             "uri" to uri.toString(),
-                            "mimeType" to mimeType,
+                            "mimeType" to intent.type, // MIME type is optional
                     )
                 }
             }

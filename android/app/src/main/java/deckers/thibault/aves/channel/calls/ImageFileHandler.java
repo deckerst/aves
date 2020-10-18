@@ -101,10 +101,10 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     }
 
     private void getImageEntry(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        String mimeType = call.argument("mimeType");
+        String mimeType = call.argument("mimeType"); // MIME type is optional
         Uri uri = Uri.parse(call.argument("uri"));
 
-        if (uri == null || mimeType == null) {
+        if (uri == null) {
             result.error("getImageEntry-args", "failed because of missing arguments", null);
             return;
         }

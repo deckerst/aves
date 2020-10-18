@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.File;
 
@@ -11,7 +12,12 @@ import deckers.thibault.aves.model.SourceImageEntry;
 
 class FileImageProvider extends ImageProvider {
     @Override
-    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
+    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @Nullable final String mimeType, @NonNull final ImageOpCallback callback) {
+        if (mimeType == null) {
+            callback.onFailure(new Exception("MIME type is null for uri=" + uri));
+            return;
+        }
+
         SourceImageEntry entry = new SourceImageEntry(uri, mimeType);
 
         String path = uri.getPath();
