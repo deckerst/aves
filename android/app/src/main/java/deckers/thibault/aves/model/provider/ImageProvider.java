@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.exifinterface.media.ExifInterface;
 
 import com.commonsware.cwac.document.DocumentFileCompat;
@@ -40,7 +41,7 @@ import deckers.thibault.aves.utils.StorageUtils;
 public abstract class ImageProvider {
     private static final String LOG_TAG = LogUtils.createTag(ImageProvider.class);
 
-    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
+    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @Nullable final String mimeType, @NonNull final ImageOpCallback callback) {
         callback.onFailure(new UnsupportedOperationException());
     }
 

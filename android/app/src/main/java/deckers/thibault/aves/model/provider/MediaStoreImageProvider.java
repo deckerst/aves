@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.commonsware.cwac.document.DocumentFileCompat;
@@ -77,24 +78,22 @@ public class MediaStoreImageProvider extends ImageProvider {
     }
 
     @Override
-    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @NonNull final String mimeType, @NonNull final ImageOpCallback callback) {
+    public void fetchSingle(@NonNull final Context context, @NonNull final Uri uri, @Nullable final String mimeType, @NonNull final ImageOpCallback callback) {
         long id = ContentUris.parseId(uri);
-        int entryCount = 0;
         NewEntryHandler onSuccess = (entry) -> {
             entry.put("uri", uri.toString());
             callback.onSuccess(entry);
         };
         NewEntryChecker alwaysValid = (contentId, dateModifiedSecs) -> true;
-        if (MimeTypes.isImage(mimeType)) {
+        if (mimeType == null || MimeTypes.isImage(mimeType)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-            entryCount = fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION);
-        } else if (MimeTypes.isVideo(mimeType)) {
+            if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION) > 0) return;
+        }
+        if (mimeType == null || MimeTypes.isVideo(mimeType)) {
             Uri contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id);
-            entryCount = fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION);
+            if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return;
         }
-        if (entryCount == 0) {
-            callback.onFailure(new Exception("failed to fetch entry at uri=" + uri));
-        }
+        callback.onFailure(new Exception("failed to fetch entry at uri=" + uri));
     }
 
     public List<Integer> getObsoleteContentIds(Context context, List<Integer> knownContentIds) {
