@@ -65,6 +65,8 @@ class InfoPageState extends State<InfoPage> {
                 return ValueListenableBuilder<ImageEntry>(
                   valueListenable: widget.entryNotifier,
                   builder: (context, entry, child) {
+                    if (entry == null) return SizedBox.shrink();
+
                     final locationAtTop = split && entry.hasGps;
                     final locationSection = LocationSection(
                       collection: collection,

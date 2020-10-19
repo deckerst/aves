@@ -1,7 +1,6 @@
 package deckers.thibault.aves.channel.streams;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
@@ -21,6 +20,7 @@ import java.util.Map;
 import deckers.thibault.aves.decoder.VideoThumbnail;
 import deckers.thibault.aves.utils.BitmapUtils;
 import deckers.thibault.aves.utils.MimeTypes;
+import deckers.thibault.aves.utils.StorageUtils;
 import io.flutter.plugin.common.EventChannel;
 
 public class ImageByteStreamHandler implements EventChannel.StreamHandler {
@@ -137,8 +137,7 @@ public class ImageByteStreamHandler implements EventChannel.StreamHandler {
                 Glide.with(activity).clear(target);
             }
         } else {
-            ContentResolver cr = activity.getContentResolver();
-            try (InputStream is = cr.openInputStream(uri)) {
+            try (InputStream is = StorageUtils.openInputStream(activity, uri)) {
                 if (is != null) {
                     streamBytes(is);
                 } else {

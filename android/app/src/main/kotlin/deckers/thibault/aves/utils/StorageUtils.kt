@@ -257,20 +257,25 @@ object StorageUtils {
 
     @JvmStatic
     fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri): DocumentFileCompat? {
-        if (requireAccessPermission(anyPath)) {
-            // need a document URI (not a media content URI) to open a `DocumentFile` output stream
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // cleanest API to get it
-                val docUri = MediaStore.getDocumentUri(context, mediaUri)
-                if (docUri != null) {
-                    return DocumentFileCompat.fromSingleUri(context, docUri)
+        try {
+            if (requireAccessPermission(anyPath)) {
+                // need a document URI (not a media content URI) to open a `DocumentFile` output stream
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
+                    // cleanest API to get it
+                    val docUri = MediaStore.getDocumentUri(context, mediaUri)
+                    if (docUri != null) {
+                        return DocumentFileCompat.fromSingleUri(context, docUri)
+                    }
                 }
+                // fallback for older APIs
+                return getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
             }
-            // fallback for older APIs
-            return getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
+            // good old `File`
+            return DocumentFileCompat.fromFile(File(anyPath))
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to get document file from mediaUri=$mediaUri", e)
         }
-        // good old `File`
-        return DocumentFileCompat.fromFile(File(anyPath))
+        return null
     }
 
     // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
@@ -368,6 +373,7 @@ object StorageUtils {
         return ContentResolver.SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
+    @JvmStatic
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         var effectiveUri = uri
         // we get a permission denial if we require original from a provider other than the media store
@@ -379,6 +385,9 @@ object StorageUtils {
             context.contentResolver.openInputStream(effectiveUri)
         } catch (e: FileNotFoundException) {
             Log.w(LOG_TAG, "failed to find file at uri=$effectiveUri")
+            null
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to open file at uri=$effectiveUri", e)
             null
         }
     }
