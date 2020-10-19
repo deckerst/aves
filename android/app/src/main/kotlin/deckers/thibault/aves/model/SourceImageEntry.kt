@@ -71,19 +71,19 @@ class SourceImageEntry {
 
     fun toMap(): Map<String, Any?> {
         return hashMapOf(
-                "uri" to uri.toString(),
-                "path" to path,
-                "sourceMimeType" to sourceMimeType,
-                "width" to width,
-                "height" to height,
-                "sourceRotationDegrees" to (sourceRotationDegrees ?: 0),
-                "sizeBytes" to sizeBytes,
-                "title" to title,
-                "dateModifiedSecs" to dateModifiedSecs,
-                "sourceDateTakenMillis" to sourceDateTakenMillis,
-                "durationMillis" to durationMillis,
-                // only for map export
-                "contentId" to contentId,
+            "uri" to uri.toString(),
+            "path" to path,
+            "sourceMimeType" to sourceMimeType,
+            "width" to width,
+            "height" to height,
+            "sourceRotationDegrees" to (sourceRotationDegrees ?: 0),
+            "sizeBytes" to sizeBytes,
+            "title" to title,
+            "dateModifiedSecs" to dateModifiedSecs,
+            "sourceDateTakenMillis" to sourceDateTakenMillis,
+            "durationMillis" to durationMillis,
+            // only for map export
+            "contentId" to contentId,
         )
     }
 

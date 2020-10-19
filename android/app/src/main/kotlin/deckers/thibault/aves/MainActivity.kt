@@ -82,19 +82,23 @@ class MainActivity : FlutterActivity() {
         // do not use 'route' as extra key, as the Flutter framework acts on it
 
         val search = ShortcutInfoCompat.Builder(this, "search")
-                .setShortLabel(getString(R.string.search_shortcut_short_label))
-                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
-                .setIntent(Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                        .putExtra("page", "/search"))
-                .build()
+            .setShortLabel(getString(R.string.search_shortcut_short_label))
+            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra("page", "/search")
+            )
+            .build()
 
         val videos = ShortcutInfoCompat.Builder(this, "videos")
-                .setShortLabel(getString(R.string.videos_shortcut_short_label))
-                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
-                .setIntent(Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                        .putExtra("page", "/collection")
-                        .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}")))
-                .build()
+            .setShortLabel(getString(R.string.videos_shortcut_short_label))
+            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra("page", "/collection")
+                    .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}"))
+            )
+            .build()
 
         ShortcutManagerCompat.setDynamicShortcuts(this, listOf(videos, search))
     }
@@ -113,8 +117,8 @@ class MainActivity : FlutterActivity() {
                 val page = intent.getStringExtra("page")
                 if (page != null) {
                     intentDataMap = hashMapOf(
-                            "page" to page,
-                            "filters" to intent.getStringArrayExtra("filters")?.toList(),
+                        "page" to page,
+                        "filters" to intent.getStringArrayExtra("filters")?.toList(),
                     )
                 }
             }
@@ -122,16 +126,16 @@ class MainActivity : FlutterActivity() {
                 val uri = intent.data
                 if (uri != null) {
                     intentDataMap = hashMapOf(
-                            "action" to "view",
-                            "uri" to uri.toString(),
-                            "mimeType" to intent.type, // MIME type is optional
+                        "action" to "view",
+                        "uri" to uri.toString(),
+                        "mimeType" to intent.type, // MIME type is optional
                     )
                 }
             }
             Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
                 intentDataMap = hashMapOf(
-                        "action" to "pick",
-                        "mimeType" to intent.type,
+                    "action" to "pick",
+                    "mimeType" to intent.type,
                 )
             }
         }
