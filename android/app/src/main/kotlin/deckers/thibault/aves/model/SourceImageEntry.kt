@@ -24,6 +24,7 @@ import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
+import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.IOException
@@ -48,7 +49,7 @@ class SourceImageEntry {
         this.sourceMimeType = sourceMimeType
     }
 
-    constructor(map: Map<String, Any?>) {
+    constructor(map: FieldMap) {
         uri = Uri.parse(map["uri"] as String)
         path = map["path"] as String?
         sourceMimeType = map["sourceMimeType"] as String
@@ -69,7 +70,7 @@ class SourceImageEntry {
         this.dateModifiedSecs = dateModifiedSecs
     }
 
-    fun toMap(): Map<String, Any?> {
+    fun toMap(): FieldMap {
         return hashMapOf(
             "uri" to uri.toString(),
             "path" to path,

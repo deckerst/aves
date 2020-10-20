@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.streams
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -10,12 +11,12 @@ import io.flutter.plugin.common.EventChannel.EventSink
 class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
-    private var knownEntries: Map<Int, Int>? = null
+    private var knownEntries: Map<Int, Int?>? = null
 
     init {
         if (arguments is Map<*, *>) {
             @Suppress("UNCHECKED_CAST")
-            knownEntries = arguments["knownEntries"] as Map<Int, Int>?
+            knownEntries = arguments["knownEntries"] as Map<Int, Int?>?
         }
     }
 
@@ -27,7 +28,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
 
     override fun onCancel(arguments: Any?) {}
 
-    private fun success(result: Map<String, Any>) {
+    private fun success(result: FieldMap) {
         handler.post { eventSink.success(result) }
     }
 
@@ -36,7 +37,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     }
 
     private fun fetchAll() {
-        MediaStoreImageProvider().fetchAll(context, knownEntries) { success(it) }
+        MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap()) { success(it) }
         endOfStream()
     }
 

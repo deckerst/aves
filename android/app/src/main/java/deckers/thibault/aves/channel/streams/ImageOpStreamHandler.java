@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +66,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
     }
 
     // {String uri, bool success, [Map<String, Object> newFields]}
-    private void success(final Map<String, Object> result) {
+    private void success(final @NotNull Map<String, ?> result) {
         handler.post(() -> eventSink.success(result));
     }
 
@@ -102,12 +104,12 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
         List<AvesImageEntry> entries = entryMapList.stream().map(AvesImageEntry::new).collect(Collectors.toList());
         provider.moveMultiple(context, copy, destinationDir, entries, new ImageProvider.ImageOpCallback() {
             @Override
-            public void onSuccess(Map<String, Object> fields) {
+            public void onSuccess(@NotNull Map<String, Object> fields) {
                 success(fields);
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NotNull Throwable throwable) {
                 error("move-failure", "failed to move entries", throwable);
             }
         });
@@ -138,7 +140,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
                 put("uri", uriString);
             }};
             try {
-                provider.delete(context, path, uri).get();
+                provider.delete(context, uri, path).get();
                 result.put("success", true);
             } catch (ExecutionException | InterruptedException e) {
                 Log.w(LOG_TAG, "failed to delete entry with path=" + path, e);
