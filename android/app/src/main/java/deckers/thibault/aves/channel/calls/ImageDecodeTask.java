@@ -70,7 +70,7 @@ public class ImageDecodeTask extends AsyncTask<ImageDecodeTask.Params, Void, Ima
     }
 
     @SuppressLint("StaticFieldLeak")
-    private Activity activity;
+    private final Activity activity;
 
     ImageDecodeTask(Activity activity) {
         this.activity = activity;
