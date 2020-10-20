@@ -24,7 +24,7 @@ import io.flutter.plugin.common.MethodChannel;
 public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/image";
 
-    private Activity activity;
+    private final Activity activity;
     private float density;
 
     public ImageFileHandler(Activity activity) {

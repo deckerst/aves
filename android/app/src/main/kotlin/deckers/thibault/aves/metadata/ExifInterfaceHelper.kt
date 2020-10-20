@@ -25,7 +25,7 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_ORIENTATION,
     )
 
-    private val baseTags: Map<String, TagMapper?> = hashMapOf(
+    private val baseTags: Map<String, TagMapper?> = mapOf(
         ExifInterface.TAG_APERTURE_VALUE to TagMapper(ExifDirectoryBase.TAG_APERTURE, DirType.EXIF_IFD0, TagFormat.RATIONAL),
         ExifInterface.TAG_ARTIST to TagMapper(ExifDirectoryBase.TAG_ARTIST, DirType.EXIF_IFD0, TagFormat.ASCII),
         ExifInterface.TAG_BITS_PER_SAMPLE to TagMapper(ExifDirectoryBase.TAG_BITS_PER_SAMPLE, DirType.EXIF_IFD0, TagFormat.SHORT),
@@ -133,12 +133,12 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_Y_RESOLUTION to TagMapper(ExifDirectoryBase.TAG_Y_RESOLUTION, DirType.EXIF_IFD0, TagFormat.RATIONAL),
     )
 
-    private val thumbnailTags: Map<String, TagMapper?> = hashMapOf(
+    private val thumbnailTags: Map<String, TagMapper?> = mapOf(
         ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT to TagMapper(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET, DirType.EXIF_THUMBNAIL, TagFormat.LONG), // IFD_TIFF_TAGS or IFD_THUMBNAIL_TAGS 0x0201
         ExifInterface.TAG_JPEG_INTERCHANGE_FORMAT_LENGTH to TagMapper(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH, DirType.EXIF_THUMBNAIL, TagFormat.LONG), // IFD_TIFF_TAGS or IFD_THUMBNAIL_TAGS 0x0202
     )
 
-    private val gpsTags: Map<String, TagMapper?> = hashMapOf(
+    private val gpsTags: Map<String, TagMapper?> = mapOf(
         ExifInterface.TAG_GPS_ALTITUDE to TagMapper(GpsDirectory.TAG_ALTITUDE, DirType.GPS, TagFormat.RATIONAL),
         ExifInterface.TAG_GPS_ALTITUDE_REF to TagMapper(GpsDirectory.TAG_ALTITUDE_REF, DirType.GPS, TagFormat.BYTE),
         ExifInterface.TAG_GPS_AREA_INFORMATION to TagMapper(GpsDirectory.TAG_AREA_INFORMATION, DirType.GPS, TagFormat.COMMENT),
@@ -173,11 +173,11 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_GPS_VERSION_ID to TagMapper(GpsDirectory.TAG_VERSION_ID, DirType.GPS, TagFormat.BYTE),
     )
 
-    private val xmpTags: Map<String, TagMapper?> = hashMapOf(
+    private val xmpTags: Map<String, TagMapper?> = mapOf(
         ExifInterface.TAG_XMP to null, // IFD_TIFF_TAGS 0x02BC
     )
 
-    private val rawTags: Map<String, TagMapper?> = hashMapOf(
+    private val rawTags: Map<String, TagMapper?> = mapOf(
         // DNG
         ExifInterface.TAG_DEFAULT_CROP_SIZE to null, // IFD_EXIF_TAGS 0xC620
         ExifInterface.TAG_DNG_VERSION to null, // IFD_EXIF_TAGS 0xC612
