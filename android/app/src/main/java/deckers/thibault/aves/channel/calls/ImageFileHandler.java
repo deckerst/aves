@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +72,7 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
     private void getThumbnail(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         String uri = call.argument("uri");
         String mimeType = call.argument("mimeType");
-        Number dateModifiedSecs = (Number)call.argument("dateModifiedSecs");
+        Number dateModifiedSecs = call.argument("dateModifiedSecs");
         Integer rotationDegrees = call.argument("rotationDegrees");
         Boolean isFlipped = call.argument("isFlipped");
         Double widthDip = call.argument("widthDip");
@@ -116,13 +118,12 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         }
 
         provider.fetchSingle(activity, uri, mimeType, new ImageProvider.ImageOpCallback() {
-            @Override
-            public void onSuccess(Map<String, Object> entry) {
-                result.success(entry);
+            public void onSuccess(@NotNull Map<String, Object> fields) {
+                result.success(fields);
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NotNull Throwable throwable) {
                 result.error("getImageEntry-failure", "failed to get entry for uri=" + uri, throwable.getMessage());
             }
         });
@@ -138,6 +139,10 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         Uri uri = Uri.parse((String) entryMap.get("uri"));
         String path = (String) entryMap.get("path");
         String mimeType = (String) entryMap.get("mimeType");
+        if (path == null || mimeType == null) {
+            result.error("rename-args", "failed because entry fields are missing", null);
+            return;
+        }
 
         ImageProvider provider = ImageProviderFactory.getProvider(uri);
         if (provider == null) {
@@ -146,12 +151,12 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         }
         provider.rename(activity, path, uri, mimeType, newName, new ImageProvider.ImageOpCallback() {
             @Override
-            public void onSuccess(Map<String, Object> newFields) {
+            public void onSuccess(@NotNull Map<String, Object> newFields) {
                 new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NotNull Throwable throwable) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rename-failure", "failed to rename", throwable.getMessage()));
             }
         });
@@ -167,6 +172,10 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         Uri uri = Uri.parse((String) entryMap.get("uri"));
         String path = (String) entryMap.get("path");
         String mimeType = (String) entryMap.get("mimeType");
+        if (path == null || mimeType == null) {
+            result.error("rotate-args", "failed because entry fields are missing", null);
+            return;
+        }
 
         ImageProvider provider = ImageProviderFactory.getProvider(uri);
         if (provider == null) {
@@ -176,12 +185,12 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         ExifOrientationOp op = clockwise ? ExifOrientationOp.ROTATE_CW : ExifOrientationOp.ROTATE_CCW;
         provider.changeOrientation(activity, path, uri, mimeType, op, new ImageProvider.ImageOpCallback() {
             @Override
-            public void onSuccess(Map<String, Object> newFields) {
+            public void onSuccess(@NotNull Map<String, Object> newFields) {
                 new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NotNull Throwable throwable) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("rotate-failure", "failed to rotate", throwable.getMessage()));
             }
         });
@@ -196,6 +205,10 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         Uri uri = Uri.parse((String) entryMap.get("uri"));
         String path = (String) entryMap.get("path");
         String mimeType = (String) entryMap.get("mimeType");
+        if (path == null || mimeType == null) {
+            result.error("flip-args", "failed because entry fields are missing", null);
+            return;
+        }
 
         ImageProvider provider = ImageProviderFactory.getProvider(uri);
         if (provider == null) {
@@ -204,12 +217,12 @@ public class ImageFileHandler implements MethodChannel.MethodCallHandler {
         }
         provider.changeOrientation(activity, path, uri, mimeType, ExifOrientationOp.FLIP, new ImageProvider.ImageOpCallback() {
             @Override
-            public void onSuccess(Map<String, Object> newFields) {
+            public void onSuccess(@NotNull Map<String, Object> newFields) {
                 new Handler(Looper.getMainLooper()).post(() -> result.success(newFields));
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onFailure(@NotNull Throwable throwable) {
                 new Handler(Looper.getMainLooper()).post(() -> result.error("flip-failure", "failed to flip", throwable.getMessage()));
             }
         });
