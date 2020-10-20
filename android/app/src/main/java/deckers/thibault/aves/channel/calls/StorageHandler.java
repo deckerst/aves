@@ -23,7 +23,7 @@ import io.flutter.plugin.common.MethodChannel;
 public class StorageHandler implements MethodChannel.MethodCallHandler {
     public static final String CHANNEL = "deckers.thibault/aves/storage";
 
-    private Context context;
+    private final Context context;
 
     public StorageHandler(Context context) {
         this.context = context;
@@ -54,7 +54,9 @@ public class StorageHandler implements MethodChannel.MethodCallHandler {
             }
             case "revokeDirectoryAccess":
                 String path = call.argument("path");
-                PermissionManager.revokeDirectoryAccess(context, path);
+                if (path != null) {
+                    PermissionManager.revokeDirectoryAccess(context, path);
+                }
                 result.success(true);
                 break;
             case "getGrantedDirectories":
