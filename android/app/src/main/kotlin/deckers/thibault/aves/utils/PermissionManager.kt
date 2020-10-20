@@ -127,7 +127,7 @@ object PermissionManager {
         val accessibleDirs = HashSet(getGrantedDirs(context))
         // from Android R, we no longer have access permission by default on primary volume
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            accessibleDirs.add(StorageUtils.primaryVolumePath)
+            accessibleDirs.add(StorageUtils.getPrimaryVolumePath(context))
         }
         Log.d(LOG_TAG, "getAccessibleDirs accessibleDirs=$accessibleDirs")
         return accessibleDirs

@@ -170,7 +170,7 @@ class MediaStoreImageProvider : ImageProvider() {
             return future
         }
 
-        if (requireAccessPermission(path)) {
+        if (requireAccessPermission(context, path)) {
             // if the file is on SD card, calling the content resolver `delete()` removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
             try {
