@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/transition_image.dart';
@@ -71,7 +71,11 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     _pauseProvider();
   }
 
+  bool get isSupported => entry.canDecode;
+
   void _initProvider() {
+    if (!entry.canDecode) return;
+
     _fastThumbnailProvider = ThumbnailProvider(
       ThumbnailProviderKey.fromEntry(entry),
     );
@@ -95,6 +99,13 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!entry.canDecode) {
+      return ErrorThumbnail(
+        extent: extent,
+        tooltip: '${entry.mimeType} not supported',
+      );
+    }
+
     final fastImage = Image(
       key: ValueKey('LQ'),
       image: _fastThumbnailProvider,
@@ -127,16 +138,9 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                 child: frame == null ? fastImage : child,
               );
             },
-            errorBuilder: (context, error, stackTrace) => Center(
-              child: Tooltip(
-                message: error.toString(),
-                preferBelow: false,
-                child: Icon(
-                  AIcons.error,
-                  size: extent / 2,
-                  color: Colors.blueGrey,
-                ),
-              ),
+            errorBuilder: (context, error, stackTrace) => ErrorThumbnail(
+              extent: extent,
+              tooltip: error.toString(),
             ),
             width: extent,
             height: extent,
