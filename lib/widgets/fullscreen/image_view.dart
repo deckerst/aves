@@ -93,7 +93,7 @@ class ImageView extends StatelessWidget {
         initialScale: PhotoViewComputedScale.contained,
         onTapUp: (tapContext, details, value) => onTap?.call(),
       );
-    } else {
+    } else if (entry.canDecode) {
       final uriImage = UriImage(
         uri: entry.uri,
         mimeType: entry.mimeType,
@@ -111,11 +111,7 @@ class ImageView extends StatelessWidget {
           context,
           imageCache.statusForKey(uriImage).keepAlive ? uriImage : fastThumbnailProvider,
         ),
-        loadFailedChild: EmptyContent(
-          icon: AIcons.error,
-          text: 'Oops!',
-          alignment: Alignment.center,
-        ),
+        loadFailedChild: _buildError(),
         backgroundDecoration: backgroundDecoration,
         scaleStateChangedCallback: onScaleChanged,
         minScale: PhotoViewComputedScale.contained,
@@ -123,6 +119,8 @@ class ImageView extends StatelessWidget {
         onTapUp: (tapContext, details, value) => onTap?.call(),
         filterQuality: FilterQuality.low,
       );
+    } else {
+      child = _buildError();
     }
 
     return heroTag != null
@@ -133,4 +131,18 @@ class ImageView extends StatelessWidget {
           )
         : child;
   }
+
+  Widget _buildError() => GestureDetector(
+        onTap: () => onTap?.call(),
+        // use a `Container` with a dummy color to make it expand
+        // so that we can also detect taps around the title `Text`
+        child: Container(
+          color: Colors.transparent,
+          child: EmptyContent(
+            icon: AIcons.error,
+            text: 'Oops!',
+            alignment: Alignment.center,
+          ),
+        ),
+      );
 }

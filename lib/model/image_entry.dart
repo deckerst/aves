@@ -56,6 +56,8 @@ class ImageEntry {
     this.dateModifiedSecs = dateModifiedSecs;
   }
 
+  bool get canDecode => !MimeTypes.undecodable.contains(mimeType);
+
   ImageEntry copyWith({
     @required String uri,
     @required String path,
