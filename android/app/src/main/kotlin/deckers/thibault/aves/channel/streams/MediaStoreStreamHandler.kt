@@ -11,6 +11,7 @@ import io.flutter.plugin.common.EventChannel.EventSink
 class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
+
     private var knownEntries: Map<Int, Int?>? = null
 
     init {

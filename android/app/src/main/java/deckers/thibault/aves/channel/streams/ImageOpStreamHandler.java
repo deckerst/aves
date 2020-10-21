@@ -27,7 +27,7 @@ public class ImageOpStreamHandler implements EventChannel.StreamHandler {
 
     public static final String CHANNEL = "deckers.thibault/aves/imageopstream";
 
-    private Context context;
+    private final Context context;
     private EventChannel.EventSink eventSink;
     private Handler handler;
     private Map<String, Object> argMap;

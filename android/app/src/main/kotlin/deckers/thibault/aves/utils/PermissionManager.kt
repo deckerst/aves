@@ -22,7 +22,6 @@ object PermissionManager {
     // permission request code to pending runnable
     private val pendingPermissionMap = ConcurrentHashMap<Int, PendingPermissionHandler>()
 
-    @JvmStatic
     fun requestVolumeAccess(activity: Activity, path: String, onGranted: () -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to volume=$path")
         pendingPermissionMap[VOLUME_ACCESS_REQUEST_CODE] = PendingPermissionHandler(path, onGranted, onDenied)
@@ -47,12 +46,10 @@ object PermissionManager {
         (if (treeUri != null) handler.onGranted else handler.onDenied)()
     }
 
-    @JvmStatic
     fun getGrantedDirForPath(context: Context, anyPath: String): String? {
         return getAccessibleDirs(context).firstOrNull { anyPath.startsWith(it) }
     }
 
-    @JvmStatic
     fun getInaccessibleDirectories(context: Context, dirPaths: List<String>): List<Map<String, String>> {
         val accessibleDirs = getAccessibleDirs(context)
 
@@ -103,16 +100,15 @@ object PermissionManager {
         return inaccessibleDirs
     }
 
-    @JvmStatic
-    fun revokeDirectoryAccess(context: Context, path: String) {
-        StorageUtils.convertDirPathToTreeUri(context, path)?.let {
+    fun revokeDirectoryAccess(context: Context, path: String): Boolean {
+        return StorageUtils.convertDirPathToTreeUri(context, path)?.let {
             val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             context.contentResolver.releasePersistableUriPermission(it, flags)
-        }
+            true
+        } ?: false
     }
 
     // returns paths matching URIs granted by the user
-    @JvmStatic
     fun getGrantedDirs(context: Context): Set<String> {
         val grantedDirs = HashSet<String>()
         for (uriPermission in context.contentResolver.persistedUriPermissions) {
