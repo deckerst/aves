@@ -34,7 +34,7 @@ class AppShortcutHandler(private val context: Context) : MethodCallHandler {
 
         val label = call.argument<String>("label") ?: return
         val iconBytes = call.argument<ByteArray>("iconBytes")
-        val filters = call.argument<List<String?>>("filters") ?: return
+        val filters = call.argument<List<String>>("filters") ?: return
 
         var icon: IconCompat? = null
         if (iconBytes?.isNotEmpty() == true) {

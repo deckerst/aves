@@ -29,6 +29,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     override fun onListen(args: Any, eventSink: EventSink) {
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
+
         Thread { streamImage() }.start()
     }
 

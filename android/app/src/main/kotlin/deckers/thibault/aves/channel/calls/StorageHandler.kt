@@ -43,7 +43,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                 for (volumePath in getVolumePaths(context)) {
                     try {
                         sm.getStorageVolume(File(volumePath))?.let {
-                            val volumeMap: MutableMap<String, Any> = HashMap()
+                            val volumeMap = HashMap<String, Any>()
                             volumeMap["path"] = volumePath
                             volumeMap["description"] = it.getDescription(context)
                             volumeMap["isPrimary"] = it.isPrimary
