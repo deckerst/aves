@@ -419,7 +419,7 @@ object StorageUtils {
 
     // convenience methods
 
-    private fun ensureTrailingSeparator(dirPath: String): String {
+    fun ensureTrailingSeparator(dirPath: String): String {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
     }
 

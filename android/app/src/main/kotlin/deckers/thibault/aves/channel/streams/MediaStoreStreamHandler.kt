@@ -24,6 +24,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     override fun onListen(arguments: Any?, eventSink: EventSink) {
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
+
         Thread { fetchAll() }.start()
     }
 
