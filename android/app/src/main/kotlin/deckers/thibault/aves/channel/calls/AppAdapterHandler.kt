@@ -212,19 +212,19 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         // simplify share intent for a single item, as some apps can handle one item but not more
         if (uriList.size == 1) {
-            return shareSingle(title, uriList[0], mimeTypes[0])
+            return shareSingle(title, uriList.first(), mimeTypes.first())
         }
 
         var mimeType = "*/*"
         if (mimeTypes.size == 1) {
             // items have the same mime type & subtype
-            mimeType = mimeTypes[0]
+            mimeType = mimeTypes.first()
         } else {
             // items have different subtypes
             val mimeTypeTypes = mimeTypes.map { it.split("/") }.distinct()
             if (mimeTypeTypes.size == 1) {
                 // items have the same mime type
-                mimeType = mimeTypeTypes[0].toString() + "/*"
+                mimeType = mimeTypeTypes.first().toString() + "/*"
             }
         }
 

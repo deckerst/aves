@@ -53,10 +53,10 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail) : DataFe
                 if (picture == null) {
                     // not ideal: bitmap -> byte[] -> bitmap
                     // but simple fallback and we cache result
-                    val bos = ByteArrayOutputStream()
+                    val stream = ByteArrayOutputStream()
                     val bitmap = retriever.frameAtTime
-                    bitmap?.compress(Bitmap.CompressFormat.PNG, 0, bos)
-                    picture = bos.toByteArray()
+                    bitmap?.compress(Bitmap.CompressFormat.PNG, 0, stream)
+                    picture = stream.toByteArray()
                 }
                 callback.onDataReady(ByteArrayInputStream(picture))
             } catch (e: Exception) {
