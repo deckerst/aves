@@ -55,6 +55,8 @@ import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
@@ -63,15 +65,15 @@ import kotlin.math.roundToLong
 class MetadataHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAllMetadata" -> Thread { getAllMetadata(call, MethodResultWrapper(result)) }.start()
-            "getCatalogMetadata" -> Thread { getCatalogMetadata(call, MethodResultWrapper(result)) }.start()
-            "getOverlayMetadata" -> Thread { getOverlayMetadata(call, MethodResultWrapper(result)) }.start()
-            "getContentResolverMetadata" -> Thread { getContentResolverMetadata(call, MethodResultWrapper(result)) }.start()
-            "getExifInterfaceMetadata" -> Thread { getExifInterfaceMetadata(call, MethodResultWrapper(result)) }.start()
-            "getMediaMetadataRetrieverMetadata" -> Thread { getMediaMetadataRetrieverMetadata(call, MethodResultWrapper(result)) }.start()
-            "getEmbeddedPictures" -> Thread { getEmbeddedPictures(call, MethodResultWrapper(result)) }.start()
-            "getExifThumbnails" -> Thread { getExifThumbnails(call, MethodResultWrapper(result)) }.start()
-            "getXmpThumbnails" -> Thread { getXmpThumbnails(call, MethodResultWrapper(result)) }.start()
+            "getAllMetadata" -> GlobalScope.launch { getAllMetadata(call, Coresult(result)) }
+            "getCatalogMetadata" -> GlobalScope.launch { getCatalogMetadata(call, Coresult(result)) }
+            "getOverlayMetadata" -> GlobalScope.launch { getOverlayMetadata(call, Coresult(result)) }
+            "getContentResolverMetadata" -> GlobalScope.launch { getContentResolverMetadata(call, Coresult(result)) }
+            "getExifInterfaceMetadata" -> GlobalScope.launch { getExifInterfaceMetadata(call, Coresult(result)) }
+            "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
+            "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
+            "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
+            "getXmpThumbnails" -> GlobalScope.launch { getXmpThumbnails(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }

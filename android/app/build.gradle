@@ -97,8 +97,9 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
     implementation 'androidx.core:core-ktx:1.5.0-alpha04' // v1.5.0-alpha02+ for ShortcutManagerCompat.setDynamicShortcuts
-    implementation "androidx.exifinterface:exifinterface:1.3.1"
+    implementation 'androidx.exifinterface:exifinterface:1.3.1'
     implementation 'com.commonsware.cwac:document:0.4.1'
     implementation 'com.drewnoakes:metadata-extractor:2.15.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'

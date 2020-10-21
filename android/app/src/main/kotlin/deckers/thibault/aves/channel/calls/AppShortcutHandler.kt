@@ -3,7 +3,6 @@ package deckers.thibault.aves.channel.calls
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.text.TextUtils
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -13,13 +12,15 @@ import deckers.thibault.aves.utils.BitmapUtils.centerSquareCrop
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class AppShortcutHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "canPin" -> result.success(canPin())
             "pin" -> {
-                Thread { pin(call) }.start()
+                GlobalScope.launch { pin(call) }
                 result.success(null)
             }
             else -> result.notImplemented()
