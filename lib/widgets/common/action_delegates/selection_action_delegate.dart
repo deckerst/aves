@@ -126,7 +126,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
         final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, 'Failed to ${copy ? 'copy' : 'move'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           final count = movedCount;
           showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
