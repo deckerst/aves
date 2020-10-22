@@ -26,13 +26,10 @@ object MimeTypes {
     private const val MP2T = "video/mp2t"
     private const val WEBM = "video/webm"
 
-    @JvmStatic
     fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith(IMAGE)
 
-    @JvmStatic
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith(VIDEO)
 
-    @JvmStatic
     // returns whether the specified MIME type represents
     // a raster image format that allows an alpha channel
     fun canHaveAlpha(mimeType: String?) = when (mimeType) {
@@ -41,7 +38,6 @@ object MimeTypes {
     }
 
     // as of Flutter v1.22.0
-    @JvmStatic
     fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {
         JPEG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
         PNG -> rotationDegrees ?: 0 == 0 && !(isFlipped ?: false)
@@ -49,7 +45,6 @@ object MimeTypes {
     }
 
     // as of metadata-extractor v2.14.0
-    @JvmStatic
     fun isSupportedByMetadataExtractor(mimeType: String) = when (mimeType) {
         WBMP, MP2T, WEBM -> false
         else -> true
@@ -59,7 +54,6 @@ object MimeTypes {
     // but we need to rotate the decoded bitmap for the other formats
     // maybe related to ExifInterface version used by Glide:
     // https://github.com/bumptech/glide/blob/master/gradle.properties#L21
-    @JvmStatic
     fun needRotationAfterGlide(mimeType: String) = when (mimeType) {
         DNG, HEIC, HEIF, PNG, WEBP -> true
         else -> false
@@ -68,7 +62,6 @@ object MimeTypes {
     // Thumbnails obtained from the Media Store are automatically rotated
     // according to EXIF orientation when decoding images of known formats
     // but we need to rotate the decoded bitmap for the other formats
-    @JvmStatic
     fun needRotationAfterContentResolverThumbnail(mimeType: String) = when (mimeType) {
         DNG, PNG -> true
         else -> false

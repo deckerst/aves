@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object MediaMetadataRetrieverHelper {
-    @JvmField
     val allKeys = hashMapOf(
         MediaMetadataRetriever.METADATA_KEY_ALBUM to "Album",
         MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST to "Album Artist",
@@ -26,8 +25,6 @@ object MediaMetadataRetrieverHelper {
         MediaMetadataRetriever.METADATA_KEY_DATE to "Date",
         MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER to "Disc Number",
         MediaMetadataRetriever.METADATA_KEY_DURATION to "Duration",
-        MediaMetadataRetriever.METADATA_KEY_EXIF_LENGTH to "Exif Length",
-        MediaMetadataRetriever.METADATA_KEY_EXIF_OFFSET to "Exif Offset",
         MediaMetadataRetriever.METADATA_KEY_GENRE to "Genre",
         MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO to "Has Audio",
         MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO to "Has Video",
@@ -51,6 +48,14 @@ object MediaMetadataRetrieverHelper {
                     MediaMetadataRetriever.METADATA_KEY_IMAGE_ROTATION to "Image Rotation",
                     MediaMetadataRetriever.METADATA_KEY_IMAGE_WIDTH to "Image Width",
                     MediaMetadataRetriever.METADATA_KEY_VIDEO_FRAME_COUNT to "Video Frame Count",
+                )
+            )
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            putAll(
+                hashMapOf(
+                    MediaMetadataRetriever.METADATA_KEY_EXIF_LENGTH to "Exif Length",
+                    MediaMetadataRetriever.METADATA_KEY_EXIF_OFFSET to "Exif Offset",
                 )
             )
         }
@@ -93,7 +98,7 @@ object MediaMetadataRetrieverHelper {
                 MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT, MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH -> "$value pixels"
                 MediaMetadataRetriever.METADATA_KEY_BITRATE -> {
                     val bitrate = value.toLongOrNull() ?: 0
-                    if (bitrate > 0) Formatter.formatFileSize(context, bitrate) + "/sec" else null
+                    if (bitrate > 0) "${Formatter.formatFileSize(context, bitrate)}/sec" else null
                 }
                 MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE -> {
                     val framerate = value.toDoubleOrNull() ?: 0.0

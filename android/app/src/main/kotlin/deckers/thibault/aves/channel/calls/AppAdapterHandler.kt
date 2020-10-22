@@ -224,7 +224,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             val mimeTypeTypes = mimeTypes.map { it.split("/") }.distinct()
             if (mimeTypeTypes.size == 1) {
                 // items have the same mime type
-                mimeType = mimeTypeTypes.first().toString() + "/*"
+                mimeType = "${mimeTypeTypes.first()}/*"
             }
         }
 
