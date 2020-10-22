@@ -7,6 +7,8 @@ import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
@@ -25,7 +27,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 
-        Thread { fetchAll() }.start()
+        GlobalScope.launch { fetchAll() }
     }
 
     override fun onCancel(arguments: Any?) {}

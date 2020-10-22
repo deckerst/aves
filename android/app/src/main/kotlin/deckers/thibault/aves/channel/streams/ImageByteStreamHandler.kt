@@ -18,6 +18,8 @@ import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import deckers.thibault.aves.utils.StorageUtils.openInputStream
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -30,7 +32,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 
-        Thread { streamImage() }.start()
+        GlobalScope.launch { streamImage() }
     }
 
     override fun onCancel(o: Any) {}
