@@ -35,7 +35,6 @@ object StorageUtils {
     // primary volume path, with trailing "/"
     private var mPrimaryVolumePath: String? = null
 
-    @JvmStatic
     fun getPrimaryVolumePath(context: Context): String {
         if (mPrimaryVolumePath == null) {
             mPrimaryVolumePath = findPrimaryVolumePath(context)
@@ -43,7 +42,6 @@ object StorageUtils {
         return mPrimaryVolumePath!!
     }
 
-    @JvmStatic
     fun getVolumePaths(context: Context): Array<String> {
         if (mStorageVolumePaths == null) {
             mStorageVolumePaths = findVolumePaths(context)
@@ -51,7 +49,6 @@ object StorageUtils {
         return mStorageVolumePaths!!
     }
 
-    @JvmStatic
     fun getVolumePath(context: Context, anyPath: String): String? {
         return getVolumePaths(context).firstOrNull { anyPath.startsWith(it) }
     }
@@ -262,7 +259,6 @@ object StorageUtils {
      * Document files
      */
 
-    @JvmStatic
     fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri): DocumentFileCompat? {
         try {
             if (requireAccessPermission(context, anyPath)) {
@@ -287,7 +283,6 @@ object StorageUtils {
 
     // returns the directory `DocumentFile` (from tree URI when scoped storage is required, `File` otherwise)
     // returns null if directory does not exist and could not be created
-    @JvmStatic
     fun createDirectoryIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
         val cleanDirPath = ensureTrailingSeparator(dirPath)
         return if (requireAccessPermission(context, cleanDirPath)) {
@@ -323,7 +318,6 @@ object StorageUtils {
         }
     }
 
-    @JvmStatic
     fun copyFileToTemp(documentFile: DocumentFileCompat, path: String): String? {
         val extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(path)).toString())
         try {
@@ -363,7 +357,6 @@ object StorageUtils {
      * Misc
      */
 
-    @JvmStatic
     fun requireAccessPermission(context: Context, anyPath: String): Boolean {
         // on Android R, we should always require access permission, even on primary volume
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
@@ -380,7 +373,6 @@ object StorageUtils {
         return ContentResolver.SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
-    @JvmStatic
     fun openInputStream(context: Context, uri: Uri): InputStream? {
         var effectiveUri = uri
         // we get a permission denial if we require original from a provider other than the media store
@@ -399,7 +391,6 @@ object StorageUtils {
         }
     }
 
-    @JvmStatic
     fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
         var effectiveUri = uri
         // we get a permission denial if we require original from a provider other than the media store
@@ -427,7 +418,7 @@ object StorageUtils {
     class PathSegments(context: Context, fullPath: String) {
         var volumePath: String? = null // `volumePath` with trailing "/"
         var relativeDir: String? = null // `relativeDir` with trailing "/"
-        var filename: String? = null // null for directories
+        private var filename: String? = null // null for directories
 
         init {
             volumePath = getVolumePath(context, fullPath)

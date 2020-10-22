@@ -19,7 +19,6 @@ object Metadata {
     const val DIR_MEDIA = "Media"
 
     // interpret EXIF code to angle (0, 90, 180 or 270 degrees)
-    @JvmStatic
     fun getRotationDegreesForExifCode(exifOrientation: Int): Int = when (exifOrientation) {
         ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_TRANSVERSE -> 90
         ExifInterface.ORIENTATION_ROTATE_180, ExifInterface.ORIENTATION_FLIP_VERTICAL -> 180
@@ -28,13 +27,11 @@ object Metadata {
     }
 
     // interpret EXIF code to whether the image is flipped
-    @JvmStatic
     fun isFlippedForExifCode(exifOrientation: Int): Boolean = when (exifOrientation) {
         ExifInterface.ORIENTATION_FLIP_HORIZONTAL, ExifInterface.ORIENTATION_TRANSVERSE, ExifInterface.ORIENTATION_FLIP_VERTICAL, ExifInterface.ORIENTATION_TRANSPOSE -> true
         else -> false
     }
 
-    @JvmStatic
     fun getExifCode(rotationDegrees: Int, isFlipped: Boolean): Int {
         return when (rotationDegrees) {
             90 -> if (isFlipped) ExifInterface.ORIENTATION_TRANSVERSE else ExifInterface.ORIENTATION_ROTATE_90
@@ -45,7 +42,6 @@ object Metadata {
     }
 
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
-    @JvmStatic
     fun parseVideoMetadataDate(metadataDate: String?): Long {
         var dateString = metadataDate ?: return 0
 
@@ -61,7 +57,7 @@ object Metadata {
         var timeZone: TimeZone? = null
         val timeZoneMatcher = Pattern.compile("(Z|[+-]\\d{4})$").matcher(dateString)
         if (timeZoneMatcher.find()) {
-            timeZone = TimeZone.getTimeZone("GMT" + timeZoneMatcher.group().replace("Z".toRegex(), ""))
+            timeZone = TimeZone.getTimeZone("GMT${timeZoneMatcher.group().replace("Z".toRegex(), "")}")
             dateString = timeZoneMatcher.replaceAll("")
         }
 

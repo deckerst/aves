@@ -376,7 +376,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         val num = it.numerator
                         val denom = it.denominator
                         metadataMap[KEY_EXPOSURE_TIME] = when {
-                            num >= denom -> it.toSimpleString(true) + "″"
+                            num >= denom -> "${it.toSimpleString(true)}″"
                             num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
                             else -> it.toString()
                         }

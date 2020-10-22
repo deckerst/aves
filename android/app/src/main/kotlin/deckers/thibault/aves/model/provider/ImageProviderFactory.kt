@@ -6,7 +6,6 @@ import android.provider.MediaStore
 import java.util.*
 
 object ImageProviderFactory {
-    @JvmStatic
     fun getProvider(uri: Uri): ImageProvider? {
         return when (uri.scheme?.toLowerCase(Locale.ROOT)) {
             ContentResolver.SCHEME_CONTENT -> {

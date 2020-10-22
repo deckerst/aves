@@ -58,10 +58,20 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
-        val width = (widthDip * density).roundToInt()
-        val height = (heightDip * density).roundToInt()
-        val defaultSize = (defaultSizeDip * density).roundToInt()
-        ImageDecodeTask(activity).execute(ImageDecodeTask.Params(uri, mimeType, dateModifiedSecs, rotationDegrees, isFlipped, width, height, defaultSize, result))
+        GlobalScope.launch {
+            ThumbnailFetcher(
+                activity,
+                uri,
+                mimeType,
+                dateModifiedSecs,
+                rotationDegrees,
+                isFlipped,
+                width = (widthDip * density).roundToInt(),
+                height = (heightDip * density).roundToInt(),
+                defaultSize = (defaultSizeDip * density).roundToInt(),
+                Coresult(result),
+            ).fetch()
+        }
     }
 
     private fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {

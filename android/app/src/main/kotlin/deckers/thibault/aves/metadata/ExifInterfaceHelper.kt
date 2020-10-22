@@ -197,7 +197,6 @@ object ExifInterfaceHelper {
 
     // list of known ExifInterface tags (as of androidx.exifinterface:exifinterface:1.3.0)
     // mapped to metadata-extractor tags (as of v2.14.0)
-    @JvmField
     val allTags: Map<String, TagMapper?> = hashMapOf<String, TagMapper?>(
     ).apply {
         putAll(baseTags)
@@ -207,7 +206,6 @@ object ExifInterfaceHelper {
         putAll(rawTags)
     }
 
-    @JvmStatic
     fun describeAll(exif: ExifInterface): Map<String, Map<String, String>> {
         // initialize metadata-extractor directories that we will fill
         // by tags converted from the ExifInterface attributes

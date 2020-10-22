@@ -85,7 +85,7 @@ class MediaStoreImageProvider : ImageProvider() {
         projection: Array<String>,
     ): Int {
         var newEntryCount = 0
-        val orderBy = MediaStore.MediaColumns.DATE_MODIFIED + " DESC"
+        val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
         try {
             val cursor = context.contentResolver.query(contentUri, projection, null, null, orderBy)
             if (cursor != null) {
@@ -311,7 +311,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 }
             })
         } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to " + (if (copy) "copy" else "move") + " entry", e)
+            Log.e(LOG_TAG, "failed to ${(if (copy) "copy" else "move")} entry", e)
             future.setException(e)
         }
 
