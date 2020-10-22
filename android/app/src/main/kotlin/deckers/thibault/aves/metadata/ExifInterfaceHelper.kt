@@ -25,6 +25,8 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_ORIENTATION,
     )
 
+    private fun isNeverNull(tag: String): Boolean = neverNullTags.contains(tag)
+
     private val baseTags: Map<String, TagMapper?> = mapOf(
         ExifInterface.TAG_APERTURE_VALUE to TagMapper(ExifDirectoryBase.TAG_APERTURE, DirType.EXIF_IFD0, TagFormat.RATIONAL),
         ExifInterface.TAG_ARTIST to TagMapper(ExifDirectoryBase.TAG_ARTIST, DirType.EXIF_IFD0, TagFormat.ASCII),
@@ -32,9 +34,9 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_BODY_SERIAL_NUMBER to TagMapper(ExifDirectoryBase.TAG_BODY_SERIAL_NUMBER, DirType.EXIF_IFD0, TagFormat.ASCII),
         ExifInterface.TAG_BRIGHTNESS_VALUE to TagMapper(ExifDirectoryBase.TAG_BRIGHTNESS_VALUE, DirType.EXIF_IFD0, TagFormat.RATIONAL),
         ExifInterface.TAG_CAMERA_OWNER_NAME to TagMapper(ExifDirectoryBase.TAG_CAMERA_OWNER_NAME, DirType.EXIF_IFD0, TagFormat.ASCII),
-        ExifInterface.TAG_CFA_PATTERN to TagMapper(ExifDirectoryBase.TAG_CFA_PATTERN, DirType.EXIF_IFD0, TagFormat.UNDEFINED),
+        ExifInterface.TAG_CFA_PATTERN to TagMapper(ExifDirectoryBase.TAG_CFA_PATTERN, DirType.EXIF_IFD0, TagFormat.BYTE), // spec format: UNDEFINED, e.g. [Red,Green][Green,Blue]
         ExifInterface.TAG_COLOR_SPACE to TagMapper(ExifDirectoryBase.TAG_COLOR_SPACE, DirType.EXIF_IFD0, TagFormat.SHORT),
-        ExifInterface.TAG_COMPONENTS_CONFIGURATION to TagMapper(ExifDirectoryBase.TAG_COMPONENTS_CONFIGURATION, DirType.EXIF_IFD0, TagFormat.UNDEFINED),
+        ExifInterface.TAG_COMPONENTS_CONFIGURATION to TagMapper(ExifDirectoryBase.TAG_COMPONENTS_CONFIGURATION, DirType.EXIF_IFD0, TagFormat.BYTE), // spec format: UNDEFINED, e.g. [Y,Cb,Cr]
         ExifInterface.TAG_COMPRESSED_BITS_PER_PIXEL to TagMapper(ExifDirectoryBase.TAG_COMPRESSED_AVERAGE_BITS_PER_PIXEL, DirType.EXIF_IFD0, TagFormat.RATIONAL),
         ExifInterface.TAG_COMPRESSION to TagMapper(ExifDirectoryBase.TAG_COMPRESSION, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_CONTRAST to TagMapper(ExifDirectoryBase.TAG_CONTRAST, DirType.EXIF_IFD0, TagFormat.SHORT),
@@ -51,7 +53,7 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_EXPOSURE_MODE to TagMapper(ExifDirectoryBase.TAG_EXPOSURE_MODE, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_EXPOSURE_PROGRAM to TagMapper(ExifDirectoryBase.TAG_EXPOSURE_PROGRAM, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_EXPOSURE_TIME to TagMapper(ExifDirectoryBase.TAG_EXPOSURE_TIME, DirType.EXIF_IFD0, TagFormat.RATIONAL),
-        ExifInterface.TAG_FILE_SOURCE to TagMapper(ExifDirectoryBase.TAG_FILE_SOURCE, DirType.EXIF_IFD0, TagFormat.UNDEFINED),
+        ExifInterface.TAG_FILE_SOURCE to TagMapper(ExifDirectoryBase.TAG_FILE_SOURCE, DirType.EXIF_IFD0, TagFormat.SHORT), // spec format: UNDEFINED
         ExifInterface.TAG_FLASH to TagMapper(ExifDirectoryBase.TAG_FLASH, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_FLASHPIX_VERSION to TagMapper(ExifDirectoryBase.TAG_FLASHPIX_VERSION, DirType.EXIF_IFD0, TagFormat.UNDEFINED),
         ExifInterface.TAG_FLASH_ENERGY to TagMapper(ExifDirectoryBase.TAG_FLASH_ENERGY, DirType.EXIF_IFD0, TagFormat.RATIONAL),
@@ -101,7 +103,7 @@ object ExifInterfaceHelper {
         ExifInterface.TAG_SAMPLES_PER_PIXEL to TagMapper(ExifDirectoryBase.TAG_SAMPLES_PER_PIXEL, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_SATURATION to TagMapper(ExifDirectoryBase.TAG_SATURATION, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_SCENE_CAPTURE_TYPE to TagMapper(ExifDirectoryBase.TAG_SCENE_CAPTURE_TYPE, DirType.EXIF_IFD0, TagFormat.SHORT),
-        ExifInterface.TAG_SCENE_TYPE to TagMapper(ExifDirectoryBase.TAG_SCENE_TYPE, DirType.EXIF_IFD0, TagFormat.UNDEFINED),
+        ExifInterface.TAG_SCENE_TYPE to TagMapper(ExifDirectoryBase.TAG_SCENE_TYPE, DirType.EXIF_IFD0, TagFormat.SHORT), // spec format: UNDEFINED
         ExifInterface.TAG_SENSING_METHOD to TagMapper(ExifDirectoryBase.TAG_SENSING_METHOD, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_SENSITIVITY_TYPE to TagMapper(ExifDirectoryBase.TAG_SENSITIVITY_TYPE, DirType.EXIF_IFD0, TagFormat.SHORT),
         ExifInterface.TAG_SHARPNESS to TagMapper(ExifDirectoryBase.TAG_SHARPNESS, DirType.EXIF_IFD0, TagFormat.SHORT),
@@ -229,7 +231,7 @@ object ExifInterfaceHelper {
         for ((exifInterfaceTag, mapper) in tags) {
             if (exif.hasAttribute(exifInterfaceTag)) {
                 val value: String? = exif.getAttribute(exifInterfaceTag)
-                if (value != null && (value != "0" || !neverNullTags.contains(exifInterfaceTag))) {
+                if (value != null && !(value == "0" && isNeverNull(exifInterfaceTag))) {
                     if (mapper != null) {
                         val dir = metadataExtractorDirs[mapper.dirType] ?: error("Directory type ${mapper.dirType} does not have a matching Directory instance")
                         val type = mapper.type
@@ -258,7 +260,7 @@ object ExifInterfaceHelper {
                 if (value != null && (value != "0" || !neverNullTags.contains(exifInterfaceTag))) {
                     val obj: Any? = when (mapper.format) {
                         TagFormat.ASCII, TagFormat.COMMENT, TagFormat.UNDEFINED -> value
-                        TagFormat.BYTE -> value.toByteArray()
+                        TagFormat.BYTE -> exif.getAttributeBytes(exifInterfaceTag)
                         TagFormat.SHORT -> value.toShortOrNull()
                         TagFormat.LONG -> value.toLongOrNull()
                         TagFormat.RATIONAL -> toRational(value)
