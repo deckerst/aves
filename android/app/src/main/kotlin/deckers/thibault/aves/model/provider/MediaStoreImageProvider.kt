@@ -16,6 +16,7 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
+import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
 import java.io.File
@@ -265,51 +266,61 @@ class MediaStoreImageProvider : ImageProvider() {
         val future = SettableFuture.create<FieldMap>()
 
         try {
-            val sourceFileName = File(sourcePath).name
-            val desiredNameWithoutExtension = sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
-
-            // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
-            // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
-            // through a document URI, not a tree URI
-            // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-            val destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension)
-            val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
-
-            // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
-            // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
-            // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
-            val source = DocumentFileCompat.fromSingleUri(context, sourceUri)
-            source.copyTo(destinationDocFile)
-
-            // the source file name and the created document file name can be different when:
-            // - a file with the same name already exists, so the name gets a suffix like ` (1)`
-            // - the original extension does not match the extension added by the underlying provider
-            val fileName = destinationDocFile.name
-            val destinationFullPath = destinationDir + fileName
-
-            var deletedSource = false
-            if (!copy) {
-                // delete original entry
-                try {
-                    delete(context, sourceUri, sourcePath).get()
-                    deletedSource = true
-                } catch (e: ExecutionException) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
-                } catch (e: InterruptedException) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
+            val sourceFile = File(sourcePath)
+            val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
+            if (sourceDir == destinationDir) {
+                if (copy) {
+                    future.setException(Exception("file at path=$sourcePath is already in destination directory"))
+                } else {
+                    future.set(HashMap<String, Any?>())
                 }
+            } else {
+                val sourceFileName = sourceFile.name
+                val desiredNameWithoutExtension = sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
+
+                // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+                // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+                // through a document URI, not a tree URI
+                // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
+                val destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension)
+                val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+
+                // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
+                // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
+                // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
+                val source = DocumentFileCompat.fromSingleUri(context, sourceUri)
+                source.copyTo(destinationDocFile)
+
+                // the source file name and the created document file name can be different when:
+                // - a file with the same name already exists, so the name gets a suffix like ` (1)`
+                // - the original extension does not match the extension added by the underlying provider
+                val fileName = destinationDocFile.name
+                val destinationFullPath = destinationDir + fileName
+
+                var deletedSource = false
+                if (!copy) {
+                    // delete original entry
+                    try {
+                        delete(context, sourceUri, sourcePath).get()
+                        deletedSource = true
+                    } catch (e: ExecutionException) {
+                        Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
+                    } catch (e: InterruptedException) {
+                        Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
+                    }
+                }
+
+                scanNewPath(context, destinationFullPath, mimeType, object : ImageOpCallback {
+                    override fun onSuccess(fields: FieldMap) {
+                        fields["deletedSource"] = deletedSource
+                        future.set(fields)
+                    }
+
+                    override fun onFailure(throwable: Throwable) {
+                        future.setException(throwable)
+                    }
+                })
             }
-
-            scanNewPath(context, destinationFullPath, mimeType, object : ImageOpCallback {
-                override fun onSuccess(fields: FieldMap) {
-                    fields["deletedSource"] = deletedSource
-                    future.set(fields)
-                }
-
-                override fun onFailure(throwable: Throwable) {
-                    future.setException(throwable)
-                }
-            })
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to ${(if (copy) "copy" else "move")} entry", e)
             future.setException(e)
