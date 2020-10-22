@@ -15,7 +15,7 @@ class IntentStreamHandler : EventChannel.StreamHandler {
 
     override fun onCancel(arguments: Any?) {}
 
-    fun notifyNewIntent() {
-        eventSink?.success(true)
+    fun notifyNewIntent(intentData: MutableMap<String, Any?>?) {
+        eventSink?.success(intentData)
     }
 }
