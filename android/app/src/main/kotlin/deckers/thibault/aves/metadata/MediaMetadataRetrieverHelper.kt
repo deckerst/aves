@@ -9,40 +9,38 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object MediaMetadataRetrieverHelper {
-    @JvmField
     val allKeys = hashMapOf(
-            MediaMetadataRetriever.METADATA_KEY_ALBUM to "Album",
-            MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST to "Album Artist",
-            MediaMetadataRetriever.METADATA_KEY_ARTIST to "Artist",
-            MediaMetadataRetriever.METADATA_KEY_AUTHOR to "Author",
-            MediaMetadataRetriever.METADATA_KEY_BITRATE to "Bitrate",
-            MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE to "Capture Framerate",
-            MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER to "CD Track Number",
-            MediaMetadataRetriever.METADATA_KEY_COLOR_RANGE to "Color Range",
-            MediaMetadataRetriever.METADATA_KEY_COLOR_STANDARD to "Color Standard",
-            MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER to "Color Transfer",
-            MediaMetadataRetriever.METADATA_KEY_COMPILATION to "Compilation",
-            MediaMetadataRetriever.METADATA_KEY_COMPOSER to "Composer",
-            MediaMetadataRetriever.METADATA_KEY_DATE to "Date",
-            MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER to "Disc Number",
-            MediaMetadataRetriever.METADATA_KEY_DURATION to "Duration",
-            MediaMetadataRetriever.METADATA_KEY_EXIF_LENGTH to "Exif Length",
-            MediaMetadataRetriever.METADATA_KEY_EXIF_OFFSET to "Exif Offset",
-            MediaMetadataRetriever.METADATA_KEY_GENRE to "Genre",
-            MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO to "Has Audio",
-            MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO to "Has Video",
-            MediaMetadataRetriever.METADATA_KEY_LOCATION to "Location",
-            MediaMetadataRetriever.METADATA_KEY_MIMETYPE to "MIME Type",
-            MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS to "Number of Tracks",
-            MediaMetadataRetriever.METADATA_KEY_TITLE to "Title",
-            MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT to "Video Height",
-            MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION to "Video Rotation",
-            MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH to "Video Width",
-            MediaMetadataRetriever.METADATA_KEY_WRITER to "Writer",
-            MediaMetadataRetriever.METADATA_KEY_YEAR to "Year",
+        MediaMetadataRetriever.METADATA_KEY_ALBUM to "Album",
+        MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST to "Album Artist",
+        MediaMetadataRetriever.METADATA_KEY_ARTIST to "Artist",
+        MediaMetadataRetriever.METADATA_KEY_AUTHOR to "Author",
+        MediaMetadataRetriever.METADATA_KEY_BITRATE to "Bitrate",
+        MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE to "Capture Framerate",
+        MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER to "CD Track Number",
+        MediaMetadataRetriever.METADATA_KEY_COLOR_RANGE to "Color Range",
+        MediaMetadataRetriever.METADATA_KEY_COLOR_STANDARD to "Color Standard",
+        MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER to "Color Transfer",
+        MediaMetadataRetriever.METADATA_KEY_COMPILATION to "Compilation",
+        MediaMetadataRetriever.METADATA_KEY_COMPOSER to "Composer",
+        MediaMetadataRetriever.METADATA_KEY_DATE to "Date",
+        MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER to "Disc Number",
+        MediaMetadataRetriever.METADATA_KEY_DURATION to "Duration",
+        MediaMetadataRetriever.METADATA_KEY_GENRE to "Genre",
+        MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO to "Has Audio",
+        MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO to "Has Video",
+        MediaMetadataRetriever.METADATA_KEY_LOCATION to "Location",
+        MediaMetadataRetriever.METADATA_KEY_MIMETYPE to "MIME Type",
+        MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS to "Number of Tracks",
+        MediaMetadataRetriever.METADATA_KEY_TITLE to "Title",
+        MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT to "Video Height",
+        MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION to "Video Rotation",
+        MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH to "Video Width",
+        MediaMetadataRetriever.METADATA_KEY_WRITER to "Writer",
+        MediaMetadataRetriever.METADATA_KEY_YEAR to "Year",
     ).apply {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            putAll(hashMapOf(
+            putAll(
+                hashMapOf(
                     MediaMetadataRetriever.METADATA_KEY_HAS_IMAGE to "Has Image",
                     MediaMetadataRetriever.METADATA_KEY_IMAGE_COUNT to "Image Count",
                     MediaMetadataRetriever.METADATA_KEY_IMAGE_HEIGHT to "Image Height",
@@ -50,7 +48,16 @@ object MediaMetadataRetrieverHelper {
                     MediaMetadataRetriever.METADATA_KEY_IMAGE_ROTATION to "Image Rotation",
                     MediaMetadataRetriever.METADATA_KEY_IMAGE_WIDTH to "Image Width",
                     MediaMetadataRetriever.METADATA_KEY_VIDEO_FRAME_COUNT to "Video Frame Count",
-            ))
+                )
+            )
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            putAll(
+                hashMapOf(
+                    MediaMetadataRetriever.METADATA_KEY_EXIF_LENGTH to "Exif Length",
+                    MediaMetadataRetriever.METADATA_KEY_EXIF_OFFSET to "Exif Offset",
+                )
+            )
         }
     }
 
@@ -91,7 +98,7 @@ object MediaMetadataRetrieverHelper {
                 MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT, MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH -> "$value pixels"
                 MediaMetadataRetriever.METADATA_KEY_BITRATE -> {
                     val bitrate = value.toLongOrNull() ?: 0
-                    if (bitrate > 0) Formatter.formatFileSize(context, bitrate) + "/sec" else null
+                    if (bitrate > 0) "${Formatter.formatFileSize(context, bitrate)}/sec" else null
                 }
                 MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE -> {
                     val framerate = value.toDoubleOrNull() ?: 0.0

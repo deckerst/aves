@@ -136,13 +136,15 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
       await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
-        final sourceUri = movedOp.uri;
         final newFields = movedOp.newFields;
-        final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-        if (entry != null) {
-          fromAlbums.add(entry.directory);
-          movedEntries.add(entry);
-          await moveEntry(entry, newFields);
+        if (newFields.isNotEmpty) {
+          final sourceUri = movedOp.uri;
+          final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+          if (entry != null) {
+            fromAlbums.add(entry.directory);
+            movedEntries.add(entry);
+            await moveEntry(entry, newFields);
+          }
         }
       });
     }

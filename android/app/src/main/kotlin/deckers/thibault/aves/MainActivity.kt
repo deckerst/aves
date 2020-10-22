@@ -26,12 +26,13 @@ class MainActivity : FlutterActivity() {
     }
 
     private val intentStreamHandler = IntentStreamHandler()
-    private var intentDataMap: MutableMap<String, Any?>? = null
+    private lateinit var intentDataMap: MutableMap<String, Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.i(LOG_TAG, "onCreate intent=$intent")
         super.onCreate(savedInstanceState)
 
-        handleIntent(intent)
+        intentDataMap = extractIntentData(intent)
 
         val messenger = flutterEngine!!.dartExecutor.binaryMessenger
 
@@ -50,15 +51,13 @@ class MainActivity : FlutterActivity() {
             when (call.method) {
                 "getIntentData" -> {
                     result.success(intentDataMap)
-                    intentDataMap = null
+                    intentDataMap.clear()
                 }
                 "pick" -> {
-                    result.success(intentDataMap)
-                    intentDataMap = null
-                    val resultUri = call.argument<String>("uri")
-                    if (resultUri != null) {
+                    val pickedUri = call.argument<String>("uri")
+                    if (pickedUri != null) {
                         val intent = Intent().apply {
-                            data = Uri.parse(resultUri)
+                            data = Uri.parse(pickedUri)
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         }
                         setResult(RESULT_OK, intent)
@@ -82,65 +81,65 @@ class MainActivity : FlutterActivity() {
         // do not use 'route' as extra key, as the Flutter framework acts on it
 
         val search = ShortcutInfoCompat.Builder(this, "search")
-                .setShortLabel(getString(R.string.search_shortcut_short_label))
-                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
-                .setIntent(Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                        .putExtra("page", "/search"))
-                .build()
+            .setShortLabel(getString(R.string.search_shortcut_short_label))
+            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_search))
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra("page", "/search")
+            )
+            .build()
 
         val videos = ShortcutInfoCompat.Builder(this, "videos")
-                .setShortLabel(getString(R.string.videos_shortcut_short_label))
-                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
-                .setIntent(Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
-                        .putExtra("page", "/collection")
-                        .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}")))
-                .build()
+            .setShortLabel(getString(R.string.videos_shortcut_short_label))
+            .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_shortcut_movie))
+            .setIntent(
+                Intent(Intent.ACTION_MAIN, null, this, MainActivity::class.java)
+                    .putExtra("page", "/collection")
+                    .putExtra("filters", arrayOf("{\"type\":\"mime\",\"mime\":\"video/*\"}"))
+            )
+            .build()
 
         ShortcutManagerCompat.setDynamicShortcuts(this, listOf(videos, search))
     }
 
     override fun onNewIntent(intent: Intent) {
+        Log.i(LOG_TAG, "onNewIntent intent=$intent")
         super.onNewIntent(intent)
-        handleIntent(intent)
-        intentStreamHandler.notifyNewIntent()
+        intentStreamHandler.notifyNewIntent(extractIntentData(intent))
     }
 
-    private fun handleIntent(intent: Intent?) {
-        Log.i(LOG_TAG, "handleIntent intent=$intent")
-        if (intent == null) return
-        when (intent.action) {
+    private fun extractIntentData(intent: Intent?): MutableMap<String, Any?> {
+        when (intent?.action) {
             Intent.ACTION_MAIN -> {
-                val page = intent.getStringExtra("page")
-                if (page != null) {
-                    intentDataMap = hashMapOf(
-                            "page" to page,
-                            "filters" to intent.getStringArrayExtra("filters")?.toList(),
+                intent.getStringExtra("page")?.let { page ->
+                    return hashMapOf(
+                        "page" to page,
+                        "filters" to intent.getStringArrayExtra("filters")?.toList(),
                     )
                 }
             }
             Intent.ACTION_VIEW -> {
-                val uri = intent.data
-                val mimeType = intent.type
-                if (uri != null && mimeType != null) {
-                    intentDataMap = hashMapOf(
-                            "action" to "view",
-                            "uri" to uri.toString(),
-                            "mimeType" to mimeType,
+                intent.data?.let { uri ->
+                    return hashMapOf(
+                        "action" to "view",
+                        "uri" to uri.toString(),
+                        "mimeType" to intent.type, // MIME type is optional
                     )
                 }
             }
             Intent.ACTION_GET_CONTENT, Intent.ACTION_PICK -> {
-                intentDataMap = hashMapOf(
-                        "action" to "pick",
-                        "mimeType" to intent.type,
+                return hashMapOf(
+                    "action" to "pick",
+                    "mimeType" to intent.type,
                 )
             }
         }
+        return HashMap()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PermissionManager.VOLUME_ACCESS_REQUEST_CODE) {
-            val treeUri = data.data
+            val treeUri = data?.data
             if (resultCode != RESULT_OK || treeUri == null) {
                 PermissionManager.onPermissionResult(requestCode, null)
                 return
