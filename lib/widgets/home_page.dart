@@ -24,7 +24,10 @@ import 'package:permission_handler/permission_handler.dart';
 class HomePage extends StatefulWidget {
   static const routeName = '/';
 
-  const HomePage();
+  // untyped map as it is coming from the platform
+  final Map intentData;
+
+  const HomePage({this.intentData});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -64,8 +67,8 @@ class _HomePageState extends State<HomePage> {
     unawaited(androidFileUtils.initAppNames());
 
     AvesApp.mode = AppMode.main;
-    final intentData = await ViewerService.getIntentData();
-    if (intentData != null) {
+    final intentData = widget.intentData ?? await ViewerService.getIntentData();
+    if (intentData?.isNotEmpty == true) {
       final action = intentData['action'];
       switch (action) {
         case 'view':
