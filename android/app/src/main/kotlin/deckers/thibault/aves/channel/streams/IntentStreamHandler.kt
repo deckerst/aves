@@ -4,7 +4,10 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 
 class IntentStreamHandler : EventChannel.StreamHandler {
-    private lateinit var eventSink: EventSink
+    // cannot use `lateinit` because we cannot guarantee
+    // its initialization in `onListen` at the right time
+    // e.g. when resuming the app after the activity got destroyed
+    private var eventSink: EventSink? = null
 
     override fun onListen(arguments: Any?, eventSink: EventSink) {
         this.eventSink = eventSink
@@ -12,7 +15,7 @@ class IntentStreamHandler : EventChannel.StreamHandler {
 
     override fun onCancel(arguments: Any?) {}
 
-    fun notifyNewIntent() {
-        eventSink.success(true)
+    fun notifyNewIntent(intentData: MutableMap<String, Any?>?) {
+        eventSink?.success(intentData)
     }
 }

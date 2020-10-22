@@ -82,13 +82,13 @@ class _AvesAppState extends State<AvesApp> {
     ),
   );
 
-  Widget get firstPage => settings.hasAcceptedTerms ? HomePage() : WelcomePage();
+  Widget getFirstPage({Map intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : WelcomePage();
 
   @override
   void initState() {
     super.initState();
     _appSetup = _setup();
-    _newIntentChannel.receiveBroadcastStream().listen((_) => _onNewIntent());
+    _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map));
   }
 
   Future<void> _setup() async {
@@ -109,11 +109,16 @@ class _AvesAppState extends State<AvesApp> {
     await settings.initCrashlytics();
   }
 
-  void _onNewIntent() {
+  void _onNewIntent(Map intentData) {
+    debugPrint('$runtimeType onNewIntent with intentData=$intentData');
+
+    // do not reset when relaunching the app
+    if (AvesApp.mode == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
+
     FirebaseCrashlytics.instance.log('New intent');
     _navigatorKey.currentState.pushReplacement(DirectMaterialPageRoute(
       settings: RouteSettings(name: HomePage.routeName),
-      builder: (_) => firstPage,
+      builder: (_) => getFirstPage(intentData: intentData),
     ));
   }
 
@@ -125,7 +130,7 @@ class _AvesAppState extends State<AvesApp> {
       future: _appSetup,
       builder: (context, snapshot) {
         if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-          return firstPage;
+          return getFirstPage();
         }
         return Scaffold(
           body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),

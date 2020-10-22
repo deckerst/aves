@@ -1,12 +1,13 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext.kotlin_version = '1.4.10'
     repositories {
         google()
         jcenter()
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3' // do not upgrade to 4+ until this is fixed: https://github.com/flutter/flutter/issues/58247
+        // TODO TLAD upgrade AGP to 4+ when this is fixed: https://github.com/flutter/flutter/issues/58247
+        classpath 'com.android.tools.build:gradle:3.6.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'

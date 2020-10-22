@@ -7,7 +7,6 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import deckers.thibault.aves.metadata.Metadata.getExifCode
 
 object BitmapUtils {
-    @JvmStatic
     fun applyExifOrientation(context: Context, bitmap: Bitmap?, rotationDegrees: Int?, isFlipped: Boolean?): Bitmap? {
         if (bitmap == null || rotationDegrees == null || isFlipped == null) return bitmap
         if (rotationDegrees == 0 && !isFlipped) return bitmap
@@ -15,12 +14,10 @@ object BitmapUtils {
         return TransformationUtils.rotateImageExif(getBitmapPool(context), bitmap, exifOrientation)
     }
 
-    @JvmStatic
     fun centerSquareCrop(context: Context, bitmap: Bitmap?, size: Int): Bitmap? {
         bitmap ?: return bitmap
         return TransformationUtils.centerCrop(getBitmapPool(context), bitmap, size, size)
     }
 
-    @JvmStatic
     fun getBitmapPool(context: Context) = Glide.get(context).bitmapPool
 }

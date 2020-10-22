@@ -24,7 +24,8 @@
     <!-- request write permission until Q (29) included, because scoped storage is unusable -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
+        android:maxSdkVersion="29"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- to access media with unredacted metadata with scoped storage (Android Q+) -->

@@ -9,6 +9,9 @@ class MimeTypes {
   static const String svg = 'image/svg+xml';
   static const String webp = 'image/webp';
 
+  static const String tiff = 'image/tiff';
+  static const String psd = 'image/vnd.adobe.photoshop';
+
   static const String arw = 'image/x-sony-arw';
   static const String cr2 = 'image/x-canon-cr2';
   static const String crw = 'image/x-canon-crw';
@@ -38,4 +41,5 @@ class MimeTypes {
 
   // groups
   static const List<String> rawImages = [arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f];
+  static const List<String> undecodable = [crw, psd, tiff]; // TODO TLAD make it dynamic if it depends on OS/lib versions
 }
