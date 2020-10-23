@@ -1,5 +1,6 @@
 package deckers.thibault.aves.model.provider
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -49,6 +50,11 @@ class MediaStoreImageProvider : ImageProvider() {
             val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
             if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
         }
+        // the uri can be a file media uri (e.g. "content://0@media/external/file/30050")
+        // without an equivalent image/video if it is shared from a file browser
+        // but the file is not publicly visible
+        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION) > 0) return
+
         callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
     }
 
@@ -90,30 +96,36 @@ class MediaStoreImageProvider : ImageProvider() {
         try {
             val cursor = context.contentResolver.query(contentUri, projection, null, null, orderBy)
             if (cursor != null) {
+                val contentUriContainsId = when (contentUri) {
+                    IMAGE_CONTENT_URI, VIDEO_CONTENT_URI -> false
+                    else -> true
+                }
+
                 // image & video
                 val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
-                val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+                val pathColumn = cursor.getColumnIndexOrThrow(MediaColumns.PATH)
                 val mimeTypeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE)
                 val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
                 val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.TITLE)
                 val widthColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH)
                 val heightColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT)
                 val dateModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_MODIFIED)
-                val dateTakenColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_TAKEN)
+                val dateTakenColumn = cursor.getColumnIndex(MediaColumns.DATE_TAKEN)
 
                 // image & video for API >= Q, only for images for API < Q
-                val orientationColumn = cursor.getColumnIndex(MediaStore.MediaColumns.ORIENTATION)
+                val orientationColumn = cursor.getColumnIndex(MediaColumns.ORIENTATION)
 
                 // video only
-                val durationColumn = cursor.getColumnIndex(MediaStore.MediaColumns.DURATION)
+                val durationColumn = cursor.getColumnIndex(MediaColumns.DURATION)
                 val needDuration = projection.contentEquals(VIDEO_PROJECTION)
 
                 while (cursor.moveToNext()) {
                     val contentId = cursor.getInt(idColumn)
                     val dateModifiedSecs = cursor.getInt(dateModifiedColumn)
                     if (isValidEntry(contentId, dateModifiedSecs)) {
-                        // building `itemUri` this way is fine if `contentUri` does not already contain the ID
-                        val itemUri = ContentUris.withAppendedId(contentUri, contentId.toLong())
+                        // for multiple items, `contentUri` is the root without ID,
+                        // but for single items, `contentUri` already contains the ID
+                        val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, contentId.toLong())
                         val mimeType = cursor.getString(mimeTypeColumn)
                         val width = cursor.getInt(widthColumn)
                         val height = cursor.getInt(heightColumn)
@@ -129,7 +141,7 @@ class MediaStoreImageProvider : ImageProvider() {
                             "sizeBytes" to cursor.getLong(sizeColumn),
                             "title" to cursor.getString(titleColumn),
                             "dateModifiedSecs" to dateModifiedSecs,
-                            "sourceDateTakenMillis" to cursor.getLong(dateTakenColumn),
+                            "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
                             "durationMillis" to durationMillis,
                             // only for map export
                             "contentId" to contentId,
@@ -337,32 +349,48 @@ class MediaStoreImageProvider : ImageProvider() {
 
         private val BASE_PROJECTION = arrayOf(
             MediaStore.MediaColumns._ID,
-            MediaStore.MediaColumns.DATA,
+            MediaColumns.PATH,
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.SIZE,  // TODO TLAD use `DISPLAY_NAME` instead/along `TITLE`?
             MediaStore.MediaColumns.TITLE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
-            MediaStore.MediaColumns.DATE_MODIFIED
+            MediaStore.MediaColumns.DATE_MODIFIED,
+            MediaColumns.DATE_TAKEN,
         )
 
         private val IMAGE_PROJECTION = arrayOf(
             *BASE_PROJECTION,
-            // uses `MediaStore.Images.Media` instead of `MediaStore.MediaColumns` for APIs < Q
-            MediaStore.Images.Media.DATE_TAKEN,
-            MediaStore.Images.Media.ORIENTATION
+            MediaColumns.ORIENTATION,
         )
 
         private val VIDEO_PROJECTION = arrayOf(
             *BASE_PROJECTION,
-            // uses `MediaStore.Video.Media` instead of `MediaStore.MediaColumns` for APIs < Q
-            MediaStore.Video.Media.DATE_TAKEN,
-            MediaStore.Video.Media.DURATION,
+            MediaColumns.DURATION,
+            // `ORIENTATION` was only available for images before Android Q
             *if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) arrayOf(
-                MediaStore.Video.Media.ORIENTATION
+                MediaStore.MediaColumns.ORIENTATION,
             ) else emptyArray()
         )
     }
+}
+
+object MediaColumns {
+    // `DATE_TAKEN`, `ORIENTATION`, `DURATION` used to be in `MediaStore.[Images,Video].Media`
+    // but were moved to `MediaStore.MediaColumns` for API 29
+    // it is safe to use them because they are static strings that have not changed
+
+    @SuppressLint("InlinedApi")
+    const val DATE_TAKEN = MediaStore.MediaColumns.DATE_TAKEN
+
+    @SuppressLint("InlinedApi")
+    const val ORIENTATION = MediaStore.MediaColumns.ORIENTATION
+
+    @SuppressLint("InlinedApi")
+    const val DURATION = MediaStore.MediaColumns.DURATION
+
+    @Suppress("DEPRECATION")
+    const val PATH = MediaStore.MediaColumns.DATA
 }
 
 typealias NewEntryHandler = (entry: FieldMap) -> Unit
