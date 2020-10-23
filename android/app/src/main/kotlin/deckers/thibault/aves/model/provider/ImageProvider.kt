@@ -83,7 +83,7 @@ abstract class ImageProvider {
         try {
             val exif = ExifInterface(editablePath)
             // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
-            // in that case we explicitely set it to `normal` first
+            // in that case we explicitly set it to `normal` first
             // because ExifInterface fails to rotate an image with undefined orientation
             // as of androidx.exifinterface:exifinterface:1.3.0
             val currentOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
