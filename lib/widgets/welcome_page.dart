@@ -99,7 +99,7 @@ class _WelcomePageState extends State<WelcomePage> {
         LabeledCheckbox(
           value: settings.isCrashlyticsEnabled,
           onChanged: (v) => setState(() => settings.isCrashlyticsEnabled = v),
-          text: 'Allow anonymous crash reporting',
+          text: 'Allow anonymous analytics and crash reporting',
         ),
         LabeledCheckbox(
           key: Key('agree-checkbox'),

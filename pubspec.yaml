@@ -49,6 +49,7 @@ dependencies:
     git:
       url: git://github.com/deckerst/expansion_tile_card.git
   firebase_core:
+  firebase_analytics:
   firebase_crashlytics:
   flushbar:
   flutter_ijkplayer:

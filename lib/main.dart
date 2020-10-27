@@ -8,6 +8,8 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/routes.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -41,7 +43,9 @@ class AvesApp extends StatefulWidget {
 
 class _AvesAppState extends State<AvesApp> {
   Future<void> _appSetup;
-  final NavigatorObserver _routeTracker = CrashlyticsRouteTracker();
+  // observers are not registered when using the same list object with different items
+  // the list itself needs to be reassigned
+  List<NavigatorObserver> _navigatorObservers = [];
   final _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
   final _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -93,11 +97,12 @@ class _AvesAppState extends State<AvesApp> {
 
   Future<void> _setup() async {
     await Firebase.initializeApp().then((app) {
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      FirebaseCrashlytics.instance.setCustomKey('locales', window.locales.join(', '));
+      final crashlytics = FirebaseCrashlytics.instance;
+      FlutterError.onError = crashlytics.recordFlutterError;
+      crashlytics.setCustomKey('locales', window.locales.join(', '));
       final now = DateTime.now();
-      FirebaseCrashlytics.instance.setCustomKey('timezone', '${now.timeZoneName} (${now.timeZoneOffset})');
-      FirebaseCrashlytics.instance.setCustomKey(
+      crashlytics.setCustomKey('timezone', '${now.timeZoneName} (${now.timeZoneOffset})');
+      crashlytics.setCustomKey(
           'build_mode',
           kReleaseMode
               ? 'release'
@@ -106,7 +111,11 @@ class _AvesAppState extends State<AvesApp> {
                   : 'debug');
     });
     await settings.init();
-    await settings.initCrashlytics();
+    await settings.initFirebase();
+    _navigatorObservers = [
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
+      CrashlyticsRouteTracker(),
+    ];
   }
 
   void _onNewIntent(Map intentData) {
@@ -126,28 +135,20 @@ class _AvesAppState extends State<AvesApp> {
   Widget build(BuildContext context) {
     // place the settings provider above `MaterialApp`
     // so it can be used during navigation transitions
-    final home = FutureBuilder<void>(
-      future: _appSetup,
-      builder: (context, snapshot) {
-        if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-          return getFirstPage();
-        }
-        return Scaffold(
-          body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
-        );
-      },
-    );
     return SettingsProvider(
       child: OverlaySupport(
         child: FutureBuilder<void>(
           future: _appSetup,
           builder: (context, snapshot) {
+            final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
+                ? getFirstPage()
+                : Scaffold(
+                    body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
+                  );
             return MaterialApp(
               navigatorKey: _navigatorKey,
               home: home,
-              navigatorObservers: [
-                if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) _routeTracker,
-              ],
+              navigatorObservers: _navigatorObservers,
               title: 'Aves',
               darkTheme: darkTheme,
               themeMode: ThemeMode.dark,
