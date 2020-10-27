@@ -43,6 +43,7 @@ class AvesApp extends StatefulWidget {
 
 class _AvesAppState extends State<AvesApp> {
   Future<void> _appSetup;
+
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];

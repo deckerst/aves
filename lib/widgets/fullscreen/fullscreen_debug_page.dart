@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/debug/db.dart';
 import 'package:aves/widgets/fullscreen/debug/metadata.dart';
-import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
