@@ -3,6 +3,7 @@ import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -57,9 +58,14 @@ class Settings extends ChangeNotifier {
 
   // Crashlytics initialization is separated from the main settings initialization
   // to allow settings customization without Firebase context (e.g. before a Flutter Driver test)
-  Future<void> initCrashlytics() async {
+  Future<void> initFirebase() async {
     await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
+    await FirebaseAnalytics().setAnalyticsCollectionEnabled(isCrashlyticsEnabled);
+    // enable analytics debug mode:
+    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app deckers.thibault.aves.debug
+    // disable analytics debug mode:
+    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app .none.
   }
 
   Future<void> reset() {
@@ -76,7 +82,7 @@ class Settings extends ChangeNotifier {
 
   set isCrashlyticsEnabled(bool newValue) {
     setAndNotify(isCrashlyticsEnabledKey, newValue);
-    unawaited(initCrashlytics());
+    unawaited(initFirebase());
   }
 
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);

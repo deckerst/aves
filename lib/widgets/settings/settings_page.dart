@@ -115,7 +115,7 @@ class SettingsPage extends StatelessWidget {
                   SwitchListTile(
                     value: settings.isCrashlyticsEnabled,
                     onChanged: (v) => settings.isCrashlyticsEnabled = v,
-                    title: Text('Allow anonymous crash reporting'),
+                    title: Text('Allow anonymous analytics and crash reporting'),
                   ),
                   GrantedDirectories(),
                 ],
