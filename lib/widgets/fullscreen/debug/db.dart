@@ -1,7 +1,7 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
-import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:flutter/material.dart';
 
 class DbTab extends StatefulWidget {

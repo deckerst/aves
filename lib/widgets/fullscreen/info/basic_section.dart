@@ -9,7 +9,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
-import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

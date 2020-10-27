@@ -11,6 +11,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/notifications.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
 import 'package:aves/widgets/fullscreen/overlay/video.dart';

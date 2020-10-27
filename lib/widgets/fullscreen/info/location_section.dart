@@ -5,7 +5,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/maps/common.dart';
 import 'package:aves/widgets/fullscreen/info/maps/google_map.dart';
 import 'package:aves/widgets/fullscreen/info/maps/leaflet_map.dart';
