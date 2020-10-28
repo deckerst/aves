@@ -20,13 +20,14 @@ import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
+import kotlinx.coroutines.delay
 import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 import java.util.concurrent.ExecutionException
 
 class MediaStoreImageProvider : ImageProvider() {
-    fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
+    suspend fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
         val isModified = fun(contentId: Int, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
@@ -35,7 +36,7 @@ class MediaStoreImageProvider : ImageProvider() {
         fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
     }
 
-    override fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
+    override suspend fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
         val id = ContentUris.parseId(uri)
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
@@ -84,7 +85,7 @@ class MediaStoreImageProvider : ImageProvider() {
         return foundContentIds
     }
 
-    private fun fetchFrom(
+    private suspend fun fetchFrom(
         context: Context,
         isValidEntry: NewEntryChecker,
         handleNewEntry: NewEntryHandler,
@@ -159,7 +160,7 @@ class MediaStoreImageProvider : ImageProvider() {
                         handleNewEntry(entryMap)
                         // TODO TLAD is this necessary?
                         if (newEntryCount % 30 == 0) {
-                            Thread.sleep(10)
+                            delay(10)
                         }
                         newEntryCount++
                     }
@@ -212,7 +213,7 @@ class MediaStoreImageProvider : ImageProvider() {
         return future
     }
 
-    override fun moveMultiple(
+    override suspend fun moveMultiple(
         context: Context,
         copy: Boolean,
         destinationDir: String,
@@ -266,7 +267,7 @@ class MediaStoreImageProvider : ImageProvider() {
         }
     }
 
-    private fun moveSingleByTreeDocAndScan(
+    private suspend fun moveSingleByTreeDocAndScan(
         context: Context,
         sourcePath: String,
         sourceUri: Uri,
@@ -322,16 +323,13 @@ class MediaStoreImageProvider : ImageProvider() {
                     }
                 }
 
-                scanNewPath(context, destinationFullPath, mimeType, object : ImageOpCallback {
-                    override fun onSuccess(fields: FieldMap) {
-                        fields["deletedSource"] = deletedSource
-                        future.set(fields)
-                    }
-
-                    override fun onFailure(throwable: Throwable) {
-                        future.setException(throwable)
-                    }
-                })
+                try {
+                    val fields = scanNewPath(context, destinationFullPath, mimeType)
+                    fields["deletedSource"] = deletedSource
+                    future.set(fields)
+                } catch (e: Exception) {
+                    future.setException(e)
+                }
             }
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to ${(if (copy) "copy" else "move")} entry", e)

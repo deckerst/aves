@@ -62,7 +62,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         handler.post { eventSink.endOfStream() }
     }
 
-    private fun move() {
+    private suspend fun move() {
         if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
             endOfStream()
             return

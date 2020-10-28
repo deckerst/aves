@@ -74,7 +74,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
-    private fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
@@ -94,7 +94,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         })
     }
 
-    private fun rename(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun rename(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
         val newName = call.argument<String>("newName")
         if (entryMap == null || newName == null) {
