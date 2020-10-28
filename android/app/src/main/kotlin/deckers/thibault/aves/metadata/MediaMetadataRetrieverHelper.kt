@@ -133,11 +133,16 @@ object MediaMetadataRetrieverHelper {
                         else -> value
                     }
                 }
-                // hide `0` values
+                // hide default or invalid values
                 MediaMetadataRetriever.METADATA_KEY_COMPILATION,
                 MediaMetadataRetriever.METADATA_KEY_DISC_NUMBER,
                 MediaMetadataRetriever.METADATA_KEY_YEAR -> if (value != "0") value else null
                 MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER -> if (value != "0/0") value else null
+                MediaMetadataRetriever.METADATA_KEY_DATE -> {
+                    val dateMillis = Metadata.parseVideoMetadataDate(value)
+                    // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
+                    if (dateMillis > 0) value else null
+                }
                 // hide
                 MediaMetadataRetriever.METADATA_KEY_LOCATION,
                 MediaMetadataRetriever.METADATA_KEY_MIMETYPE -> null
