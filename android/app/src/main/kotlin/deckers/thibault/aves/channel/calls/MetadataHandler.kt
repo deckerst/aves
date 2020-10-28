@@ -49,6 +49,7 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
+import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
@@ -150,9 +151,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
-        if (mediaDir.isNotEmpty()) {
-            metadataMap[Metadata.DIR_MEDIA] = mediaDir
+        if (isMultimedia(mimeType)) {
+            val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
+            if (mediaDir.isNotEmpty()) {
+                metadataMap[Metadata.DIR_MEDIA] = mediaDir
+            }
         }
 
         if (metadataMap.isNotEmpty()) {
