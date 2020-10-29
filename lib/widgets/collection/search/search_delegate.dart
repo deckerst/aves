@@ -179,7 +179,7 @@ class ImageSearchDelegate {
 
   void _goBack(BuildContext context) {
     _clean();
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
   void _goToCollectionPage(BuildContext context, CollectionFilter filter) {
