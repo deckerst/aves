@@ -38,12 +38,6 @@ class Constants {
       sourceUrl: 'https://github.com/bumptech/glide',
     ),
     Dependency(
-      name: 'Guava',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/google/guava/blob/master/COPYING',
-      sourceUrl: 'https://github.com/google/guava',
-    ),
-    Dependency(
       name: 'Metadata Extractor',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/drewnoakes/metadata-extractor/blob/master/LICENSE',

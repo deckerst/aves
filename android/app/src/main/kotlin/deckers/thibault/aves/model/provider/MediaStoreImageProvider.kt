@@ -8,8 +8,6 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import com.commonsware.cwac.document.DocumentFileCompat
-import com.google.common.util.concurrent.ListenableFuture
-import com.google.common.util.concurrent.SettableFuture
 import deckers.thibault.aves.model.AvesImageEntry
 import deckers.thibault.aves.model.SourceImageEntry
 import deckers.thibault.aves.utils.LogUtils.createTag
@@ -22,9 +20,7 @@ import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
 import kotlinx.coroutines.delay
 import java.io.File
-import java.io.FileNotFoundException
 import java.util.*
-import java.util.concurrent.ExecutionException
 
 class MediaStoreImageProvider : ImageProvider() {
     suspend fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
@@ -176,41 +172,21 @@ class MediaStoreImageProvider : ImageProvider() {
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
-    override fun delete(context: Context, uri: Uri, path: String?): ListenableFuture<Any?> {
-        val future = SettableFuture.create<Any?>()
-
-        if (path == null) {
-            future.setException(Exception("failed to delete file because path is null"))
-            return future
-        }
+    override suspend fun delete(context: Context, uri: Uri, path: String?) {
+        path ?: throw Exception("failed to delete file because path is null")
 
         if (requireAccessPermission(context, path)) {
             // if the file is on SD card, calling the content resolver `delete()` removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
-            try {
-                val df = getDocumentFile(context, path, uri)
-                if (df != null && df.delete()) {
-                    future.set(null)
-                } else {
-                    future.setException(Exception("failed to delete file with df=$df"))
-                }
-            } catch (e: FileNotFoundException) {
-                future.setException(e)
-            }
-            return future
+            val df = getDocumentFile(context, path, uri)
+
+            @Suppress("BlockingMethodInNonBlockingContext")
+            if (df != null && df.delete()) return
+            throw Exception("failed to delete file with df=$df")
         }
 
-        try {
-            if (context.contentResolver.delete(uri, null, null) > 0) {
-                future.set(null)
-            } else {
-                future.setException(Exception("failed to delete row from content provider"))
-            }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to delete entry", e)
-            future.setException(e)
-        }
-        return future
+        if (context.contentResolver.delete(uri, null, null) > 0) return
+        throw Exception("failed to delete row from content provider")
     }
 
     override suspend fun moveMultiple(
@@ -252,14 +228,12 @@ class MediaStoreImageProvider : ImageProvider() {
                 // - there is no documentation regarding support for usage with removable storage
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                 try {
-                    val newFieldsFuture = moveSingleByTreeDocAndScan(
+                    val newFields = moveSingleByTreeDocAndScan(
                         context, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy,
                     )
-                    result["newFields"] = newFieldsFuture.get()
+                    result["newFields"] = newFields
                     result["success"] = true
-                } catch (e: ExecutionException) {
-                    Log.w(LOG_TAG, "failed to move to destinationDir=$destinationDir entry with sourcePath=$sourcePath", e)
-                } catch (e: InterruptedException) {
+                } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to move to destinationDir=$destinationDir entry with sourcePath=$sourcePath", e)
                 }
             }
@@ -275,68 +249,56 @@ class MediaStoreImageProvider : ImageProvider() {
         destinationDirDocFile: DocumentFileCompat,
         mimeType: String,
         copy: Boolean,
-    ): ListenableFuture<FieldMap> {
-        val future = SettableFuture.create<FieldMap>()
-
-        try {
-            val sourceFile = File(sourcePath)
-            val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
-            if (sourceDir == destinationDir) {
-                if (copy) {
-                    future.setException(Exception("file at path=$sourcePath is already in destination directory"))
-                } else {
-                    future.set(HashMap<String, Any?>())
-                }
-            } else {
-                val sourceFileName = sourceFile.name
-                val desiredNameWithoutExtension = sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
-
-                // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
-                // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
-                // through a document URI, not a tree URI
-                // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-                val destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension)
-                val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
-
-                // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
-                // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
-                // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
-                val source = DocumentFileCompat.fromSingleUri(context, sourceUri)
-                source.copyTo(destinationDocFile)
-
-                // the source file name and the created document file name can be different when:
-                // - a file with the same name already exists, so the name gets a suffix like ` (1)`
-                // - the original extension does not match the extension added by the underlying provider
-                val fileName = destinationDocFile.name
-                val destinationFullPath = destinationDir + fileName
-
-                var deletedSource = false
-                if (!copy) {
-                    // delete original entry
-                    try {
-                        delete(context, sourceUri, sourcePath).get()
-                        deletedSource = true
-                    } catch (e: ExecutionException) {
-                        Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
-                    } catch (e: InterruptedException) {
-                        Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
-                    }
-                }
-
-                try {
-                    val fields = scanNewPath(context, destinationFullPath, mimeType)
-                    fields["deletedSource"] = deletedSource
-                    future.set(fields)
-                } catch (e: Exception) {
-                    future.setException(e)
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to ${(if (copy) "copy" else "move")} entry", e)
-            future.setException(e)
+    ): FieldMap {
+        val sourceFile = File(sourcePath)
+        val sourceDir = sourceFile.parent?.let { ensureTrailingSeparator(it) }
+        if (sourceDir == destinationDir) {
+            if (copy) throw Exception("file at path=$sourcePath is already in destination directory")
+            return HashMap<String, Any?>()
         }
 
-        return future
+        val sourceFileName = sourceFile.name
+        val desiredNameWithoutExtension = sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
+
+        if (File(destinationDir, sourceFileName).exists()) {
+            throw Exception("file with name=$sourceFileName already exists in destination directory")
+        }
+
+        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+        // through a document URI, not a tree URI
+        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
+        @Suppress("BlockingMethodInNonBlockingContext")
+        val destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension)
+        val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+
+        // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
+        // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
+        // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
+        val source = DocumentFileCompat.fromSingleUri(context, sourceUri)
+        @Suppress("BlockingMethodInNonBlockingContext")
+        source.copyTo(destinationDocFile)
+
+        // the source file name and the created document file name can be different when:
+        // - a file with the same name already exists, some implementations give a suffix like ` (1)`, some *do not*
+        // - the original extension does not match the extension added by the underlying provider
+        val fileName = destinationDocFile.name
+        val destinationFullPath = destinationDir + fileName
+
+        var deletedSource = false
+        if (!copy) {
+            // delete original entry
+            try {
+                delete(context, sourceUri, sourcePath)
+                deletedSource = true
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
+            }
+        }
+
+        return scanNewPath(context, destinationFullPath, mimeType).apply {
+            put("deletedSource", deletedSource)
+        }
     }
 
     companion object {

@@ -16,7 +16,6 @@ import com.adobe.internal.xmp.XMPUtils
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
-import com.drew.imaging.ImageProcessingException
 import com.drew.lang.Rational
 import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
@@ -59,7 +58,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -568,9 +566,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: IOException) {
-                Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
-            } catch (e: ImageProcessingException) {
+            } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
