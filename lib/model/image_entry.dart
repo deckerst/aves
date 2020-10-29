@@ -196,14 +196,20 @@ class ImageEntry {
     }
   }
 
-  bool get portrait => rotationDegrees % 180 == 90;
+  bool get isPortrait => rotationDegrees % 180 == 90;
+
+  String get resolutionText {
+    final w = width ?? '?';
+    final h = height ?? '?';
+    return isPortrait ? '$h × $w' : '$w × $h';
+  }
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
-    return portrait ? height / width : width / height;
+    return isPortrait ? height / width : width / height;
   }
 
-  Size get displaySize => portrait ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
+  Size get displaySize => isPortrait ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 
@@ -371,7 +377,10 @@ class ImageEntry {
     final contentId = newFields['contentId'];
     if (contentId is int) this.contentId = contentId;
     final sourceTitle = newFields['title'];
-    if (sourceTitle is String) this.sourceTitle = sourceTitle;
+    if (sourceTitle is String) {
+      this.sourceTitle = sourceTitle;
+      _bestTitle = null;
+    }
     final dateModifiedSecs = newFields['dateModifiedSecs'];
     if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
     final rotationDegrees = newFields['rotationDegrees'];
@@ -381,6 +390,8 @@ class ImageEntry {
 
     await metadataDb.saveEntries({this});
     await metadataDb.saveMetadata({catalogMetadata});
+
+    metadataChangeNotifier.notifyListeners();
   }
 
   Future<bool> rename(String newName) async {
@@ -390,8 +401,6 @@ class ImageEntry {
     if (newFields.isEmpty) return false;
 
     await _applyNewFields(newFields);
-    _bestTitle = null;
-    metadataChangeNotifier.notifyListeners();
     return true;
   }
 

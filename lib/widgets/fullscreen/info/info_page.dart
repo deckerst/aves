@@ -36,48 +36,13 @@ class InfoPage extends StatefulWidget {
 class InfoPageState extends State<InfoPage> {
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
-  List<MetadataDirectory> _metadata = [];
-  String _loadedMetadataUri;
 
   CollectionLens get collection => widget.collection;
 
   ImageEntry get entry => widget.entryNotifier.value;
 
-  bool get isVisible => widget.visibleNotifier.value;
-
-  @override
-  void initState() {
-    super.initState();
-    _registerWidget(widget);
-    _getMetadata();
-  }
-
-  @override
-  void didUpdateWidget(InfoPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-    _getMetadata();
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    super.dispose();
-  }
-
-  void _registerWidget(InfoPage widget) {
-    widget.visibleNotifier.addListener(_getMetadata);
-  }
-
-  void _unregisterWidget(InfoPage widget) {
-    widget.visibleNotifier.removeListener(_getMetadata);
-  }
-
   @override
   Widget build(BuildContext context) {
-    const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
-
     final appBar = SliverAppBar(
       leading: IconButton(
         key: Key('back-button'),
@@ -99,64 +64,20 @@ class InfoPageState extends State<InfoPage> {
               builder: (c, mq, child) {
                 final mqWidth = mq.item1;
                 final mqViewInsetsBottom = mq.item2;
-                final split = mqWidth > 400;
-
                 return ValueListenableBuilder<ImageEntry>(
                   valueListenable: widget.entryNotifier,
                   builder: (context, entry, child) {
-                    if (entry == null) return SizedBox.shrink();
-
-                    final locationAtTop = split && entry.hasGps;
-                    final locationSection = LocationSection(
-                      collection: collection,
-                      entry: entry,
-                      showTitle: !locationAtTop,
-                      visibleNotifier: widget.visibleNotifier,
-                      onFilter: _goToCollection,
-                    );
-                    final basicAndLocationSliver = locationAtTop
-                        ? SliverToBoxAdapter(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
-                                SizedBox(width: 8),
-                                Expanded(child: locationSection),
-                              ],
-                            ),
+                    return entry != null
+                        ? _InfoPageContent(
+                            collection: collection,
+                            entry: entry,
+                            visibleNotifier: widget.visibleNotifier,
+                            scrollController: _scrollController,
+                            appBar: appBar,
+                            split: mqWidth > 400,
+                            mqViewInsetsBottom: mqViewInsetsBottom,
                           )
-                        : SliverList(
-                            delegate: SliverChildListDelegate.fixed(
-                              [
-                                BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
-                                locationSection,
-                              ],
-                            ),
-                          );
-                    final metadataSliver = MetadataSectionSliver(
-                      entry: entry,
-                      metadata: _metadata,
-                    );
-
-                    return AnimationLimiter(
-                      // we update the limiter key after fetching the metadata of a new entry,
-                      // in order to restart the staggered animation of the metadata section
-                      key: Key(_loadedMetadataUri),
-                      child: CustomScrollView(
-                        controller: _scrollController,
-                        slivers: [
-                          appBar,
-                          SliverPadding(
-                            padding: horizontalPadding + EdgeInsets.only(top: 8),
-                            sliver: basicAndLocationSliver,
-                          ),
-                          SliverPadding(
-                            padding: horizontalPadding + EdgeInsets.only(bottom: 8 + mqViewInsetsBottom),
-                            sliver: metadataSliver,
-                          ),
-                        ],
-                      ),
-                    );
+                        : SizedBox.shrink();
                   },
                 );
               },
@@ -198,10 +119,139 @@ class InfoPageState extends State<InfoPage> {
       curve: Curves.easeInOut,
     );
   }
+}
+
+class _InfoPageContent extends StatefulWidget {
+  final CollectionLens collection;
+  final ImageEntry entry;
+  final ValueNotifier<bool> visibleNotifier;
+  final ScrollController scrollController;
+  final SliverAppBar appBar;
+  final bool split;
+  final double mqViewInsetsBottom;
+
+  const _InfoPageContent({
+    Key key,
+    @required this.collection,
+    @required this.entry,
+    @required this.visibleNotifier,
+    @required this.scrollController,
+    @required this.appBar,
+    @required this.split,
+    @required this.mqViewInsetsBottom,
+  }) : super(key: key);
+
+  @override
+  _InfoPageContentState createState() => _InfoPageContentState();
+}
+
+class _InfoPageContentState extends State<_InfoPageContent> {
+  List<MetadataDirectory> _metadata = [];
+  String _loadedMetadataUri;
+
+  static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
+
+  CollectionLens get collection => widget.collection;
+
+  ImageEntry get entry => widget.entry;
+
+  bool get isVisible => widget.visibleNotifier.value;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+    _getMetadata();
+  }
+
+  @override
+  void didUpdateWidget(_InfoPageContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+    _getMetadata();
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(_InfoPageContent widget) {
+    widget.visibleNotifier.addListener(_getMetadata);
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
+  }
+
+  void _unregisterWidget(_InfoPageContent widget) {
+    widget.visibleNotifier.removeListener(_getMetadata);
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locationAtTop = widget.split && entry.hasGps;
+    final locationSection = LocationSection(
+      collection: collection,
+      entry: entry,
+      showTitle: !locationAtTop,
+      visibleNotifier: widget.visibleNotifier,
+      onFilter: _goToCollection,
+    );
+    final basicAndLocationSliver = locationAtTop
+        ? SliverToBoxAdapter(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
+                SizedBox(width: 8),
+                Expanded(child: locationSection),
+              ],
+            ),
+          )
+        : SliverList(
+            delegate: SliverChildListDelegate.fixed(
+              [
+                BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
+                locationSection,
+              ],
+            ),
+          );
+    final metadataSliver = MetadataSectionSliver(
+      entry: entry,
+      metadata: _metadata,
+    );
+
+    return AnimationLimiter(
+      // we update the limiter key after fetching the metadata of a new entry,
+      // in order to restart the staggered animation of the metadata section
+      key: Key(_loadedMetadataUri),
+      child: CustomScrollView(
+        controller: widget.scrollController,
+        slivers: [
+          widget.appBar,
+          SliverPadding(
+            padding: horizontalPadding + EdgeInsets.only(top: 8),
+            sliver: basicAndLocationSliver,
+          ),
+          SliverPadding(
+            padding: horizontalPadding + EdgeInsets.only(bottom: 8 + widget.mqViewInsetsBottom),
+            sliver: metadataSliver,
+          ),
+        ],
+      ),
+    );
+  }
 
   void _goToCollection(CollectionFilter filter) {
     if (collection == null) return;
     FilterNotification(filter).dispatch(context);
+  }
+
+  void _onMetadataChanged() {
+    _metadata = [];
+    _loadedMetadataUri = null;
+    _getMetadata();
   }
 
   // fetch and hold metadata in the page widget and not in the section sliver,

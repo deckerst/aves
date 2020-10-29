@@ -78,7 +78,7 @@ class FullscreenDebugPage extends StatelessWidget {
           'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
           'rotationDegrees': '${entry.rotationDegrees}',
           'isFlipped': '${entry.isFlipped}',
-          'portrait': '${entry.portrait}',
+          'portrait': '${entry.isPortrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
           'displaySize': '${entry.displaySize}',
         }),
