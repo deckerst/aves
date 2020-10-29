@@ -67,7 +67,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   }
 
   void _unregisterWidget(ThumbnailRasterImage widget) {
-    widget.entry.imageChangeNotifier?.removeListener(_onImageChanged);
+    widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
     _pauseProvider();
   }
 

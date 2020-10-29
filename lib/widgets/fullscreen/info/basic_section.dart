@@ -31,7 +31,7 @@ class BasicSection extends StatelessWidget {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.unknown;
     final showMegaPixels = entry.isPhoto && entry.megaPixels != null && entry.megaPixels > 0;
-    final resolutionText = '${entry.width ?? '?'} × ${entry.height ?? '?'}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
+    final resolutionText = '${entry.resolutionText}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
