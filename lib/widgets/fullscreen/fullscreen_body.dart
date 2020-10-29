@@ -314,7 +314,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 
   void _updateEntry() {
     if (_currentHorizontalPage != null && entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
-      // as of Flutter v1.20.2, `PageView` does not call `onPageChanged` when the last page is deleted
+      // as of Flutter v1.22.2, `PageView` does not call `onPageChanged` when the last page is deleted
       // so we manually track the page change, and let the entry update follow
       _onHorizontalPageChanged(entries.length - 1);
       return;
@@ -462,7 +462,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   void _registerWidget(FullscreenVerticalPageView widget) {
     widget.verticalPager.addListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.addListener(_onEntryChanged);
-    _onEntryChanged();
+    if (_oldEntry != entry) _onEntryChanged();
   }
 
   void _unregisterWidget(FullscreenVerticalPageView widget) {
@@ -529,12 +529,17 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
   void _onEntryChanged() {
     _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
-    entry?.imageChangeNotifier?.addListener(_onImageChanged);
     _oldEntry = entry;
-    // make sure to locate the entry,
-    // so that we can display the address instead of coordinates
-    // even when background locating has not reached this entry yet
-    entry?.locate();
+
+    if (entry != null) {
+      entry.imageChangeNotifier.addListener(_onImageChanged);
+      // make sure to locate the entry,
+      // so that we can display the address instead of coordinates
+      // even when background locating has not reached this entry yet
+      entry.locate();
+    } else {
+      Navigator.pop(context);
+    }
   }
 
   // when the entry image itself changed (e.g. after rotation)
