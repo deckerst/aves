@@ -11,6 +11,7 @@ import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -27,9 +28,9 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
                 GlobalScope.launch { Glide.get(activity).clearDiskCache() }
                 result.success(null)
             }
-            "rename" -> GlobalScope.launch { rename(call, Coresult(result)) }
-            "rotate" -> GlobalScope.launch { rotate(call, Coresult(result)) }
-            "flip" -> GlobalScope.launch { flip(call, Coresult(result)) }
+            "rename" -> GlobalScope.launch(Dispatchers.IO) { rename(call, Coresult(result)) }
+            "rotate" -> GlobalScope.launch(Dispatchers.IO) { rotate(call, Coresult(result)) }
+            "flip" -> GlobalScope.launch(Dispatchers.IO) { flip(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }

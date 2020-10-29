@@ -13,10 +13,10 @@ import deckers.thibault.aves.utils.LogUtils.createTag
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
-import java.util.concurrent.ExecutionException
 
 class ImageOpStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
@@ -41,8 +41,8 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         handler = Handler(Looper.getMainLooper())
 
         when (op) {
-            "delete" -> GlobalScope.launch { delete() }
-            "move" -> GlobalScope.launch { move() }
+            "delete" -> GlobalScope.launch(Dispatchers.IO) { delete() }
+            "move" -> GlobalScope.launch(Dispatchers.IO) { move() }
             else -> endOfStream()
         }
     }
@@ -92,7 +92,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         endOfStream()
     }
 
-    private fun delete() {
+    private suspend fun delete() {
         if (entryMapList.isEmpty()) {
             endOfStream()
             return
@@ -114,12 +114,9 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
                     "uri" to uri.toString(),
                 )
                 try {
-                    provider.delete(context, uri, path).get()
+                    provider.delete(context, uri, path)
                     result["success"] = true
-                } catch (e: ExecutionException) {
-                    Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
-                    result["success"] = false
-                } catch (e: InterruptedException) {
+                } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
                     result["success"] = false
                 }

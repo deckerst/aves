@@ -8,8 +8,6 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.commonsware.cwac.document.DocumentFileCompat
-import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
 import deckers.thibault.aves.model.AvesImageEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.utils.LogUtils.createTag
@@ -30,8 +28,8 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException())
     }
 
-    open fun delete(context: Context, uri: Uri, path: String?): ListenableFuture<Any?> {
-        return Futures.immediateFailedFuture(UnsupportedOperationException())
+    open suspend fun delete(context: Context, uri: Uri, path: String?) {
+        throw UnsupportedOperationException()
     }
 
     open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesImageEntry>, callback: ImageOpCallback) {
@@ -49,6 +47,7 @@ abstract class ImageProvider {
 
         val df = getDocumentFile(context, oldPath, oldMediaUri)
         try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             val renamed = df != null && df.renameTo(newFilename)
             if (!renamed) {
                 callback.onFailure(Exception("failed to rename entry at path=$oldPath"))
