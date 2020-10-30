@@ -1,9 +1,6 @@
-import 'dart:collection';
-
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -11,9 +8,7 @@ import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/notifications.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -146,47 +141,11 @@ class _InfoPageContent extends StatefulWidget {
 }
 
 class _InfoPageContentState extends State<_InfoPageContent> {
-  List<MetadataDirectory> _metadata = [];
-  String _loadedMetadataUri;
-
   static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
 
   CollectionLens get collection => widget.collection;
 
   ImageEntry get entry => widget.entry;
-
-  bool get isVisible => widget.visibleNotifier.value;
-
-  @override
-  void initState() {
-    super.initState();
-    _registerWidget(widget);
-    _getMetadata();
-  }
-
-  @override
-  void didUpdateWidget(_InfoPageContent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-    _getMetadata();
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    super.dispose();
-  }
-
-  void _registerWidget(_InfoPageContent widget) {
-    widget.visibleNotifier.addListener(_getMetadata);
-    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
-  }
-
-  void _unregisterWidget(_InfoPageContent widget) {
-    widget.visibleNotifier.removeListener(_getMetadata);
-    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,66 +178,27 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           );
     final metadataSliver = MetadataSectionSliver(
       entry: entry,
-      metadata: _metadata,
+      visibleNotifier: widget.visibleNotifier,
     );
 
-    return AnimationLimiter(
-      // we update the limiter key after fetching the metadata of a new entry,
-      // in order to restart the staggered animation of the metadata section
-      key: Key(_loadedMetadataUri),
-      child: CustomScrollView(
-        controller: widget.scrollController,
-        slivers: [
-          widget.appBar,
-          SliverPadding(
-            padding: horizontalPadding + EdgeInsets.only(top: 8),
-            sliver: basicAndLocationSliver,
-          ),
-          SliverPadding(
-            padding: horizontalPadding + EdgeInsets.only(bottom: 8 + widget.mqViewInsetsBottom),
-            sliver: metadataSliver,
-          ),
-        ],
-      ),
+    return CustomScrollView(
+      controller: widget.scrollController,
+      slivers: [
+        widget.appBar,
+        SliverPadding(
+          padding: horizontalPadding + EdgeInsets.only(top: 8),
+          sliver: basicAndLocationSliver,
+        ),
+        SliverPadding(
+          padding: horizontalPadding + EdgeInsets.only(bottom: 8 + widget.mqViewInsetsBottom),
+          sliver: metadataSliver,
+        ),
+      ],
     );
   }
 
   void _goToCollection(CollectionFilter filter) {
     if (collection == null) return;
     FilterNotification(filter).dispatch(context);
-  }
-
-  void _onMetadataChanged() {
-    _metadata = [];
-    _loadedMetadataUri = null;
-    _getMetadata();
-  }
-
-  // fetch and hold metadata in the page widget and not in the section sliver,
-  // so that we can refresh and limit the staggered animation of the metadata section
-  Future<void> _getMetadata() async {
-    if (entry == null) return;
-    if (_loadedMetadataUri == entry.uri) return;
-    if (isVisible) {
-      final rawMetadata = await MetadataService.getAllMetadata(entry) ?? {};
-      _metadata = rawMetadata.entries.map((dirKV) {
-        final directoryName = dirKV.key as String ?? '';
-        final rawTags = dirKV.value as Map ?? {};
-        final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
-          final value = tagKV.value as String ?? '';
-          if (value.isEmpty) return null;
-          final tagName = tagKV.key as String ?? '';
-          return MapEntry(tagName, value);
-        }).where((kv) => kv != null)));
-        return MetadataDirectory(directoryName, tags);
-      }).toList()
-        ..sort((a, b) => compareAsciiUpperCase(a.name, b.name));
-      _loadedMetadataUri = entry.uri;
-    } else {
-      _metadata = [];
-      _loadedMetadataUri = null;
-    }
-    // _expandedDirectoryNotifier.value = null;
-    if (mounted) setState(() {});
   }
 }
