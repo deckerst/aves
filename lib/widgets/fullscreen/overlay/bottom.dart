@@ -151,7 +151,7 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
               if (position != null) position,
               if (entry.bestTitle != null) entry.bestTitle,
             ].join(' – ');
-            final hasShootingDetails = details != null && !details.isEmpty;
+            final hasShootingDetails = details != null && !details.isEmpty && settings.showOverlayShootingDetails;
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
