@@ -44,6 +44,9 @@ class Settings extends ChangeNotifier {
   static const tagSortFactorKey = 'tag_sort_factor';
   static const pinnedFiltersKey = 'pinned_filters';
 
+  // viewer
+  static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
+
   // info
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
@@ -149,6 +152,12 @@ class Settings extends ChangeNotifier {
   Set<CollectionFilter> get pinnedFilters => (_prefs.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+
+  // viewer
+
+  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, true);
+
+  set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
   // info
 
