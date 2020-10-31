@@ -28,6 +28,9 @@ class Durations {
   static const fullscreenPageAnimation = Duration(milliseconds: 300);
   static const fullscreenOverlayAnimation = Duration(milliseconds: 200);
 
+  // info
+  static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
+
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 2);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
