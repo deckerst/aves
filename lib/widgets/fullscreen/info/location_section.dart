@@ -33,7 +33,7 @@ class LocationSection extends StatefulWidget {
   _LocationSectionState createState() => _LocationSectionState();
 }
 
-class _LocationSectionState extends State<LocationSection> with SingleTickerProviderStateMixin {
+class _LocationSectionState extends State<LocationSection> with TickerProviderStateMixin {
   String _loadedUri;
 
   static const extent = 48.0;
