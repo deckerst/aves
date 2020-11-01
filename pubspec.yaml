@@ -65,6 +65,7 @@ dependencies:
   google_maps_flutter:
   intl:
   latlong: # for flutter_map
+  material_design_icons_flutter:
   overlay_support:
   package_info:
   palette_generator:

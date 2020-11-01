@@ -87,6 +87,6 @@ class AlbumFilter extends CollectionFilter {
 
   @override
   String toString() {
-    return 'AlbumFilter{album=$album}';
+    return '$runtimeType#${shortHash(this)}{album=$album}';
   }
 }

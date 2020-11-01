@@ -161,6 +161,12 @@ class Constants {
       sourceUrl: 'https://github.com/MikeMitterer/dart-latlong',
     ),
     Dependency(
+      name: 'Material Design Icons Flutter',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/ziofat/material_design_icons_flutter/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/ziofat/material_design_icons_flutter',
+    ),
+    Dependency(
       name: 'Overlay Support',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/boyan01/overlay_support/blob/master/LICENSE',

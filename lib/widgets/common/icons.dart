@@ -6,6 +6,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/image_providers/app_icon_image_provider.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AIcons {
   static const IconData allCollection = Icons.collections_outlined;
@@ -20,15 +21,17 @@ class AIcons {
   static const IconData disc = Icons.fiber_manual_record;
   static const IconData error = Icons.error_outline;
   static const IconData location = Icons.place_outlined;
+  static const IconData locationOff = Icons.location_off_outlined;
   static const IconData raw = Icons.camera_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
   static const IconData settings = Icons.settings_outlined;
   static const IconData text = Icons.format_quote_outlined;
   static const IconData tag = Icons.local_offer_outlined;
+  static const IconData tagOff = MdiIcons.tagOffOutline;
 
   // actions
-  static const IconData addShortcut = Icons.bookmark_border;
+  static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData clear = Icons.clear_outlined;
   static const IconData collapse = Icons.expand_less_outlined;
   static const IconData createAlbum = Icons.add_circle_outline;
