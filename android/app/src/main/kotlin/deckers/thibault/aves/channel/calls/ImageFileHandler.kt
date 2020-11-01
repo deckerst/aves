@@ -11,6 +11,7 @@ import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -27,9 +28,9 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
                 GlobalScope.launch { Glide.get(activity).clearDiskCache() }
                 result.success(null)
             }
-            "rename" -> GlobalScope.launch { rename(call, Coresult(result)) }
-            "rotate" -> GlobalScope.launch { rotate(call, Coresult(result)) }
-            "flip" -> GlobalScope.launch { flip(call, Coresult(result)) }
+            "rename" -> GlobalScope.launch(Dispatchers.IO) { rename(call, Coresult(result)) }
+            "rotate" -> GlobalScope.launch(Dispatchers.IO) { rotate(call, Coresult(result)) }
+            "flip" -> GlobalScope.launch(Dispatchers.IO) { flip(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }
@@ -74,7 +75,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
-    private fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
@@ -94,7 +95,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         })
     }
 
-    private fun rename(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun rename(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
         val newName = call.argument<String>("newName")
         if (entryMap == null || newName == null) {

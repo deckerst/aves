@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class MimeFilter extends CollectionFilter {
@@ -81,4 +82,9 @@ class MimeFilter extends CollectionFilter {
 
   @override
   int get hashCode => hashValues(type, mime);
+
+  @override
+  String toString() {
+    return '$runtimeType#${shortHash(this)}{mime=$mime}';
+  }
 }

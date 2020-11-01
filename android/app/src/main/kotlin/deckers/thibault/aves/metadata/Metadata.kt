@@ -62,7 +62,7 @@ object Metadata {
         }
 
         val date: Date = try {
-            val parser = SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.US)
+            val parser = SimpleDateFormat("yyyyMMdd'T'HHmmss", Locale.ROOT)
             parser.timeZone = timeZone ?: TimeZone.getTimeZone("GMT")
             parser.parse(dateString)
         } catch (e: ParseException) {

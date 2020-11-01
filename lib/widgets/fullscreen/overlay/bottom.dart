@@ -151,7 +151,7 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
               if (position != null) position,
               if (entry.bestTitle != null) entry.bestTitle,
             ].join(' – ');
-            final hasShootingDetails = details != null && !details.isEmpty;
+            final hasShootingDetails = details != null && !details.isEmpty && settings.showOverlayShootingDetails;
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,13 +229,12 @@ class _DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.unknown;
-    final resolution = '${entry.width ?? '?'} × ${entry.height ?? '?'}';
     return Row(
       children: [
         DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        if (!entry.isSvg) Expanded(flex: 2, child: Text(resolution, strutStyle: Constants.overflowStrutStyle)),
+        if (!entry.isSvg) Expanded(flex: 2, child: Text(entry.resolutionText, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }

@@ -30,6 +30,11 @@ object MimeTypes {
 
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith(VIDEO)
 
+    fun isMultimedia(mimeType: String?) = when (mimeType) {
+        HEIC, HEIF -> true
+        else -> isVideo(mimeType)
+    }
+
     // returns whether the specified MIME type represents
     // a raster image format that allows an alpha channel
     fun canHaveAlpha(mimeType: String?) = when (mimeType) {

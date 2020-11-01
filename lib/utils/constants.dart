@@ -38,12 +38,6 @@ class Constants {
       sourceUrl: 'https://github.com/bumptech/glide',
     ),
     Dependency(
-      name: 'Guava',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/google/guava/blob/master/COPYING',
-      sourceUrl: 'https://github.com/google/guava',
-    ),
-    Dependency(
       name: 'Metadata Extractor',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/drewnoakes/metadata-extractor/blob/master/LICENSE',
@@ -165,6 +159,12 @@ class Constants {
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/MikeMitterer/dart-latlong/blob/master/LICENSE',
       sourceUrl: 'https://github.com/MikeMitterer/dart-latlong',
+    ),
+    Dependency(
+      name: 'Material Design Icons Flutter',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/ziofat/material_design_icons_flutter/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/ziofat/material_design_icons_flutter',
     ),
     Dependency(
       name: 'Overlay Support',

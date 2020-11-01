@@ -131,9 +131,9 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
           a: TextStyle(color: Theme.of(context).accentColor),
           p: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Concourse'),
         ),
-        onTapLink: (url) async {
-          if (await canLaunch(url)) {
-            await launch(url);
+        onTapLink: (text, href, title) async {
+          if (await canLaunch(href)) {
+            await launch(href);
           }
         },
       ),

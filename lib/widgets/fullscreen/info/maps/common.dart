@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_app_service.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
@@ -7,6 +8,7 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class MapDecorator extends StatelessWidget {
   final Widget child;
@@ -76,7 +78,9 @@ class MapButtonPanel extends StatelessWidget {
                         title: 'Map Style',
                       ),
                     );
-                    if (style != null) {
+                    // wait for the dialog to hide because switching to Google Maps layer may block the UI
+                    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+                    if (style != null && style != settings.infoMapStyle) {
                       settings.infoMapStyle = style;
                       MapStyleChangedNotification().dispatch(context);
                     }

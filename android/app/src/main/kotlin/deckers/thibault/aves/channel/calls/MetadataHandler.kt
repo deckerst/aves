@@ -16,7 +16,6 @@ import com.adobe.internal.xmp.XMPUtils
 import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
-import com.drew.imaging.ImageProcessingException
 import com.drew.lang.Rational
 import com.drew.metadata.exif.ExifDirectoryBase
 import com.drew.metadata.exif.ExifIFD0Directory
@@ -31,12 +30,12 @@ import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
+import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
-import deckers.thibault.aves.metadata.Metadata.parseVideoMetadataDate
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDescription
@@ -49,6 +48,7 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
+import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
@@ -58,7 +58,6 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -150,9 +149,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
-        if (mediaDir.isNotEmpty()) {
-            metadataMap[Metadata.DIR_MEDIA] = mediaDir
+        if (isMultimedia(mimeType)) {
+            val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
+            if (mediaDir.isNotEmpty()) {
+                metadataMap[Metadata.DIR_MEDIA] = mediaDir
+            }
         }
 
         if (metadataMap.isNotEmpty()) {
@@ -317,15 +318,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return metadataMap
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
-
-            val dateString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DATE)
-            if (dateString != null) {
-                val dateMillis = parseVideoMetadataDate(dateString)
-                // some entries have an invalid default date (19040101T000000.000Z) that is before Epoch time
-                if (dateMillis > 0) {
-                    metadataMap[KEY_DATE_MILLIS] = dateMillis
-                }
-            }
+            retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { metadataMap[KEY_DATE_MILLIS] = it }
 
             val locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION)
             if (locationString != null) {
@@ -573,9 +566,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                 }
-            } catch (e: IOException) {
-                Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
-            } catch (e: ImageProcessingException) {
+            } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
             } catch (e: NoClassDefFoundError) {
                 Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)

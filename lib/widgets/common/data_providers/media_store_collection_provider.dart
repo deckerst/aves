@@ -6,8 +6,10 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
   Future<void> init() async {
@@ -68,16 +70,31 @@ class MediaStoreSource extends CollectionSource {
       onDone: () async {
         addPendingEntries();
         debugPrint('$runtimeType refresh loaded ${allNewEntries.length} new entries, elapsed=${stopwatch.elapsed}');
+
         await metadataDb.saveEntries(allNewEntries); // 700ms for 5500 entries
         updateAlbums();
+        final analytics = FirebaseAnalytics();
+        unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(rawEntries.length, 3)).toString()));
+        unawaited(analytics.setUserProperty(name: 'album_count', value: (ceilBy(sortedAlbums.length, 1)).toString()));
+
         stateNotifier.value = SourceState.cataloguing;
         await catalogEntries();
+        unawaited(analytics.setUserProperty(name: 'tag_count', value: (ceilBy(sortedTags.length, 1)).toString()));
+
         stateNotifier.value = SourceState.locating;
         await locateEntries();
+        unawaited(analytics.setUserProperty(name: 'country_count', value: (ceilBy(sortedCountries.length, 1)).toString()));
+
         stateNotifier.value = SourceState.ready;
         debugPrint('$runtimeType refresh done, elapsed=${stopwatch.elapsed}');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
+  }
+
+  // e.g. x=12345, precision=3 should return 13000
+  int ceilBy(num x, int precision) {
+    final factor = pow(10, precision);
+    return (x / factor).ceil() * factor;
   }
 }

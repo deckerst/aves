@@ -1,15 +1,17 @@
-import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/fullscreen/info/info_page.dart';
+import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_thumbnail.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
   final ImageEntry entry;
@@ -26,7 +28,7 @@ class MetadataSectionSliver extends StatefulWidget {
 
 class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
   List<_MetadataDirectory> _metadata = [];
-  String _loadedMetadataUri;
+  final ValueNotifier<String> _loadedMetadataUri = ValueNotifier(null);
   final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
 
   ImageEntry get entry => widget.entry;
@@ -61,84 +63,120 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
   void _registerWidget(MetadataSectionSliver widget) {
     widget.visibleNotifier.addListener(_getMetadata);
+    widget.entry.metadataChangeNotifier.addListener(_onMetadataChanged);
   }
 
   void _unregisterWidget(MetadataSectionSliver widget) {
     widget.visibleNotifier.removeListener(_getMetadata);
+    widget.entry.metadataChangeNotifier.removeListener(_onMetadataChanged);
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    if (_metadata.isEmpty) return SliverToBoxAdapter(child: SizedBox.shrink());
-
-    final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty).toList();
-    final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty).toList();
-    final untitledDirectoryCount = directoriesWithoutTitle.length;
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          if (index == 0) {
-            return SectionRow(AIcons.info);
-          }
-          if (index < untitledDirectoryCount + 1) {
-            final dir = directoriesWithoutTitle[index - 1];
-            return InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength);
-          }
-          final dir = directoriesWithTitle[index - 1 - untitledDirectoryCount];
-          Widget thumbnail;
-          final prefixChildren = <Widget>[];
-          switch (dir.name) {
-            case exifThumbnailDirectory:
-              thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry);
-              break;
-            case xmpDirectory:
-              thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
-              break;
-            case mediaDirectory:
-              thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry);
-              Widget builder(IconData data) => Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    child: Icon(data),
-                  );
-              if (dir.tags['Has Video'] == 'yes') prefixChildren.add(builder(AIcons.video));
-              if (dir.tags['Has Audio'] == 'yes') prefixChildren.add(builder(AIcons.audio));
-              if (dir.tags['Has Image'] == 'yes') {
-                int count;
-                if (dir.tags.containsKey('Image Count')) {
-                  count = int.tryParse(dir.tags['Image Count']);
-                }
-                prefixChildren.addAll(List.generate(count ?? 1, (i) => builder(AIcons.image)));
-              }
-              break;
-          }
-
-          return AvesExpansionTile(
-            title: dir.name,
-            expandedNotifier: _expandedDirectoryNotifier,
-            children: [
-              if (prefixChildren.isNotEmpty)
-                Align(
-                  alignment: AlignmentDirectional.topStart,
-                  child: Wrap(children: prefixChildren),
+    // use a `Column` inside a `SliverToBoxAdapter`, instead of a `SliverList`,
+    // so that we can have the metadata-dependent `AnimationLimiter` inside the metadata section
+    // warning: placing the `AnimationLimiter` as a parent to the `ScrollView`
+    // triggers dispose & reinitialization of other sections, including heavy widgets like maps
+    return SliverToBoxAdapter(
+      child: AnimatedBuilder(
+        animation: _loadedMetadataUri,
+        builder: (context, child) {
+          Widget content;
+          if (_metadata.isEmpty) {
+            content = SizedBox.shrink();
+          } else {
+            final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty).toList();
+            final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty).toList();
+            content = Column(
+              children: AnimationConfiguration.toStaggeredList(
+                duration: Durations.staggeredAnimation,
+                delay: Durations.staggeredAnimationDelay,
+                childAnimationBuilder: (child) => SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: FadeInAnimation(
+                    child: child,
+                  ),
                 ),
-              if (thumbnail != null) thumbnail,
-              Container(
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
+                children: [
+                  SectionRow(AIcons.info),
+                  ...directoriesWithoutTitle.map(_buildDirTileWithoutTitle),
+                  ...directoriesWithTitle.map(_buildDirTileWithTitle),
+                ],
               ),
-            ],
+            );
+          }
+          return AnimationLimiter(
+            // we update the limiter key after fetching the metadata of a new entry,
+            // in order to restart the staggered animation of the metadata section
+            key: Key(_loadedMetadataUri.value),
+            child: content,
           );
         },
-        childCount: 1 + _metadata.length,
       ),
     );
   }
 
+  Widget _buildDirTileWithoutTitle(_MetadataDirectory dir) {
+    return InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength);
+  }
+
+  Widget _buildDirTileWithTitle(_MetadataDirectory dir) {
+    Widget thumbnail;
+    final prefixChildren = <Widget>[];
+    switch (dir.name) {
+      case exifThumbnailDirectory:
+        thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry);
+        break;
+      case xmpDirectory:
+        thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
+        break;
+      case mediaDirectory:
+        thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry);
+        Widget builder(IconData data) => Padding(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Icon(data),
+            );
+        if (dir.tags['Has Video'] == 'yes') prefixChildren.add(builder(AIcons.video));
+        if (dir.tags['Has Audio'] == 'yes') prefixChildren.add(builder(AIcons.audio));
+        if (dir.tags['Has Image'] == 'yes') {
+          int count;
+          if (dir.tags.containsKey('Image Count')) {
+            count = int.tryParse(dir.tags['Image Count']);
+          }
+          prefixChildren.addAll(List.generate(count ?? 1, (i) => builder(AIcons.image)));
+        }
+        break;
+    }
+
+    return AvesExpansionTile(
+      title: dir.name,
+      expandedNotifier: _expandedDirectoryNotifier,
+      children: [
+        if (prefixChildren.isNotEmpty)
+          Align(
+            alignment: AlignmentDirectional.topStart,
+            child: Wrap(children: prefixChildren),
+          ),
+        if (thumbnail != null) thumbnail,
+        Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
+        ),
+      ],
+    );
+  }
+
+  void _onMetadataChanged() {
+    _loadedMetadataUri.value = null;
+    _metadata = [];
+    _getMetadata();
+  }
+
   Future<void> _getMetadata() async {
-    if (_loadedMetadataUri == entry.uri) return;
+    if (entry == null) return;
+    if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
       final rawMetadata = await MetadataService.getAllMetadata(entry) ?? {};
       _metadata = rawMetadata.entries.map((dirKV) {
@@ -153,13 +191,11 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         return _MetadataDirectory(directoryName, tags);
       }).toList()
         ..sort((a, b) => compareAsciiUpperCase(a.name, b.name));
-      _loadedMetadataUri = entry.uri;
+      _loadedMetadataUri.value = entry.uri;
     } else {
       _metadata = [];
-      _loadedMetadataUri = null;
+      _loadedMetadataUri.value = null;
     }
-    _expandedDirectoryNotifier.value = null;
-    if (mounted) setState(() {});
   }
 
   @override

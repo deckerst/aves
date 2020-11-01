@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.3+29
+version: 1.2.4+30
 
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
@@ -48,8 +48,9 @@ dependencies:
 #    path: ../expansion_tile_card
     git:
       url: git://github.com/deckerst/expansion_tile_card.git
-  firebase_core: "^0.5.0"
-  firebase_crashlytics: "^0.2.0-dev.5"
+  firebase_core:
+  firebase_analytics:
+  firebase_crashlytics:
   flushbar:
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer
@@ -64,6 +65,7 @@ dependencies:
   google_maps_flutter:
   intl:
   latlong: # for flutter_map
+  material_design_icons_flutter:
   overlay_support:
   package_info:
   palette_generator:

@@ -69,4 +69,9 @@ class QueryFilter extends CollectionFilter {
 
   @override
   int get hashCode => hashValues(type, query);
+
+  @override
+  String toString() {
+    return '$runtimeType#${shortHash(this)}{query=$query}';
+  }
 }
