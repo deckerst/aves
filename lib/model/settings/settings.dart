@@ -55,6 +55,10 @@ class Settings extends ChangeNotifier {
   // rendering
   static const svgBackgroundKey = 'svg_background';
 
+  // search
+  static const saveSearchHistoryKey = 'save_search_history';
+  static const searchHistoryKey = 'search_history';
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -178,6 +182,16 @@ class Settings extends ChangeNotifier {
   int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
 
   set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
+
+  // search
+
+  bool get saveSearchHistory => getBoolOrDefault(saveSearchHistoryKey, true);
+
+  set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
+
+  List<CollectionFilter> get searchHistory => (_prefs.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).toList();
+
+  set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
   // utils
 

@@ -40,6 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _buildDisplaySection(context),
                   _buildThumbnailsSection(context),
                   _buildViewerSection(context),
+                  _buildSearchSection(context),
                   _buildPrivacySection(context),
                 ],
               ),
@@ -166,6 +167,25 @@ class _SettingsPageState extends State<SettingsPage> {
           value: settings.showOverlayShootingDetails,
           onChanged: (v) => settings.showOverlayShootingDetails = v,
           title: Text('Show shooting details'),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchSection(BuildContext context) {
+    return AvesExpansionTile(
+      title: 'Search',
+      expandedNotifier: _expandedNotifier,
+      children: [
+        SwitchListTile(
+          value: settings.saveSearchHistory,
+          onChanged: (v) {
+            settings.saveSearchHistory = v;
+            if (!v) {
+              settings.searchHistory = [];
+            }
+          },
+          title: Text('Save search history'),
         ),
       ],
     );

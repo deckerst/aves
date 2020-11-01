@@ -25,6 +25,8 @@ class ImageSearchDelegate {
   final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
   final CollectionLens parentCollection;
 
+  static const searchHistoryCount = 10;
+
   ImageSearchDelegate({@required this.source, this.parentCollection});
 
   ThemeData appBarTheme(BuildContext context) {
@@ -67,7 +69,8 @@ class ImageSearchDelegate {
       child: ValueListenableBuilder<String>(
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
-            var queryFilter = _buildQueryFilter(false);
+            final queryFilter = _buildQueryFilter(false);
+            final history = settings.searchHistory;
             return ListView(
               padding: EdgeInsets.only(top: 8),
               children: [
@@ -85,6 +88,12 @@ class ImageSearchDelegate {
                   // but we also need to animate the query chip when it is selected by submitting the search query
                   heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
                 ),
+                if (upQuery.isEmpty && history.isNotEmpty)
+                  _buildFilterRow(
+                    context: context,
+                    title: 'Recent',
+                    filters: history,
+                  ),
                 StreamBuilder(
                     stream: source.eventBus.on<AlbumsChangedEvent>(),
                     builder: (context, snapshot) {
@@ -170,6 +179,12 @@ class ImageSearchDelegate {
   }
 
   void _select(BuildContext context, CollectionFilter filter) {
+    if (settings.saveSearchHistory) {
+      final history = settings.searchHistory
+        ..remove(filter)
+        ..insert(0, filter);
+      settings.searchHistory = history.take(searchHistoryCount).toList();
+    }
     if (parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {

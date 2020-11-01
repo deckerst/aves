@@ -316,6 +316,7 @@ class AppDebugPageState extends State<AppDebugPage> {
           'collectionTileExtent': '${settings.collectionTileExtent}',
           'infoMapZoom': '${settings.infoMapZoom}',
           'pinnedFilters': '${settings.pinnedFilters}',
+          'searchHistory': '${settings.searchHistory}',
         }),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter {
@@ -45,7 +46,7 @@ class LocationFilter extends CollectionFilter {
     // as of Flutter v1.22.0-12.1.pre emoji shadows are rendered as colorful duplicates,
     // not filled with the shadow color as expected, so we remove them
     if (flag != null) return Text(flag, style: TextStyle(fontSize: size, shadows: []));
-    return Icon(AIcons.location, size: size);
+    return Icon(_location.isEmpty ? AIcons.locationOff : AIcons.location, size: size);
   }
 
   @override
@@ -62,7 +63,7 @@ class LocationFilter extends CollectionFilter {
 
   @override
   String toString() {
-    return 'LocationFilter{level=$level, location=$_location}';
+    return '$runtimeType#${shortHash(this)}{level=$level, location=$_location}';
   }
 
   // U+0041 Latin Capital letter A

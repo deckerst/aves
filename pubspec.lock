@@ -480,6 +480,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.10-nullsafety.1"
+  material_design_icons_flutter:
+    dependency: "direct main"
+    description:
+      name: material_design_icons_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.5755"
   meta:
     dependency: transitive
     description:
