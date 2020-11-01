@@ -2,6 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:collection/collection.dart';
@@ -50,7 +51,10 @@ class FilterTable extends StatelessWidget {
               return TableRow(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(bottom: 8),
+                    // the `Table` `border` property paints on the cells and does not add margins,
+                    // so we define margins here instead, but they should be symmetric
+                    // to keep all cells vertically aligned on the center/middle
+                    margin: EdgeInsets.symmetric(vertical: 4),
                     alignment: AlignmentDirectional.centerStart,
                     child: AvesFilterChip(
                       filter: filter,
@@ -65,7 +69,10 @@ class FilterTable extends StatelessWidget {
                       progressColor: stringToColor(label),
                       animation: true,
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),
-                      center: Text(NumberFormat.percentPattern().format(percent)),
+                      center: Text(
+                        NumberFormat.percentPattern().format(percent),
+                        style: TextStyle(shadows: [Constants.embossShadow]),
+                      ),
                     ),
                   Text(
                     '$count',
