@@ -99,7 +99,7 @@ class _WelcomePageState extends State<WelcomePage> {
         LabeledCheckbox(
           value: settings.isCrashlyticsEnabled,
           onChanged: (v) => setState(() => settings.isCrashlyticsEnabled = v),
-          text: 'Allow anonymous crash reporting',
+          text: 'Allow anonymous analytics and crash reporting',
         ),
         LabeledCheckbox(
           key: Key('agree-checkbox'),
@@ -156,9 +156,9 @@ class _WelcomePageState extends State<WelcomePage> {
         child: Markdown(
           data: terms,
           selectable: true,
-          onTapLink: (url) async {
-            if (await canLaunch(url)) {
-              await launch(url);
+          onTapLink: (text, href, title) async {
+            if (await canLaunch(href)) {
+              await launch(href);
             }
           },
           shrinkWrap: true,

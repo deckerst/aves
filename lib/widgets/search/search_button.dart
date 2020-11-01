@@ -1,7 +1,7 @@
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
 
 class SearchButton extends StatelessWidget {

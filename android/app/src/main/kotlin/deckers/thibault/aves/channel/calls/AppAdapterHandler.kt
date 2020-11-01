@@ -126,7 +126,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
             val options = RequestOptions()
                 .format(DecodeFormat.PREFER_RGB_565)
-                .centerCrop()
                 .override(size, size)
             val target = Glide.with(context)
                 .asBitmap()

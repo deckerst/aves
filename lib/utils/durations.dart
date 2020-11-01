@@ -7,6 +7,8 @@ class Durations {
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
   static const popupMenuAnimation = Duration(milliseconds: 300); // ref _PopupMenuRoute._kMenuDuration
+  static const dialogTransitionAnimation = Duration(milliseconds: 150); // ref `transitionDuration` in `showDialog()`
+
   static const staggeredAnimation = Duration(milliseconds: 375);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
@@ -25,6 +27,9 @@ class Durations {
   // fullscreen animations
   static const fullscreenPageAnimation = Duration(milliseconds: 300);
   static const fullscreenOverlayAnimation = Duration(milliseconds: 200);
+
+  // info
+  static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
 
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 2);

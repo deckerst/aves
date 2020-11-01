@@ -3,6 +3,7 @@ import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -43,6 +44,9 @@ class Settings extends ChangeNotifier {
   static const tagSortFactorKey = 'tag_sort_factor';
   static const pinnedFiltersKey = 'pinned_filters';
 
+  // viewer
+  static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
+
   // info
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
@@ -51,15 +55,24 @@ class Settings extends ChangeNotifier {
   // rendering
   static const svgBackgroundKey = 'svg_background';
 
+  // search
+  static const saveSearchHistoryKey = 'save_search_history';
+  static const searchHistoryKey = 'search_history';
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
 
   // Crashlytics initialization is separated from the main settings initialization
   // to allow settings customization without Firebase context (e.g. before a Flutter Driver test)
-  Future<void> initCrashlytics() async {
+  Future<void> initFirebase() async {
     await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
+    await FirebaseAnalytics().setAnalyticsCollectionEnabled(isCrashlyticsEnabled);
+    // enable analytics debug mode:
+    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app deckers.thibault.aves.debug
+    // disable analytics debug mode:
+    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app .none.
   }
 
   Future<void> reset() {
@@ -76,7 +89,7 @@ class Settings extends ChangeNotifier {
 
   set isCrashlyticsEnabled(bool newValue) {
     setAndNotify(isCrashlyticsEnabledKey, newValue);
-    unawaited(initCrashlytics());
+    unawaited(initFirebase());
   }
 
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
@@ -144,6 +157,12 @@ class Settings extends ChangeNotifier {
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
+  // viewer
+
+  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, true);
+
+  set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
+
   // info
 
   EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
@@ -163,6 +182,16 @@ class Settings extends ChangeNotifier {
   int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
 
   set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
+
+  // search
+
+  bool get saveSearchHistory => getBoolOrDefault(saveSearchHistoryKey, true);
+
+  set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
+
+  List<CollectionFilter> get searchHistory => (_prefs.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).toList();
+
+  set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
   // utils
 
