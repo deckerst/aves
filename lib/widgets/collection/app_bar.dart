@@ -9,7 +9,6 @@ import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/collection_actions.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
-import 'package:aves/widgets/collection/search/search_delegate.dart';
 import 'package:aves/widgets/common/action_delegates/add_shortcut_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
@@ -19,7 +18,8 @@ import 'package:aves/widgets/common/data_providers/media_store_collection_provid
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
-import 'package:aves/widgets/common/search_button.dart';
+import 'package:aves/widgets/search/search_button.dart';
+import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

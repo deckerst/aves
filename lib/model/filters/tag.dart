@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 class TagFilter extends CollectionFilter {
   static const type = 'tag';
+  static const emptyLabel = 'untagged';
 
   final String tag;
 
@@ -22,13 +23,13 @@ class TagFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(ImageEntry entry) => entry.xmpSubjects.contains(tag);
+  bool filter(ImageEntry entry) => tag.isEmpty ? entry.xmpSubjects.isEmpty : entry.xmpSubjects.contains(tag);
 
   @override
   bool get isUnique => false;
 
   @override
-  String get label => tag;
+  String get label => tag.isEmpty ? emptyLabel : tag;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => showGenericIcon ? Icon(AIcons.tag, size: size) : null;
