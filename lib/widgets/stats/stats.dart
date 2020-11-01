@@ -90,7 +90,10 @@ class StatsPage extends StatelessWidget {
               leading: Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below
               padding: EdgeInsets.symmetric(horizontal: lineHeight) + EdgeInsets.only(right: 24),
-              center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
+              center: Text(
+                NumberFormat.percentPattern().format(withGpsPercent),
+                style: TextStyle(shadows: [Constants.embossShadow]),
+              ),
             ),
             SizedBox(height: 8),
             Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
