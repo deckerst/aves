@@ -1,4 +1,4 @@
-import 'package:aves/widgets/collection/search/search_delegate.dart';
+import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

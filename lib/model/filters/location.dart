@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter {
   static const type = 'location';
+  static const emptyLabel = 'unlocated';
   static const locationSeparator = ';';
 
   final LocationLevel level;
@@ -33,10 +34,10 @@ class LocationFilter extends CollectionFilter {
   String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
 
   @override
-  bool filter(ImageEntry entry) => entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
+  bool filter(ImageEntry entry) => _location.isEmpty ? !entry.isLocated : entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
 
   @override
-  String get label => _location;
+  String get label => _location.isEmpty ? emptyLabel : _location;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
