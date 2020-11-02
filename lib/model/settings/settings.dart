@@ -45,6 +45,7 @@ class Settings extends ChangeNotifier {
   static const pinnedFiltersKey = 'pinned_filters';
 
   // viewer
+  static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
 
   // info
@@ -158,6 +159,10 @@ class Settings extends ChangeNotifier {
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   // viewer
+
+  bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
+
+  set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
 
   bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, true);
 

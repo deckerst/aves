@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/collection/empty.dart';
@@ -6,27 +8,55 @@ import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 
-class ImageView extends StatelessWidget {
+class ImageView extends StatefulWidget {
   final ImageEntry entry;
   final Object heroTag;
-  final ValueChanged<PhotoViewScaleState> onScaleChanged;
   final VoidCallback onTap;
+  final List<Tuple2<String, ValueNotifier<ViewState>>> viewStateNotifiers;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
 
   const ImageView({
     Key key,
-    this.entry,
+    @required this.entry,
     this.heroTag,
-    this.onScaleChanged,
-    this.onTap,
-    this.videoControllers,
+    @required this.onTap,
+    @required this.viewStateNotifiers,
+    @required this.videoControllers,
   }) : super(key: key);
+
+  @override
+  _ImageViewState createState() => _ImageViewState();
+}
+
+class _ImageViewState extends State<ImageView> {
+  final PhotoViewController _photoViewController = PhotoViewController();
+  StreamSubscription<PhotoViewControllerValue> _subscription;
+
+  ImageEntry get entry => widget.entry;
+
+  VoidCallback get onTap => widget.onTap;
+
+  ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifiers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+
+  @override
+  void initState() {
+    super.initState();
+    _subscription = _photoViewController.outputStateStream.listen(_onViewChanged);
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    _subscription = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +65,7 @@ class ImageView extends StatelessWidget {
     // no hero for videos, as a typical video first frame is different from its thumbnail
 
     if (entry.isVideo) {
-      final videoController = videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+      final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
       return PhotoView.customChild(
         child: videoController != null
             ? AvesVideo(
@@ -44,7 +74,7 @@ class ImageView extends StatelessWidget {
               )
             : SizedBox(),
         backgroundDecoration: backgroundDecoration,
-        scaleStateChangedCallback: onScaleChanged,
+        controller: _photoViewController,
         minScale: PhotoViewComputedScale.contained,
         initialScale: PhotoViewComputedScale.contained,
         onTapUp: (tapContext, details, value) => onTap?.call(),
@@ -88,7 +118,7 @@ class ImageView extends StatelessWidget {
           colorFilter: colorFilter,
         ),
         backgroundDecoration: backgroundDecoration,
-        scaleStateChangedCallback: onScaleChanged,
+        controller: _photoViewController,
         minScale: PhotoViewComputedScale.contained,
         initialScale: PhotoViewComputedScale.contained,
         onTapUp: (tapContext, details, value) => onTap?.call(),
@@ -113,7 +143,7 @@ class ImageView extends StatelessWidget {
         ),
         loadFailedChild: _buildError(),
         backgroundDecoration: backgroundDecoration,
-        scaleStateChangedCallback: onScaleChanged,
+        controller: _photoViewController,
         minScale: PhotoViewComputedScale.contained,
         initialScale: PhotoViewComputedScale.contained,
         onTapUp: (tapContext, details, value) => onTap?.call(),
@@ -123,9 +153,9 @@ class ImageView extends StatelessWidget {
       child = _buildError();
     }
 
-    return heroTag != null
+    return widget.heroTag != null
         ? Hero(
-            tag: heroTag,
+            tag: widget.heroTag,
             transitionOnUserGestures: true,
             child: child,
           )
@@ -145,4 +175,22 @@ class ImageView extends StatelessWidget {
           ),
         ),
       );
+
+  void _onViewChanged(PhotoViewControllerValue v) {
+    viewStateNotifier?.value = ViewState(v.position, v.scale);
+  }
+}
+
+class ViewState {
+  final Offset position;
+  final double scale;
+
+  static const ViewState zero = ViewState(Offset(0.0, 0.0), 0);
+
+  const ViewState(this.position, this.scale);
+
+  @override
+  String toString() {
+    return '$runtimeType#${shortHash(this)}{position=$position, scale=$scale}';
+  }
 }

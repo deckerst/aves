@@ -2,11 +2,14 @@ import 'dart:math';
 
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
+import 'package:aves/widgets/fullscreen/overlay/minimap.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +21,7 @@ class FullscreenTopOverlay extends StatelessWidget {
   final EdgeInsets viewInsets, viewPadding;
   final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
+  final ValueNotifier<ViewState> viewStateNotifier;
 
   static const double padding = 8;
 
@@ -33,6 +37,7 @@ class FullscreenTopOverlay extends StatelessWidget {
     @required this.viewInsets,
     @required this.viewPadding,
     @required this.onActionSelected,
+    this.viewStateNotifier,
   }) : super(key: key);
 
   @override
@@ -58,8 +63,7 @@ class FullscreenTopOverlay extends StatelessWidget {
             ].where(_canDo).take(quickActionCount).toList();
             final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
             final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
-
-            return _TopOverlayRow(
+            final buttonRow = _TopOverlayRow(
               quickActions: quickActions,
               inAppActions: inAppActions,
               externalAppActions: externalAppActions,
@@ -67,6 +71,23 @@ class FullscreenTopOverlay extends StatelessWidget {
               entry: entry,
               onActionSelected: onActionSelected,
             );
+
+            return settings.showOverlayMinimap && viewStateNotifier != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buttonRow,
+                      SizedBox(height: 8),
+                      FadeTransition(
+                        opacity: scale,
+                        child: Minimap(
+                          entry: entry,
+                          viewStateNotifier: viewStateNotifier,
+                        ),
+                      )
+                    ],
+                  )
+                : buttonRow;
           },
         ),
       ),

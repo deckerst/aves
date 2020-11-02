@@ -178,6 +178,11 @@ class _SettingsPageState extends State<SettingsPage> {
       expandedNotifier: _expandedNotifier,
       children: [
         SwitchListTile(
+          value: settings.showOverlayMinimap,
+          onChanged: (v) => settings.showOverlayMinimap = v,
+          title: Text('Show minimap'),
+        ),
+        SwitchListTile(
           value: settings.showOverlayShootingDetails,
           onChanged: (v) => settings.showOverlayShootingDetails = v,
           title: Text('Show shooting details'),
