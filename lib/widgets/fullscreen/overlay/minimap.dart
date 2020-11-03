@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -61,11 +62,12 @@ class MinimapPainter extends CustomPainter {
     final viewSize = entrySize * viewScale;
     if (viewSize.isEmpty) return;
 
+    // hide minimap when image is in full view
+    if (viewportSize + Offset(precisionErrorTolerance, precisionErrorTolerance) >= viewSize) return;
+
     final canvasScale = size.longestSide / viewSize.longestSide;
     final scaledEntrySize = viewSize * canvasScale;
     final scaledViewportSize = viewportSize * canvasScale;
-    // hide minimap when image is in full view
-    if (scaledViewportSize >= scaledEntrySize) return;
 
     final entryRect = Rect.fromCenter(
       center: size.center(Offset.zero),

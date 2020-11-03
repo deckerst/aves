@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ImageView extends StatefulWidget {
@@ -39,6 +41,8 @@ class _ImageViewState extends State<ImageView> {
   final PhotoViewController _photoViewController = PhotoViewController();
   StreamSubscription<PhotoViewControllerValue> _subscription;
 
+  static const backgroundDecoration = BoxDecoration(color: Colors.transparent);
+
   ImageEntry get entry => widget.entry;
 
   VoidCallback get onTap => widget.onTap;
@@ -60,106 +64,185 @@ class _ImageViewState extends State<ImageView> {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundDecoration = BoxDecoration(color: Colors.transparent);
-
-    // no hero for videos, as a typical video first frame is different from its thumbnail
-
-    if (entry.isVideo) {
-      final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
-      return PhotoView.customChild(
-        child: videoController != null
-            ? AvesVideo(
-                entry: entry,
-                controller: videoController,
-              )
-            : SizedBox(),
-        backgroundDecoration: backgroundDecoration,
-        controller: _photoViewController,
-        minScale: PhotoViewComputedScale.contained,
-        initialScale: PhotoViewComputedScale.contained,
-        onTapUp: (tapContext, details, value) => onTap?.call(),
-      );
-    }
-
-    // if the hero tag is defined in the `loadingBuilder` and also set by the `heroAttributes`,
-    // the route transition becomes visible if the final is loaded before the hero animation is done.
-
-    // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
-    // there's a black frame between the hero animation and the final image, even when it's cached.
-
-    final fastThumbnailProvider = ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
-    // this loading builder shows a transition image until the final image is ready
-    // if the image is already in the cache it will show the final image, otherwise the thumbnail
-    // in any case, we should use `Center` + `AspectRatio` + `Fill` so that the transition image
-    // appears as the final image with `PhotoViewComputedScale.contained` for `initialScale`
-    Widget loadingBuilder(BuildContext context, ImageProvider imageProvider) {
-      return Center(
-        child: AspectRatio(
-          // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
-          aspectRatio: entry.displayAspectRatio,
-          child: Image(
-            image: imageProvider,
-            fit: BoxFit.fill,
-          ),
-        ),
-      );
-    }
-
     Widget child;
-    if (entry.isSvg) {
-      final colorFilter = ColorFilter.mode(Color(settings.svgBackground), BlendMode.dstOver);
-      child = PhotoView.customChild(
-        child: SvgPicture(
-          UriPicture(
-            uri: entry.uri,
-            mimeType: entry.mimeType,
-          ),
-          placeholderBuilder: (context) => loadingBuilder(context, fastThumbnailProvider),
-          colorFilter: colorFilter,
-        ),
-        backgroundDecoration: backgroundDecoration,
-        controller: _photoViewController,
-        minScale: PhotoViewComputedScale.contained,
-        initialScale: PhotoViewComputedScale.contained,
-        onTapUp: (tapContext, details, value) => onTap?.call(),
-      );
+    if (entry.isVideo) {
+      child = _buildVideoView();
+    } else if (entry.isSvg) {
+      child = _buildSvgView();
     } else if (entry.canDecode) {
-      final uriImage = UriImage(
-        uri: entry.uri,
-        mimeType: entry.mimeType,
-        rotationDegrees: entry.rotationDegrees,
-        isFlipped: entry.isFlipped,
-        expectedContentLength: entry.sizeBytes,
-      );
-      child = PhotoView(
-        // key includes size and orientation to refresh when the image is rotated
-        key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
-        imageProvider: uriImage,
-        // when the full image is ready, we use it in the `loadingBuilder`
-        // we still provide a `loadingBuilder` in that case to avoid a black frame after hero animation
-        loadingBuilder: (context, event) => loadingBuilder(
-          context,
-          imageCache.statusForKey(uriImage).keepAlive ? uriImage : fastThumbnailProvider,
-        ),
-        loadFailedChild: _buildError(),
-        backgroundDecoration: backgroundDecoration,
-        controller: _photoViewController,
-        minScale: PhotoViewComputedScale.contained,
-        initialScale: PhotoViewComputedScale.contained,
-        onTapUp: (tapContext, details, value) => onTap?.call(),
-        filterQuality: FilterQuality.low,
-      );
+      if (isLargeImage) {
+        child = _buildLargeImageView();
+      } else {
+        child = _buildImageView();
+      }
     } else {
       child = _buildError();
     }
 
-    return widget.heroTag != null
+    // if the hero tag is defined in the `loadingBuilder` and also set by the `heroAttributes`,
+    // the route transition becomes visible if the final image is loaded before the hero animation is done.
+
+    // if the hero tag wraps the whole `PhotoView` and the `loadingBuilder` is not provided,
+    // there's a black frame between the hero animation and the final image, even when it's cached.
+
+    // no hero for videos, as a typical video first frame is different from its thumbnail
+    return widget.heroTag != null && !entry.isVideo
         ? Hero(
             tag: widget.heroTag,
             transitionOnUserGestures: true,
             child: child,
           )
         : child;
+  }
+
+  // the images loaded by `PhotoView` cannot have a width or height larger than 8192
+  // so the reported offset and scale does not match expected values derived from the original dimensions
+  // TODO TLAD tile large images
+  bool get isLargeImage => entry.width > 4096 || entry.height > 4096;
+
+  ImageProvider get fastThumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
+
+  // this loading builder shows a transition image until the final image is ready
+  // if the image is already in the cache it will show the final image, otherwise the thumbnail
+  // in any case, we should use `Center` + `AspectRatio` + `BoxFit.fill` so that the transition image
+  // appears as the final image with `PhotoViewComputedScale.contained` for `initialScale`
+  Widget _loadingBuilder(BuildContext context, ImageProvider imageProvider) {
+    return Center(
+      child: AspectRatio(
+        // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
+        aspectRatio: entry.displayAspectRatio,
+        child: Image(
+          image: imageProvider,
+          fit: BoxFit.fill,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImageView() {
+    final uriImage = UriImage(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      rotationDegrees: entry.rotationDegrees,
+      isFlipped: entry.isFlipped,
+      expectedContentLength: entry.sizeBytes,
+    );
+    return PhotoView(
+      // key includes size and orientation to refresh when the image is rotated
+      key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
+      imageProvider: uriImage,
+      // when the full image is ready, we use it in the `loadingBuilder`
+      // we still provide a `loadingBuilder` in that case to avoid a black frame after hero animation
+      loadingBuilder: (context, event) => _loadingBuilder(
+        context,
+        imageCache.statusForKey(uriImage).keepAlive ? uriImage : fastThumbnailProvider,
+      ),
+      loadFailedChild: _buildError(),
+      backgroundDecoration: backgroundDecoration,
+      controller: _photoViewController,
+      minScale: PhotoViewComputedScale.contained,
+      initialScale: PhotoViewComputedScale.contained,
+      onTapUp: (tapContext, details, value) => onTap?.call(),
+      filterQuality: FilterQuality.low,
+    );
+  }
+
+  Widget _buildLargeImageView() {
+    final uriImage = UriImage(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+      rotationDegrees: entry.rotationDegrees,
+      isFlipped: entry.isFlipped,
+      expectedContentLength: entry.sizeBytes,
+    );
+    return PhotoView.customChild(
+      // key includes size and orientation to refresh when the image is rotated
+      key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
+      child: Selector<MediaQueryData, Size>(
+        selector: (context, mq) => mq.size,
+        builder: (context, mqSize, child) {
+          return StreamBuilder<PhotoViewControllerValue>(
+            stream: _photoViewController.outputStateStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) return SizedBox.shrink();
+              final displayWidth = entry.displaySize.width;
+              final displayHeight = entry.displaySize.height;
+              var scale = 0.0;
+              if (snapshot.hasData) {
+                scale = snapshot.data.scale;
+              } else {
+                // for initial scale as `PhotoViewComputedScale.contained`
+                scale = min(mqSize.width / displayWidth, mqSize.height / displayHeight);
+              }
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: displayWidth * scale,
+                    height: displayHeight * scale,
+                    child: _loadingBuilder(
+                      context,
+                      fastThumbnailProvider,
+                    ),
+                  ),
+                  Image(
+                    image: uriImage,
+                    width: displayWidth * scale,
+                    height: displayHeight * scale,
+                    errorBuilder: (context, error, stackTrace) => _buildError(),
+                    fit: BoxFit.contain,
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+      childSize: entry.displaySize,
+      backgroundDecoration: backgroundDecoration,
+      controller: _photoViewController,
+      minScale: PhotoViewComputedScale.contained,
+      initialScale: PhotoViewComputedScale.contained,
+      onTapUp: (tapContext, details, value) => onTap?.call(),
+      filterQuality: FilterQuality.low,
+    );
+  }
+
+  Widget _buildSvgView() {
+    final colorFilter = ColorFilter.mode(Color(settings.svgBackground), BlendMode.dstOver);
+    return PhotoView.customChild(
+      child: SvgPicture(
+        UriPicture(
+          uri: entry.uri,
+          mimeType: entry.mimeType,
+        ),
+        placeholderBuilder: (context) => _loadingBuilder(context, fastThumbnailProvider),
+        colorFilter: colorFilter,
+      ),
+      backgroundDecoration: backgroundDecoration,
+      controller: _photoViewController,
+      minScale: PhotoViewComputedScale.contained,
+      initialScale: PhotoViewComputedScale.contained,
+      onTapUp: (tapContext, details, value) => onTap?.call(),
+    );
+  }
+
+  Widget _buildVideoView() {
+    final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+    return PhotoView.customChild(
+      child: videoController != null
+          ? AvesVideo(
+              entry: entry,
+              controller: videoController,
+            )
+          : SizedBox(),
+      childSize: entry.displaySize,
+      backgroundDecoration: backgroundDecoration,
+      controller: _photoViewController,
+      minScale: PhotoViewComputedScale.contained,
+      initialScale: PhotoViewComputedScale.contained,
+      onTapUp: (tapContext, details, value) => onTap?.call(),
+    );
   }
 
   Widget _buildError() => GestureDetector(
