@@ -156,7 +156,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       },
       child: NotificationListener(
         onNotification: (notification) {
-          if (notification is FilterNotification) _goToCollection(notification.filter);
+          if (notification is FilterNotification) {
+            _goToCollection(notification.filter);
+          } else if (notification is ViewStateNotification) {
+            _updateViewState(notification.uri, notification.viewState);
+          }
           return false;
         },
         child: Stack(
@@ -171,7 +175,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
               onHorizontalPageChanged: _onHorizontalPageChanged,
               onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
               onImagePageRequested: () => _goToVerticalPage(imagePage),
-              viewStateNotifiers: _viewStateNotifiers,
+              onViewDisposed: (uri) => _updateViewState(uri, null),
             ),
             _buildTopOverlay(),
             _buildBottomOverlay(),
@@ -179,6 +183,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         ),
       ),
     );
+  }
+
+  void _updateViewState(String uri, ViewState viewState) {
+    final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == uri, orElse: () => null)?.item2;
+    viewStateNotifier?.value = viewState ?? ViewState.zero;
   }
 
   Widget _buildTopOverlay() {
@@ -430,16 +439,15 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
 class FullscreenVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
   final ValueNotifier<ImageEntry> entryNotifier;
-  final List<Tuple2<String, ValueNotifier<ViewState>>> viewStateNotifiers;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImageTap, onImagePageRequested;
+  final void Function(String uri) onViewDisposed;
 
   const FullscreenVerticalPageView({
     @required this.collection,
     @required this.entryNotifier,
-    @required this.viewStateNotifiers,
     @required this.videoControllers,
     @required this.verticalPager,
     @required this.horizontalPager,
@@ -447,6 +455,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
     @required this.onHorizontalPageChanged,
     @required this.onImageTap,
     @required this.onImagePageRequested,
+    @required this.onViewDisposed,
   });
 
   @override
@@ -506,13 +515,12 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               pageController: widget.horizontalPager,
               onTap: widget.onImageTap,
               onPageChanged: widget.onHorizontalPageChanged,
-              viewStateNotifiers: widget.viewStateNotifiers,
               videoControllers: widget.videoControllers,
+              onViewDisposed: widget.onViewDisposed,
             )
           : SingleImagePage(
               entry: entry,
               onTap: widget.onImageTap,
-              viewStateNotifiers: widget.viewStateNotifiers,
               videoControllers: widget.videoControllers,
             ),
       NotificationListener(
