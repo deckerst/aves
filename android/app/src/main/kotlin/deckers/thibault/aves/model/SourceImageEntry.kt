@@ -176,7 +176,6 @@ class SourceImageEntry {
                         dir.getSafeLong(Mp4Directory.TAG_DURATION) { durationMillis = it }
                     }
                 } else {
-                    // EXIF, if defined, should override metadata found in other directories
                     for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                         foundExif = true
                         dir.getSafeInt(ExifIFD0Directory.TAG_IMAGE_WIDTH) { width = it }
@@ -185,15 +184,15 @@ class SourceImageEntry {
                         dir.getSafeDateMillis(ExifIFD0Directory.TAG_DATETIME) { sourceDateTakenMillis = it }
                     }
 
-                    if (!foundExif) {
-                        for (dir in metadata.getDirectoriesOfType(JpegDirectory::class.java)) {
-                            dir.getSafeInt(JpegDirectory.TAG_IMAGE_WIDTH) { width = it }
-                            dir.getSafeInt(JpegDirectory.TAG_IMAGE_HEIGHT) { height = it }
-                        }
-                        for (dir in metadata.getDirectoriesOfType(PsdHeaderDirectory::class.java)) {
-                            dir.getSafeInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH) { width = it }
-                            dir.getSafeInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT) { height = it }
-                        }
+                    // dimensions reported in EXIF do not always match the image
+                    // so we fetch them from the format directory if available
+                    for (dir in metadata.getDirectoriesOfType(JpegDirectory::class.java)) {
+                        dir.getSafeInt(JpegDirectory.TAG_IMAGE_WIDTH) { width = it }
+                        dir.getSafeInt(JpegDirectory.TAG_IMAGE_HEIGHT) { height = it }
+                    }
+                    for (dir in metadata.getDirectoriesOfType(PsdHeaderDirectory::class.java)) {
+                        dir.getSafeInt(PsdHeaderDirectory.TAG_IMAGE_WIDTH) { width = it }
+                        dir.getSafeInt(PsdHeaderDirectory.TAG_IMAGE_HEIGHT) { height = it }
                     }
                 }
             }
