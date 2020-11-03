@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -8,6 +7,7 @@ import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
+import 'package:aves/widgets/fullscreen/tiled_view.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +21,16 @@ class ImageView extends StatefulWidget {
   final ImageEntry entry;
   final Object heroTag;
   final VoidCallback onTap;
-  final List<Tuple2<String, ValueNotifier<ViewState>>> viewStateNotifiers;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
+  final VoidCallback onDisposed;
 
   const ImageView({
     Key key,
     @required this.entry,
     this.heroTag,
     @required this.onTap,
-    @required this.viewStateNotifiers,
     @required this.videoControllers,
+    this.onDisposed,
   }) : super(key: key);
 
   @override
@@ -39,6 +39,7 @@ class ImageView extends StatefulWidget {
 
 class _ImageViewState extends State<ImageView> {
   final PhotoViewController _photoViewController = PhotoViewController();
+  final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier<ViewState>(ViewState.zero);
   StreamSubscription<PhotoViewControllerValue> _subscription;
 
   static const backgroundDecoration = BoxDecoration(color: Colors.transparent);
@@ -46,8 +47,6 @@ class _ImageViewState extends State<ImageView> {
   ImageEntry get entry => widget.entry;
 
   VoidCallback get onTap => widget.onTap;
-
-  ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifiers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
 
   @override
   void initState() {
@@ -59,6 +58,7 @@ class _ImageViewState extends State<ImageView> {
   void dispose() {
     _subscription.cancel();
     _subscription = null;
+    widget.onDisposed?.call();
     super.dispose();
   }
 
@@ -71,7 +71,7 @@ class _ImageViewState extends State<ImageView> {
       child = _buildSvgView();
     } else if (entry.canDecode) {
       if (isLargeImage) {
-        child = _buildLargeImageView();
+        child = _buildTiledImageView();
       } else {
         child = _buildImageView();
       }
@@ -97,7 +97,7 @@ class _ImageViewState extends State<ImageView> {
 
   // the images loaded by `PhotoView` cannot have a width or height larger than 8192
   // so the reported offset and scale does not match expected values derived from the original dimensions
-  // TODO TLAD tile large images
+  // besides, large images should be tiled to be memory-friendly
   bool get isLargeImage => entry.width > 4096 || entry.height > 4096;
 
   ImageProvider get fastThumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
@@ -147,54 +147,19 @@ class _ImageViewState extends State<ImageView> {
     );
   }
 
-  Widget _buildLargeImageView() {
-    final uriImage = UriImage(
-      uri: entry.uri,
-      mimeType: entry.mimeType,
-      rotationDegrees: entry.rotationDegrees,
-      isFlipped: entry.isFlipped,
-      expectedContentLength: entry.sizeBytes,
-    );
+  Widget _buildTiledImageView() {
     return PhotoView.customChild(
       // key includes size and orientation to refresh when the image is rotated
       key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
       child: Selector<MediaQueryData, Size>(
         selector: (context, mq) => mq.size,
         builder: (context, mqSize, child) {
-          return StreamBuilder<PhotoViewControllerValue>(
-            stream: _photoViewController.outputStateStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) return SizedBox.shrink();
-              final displayWidth = entry.displaySize.width;
-              final displayHeight = entry.displaySize.height;
-              var scale = 0.0;
-              if (snapshot.hasData) {
-                scale = snapshot.data.scale;
-              } else {
-                // for initial scale as `PhotoViewComputedScale.contained`
-                scale = min(mqSize.width / displayWidth, mqSize.height / displayHeight);
-              }
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: displayWidth * scale,
-                    height: displayHeight * scale,
-                    child: _loadingBuilder(
-                      context,
-                      fastThumbnailProvider,
-                    ),
-                  ),
-                  Image(
-                    image: uriImage,
-                    width: displayWidth * scale,
-                    height: displayHeight * scale,
-                    errorBuilder: (context, error, stackTrace) => _buildError(),
-                    fit: BoxFit.contain,
-                  ),
-                ],
-              );
-            },
+          return TiledImageView(
+            entry: entry,
+            viewportSize: mqSize,
+            viewStateNotifier: _viewStateNotifier,
+            baseChild: _loadingBuilder(context, fastThumbnailProvider),
+            errorBuilder: (context, error, stackTrace) => _buildError(),
           );
         },
       ),
@@ -260,7 +225,9 @@ class _ImageViewState extends State<ImageView> {
       );
 
   void _onViewChanged(PhotoViewControllerValue v) {
-    viewStateNotifier?.value = ViewState(v.position, v.scale);
+    final viewState = ViewState(v.position, v.scale);
+    _viewStateNotifier.value = viewState;
+    ViewStateNotification(entry.uri, viewState).dispatch(context);
   }
 }
 
@@ -275,5 +242,17 @@ class ViewState {
   @override
   String toString() {
     return '$runtimeType#${shortHash(this)}{position=$position, scale=$scale}';
+  }
+}
+
+class ViewStateNotification extends Notification {
+  final String uri;
+  final ViewState viewState;
+
+  const ViewStateNotification(this.uri, this.viewState);
+
+  @override
+  String toString() {
+    return '$runtimeType#${shortHash(this)}{uri=$uri, viewState=$viewState}';
   }
 }
