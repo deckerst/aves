@@ -169,6 +169,8 @@ class ImageEntry {
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
   bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
 
+  bool get canTile => !isVideo && !isAnimated && ![MimeTypes.gif].contains(mimeType);
+
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');

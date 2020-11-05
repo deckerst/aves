@@ -104,6 +104,7 @@ class CancelledException {}
 
 class ServiceCallPriority {
   static const int getFastThumbnail = 100;
+  static const int getRegion = 150;
   static const int getSizedThumbnail = 200;
   static const int normal = 500;
   static const int getMetadata = 1000;

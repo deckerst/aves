@@ -70,7 +70,7 @@ class _ImageViewState extends State<ImageView> {
     } else if (entry.isSvg) {
       child = _buildSvgView();
     } else if (entry.canDecode) {
-      if (isLargeImage) {
+      if (useTile) {
         child = _buildTiledImageView();
       } else {
         child = _buildImageView();
@@ -98,7 +98,7 @@ class _ImageViewState extends State<ImageView> {
   // the images loaded by `PhotoView` cannot have a width or height larger than 8192
   // so the reported offset and scale does not match expected values derived from the original dimensions
   // besides, large images should be tiled to be memory-friendly
-  bool get isLargeImage => entry.width > 4096 || entry.height > 4096;
+  bool get useTile => entry.canTile && (entry.width > 4096 || entry.height > 4096);
 
   ImageProvider get fastThumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
 
