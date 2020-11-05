@@ -27,8 +27,9 @@ class TiledImageView extends StatefulWidget {
 }
 
 class _TiledImageViewState extends State<TiledImageView> {
-  double _initialScale;
+  double _tileSide, _initialScale;
   int _maxSampleSize;
+  Matrix4 _transform;
 
   ImageEntry get entry => widget.entry;
 
@@ -36,10 +37,11 @@ class _TiledImageViewState extends State<TiledImageView> {
 
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
 
-  static const tileSide = 200.0;
-
   // margin around visible area to fetch surrounding tiles in advance
-  static const preFetchMargin = 50.0;
+  static const preFetchMargin = 0.0;
+
+  // magic number used to derive sample size from scale
+  static const scaleFactor = 2.0;
 
   @override
   void initState() {
@@ -57,8 +59,20 @@ class _TiledImageViewState extends State<TiledImageView> {
   }
 
   void _init() {
+    _tileSide = viewportSize.shortestSide * scaleFactor;
     _initialScale = min(viewportSize.width / entry.displaySize.width, viewportSize.height / entry.displaySize.height);
     _maxSampleSize = _sampleSizeForScale(_initialScale);
+
+    final rotationDegrees = entry.rotationDegrees;
+    final isFlipped = entry.isFlipped;
+    _transform = null;
+    if (rotationDegrees != 0 || isFlipped) {
+      _transform = Matrix4.identity()
+        ..translate(entry.width / 2.0, entry.height / 2.0)
+        ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
+        ..rotateZ(-toRadians(rotationDegrees.toDouble()))
+        ..translate(-entry.displaySize.width / 2.0, -entry.displaySize.height / 2.0);
+    }
   }
 
   @override
@@ -67,16 +81,6 @@ class _TiledImageViewState extends State<TiledImageView> {
 
     final displayWidth = entry.displaySize.width;
     final displayHeight = entry.displaySize.height;
-    final rotationDegrees = entry.rotationDegrees;
-    final isFlipped = entry.isFlipped;
-    Matrix4 transform;
-    if (rotationDegrees != 0 || isFlipped) {
-      transform = Matrix4.identity()
-        ..translate(entry.width / 2.0, entry.height / 2.0)
-        ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
-        ..rotateZ(-toRadians(rotationDegrees.toDouble()))
-        ..translate(-displayWidth / 2.0, -displayHeight / 2.0);
-    }
 
     return AnimatedBuilder(
         animation: viewStateNotifier,
@@ -98,7 +102,7 @@ class _TiledImageViewState extends State<TiledImageView> {
           final tiles = <Widget>[];
           var minSampleSize = min(_sampleSizeForScale(scale), _maxSampleSize);
           for (var sampleSize = _maxSampleSize; sampleSize >= minSampleSize; sampleSize = (sampleSize / 2).floor()) {
-            final layerRegionSize = Size.square(tileSide * sampleSize);
+            final layerRegionSize = Size.square(_tileSide * sampleSize);
             for (var x = 0.0; x < displayWidth; x += layerRegionSize.width) {
               for (var y = 0.0; y < displayHeight; y += layerRegionSize.height) {
                 final regionOrigin = Offset(x, y);
@@ -114,10 +118,10 @@ class _TiledImageViewState extends State<TiledImageView> {
                   var regionRect = regionOrigin & thisRegionSize;
 
                   // apply EXIF orientation
-                  if (transform != null) {
+                  if (_transform != null) {
                     regionRect = Rect.fromPoints(
-                      MatrixUtils.transformPoint(transform, regionRect.topLeft),
-                      MatrixUtils.transformPoint(transform, regionRect.bottomRight),
+                      MatrixUtils.transformPoint(_transform, regionRect.topLeft),
+                      MatrixUtils.transformPoint(_transform, regionRect.bottomRight),
                     );
                   }
 
@@ -149,7 +153,7 @@ class _TiledImageViewState extends State<TiledImageView> {
   int _sampleSizeForScale(double scale) {
     var sample = 0;
     if (0 < scale && scale < 1) {
-      sample = pow(2, (log(1 / scale) / log(2)).floor());
+      sample = highestPowerOf2((1 / scale) / scaleFactor);
     }
     return max<int>(1, sample);
   }
@@ -157,6 +161,7 @@ class _TiledImageViewState extends State<TiledImageView> {
 
 class RegionTile extends StatelessWidget {
   final ImageEntry entry;
+
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
   final Rect tileRect, regionRect;

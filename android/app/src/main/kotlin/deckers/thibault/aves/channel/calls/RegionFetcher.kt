@@ -1,50 +1,67 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
+import android.util.Log
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
 import java.io.ByteArrayOutputStream
 
 class RegionFetcher internal constructor(
-    private val activity: Activity,
-    private val uri: Uri,
-    private val mimeType: String,
-    private val sampleSize: Int,
-    private val rect: Rect,
-    private val result: MethodChannel.Result,
+    private val context: Context,
 ) {
+    private var lastDecoderRef: Pair<Uri, BitmapRegionDecoder>? = null
 
-    fun fetch() {
-        val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+    fun fetch(
+        uri: Uri,
+        mimeType: String,
+        sampleSize: Int,
+        rect: Rect,
+        result: MethodChannel.Result,
+    ) {
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = sampleSize
+        }
+
+        var currentDecoderRef = lastDecoderRef
+        if (currentDecoderRef != null && currentDecoderRef.first != uri) {
+            currentDecoderRef.second.recycle()
+            currentDecoderRef = null
+        }
 
         try {
-            StorageUtils.openInputStream(activity, uri).use { input ->
-                val decoder = BitmapRegionDecoder.newInstance(input, false)
-                val data = decoder.decodeRegion(rect, options)?.let {
-                    val stream = ByteArrayOutputStream()
-                    // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                    // Bitmap.CompressFormat.PNG is slower than JPEG, but it allows transparency
-                    if (MimeTypes.canHaveAlpha(mimeType)) {
-                        it.compress(Bitmap.CompressFormat.PNG, 0, stream)
-                    } else {
-                        it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                    }
-                    stream.toByteArray()
+            if (currentDecoderRef == null) {
+                val newDecoder = StorageUtils.openInputStream(context, uri).use { input ->
+                    BitmapRegionDecoder.newInstance(input, false)
                 }
-                if (data != null) {
-                    result.success(data)
+                currentDecoderRef = Pair(uri, newDecoder)
+            }
+            val decoder = currentDecoderRef.second
+            lastDecoderRef = currentDecoderRef
+
+            val data = decoder.decodeRegion(rect, options)?.let {
+                val stream = ByteArrayOutputStream()
+                // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
+                // Bitmap.CompressFormat.PNG is slower than JPEG, but it allows transparency
+                if (MimeTypes.canHaveAlpha(mimeType)) {
+                    it.compress(Bitmap.CompressFormat.PNG, 0, stream)
                 } else {
-                    result.error("getRegion-null", "failed to decode region for uri=$uri rect=$rect", null)
+                    it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                 }
+                stream.toByteArray()
+            }
+            if (data != null) {
+                result.success(data)
+            } else {
+                result.error("getRegion-null", "failed to decode region for uri=$uri rect=$rect", null)
             }
         } catch (e: Exception) {
-            result.error("getRegion-read-exception", "failed to get image from uri=$uri", e.message)
+            result.error("getRegion-read-exception", "failed to initialize region decoder for uri=$uri", e.message)
         }
     }
 }
