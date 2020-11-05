@@ -20,6 +20,8 @@ import kotlin.math.roundToInt
 class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     private val density = activity.resources.displayMetrics.density
 
+    private val regionFetcher = RegionFetcher(activity)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getObsoleteEntries" -> GlobalScope.launch { getObsoleteEntries(call, Coresult(result)) }
@@ -90,14 +92,13 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        RegionFetcher(
-            activity,
+        regionFetcher.fetch(
             uri,
             mimeType,
             sampleSize,
             Rect(x, y, x + width, y + height),
             result,
-        ).fetch()
+        )
     }
 
     private suspend fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {

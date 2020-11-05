@@ -43,6 +43,7 @@ class _ImageViewState extends State<ImageView> {
   StreamSubscription<PhotoViewControllerValue> _subscription;
 
   static const backgroundDecoration = BoxDecoration(color: Colors.transparent);
+  static const maxScale = 2.0;
 
   ImageEntry get entry => widget.entry;
 
@@ -140,6 +141,7 @@ class _ImageViewState extends State<ImageView> {
       loadFailedChild: _buildError(),
       backgroundDecoration: backgroundDecoration,
       controller: _photoViewController,
+      maxScale: maxScale,
       minScale: PhotoViewComputedScale.contained,
       initialScale: PhotoViewComputedScale.contained,
       onTapUp: (tapContext, details, value) => onTap?.call(),
@@ -166,6 +168,7 @@ class _ImageViewState extends State<ImageView> {
       childSize: entry.displaySize,
       backgroundDecoration: backgroundDecoration,
       controller: _photoViewController,
+      maxScale: maxScale,
       minScale: PhotoViewComputedScale.contained,
       initialScale: PhotoViewComputedScale.contained,
       onTapUp: (tapContext, details, value) => onTap?.call(),
@@ -204,6 +207,7 @@ class _ImageViewState extends State<ImageView> {
       childSize: entry.displaySize,
       backgroundDecoration: backgroundDecoration,
       controller: _photoViewController,
+      maxScale: maxScale,
       minScale: PhotoViewComputedScale.contained,
       initialScale: PhotoViewComputedScale.contained,
       onTapUp: (tapContext, details, value) => onTap?.call(),
