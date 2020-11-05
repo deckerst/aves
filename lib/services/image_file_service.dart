@@ -113,6 +113,39 @@ class ImageFileService {
     return Future.sync(() => null);
   }
 
+  static Future<Uint8List> getRegion(
+    String uri,
+    String mimeType,
+    int rotationDegrees,
+    bool isFlipped,
+    int sampleSize,
+    Rect rect, {
+    Object taskKey,
+    int priority,
+  }) {
+    return servicePolicy.call(
+      () async {
+        try {
+          final result = await platform.invokeMethod('getRegion', <String, dynamic>{
+            'uri': uri,
+            'mimeType': mimeType,
+            'sampleSize': sampleSize,
+            'x': rect.left.toInt(),
+            'y': rect.top.toInt(),
+            'width': rect.width.toInt(),
+            'height': rect.height.toInt(),
+          });
+          return result as Uint8List;
+        } on PlatformException catch (e) {
+          debugPrint('getRegion failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+        }
+        return null;
+      },
+      priority: priority ?? ServiceCallPriority.getRegion,
+      key: taskKey,
+    );
+  }
+
   static Future<Uint8List> getThumbnail(
     String uri,
     String mimeType,
