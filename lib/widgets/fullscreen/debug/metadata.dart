@@ -60,16 +60,17 @@ class _MetadataTabState extends State<MetadataTab> {
       }));
       return AvesExpansionTile(
         title: title,
-        children: [
-          Container(
-            alignment: AlignmentDirectional.topStart,
-            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: InfoRowGroup(
-              data,
-              maxValueLength: Constants.infoGroupMaxValueLength,
-            ),
-          )
-        ],
+        children: data.isNotEmpty
+            ? [
+                Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                  child: InfoRowGroup(
+                    data,
+                    maxValueLength: Constants.infoGroupMaxValueLength,
+                  ),
+                )
+              ]
+            : null,
       );
     }
 
