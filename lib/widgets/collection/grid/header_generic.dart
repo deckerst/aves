@@ -214,7 +214,7 @@ class SectionSelectableLeading extends StatelessWidget {
                     child: IconButton(
                       iconSize: 26,
                       padding: EdgeInsets.only(top: 1),
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
                       onPressed: onPressed,
                       tooltip: selected ? 'Deselect section' : 'Select section',

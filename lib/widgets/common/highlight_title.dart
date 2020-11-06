@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 class HighlightTitle extends StatelessWidget {
   final String name;
   final double fontSize;
+  final bool enabled;
 
   const HighlightTitle(
     this.name, {
     this.fontSize = 20,
+    this.enabled = true,
   });
+
+  static const disabledColor = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class HighlightTitle extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       child: Container(
         decoration: HighlightDecoration(
-          color: stringToColor(name),
+          color: enabled ? stringToColor(name) : disabledColor,
         ),
         margin: EdgeInsets.symmetric(vertical: 4.0),
         child: Text(

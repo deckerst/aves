@@ -154,13 +154,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       expandedNotifier: _expandedDirectoryNotifier,
       children: [
         if (prefixChildren.isNotEmpty)
-          Align(
-            alignment: AlignmentDirectional.topStart,
-            child: Wrap(children: prefixChildren),
-          ),
+          Wrap(children: prefixChildren),
         if (thumbnail != null) thumbnail,
-        Container(
-          alignment: Alignment.topLeft,
+        Padding(
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
         ),
