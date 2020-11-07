@@ -33,6 +33,9 @@ version: 1.2.5+31
 # - does not support AC3 (by default, but possible by custom build)
 # - can play if only the video or audio stream is supported
 
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
 dependencies:
   flutter:
     sdk: flutter

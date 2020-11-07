@@ -71,8 +71,6 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     _pauseProvider();
   }
 
-  bool get isSupported => entry.canDecode;
-
   void _initProvider() {
     if (!entry.canDecode) return;
 

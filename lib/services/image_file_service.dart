@@ -193,9 +193,11 @@ class ImageFileService {
     }
   }
 
+  static bool cancelRegion(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
+
   static bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
 
-  static Future<T> resumeThumbnail<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+  static Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   static Stream<ImageOpEvent> delete(Iterable<ImageEntry> entries) {
     try {

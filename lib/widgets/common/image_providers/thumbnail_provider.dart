@@ -30,8 +30,8 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   }
 
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
-    var uri = key.uri;
-    var mimeType = key.mimeType;
+    final uri = key.uri;
+    final mimeType = key.mimeType;
     try {
       final bytes = await ImageFileService.getThumbnail(
         uri,
@@ -55,7 +55,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, ImageErrorListener handleError) {
-    ImageFileService.resumeThumbnail(key);
+    ImageFileService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
@@ -105,7 +105,15 @@ class ThumbnailProviderKey {
   }
 
   @override
-  int get hashCode => hashValues(uri, mimeType, dateModifiedSecs, rotationDegrees, isFlipped, extent, scale);
+  int get hashCode => hashValues(
+        uri,
+        mimeType,
+        dateModifiedSecs,
+        rotationDegrees,
+        isFlipped,
+        extent,
+        scale,
+      );
 
   @override
   String toString() {

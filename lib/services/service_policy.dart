@@ -7,9 +7,12 @@ import 'package:tuple/tuple.dart';
 final ServicePolicy servicePolicy = ServicePolicy._private();
 
 class ServicePolicy {
+  final StreamController<QueueState> _queueStreamController = StreamController<QueueState>.broadcast();
   final Map<Object, Tuple2<int, _Task>> _paused = {};
   final SplayTreeMap<int, Queue<_Task>> _queues = SplayTreeMap();
   _Task _running;
+
+  Stream<QueueState> get queueStream => _queueStreamController.stream;
 
   ServicePolicy._private();
 
@@ -60,6 +63,7 @@ class ServicePolicy {
   Queue<_Task> _getQueue(int priority) => _queues.putIfAbsent(priority, () => Queue<_Task>());
 
   void _pickNext() {
+    _notifyQueueState();
     if (_running != null) return;
     final queue = _queues.entries.firstWhere((kv) => kv.value.isNotEmpty, orElse: () => null)?.value;
     _running = queue?.removeFirst();
@@ -90,6 +94,13 @@ class ServicePolicy {
   }
 
   bool isPaused(Object key) => _paused.containsKey(key);
+
+  void _notifyQueueState() {
+    if (!_queueStreamController.hasListener) return;
+
+    final queueByPriority = Map.fromEntries(_queues.entries.map((kv) => MapEntry(kv.key, kv.value.length)));
+    _queueStreamController.add(QueueState(queueByPriority));
+  }
 }
 
 class _Task {
@@ -109,4 +120,10 @@ class ServiceCallPriority {
   static const int normal = 500;
   static const int getMetadata = 1000;
   static const int getLocation = 1000;
+}
+
+class QueueState {
+  final Map<int, int> queueByPriority;
+
+  const QueueState(this.queueByPriority);
 }
