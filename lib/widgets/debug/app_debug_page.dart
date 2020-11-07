@@ -6,6 +6,7 @@ import 'package:aves/widgets/debug/android_env.dart';
 import 'package:aves/widgets/debug/cache.dart';
 import 'package:aves/widgets/debug/database.dart';
 import 'package:aves/widgets/debug/firebase.dart';
+import 'package:aves/widgets/debug/overlay.dart';
 import 'package:aves/widgets/debug/settings.dart';
 import 'package:aves/widgets/debug/storage.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
@@ -25,6 +26,8 @@ class AppDebugPage extends StatefulWidget {
 
 class AppDebugPageState extends State<AppDebugPage> {
   List<ImageEntry> get entries => widget.source.rawEntries;
+
+  static OverlayEntry _taskQueueOverlayEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +72,22 @@ class AppDebugPageState extends State<AppDebugPage> {
           max: 10.0,
           divisions: 9,
           label: '$timeDilation',
+        ),
+        SwitchListTile(
+          value: _taskQueueOverlayEntry != null,
+          onChanged: (v) {
+            _taskQueueOverlayEntry?.remove();
+            if (v) {
+              _taskQueueOverlayEntry = OverlayEntry(
+                builder: (context) => DebugTaskQueueOverlay(),
+              );
+              Overlay.of(context).insert(_taskQueueOverlayEntry);
+            } else {
+              _taskQueueOverlayEntry = null;
+            }
+            setState(() {});
+          },
+          title: Text('Show tasks overlay'),
         ),
         Divider(),
         Padding(

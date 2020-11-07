@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/widgets/common/image_providers/uri_region_provider.dart';
+import 'package:aves/widgets/common/image_providers/region_provider.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +99,7 @@ class _TiledImageViewState extends State<TiledImageView> {
           );
           final viewRect = (viewOrigin & viewportSize).inflate(preFetchMargin);
 
-          final tiles = <Widget>[];
+          final tiles = <RegionTile>[];
           var minSampleSize = min(_sampleSizeForScale(scale), _maxSampleSize);
           for (var sampleSize = _maxSampleSize; sampleSize >= minSampleSize; sampleSize = (sampleSize / 2).floor()) {
             final layerRegionSize = Size.square(_tileSide * sampleSize);
@@ -159,7 +159,7 @@ class _TiledImageViewState extends State<TiledImageView> {
   }
 }
 
-class RegionTile extends StatelessWidget {
+class RegionTile extends StatefulWidget {
   final ImageEntry entry;
 
   // `tileRect` uses Flutter view coordinates
@@ -175,33 +175,65 @@ class RegionTile extends StatelessWidget {
   });
 
   @override
+  _RegionTileState createState() => _RegionTileState();
+}
+
+class _RegionTileState extends State<RegionTile> {
+  RegionProvider _provider;
+
+  ImageEntry get entry => widget.entry;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+  }
+
+  @override
+  void didUpdateWidget(RegionTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entry != widget.entry || oldWidget.tileRect != widget.tileRect || oldWidget.sampleSize != widget.sampleSize || oldWidget.sampleSize != widget.sampleSize) {
+      _unregisterWidget(oldWidget);
+      _registerWidget(widget);
+    }
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(RegionTile widget) {
+    _initProvider();
+  }
+
+  void _unregisterWidget(RegionTile widget) {
+    _pauseProvider();
+  }
+
+  void _initProvider() {
+    if (!entry.canDecode) return;
+
+    _provider = RegionProvider(RegionProviderKey.fromEntry(
+      entry,
+      sampleSize: widget.sampleSize,
+      rect: widget.regionRect,
+    ));
+  }
+
+  void _pauseProvider() => _provider?.pause();
+
+  @override
   Widget build(BuildContext context) {
+    final tileRect = widget.tileRect;
+
     Widget child = Image(
-      image: UriRegion(
-        uri: entry.uri,
-        mimeType: entry.mimeType,
-        rotationDegrees: entry.rotationDegrees,
-        isFlipped: entry.isFlipped,
-        sampleSize: sampleSize,
-        rect: regionRect,
-      ),
+      image: _provider,
       width: tileRect.width,
       height: tileRect.height,
       fit: BoxFit.fill,
-      // TODO TLAD remove when done with tiling
-      // color: Color.fromARGB((0xff / sampleSize).floor(), 0, 0, 0xff),
-      // colorBlendMode: BlendMode.color,
     );
-
-    // child = Container(
-    //   foregroundDecoration: BoxDecoration(
-    //     border: Border.all(
-    //       color: Colors.cyan,
-    //     ),
-    //   ),
-    //   // child: Text('$sampleSize'),
-    //   child: child,
-    // );
 
     // apply EXIF orientation
     final quarterTurns = entry.rotationDegrees ~/ 90;
@@ -229,5 +261,13 @@ class RegionTile extends StatelessWidget {
       rect: tileRect,
       child: child,
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IntProperty('contentId', widget.entry.contentId));
+    properties.add(IntProperty('sampleSize', widget.sampleSize));
+    properties.add(DiagnosticsProperty<Rect>('regionRect', widget.regionRect));
   }
 }
