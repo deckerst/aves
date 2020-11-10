@@ -123,7 +123,8 @@ class SourceImageEntry {
             fillVideoByMediaMetadataRetriever(context)
             if (isSized && hasDuration) return this
         }
-        if (MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) {
+        // skip metadata-extractor for raw images because it reports the decoded dimensions instead of the raw dimensions
+        if (!MimeTypes.isRaw(sourceMimeType) && MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) {
             fillByMetadataExtractor(context)
             if (isSized && foundExif) return this
         }
@@ -224,8 +225,9 @@ class SourceImageEntry {
     private fun fillByBitmapDecode(context: Context) {
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = true
+                val options = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
                 BitmapFactory.decodeStream(input, null, options)
                 width = options.outWidth
                 height = options.outHeight

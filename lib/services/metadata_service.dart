@@ -76,6 +76,19 @@ class MetadataService {
     return null;
   }
 
+  static Future<Map> getBitmapFactoryInfo(ImageEntry entry) async {
+    try {
+      // return map with all data available when decoding image bounds with `BitmapFactory`
+      final result = await platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getBitmapFactoryInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
   static Future<Map> getContentResolverMetadata(ImageEntry entry) async {
     try {
       // return map with all data available from the content resolver
@@ -92,7 +105,7 @@ class MetadataService {
 
   static Future<Map> getExifInterfaceMetadata(ImageEntry entry) async {
     try {
-      // return map with all data available from the ExifInterface library
+      // return map with all data available from the `ExifInterface` library
       final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
         'uri': entry.uri,
       }) as Map;
@@ -105,7 +118,7 @@ class MetadataService {
 
   static Future<Map> getMediaMetadataRetrieverMetadata(ImageEntry entry) async {
     try {
-      // return map with all data available from the MediaMetadataRetriever
+      // return map with all data available from `MediaMetadataRetriever`
       final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
         'uri': entry.uri,
       }) as Map;

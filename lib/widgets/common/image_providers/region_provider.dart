@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/model/image_entry.dart';
@@ -22,7 +23,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${key.uri}, rect=${key.rect}');
+        yield ErrorDescription('uri=${key.uri}, regionRect=${key.regionRect}');
       },
     );
   }
@@ -37,7 +38,8 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         key.rotationDegrees,
         key.isFlipped,
         key.sampleSize,
-        key.rect,
+        key.regionRect,
+        key.imageSize,
         taskKey: key,
       );
       if (bytes == null) {
@@ -63,7 +65,8 @@ class RegionProviderKey {
   final String uri, mimeType;
   final int rotationDegrees, sampleSize;
   final bool isFlipped;
-  final Rect rect;
+  final Rectangle<int> regionRect;
+  final Size imageSize;
   final double scale;
 
   const RegionProviderKey({
@@ -72,14 +75,16 @@ class RegionProviderKey {
     @required this.rotationDegrees,
     @required this.isFlipped,
     @required this.sampleSize,
-    @required this.rect,
+    @required this.regionRect,
+    @required this.imageSize,
     this.scale = 1.0,
   })  : assert(uri != null),
         assert(mimeType != null),
         assert(rotationDegrees != null),
         assert(isFlipped != null),
         assert(sampleSize != null),
-        assert(rect != null),
+        assert(regionRect != null),
+        assert(imageSize != null),
         assert(scale != null);
 
   // do not store the entry as it is, because the key should be constant
@@ -87,7 +92,7 @@ class RegionProviderKey {
   factory RegionProviderKey.fromEntry(
     ImageEntry entry, {
     @required int sampleSize,
-    @required Rect rect,
+    @required Rectangle<int> rect,
   }) {
     return RegionProviderKey(
       uri: entry.uri,
@@ -95,14 +100,15 @@ class RegionProviderKey {
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
       sampleSize: sampleSize,
-      rect: rect,
+      regionRect: rect,
+      imageSize: Size(entry.width.toDouble(), entry.height.toDouble()),
     );
   }
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.rect == rect && other.scale == scale;
+    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.regionRect == regionRect && other.imageSize == imageSize && other.scale == scale;
   }
 
   @override
@@ -113,12 +119,13 @@ class RegionProviderKey {
         isFlipped,
         mimeType,
         sampleSize,
-        rect,
+        regionRect,
+        imageSize,
         scale,
       );
 
   @override
   String toString() {
-    return 'RegionProviderKey(uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, rect=$rect, scale=$scale)';
+    return 'RegionProviderKey(uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, regionRect=$regionRect, imageSize=$imageSize, scale=$scale)';
   }
 }

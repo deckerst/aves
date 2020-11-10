@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
@@ -113,13 +114,15 @@ class ImageFileService {
     return Future.sync(() => null);
   }
 
+  // `rect`: region to decode, with coordinates in reference to `imageSize`
   static Future<Uint8List> getRegion(
     String uri,
     String mimeType,
     int rotationDegrees,
     bool isFlipped,
     int sampleSize,
-    Rect rect, {
+    Rectangle<int> regionRect,
+    Size imageSize, {
     Object taskKey,
     int priority,
   }) {
@@ -130,10 +133,12 @@ class ImageFileService {
             'uri': uri,
             'mimeType': mimeType,
             'sampleSize': sampleSize,
-            'x': rect.left.toInt(),
-            'y': rect.top.toInt(),
-            'width': rect.width.toInt(),
-            'height': rect.height.toInt(),
+            'regionX': regionRect.left,
+            'regionY': regionRect.top,
+            'regionWidth': regionRect.width,
+            'regionHeight': regionRect.height,
+            'imageWidth': imageSize.width.toInt(),
+            'imageHeight': imageSize.height.toInt(),
           });
           return result as Uint8List;
         } on PlatformException catch (e) {

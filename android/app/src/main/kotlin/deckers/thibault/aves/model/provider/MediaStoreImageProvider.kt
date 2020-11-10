@@ -144,11 +144,14 @@ class MediaStoreImageProvider : ImageProvider() {
                             "contentId" to contentId,
                         )
 
-                        if ((width <= 0 || height <= 0) && needSize(mimeType)
+                        if (MimeTypes.isRaw(mimeType)
+                            || (width <= 0 || height <= 0) && needSize(mimeType)
                             || durationMillis == 0L && needDuration
                         ) {
-                            // some images are incorrectly registered in the Media Store,
-                            // they are valid but miss some attributes, such as width, height, orientation
+                            // Some images are incorrectly registered in the Media Store,
+                            // missing some attributes such as width, height, orientation.
+                            // Also, the reported size of raw images is inconsistent across devices
+                            // and Android versions (sometimes the raw size, sometimes the decoded size).
                             val entry = SourceImageEntry(entryMap).fillPreCatalogMetadata(context)
                             entryMap = entry.toMap()
                         }
