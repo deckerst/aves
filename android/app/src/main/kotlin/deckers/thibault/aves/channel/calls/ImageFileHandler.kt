@@ -3,6 +3,7 @@ package deckers.thibault.aves.channel.calls
 import android.app.Activity
 import android.graphics.Rect
 import android.net.Uri
+import android.util.Size
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.provider.FieldMap
@@ -82,12 +83,14 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         val sampleSize = call.argument<Int>("sampleSize")
-        val x = call.argument<Int>("x")
-        val y = call.argument<Int>("y")
-        val width = call.argument<Int>("width")
-        val height = call.argument<Int>("height")
+        val x = call.argument<Int>("regionX")
+        val y = call.argument<Int>("regionY")
+        val width = call.argument<Int>("regionWidth")
+        val height = call.argument<Int>("regionHeight")
+        val imageWidth = call.argument<Int>("imageWidth")
+        val imageHeight = call.argument<Int>("imageHeight")
 
-        if (uri == null || mimeType == null || sampleSize == null || x == null || y == null || width == null || height == null) {
+        if (uri == null || mimeType == null || sampleSize == null || x == null || y == null || width == null || height == null || imageWidth == null || imageHeight == null) {
             result.error("getRegion-args", "failed because of missing arguments", null)
             return
         }
@@ -97,6 +100,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             mimeType,
             sampleSize,
             Rect(x, y, x + width, y + height),
+            Size(imageWidth, imageHeight),
             result,
         )
     }

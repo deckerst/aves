@@ -5,6 +5,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -58,6 +59,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -70,6 +72,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getContentResolverMetadata" -> GlobalScope.launch { getContentResolverMetadata(call, Coresult(result)) }
             "getExifInterfaceMetadata" -> GlobalScope.launch { getExifInterfaceMetadata(call, Coresult(result)) }
             "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
+            "getBitmapFactoryInfo" -> GlobalScope.launch { getBitmapFactoryInfo(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
             "getXmpThumbnails" -> GlobalScope.launch { getXmpThumbnails(call, Coresult(result)) }
@@ -479,6 +482,34 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
                 retriever.release()
             }
+        }
+        result.success(metadataMap)
+    }
+
+    private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("getBitmapDecoderInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val metadataMap = HashMap<String, String>()
+        try {
+            StorageUtils.openInputStream(context, uri)?.use { input ->
+                val options = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                BitmapFactory.decodeStream(input, null, options)
+                options.outMimeType?.let { metadataMap["MimeType"] = it }
+                options.outWidth.let { metadataMap["Width"] = it.toString() }
+                options.outHeight.let { metadataMap["Height"] = it.toString() }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    options.outColorSpace?.let { metadataMap["ColorSpace"] = it.toString() }
+                    options.outConfig?.let { metadataMap["Config"] = it.toString() }
+                }
+            }
+        } catch (e: IOException) {
+            // ignore
         }
         result.success(metadataMap)
     }

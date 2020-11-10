@@ -16,7 +16,16 @@ object MimeTypes {
     const val WEBP = "image/webp"
 
     // raw raster
+    private const val ARW = "image/x-sony-arw"
+    private const val CR2 = "image/x-canon-cr2"
     private const val DNG = "image/x-adobe-dng"
+    private const val NEF = "image/x-nikon-nef"
+    private const val NRW = "image/x-nikon-nrw"
+    private const val ORF = "image/x-olympus-orf"
+    private const val PEF = "image/x-pentax-pef"
+    private const val RAF = "image/x-fuji-raf"
+    private const val RW2 = "image/x-panasonic-rw2"
+    private const val SRW = "image/x-samsung-srw"
 
     // vector
     const val SVG = "image/svg+xml"
@@ -33,6 +42,13 @@ object MimeTypes {
     fun isMultimedia(mimeType: String?) = when (mimeType) {
         HEIC, HEIF -> true
         else -> isVideo(mimeType)
+    }
+
+    fun isRaw(mimeType: String?): Boolean {
+        return when (mimeType) {
+            ARW, CR2, DNG, NEF, NRW, ORF, PEF, RAF, RW2, SRW -> true
+            else -> false
+        }
     }
 
     // returns whether the specified MIME type represents

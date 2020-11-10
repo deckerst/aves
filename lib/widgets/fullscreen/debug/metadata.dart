@@ -18,7 +18,7 @@ class MetadataTab extends StatefulWidget {
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
+  Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
@@ -33,6 +33,7 @@ class _MetadataTabState extends State<MetadataTab> {
   }
 
   void _loadMetadata() {
+    _bitmapFactoryLoader = MetadataService.getBitmapFactoryInfo(entry);
     _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
     _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
     _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
@@ -77,6 +78,10 @@ class _MetadataTabState extends State<MetadataTab> {
     return ListView(
       padding: EdgeInsets.all(8),
       children: [
+        FutureBuilder<Map>(
+          future: _bitmapFactoryLoader,
+          builder: (context, snapshot) => builder(context, snapshot, 'Bitmap Factory'),
+        ),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
           builder: (context, snapshot) => builder(context, snapshot, 'Content Resolver'),
