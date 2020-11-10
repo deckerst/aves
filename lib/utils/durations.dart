@@ -27,6 +27,7 @@ class Durations {
   // fullscreen animations
   static const fullscreenPageAnimation = Duration(milliseconds: 300);
   static const fullscreenOverlayAnimation = Duration(milliseconds: 200);
+  static const fullscreenOverlayChangeAnimation = Duration(milliseconds: 150);
 
   // info
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);

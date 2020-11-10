@@ -18,7 +18,8 @@ class Constants {
     offset: Offset(0.5, 1.0),
   );
 
-  static const String unknown = 'unknown';
+  static const String overlayUnknown = '—'; // em dash
+  static const String infoUnknown = 'unknown';
 
   static const pointNemo = Tuple2(-48.876667, -123.393333);
 

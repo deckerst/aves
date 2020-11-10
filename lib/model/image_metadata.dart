@@ -114,18 +114,18 @@ class OverlayMetadata {
     this.exposureTime,
     this.focalLength,
     this.iso,
-  }) : aperture = aperture.replaceFirst('f', 'ƒ');
+  }) : aperture = aperture?.replaceFirst('f', 'ƒ');
 
   factory OverlayMetadata.fromMap(Map map) {
     return OverlayMetadata(
-      aperture: map['aperture'] ?? '',
-      exposureTime: map['exposureTime'] ?? '',
-      focalLength: map['focalLength'] ?? '',
-      iso: map['iso'] ?? '',
+      aperture: map['aperture'],
+      exposureTime: map['exposureTime'],
+      focalLength: map['focalLength'],
+      iso: map['iso'],
     );
   }
 
-  bool get isEmpty => aperture.isEmpty && exposureTime.isEmpty && focalLength.isEmpty && iso.isEmpty;
+  bool get isEmpty => aperture == null && exposureTime == null && focalLength == null && iso == null;
 
   @override
   String toString() {
