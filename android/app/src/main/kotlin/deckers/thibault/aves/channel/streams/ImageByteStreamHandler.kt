@@ -1,7 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -11,7 +10,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.MimeTypes.canHaveAlpha
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -20,7 +20,6 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 
@@ -102,15 +101,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
                 bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
             }
             if (bitmap != null) {
-                val stream = ByteArrayOutputStream()
-                // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                // Bitmap.CompressFormat.PNG is slower than JPEG, but it allows transparency
-                if (canHaveAlpha(mimeType)) {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
-                } else {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                }
-                success(stream.toByteArray())
+                success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false))
             } else {
                 error("streamImage-image-decode-null", "failed to get image from uri=$uri", null)
             }
@@ -134,11 +125,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         try {
             val bitmap = target.get()
             if (bitmap != null) {
-                val stream = ByteArrayOutputStream()
-                // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                // Bitmap.CompressFormat.PNG is slower than JPEG
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                success(stream.toByteArray())
+                success(bitmap.getBytes(canHaveAlpha = false, recycle = false))
             } else {
                 error("streamImage-video-null", "failed to get image from uri=$uri", null)
             }

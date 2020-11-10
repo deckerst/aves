@@ -1,16 +1,15 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
 import android.util.Size
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
-import java.io.ByteArrayOutputStream
 import kotlin.math.roundToInt
 
 class RegionFetcher internal constructor(
@@ -61,19 +60,9 @@ class RegionFetcher internal constructor(
                 regionRect
             }
 
-            val data = decoder.decodeRegion(effectiveRect, options)?.let {
-                val stream = ByteArrayOutputStream()
-                // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                // Bitmap.CompressFormat.PNG is slower than JPEG, but it allows transparency
-                if (MimeTypes.canHaveAlpha(mimeType)) {
-                    it.compress(Bitmap.CompressFormat.PNG, 0, stream)
-                } else {
-                    it.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                }
-                stream.toByteArray()
-            }
-            if (data != null) {
-                result.success(data)
+            val bitmap = decoder.decodeRegion(effectiveRect, options)
+            if (bitmap != null) {
+                result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = true))
             } else {
                 result.error("getRegion-null", "failed to decode region for uri=$uri regionRect=$regionRect", null)
             }
