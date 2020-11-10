@@ -6,6 +6,7 @@ import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
@@ -150,25 +151,21 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
             final positionTitle = [
               if (position != null) position,
               if (entry.bestTitle != null) entry.bestTitle,
-            ].join(' – ');
+            ].join(' — '); // em dash
             final hasShootingDetails = details != null && !details.isEmpty && settings.showOverlayShootingDetails;
             return Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (positionTitle.isNotEmpty) Text(positionTitle, strutStyle: Constants.overflowStrutStyle),
-                if (entry.hasGps)
-                  Container(
-                    padding: EdgeInsets.only(top: _interRowPadding),
-                    child: _LocationRow(entry: entry),
-                  ),
+                _buildSoloLocationRow(),
                 if (twoColumns)
                   Padding(
                     padding: EdgeInsets.only(top: _interRowPadding),
                     child: Row(
                       children: [
                         Container(width: subRowWidth, child: _DateRow(entry)),
-                        if (hasShootingDetails) Container(width: subRowWidth, child: _ShootingRow(details)),
+                        _buildDuoShootingRow(subRowWidth, hasShootingDetails),
                       ],
                     ),
                   )
@@ -178,12 +175,7 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
                     width: subRowWidth,
                     child: _DateRow(entry),
                   ),
-                  if (hasShootingDetails)
-                    Container(
-                      padding: EdgeInsets.only(top: _interRowPadding),
-                      width: subRowWidth,
-                      child: _ShootingRow(details),
-                    ),
+                  _buildSoloShootingRow(subRowWidth, hasShootingDetails),
                 ],
               ],
             );
@@ -192,6 +184,58 @@ class _FullscreenBottomOverlayContent extends AnimatedWidget {
       ),
     );
   }
+
+  Widget _buildSoloLocationRow() => AnimatedSwitcher(
+        duration: Durations.fullscreenOverlayChangeAnimation,
+        switchInCurve: Curves.easeInOutCubic,
+        switchOutCurve: Curves.easeInOutCubic,
+        transitionBuilder: _soloTransition,
+        child: entry.hasGps
+            ? Container(
+                padding: EdgeInsets.only(top: _interRowPadding),
+                child: _LocationRow(entry: entry),
+              )
+            : SizedBox.shrink(),
+      );
+
+  Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
+        duration: Durations.fullscreenOverlayChangeAnimation,
+        switchInCurve: Curves.easeInOutCubic,
+        switchOutCurve: Curves.easeInOutCubic,
+        transitionBuilder: _soloTransition,
+        child: hasShootingDetails
+            ? Container(
+                padding: EdgeInsets.only(top: _interRowPadding),
+                width: subRowWidth,
+                child: _ShootingRow(details),
+              )
+            : SizedBox.shrink(),
+      );
+
+  Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
+        duration: Durations.fullscreenOverlayChangeAnimation,
+        switchInCurve: Curves.easeInOutCubic,
+        switchOutCurve: Curves.easeInOutCubic,
+        transitionBuilder: (child, animation) => FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+        child: hasShootingDetails
+            ? Container(
+                width: subRowWidth,
+                child: _ShootingRow(details),
+              )
+            : SizedBox.shrink(),
+      );
+
+  static Widget _soloTransition(Widget child, Animation<double> animation) => FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          axisAlignment: 1,
+          sizeFactor: animation,
+          child: child,
+        ),
+      );
 }
 
 class _LocationRow extends AnimatedWidget {
@@ -228,7 +272,7 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.unknown;
+    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.infoUnknown;
     return Row(
       children: [
         DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
@@ -251,10 +295,10 @@ class _ShootingRow extends StatelessWidget {
       children: [
         DecoratedIcon(AIcons.shooting, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
-        Expanded(child: Text(details.aperture, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.exposureTime, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.focalLength, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(child: Text(details.iso, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.aperture ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.focalLength ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(child: Text(details.iso ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }
