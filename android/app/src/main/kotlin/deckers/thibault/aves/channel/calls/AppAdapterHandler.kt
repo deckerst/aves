@@ -6,20 +6,19 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils.createTag
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -134,12 +133,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 .submit(size, size)
 
             try {
-                val bitmap = target.get()
-                if (bitmap != null) {
-                    val stream = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
-                    data = stream.toByteArray()
-                }
+                data = target.get()?.getBytes(canHaveAlpha = true, recycle = false)
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
             }

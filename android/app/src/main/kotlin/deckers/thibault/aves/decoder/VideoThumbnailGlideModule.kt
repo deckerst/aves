@@ -1,7 +1,6 @@
 package deckers.thibault.aves.decoder
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
@@ -16,9 +15,9 @@ import com.bumptech.glide.load.model.ModelLoaderFactory
 import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.StorageUtils.openMetadataRetriever
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 @GlideModule
@@ -49,16 +48,12 @@ internal class VideoThumbnailFetcher(private val model: VideoThumbnail) : DataFe
         val retriever = openMetadataRetriever(model.context, model.uri)
         if (retriever != null) {
             try {
-                var picture = retriever.embeddedPicture
-                if (picture == null) {
-                    // not ideal: bitmap -> byte[] -> bitmap
-                    // but simple fallback and we cache result
-                    val stream = ByteArrayOutputStream()
-                    val bitmap = retriever.frameAtTime
-                    bitmap?.compress(Bitmap.CompressFormat.PNG, 0, stream)
-                    picture = stream.toByteArray()
+                val picture = retriever.embeddedPicture ?: retriever.frameAtTime?.getBytes(canHaveAlpha = false, recycle = false)
+                if (picture != null) {
+                    callback.onDataReady(ByteArrayInputStream(picture))
+                } else {
+                    callback.onLoadFailed(Exception("failed to get embedded picture or any frame"))
                 }
-                callback.onDataReady(ByteArrayInputStream(picture))
             } catch (e: Exception) {
                 callback.onLoadFailed(e)
             } finally {

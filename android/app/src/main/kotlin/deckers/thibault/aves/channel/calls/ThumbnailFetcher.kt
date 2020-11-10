@@ -15,11 +15,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import io.flutter.plugin.common.MethodChannel
-import java.io.ByteArrayOutputStream
 
 class ThumbnailFetcher internal constructor(
     private val activity: Activity,
@@ -39,6 +40,7 @@ class ThumbnailFetcher internal constructor(
 
     fun fetch() {
         var bitmap: Bitmap? = null
+        var recycle = true
         var exception: Exception? = null
 
         // fetch low quality thumbnails when size is not specified
@@ -58,25 +60,21 @@ class ThumbnailFetcher internal constructor(
         if (bitmap == null) {
             try {
                 bitmap = getByGlide()
+                recycle = false
             } catch (e: Exception) {
                 exception = e
             }
         }
 
         if (bitmap != null) {
-            val stream = ByteArrayOutputStream()
-            // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-            // Bitmap.CompressFormat.PNG is slower than JPEG
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-            result.success(stream.toByteArray())
-            return
+            result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = recycle))
+        } else {
+            var errorDetails: String? = exception?.message
+            if (errorDetails?.isNotEmpty() == true) {
+                errorDetails = errorDetails.split("\n".toRegex(), 2).first()
+            }
+            result.error("getThumbnail-null", "failed to get thumbnail for uri=$uri", errorDetails)
         }
-
-        var errorDetails: String? = exception?.message
-        if (errorDetails?.isNotEmpty() == true) {
-            errorDetails = errorDetails.split("\n".toRegex(), 2).first()
-        }
-        result.error("getThumbnail-null", "failed to get thumbnail for uri=$uri", errorDetails)
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)

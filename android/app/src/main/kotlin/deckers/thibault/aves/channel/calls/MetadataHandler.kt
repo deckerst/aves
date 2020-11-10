@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -46,6 +45,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
@@ -58,7 +58,6 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import kotlin.math.roundToLong
@@ -548,14 +547,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
                 val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-                exif.thumbnailBitmap?.let {
-                    val bitmap = TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), it, orientation)
-                    if (bitmap != null) {
-                        val stream = ByteArrayOutputStream()
-                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                        // Bitmap.CompressFormat.PNG is slower than JPEG
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-                        thumbnails.add(stream.toByteArray())
+                exif.thumbnailBitmap?.let { bitmap ->
+                    TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
+                        thumbnails.add(it.getBytes(canHaveAlpha = false, recycle = false))
                     }
                 }
             }
