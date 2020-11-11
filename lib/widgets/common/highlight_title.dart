@@ -11,7 +11,7 @@ class HighlightTitle extends StatelessWidget {
     this.name, {
     this.fontSize = 20,
     this.enabled = true,
-  });
+  }) : assert(name != null);
 
   static const disabledColor = Colors.grey;
 
