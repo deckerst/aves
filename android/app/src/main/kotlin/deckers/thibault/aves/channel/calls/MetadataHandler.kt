@@ -28,7 +28,9 @@ import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDouble
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
@@ -38,7 +40,6 @@ import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
@@ -353,37 +354,62 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val metadataMap = HashMap<String, Any>()
-        if (isVideo(mimeType) || !isSupportedByMetadataExtractor(mimeType)) {
+        if (isVideo(mimeType)) {
             result.success(metadataMap)
             return
         }
-        try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
-                for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                    dir.getSafeDescription(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it }
-                    dir.getSafeDescription(ExifSubIFDDirectory.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
-                    dir.getSafeDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = "ISO$it" }
-                    dir.getSafeRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) {
-                        // TAG_EXPOSURE_TIME as a string is sometimes a ratio, sometimes a decimal
-                        // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
-                        // and process it to make sure the numerator is `1` when the ratio value is less than 1
-                        val num = it.numerator
-                        val denom = it.denominator
-                        metadataMap[KEY_EXPOSURE_TIME] = when {
-                            num >= denom -> "${it.toSimpleString(true)}″"
-                            num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
-                            else -> it.toString()
-                        }
+
+        val saveExposureTime: (value: Rational) -> Unit = {
+            // `TAG_EXPOSURE_TIME` as a string is sometimes a ratio, sometimes a decimal
+            // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
+            // and process it to make sure the numerator is `1` when the ratio value is less than 1
+            val num = it.numerator
+            val denom = it.denominator
+            metadataMap[KEY_EXPOSURE_TIME] = when {
+                num >= denom -> "${it.toSimpleString(true)}″"
+                num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
+                else -> it.toString()
+            }
+        }
+
+        var foundExif = false
+        if (isSupportedByMetadataExtractor(mimeType)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                        foundExif = true
+                        dir.getSafeRational(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
+                        dir.getSafeRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME, saveExposureTime)
+                        dir.getSafeRational(ExifSubIFDDirectory.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
+                        dir.getSafeInt(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
                     }
                 }
-                result.success(metadataMap)
-            } ?: result.error("getOverlayMetadata-noinput", "failed to get metadata for uri=$uri", null)
-        } catch (e: Exception) {
-            result.error("getOverlayMetadata-exception", "failed to get metadata for uri=$uri", e.message)
-        } catch (e: NoClassDefFoundError) {
-            result.error("getOverlayMetadata-exception", "failed to get metadata for uri=$uri", e.message)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+            }
         }
+
+        if (!foundExif) {
+            // fallback to read EXIF via ExifInterface
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val exif = ExifInterface(input)
+                    exif.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
+                    exif.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
+                    exif.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
+                    exif.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
+                }
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
+            }
+        }
+
+        result.success(metadataMap)
     }
 
     private fun getContentResolverMetadata(call: MethodCall, result: MethodChannel.Result) {
