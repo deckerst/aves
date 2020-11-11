@@ -64,7 +64,7 @@ class MetadataService {
     if (entry.isSvg) return null;
 
     try {
-      // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
+      // return map with values for: 'aperture' (double), 'exposureTime' (description), 'focalLength' (double), 'iso' (int)
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,

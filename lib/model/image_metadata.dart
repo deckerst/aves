@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
+import 'package:intl/intl.dart';
 
 class DateMetadata {
   final int contentId, dateMillis;
@@ -109,19 +110,25 @@ class CatalogMetadata {
 class OverlayMetadata {
   final String aperture, exposureTime, focalLength, iso;
 
+  static final apertureFormat = NumberFormat('0.0', 'en_US');
+  static final focalLengthFormat = NumberFormat('0.#', 'en_US');
+
   OverlayMetadata({
-    String aperture,
-    this.exposureTime,
-    this.focalLength,
-    this.iso,
-  }) : aperture = aperture?.replaceFirst('f', 'ƒ');
+    double aperture,
+    String exposureTime,
+    double focalLength,
+    int iso,
+  })  : aperture = aperture != null ? 'ƒ/${apertureFormat.format(aperture)}' : null,
+        exposureTime = exposureTime,
+        focalLength = focalLength != null ? '${focalLengthFormat.format(focalLength)} mm' : null,
+        iso = iso != null ? 'ISO$iso' : null;
 
   factory OverlayMetadata.fromMap(Map map) {
     return OverlayMetadata(
-      aperture: map['aperture'],
-      exposureTime: map['exposureTime'],
-      focalLength: map['focalLength'],
-      iso: map['iso'],
+      aperture: map['aperture'] as double,
+      exposureTime: map['exposureTime'] as String,
+      focalLength: map['focalLength'] as double,
+      iso: map['iso'] as int,
     );
   }
 
