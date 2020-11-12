@@ -27,6 +27,12 @@ class Constants {
 
   static const List<Dependency> androidDependencies = [
     Dependency(
+      name: 'Android-TiffBitmapFactory',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/Beyka/Android-TiffBitmapFactory/blob/master/license.txt',
+      sourceUrl: 'https://github.com/Beyka/Android-TiffBitmapFactory',
+    ),
+    Dependency(
       name: 'CWAC-Document',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/commonsguy/cwac-document/blob/master/LICENSE',

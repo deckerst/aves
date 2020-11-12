@@ -17,6 +17,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.2.5+31
 
+# brendan-duncan/image (as of v2.1.19):
+# - does not support TIFF with JPEG compression (issue #184)
+# - TIFF tile decoding is not public (issue #258)
+
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
 # - does not support AVI/XVID, AC3

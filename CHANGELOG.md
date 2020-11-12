@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Support for TIFF images (single page)
 - Viewer overlay: minimap (optional)
 
 ### Changed

@@ -37,8 +37,12 @@ class RegionFetcher internal constructor(
 
         try {
             if (currentDecoderRef == null) {
-                val newDecoder = StorageUtils.openInputStream(context, uri).use { input ->
+                val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
                     BitmapRegionDecoder.newInstance(input, false)
+                }
+                if (newDecoder == null) {
+                    result.error("getRegion-read-null", "failed to open file for uri=$uri regionRect=$regionRect", null)
+                    return
                 }
                 currentDecoderRef = LastDecoderRef(uri, newDecoder)
             }

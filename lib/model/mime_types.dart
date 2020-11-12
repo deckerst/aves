@@ -41,5 +41,5 @@ class MimeTypes {
 
   // groups
   static const List<String> rawImages = [arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f];
-  static const List<String> undecodable = [crw, psd, tiff]; // TODO TLAD make it dynamic if it depends on OS/lib versions
+  static const List<String> undecodable = [crw, psd]; // TODO TLAD make it dynamic if it depends on OS/lib versions
 }

@@ -15,11 +15,13 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
-import deckers.thibault.aves.utils.StorageUtils.openInputStream
+import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -71,6 +73,8 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri)
+        } else if (mimeType == MimeTypes.TIFF) {
+            streamTiffImage(uri)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, mimeType, rotationDegrees, isFlipped)
@@ -83,7 +87,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     private fun streamImageAsIs(uri: Uri) {
         try {
-            openInputStream(activity, uri).use { input -> input?.let { streamBytes(it) } }
+            StorageUtils.openInputStream(activity, uri)?.use { input -> streamBytes(input) }
         } catch (e: IOException) {
             error("streamImage-image-read-exception", "failed to get image from uri=$uri", e.message)
         }
@@ -133,6 +137,38 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             error("streamImage-video-exception", "failed to get image from uri=$uri", e.message)
         } finally {
             Glide.with(activity).clear(target)
+        }
+    }
+
+    private fun streamTiffImage(uri: Uri) {
+        // copy source stream to a temp file
+        val file: File
+        try {
+            file = File.createTempFile("aves", ".tiff")
+            StorageUtils.openInputStream(activity, uri)?.use { input ->
+                StorageUtils.copyInputStreamToFile(input, file)
+            }
+            file.deleteOnExit()
+        } catch (e: IOException) {
+            error("streamImage-tiff-copy", "failed to copy file from uri=$uri", null)
+            return
+        }
+
+        val options = TiffBitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        TiffBitmapFactory.decodeFile(file, options)
+        val dirCount: Int = options.outDirectoryCount
+        // TODO TLAD handle multipage TIFF
+        if (dirCount > 0) {
+            val i = 0
+            options.inDirectoryNumber = i
+            options.inJustDecodeBounds = false
+            val bitmap = TiffBitmapFactory.decodeFile(file, options)
+            if (bitmap != null) {
+                success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+            } else {
+                error("streamImage-tiff-null", "failed to get tiff image (dir=$i) from uri=$uri", null)
+            }
         }
     }
 
