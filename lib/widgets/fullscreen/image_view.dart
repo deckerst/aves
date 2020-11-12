@@ -41,6 +41,7 @@ class _ImageViewState extends State<ImageView> {
   final PhotoViewController _photoViewController = PhotoViewController();
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier<ViewState>(ViewState.zero);
   StreamSubscription<PhotoViewControllerValue> _subscription;
+  Size _photoViewChildSize;
 
   static const backgroundDecoration = BoxDecoration(color: Colors.transparent);
   static const maxScale = 2.0;
@@ -53,6 +54,9 @@ class _ImageViewState extends State<ImageView> {
   void initState() {
     super.initState();
     _subscription = _photoViewController.outputStateStream.listen(_onViewChanged);
+    if (entry.isVideo || (!entry.isSvg && entry.canDecode && useTile)) {
+      _photoViewChildSize = entry.displaySize;
+    }
   }
 
   @override
@@ -140,6 +144,10 @@ class _ImageViewState extends State<ImageView> {
       ),
       loadFailedChild: _buildError(),
       backgroundDecoration: backgroundDecoration,
+      imageSizedCallback: (size) {
+        // do not directly update the `ViewState` notifier as this callback is called during build
+        _photoViewChildSize = size;
+      },
       controller: _photoViewController,
       maxScale: maxScale,
       minScale: PhotoViewComputedScale.contained,
@@ -229,7 +237,7 @@ class _ImageViewState extends State<ImageView> {
       );
 
   void _onViewChanged(PhotoViewControllerValue v) {
-    final viewState = ViewState(v.position, v.scale);
+    final viewState = ViewState(v.position, v.scale, _photoViewChildSize);
     _viewStateNotifier.value = viewState;
     ViewStateNotification(entry.uri, viewState).dispatch(context);
   }
@@ -238,14 +246,15 @@ class _ImageViewState extends State<ImageView> {
 class ViewState {
   final Offset position;
   final double scale;
+  final Size size;
 
-  static const ViewState zero = ViewState(Offset(0.0, 0.0), 0);
+  static const ViewState zero = ViewState(Offset(0.0, 0.0), 0, null);
 
-  const ViewState(this.position, this.scale);
+  const ViewState(this.position, this.scale, this.size);
 
   @override
   String toString() {
-    return '$runtimeType#${shortHash(this)}{position=$position, scale=$scale}';
+    return '$runtimeType#${shortHash(this)}{position=$position, scale=$scale, size=$size}';
   }
 }
 

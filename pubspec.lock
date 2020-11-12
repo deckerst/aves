@@ -674,7 +674,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "79a3c20ee7f01e6ffb71464000c2ca8f1e28ec44"
+      resolved-ref: aa6400bbc85bf6ce953c4609d126796cdb4ca3c2
       url: "git://github.com/deckerst/photo_view.git"
     source: git
     version: "0.9.2"
