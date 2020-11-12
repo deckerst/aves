@@ -27,12 +27,13 @@ class Minimap extends StatelessWidget {
           return AnimatedBuilder(
               animation: viewStateNotifier,
               builder: (context, child) {
+                final viewState = viewStateNotifier.value;
                 return CustomPaint(
                   painter: MinimapPainter(
-                    entrySize: entry.displaySize,
                     viewportSize: mqSize,
-                    viewCenterOffset: viewStateNotifier.value.position,
-                    viewScale: viewStateNotifier.value.scale,
+                    entrySize: viewState.size ?? entry.displaySize,
+                    viewCenterOffset: viewState.position,
+                    viewScale: viewState.scale,
                     minimapBorderColor: Colors.white30,
                   ),
                   size: size,
@@ -49,8 +50,8 @@ class MinimapPainter extends CustomPainter {
   final Color minimapBorderColor, viewportBorderColor;
 
   const MinimapPainter({
-    @required this.entrySize,
     @required this.viewportSize,
+    @required this.entrySize,
     @required this.viewCenterOffset,
     @required this.viewScale,
     this.minimapBorderColor = Colors.white,
