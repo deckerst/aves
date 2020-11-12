@@ -15,10 +15,7 @@ import android.webkit.MimeTypeMap
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.utils.LogUtils.createTag
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.util.*
 import java.util.regex.Pattern
 
@@ -405,6 +402,17 @@ object StorageUtils {
         } catch (e: Exception) {
             // unsupported format
             null
+        }
+    }
+
+    @Throws(IOException::class)
+    fun copyInputStreamToFile(inputStream: InputStream, file: File) {
+        FileOutputStream(file).use { outputStream ->
+            var read: Int
+            val bytes = ByteArray(1024)
+            while (inputStream.read(bytes).also { read = it } != -1) {
+                outputStream.write(bytes, 0, read)
+            }
         }
     }
 

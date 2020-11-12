@@ -20,7 +20,11 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
+import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory
+import java.io.File
+import java.io.IOException
 
 class ThumbnailFetcher internal constructor(
     private val activity: Activity,
@@ -43,12 +47,13 @@ class ThumbnailFetcher internal constructor(
         var recycle = true
         var exception: Exception? = null
 
-        // fetch low quality thumbnails when size is not specified
-        if ((width == defaultSize || height == defaultSize) && !isFlipped) {
-            // as of Android R, the Media Store content resolver may return a thumbnail
-            // that is automatically rotated according to EXIF orientation,
-            // but not flipped when necessary
-            // so we skip this step for flipped entries
+        if (mimeType == MimeTypes.TIFF) {
+            bitmap = getTiff()
+        } else if ((width == defaultSize || height == defaultSize) && !isFlipped) {
+            // Fetch low quality thumbnails when size is not specified.
+            // As of Android R, the Media Store content resolver may return a thumbnail
+            // that is automatically rotated according to EXIF orientation, but not flipped,
+            // so we skip this step for flipped entries.
             try {
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getByResolver() else getByMediaStore()
             } catch (e: Exception) {
@@ -135,5 +140,45 @@ class ThumbnailFetcher internal constructor(
         } finally {
             Glide.with(activity).clear(target)
         }
+    }
+
+    private fun getTiff(): Bitmap? {
+        // copy source stream to a temp file
+        val file: File
+        try {
+            file = File.createTempFile("aves", ".tiff")
+            StorageUtils.openInputStream(activity, uri)?.use { input ->
+                StorageUtils.copyInputStreamToFile(input, file)
+            }
+            file.deleteOnExit()
+        } catch (e: IOException) {
+            return null
+        }
+
+        // check directory count
+        val options = TiffBitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        TiffBitmapFactory.decodeFile(file, options)
+        if (options.outDirectoryCount == 0) return null
+        options.inDirectoryNumber = 0
+
+        // determine sample size
+        TiffBitmapFactory.decodeFile(file, options)
+        val imageWidth = options.outWidth
+        val imageHeight = options.outHeight
+        var sampleSize = 1
+        if (imageHeight > height || imageWidth > width) {
+            while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
+                sampleSize *= 2
+            }
+        }
+
+        // decode
+        with(options) {
+            inJustDecodeBounds = false
+            inSampleSize = sampleSize
+        }
+        return TiffBitmapFactory.decodeFile(file, options)
     }
 }

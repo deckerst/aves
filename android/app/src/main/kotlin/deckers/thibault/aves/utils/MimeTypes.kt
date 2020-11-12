@@ -58,7 +58,7 @@ object MimeTypes {
         else -> false
     }
 
-    // as of Flutter v1.22.0
+    // as of Flutter v1.22.0, with additional custom handling for SVG
     fun isSupportedByFlutter(mimeType: String, rotationDegrees: Int?, isFlipped: Boolean?) = when (mimeType) {
         JPEG, GIF, WEBP, BMP, WBMP, ICO, SVG -> true
         PNG -> rotationDegrees ?: 0 == 0 && !(isFlipped ?: false)
