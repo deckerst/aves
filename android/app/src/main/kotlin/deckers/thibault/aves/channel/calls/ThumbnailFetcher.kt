@@ -1,7 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
-import android.app.Activity
 import android.content.ContentUris
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -20,14 +20,11 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
-import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
-import java.io.File
-import java.io.IOException
 
 class ThumbnailFetcher internal constructor(
-    private val activity: Activity,
+    private val context: Context,
     uri: String,
     private val mimeType: String,
     private val dateModifiedSecs: Long,
@@ -47,18 +44,18 @@ class ThumbnailFetcher internal constructor(
         var recycle = true
         var exception: Exception? = null
 
-        if (mimeType == MimeTypes.TIFF) {
-            bitmap = getTiff()
-        } else if ((width == defaultSize || height == defaultSize) && !isFlipped) {
-            // Fetch low quality thumbnails when size is not specified.
-            // As of Android R, the Media Store content resolver may return a thumbnail
-            // that is automatically rotated according to EXIF orientation, but not flipped,
-            // so we skip this step for flipped entries.
-            try {
+        try {
+            if (mimeType == MimeTypes.TIFF) {
+                bitmap = getTiff()
+            } else if ((width == defaultSize || height == defaultSize) && !isFlipped) {
+                // Fetch low quality thumbnails when size is not specified.
+                // As of Android R, the Media Store content resolver may return a thumbnail
+                // that is automatically rotated according to EXIF orientation, but not flipped,
+                // so we skip this step for flipped entries.
                 bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) getByResolver() else getByMediaStore()
-            } catch (e: Exception) {
-                exception = e
             }
+        } catch (e: Exception) {
+            exception = e
         }
 
         // fallback if the native methods failed or for higher quality thumbnails
@@ -84,17 +81,17 @@ class ThumbnailFetcher internal constructor(
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private fun getByResolver(): Bitmap? {
-        val resolver = activity.contentResolver
+        val resolver = context.contentResolver
         var bitmap: Bitmap? = resolver.loadThumbnail(uri, Size(width, height), null)
         if (needRotationAfterContentResolverThumbnail(mimeType)) {
-            bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
+            bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
         }
         return bitmap
     }
 
     private fun getByMediaStore(): Bitmap? {
         val contentId = ContentUris.parseId(uri)
-        val resolver = activity.contentResolver
+        val resolver = context.contentResolver
         return if (isVideo(mimeType)) {
             @Suppress("DEPRECATION")
             MediaStore.Video.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Video.Thumbnails.MINI_KIND, null)
@@ -103,7 +100,7 @@ class ThumbnailFetcher internal constructor(
             var bitmap = MediaStore.Images.Thumbnails.getThumbnail(resolver, contentId, MediaStore.Images.Thumbnails.MINI_KIND, null)
             // from Android Q, returned thumbnail is already rotated according to EXIF orientation
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && bitmap != null) {
-                bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
+                bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
             bitmap
         }
@@ -118,13 +115,13 @@ class ThumbnailFetcher internal constructor(
 
         val target = if (isVideo(mimeType)) {
             options = options.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            Glide.with(activity)
+            Glide.with(context)
                 .asBitmap()
                 .apply(options)
-                .load(VideoThumbnail(activity, uri))
+                .load(VideoThumbnail(context, uri))
                 .submit(width, height)
         } else {
-            Glide.with(activity)
+            Glide.with(context)
                 .asBitmap()
                 .apply(options)
                 .load(uri)
@@ -134,51 +131,38 @@ class ThumbnailFetcher internal constructor(
         return try {
             var bitmap = target.get()
             if (needRotationAfterGlide(mimeType)) {
-                bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
+                bitmap = applyExifOrientation(context, bitmap, rotationDegrees, isFlipped)
             }
             bitmap
         } finally {
-            Glide.with(activity).clear(target)
+            Glide.with(context).clear(target)
         }
     }
 
     private fun getTiff(): Bitmap? {
-        // copy source stream to a temp file
-        val file: File
-        try {
-            file = File.createTempFile("aves", ".tiff")
-            StorageUtils.openInputStream(activity, uri)?.use { input ->
-                StorageUtils.copyInputStreamToFile(input, file)
-            }
-            file.deleteOnExit()
-        } catch (e: IOException) {
-            return null
-        }
-
-        // check directory count
-        val options = TiffBitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
-        TiffBitmapFactory.decodeFile(file, options)
-        if (options.outDirectoryCount == 0) return null
-        options.inDirectoryNumber = 0
-
         // determine sample size
-        TiffBitmapFactory.decodeFile(file, options)
-        val imageWidth = options.outWidth
-        val imageHeight = options.outHeight
         var sampleSize = 1
-        if (imageHeight > height || imageWidth > width) {
-            while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
-                sampleSize *= 2
+        context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+            val options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+            TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+            val imageWidth = options.outWidth
+            val imageHeight = options.outHeight
+            if (imageHeight > height || imageWidth > width) {
+                while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
+                    sampleSize *= 2
+                }
             }
         }
 
         // decode
-        with(options) {
-            inJustDecodeBounds = false
-            inSampleSize = sampleSize
+        return context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+            val options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = false
+                inSampleSize = sampleSize
+            }
+            return TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
         }
-        return TiffBitmapFactory.decodeFile(file, options)
     }
 }
