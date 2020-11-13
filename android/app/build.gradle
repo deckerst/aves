@@ -101,8 +101,8 @@ dependencies {
     // as of v0.9.8.7, `Android-TiffBitmapFactory` master branch is set up to release and distribute via Bintray
     // as of 20201113, its `q_support` branch allows decoding TIFF without a `File`, but is not released
     // we forked it to bypass official releases, upgrading its Android/Gradle structure to make it compatible with JitPack
-    // JitPack build result is available at https://jitpack.io/com/github/deckerst/Android-TiffBitmapFactory/q_support-SNAPSHOT/build.log
-    implementation 'com.github.deckerst:Android-TiffBitmapFactory:0f1f0aaab1'
+    // JitPack build result is available at https://jitpack.io/com/github/deckerst/Android-TiffBitmapFactory/<commit>/build.log
+    implementation 'com.github.deckerst:Android-TiffBitmapFactory:7efb450636'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
 
     kapt 'androidx.annotation:annotation:1.1.0'

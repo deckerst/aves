@@ -21,7 +21,6 @@ import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -110,11 +109,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
                 error("streamImage-image-decode-null", "failed to get image from uri=$uri", null)
             }
         } catch (e: Exception) {
-            var errorDetails = e.message
-            if (errorDetails?.isNotEmpty() == true) {
-                errorDetails = errorDetails.split("\n".toRegex(), 2).first()
-            }
-            error("streamImage-image-decode-exception", "failed to get image from uri=$uri", errorDetails)
+            error("streamImage-image-decode-exception", "failed to get image from uri=$uri", toErrorDetails(e))
         } finally {
             Glide.with(activity).clear(target)
         }
@@ -141,34 +136,44 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     }
 
     private fun streamTiffImage(uri: Uri) {
-        // copy source stream to a temp file
-        val file: File
+        val resolver = activity.contentResolver
         try {
-            file = File.createTempFile("aves", ".tiff")
-            StorageUtils.openInputStream(activity, uri)?.use { input ->
-                StorageUtils.copyInputStreamToFile(input, file)
+            var dirCount = 0
+            resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                val options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                dirCount = options.outDirectoryCount
             }
-            file.deleteOnExit()
-        } catch (e: IOException) {
-            error("streamImage-tiff-copy", "failed to copy file from uri=$uri", null)
-            return
-        }
 
-        val options = TiffBitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        TiffBitmapFactory.decodeFile(file, options)
-        val dirCount: Int = options.outDirectoryCount
-        // TODO TLAD handle multipage TIFF
-        if (dirCount > 0) {
-            val i = 0
-            options.inDirectoryNumber = i
-            options.inJustDecodeBounds = false
-            val bitmap = TiffBitmapFactory.decodeFile(file, options)
-            if (bitmap != null) {
-                success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-            } else {
-                error("streamImage-tiff-null", "failed to get tiff image (dir=$i) from uri=$uri", null)
+            // TODO TLAD handle multipage TIFF
+            if (dirCount > 0) {
+                val i = 0
+                resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                    val options = TiffBitmapFactory.Options().apply {
+                        inJustDecodeBounds = false
+                        inDirectoryNumber = i
+                    }
+                    val bitmap = TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                    if (bitmap != null) {
+                        success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+                    } else {
+                        error("streamImage-tiff-null", "failed to get tiff image (dir=$i) from uri=$uri", null)
+                    }
+                }
             }
+        } catch (e: Exception) {
+            error("streamImage-tiff-exception", "failed to get image from uri=$uri", toErrorDetails(e))
+        }
+    }
+
+    private fun toErrorDetails(e: Exception): String? {
+        val errorDetails = e.message
+        return if (errorDetails?.isNotEmpty() == true) {
+            errorDetails.split("\n".toRegex(), 2).first()
+        } else {
+            errorDetails
         }
     }
 
