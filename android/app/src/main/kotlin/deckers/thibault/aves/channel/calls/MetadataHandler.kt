@@ -74,6 +74,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getExifInterfaceMetadata" -> GlobalScope.launch { getExifInterfaceMetadata(call, Coresult(result)) }
             "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
             "getBitmapFactoryInfo" -> GlobalScope.launch { getBitmapFactoryInfo(call, Coresult(result)) }
+            "getMetadataExtractorSummary" -> GlobalScope.launch { getMetadataExtractorSummary(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
             "getXmpThumbnails" -> GlobalScope.launch { getXmpThumbnails(call, Coresult(result)) }
@@ -542,6 +543,49 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             // ignore
         }
         result.success(metadataMap)
+    }
+
+    private fun getMetadataExtractorSummary(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("getMetadataExtractorSummary-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val metadataMap = HashMap<String, String>()
+        try {
+            StorageUtils.openInputStream(context, uri)?.use { input ->
+                val metadata = ImageMetadataReader.readMetadata(input)
+                metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
+                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                        dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
+                    } else ""
+                }
+                metadataMap["typeName"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
+                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)) {
+                        dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)
+                    } else ""
+                }
+                for (dir in metadata.directories) {
+                    val dirName = dir.name ?: ""
+                    var index = 0
+                    while (metadataMap.containsKey("$dirName ($index)")) index++
+                    var value = "${dir.tagCount} tags"
+                    dir.parent?.let { value += ", parent: ${it.name}" }
+                    metadataMap["$dirName ($index)"] = value
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+        }
+
+        if (metadataMap.isNotEmpty()) {
+            result.success(metadataMap)
+        } else {
+            result.error("getMetadataExtractorSummary-failure", "failed to get metadata for uri=$uri", null)
+        }
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {

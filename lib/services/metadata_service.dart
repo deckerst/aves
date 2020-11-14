@@ -130,6 +130,19 @@ class MetadataService {
     return {};
   }
 
+  static Future<Map> getMetadataExtractorSummary(ImageEntry entry) async {
+    try {
+      // return map with the mime type and tag count for each directory found by `metadata-extractor`
+      final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getMetadataExtractorSummary failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
   static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
     try {
       final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
