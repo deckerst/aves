@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -34,7 +35,7 @@ class MimeFilter extends CollectionFilter {
       _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
       _filter = (entry) => entry.mimeType == lowMime;
-      _label = displayType(lowMime);
+      _label = MimeTypes.displayType(lowMime);
     }
     _icon ??= AIcons.vector;
   }
@@ -49,18 +50,6 @@ class MimeFilter extends CollectionFilter {
         'type': type,
         'mime': mime,
       };
-
-  static String displayType(String mime) {
-    final patterns = [
-      RegExp('.*/'), // remove type, keep subtype
-      RegExp('(X-|VND.(WAP.)?)'), // noisy prefixes
-      '+XML', // noisy suffix
-      RegExp('ADOBE\\\.'), // for PSD
-    ];
-    mime = mime.toUpperCase();
-    patterns.forEach((pattern) => mime = mime.replaceFirst(pattern, ''));
-    return mime;
-  }
 
   @override
   bool filter(ImageEntry entry) => _filter(entry);

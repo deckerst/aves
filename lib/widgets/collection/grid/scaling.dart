@@ -226,10 +226,13 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     Positioned(
                       left: clampedCenter.dx - extent / 2,
                       top: clampedCenter.dy - extent / 2,
-                      child: DecoratedThumbnail(
-                        entry: widget.imageEntry,
-                        extent: extent,
-                        showOverlay: false,
+                      child: DefaultTextStyle(
+                        style: TextStyle(),
+                        child: DecoratedThumbnail(
+                          entry: widget.imageEntry,
+                          extent: extent,
+                          showOverlay: false,
+                        ),
                       ),
                     ),
                   ],

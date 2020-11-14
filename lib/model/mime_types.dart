@@ -42,4 +42,16 @@ class MimeTypes {
   // groups
   static const List<String> rawImages = [arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f];
   static const List<String> undecodable = [crw, psd]; // TODO TLAD make it dynamic if it depends on OS/lib versions
+
+  static String displayType(String mime) {
+    final patterns = [
+      RegExp('.*/'), // remove type, keep subtype
+      RegExp('(X-|VND.(WAP.)?)'), // noisy prefixes
+      '+XML', // noisy suffix
+      RegExp('ADOBE\\\.'), // for PSD
+    ];
+    mime = mime.toUpperCase();
+    patterns.forEach((pattern) => mime = mime.replaceFirst(pattern, ''));
+    return mime;
+  }
 }

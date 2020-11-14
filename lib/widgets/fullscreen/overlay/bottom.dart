@@ -272,7 +272,7 @@ class _DateRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.infoUnknown;
+    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.overlayUnknown;
     return Row(
       children: [
         DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),

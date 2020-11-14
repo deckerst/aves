@@ -5,6 +5,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -260,7 +261,7 @@ class EntryByMimeDatum {
   EntryByMimeDatum({
     @required this.mimeType,
     @required this.entryCount,
-  }) : displayText = MimeFilter.displayType(mimeType);
+  }) : displayText = MimeTypes.displayType(mimeType);
 
   Color get color => stringToColor(displayText);
 
