@@ -56,6 +56,7 @@ class MonthSectionHeader extends StatelessWidget {
   static DateFormat ym = DateFormat.yMMMM();
 
   static String _formatDate(DateTime date) {
+    if (date == null) return 'Unknown';
     if (date.isThisMonth) return 'This month';
     if (date.isThisYear) return m.format(date);
     return ym.format(date);

@@ -12,11 +12,11 @@ String formatDuration(Duration d) {
 }
 
 extension ExtraDateTime on DateTime {
-  bool isAtSameYearAs(DateTime other) => this != null && other != null && year == other.year;
+  bool isAtSameYearAs(DateTime other) => this?.year == other?.year;
 
-  bool isAtSameMonthAs(DateTime other) => isAtSameYearAs(other) && month == other.month;
+  bool isAtSameMonthAs(DateTime other) => isAtSameYearAs(other) && this?.month == other?.month;
 
-  bool isAtSameDayAs(DateTime other) => isAtSameMonthAs(other) && day == other.day;
+  bool isAtSameDayAs(DateTime other) => isAtSameMonthAs(other) && this?.day == other?.day;
 
   bool get isToday => isAtSameDayAs(DateTime.now());
 

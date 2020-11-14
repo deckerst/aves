@@ -99,6 +99,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   Widget build(BuildContext context) {
     if (!entry.canDecode) {
       return ErrorThumbnail(
+        entry: entry,
         extent: extent,
         tooltip: '${entry.mimeType} not supported',
       );
@@ -137,6 +138,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
               );
             },
             errorBuilder: (context, error, stackTrace) => ErrorThumbnail(
+              entry: entry,
               extent: extent,
               tooltip: error.toString(),
             ),
