@@ -5,6 +5,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/highlight_title.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata_thumbnail.dart';
@@ -122,14 +123,14 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   Widget _buildDirTileWithTitle(_MetadataDirectory dir) {
+    if (dir.name == xmpDirectory) {
+      return _buildXmpDirTile(dir);
+    }
     Widget thumbnail;
     final prefixChildren = <Widget>[];
     switch (dir.name) {
       case exifThumbnailDirectory:
         thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry);
-        break;
-      case xmpDirectory:
-        thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
         break;
       case mediaDirectory:
         thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry);
@@ -153,16 +154,47 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       title: dir.name,
       expandedNotifier: _expandedDirectoryNotifier,
       children: [
-        if (prefixChildren.isNotEmpty)
-          Align(
-            alignment: AlignmentDirectional.topStart,
-            child: Wrap(children: prefixChildren),
-          ),
+        if (prefixChildren.isNotEmpty) Wrap(children: prefixChildren),
         if (thumbnail != null) thumbnail,
-        Container(
-          alignment: Alignment.topLeft,
+        Padding(
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildXmpDirTile(_MetadataDirectory dir) {
+    final thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
+    final byNamespace = SplayTreeMap.of(
+      groupBy<MapEntry<String, String>, String>(dir.tags.entries, (kv) {
+        final fullKey = kv.key;
+        final i = fullKey.indexOf(':');
+        if (i == -1) return '';
+        return fullKey.substring(0, i);
+      }),
+      compareAsciiLowerCase,
+    );
+    return AvesExpansionTile(
+      title: dir.name,
+      expandedNotifier: _expandedDirectoryNotifier,
+      children: [
+        if (thumbnail != null) thumbnail,
+        Padding(
+          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: byNamespace.entries.expand((kv) {
+              final ns = kv.key;
+              final hasNamespace = ns.isNotEmpty;
+              final i = hasNamespace ? ns.length + 1 : 0;
+              final tags = Map.fromEntries(kv.value.map((kv) => MapEntry(kv.key.substring(i), kv.value)));
+              return [
+                if (hasNamespace) HighlightTitle(ns),
+                InfoRowGroup(tags, maxValueLength: Constants.infoGroupMaxValueLength),
+              ];
+            }).toList(),
+          ),
         ),
       ],
     );
@@ -196,6 +228,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       _metadata = [];
       _loadedMetadataUri.value = null;
     }
+    _expandedDirectoryNotifier.value = null;
   }
 
   @override

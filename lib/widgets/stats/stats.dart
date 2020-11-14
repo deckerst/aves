@@ -5,6 +5,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -90,7 +91,10 @@ class StatsPage extends StatelessWidget {
               leading: Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below
               padding: EdgeInsets.symmetric(horizontal: lineHeight) + EdgeInsets.only(right: 24),
-              center: Text(NumberFormat.percentPattern().format(withGpsPercent)),
+              center: Text(
+                NumberFormat.percentPattern().format(withGpsPercent),
+                style: TextStyle(shadows: [Constants.embossShadow]),
+              ),
             ),
             SizedBox(height: 8),
             Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
@@ -257,7 +261,7 @@ class EntryByMimeDatum {
   EntryByMimeDatum({
     @required this.mimeType,
     @required this.entryCount,
-  }) : displayText = MimeFilter.displayType(mimeType);
+  }) : displayText = MimeTypes.displayType(mimeType);
 
   Color get color => stringToColor(displayText);
 

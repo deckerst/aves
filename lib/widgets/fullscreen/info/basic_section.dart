@@ -29,7 +29,7 @@ class BasicSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.unknown;
+    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.infoUnknown;
     final showMegaPixels = entry.isPhoto && entry.megaPixels != null && entry.megaPixels > 0;
     final resolutionText = '${entry.resolutionText}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
@@ -37,12 +37,12 @@ class BasicSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InfoRowGroup({
-          'Title': entry.bestTitle ?? Constants.unknown,
+          'Title': entry.bestTitle ?? Constants.infoUnknown,
           'Date': dateText,
           if (entry.isVideo) ..._buildVideoRows(),
           if (!entry.isSvg) 'Resolution': resolutionText,
-          'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.unknown,
-          'URI': entry.uri ?? Constants.unknown,
+          'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.infoUnknown,
+          'URI': entry.uri ?? Constants.infoUnknown,
           if (entry.path != null) 'Path': entry.path,
         }),
         _buildChips(),

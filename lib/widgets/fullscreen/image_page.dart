@@ -10,17 +10,17 @@ class MultiImagePage extends StatefulWidget {
   final CollectionLens collection;
   final PageController pageController;
   final ValueChanged<int> onPageChanged;
-  final ValueChanged<PhotoViewScaleState> onScaleChanged;
   final VoidCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
+  final void Function(String uri) onViewDisposed;
 
   const MultiImagePage({
     this.collection,
     this.pageController,
     this.onPageChanged,
-    this.onScaleChanged,
     this.onTap,
     this.videoControllers,
+    this.onViewDisposed,
   });
 
   @override
@@ -49,9 +49,9 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
               key: Key('imageview'),
               entry: entry,
               heroTag: widget.collection.heroTag(entry),
-              onScaleChanged: widget.onScaleChanged,
               onTap: widget.onTap,
               videoControllers: widget.videoControllers,
+              onDisposed: () => widget.onViewDisposed?.call(entry.uri),
             ),
           );
         },
@@ -66,13 +66,11 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
 
 class SingleImagePage extends StatefulWidget {
   final ImageEntry entry;
-  final ValueChanged<PhotoViewScaleState> onScaleChanged;
   final VoidCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
 
   const SingleImagePage({
     this.entry,
-    this.onScaleChanged,
     this.onTap,
     this.videoControllers,
   });
@@ -90,7 +88,6 @@ class SingleImagePageState extends State<SingleImagePage> with AutomaticKeepAliv
       axis: [Axis.vertical],
       child: ImageView(
         entry: widget.entry,
-        onScaleChanged: widget.onScaleChanged,
         onTap: widget.onTap,
         videoControllers: widget.videoControllers,
       ),

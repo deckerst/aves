@@ -43,6 +43,7 @@ class MetadataService {
         final result = await platform.invokeMethod('getCatalogMetadata', <String, dynamic>{
           'mimeType': entry.mimeType,
           'uri': entry.uri,
+          'path': entry.path,
         }) as Map;
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
@@ -64,7 +65,7 @@ class MetadataService {
     if (entry.isSvg) return null;
 
     try {
-      // return map with string descriptions for: 'aperture' 'exposureTime' 'focalLength' 'iso'
+      // return map with values for: 'aperture' (double), 'exposureTime' (description), 'focalLength' (double), 'iso' (int)
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
@@ -74,6 +75,19 @@ class MetadataService {
       debugPrint('getOverlayMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
+  }
+
+  static Future<Map> getBitmapFactoryInfo(ImageEntry entry) async {
+    try {
+      // return map with all data available when decoding image bounds with `BitmapFactory`
+      final result = await platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getBitmapFactoryInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
   }
 
   static Future<Map> getContentResolverMetadata(ImageEntry entry) async {
@@ -92,7 +106,7 @@ class MetadataService {
 
   static Future<Map> getExifInterfaceMetadata(ImageEntry entry) async {
     try {
-      // return map with all data available from the ExifInterface library
+      // return map with all data available from the `ExifInterface` library
       final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
         'uri': entry.uri,
       }) as Map;
@@ -105,13 +119,26 @@ class MetadataService {
 
   static Future<Map> getMediaMetadataRetrieverMetadata(ImageEntry entry) async {
     try {
-      // return map with all data available from the MediaMetadataRetriever
+      // return map with all data available from `MediaMetadataRetriever`
       final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
         'uri': entry.uri,
       }) as Map;
       return result;
     } on PlatformException catch (e) {
       debugPrint('getMediaMetadataRetrieverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
+  static Future<Map> getMetadataExtractorSummary(ImageEntry entry) async {
+    try {
+      // return map with the mime type and tag count for each directory found by `metadata-extractor`
+      final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getMetadataExtractorSummary failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }

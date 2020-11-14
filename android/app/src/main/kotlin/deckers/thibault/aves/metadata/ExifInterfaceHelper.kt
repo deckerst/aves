@@ -10,11 +10,14 @@ import com.drew.metadata.exif.makernotes.OlympusImageProcessingMakernoteDirector
 import com.drew.metadata.exif.makernotes.OlympusMakernoteDirectory
 import deckers.thibault.aves.utils.LogUtils
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.roundToLong
 
 object ExifInterfaceHelper {
     private val LOG_TAG = LogUtils.createTag(ExifInterfaceHelper::class.java)
+
+    private const val precisionErrorTolerance = 1e-10
 
     // ExifInterface always states it has the following attributes
     // and returns "0" instead of "null" when they are actually missing
@@ -279,7 +282,7 @@ object ExifInterfaceHelper {
     private fun toRational(s: String?): Rational? {
         s ?: return null
 
-        // convert "12345/100"
+        // e.g. "12345/100" to Rational(12345, 100)
         val parts = s.split("/")
         if (parts.size == 2) {
             val numerator = parts[0].toLongOrNull() ?: return null
@@ -287,9 +290,20 @@ object ExifInterfaceHelper {
             return Rational(numerator, denominator)
         }
 
-        // convert "123.45"
         var d = s.toDoubleOrNull() ?: return null
         if (d == 0.0) return Rational(0, 1)
+
+        // e.g. "0.02564102564102564" to Rational(1, 39)
+        if (d < 1) {
+            val numerator = 1L
+            val f = numerator / d
+            val denominator = f.roundToLong()
+            if (abs(f - denominator) < precisionErrorTolerance) {
+                return Rational(numerator, denominator)
+            }
+        }
+
+        // e.g. "123.45" to Rational(12345, 100)
         var denominator: Long = 1
         while (d != floor(d)) {
             denominator *= 10
@@ -316,6 +330,24 @@ object ExifInterfaceHelper {
         if (this.hasAttribute(tag)) {
             val value = this.getAttributeInt(tag, 0)
             if (acceptZero || value != 0) {
+                save(value)
+            }
+        }
+    }
+
+    fun ExifInterface.getSafeDouble(tag: String, save: (value: Double) -> Unit) {
+        if (this.hasAttribute(tag)) {
+            val value = this.getAttributeDouble(tag, Double.NaN)
+            if (!value.isNaN()) {
+                save(value)
+            }
+        }
+    }
+
+    fun ExifInterface.getSafeRational(tag: String, save: (value: Rational) -> Unit) {
+        if (this.hasAttribute(tag)) {
+            val value = toRational(this.getAttribute(tag))
+            if (value != null) {
                 save(value)
             }
         }

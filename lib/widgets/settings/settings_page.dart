@@ -3,6 +3,7 @@ import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
@@ -10,6 +11,7 @@ import 'package:aves/widgets/common/highlight_title.dart';
 import 'package:aves/widgets/settings/access_grants.dart';
 import 'package:aves/widgets/settings/svg_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -25,24 +27,33 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: DefaultTabController(
-        length: 4,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Settings'),
-          ),
-          body: SafeArea(
-            child: Consumer<Settings>(
-              builder: (context, settings, child) => ListView(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Settings'),
+        ),
+        body: SafeArea(
+          child: Consumer<Settings>(
+            builder: (context, settings, child) => AnimationLimiter(
+              child: ListView(
                 padding: EdgeInsets.all(8),
-                children: [
-                  _buildNavigationSection(context),
-                  _buildDisplaySection(context),
-                  _buildThumbnailsSection(context),
-                  _buildViewerSection(context),
-                  _buildSearchSection(context),
-                  _buildPrivacySection(context),
-                ],
+                children: AnimationConfiguration.toStaggeredList(
+                  duration: Durations.staggeredAnimation,
+                  delay: Durations.staggeredAnimationDelay,
+                  childAnimationBuilder: (child) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: child,
+                    ),
+                  ),
+                  children: [
+                    _buildNavigationSection(context),
+                    _buildDisplaySection(context),
+                    _buildThumbnailsSection(context),
+                    _buildViewerSection(context),
+                    _buildSearchSection(context),
+                    _buildPrivacySection(context),
+                  ],
+                ),
               ),
             ),
           ),
@@ -164,6 +175,11 @@ class _SettingsPageState extends State<SettingsPage> {
       expandedNotifier: _expandedNotifier,
       children: [
         SwitchListTile(
+          value: settings.showOverlayMinimap,
+          onChanged: (v) => settings.showOverlayMinimap = v,
+          title: Text('Show minimap'),
+        ),
+        SwitchListTile(
           value: settings.showOverlayShootingDetails,
           onChanged: (v) => settings.showOverlayShootingDetails = v,
           title: Text('Show shooting details'),
@@ -201,9 +217,8 @@ class _SettingsPageState extends State<SettingsPage> {
           onChanged: (v) => settings.isCrashlyticsEnabled = v,
           title: Text('Allow anonymous analytics and crash reporting'),
         ),
-        Container(
-          alignment: AlignmentDirectional.topStart,
-          padding: EdgeInsets.only(bottom: 16),
+        Padding(
+          padding: EdgeInsets.only(top: 8, bottom: 16),
           child: GrantedDirectories(),
         ),
       ],

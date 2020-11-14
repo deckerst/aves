@@ -9,12 +9,13 @@ class AvesExpansionTile extends StatelessWidget {
 
   const AvesExpansionTile({
     @required this.title,
-    @required this.children,
     this.expandedNotifier,
+    @required this.children,
   });
 
   @override
   Widget build(BuildContext context) {
+    final enabled = children?.isNotEmpty == true;
     return Theme(
       data: Theme.of(context).copyWith(
         // color used by the `ExpansionTileCard` for selected text and icons
@@ -27,12 +28,17 @@ class AvesExpansionTile extends StatelessWidget {
         title: HighlightTitle(
           title,
           fontSize: 18,
+          enabled: enabled,
         ),
-        children: [
-          Divider(thickness: 1, height: 1),
-          SizedBox(height: 4),
-          ...children,
-        ],
+        expandable: enabled,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(thickness: 1, height: 1),
+            SizedBox(height: 4),
+            if (enabled) ...children,
+          ],
+        ),
         baseColor: Colors.grey[900],
         expandedColor: Colors.grey[850],
       ),

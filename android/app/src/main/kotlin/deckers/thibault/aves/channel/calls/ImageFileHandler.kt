@@ -1,7 +1,9 @@
 package deckers.thibault.aves.channel.calls
 
 import android.app.Activity
+import android.graphics.Rect
 import android.net.Uri
+import android.util.Size
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.provider.FieldMap
@@ -19,11 +21,14 @@ import kotlin.math.roundToInt
 class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     private val density = activity.resources.displayMetrics.density
 
+    private val regionFetcher = RegionFetcher(activity)
+
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getObsoleteEntries" -> GlobalScope.launch { getObsoleteEntries(call, Coresult(result)) }
             "getImageEntry" -> GlobalScope.launch { getImageEntry(call, Coresult(result)) }
             "getThumbnail" -> GlobalScope.launch { getThumbnail(call, Coresult(result)) }
+            "getRegion" -> GlobalScope.launch { getRegion(call, Coresult(result)) }
             "clearSizedThumbnailDiskCache" -> {
                 GlobalScope.launch { Glide.get(activity).clearDiskCache() }
                 result.success(null)
@@ -53,26 +58,51 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val widthDip = call.argument<Double>("widthDip")
         val heightDip = call.argument<Double>("heightDip")
         val defaultSizeDip = call.argument<Double>("defaultSizeDip")
+
         if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
             result.error("getThumbnail-args", "failed because of missing arguments", null)
             return
         }
 
         // convert DIP to physical pixels here, instead of using `devicePixelRatio` in Flutter
-        GlobalScope.launch {
-            ThumbnailFetcher(
-                activity,
-                uri,
-                mimeType,
-                dateModifiedSecs,
-                rotationDegrees,
-                isFlipped,
-                width = (widthDip * density).roundToInt(),
-                height = (heightDip * density).roundToInt(),
-                defaultSize = (defaultSizeDip * density).roundToInt(),
-                Coresult(result),
-            ).fetch()
+        ThumbnailFetcher(
+            activity,
+            uri,
+            mimeType,
+            dateModifiedSecs,
+            rotationDegrees,
+            isFlipped,
+            width = (widthDip * density).roundToInt(),
+            height = (heightDip * density).roundToInt(),
+            defaultSize = (defaultSizeDip * density).roundToInt(),
+            result,
+        ).fetch()
+    }
+
+    private fun getRegion(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val mimeType = call.argument<String>("mimeType")
+        val sampleSize = call.argument<Int>("sampleSize")
+        val x = call.argument<Int>("regionX")
+        val y = call.argument<Int>("regionY")
+        val width = call.argument<Int>("regionWidth")
+        val height = call.argument<Int>("regionHeight")
+        val imageWidth = call.argument<Int>("imageWidth")
+        val imageHeight = call.argument<Int>("imageHeight")
+
+        if (uri == null || mimeType == null || sampleSize == null || x == null || y == null || width == null || height == null || imageWidth == null || imageHeight == null) {
+            result.error("getRegion-args", "failed because of missing arguments", null)
+            return
         }
+
+        regionFetcher.fetch(
+            uri,
+            mimeType,
+            sampleSize,
+            Rect(x, y, x + width, y + height),
+            Size(imageWidth, imageHeight),
+            result,
+        )
     }
 
     private suspend fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {

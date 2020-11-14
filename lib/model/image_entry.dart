@@ -169,6 +169,27 @@ class ImageEntry {
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
   bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
 
+  // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
+  // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,
+  // and it actually fails to decode GIF, DNG and animated WEBP. Other formats were not tested.
+  bool get canTile =>
+      [
+        MimeTypes.heic,
+        MimeTypes.heif,
+        MimeTypes.jpeg,
+        MimeTypes.webp,
+        MimeTypes.arw,
+        MimeTypes.cr2,
+        MimeTypes.nef,
+        MimeTypes.nrw,
+        MimeTypes.orf,
+        MimeTypes.pef,
+        MimeTypes.raf,
+        MimeTypes.rw2,
+        MimeTypes.srw,
+      ].contains(mimeType) &&
+      !isAnimated;
+
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
   bool get isVideo => mimeType.startsWith('video');

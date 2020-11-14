@@ -15,7 +15,11 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.5+31
+version: 1.2.6+32
+
+# brendan-duncan/image (as of v2.1.19):
+# - does not support TIFF with JPEG compression (issue #184)
+# - TIFF tile decoding is not public (issue #258)
 
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
@@ -32,6 +36,9 @@ version: 1.2.5+31
 # - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
 # - does not support AC3 (by default, but possible by custom build)
 # - can play if only the video or audio stream is supported
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
