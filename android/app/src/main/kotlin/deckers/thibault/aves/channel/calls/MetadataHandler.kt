@@ -526,8 +526,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 }
                 BitmapFactory.decodeStream(input, null, options)
                 options.outMimeType?.let { metadataMap["MimeType"] = it }
-                options.outWidth.let { metadataMap["Width"] = it.toString() }
-                options.outHeight.let { metadataMap["Height"] = it.toString() }
+                options.outWidth.takeIf { it >= 0 }?.let { metadataMap["Width"] = it.toString() }
+                options.outHeight.takeIf { it >= 0 }?.let { metadataMap["Height"] = it.toString() }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     options.outColorSpace?.let { metadataMap["ColorSpace"] = it.toString() }
                     options.outConfig?.let { metadataMap["Config"] = it.toString() }
