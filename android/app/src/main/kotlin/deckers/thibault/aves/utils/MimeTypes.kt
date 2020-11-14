@@ -87,4 +87,8 @@ object MimeTypes {
         DNG, PNG -> true
         else -> false
     }
+
+    // extensions
+
+    val tiffExtensionPattern = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)
 }

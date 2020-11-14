@@ -53,6 +53,7 @@ import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -185,12 +186,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val path = call.argument<String>("path")
         if (mimeType == null || uri == null) {
             result.error("getCatalogMetadata-args", "failed because of missing arguments", null)
             return
         }
 
-        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType))
+        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, path))
         if (isVideo(mimeType)) {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri))
         }
@@ -199,7 +201,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
-    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String): Map<String, Any> {
+    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
         var foundExif = false
@@ -212,14 +214,17 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                        // `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
-                        // the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`)
-                        // `context.getContentResolver().getType()` sometimes return incorrect value
-                        // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-                        // file extension is unreliable
-                        // in the end, `metadata-extractor` is the most reliable, unless it reports `tiff`
-                        dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                            if (it != MimeTypes.TIFF) {
+                        // * `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
+                        // * the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
+                        // * `context.getContentResolver().getType()` sometimes return incorrect value
+                        // * `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
+                        // * file extension is unreliable
+                        // In the end, `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives),
+                        // in which case we trust the file extension
+                        if (path?.matches(tiffExtensionPattern) == true) {
+                            metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
+                        } else {
+                            dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
                                 metadataMap[KEY_MIME_TYPE] = it
                             }
                         }
