@@ -2,11 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.2.6] - 2020-11-15
 ### Added
 - Support for TIFF images (single page)
 - Viewer overlay: minimap (optional)
 
 ### Changed
+- Upgraded Flutter to stable v1.22.4
 - Viewer: use subsampling and tiling to display large images
 
 ### Fixed
