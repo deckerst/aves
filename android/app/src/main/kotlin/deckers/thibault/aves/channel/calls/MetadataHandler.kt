@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -28,7 +28,9 @@ import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDouble
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
+import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
@@ -38,26 +40,27 @@ import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
-import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -70,6 +73,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getContentResolverMetadata" -> GlobalScope.launch { getContentResolverMetadata(call, Coresult(result)) }
             "getExifInterfaceMetadata" -> GlobalScope.launch { getExifInterfaceMetadata(call, Coresult(result)) }
             "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
+            "getBitmapFactoryInfo" -> GlobalScope.launch { getBitmapFactoryInfo(call, Coresult(result)) }
+            "getMetadataExtractorSummary" -> GlobalScope.launch { getMetadataExtractorSummary(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
             "getXmpThumbnails" -> GlobalScope.launch { getXmpThumbnails(call, Coresult(result)) }
@@ -182,12 +187,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val path = call.argument<String>("path")
         if (mimeType == null || uri == null) {
             result.error("getCatalogMetadata-args", "failed because of missing arguments", null)
             return
         }
 
-        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType))
+        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, path))
         if (isVideo(mimeType)) {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri))
         }
@@ -196,7 +202,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
-    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String): Map<String, Any> {
+    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
         var foundExif = false
@@ -209,14 +215,17 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
                     // File type
                     for (dir in metadata.getDirectoriesOfType(FileTypeDirectory::class.java)) {
-                        // `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
-                        // the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`)
-                        // `context.getContentResolver().getType()` sometimes return incorrect value
-                        // `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
-                        // file extension is unreliable
-                        // in the end, `metadata-extractor` is the most reliable, unless it reports `tiff`
-                        dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                            if (it != MimeTypes.TIFF) {
+                        // * `metadata-extractor` sometimes detect the the wrong mime type (e.g. `pef` file as `tiff`)
+                        // * the content resolver / media store sometimes report the wrong mime type (e.g. `png` file as `jpeg`, `tiff` as `srw`)
+                        // * `context.getContentResolver().getType()` sometimes return incorrect value
+                        // * `MediaMetadataRetriever.setDataSource()` sometimes fail with `status = 0x80000000`
+                        // * file extension is unreliable
+                        // In the end, `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives),
+                        // in which case we trust the file extension
+                        if (path?.matches(tiffExtensionPattern) == true) {
+                            metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
+                        } else {
+                            dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
                                 metadataMap[KEY_MIME_TYPE] = it
                             }
                         }
@@ -351,37 +360,62 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val metadataMap = HashMap<String, Any>()
-        if (isVideo(mimeType) || !isSupportedByMetadataExtractor(mimeType)) {
+        if (isVideo(mimeType)) {
             result.success(metadataMap)
             return
         }
-        try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
-                for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
-                    dir.getSafeDescription(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it }
-                    dir.getSafeDescription(ExifSubIFDDirectory.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
-                    dir.getSafeDescription(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = "ISO$it" }
-                    dir.getSafeRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME) {
-                        // TAG_EXPOSURE_TIME as a string is sometimes a ratio, sometimes a decimal
-                        // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
-                        // and process it to make sure the numerator is `1` when the ratio value is less than 1
-                        val num = it.numerator
-                        val denom = it.denominator
-                        metadataMap[KEY_EXPOSURE_TIME] = when {
-                            num >= denom -> "${it.toSimpleString(true)}″"
-                            num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
-                            else -> it.toString()
-                        }
+
+        val saveExposureTime: (value: Rational) -> Unit = {
+            // `TAG_EXPOSURE_TIME` as a string is sometimes a ratio, sometimes a decimal
+            // so we explicitly request it as a rational (e.g. 1/100, 1/14, 71428571/1000000000, 4000/1000, 2000000000/500000000)
+            // and process it to make sure the numerator is `1` when the ratio value is less than 1
+            val num = it.numerator
+            val denom = it.denominator
+            metadataMap[KEY_EXPOSURE_TIME] = when {
+                num >= denom -> "${it.toSimpleString(true)}″"
+                num != 1L && num != 0L -> Rational(1, (denom / num.toDouble()).roundToLong()).toString()
+                else -> it.toString()
+            }
+        }
+
+        var foundExif = false
+        if (isSupportedByMetadataExtractor(mimeType)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
+                        foundExif = true
+                        dir.getSafeRational(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
+                        dir.getSafeRational(ExifSubIFDDirectory.TAG_EXPOSURE_TIME, saveExposureTime)
+                        dir.getSafeRational(ExifSubIFDDirectory.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it.numerator.toDouble() / it.denominator }
+                        dir.getSafeInt(ExifSubIFDDirectory.TAG_ISO_EQUIVALENT) { metadataMap[KEY_ISO] = it }
                     }
                 }
-                result.success(metadataMap)
-            } ?: result.error("getOverlayMetadata-noinput", "failed to get metadata for uri=$uri", null)
-        } catch (e: Exception) {
-            result.error("getOverlayMetadata-exception", "failed to get metadata for uri=$uri", e.message)
-        } catch (e: NoClassDefFoundError) {
-            result.error("getOverlayMetadata-exception", "failed to get metadata for uri=$uri", e.message)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+            }
         }
+
+        if (!foundExif) {
+            // fallback to read EXIF via ExifInterface
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val exif = ExifInterface(input)
+                    exif.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
+                    exif.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
+                    exif.getSafeDouble(ExifInterface.TAG_FOCAL_LENGTH) { metadataMap[KEY_FOCAL_LENGTH] = it }
+                    exif.getSafeInt(ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY) { metadataMap[KEY_ISO] = it }
+                }
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
+                Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
+            }
+        }
+
+        result.success(metadataMap)
     }
 
     private fun getContentResolverMetadata(call: MethodCall, result: MethodChannel.Result) {
@@ -483,6 +517,77 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
+    private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("getBitmapDecoderInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val metadataMap = HashMap<String, String>()
+        try {
+            StorageUtils.openInputStream(context, uri)?.use { input ->
+                val options = BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                BitmapFactory.decodeStream(input, null, options)
+                options.outMimeType?.let { metadataMap["MimeType"] = it }
+                options.outWidth.takeIf { it >= 0 }?.let { metadataMap["Width"] = it.toString() }
+                options.outHeight.takeIf { it >= 0 }?.let { metadataMap["Height"] = it.toString() }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    options.outColorSpace?.let { metadataMap["ColorSpace"] = it.toString() }
+                    options.outConfig?.let { metadataMap["Config"] = it.toString() }
+                }
+            }
+        } catch (e: IOException) {
+            // ignore
+        }
+        result.success(metadataMap)
+    }
+
+    private fun getMetadataExtractorSummary(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("getMetadataExtractorSummary-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val metadataMap = HashMap<String, String>()
+        try {
+            StorageUtils.openInputStream(context, uri)?.use { input ->
+                val metadata = ImageMetadataReader.readMetadata(input)
+                metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
+                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                        dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
+                    } else ""
+                }
+                metadataMap["typeName"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
+                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)) {
+                        dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)
+                    } else ""
+                }
+                for (dir in metadata.directories) {
+                    val dirName = dir.name ?: ""
+                    var index = 0
+                    while (metadataMap.containsKey("$dirName ($index)")) index++
+                    var value = "${dir.tagCount} tags"
+                    dir.parent?.let { value += ", parent: ${it.name}" }
+                    metadataMap["$dirName ($index)"] = value
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+        }
+
+        if (metadataMap.isNotEmpty()) {
+            result.success(metadataMap)
+        } else {
+            result.error("getMetadataExtractorSummary-failure", "failed to get metadata for uri=$uri", null)
+        }
+    }
+
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
@@ -517,14 +622,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)
                 val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-                exif.thumbnailBitmap?.let {
-                    val bitmap = TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), it, orientation)
-                    if (bitmap != null) {
-                        val stream = ByteArrayOutputStream()
-                        // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                        // Bitmap.CompressFormat.PNG is slower than JPEG
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-                        thumbnails.add(stream.toByteArray())
+                exif.thumbnailBitmap?.let { bitmap ->
+                    TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
+                        thumbnails.add(it.getBytes(canHaveAlpha = false, recycle = false))
                     }
                 }
             }

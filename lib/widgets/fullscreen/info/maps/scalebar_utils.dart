@@ -1,16 +1,7 @@
 import 'dart:math';
 
+import 'package:aves/utils/math_utils.dart';
 import 'package:latlong/latlong.dart';
-
-const double piOver180 = PI / 180.0;
-
-double toDegrees(double radians) {
-  return radians / piOver180;
-}
-
-double toRadians(double degrees) {
-  return degrees * piOver180;
-}
 
 LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, double distance) {
   var mSemiMajorAxis = 6378137.0; //WGS84 major axis

@@ -97,7 +97,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                   );
                   child = AnimatedContainer(
                     duration: duration,
-                    alignment: Alignment.topRight,
+                    alignment: AlignmentDirectional.topEnd,
                     color: selected ? Colors.black54 : Colors.transparent,
                     child: child,
                   );

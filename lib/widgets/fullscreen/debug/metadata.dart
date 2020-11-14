@@ -18,7 +18,7 @@ class MetadataTab extends StatefulWidget {
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  Future<Map> _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader;
+  Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader;
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
@@ -33,9 +33,11 @@ class _MetadataTabState extends State<MetadataTab> {
   }
 
   void _loadMetadata() {
+    _bitmapFactoryLoader = MetadataService.getBitmapFactoryInfo(entry);
     _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
     _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
     _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
+    _metadataExtractorLoader = MetadataService.getMetadataExtractorSummary(entry);
     setState(() {});
   }
 
@@ -60,22 +62,27 @@ class _MetadataTabState extends State<MetadataTab> {
       }));
       return AvesExpansionTile(
         title: title,
-        children: [
-          Container(
-            alignment: AlignmentDirectional.topStart,
-            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-            child: InfoRowGroup(
-              data,
-              maxValueLength: Constants.infoGroupMaxValueLength,
-            ),
-          )
-        ],
+        children: data.isNotEmpty
+            ? [
+                Padding(
+                  padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                  child: InfoRowGroup(
+                    data,
+                    maxValueLength: Constants.infoGroupMaxValueLength,
+                  ),
+                )
+              ]
+            : null,
       );
     }
 
     return ListView(
       padding: EdgeInsets.all(8),
       children: [
+        FutureBuilder<Map>(
+          future: _bitmapFactoryLoader,
+          builder: (context, snapshot) => builder(context, snapshot, 'Bitmap Factory'),
+        ),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
           builder: (context, snapshot) => builder(context, snapshot, 'Content Resolver'),
@@ -87,6 +94,10 @@ class _MetadataTabState extends State<MetadataTab> {
         FutureBuilder<Map>(
           future: _mediaMetadataLoader,
           builder: (context, snapshot) => builder(context, snapshot, 'Media Metadata Retriever'),
+        ),
+        FutureBuilder<Map>(
+          future: _metadataExtractorLoader,
+          builder: (context, snapshot) => builder(context, snapshot, 'Metadata Extractor'),
         ),
       ],
     );

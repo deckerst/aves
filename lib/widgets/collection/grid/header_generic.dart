@@ -80,7 +80,7 @@ class SectionHeader extends StatelessWidget {
       final para = RenderParagraph(
         TextSpan(
           children: [
-            // `RenderParagraph` fails to lay out `WidgetSpan` offscreen as of Flutter v1.17.0
+            // as of Flutter v1.22.3, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
             // so we use a hair space times a magic number to match width
             TextSpan(
               text: '\u200A' * (hasLeading ? 23 : 1),
@@ -214,7 +214,7 @@ class SectionSelectableLeading extends StatelessWidget {
                     child: IconButton(
                       iconSize: 26,
                       padding: EdgeInsets.only(top: 1),
-                      alignment: Alignment.topLeft,
+                      alignment: AlignmentDirectional.topStart,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
                       onPressed: onPressed,
                       tooltip: selected ? 'Deselect section' : 'Select section',

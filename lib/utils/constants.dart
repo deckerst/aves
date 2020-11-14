@@ -3,7 +3,7 @@ import 'package:flutter/painting.dart';
 import 'package:tuple/tuple.dart';
 
 class Constants {
-  // as of Flutter v1.11.0, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
+  // as of Flutter v1.22.3, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
   // so we give it a `strutStyle` with a slightly larger height
   static const overflowStrutStyle = StrutStyle(height: 1.3);
 
@@ -18,13 +18,20 @@ class Constants {
     offset: Offset(0.5, 1.0),
   );
 
-  static const String unknown = 'unknown';
+  static const String overlayUnknown = '—'; // em dash
+  static const String infoUnknown = 'unknown';
 
   static const pointNemo = Tuple2(-48.876667, -123.393333);
 
   static const int infoGroupMaxValueLength = 140;
 
   static const List<Dependency> androidDependencies = [
+    Dependency(
+      name: 'Android-TiffBitmapFactory',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/Beyka/Android-TiffBitmapFactory/blob/master/license.txt',
+      sourceUrl: 'https://github.com/Beyka/Android-TiffBitmapFactory',
+    ),
     Dependency(
       name: 'CWAC-Document',
       license: 'Apache 2.0',

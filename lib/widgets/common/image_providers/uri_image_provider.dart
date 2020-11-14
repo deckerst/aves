@@ -73,7 +73,7 @@ class UriImage extends ImageProvider<UriImage> {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is UriImage && other.uri == uri && other.mimeType == mimeType && other.scale == scale;
+    return other is UriImage && other.uri == uri && other.scale == scale;
   }
 
   @override

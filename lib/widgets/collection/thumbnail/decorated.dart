@@ -64,7 +64,7 @@ class DecoratedThumbnail extends StatelessWidget {
       );
     }
     return Container(
-      decoration: BoxDecoration(
+      foregroundDecoration: BoxDecoration(
         border: Border.all(
           color: borderColor,
           width: borderWidth,

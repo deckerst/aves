@@ -1,10 +1,10 @@
-import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:intl/intl.dart';
 import 'package:tuple/tuple.dart';
 
 String _decimal2sexagesimal(final double degDecimal) {
-  double _round(final double value, {final int decimals = 6}) => (value * math.pow(10, decimals)).round() / math.pow(10, decimals);
+  double _round(final double value, {final int decimals = 6}) => (value * pow(10, decimals)).round() / pow(10, decimals);
 
   List<int> _split(final double value) {
     // NumberFormat is necessary to create digit after comma if the value

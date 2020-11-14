@@ -1,1 +1,6 @@
 Thanks for using Aves!
+v1.2.6:
+- subsampling and tiling of large images
+- support for TIFF images (single page only)
+- optional minimap in viewer overlay
+Full changelog available on Github

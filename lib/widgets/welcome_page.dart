@@ -3,6 +3,7 @@ import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_logo.dart';
 import 'package:aves/widgets/common/labeled_checkbox.dart';
 import 'package:aves/widgets/home_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -24,6 +25,9 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
     _termsLoader = rootBundle.loadString('assets/terms.md');
+    if (!kReleaseMode) {
+      settings.isCrashlyticsEnabled = false;
+    }
   }
 
   @override
@@ -167,9 +171,8 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  // workaround to handle `Flexible` widgets,
-  // because `AnimationConfiguration.toStaggeredList` does not,
-  // as of flutter_staggered_animations v0.1.2,
+  // as of flutter_staggered_animations v0.1.2, `AnimationConfiguration.toStaggeredList` does not handle `Flexible` widgets
+  // so we use this workaround instead
   static List<Widget> _toStaggeredList({
     Duration duration,
     Duration delay,

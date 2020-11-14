@@ -5,8 +5,22 @@ import android.graphics.Bitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import deckers.thibault.aves.metadata.Metadata.getExifCode
+import java.io.ByteArrayOutputStream
 
 object BitmapUtils {
+    fun Bitmap.getBytes(canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean = true): ByteArray {
+        val stream = ByteArrayOutputStream()
+        // we compress the bitmap because Flutter cannot decode the raw bytes
+        // `Bitmap.CompressFormat.PNG` is slower than `JPEG`, but it allows transparency
+        if (canHaveAlpha) {
+            this.compress(Bitmap.CompressFormat.PNG, quality, stream)
+        } else {
+            this.compress(Bitmap.CompressFormat.JPEG, quality, stream)
+        }
+        if (recycle) this.recycle()
+        return stream.toByteArray()
+    }
+
     fun applyExifOrientation(context: Context, bitmap: Bitmap?, rotationDegrees: Int?, isFlipped: Boolean?): Bitmap? {
         if (bitmap == null || rotationDegrees == null || isFlipped == null) return bitmap
         if (rotationDegrees == 0 && !isFlipped) return bitmap

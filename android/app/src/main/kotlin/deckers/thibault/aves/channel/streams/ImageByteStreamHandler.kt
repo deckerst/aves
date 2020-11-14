@@ -1,7 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -11,16 +10,17 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
-import deckers.thibault.aves.utils.MimeTypes.canHaveAlpha
+import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
-import deckers.thibault.aves.utils.StorageUtils.openInputStream
+import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import java.io.InputStream
 
@@ -72,6 +72,8 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri)
+        } else if (mimeType == MimeTypes.TIFF) {
+            streamTiffImage(uri)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, mimeType, rotationDegrees, isFlipped)
@@ -84,7 +86,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     private fun streamImageAsIs(uri: Uri) {
         try {
-            openInputStream(activity, uri).use { input -> input?.let { streamBytes(it) } }
+            StorageUtils.openInputStream(activity, uri)?.use { input -> streamBytes(input) }
         } catch (e: IOException) {
             error("streamImage-image-read-exception", "failed to get image from uri=$uri", e.message)
         }
@@ -102,24 +104,12 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
                 bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
             }
             if (bitmap != null) {
-                val stream = ByteArrayOutputStream()
-                // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                // Bitmap.CompressFormat.PNG is slower than JPEG, but it allows transparency
-                if (canHaveAlpha(mimeType)) {
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
-                } else {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                }
-                success(stream.toByteArray())
+                success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false))
             } else {
                 error("streamImage-image-decode-null", "failed to get image from uri=$uri", null)
             }
         } catch (e: Exception) {
-            var errorDetails = e.message
-            if (errorDetails?.isNotEmpty() == true) {
-                errorDetails = errorDetails.split("\n".toRegex(), 2).first()
-            }
-            error("streamImage-image-decode-exception", "failed to get image from uri=$uri", errorDetails)
+            error("streamImage-image-decode-exception", "failed to get image from uri=$uri", toErrorDetails(e))
         } finally {
             Glide.with(activity).clear(target)
         }
@@ -134,11 +124,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         try {
             val bitmap = target.get()
             if (bitmap != null) {
-                val stream = ByteArrayOutputStream()
-                // we compress the bitmap because Dart Image.memory cannot decode the raw bytes
-                // Bitmap.CompressFormat.PNG is slower than JPEG
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-                success(stream.toByteArray())
+                success(bitmap.getBytes(canHaveAlpha = false, recycle = false))
             } else {
                 error("streamImage-video-null", "failed to get image from uri=$uri", null)
             }
@@ -146,6 +132,48 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             error("streamImage-video-exception", "failed to get image from uri=$uri", e.message)
         } finally {
             Glide.with(activity).clear(target)
+        }
+    }
+
+    private fun streamTiffImage(uri: Uri) {
+        val resolver = activity.contentResolver
+        try {
+            var dirCount = 0
+            resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                val options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                dirCount = options.outDirectoryCount
+            }
+
+            // TODO TLAD handle multipage TIFF
+            if (dirCount > 0) {
+                val i = 0
+                resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                    val options = TiffBitmapFactory.Options().apply {
+                        inJustDecodeBounds = false
+                        inDirectoryNumber = i
+                    }
+                    val bitmap = TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                    if (bitmap != null) {
+                        success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+                    } else {
+                        error("streamImage-tiff-null", "failed to get tiff image (dir=$i) from uri=$uri", null)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            error("streamImage-tiff-exception", "failed to get image from uri=$uri", toErrorDetails(e))
+        }
+    }
+
+    private fun toErrorDetails(e: Exception): String? {
+        val errorDetails = e.message
+        return if (errorDetails?.isNotEmpty() == true) {
+            errorDetails.split("\n".toRegex(), 2).first()
+        } else {
+            errorDetails
         }
     }
 

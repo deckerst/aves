@@ -10,6 +10,7 @@ import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
+import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/notifications.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
@@ -52,6 +53,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   EntryActionDelegate _actionDelegate;
   final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
+  final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
 
   CollectionLens get collection => widget.collection;
 
@@ -97,7 +99,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       collection: collection,
       showInfo: () => _goToVerticalPage(infoPage),
     );
-    _initVideoController();
+    _initViewStateControllers();
     _registerWidget(widget);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
@@ -154,7 +156,11 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       },
       child: NotificationListener(
         onNotification: (notification) {
-          if (notification is FilterNotification) _goToCollection(notification.filter);
+          if (notification is FilterNotification) {
+            _goToCollection(notification.filter);
+          } else if (notification is ViewStateNotification) {
+            _updateViewState(notification.uri, notification.viewState);
+          }
           return false;
         },
         child: Stack(
@@ -169,6 +175,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
               onHorizontalPageChanged: _onHorizontalPageChanged,
               onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
               onImagePageRequested: () => _goToVerticalPage(imagePage),
+              onViewDisposed: (uri) => _updateViewState(uri, null),
             ),
             _buildTopOverlay(),
             _buildBottomOverlay(),
@@ -178,11 +185,17 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     );
   }
 
+  void _updateViewState(String uri, ViewState viewState) {
+    final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == uri, orElse: () => null)?.item2;
+    viewStateNotifier?.value = viewState ?? ViewState.zero;
+  }
+
   Widget _buildTopOverlay() {
     final child = ValueListenableBuilder<ImageEntry>(
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
+        final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
         return FullscreenTopOverlay(
           entry: entry,
           scale: _topOverlayScale,
@@ -190,6 +203,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           viewInsets: _frozenViewInsets,
           viewPadding: _frozenViewPadding,
           onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
+          viewStateNotifier: viewStateNotifier,
         );
       },
     );
@@ -324,7 +338,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     if (_entryNotifier.value == newEntry) return;
     _entryNotifier.value = newEntry;
     _pauseVideoControllers();
-    _initVideoController();
+    _initViewStateControllers();
   }
 
   void _onLeave() {
@@ -381,28 +395,45 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     }
   }
 
-  // video controller
+  // state controllers/monitors
 
-  void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
-
-  Future<void> _initVideoController() async {
+  void _initViewStateControllers() {
     final entry = _entryNotifier.value;
-    if (entry == null || !entry.isVideo) return;
+    if (entry == null) return;
 
     final uri = entry.uri;
-    var controllerEntry = _videoControllers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
-    if (controllerEntry != null) {
-      _videoControllers.remove(controllerEntry);
-    } else {
-      // do not set data source of IjkMediaController here
-      controllerEntry = Tuple2(uri, IjkMediaController());
+    _initViewSpecificController<ValueNotifier<ViewState>>(
+      uri,
+      _viewStateNotifiers,
+      () => ValueNotifier<ViewState>(ViewState.zero),
+      (_) => _.dispose(),
+    );
+    if (entry.isVideo) {
+      _initViewSpecificController<IjkMediaController>(
+        uri,
+        _videoControllers,
+        () => IjkMediaController(),
+        (_) => _.dispose(),
+      );
     }
-    _videoControllers.insert(0, controllerEntry);
-    while (_videoControllers.length > 3) {
-      _videoControllers.removeLast().item2.dispose();
-    }
+
     setState(() {});
   }
+
+  void _initViewSpecificController<T>(String uri, List<Tuple2<String, T>> controllers, T Function() builder, void Function(T controller) disposer) {
+    var controller = controllers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
+    if (controller != null) {
+      controllers.remove(controller);
+    } else {
+      controller = Tuple2(uri, builder());
+    }
+    controllers.insert(0, controller);
+    while (controllers.length > 3) {
+      disposer?.call(controllers.removeLast().item2);
+    }
+  }
+
+  void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
 }
 
 class FullscreenVerticalPageView extends StatefulWidget {
@@ -412,6 +443,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImageTap, onImagePageRequested;
+  final void Function(String uri) onViewDisposed;
 
   const FullscreenVerticalPageView({
     @required this.collection,
@@ -423,6 +455,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
     @required this.onHorizontalPageChanged,
     @required this.onImageTap,
     @required this.onImagePageRequested,
+    @required this.onViewDisposed,
   });
 
   @override
@@ -483,6 +516,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               onTap: widget.onImageTap,
               onPageChanged: widget.onHorizontalPageChanged,
               videoControllers: widget.videoControllers,
+              onViewDisposed: widget.onViewDisposed,
             )
           : SingleImagePage(
               entry: entry,

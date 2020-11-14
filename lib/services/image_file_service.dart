@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
@@ -113,6 +114,43 @@ class ImageFileService {
     return Future.sync(() => null);
   }
 
+  // `rect`: region to decode, with coordinates in reference to `imageSize`
+  static Future<Uint8List> getRegion(
+    String uri,
+    String mimeType,
+    int rotationDegrees,
+    bool isFlipped,
+    int sampleSize,
+    Rectangle<int> regionRect,
+    Size imageSize, {
+    Object taskKey,
+    int priority,
+  }) {
+    return servicePolicy.call(
+      () async {
+        try {
+          final result = await platform.invokeMethod('getRegion', <String, dynamic>{
+            'uri': uri,
+            'mimeType': mimeType,
+            'sampleSize': sampleSize,
+            'regionX': regionRect.left,
+            'regionY': regionRect.top,
+            'regionWidth': regionRect.width,
+            'regionHeight': regionRect.height,
+            'imageWidth': imageSize.width.toInt(),
+            'imageHeight': imageSize.height.toInt(),
+          });
+          return result as Uint8List;
+        } on PlatformException catch (e) {
+          debugPrint('getRegion failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+        }
+        return null;
+      },
+      priority: priority ?? ServiceCallPriority.getRegion,
+      key: taskKey,
+    );
+  }
+
   static Future<Uint8List> getThumbnail(
     String uri,
     String mimeType,
@@ -160,9 +198,11 @@ class ImageFileService {
     }
   }
 
+  static bool cancelRegion(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
+
   static bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
 
-  static Future<T> resumeThumbnail<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+  static Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   static Stream<ImageOpEvent> delete(Iterable<ImageEntry> entries) {
     try {
