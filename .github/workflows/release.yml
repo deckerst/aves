@@ -89,6 +89,6 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: deckers.thibault.aves
-          releaseFile: app-release.aab
+          releaseFiles: app-release.aab
           track: beta
           whatsNewDirectory: whatsnew
