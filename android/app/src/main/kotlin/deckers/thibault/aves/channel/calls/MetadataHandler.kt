@@ -222,11 +222,14 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         // * file extension is unreliable
                         // In the end, `metadata-extractor` is the most reliable, except for `tiff` (false positives, false negatives),
                         // in which case we trust the file extension
+                        // cf https://github.com/drewnoakes/metadata-extractor/issues/296
                         if (path?.matches(tiffExtensionPattern) == true) {
                             metadataMap[KEY_MIME_TYPE] = MimeTypes.TIFF
                         } else {
                             dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) {
-                                metadataMap[KEY_MIME_TYPE] = it
+                                if (it != MimeTypes.TIFF) {
+                                    metadataMap[KEY_MIME_TYPE] = it
+                                }
                             }
                         }
                     }
