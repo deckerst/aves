@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [v1.2.6] - 2020-11-15
+## [v1.2.7] - 2020-11-15
 ### Added
 - Support for TIFF images (single page)
 - Viewer overlay: minimap (optional)
@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed finding dimensions of entries with incorrect EXIF
+
+## [v1.2.6] - 2020-11-15 [YANKED]
 
 ## [v1.2.5] - 2020-11-01
 ### Added
