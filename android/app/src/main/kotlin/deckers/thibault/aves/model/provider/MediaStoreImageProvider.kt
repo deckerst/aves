@@ -47,10 +47,10 @@ class MediaStoreImageProvider : ImageProvider() {
             val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
             if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
         }
-        // the uri can be a file media uri (e.g. "content://0@media/external/file/30050")
+        // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
         // without an equivalent image/video if it is shared from a file browser
         // but the file is not publicly visible
-        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION) > 0) return
+        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = mimeType) > 0) return
 
         callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
     }
@@ -87,6 +87,7 @@ class MediaStoreImageProvider : ImageProvider() {
         handleNewEntry: NewEntryHandler,
         contentUri: Uri,
         projection: Array<String>,
+        fileMimeType: String? = null,
     ): Int {
         var newEntryCount = 0
         val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
@@ -123,45 +124,51 @@ class MediaStoreImageProvider : ImageProvider() {
                         // for multiple items, `contentUri` is the root without ID,
                         // but for single items, `contentUri` already contains the ID
                         val itemUri = if (contentUriContainsId) contentUri else ContentUris.withAppendedId(contentUri, contentId.toLong())
-                        val mimeType = cursor.getString(mimeTypeColumn)
+                        // `mimeType` can be registered as null for file media URIs with unsupported media types (e.g. TIFF on old devices)
+                        // in that case we try to use the mime type provided along the URI
+                        val mimeType: String? = cursor.getString(mimeTypeColumn) ?: fileMimeType
                         val width = cursor.getInt(widthColumn)
                         val height = cursor.getInt(heightColumn)
                         val durationMillis = if (durationColumn != -1) cursor.getLong(durationColumn) else 0L
 
-                        var entryMap: FieldMap = hashMapOf(
-                            "uri" to itemUri.toString(),
-                            "path" to cursor.getString(pathColumn),
-                            "sourceMimeType" to mimeType,
-                            "width" to width,
-                            "height" to height,
-                            "sourceRotationDegrees" to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
-                            "sizeBytes" to cursor.getLong(sizeColumn),
-                            "title" to cursor.getString(titleColumn),
-                            "dateModifiedSecs" to dateModifiedSecs,
-                            "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
-                            "durationMillis" to durationMillis,
-                            // only for map export
-                            "contentId" to contentId,
-                        )
+                        if (mimeType == null) {
+                            Log.w(LOG_TAG, "failed to make entry from uri=$itemUri because of null MIME type")
+                        } else {
+                            var entryMap: FieldMap = hashMapOf(
+                                "uri" to itemUri.toString(),
+                                "path" to cursor.getString(pathColumn),
+                                "sourceMimeType" to mimeType,
+                                "width" to width,
+                                "height" to height,
+                                "sourceRotationDegrees" to if (orientationColumn != -1) cursor.getInt(orientationColumn) else 0,
+                                "sizeBytes" to cursor.getLong(sizeColumn),
+                                "title" to cursor.getString(titleColumn),
+                                "dateModifiedSecs" to dateModifiedSecs,
+                                "sourceDateTakenMillis" to if (dateTakenColumn != -1) cursor.getLong(dateTakenColumn) else null,
+                                "durationMillis" to durationMillis,
+                                // only for map export
+                                "contentId" to contentId,
+                            )
 
-                        if (MimeTypes.isRaw(mimeType)
-                            || (width <= 0 || height <= 0) && needSize(mimeType)
-                            || durationMillis == 0L && needDuration
-                        ) {
-                            // Some images are incorrectly registered in the Media Store,
-                            // missing some attributes such as width, height, orientation.
-                            // Also, the reported size of raw images is inconsistent across devices
-                            // and Android versions (sometimes the raw size, sometimes the decoded size).
-                            val entry = SourceImageEntry(entryMap).fillPreCatalogMetadata(context)
-                            entryMap = entry.toMap()
-                        }
+                            if (MimeTypes.isRaw(mimeType)
+                                || (width <= 0 || height <= 0) && needSize(mimeType)
+                                || durationMillis == 0L && needDuration
+                            ) {
+                                // Some images are incorrectly registered in the Media Store,
+                                // missing some attributes such as width, height, orientation.
+                                // Also, the reported size of raw images is inconsistent across devices
+                                // and Android versions (sometimes the raw size, sometimes the decoded size).
+                                val entry = SourceImageEntry(entryMap).fillPreCatalogMetadata(context)
+                                entryMap = entry.toMap()
+                            }
 
-                        handleNewEntry(entryMap)
-                        // TODO TLAD is this necessary?
-                        if (newEntryCount % 30 == 0) {
-                            delay(10)
+                            handleNewEntry(entryMap)
+                            // TODO TLAD is this necessary?
+                            if (newEntryCount % 30 == 0) {
+                                delay(10)
+                            }
+                            newEntryCount++
                         }
-                        newEntryCount++
                     }
                 }
                 cursor.close()
