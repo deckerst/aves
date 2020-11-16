@@ -217,7 +217,12 @@ class ImageEntry {
     }
   }
 
-  bool get isPortrait => rotationDegrees % 180 == 90;
+  // The additional comparison of width to height is a workaround for badly registered entries.
+  // e.g. a portrait FHD video should be registered as width=1920, height=1080, orientation=90,
+  // but is incorrectly registered in the Media Store as width=1080, height=1920, orientation=0
+  // Double-checking the width/height during loading or cataloguing is the proper solution,
+  // but it would take space and time, so a basic workaround will do.
+  bool get isPortrait => rotationDegrees % 180 == 90 && (catalogMetadata?.rotationDegrees == null || width > height);
 
   String get resolutionText {
     final w = width ?? '?';
