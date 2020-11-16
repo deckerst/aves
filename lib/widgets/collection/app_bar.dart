@@ -282,6 +282,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   void _onCollectionActionSelected(CollectionAction action) async {
     // wait for the popup menu to hide before proceeding with the action
     await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+
     switch (action) {
       case CollectionAction.copy:
       case CollectionAction.move:

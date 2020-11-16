@@ -108,6 +108,12 @@ class Constants {
       sourceUrl: 'https://github.com/AndreHaueisen/flushbar',
     ),
     Dependency(
+      name: 'Flutter Highlight',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/git-touch/highlight/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/git-touch/highlight',
+    ),
+    Dependency(
       name: 'Flutter ijkplayer',
       license: 'MIT',
       licenseUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer/blob/master/LICENSE',

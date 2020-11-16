@@ -59,6 +59,7 @@ dependencies:
   firebase_analytics:
   firebase_crashlytics:
   flushbar:
+  flutter_highlight:
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer
     git:

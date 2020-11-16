@@ -23,6 +23,7 @@ class ImageEntry {
   String _path, _directory, _filename, _extension;
   int contentId;
   final String sourceMimeType;
+  // TODO TLAD use SVG viewport as width/height
   int width;
   int height;
   int sourceRotationDegrees;

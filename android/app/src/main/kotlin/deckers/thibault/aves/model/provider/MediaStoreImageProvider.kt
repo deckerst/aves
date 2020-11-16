@@ -321,7 +321,8 @@ class MediaStoreImageProvider : ImageProvider() {
             MediaStore.MediaColumns._ID,
             MediaColumns.PATH,
             MediaStore.MediaColumns.MIME_TYPE,
-            MediaStore.MediaColumns.SIZE,  // TODO TLAD use `DISPLAY_NAME` instead/along `TITLE`?
+            MediaStore.MediaColumns.SIZE,
+            // TODO TLAD use `DISPLAY_NAME` instead/along `TITLE`?
             MediaStore.MediaColumns.TITLE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
