@@ -6,6 +6,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/utils/math_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
@@ -90,11 +91,5 @@ class MediaStoreSource extends CollectionSource {
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
-  }
-
-  // e.g. x=12345, precision=3 should return 13000
-  int ceilBy(num x, int precision) {
-    final factor = pow(10, precision);
-    return (x / factor).ceil() * factor;
   }
 }
