@@ -44,7 +44,7 @@ object MimeTypes {
         else -> isVideo(mimeType)
     }
 
-    fun isRaw(mimeType: String?): Boolean {
+    fun isRaw(mimeType: String): Boolean {
         return when (mimeType) {
             ARW, CR2, DNG, NEF, NRW, ORF, PEF, RAF, RW2, SRW -> true
             else -> false
