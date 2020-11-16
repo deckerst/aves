@@ -2,6 +2,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
@@ -9,7 +10,9 @@ import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_debug_page.dart';
+import 'package:aves/widgets/fullscreen/source_viewer_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf/pdf.dart';
@@ -28,46 +31,52 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
   bool get hasCollection => collection != null;
 
-  void onActionSelected(BuildContext context, ImageEntry entry, EntryAction action) {
+  void onActionSelected(BuildContext context, ImageEntry entry, EntryAction action) async {
+    // wait for the popup menu to hide before proceeding with the action
+    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
+
     switch (action) {
       case EntryAction.toggleFavourite:
         entry.toggleFavourite();
         break;
       case EntryAction.delete:
-        _showDeleteDialog(context, entry);
+        unawaited(_showDeleteDialog(context, entry));
         break;
       case EntryAction.edit:
-        AndroidAppService.edit(entry.uri, entry.mimeType);
+        unawaited(AndroidAppService.edit(entry.uri, entry.mimeType));
         break;
       case EntryAction.info:
         showInfo();
         break;
       case EntryAction.rename:
-        _showRenameDialog(context, entry);
+        unawaited(_showRenameDialog(context, entry));
         break;
       case EntryAction.open:
-        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
+        unawaited(AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype));
         break;
       case EntryAction.openMap:
-        AndroidAppService.openMap(entry.geoUri);
+        unawaited(AndroidAppService.openMap(entry.geoUri));
         break;
       case EntryAction.print:
-        _print(entry);
+        unawaited(_print(entry));
         break;
       case EntryAction.rotateCCW:
-        _rotate(context, entry, clockwise: false);
+        unawaited(_rotate(context, entry, clockwise: false));
         break;
       case EntryAction.rotateCW:
-        _rotate(context, entry, clockwise: true);
+        unawaited(_rotate(context, entry, clockwise: true));
         break;
       case EntryAction.flip:
-        _flip(context, entry);
+        unawaited(_flip(context, entry));
         break;
       case EntryAction.setAs:
-        AndroidAppService.setAs(entry.uri, entry.mimeType);
+        unawaited(AndroidAppService.setAs(entry.uri, entry.mimeType));
         break;
       case EntryAction.share:
-        AndroidAppService.share({entry});
+        unawaited(AndroidAppService.share({entry}));
+        break;
+      case EntryAction.viewSource:
+        _goToSourceViewer(context, entry);
         break;
       case EntryAction.debug:
         _goToDebug(context, entry);
@@ -179,6 +188,16 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     if (!await checkStoragePermission(context, [entry])) return;
 
     showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
+  }
+
+  void _goToSourceViewer(BuildContext context, ImageEntry entry) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: SourceViewerPage.routeName),
+        builder: (context) => SourceViewerPage(entry: entry),
+      ),
+    );
   }
 
   void _goToDebug(BuildContext context, ImageEntry entry) {

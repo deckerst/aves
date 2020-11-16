@@ -182,7 +182,7 @@ abstract class ImageProvider {
                 }
 
                 if (newFields.isEmpty()) {
-                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri"))
+                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
                 } else {
                     cont.resume(newFields)
                 }

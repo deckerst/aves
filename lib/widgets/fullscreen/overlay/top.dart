@@ -109,6 +109,8 @@ class FullscreenTopOverlay extends StatelessWidget {
         return entry.canPrint;
       case EntryAction.openMap:
         return entry.hasGps;
+      case EntryAction.viewSource:
+        return entry.isSvg;
       case EntryAction.share:
       case EntryAction.info:
       case EntryAction.open:
@@ -191,6 +193,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rotateCW:
       case EntryAction.flip:
       case EntryAction.print:
+      case EntryAction.viewSource:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
@@ -233,6 +236,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rotateCW:
       case EntryAction.flip:
       case EntryAction.print:
+      case EntryAction.viewSource:
       case EntryAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());
         break;

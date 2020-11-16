@@ -15,6 +15,7 @@ enum EntryAction {
   setAs,
   share,
   toggleFavourite,
+  viewSource,
   debug,
 }
 
@@ -31,6 +32,7 @@ class EntryActions {
     EntryAction.delete,
     EntryAction.rename,
     EntryAction.print,
+    EntryAction.viewSource,
   ];
 
   static const externalApp = [
@@ -64,6 +66,8 @@ extension ExtraEntryAction on EntryAction {
         return 'Print';
       case EntryAction.share:
         return 'Share';
+      case EntryAction.viewSource:
+        return 'View source';
       // external app actions
       case EntryAction.edit:
         return 'Edit with…';
@@ -101,6 +105,8 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.print;
       case EntryAction.share:
         return AIcons.share;
+      case EntryAction.viewSource:
+        return AIcons.vector;
       // external app actions
       case EntryAction.edit:
       case EntryAction.open:
