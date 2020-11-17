@@ -56,7 +56,10 @@ class MinimapPainter extends CustomPainter {
     @required this.viewScale,
     this.minimapBorderColor = Colors.white,
     this.viewportBorderColor = Colors.white,
-  });
+  })  : assert(viewportSize != null),
+        assert(entrySize != null),
+        assert(viewCenterOffset != null),
+        assert(viewScale != null);
 
   @override
   void paint(Canvas canvas, Size size) {

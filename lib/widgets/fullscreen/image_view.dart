@@ -39,6 +39,7 @@ class ImageView extends StatefulWidget {
 
 class _ImageViewState extends State<ImageView> {
   final PhotoViewController _photoViewController = PhotoViewController();
+  final PhotoViewScaleStateController _photoViewScaleStateController = PhotoViewScaleStateController();
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier<ViewState>(ViewState.zero);
   StreamSubscription<PhotoViewControllerValue> _subscription;
   Size _photoViewChildSize;
@@ -164,6 +165,15 @@ class _ImageViewState extends State<ImageView> {
       child: Selector<MediaQueryData, Size>(
         selector: (context, mq) => mq.size,
         builder: (context, mqSize, child) {
+          // When the scale state is cycled to be in its `initial` state (i.e. `contained`), and the device is rotated,
+          // `PhotoView` keeps the scale state as `contained`, but the controller does not update or notify the new scale value.
+          // We cannot use `scaleStateChangedCallback` as a workaround, because the scale state is updated before animating the scale change,
+          // so we keep receiving scale updates after the scale state update.
+          // Instead we check the scale state here when the constraints change, so we can reset the obsolete scale value.
+          if (_photoViewScaleStateController.scaleState == PhotoViewScaleState.initial) {
+            final value = PhotoViewControllerValue(position: Offset.zero, scale: 0, rotation: 0, rotationFocusPoint: null);
+            WidgetsBinding.instance.addPostFrameCallback((_) => _onViewChanged(value));
+          }
           return TiledImageView(
             entry: entry,
             viewportSize: mqSize,
@@ -176,6 +186,7 @@ class _ImageViewState extends State<ImageView> {
       childSize: entry.displaySize,
       backgroundDecoration: backgroundDecoration,
       controller: _photoViewController,
+      scaleStateController: _photoViewScaleStateController,
       maxScale: maxScale,
       minScale: PhotoViewComputedScale.contained,
       initialScale: PhotoViewComputedScale.contained,
