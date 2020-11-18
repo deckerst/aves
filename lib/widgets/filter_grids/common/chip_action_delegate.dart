@@ -57,7 +57,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
-    final selection = source.rawEntries.where(filter.filter).toList();
+    final selection = source.rawEntries.where(filter.filter).toSet();
     final count = selection.length;
 
     final confirmed = await showDialog<bool>(
@@ -111,7 +111,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final selection = source.rawEntries.where(filter.filter).toList();
+    final selection = source.rawEntries.where(filter.filter).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
 
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, false)) return;

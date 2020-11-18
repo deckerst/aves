@@ -31,7 +31,7 @@ mixin FeedbackMixin {
 
   void showOpReport<T extends ImageOpEvent>({
     @required BuildContext context,
-    @required List<ImageEntry> selection,
+    @required Set<ImageEntry> selection,
     @required Stream<T> opStream,
     @required void Function(Set<T> processed) onDone,
   }) {

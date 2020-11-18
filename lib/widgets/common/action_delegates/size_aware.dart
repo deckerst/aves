@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 mixin SizeAwareMixin {
-  Future<bool> checkFreeSpaceForMove(BuildContext context, List<ImageEntry> selection, String destinationAlbum, bool copy) async {
+  Future<bool> checkFreeSpaceForMove(BuildContext context, Set<ImageEntry> selection, String destinationAlbum, bool copy) async {
     final destinationVolume = androidFileUtils.getStorageVolume(destinationAlbum);
     final free = await AndroidFileService.getFreeSpace(destinationVolume);
     int needed;

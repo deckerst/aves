@@ -72,7 +72,9 @@ class _ImageViewState extends State<ImageView> {
   Widget build(BuildContext context) {
     Widget child;
     if (entry.isVideo) {
-      child = _buildVideoView();
+      if (entry.width > 0 && entry.height > 0) {
+        child = _buildVideoView();
+      }
     } else if (entry.isSvg) {
       child = _buildSvgView();
     } else if (entry.canDecode) {
@@ -81,9 +83,8 @@ class _ImageViewState extends State<ImageView> {
       } else {
         child = _buildImageView();
       }
-    } else {
-      child = _buildError();
     }
+    child ??= _buildError();
 
     // if the hero tag is defined in the `loadingBuilder` and also set by the `heroAttributes`,
     // the route transition becomes visible if the final image is loaded before the hero animation is done.

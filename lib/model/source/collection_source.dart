@@ -37,7 +37,7 @@ mixin SourceBase {
   void setProgress({@required int done, @required int total}) => _progressStreamController.add(ProgressEvent(done: done, total: total));
 }
 
-class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
+abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   @override
   List<ImageEntry> get sortedEntriesForFilterList => CollectionLens(
         source: this,
@@ -109,7 +109,7 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   }
 
   void updateAfterMove({
-    @required List<ImageEntry> selection,
+    @required Set<ImageEntry> selection,
     @required bool copy,
     @required String destinationAlbum,
     @required Iterable<MoveOpEvent> movedOps,
@@ -163,6 +163,10 @@ class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   int count(CollectionFilter filter) {
     return _filterEntryCountMap.putIfAbsent(filter, () => _rawEntries.where((entry) => filter.filter(entry)).length);
   }
+
+  Future<void> refresh();
+
+  Future<void> refreshMetadata(Set<ImageEntry> entries);
 }
 
 enum SourceState { loading, cataloguing, locating, ready }

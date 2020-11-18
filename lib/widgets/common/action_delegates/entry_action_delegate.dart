@@ -128,14 +128,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
   }
 
   Future<void> _flip(BuildContext context, ImageEntry entry) async {
-    if (!await checkStoragePermission(context, [entry])) return;
+    if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.flip();
     if (!success) showFeedback(context, 'Failed');
   }
 
   Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
-    if (!await checkStoragePermission(context, [entry])) return;
+    if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.rotate(clockwise: clockwise);
     if (!success) showFeedback(context, 'Failed');
@@ -162,7 +162,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     );
     if (confirmed == null || !confirmed) return;
 
-    if (!await checkStoragePermission(context, [entry])) return;
+    if (!await checkStoragePermission(context, {entry})) return;
 
     if (!await entry.delete()) {
       showFeedback(context, 'Failed');
@@ -185,7 +185,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     );
     if (newName == null || newName.isEmpty) return;
 
-    if (!await checkStoragePermission(context, [entry])) return;
+    if (!await checkStoragePermission(context, {entry})) return;
 
     showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
   }

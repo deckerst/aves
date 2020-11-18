@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -29,6 +30,10 @@ import 'package:provider/provider.dart';
 class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
 
+  CollectionSource get source => collection.source;
+
+  Set<ImageEntry> get selection => collection.selection;
+
   SelectionActionDelegate({
     @required this.collection,
   });
@@ -39,7 +44,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
         _showDeleteDialog(context);
         break;
       case EntryAction.share:
-        AndroidAppService.share(collection.selection);
+        AndroidAppService.share(selection);
         break;
       default:
         break;
@@ -55,7 +60,9 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
         _moveSelection(context, copy: false);
         break;
       case CollectionAction.refreshMetadata:
-        _refreshSelectionMetadata();
+        source.refreshMetadata(selection);
+        collection.clearSelection();
+        collection.browse();
         break;
       default:
         break;
@@ -63,7 +70,6 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
   }
 
   Future<void> _moveSelection(BuildContext context, {@required bool copy}) async {
-    final source = collection.source;
     final chipSetActionDelegate = AlbumChipSetActionDelegate(source: source);
     final destinationAlbum = await Navigator.push(
       context,
@@ -114,7 +120,6 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
-    final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;
 
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, copy)) return;
@@ -146,18 +151,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
     );
   }
 
-  Future<void> _refreshSelectionMetadata() async {
-    collection.selection.forEach((entry) => entry.clearMetadata());
-    final source = collection.source;
-    source.stateNotifier.value = SourceState.cataloguing;
-    await source.catalogEntries();
-    source.stateNotifier.value = SourceState.locating;
-    await source.locateEntries();
-    source.stateNotifier.value = SourceState.ready;
-  }
-
   Future<void> _showDeleteDialog(BuildContext context) async {
-    final selection = collection.selection.toList();
     final count = selection.length;
 
     final confirmed = await showDialog<bool>(
@@ -195,7 +189,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (deletedCount > 0) {
-          collection.source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
+          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
         }
         collection.clearSelection();
         collection.browse();

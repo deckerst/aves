@@ -14,7 +14,6 @@ import 'package:aves/widgets/common/action_delegates/selection_action_delegate.d
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
-import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/common/menu_row.dart';
@@ -290,10 +289,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.refresh:
-        if (source is MediaStoreSource) {
-          source.clearEntries();
-          unawaited((source as MediaStoreSource).refresh());
-        }
+        unawaited(source.refresh());
         break;
       case CollectionAction.select:
         collection.select();
