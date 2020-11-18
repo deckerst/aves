@@ -4,7 +4,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
-import 'package:aves/widgets/common/data_providers/media_store_collection_provider.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +26,7 @@ abstract class ChipSetActionDelegate {
         await _showSortDialog(context);
         break;
       case ChipSetAction.refresh:
-        if (source is MediaStoreSource) {
-          source.clearEntries();
-          unawaited((source as MediaStoreSource).refresh());
-        }
+        unawaited(source.refresh());
         break;
       case ChipSetAction.stats:
         _goToStats(context);

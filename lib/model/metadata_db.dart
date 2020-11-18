@@ -143,7 +143,7 @@ class MetadataDb {
     await init();
   }
 
-  void removeIds(List<int> contentIds) async {
+  void removeIds(Set<int> contentIds, {@required bool updateFavourites}) async {
     if (contentIds == null || contentIds.isEmpty) return;
 
     final stopwatch = Stopwatch()..start();
@@ -157,7 +157,9 @@ class MetadataDb {
       batch.delete(dateTakenTable, where: where, whereArgs: whereArgs);
       batch.delete(metadataTable, where: where, whereArgs: whereArgs);
       batch.delete(addressTable, where: where, whereArgs: whereArgs);
-      batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
+      if (updateFavourites) {
+        batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
+      }
     });
     await batch.commit(noResult: true);
     debugPrint('$runtimeType removeIds complete in ${stopwatch.elapsed.inMilliseconds}ms for ${contentIds.length} entries');

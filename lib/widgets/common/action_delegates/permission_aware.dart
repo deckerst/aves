@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../aves_dialog.dart';
 
 mixin PermissionAwareMixin {
-  Future<bool> checkStoragePermission(BuildContext context, Iterable<ImageEntry> entries) {
+  Future<bool> checkStoragePermission(BuildContext context, Set<ImageEntry> entries) {
     return checkStoragePermissionForAlbums(context, entries.where((e) => e.path != null).map((e) => e.directory).toSet());
   }
 

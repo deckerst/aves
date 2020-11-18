@@ -31,14 +31,16 @@ class MediaStoreSource extends CollectionSource {
     debugPrint('$runtimeType init done, elapsed=${stopwatch.elapsed}');
   }
 
+  @override
   Future<void> refresh() async {
     debugPrint('$runtimeType refresh start');
     final stopwatch = Stopwatch()..start();
     stateNotifier.value = SourceState.loading;
+    clearEntries();
 
     final oldEntries = await metadataDb.loadEntries(); // 400ms for 5500 entries
     final knownEntryMap = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
-    final obsoleteEntries = await ImageFileService.getObsoleteEntries(knownEntryMap.keys.toList());
+    final obsoleteEntries = (await ImageFileService.getObsoleteEntries(knownEntryMap.keys.toList())).toSet();
     oldEntries.removeWhere((entry) => obsoleteEntries.contains(entry.contentId));
 
     // show known entries
@@ -48,7 +50,7 @@ class MediaStoreSource extends CollectionSource {
     debugPrint('$runtimeType refresh loaded ${oldEntries.length} known entries, elapsed=${stopwatch.elapsed}');
 
     // clean up obsolete entries
-    metadataDb.removeIds(obsoleteEntries);
+    metadataDb.removeIds(obsoleteEntries, updateFavourites: true);
 
     // fetch new entries
     var refreshCount = 10;
@@ -91,5 +93,12 @@ class MediaStoreSource extends CollectionSource {
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
+  }
+
+  @override
+  Future<void> refreshMetadata(Set<ImageEntry> entries) {
+    final contentIds = entries.map((entry) => entry.contentId).toSet();
+    metadataDb.removeIds(contentIds, updateFavourites: false);
+    return refresh();
   }
 }

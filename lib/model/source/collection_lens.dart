@@ -4,7 +4,6 @@ import 'dart:collection';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -48,14 +47,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       ..clear();
     _subscriptions = null;
     super.dispose();
-  }
-
-  factory CollectionLens.empty() {
-    return CollectionLens(
-      source: CollectionSource(),
-      groupFactor: settings.collectionGroupFactor,
-      sortFactor: settings.collectionSortFactor,
-    );
   }
 
   CollectionLens derive(CollectionFilter filter) {
