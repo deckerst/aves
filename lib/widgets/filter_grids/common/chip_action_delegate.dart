@@ -7,6 +7,7 @@ import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_album_dialog.dart';
+import 'package:aves/widgets/common/action_delegates/size_aware.dart';
 import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class ChipActionDelegate {
   }
 }
 
-class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin {
+class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionSource source;
 
   AlbumChipActionDelegate({
@@ -112,6 +113,8 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     final selection = source.rawEntries.where(filter.filter).toList();
     final destinationAlbum = path.join(path.dirname(album), newName);
+
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, false)) return;
 
     showOpReport<MoveOpEvent>(
       context: context,
