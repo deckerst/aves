@@ -98,16 +98,13 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   @override
   Widget build(BuildContext context) {
     if (!entry.canDecode) {
-      return ErrorThumbnail(
-        entry: entry,
-        extent: extent,
-        tooltip: '${entry.mimeType} not supported',
-      );
+      return _buildError(context, '${entry.mimeType} not supported', null);
     }
 
     final fastImage = Image(
       key: ValueKey('LQ'),
       image: _fastThumbnailProvider,
+      errorBuilder: _buildError,
       width: extent,
       height: extent,
       fit: BoxFit.cover,
@@ -137,11 +134,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                 child: frame == null ? fastImage : child,
               );
             },
-            errorBuilder: (context, error, stackTrace) => ErrorThumbnail(
-              entry: entry,
-              extent: extent,
-              tooltip: error.toString(),
-            ),
+            errorBuilder: _buildError,
             width: extent,
             height: extent,
             fit: BoxFit.cover,
@@ -172,6 +165,12 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
             child: image,
           );
   }
+
+  Widget _buildError(BuildContext context, Object error, StackTrace stackTrace) => ErrorThumbnail(
+        entry: entry,
+        extent: extent,
+        tooltip: error.toString(),
+      );
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
