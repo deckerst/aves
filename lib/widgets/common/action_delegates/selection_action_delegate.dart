@@ -12,6 +12,7 @@ import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
+import 'package:aves/widgets/common/action_delegates/size_aware.dart';
 import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -25,7 +26,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
+class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
 
   SelectionActionDelegate({
@@ -115,6 +116,8 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
     final selection = collection.selection.toList();
     if (!await checkStoragePermission(context, selection)) return;
+
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, copy)) return;
 
     showOpReport<MoveOpEvent>(
       context: context,
