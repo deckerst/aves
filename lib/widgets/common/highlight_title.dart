@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 
 class HighlightTitle extends StatelessWidget {
   final String name;
+  final Color color;
   final double fontSize;
   final bool enabled;
 
   const HighlightTitle(
     this.name, {
+    this.color,
     this.fontSize = 20,
     this.enabled = true,
   }) : assert(name != null);
@@ -21,7 +23,7 @@ class HighlightTitle extends StatelessWidget {
       alignment: AlignmentDirectional.centerStart,
       child: Container(
         decoration: HighlightDecoration(
-          color: enabled ? stringToColor(name) : disabledColor,
+          color: enabled ? color ?? stringToColor(name) : disabledColor,
         ),
         margin: EdgeInsets.symmetric(vertical: 4.0),
         child: Text(

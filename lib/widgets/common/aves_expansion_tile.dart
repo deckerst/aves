@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 
 class AvesExpansionTile extends StatelessWidget {
   final String title;
+  final Color color;
   final List<Widget> children;
   final ValueNotifier<String> expandedNotifier;
 
   const AvesExpansionTile({
     @required this.title,
+    this.color,
     this.expandedNotifier,
     @required this.children,
   });
@@ -27,6 +29,7 @@ class AvesExpansionTile extends StatelessWidget {
         expandedNotifier: expandedNotifier,
         title: HighlightTitle(
           title,
+          color: color,
           fontSize: 18,
           enabled: enabled,
         ),

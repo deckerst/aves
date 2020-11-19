@@ -93,7 +93,6 @@ dependencies:
   streams_channel:
   tuple:
   url_launcher:
-  uuid:
 
 dev_dependencies:
   flutter_test:
