@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
+import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_expansion_tile.dart';
@@ -28,7 +29,7 @@ class MetadataSectionSliver extends StatefulWidget {
 }
 
 class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
-  List<_MetadataDirectory> _metadata = [];
+  Map<String, _MetadataDirectory> _metadata = {};
   final ValueNotifier<String> _loadedMetadataUri = ValueNotifier(null);
   final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
 
@@ -40,6 +41,10 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
   static const mediaDirectory = 'Media'; // additional media (video/audio/images) directory
+
+  // directory names may contain the name of their parent directory
+  // if so, they are separated by this character
+  static const parentChildSeparator = '/';
 
   @override
   void initState() {
@@ -87,8 +92,6 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           if (_metadata.isEmpty) {
             content = SizedBox.shrink();
           } else {
-            final directoriesWithoutTitle = _metadata.where((dir) => dir.name.isEmpty).toList();
-            final directoriesWithTitle = _metadata.where((dir) => dir.name.isNotEmpty).toList();
             content = Column(
               children: AnimationConfiguration.toStaggeredList(
                 duration: Durations.staggeredAnimation,
@@ -101,8 +104,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
                 ),
                 children: [
                   SectionRow(AIcons.info),
-                  ...directoriesWithoutTitle.map(_buildDirTileWithoutTitle),
-                  ...directoriesWithTitle.map(_buildDirTileWithTitle),
+                  ..._metadata.entries.map((kv) => _buildDirTile(kv.key, kv.value)),
                 ],
               ),
             );
@@ -118,11 +120,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     );
   }
 
-  Widget _buildDirTileWithoutTitle(_MetadataDirectory dir) {
-    return InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength);
-  }
-
-  Widget _buildDirTileWithTitle(_MetadataDirectory dir) {
+  Widget _buildDirTile(String title, _MetadataDirectory dir) {
     if (dir.name == xmpDirectory) {
       return _buildXmpDirTile(dir);
     }
@@ -151,7 +149,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     }
 
     return AvesExpansionTile(
-      title: dir.name,
+      title: title,
+      color: stringToColor(dir.name),
       expandedNotifier: _expandedDirectoryNotifier,
       children: [
         if (prefixChildren.isNotEmpty) Wrap(children: prefixChildren),
@@ -173,7 +172,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         if (i == -1) return '';
         return fullKey.substring(0, i);
       }),
-      compareAsciiLowerCase,
+      compareAsciiUpperCase,
     );
     return AvesExpansionTile(
       title: dir.name,
@@ -188,10 +187,11 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
               final ns = kv.key;
               final hasNamespace = ns.isNotEmpty;
               final i = hasNamespace ? ns.length + 1 : 0;
-              final tags = Map.fromEntries(kv.value.map((kv) => MapEntry(kv.key.substring(i), kv.value)));
+              final entries = kv.value.map((kv) => MapEntry(kv.key.substring(i), kv.value)).toList();
+              entries.sort((a, b) => compareAsciiUpperCaseNatural(a.key, b.key));
               return [
                 if (hasNamespace) HighlightTitle(ns),
-                InfoRowGroup(tags, maxValueLength: Constants.infoGroupMaxValueLength),
+                InfoRowGroup(Map.fromEntries(entries), maxValueLength: Constants.infoGroupMaxValueLength),
               ];
             }).toList(),
           ),
@@ -202,7 +202,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
   void _onMetadataChanged() {
     _loadedMetadataUri.value = null;
-    _metadata = [];
+    _metadata = {};
     _getMetadata();
   }
 
@@ -211,8 +211,16 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
       final rawMetadata = await MetadataService.getAllMetadata(entry) ?? {};
-      _metadata = rawMetadata.entries.map((dirKV) {
-        final directoryName = dirKV.key as String ?? '';
+      final directories = rawMetadata.entries.map((dirKV) {
+        var directoryName = dirKV.key as String ?? '';
+
+        String parent;
+        final parts = directoryName.split(parentChildSeparator);
+        if (parts.length > 1) {
+          parent = parts[0];
+          directoryName = parts[1];
+        }
+
         final rawTags = dirKV.value as Map ?? {};
         final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
           final value = tagKV.value as String ?? '';
@@ -220,12 +228,21 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           final tagName = tagKV.key as String ?? '';
           return MapEntry(tagName, value);
         }).where((kv) => kv != null)));
-        return _MetadataDirectory(directoryName, tags);
+        return _MetadataDirectory(directoryName, parent, tags);
+      }).toList();
+
+      final titledDirectories = directories.map((dir) {
+        var title = dir.name;
+        if (directories.where((dir) => dir.name == title).length > 1 && dir.parent?.isNotEmpty == true) {
+          title = '${dir.parent}/$title';
+        }
+        return MapEntry(title, dir);
       }).toList()
-        ..sort((a, b) => compareAsciiUpperCase(a.name, b.name));
+        ..sort((a, b) => compareAsciiUpperCase(a.key, b.key));
+      _metadata = Map.fromEntries(titledDirectories);
       _loadedMetadataUri.value = entry.uri;
     } else {
-      _metadata = [];
+      _metadata = {};
       _loadedMetadataUri.value = null;
     }
     _expandedDirectoryNotifier.value = null;
@@ -237,7 +254,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
 class _MetadataDirectory {
   final String name;
+  final String parent;
   final SplayTreeMap<String, String> tags;
 
-  const _MetadataDirectory(this.name, this.tags);
+  const _MetadataDirectory(this.name, this.parent, this.tags);
 }

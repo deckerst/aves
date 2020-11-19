@@ -217,8 +217,11 @@ object ExifInterfaceHelper {
         // so that we can rely on metadata-extractor descriptions
         val dirs = DirType.values().map { Pair(it, it.createDirectory()) }.toMap()
 
+        // exclude Exif directory when it only includes image size
+        val isUselessExif: (Map<String, String>) -> Boolean = { it.size == 2 && it.containsKey("Image Height") && it.containsKey("Image Width") }
+
         return HashMap<String, Map<String, String>>().apply {
-            put("Exif", describeDir(exif, dirs, baseTags))
+            put("Exif", describeDir(exif, dirs, baseTags).takeUnless(isUselessExif) ?: hashMapOf())
             put("Exif Thumbnail", describeDir(exif, dirs, thumbnailTags))
             put(Metadata.DIR_GPS, describeDir(exif, dirs, gpsTags))
             put(Metadata.DIR_XMP, describeDir(exif, dirs, xmpTags))
