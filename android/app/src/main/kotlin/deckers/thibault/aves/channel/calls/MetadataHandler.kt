@@ -103,7 +103,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
                     for (dir in metadata.directories.filter { it.tagCount > 0 && it !is FileTypeDirectory }) {
                         // directory name
-                        val dirName = dir.name ?: ""
+                        var dirName = dir.name
+                        // optional parent to distinguish child directories of the same type
+                        dir.parent?.name?.let { dirName = "$it/$dirName" }
+
                         val dirMap = metadataMap.getOrDefault(dirName, HashMap())
                         metadataMap[dirName] = dirMap
 
