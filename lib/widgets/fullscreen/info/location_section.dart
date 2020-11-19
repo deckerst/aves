@@ -173,7 +173,7 @@ extension ExtraEntryMapStyle on EntryMapStyle {
       case EntryMapStyle.googleTerrain:
         return 'Google Maps (Terrain)';
       case EntryMapStyle.osmHot:
-        return 'Humanitarian OpenStreetMap';
+        return 'Humanitarian OSM';
       case EntryMapStyle.stamenToner:
         return 'Stamen Toner';
       case EntryMapStyle.stamenWatercolor:
