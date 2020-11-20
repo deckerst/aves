@@ -1,3 +1,4 @@
+import 'package:aves/utils/brand_colors.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -51,13 +52,13 @@ class _LicensesState extends State<Licenses> {
             SizedBox(height: 16),
             AvesExpansionTile(
               title: 'Android Libraries',
-              color: Constants.androidGreen,
+              color: BrandColors.android,
               expandedNotifier: _expandedNotifier,
               children: _platform.map((package) => LicenseRow(package)).toList(),
             ),
             AvesExpansionTile(
               title: 'Flutter Packages',
-              color: Constants.flutterBlue,
+              color: BrandColors.flutter,
               expandedNotifier: _expandedNotifier,
               children: _flutter.map((package) => LicenseRow(package)).toList(),
             ),

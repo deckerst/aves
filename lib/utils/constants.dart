@@ -3,9 +3,6 @@ import 'package:flutter/painting.dart';
 import 'package:tuple/tuple.dart';
 
 class Constants {
-  static const Color androidGreen = Color(0xFF3DDC84);
-  static const Color flutterBlue = Color(0xFF47D1FD);
-
   // as of Flutter v1.22.3, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
   // so we give it a `strutStyle` with a slightly larger height
   static const overflowStrutStyle = StrutStyle(height: 1.3);

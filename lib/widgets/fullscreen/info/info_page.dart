@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/data_providers/media_query_data_provider.dar
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
-import 'package:aves/widgets/fullscreen/info/metadata_section.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

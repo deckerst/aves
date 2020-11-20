@@ -2,14 +2,15 @@ import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
+import 'package:aves/utils/brand_colors.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_expansion_tile.dart';
-import 'package:aves/widgets/common/highlight_title.dart';
 import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
-import 'package:aves/widgets/fullscreen/info/metadata_thumbnail.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -121,12 +122,17 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   Widget _buildDirTile(String title, _MetadataDirectory dir) {
-    if (dir.name == xmpDirectory) {
-      return _buildXmpDirTile(dir);
+    final dirName = dir.name;
+    if (dirName == xmpDirectory) {
+      return XmpDirTile(
+        entry: entry,
+        tags: dir.tags,
+        expandedNotifier: _expandedDirectoryNotifier,
+      );
     }
     Widget thumbnail;
     final prefixChildren = <Widget>[];
-    switch (dir.name) {
+    switch (dirName) {
       case exifThumbnailDirectory:
         thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry);
         break;
@@ -150,7 +156,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
     return AvesExpansionTile(
       title: title,
-      color: stringToColor(dir.name),
+      color: BrandColors.get(dirName) ?? stringToColor(dirName),
       expandedNotifier: _expandedDirectoryNotifier,
       children: [
         if (prefixChildren.isNotEmpty) Wrap(children: prefixChildren),
@@ -158,43 +164,6 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         Padding(
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildXmpDirTile(_MetadataDirectory dir) {
-    final thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
-    final byNamespace = SplayTreeMap.of(
-      groupBy<MapEntry<String, String>, String>(dir.tags.entries, (kv) {
-        final fullKey = kv.key;
-        final i = fullKey.indexOf(':');
-        if (i == -1) return '';
-        return fullKey.substring(0, i);
-      }),
-      compareAsciiUpperCase,
-    );
-    return AvesExpansionTile(
-      title: dir.name,
-      expandedNotifier: _expandedDirectoryNotifier,
-      children: [
-        if (thumbnail != null) thumbnail,
-        Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: byNamespace.entries.expand((kv) {
-              final ns = kv.key;
-              final hasNamespace = ns.isNotEmpty;
-              final i = hasNamespace ? ns.length + 1 : 0;
-              final entries = kv.value.map((kv) => MapEntry(kv.key.substring(i), kv.value)).toList();
-              entries.sort((a, b) => compareAsciiUpperCaseNatural(a.key, b.key));
-              return [
-                if (hasNamespace) HighlightTitle(ns),
-                InfoRowGroup(Map.fromEntries(entries), maxValueLength: Constants.infoGroupMaxValueLength),
-              ];
-            }).toList(),
-          ),
         ),
       ],
     );
@@ -223,7 +192,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
         final rawTags = dirKV.value as Map ?? {};
         final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
-          final value = tagKV.value as String ?? '';
+          final value = (tagKV.value as String ?? '').trim();
           if (value.isEmpty) return null;
           final tagName = tagKV.key as String ?? '';
           return MapEntry(tagName, value);
