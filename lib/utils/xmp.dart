@@ -2,7 +2,9 @@ class XMP {
   static const namespaceSeparator = ':';
   static const structFieldSeparator = '/';
 
+  // cf https://exiftool.org/TagNames/XMP.html
   static const Map<String, String> namespaces = {
+    'aux': 'Auxiliary Exif',
     'Camera': 'Camera',
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',
@@ -12,6 +14,7 @@ class XMP {
     'Iptc4xmpCore': 'IPTC Core',
     'lr': 'Lightroom',
     'MicrosoftPhoto': 'Microsoft Photo',
+    'panorama': 'Panorama',
     'pdf': 'PDF',
     'pdfx': 'PDF/X',
     'photomechanic': 'Photo Mechanic',
