@@ -15,7 +15,9 @@ class ErrorThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      alignment: Alignment.center,
+      color: Colors.black,
       child: Tooltip(
         message: tooltip,
         preferBelow: false,
