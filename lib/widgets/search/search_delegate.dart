@@ -259,7 +259,7 @@ class ImageSearchDelegate {
     queryTextController.text = value;
   }
 
-  final ValueNotifier<SearchBody> currentBodyNotifier = ValueNotifier<SearchBody>(null);
+  final ValueNotifier<SearchBody> currentBodyNotifier = ValueNotifier(null);
 
   SearchBody get currentBody => currentBodyNotifier.value;
 

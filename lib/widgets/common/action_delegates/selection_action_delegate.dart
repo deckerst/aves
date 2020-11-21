@@ -10,15 +10,14 @@ import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/collection/collection_actions.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/common/action_delegates/create_album_dialog.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/size_aware.dart';
 import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
@@ -70,47 +69,34 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
   }
 
   Future<void> _moveSelection(BuildContext context, {@required bool copy}) async {
+    final filterNotifier = ValueNotifier('');
     final chipSetActionDelegate = AlbumChipSetActionDelegate(source: source);
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
         builder: (context) {
+          Widget appBar = AlbumPickAppBar(
+            copy: copy,
+            actionDelegate: chipSetActionDelegate,
+            onFilterChanged: (filter) => filterNotifier.value = filter,
+          );
+
           return Selector<Settings, ChipSortFactor>(
             selector: (context, s) => s.albumSortFactor,
             builder: (context, sortFactor, child) {
-              return FilterGridPage(
-                source: source,
-                appBar: SliverAppBar(
-                  leading: BackButton(),
-                  title: Text(copy ? 'Copy to Album' : 'Move to Album'),
-                  actions: [
-                    IconButton(
-                      icon: Icon(AIcons.createAlbum),
-                      onPressed: () async {
-                        final newAlbum = await showDialog<String>(
-                          context: context,
-                          builder: (context) => CreateAlbumDialog(),
-                        );
-                        if (newAlbum != null && newAlbum.isNotEmpty) {
-                          Navigator.pop<String>(context, newAlbum);
-                        }
-                      },
-                      tooltip: 'Create album',
-                    ),
-                    IconButton(
-                      icon: Icon(AIcons.sort),
-                      onPressed: () => chipSetActionDelegate.onActionSelected(context, ChipSetAction.sort),
-                    ),
-                  ],
-                  floating: true,
+              return ValueListenableBuilder<String>(
+                valueListenable: filterNotifier,
+                builder: (context, filter, child) => FilterGridPage(
+                  source: source,
+                  appBar: appBar,
+                  filterEntries: AlbumListPage.getAlbumEntries(source, filter: filter),
+                  filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
+                  emptyBuilder: () => EmptyContent(
+                    icon: AIcons.album,
+                    text: 'No albums',
+                  ),
+                  onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
                 ),
-                filterEntries: AlbumListPage.getAlbumEntries(source),
-                filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-                emptyBuilder: () => EmptyContent(
-                  icon: AIcons.album,
-                  text: 'No albums',
-                ),
-                onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
               );
             },
           );

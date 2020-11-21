@@ -45,7 +45,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         sortFactor: EntrySortFactor.date,
       ).sortedEntries;
 
-  ValueNotifier<SourceState> stateNotifier = ValueNotifier<SourceState>(SourceState.ready);
+  ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
   List<DateMetadata> _savedDates;
 
