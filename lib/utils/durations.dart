@@ -12,8 +12,10 @@ class Durations {
   static const staggeredAnimation = Duration(milliseconds: 375);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
-  // collection animations
   static const appBarTitleAnimation = Duration(milliseconds: 300);
+  static const appBarActionChangeAnimation = Duration(milliseconds: 200);
+
+  // collection animations
   static const filterBarRemovalAnimation = Duration(milliseconds: 400);
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);
   static const collectionScalingBackgroundAnimation = Duration(milliseconds: 200);
@@ -40,4 +42,5 @@ class Durations {
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
+  static const searchDebounceDelay = Duration(milliseconds: 200);
 }

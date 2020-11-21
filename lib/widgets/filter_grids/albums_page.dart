@@ -58,12 +58,16 @@ class AlbumListPage extends StatelessWidget {
 
   // common with album selection page to move/copy entries
 
-  static Map<String, ImageEntry> getAlbumEntries(CollectionSource source) {
+  static Map<String, ImageEntry> getAlbumEntries(CollectionSource source, {String filter}) {
     final pinned = settings.pinnedFilters.whereType<AlbumFilter>().map((f) => f.album);
     final entriesByDate = source.sortedEntriesForFilterList;
 
     // albums are initially sorted by name at the source level
     var sortedAlbums = source.sortedAlbums;
+    if (filter != null && filter.isNotEmpty) {
+      filter = filter.toUpperCase();
+      sortedAlbums = sortedAlbums.where((album) => source.getUniqueAlbumName(album).toUpperCase().contains(filter)).toList();
+    }
 
     if (settings.albumSortFactor == ChipSortFactor.name) {
       final pinnedAlbums = <String>[], regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];

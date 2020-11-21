@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        // TODO TLAD upgrade AGP to 4+ when this is fixed: https://github.com/flutter/flutter/issues/58247
+        // TODO TLAD upgrade AGP to 4+ when this lands on stable: https://github.com/flutter/flutter/pull/70808
         classpath 'com.android.tools.build:gradle:3.6.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:4.3.4'

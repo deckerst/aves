@@ -40,7 +40,7 @@ class ImageView extends StatefulWidget {
 class _ImageViewState extends State<ImageView> {
   final PhotoViewController _photoViewController = PhotoViewController();
   final PhotoViewScaleStateController _photoViewScaleStateController = PhotoViewScaleStateController();
-  final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier<ViewState>(ViewState.zero);
+  final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   StreamSubscription<PhotoViewControllerValue> _subscription;
   Size _photoViewChildSize;
 
