@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/utils/durations.dart';
+import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
@@ -63,7 +64,9 @@ class MapButtonPanel extends StatelessWidget {
               children: [
                 MapOverlayButton(
                   icon: AIcons.openInNew,
-                  onPressed: () => AndroidAppService.openMap(geoUri),
+                  onPressed: () => AndroidAppService.openMap(geoUri).then((success) {
+                    if (!success) showNoMatchingAppDialog(context);
+                  }),
                   tooltip: 'Show on map…',
                 ),
                 SizedBox(height: padding),

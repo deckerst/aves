@@ -74,3 +74,21 @@ class DialogTitle extends StatelessWidget {
     );
   }
 }
+
+void showNoMatchingAppDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AvesDialog(
+        title: 'No Matching App',
+        content: Text('There are no apps that can handle this.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'.toUpperCase()),
+          ),
+        ],
+      );
+    },
+  );
+}

@@ -38,20 +38,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       case EntryAction.delete:
         _showDeleteDialog(context, entry);
         break;
-      case EntryAction.edit:
-        AndroidAppService.edit(entry.uri, entry.mimeType);
-        break;
       case EntryAction.info:
         showInfo();
         break;
       case EntryAction.rename:
         _showRenameDialog(context, entry);
-        break;
-      case EntryAction.open:
-        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
-        break;
-      case EntryAction.openMap:
-        AndroidAppService.openMap(entry.geoUri);
         break;
       case EntryAction.print:
         _print(entry);
@@ -65,11 +56,30 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       case EntryAction.flip:
         _flip(context, entry);
         break;
+      case EntryAction.edit:
+        AndroidAppService.edit(entry.uri, entry.mimeType).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
+        break;
+      case EntryAction.open:
+        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
+        break;
+      case EntryAction.openMap:
+        AndroidAppService.openMap(entry.geoUri).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
+        break;
       case EntryAction.setAs:
-        AndroidAppService.setAs(entry.uri, entry.mimeType);
+        AndroidAppService.setAs(entry.uri, entry.mimeType).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
         break;
       case EntryAction.share:
-        AndroidAppService.share({entry});
+        AndroidAppService.share({entry}).then((success) {
+          if (!success) showNoMatchingAppDialog(context);
+        });
         break;
       case EntryAction.viewSource:
         _goToSourceViewer(context, entry);
