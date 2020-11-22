@@ -3,7 +3,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_album_dialog.dart';
@@ -11,16 +10,11 @@ import 'package:aves/widgets/common/action_delegates/size_aware.dart';
 import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
-import 'package:pedantic/pedantic.dart';
 
 class ChipActionDelegate {
-  Future<void> onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) async {
-    // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-
+  void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     switch (action) {
       case ChipAction.pin:
         settings.pinnedFilters = settings.pinnedFilters..add(filter);
@@ -42,14 +36,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   });
 
   @override
-  Future<void> onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) async {
-    await super.onActionSelected(context, filter, action);
+  void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
+    super.onActionSelected(context, filter, action);
     switch (action) {
       case ChipAction.delete:
-        unawaited(_showDeleteDialog(context, filter as AlbumFilter));
+        _showDeleteDialog(context, filter as AlbumFilter);
         break;
       case ChipAction.rename:
-        unawaited(_showRenameDialog(context, filter as AlbumFilter));
+        _showRenameDialog(context, filter as AlbumFilter);
         break;
       default:
         break;

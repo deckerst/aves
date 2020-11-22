@@ -2,13 +2,10 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:pedantic/pedantic.dart';
 
 abstract class ChipSetActionDelegate {
   CollectionSource get source;
@@ -17,16 +14,13 @@ abstract class ChipSetActionDelegate {
 
   set sortFactor(ChipSortFactor factor);
 
-  Future<void> onActionSelected(BuildContext context, ChipSetAction action) async {
-    // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-
+  void onActionSelected(BuildContext context, ChipSetAction action) {
     switch (action) {
       case ChipSetAction.sort:
-        await _showSortDialog(context);
+        _showSortDialog(context);
         break;
       case ChipSetAction.refresh:
-        unawaited(source.refresh());
+        source.refresh();
         break;
       case ChipSetAction.stats:
         _goToStats(context);

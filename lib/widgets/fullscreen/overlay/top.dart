@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/icons.dart';
@@ -12,6 +13,7 @@ import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:aves/widgets/fullscreen/overlay/minimap.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -168,7 +170,10 @@ class _TopOverlayRow extends StatelessWidget {
                 _buildPopupMenuItem(EntryAction.debug),
               ]
             ],
-            onSelected: onActionSelected,
+            onSelected: (action) {
+              // wait for the popup menu to hide before proceeding with the action
+              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
+            },
           ),
         ),
       ],
@@ -177,7 +182,7 @@ class _TopOverlayRow extends StatelessWidget {
 
   Widget _buildOverlayButton(EntryAction action) {
     Widget child;
-    void onPressed() => onActionSelected?.call(action);
+    void onPressed() => onActionSelected(action);
     switch (action) {
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(

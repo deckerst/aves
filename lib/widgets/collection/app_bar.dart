@@ -258,7 +258,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 ]
               ];
             },
-            onSelected: _onCollectionActionSelected,
+            onSelected: (action) {
+              // wait for the popup menu to hide before proceeding with the action
+              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onCollectionActionSelected(action));
+            },
           );
         },
       ),
@@ -278,10 +281,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     widget.appBarHeightNotifier.value = kToolbarHeight + (hasFilters ? FilterBar.preferredHeight : 0);
   }
 
-  void _onCollectionActionSelected(CollectionAction action) async {
-    // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-
+  Future<void> _onCollectionActionSelected(CollectionAction action) async {
     switch (action) {
       case CollectionAction.copy:
       case CollectionAction.move:

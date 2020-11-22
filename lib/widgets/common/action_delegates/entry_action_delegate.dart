@@ -2,7 +2,6 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/rename_entry_dialog.dart';
@@ -31,49 +30,46 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
   bool get hasCollection => collection != null;
 
-  void onActionSelected(BuildContext context, ImageEntry entry, EntryAction action) async {
-    // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-
+  void onActionSelected(BuildContext context, ImageEntry entry, EntryAction action) {
     switch (action) {
       case EntryAction.toggleFavourite:
         entry.toggleFavourite();
         break;
       case EntryAction.delete:
-        unawaited(_showDeleteDialog(context, entry));
+        _showDeleteDialog(context, entry);
         break;
       case EntryAction.edit:
-        unawaited(AndroidAppService.edit(entry.uri, entry.mimeType));
+        AndroidAppService.edit(entry.uri, entry.mimeType);
         break;
       case EntryAction.info:
         showInfo();
         break;
       case EntryAction.rename:
-        unawaited(_showRenameDialog(context, entry));
+        _showRenameDialog(context, entry);
         break;
       case EntryAction.open:
-        unawaited(AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype));
+        AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype);
         break;
       case EntryAction.openMap:
-        unawaited(AndroidAppService.openMap(entry.geoUri));
+        AndroidAppService.openMap(entry.geoUri);
         break;
       case EntryAction.print:
-        unawaited(_print(entry));
+        _print(entry);
         break;
       case EntryAction.rotateCCW:
-        unawaited(_rotate(context, entry, clockwise: false));
+        _rotate(context, entry, clockwise: false);
         break;
       case EntryAction.rotateCW:
-        unawaited(_rotate(context, entry, clockwise: true));
+        _rotate(context, entry, clockwise: true);
         break;
       case EntryAction.flip:
-        unawaited(_flip(context, entry));
+        _flip(context, entry);
         break;
       case EntryAction.setAs:
-        unawaited(AndroidAppService.setAs(entry.uri, entry.mimeType));
+        AndroidAppService.setAs(entry.uri, entry.mimeType);
         break;
       case EntryAction.share:
-        unawaited(AndroidAppService.share({entry}));
+        AndroidAppService.share({entry});
         break;
       case EntryAction.viewSource:
         _goToSourceViewer(context, entry);
