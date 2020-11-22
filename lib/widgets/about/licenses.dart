@@ -64,8 +64,19 @@ class _LicensesState extends State<Licenses> {
             ),
             Center(
               child: TextButton(
-                onPressed: () => showLicensePage(context: context),
-                child: Text('All Licenses'.toUpperCase()),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Theme(
+                      data: Theme.of(context).copyWith(
+                        // as of Flutter v1.22.4, `cardColor` is used as a background color by `LicensePage`
+                        cardColor: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: LicensePage(),
+                    ),
+                  ),
+                ),
+                child: Text('Show All Licenses'.toUpperCase()),
               ),
             ),
           ],

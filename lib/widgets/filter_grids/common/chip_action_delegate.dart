@@ -58,6 +58,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       context: context,
       builder: (context) {
         return AvesDialog(
+          context: context,
           content: Text('Are you sure you want to delete this album and its ${Intl.plural(count, one: 'item', other: '$count items')}?'),
           actions: [
             TextButton(

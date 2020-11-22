@@ -152,6 +152,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       context: context,
       builder: (context) {
         return AvesDialog(
+          context: context,
           content: Text('Are you sure?'),
           actions: [
             TextButton(

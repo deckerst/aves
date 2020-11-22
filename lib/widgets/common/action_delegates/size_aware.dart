@@ -34,6 +34,7 @@ mixin SizeAwareMixin {
         context: context,
         builder: (context) {
           return AvesDialog(
+            context: context,
             title: 'Not Enough Space',
             content: Text('This operation needs ${formatFilesize(needed)} of free space on “${destinationVolume.description}” to complete, but there is only ${formatFilesize(free)} left.'),
             actions: [

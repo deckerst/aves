@@ -35,6 +35,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
+      context: context,
       title: widget.title,
       scrollableContent: widget.options.entries.map((kv) => _buildRadioListTile(kv.key, kv.value)).toList(),
       actions: [

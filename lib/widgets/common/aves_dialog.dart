@@ -3,8 +3,10 @@ import 'package:flutter/widgets.dart';
 
 class AvesDialog extends AlertDialog {
   static const contentHorizontalPadding = EdgeInsets.symmetric(horizontal: 24);
+  static const borderWidth = 1.0;
 
   AvesDialog({
+    @required BuildContext context,
     String title,
     ScrollController scrollController,
     List<Widget> scrollableContent,
@@ -12,30 +14,34 @@ class AvesDialog extends AlertDialog {
     @required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
         super(
-          title: title != null ? DialogTitle(title: title) : null,
+          title: title != null ? Padding(
+            // padding to avoid transparent border overlapping
+            padding: EdgeInsets.symmetric(horizontal: borderWidth),
+            child: DialogTitle(title: title),
+          ) : null,
           titlePadding: EdgeInsets.zero,
           // the `scrollable` flag of `AlertDialog` makes it
           // scroll both the title and the content together,
           // and overflow feedback ignores the dialog shape,
           // so we restrict scrolling to the content instead
           content: scrollableContent != null
-              ? Builder(
-                  builder: (context) => Container(
-                    // workaround because the dialog tries
-                    // to size itself to the content intrinsic size,
-                    // but the `ListView` viewport does not have one
-                    width: 1,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: Divider.createBorderSide(context, width: 1),
-                        ),
+              ? Container(
+                  // padding to avoid transparent border overlapping
+                  padding: EdgeInsets.symmetric(horizontal: borderWidth),
+                  // workaround because the dialog tries
+                  // to size itself to the content intrinsic size,
+                  // but the `ListView` viewport does not have one
+                  width: 1,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: Divider.createBorderSide(context, width: borderWidth),
                       ),
-                      child: ListView(
-                        controller: scrollController ?? ScrollController(),
-                        shrinkWrap: true,
-                        children: scrollableContent,
-                      ),
+                    ),
+                    child: ListView(
+                      controller: scrollController ?? ScrollController(),
+                      shrinkWrap: true,
+                      children: scrollableContent,
                     ),
                   ),
                 )
@@ -44,6 +50,7 @@ class AvesDialog extends AlertDialog {
           actions: actions,
           actionsPadding: EdgeInsets.symmetric(horizontal: 8),
           shape: RoundedRectangleBorder(
+            side: Divider.createBorderSide(context, width: borderWidth),
             borderRadius: BorderRadius.circular(24),
           ),
         );
@@ -61,7 +68,7 @@ class DialogTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
         border: Border(
-          bottom: Divider.createBorderSide(context, width: 1),
+          bottom: Divider.createBorderSide(context, width: AvesDialog.borderWidth),
         ),
       ),
       child: Text(
@@ -80,6 +87,7 @@ void showNoMatchingAppDialog(BuildContext context) {
     context: context,
     builder: (context) {
       return AvesDialog(
+        context: context,
         title: 'No Matching App',
         content: Text('There are no apps that can handle this.'),
         actions: [
