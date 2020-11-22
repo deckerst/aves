@@ -44,6 +44,7 @@ class AlbumPickAppBar extends StatelessWidget {
         IconButton(
           icon: Icon(AIcons.sort),
           onPressed: () => actionDelegate.onActionSelected(context, ChipSetAction.sort),
+          tooltip: 'Sort…',
         ),
       ],
       floating: true,

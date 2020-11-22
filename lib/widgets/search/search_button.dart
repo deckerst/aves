@@ -16,6 +16,7 @@ class SearchButton extends StatelessWidget {
       key: Key('search-button'),
       icon: Icon(AIcons.search),
       onPressed: () => _goToSearch(context),
+      tooltip: 'Search',
     );
   }
 
