@@ -170,6 +170,7 @@ class FilterGridPage extends StatelessWidget {
   final Map<String, ImageEntry> filterEntries;
   final CollectionFilter Function(String key) filterBuilder;
   final Widget Function() emptyBuilder;
+  final double appBarHeight;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
@@ -179,6 +180,7 @@ class FilterGridPage extends StatelessWidget {
     @required this.filterEntries,
     @required this.filterBuilder,
     @required this.emptyBuilder,
+    this.appBarHeight = kToolbarHeight,
     @required this.onTap,
     this.onLongPress,
   });
@@ -227,7 +229,7 @@ class FilterGridPage extends StatelessWidget {
         controller: PrimaryScrollController.of(context),
         padding: EdgeInsets.only(
           // padding to keep scroll thumb between app bar above and nav bar below
-          top: kToolbarHeight,
+          top: appBarHeight,
           bottom: mqViewInsetsBottom,
         ),
         child: scrollView,
@@ -243,7 +245,15 @@ class FilterGridPage extends StatelessWidget {
         appBar,
         filterKeys.isEmpty
             ? SliverFillRemaining(
-                child: emptyBuilder(),
+                child: Selector<MediaQueryData, double>(
+                  selector: (context, mq) => mq.viewInsets.bottom,
+                  builder: (context, mqViewInsetsBottom, child) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: mqViewInsetsBottom),
+                      child: emptyBuilder(),
+                    );
+                  },
+                ),
                 hasScrollBody: false,
               )
             : SliverPadding(

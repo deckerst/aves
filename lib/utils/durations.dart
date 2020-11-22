@@ -42,5 +42,5 @@ class Durations {
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
-  static const searchDebounceDelay = Duration(milliseconds: 200);
+  static const searchDebounceDelay = Duration(milliseconds: 250);
 }

@@ -1,30 +1,21 @@
 import 'dart:async';
 
-import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/collection/collection_actions.dart';
-import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/action_delegates/feedback.dart';
 import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
 import 'package:aves/widgets/common/action_delegates/size_aware.dart';
 import 'package:aves/widgets/common/aves_dialog.dart';
 import 'package:aves/widgets/common/entry_actions.dart';
-import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
@@ -71,38 +62,11 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
   }
 
   Future<void> _moveSelection(BuildContext context, {@required bool copy}) async {
-    final filterNotifier = ValueNotifier('');
-    final chipSetActionDelegate = AlbumChipSetActionDelegate(source: source);
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
-        builder: (context) {
-          Widget appBar = AlbumPickAppBar(
-            copy: copy,
-            actionDelegate: chipSetActionDelegate,
-            onFilterChanged: (filter) => filterNotifier.value = filter,
-          );
-
-          return Selector<Settings, ChipSortFactor>(
-            selector: (context, s) => s.albumSortFactor,
-            builder: (context, sortFactor, child) {
-              return ValueListenableBuilder<String>(
-                valueListenable: filterNotifier,
-                builder: (context, filter, child) => FilterGridPage(
-                  source: source,
-                  appBar: appBar,
-                  filterEntries: AlbumListPage.getAlbumEntries(source, filter: filter),
-                  filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-                  emptyBuilder: () => EmptyContent(
-                    icon: AIcons.album,
-                    text: 'No albums',
-                  ),
-                  onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
-                ),
-              );
-            },
-          );
-        },
+        settings: RouteSettings(name: AlbumPickPage.routeName),
+        builder: (context) => AlbumPickPage(source: source, copy: copy),
       ),
     );
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
