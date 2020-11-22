@@ -27,8 +27,8 @@ import 'package:collection/collection.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class FilterNavigationPage extends StatelessWidget {
@@ -107,7 +107,8 @@ class FilterNavigationPage extends StatelessWidget {
           .toList(),
     );
     if (selectedAction != null) {
-      unawaited(chipActionDelegate.onActionSelected(context, filter, selectedAction));
+      // wait for the popup menu to hide before proceeding with the action
+      Future.delayed(Durations.popupMenuAnimation * timeDilation, () => chipActionDelegate.onActionSelected(context, filter, selectedAction));
     }
   }
 
@@ -134,7 +135,10 @@ class FilterNavigationPage extends StatelessWidget {
             ),
           ];
         },
-        onSelected: (action) => chipSetActionDelegate.onActionSelected(context, action),
+        onSelected: (action) {
+          // wait for the popup menu to hide before proceeding with the action
+          Future.delayed(Durations.popupMenuAnimation * timeDilation, () => chipSetActionDelegate.onActionSelected(context, action));
+        },
       ),
     ];
   }
