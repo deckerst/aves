@@ -146,6 +146,7 @@ class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwar
       context: context,
       builder: (context) {
         return AvesDialog(
+          context: context,
           content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these $count items')}?'),
           actions: [
             TextButton(

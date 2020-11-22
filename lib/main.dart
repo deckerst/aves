@@ -57,6 +57,7 @@ class _AvesAppState extends State<AvesApp> {
     accentColor: accentColor,
     scaffoldBackgroundColor: Colors.grey[900],
     buttonColor: accentColor,
+    dialogBackgroundColor: Colors.grey[850],
     toggleableActiveColor: accentColor,
     tooltipTheme: TooltipThemeData(
       verticalOffset: 32,

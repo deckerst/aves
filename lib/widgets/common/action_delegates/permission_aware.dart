@@ -25,6 +25,7 @@ mixin PermissionAwareMixin {
         context: context,
         builder: (context) {
           return AvesDialog(
+            context: context,
             title: 'Storage Volume Access',
             content: Text('Please select the $dirDisplayName directory of “$volumeDescription” in the next screen, so that this app can access it and complete your request.'),
             actions: [

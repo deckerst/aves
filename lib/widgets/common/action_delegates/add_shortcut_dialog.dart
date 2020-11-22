@@ -37,6 +37,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
+      context: context,
       content: TextField(
         controller: _nameController,
         decoration: InputDecoration(

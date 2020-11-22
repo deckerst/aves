@@ -41,6 +41,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   @override
   Widget build(BuildContext context) {
     return AvesDialog(
+      context: context,
       title: 'New Album',
       scrollController: _scrollController,
       scrollableContent: [

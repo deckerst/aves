@@ -43,7 +43,7 @@ class InfoPageState extends State<InfoPage> {
         key: Key('back-button'),
         icon: Icon(AIcons.goUp),
         onPressed: _goToImage,
-        tooltip: 'Back to media',
+        tooltip: 'Back to viewer',
       ),
       title: Text('Info'),
       floating: true,

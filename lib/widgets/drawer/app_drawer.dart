@@ -38,37 +38,30 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     final header = Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: Divider.createBorderSide(context),
-        ),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        color: Theme.of(context).accentColor,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Wrap(
-                  spacing: 16,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    AvesLogo(size: 64),
-                    Text(
-                      'Aves',
-                      style: TextStyle(
-                        fontSize: 44,
-                        fontFamily: 'Concourse Caps',
-                      ),
+      padding: EdgeInsets.all(16),
+      color: Theme.of(context).accentColor,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Wrap(
+                spacing: 16,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  AvesLogo(size: 64),
+                  Text(
+                    'Aves',
+                    style: TextStyle(
+                      fontSize: 44,
+                      fontFamily: 'Concourse Caps',
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
