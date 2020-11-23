@@ -374,7 +374,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       MaterialPageRoute(
         settings: RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
-          collection: collection,
+          source: source,
+          parentCollection: collection,
         ),
       ),
     );

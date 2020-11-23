@@ -64,30 +64,21 @@ class DecoratedFilterChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedSwitcher(
-          duration: Durations.chipDecorationAnimation,
-          switchInCurve: Curves.easeInOutCubic,
-          switchOutCurve: Curves.easeInOutCubic,
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: SizeTransition(
-              axis: Axis.horizontal,
-              sizeFactor: animation,
-              axisAlignment: 1.0,
-              child: child,
+        AnimatedCrossFade(
+          firstChild: Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: DecoratedIcon(
+              AIcons.pin,
+              color: FilterGridPage.detailColor,
+              shadows: [Constants.embossShadow],
+              size: 16,
             ),
           ),
-          child: pinned
-              ? Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: DecoratedIcon(
-                    AIcons.pin,
-                    color: FilterGridPage.detailColor,
-                    shadows: [Constants.embossShadow],
-                    size: 16,
-                  ),
-                )
-              : SizedBox.shrink(),
+          secondChild: SizedBox.shrink(),
+          sizeCurve: Curves.easeInOutCubic,
+          alignment: AlignmentDirectional.centerEnd,
+          crossFadeState: pinned ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          duration: Durations.chipDecorationAnimation,
         ),
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           Padding(

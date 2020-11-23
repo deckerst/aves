@@ -1,5 +1,4 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/common/aves_selection_dialog.dart';
@@ -52,11 +51,7 @@ abstract class ChipSetActionDelegate {
       MaterialPageRoute(
         settings: RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
-          collection: CollectionLens(
-            source: source,
-            groupFactor: settings.collectionGroupFactor,
-            sortFactor: settings.collectionSortFactor,
-          ),
+          source: source,
         ),
       ),
     );

@@ -296,7 +296,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+      (route) => false,
     );
   }
 

@@ -1,9 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/settings.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +8,16 @@ import 'package:intl/intl.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class FilterTable extends StatelessWidget {
-  final CollectionLens collection;
+  final int totalEntryCount;
   final Map<String, int> entryCountMap;
   final CollectionFilter Function(String key) filterBuilder;
+  final FilterCallback onFilterSelection;
 
   const FilterTable({
-    @required this.collection,
+    @required this.totalEntryCount,
     @required this.entryCountMap,
     @required this.filterBuilder,
+    @required this.onFilterSelection,
   });
 
   static const chipWidth = AvesFilterChip.maxChipWidth;
@@ -27,7 +26,6 @@ class FilterTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxCount = collection.entryCount;
     final sortedEntries = entryCountMap.entries.toList()
       ..sort((kv1, kv2) {
         final c = kv2.value.compareTo(kv1.value);
@@ -47,7 +45,7 @@ class FilterTable extends StatelessWidget {
               final filter = filterBuilder(kv.key);
               final label = filter.label;
               final count = kv.value;
-              final percent = count / maxCount;
+              final percent = count / totalEntryCount;
               return TableRow(
                 children: [
                   Container(
@@ -58,7 +56,7 @@ class FilterTable extends StatelessWidget {
                     alignment: AlignmentDirectional.centerStart,
                     child: AvesFilterChip(
                       filter: filter,
-                      onTap: (filter) => _goToCollection(context, filter),
+                      onTap: onFilterSelection,
                     ),
                   ),
                   if (showPercentIndicator)
@@ -90,18 +88,6 @@ class FilterTable extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  void _goToCollection(BuildContext context, CollectionFilter filter) {
-    if (collection == null) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(collection.derive(filter)),
-      ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
     );
   }
 }
