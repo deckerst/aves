@@ -111,7 +111,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         mainAxisSize: MainAxisSize.min,
         children: [
           content,
-          Flexible(child: widget.details),
+          widget.details,
         ],
       );
     }
