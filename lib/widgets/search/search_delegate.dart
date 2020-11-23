@@ -22,8 +22,8 @@ import 'package:flutter/services.dart';
 
 class ImageSearchDelegate {
   final CollectionSource source;
-  final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
   final CollectionLens parentCollection;
+  final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
 
   static const searchHistoryCount = 10;
 
@@ -188,14 +188,12 @@ class ImageSearchDelegate {
     if (parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {
-      _goToCollectionPage(context, filter);
+      _jumpToCollectionPage(context, filter);
     }
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    if (filter != null) {
-      parentCollection.addFilter(filter);
-    }
+    parentCollection.addFilter(filter);
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
@@ -209,7 +207,7 @@ class ImageSearchDelegate {
     Navigator.pop(context);
   }
 
-  void _goToCollectionPage(BuildContext context, CollectionFilter filter) {
+  void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
     _clean();
     Navigator.pushAndRemoveUntil(
       context,
@@ -222,7 +220,7 @@ class ImageSearchDelegate {
           sortFactor: settings.collectionSortFactor,
         )),
       ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+      (route) => false,
     );
   }
 

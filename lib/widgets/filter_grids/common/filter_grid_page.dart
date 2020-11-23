@@ -76,7 +76,7 @@ class FilterNavigationPage extends StatelessWidget {
           return sourceState != SourceState.loading && emptyBuilder != null ? emptyBuilder() : SizedBox.shrink();
         },
       ),
-      onTap: (filter) => Navigator.pushAndRemoveUntil(
+      onTap: (filter) => Navigator.push(
         context,
         MaterialPageRoute(
           settings: RouteSettings(name: CollectionPage.routeName),
@@ -87,7 +87,6 @@ class FilterNavigationPage extends StatelessWidget {
             sortFactor: settings.collectionSortFactor,
           )),
         ),
-        settings.navRemoveRoutePredicate(CollectionPage.routeName),
       ),
       onLongPress: AvesApp.mode == AppMode.main ? (filter, tapPosition) => _showMenu(context, filter, tapPosition) : null,
     );

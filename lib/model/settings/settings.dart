@@ -198,14 +198,6 @@ class Settings extends ChangeNotifier {
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
-  // utils
-
-  // `RoutePredicate`
-  RoutePredicate navRemoveRoutePredicate(String pushedRouteName) {
-    final home = homePage.routeName;
-    return (route) => pushedRouteName != home && route.settings?.name == home;
-  }
-
   // convenience methods
 
   // ignore: avoid_positional_boolean_parameters
