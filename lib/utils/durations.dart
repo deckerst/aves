@@ -15,6 +15,9 @@ class Durations {
   static const appBarTitleAnimation = Duration(milliseconds: 300);
   static const appBarActionChangeAnimation = Duration(milliseconds: 200);
 
+  // filter grids animations
+  static const chipDecorationAnimation = Duration(milliseconds: 200);
+
   // collection animations
   static const filterBarRemovalAnimation = Duration(milliseconds: 400);
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);

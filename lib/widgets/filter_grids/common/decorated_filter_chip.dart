@@ -6,6 +6,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/aves_filter_chip.dart';
@@ -63,16 +64,31 @@ class DecoratedFilterChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (pinned)
-          Padding(
-            padding: EdgeInsets.only(right: 8),
-            child: DecoratedIcon(
-              AIcons.pin,
-              color: FilterGridPage.detailColor,
-              shadows: [Constants.embossShadow],
-              size: 16,
+        AnimatedSwitcher(
+          duration: Durations.chipDecorationAnimation,
+          switchInCurve: Curves.easeInOutCubic,
+          switchOutCurve: Curves.easeInOutCubic,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: SizeTransition(
+              axis: Axis.horizontal,
+              sizeFactor: animation,
+              axisAlignment: 1.0,
+              child: child,
             ),
           ),
+          child: pinned
+              ? Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: DecoratedIcon(
+                    AIcons.pin,
+                    color: FilterGridPage.detailColor,
+                    shadows: [Constants.embossShadow],
+                    size: 16,
+                  ),
+                )
+              : SizedBox.shrink(),
+        ),
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           Padding(
             padding: EdgeInsets.only(right: 8),
