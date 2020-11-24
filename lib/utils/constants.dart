@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:tuple/tuple.dart';
+import 'package:latlong/latlong.dart';
 
 class Constants {
   // as of Flutter v1.22.3, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
@@ -21,7 +21,7 @@ class Constants {
   static const String overlayUnknown = '—'; // em dash
   static const String infoUnknown = 'unknown';
 
-  static const pointNemo = Tuple2(-48.876667, -123.393333);
+  static final pointNemo = LatLng(-48.876667, -123.393333);
 
   static const int infoGroupMaxValueLength = 140;
 

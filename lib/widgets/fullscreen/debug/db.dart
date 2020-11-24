@@ -128,7 +128,6 @@ class _DbTabState extends State<DbTab> {
                 Text('DB address:${data == null ? ' no row' : ''}'),
                 if (data != null)
                   InfoRowGroup({
-                    'addressLine': '${data.addressLine}',
                     'countryCode': '${data.countryCode}',
                     'countryName': '${data.countryName}',
                     'adminArea': '${data.adminArea}',

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
@@ -30,15 +32,25 @@ mixin LocationMixin on SourceBase {
     final todo = byLocated[false] ?? [];
     if (todo.isEmpty) return;
 
-    // cache known locations to avoid querying the geocoder unless necessary
-    // measuring the time it takes to process ~3000 coordinates (with ~10% of duplicates)
-    // does not clearly show whether it is an actual optimization,
-    // as results vary wildly (durations in "min:sec"):
-    // - with no cache: 06:17, 08:36, 08:34
-    // - with cache: 08:28, 05:42, 08:03, 05:58
-    // anyway, in theory it should help!
-    final knownLocations = <Tuple2<double, double>, AddressDetails>{};
-    byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(entry.latLng, () => entry.addressDetails));
+    // geocoder calls take between 150ms and 250ms
+    // approximation and caching can reduce geocoder usage
+    // for example, for a set of 2932 entries:
+    // - 2476 calls (84%) when approximating to 6 decimal places (~10cm - individual humans)
+    // - 2433 calls (83%) when approximating to 5 decimal places (~1m - individual trees, houses)
+    // - 2277 calls (78%) when approximating to 4 decimal places (~10m - individual street, large buildings)
+    // - 1521 calls (52%) when approximating to 3 decimal places (~100m - neighborhood, street)
+    // -  652 calls (22%) when approximating to 2 decimal places (~1km - town or village)
+    // cf https://en.wikipedia.org/wiki/Decimal_degrees#Precision
+    final latLngFactor = pow(10, 2);
+    Tuple2 approximateLatLng(ImageEntry entry) {
+      final lat = entry.catalogMetadata?.latitude;
+      final lng = entry.catalogMetadata?.longitude;
+      if (lat == null || lng == null) return null;
+      return Tuple2((lat * latLngFactor).round(), (lng * latLngFactor).round());
+    }
+
+    final knownLocations = <Tuple2, AddressDetails>{};
+    byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails));
 
     var progressDone = 0;
     final progressTotal = todo.length;
@@ -46,13 +58,14 @@ mixin LocationMixin on SourceBase {
 
     final newAddresses = <AddressDetails>[];
     await Future.forEach<ImageEntry>(todo, (entry) async {
-      if (knownLocations.containsKey(entry.latLng)) {
-        entry.addressDetails = knownLocations[entry.latLng]?.copyWith(contentId: entry.contentId);
+      final latLng = approximateLatLng(entry);
+      if (knownLocations.containsKey(latLng)) {
+        entry.addressDetails = knownLocations[latLng]?.copyWith(contentId: entry.contentId);
       } else {
         await entry.locate(background: true);
         // it is intended to insert `null` if the geocoder failed,
         // so that we skip geocoding of following entries with the same coordinates
-        knownLocations[entry.latLng] = entry.addressDetails;
+        knownLocations[latLng] = entry.addressDetails;
       }
       if (entry.isLocated) {
         newAddresses.add(entry.addressDetails);
