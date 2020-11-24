@@ -21,7 +21,7 @@ packages:
       name: ansicolor
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "1.1.1"
   archive:
     dependency: transitive
     description:
@@ -324,7 +324,7 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.1"
   flutter_native_timezone:
     dependency: "direct main"
     description:
@@ -535,7 +535,7 @@ packages:
       name: node_interop
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   node_io:
     dependency: transitive
     description:
@@ -647,7 +647,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.2"
+    version: "1.12.0"
   pedantic:
     dependency: "direct main"
     description:
