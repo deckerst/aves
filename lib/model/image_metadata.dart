@@ -142,13 +142,12 @@ class OverlayMetadata {
 
 class AddressDetails {
   final int contentId;
-  final String addressLine, countryCode, countryName, adminArea, locality;
+  final String countryCode, countryName, adminArea, locality;
 
   String get place => locality != null && locality.isNotEmpty ? locality : adminArea;
 
   AddressDetails({
     this.contentId,
-    this.addressLine,
     this.countryCode,
     this.countryName,
     this.adminArea,
@@ -160,7 +159,6 @@ class AddressDetails {
   }) {
     return AddressDetails(
       contentId: contentId ?? this.contentId,
-      addressLine: addressLine,
       countryCode: countryCode,
       countryName: countryName,
       adminArea: adminArea,
@@ -171,7 +169,6 @@ class AddressDetails {
   factory AddressDetails.fromMap(Map map) {
     return AddressDetails(
       contentId: map['contentId'],
-      addressLine: map['addressLine'] ?? '',
       countryCode: map['countryCode'] ?? '',
       countryName: map['countryName'] ?? '',
       adminArea: map['adminArea'] ?? '',
@@ -181,7 +178,6 @@ class AddressDetails {
 
   Map<String, dynamic> toMap() => {
         'contentId': contentId,
-        'addressLine': addressLine,
         'countryCode': countryCode,
         'countryName': countryName,
         'adminArea': adminArea,
@@ -190,7 +186,7 @@ class AddressDetails {
 
   @override
   String toString() {
-    return 'AddressDetails{contentId=$contentId, addressLine=$addressLine, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
+    return 'AddressDetails{contentId=$contentId, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
   }
 }
 

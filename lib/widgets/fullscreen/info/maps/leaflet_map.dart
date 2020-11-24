@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:latlong/latlong.dart';
-import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../location_section.dart';
@@ -18,16 +17,15 @@ class EntryLeafletMap extends StatefulWidget {
   final Size markerSize;
   final WidgetBuilder markerBuilder;
 
-  EntryLeafletMap({
+  const EntryLeafletMap({
     Key key,
-    Tuple2<double, double> latLng,
+    this.latLng,
     this.geoUri,
     this.initialZoom,
     this.style,
     this.markerBuilder,
     this.markerSize,
-  })  : latLng = LatLng(latLng.item1, latLng.item2),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EntryLeafletMapState();
