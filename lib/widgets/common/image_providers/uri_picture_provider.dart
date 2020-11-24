@@ -8,9 +8,12 @@ class UriPicture extends PictureProvider<UriPicture> {
   const UriPicture({
     @required this.uri,
     @required this.mimeType,
+    this.colorFilter,
   }) : assert(uri != null);
 
   final String uri, mimeType;
+
+  final ColorFilter colorFilter;
 
   @override
   Future<UriPicture> obtainKey(PictureConfiguration configuration) {
@@ -34,22 +37,22 @@ class UriPicture extends PictureProvider<UriPicture> {
 
     final decoder = SvgPicture.svgByteDecoder;
     if (onError != null) {
-      final future = decoder(data, null, key.toString());
+      final future = decoder(data, colorFilter, key.toString());
       unawaited(future.catchError(onError));
       return future;
     }
-    return decoder(data, null, key.toString());
+    return decoder(data, colorFilter, key.toString());
   }
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is UriPicture && other.uri == uri;
+    return other is UriPicture && other.uri == uri && other.colorFilter == colorFilter;
   }
 
   @override
-  int get hashCode => uri.hashCode;
+  int get hashCode => hashValues(uri, colorFilter);
 
   @override
-  String toString() => '${objectRuntimeType(this, 'UriPicture')}(uri=$uri, mimeType=$mimeType)';
+  String toString() => '${objectRuntimeType(this, 'UriPicture')}(uri=$uri, mimeType=$mimeType, colorFilter=$colorFilter)';
 }

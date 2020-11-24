@@ -1,6 +1,5 @@
 import 'package:aves/utils/geo_utils.dart';
 import 'package:latlong/latlong.dart';
-import 'package:tuple/tuple.dart';
 
 enum CoordinateFormat { dms, decimal }
 
