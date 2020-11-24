@@ -181,10 +181,10 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
     return FutureBuilder<String>(
       future: _addressLineLoader,
       builder: (context, snapshot) {
-        final address = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : '';
+        final address = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : null;
         return InfoRowGroup({
           'Coordinates': settings.coordinateFormat.format(entry.latLng),
-          if (address.isNotEmpty) 'Address': address,
+          if (address?.isNotEmpty == true) 'Address': address,
         });
       },
     );
