@@ -1,30 +1,30 @@
-import 'dart:io';
-
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 
-import '../aves_dialog.dart';
+import 'aves_dialog.dart';
 
-class RenameEntryDialog extends StatefulWidget {
-  final ImageEntry entry;
+class AddShortcutDialog extends StatefulWidget {
+  final Set<CollectionFilter> filters;
 
-  const RenameEntryDialog(this.entry);
+  const AddShortcutDialog(this.filters);
 
   @override
-  _RenameEntryDialogState createState() => _RenameEntryDialogState();
+  _AddShortcutDialogState createState() => _AddShortcutDialogState();
 }
 
-class _RenameEntryDialogState extends State<RenameEntryDialog> {
+class _AddShortcutDialogState extends State<AddShortcutDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
-
-  ImageEntry get entry => widget.entry;
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = entry.filenameWithoutExtension ?? entry.sourceTitle;
+    final filters = List.from(widget.filters)..sort();
+    if (filters.isEmpty) {
+      _nameController.text = 'Collection';
+    } else {
+      _nameController.text = filters.first.label;
+    }
     _validate();
   }
 
@@ -41,10 +41,10 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
       content: TextField(
         controller: _nameController,
         decoration: InputDecoration(
-          labelText: 'New name',
-          suffixText: entry.extension,
+          labelText: 'Shortcut label',
         ),
         autofocus: true,
+        maxLength: 25,
         onChanged: (_) => _validate(),
         onSubmitted: (_) => _submit(context),
       ),
@@ -58,7 +58,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text('Apply'.toUpperCase()),
+              child: Text('Add'.toUpperCase()),
             );
           },
         )
@@ -66,16 +66,9 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
     );
   }
 
-  String _buildEntryPath(String name) {
-    if (name == null || name.isEmpty) return '';
-    return path.join(entry.directory, name + entry.extension);
-  }
-
   Future<void> _validate() async {
-    final newName = _nameController.text ?? '';
-    final path = _buildEntryPath(newName);
-    final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
-    _isValidNotifier.value = newName.isNotEmpty && !exists;
+    final name = _nameController.text ?? '';
+    _isValidNotifier.value = name.isNotEmpty;
   }
 
   void _submit(BuildContext context) => Navigator.pop(context, _nameController.text);

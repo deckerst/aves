@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:flutter/material.dart';
 

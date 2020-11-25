@@ -1,8 +1,8 @@
+import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/widgets/common/aves_selection_dialog.dart';
-import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
+import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
 

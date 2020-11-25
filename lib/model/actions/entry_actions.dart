@@ -1,5 +1,5 @@
-import 'package:aves/widgets/common/icons.dart';
-import 'package:flutter/material.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:flutter/widgets.dart';
 
 enum EntryAction {
   delete,

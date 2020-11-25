@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/widgets/common/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

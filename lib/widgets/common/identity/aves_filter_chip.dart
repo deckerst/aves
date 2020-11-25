@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/icons.dart';
 import 'package:flutter/material.dart';
 
 typedef FilterCallback = void Function(CollectionFilter filter);
@@ -28,7 +28,7 @@ class AvesFilterChip extends StatefulWidget {
 
   const AvesFilterChip({
     Key key,
-    this.filter,
+    @required this.filter,
     this.removable = false,
     this.showGenericIcon = true,
     this.background,
@@ -36,7 +36,8 @@ class AvesFilterChip extends StatefulWidget {
     this.heroType = HeroType.onTap,
     @required this.onTap,
     this.onLongPress,
-  }) : super(key: key);
+  })  : assert(filter != null),
+        super(key: key);
 
   @override
   _AvesFilterChipState createState() => _AvesFilterChipState();

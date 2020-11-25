@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:aves/image_providers/thumbnail_provider.dart';
+import 'package:aves/image_providers/uri_image_provider.dart';
+import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
-import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
-import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/tiled_view.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
 import 'package:flutter/foundation.dart';

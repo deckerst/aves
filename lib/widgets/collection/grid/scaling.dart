@@ -1,23 +1,28 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/collection/grid/list_section_layout.dart';
-import 'package:aves/widgets/collection/grid/list_sliver.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 
-class GridScaleGestureDetector extends StatefulWidget {
+// metadata to identify entry from RenderObject hit test during collection scaling
+class ScalerMetadata<T> {
+  final T item;
+
+  const ScalerMetadata(this.item);
+}
+
+class GridScaleGestureDetector<T> extends StatefulWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<double> extentNotifier;
   final Size viewportSize;
-  final void Function(ImageEntry entry) onScaled;
+  final Widget Function(T item, double extent) scaledBuilder;
+  final Rect Function(T item) getScaledItemTileRect;
+  final void Function(T item) onScaled;
   final Widget child;
 
   const GridScaleGestureDetector({
@@ -25,20 +30,22 @@ class GridScaleGestureDetector extends StatefulWidget {
     @required this.appBarHeightNotifier,
     @required this.extentNotifier,
     @required this.viewportSize,
-    this.onScaled,
+    @required this.scaledBuilder,
+    @required this.getScaledItemTileRect,
+    @required this.onScaled,
     @required this.child,
   });
 
   @override
-  _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState();
+  _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState<T>();
 }
 
-class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
+class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector> {
   double _startExtent, _extentMin, _extentMax;
   bool _applyingScale = false;
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
-  ThumbnailMetadata _metadata;
+  ScalerMetadata<T> _metadata;
 
   ValueNotifier<double> get tileExtentNotifier => widget.extentNotifier;
 
@@ -60,7 +67,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         scrollableBox.hitTest(result, position: details.localFocalPoint);
 
         // find `RenderObject`s at the gesture focal point
-        T firstOf<T>(BoxHitTestResult result) => result.path.firstWhere((el) => el.target is T, orElse: () => null)?.target as T;
+        U firstOf<U>(BoxHitTestResult result) => result.path.firstWhere((el) => el.target is U, orElse: () => null)?.target as U;
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
@@ -75,14 +82,12 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final halfExtent = _startExtent / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
-          builder: (context) {
-            return ScaleOverlay(
-              imageEntry: _metadata.entry,
-              center: thumbnailCenter,
-              gridWidth: gridWidth,
-              scaledExtentNotifier: _scaledExtentNotifier,
-            );
-          },
+          builder: (context) => ScaleOverlay(
+            builder: (extent) => widget.scaledBuilder(_metadata.item, extent),
+            center: thumbnailCenter,
+            gridWidth: gridWidth,
+            scaledExtentNotifier: _scaledExtentNotifier,
+          ),
         );
         Overlay.of(scrollableContext).insert(_overlayEntry);
       },
@@ -112,8 +117,8 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         } else {
           // scroll to show the focal point thumbnail at its new position
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            final entry = _metadata.entry;
-            _scrollToEntry(entry);
+            final entry = _metadata.item;
+            _scrollToItem(entry);
             // warning: posting `onScaled` in the next frame with `addPostFrameCallback`
             // would trigger only when the scrollable offset actually changes
             Future.delayed(Durations.collectionScalingCompleteNotificationDelay).then((_) => widget.onScaled?.call(entry));
@@ -129,11 +134,10 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
   // `Scrollable.ensureVisible` only works on already rendered objects
   // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
   // `RenderViewport.scrollOffsetOf` is a good alternative
-  void _scrollToEntry(ImageEntry entry) {
+  void _scrollToItem(T item) {
     final scrollableContext = widget.scrollableKey.currentContext;
     final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
-    final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
-    final tileRect = sectionedListLayout.getTileRect(entry) ?? Rect.zero;
+    final tileRect = widget.getScaledItemTileRect(item);
     // most of the time the app bar will be scrolled away after scaling,
     // so we compensate for it to center the focal point thumbnail
     final appBarHeight = widget.appBarHeightNotifier.value;
@@ -144,13 +148,13 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
 }
 
 class ScaleOverlay extends StatefulWidget {
-  final ImageEntry imageEntry;
+  final Widget Function(double extent) builder;
   final Offset center;
   final double gridWidth;
   final ValueNotifier<double> scaledExtentNotifier;
 
   const ScaleOverlay({
-    @required this.imageEntry,
+    @required this.builder,
     @required this.center,
     @required this.gridWidth,
     @required this.scaledExtentNotifier,
@@ -225,11 +229,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                       top: clampedCenter.dy - extent / 2,
                       child: DefaultTextStyle(
                         style: TextStyle(),
-                        child: DecoratedThumbnail(
-                          entry: widget.imageEntry,
-                          extent: extent,
-                          showOverlay: false,
-                        ),
+                        child: widget.builder(extent),
                       ),
                     ),
                   ],

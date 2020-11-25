@@ -1,6 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/durations.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

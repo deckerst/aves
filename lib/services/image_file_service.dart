@@ -4,7 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

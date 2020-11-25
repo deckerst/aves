@@ -1,7 +1,7 @@
 import 'package:aves/flutter_version.dart';
 import 'package:aves/widgets/about/licenses.dart';
-import 'package:aves/widgets/common/aves_logo.dart';
-import 'package:aves/widgets/common/link_chip.dart';
+import 'package:aves/widgets/common/basic/link_chip.dart';
+import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 

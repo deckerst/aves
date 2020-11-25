@@ -5,26 +5,26 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/widgets/collection/collection_actions.dart';
-import 'package:aves/widgets/common/action_delegates/feedback.dart';
-import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
-import 'package:aves/widgets/common/action_delegates/size_aware.dart';
-import 'package:aves/widgets/common/aves_dialog.dart';
-import 'package:aves/widgets/common/entry_actions.dart';
+import 'package:aves/model/actions/collection_actions.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
+import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-class SelectionActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
 
   CollectionSource get source => collection.source;
 
   Set<ImageEntry> get selection => collection.selection;
 
-  SelectionActionDelegate({
+  EntrySetActionDelegate({
     @required this.collection,
   });
 

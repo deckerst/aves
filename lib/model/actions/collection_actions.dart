@@ -1,13 +1,14 @@
 enum CollectionAction {
   addShortcut,
-  copy,
+  sort,
   group,
-  move,
   refresh,
-  refreshMetadata,
   select,
   selectAll,
   selectNone,
-  sort,
   stats,
+  // apply to entry set
+  copy,
+  move,
+  refreshMetadata,
 }

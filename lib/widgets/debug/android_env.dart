@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:flutter/material.dart';
 

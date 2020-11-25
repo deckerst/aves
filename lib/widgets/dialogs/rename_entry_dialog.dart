@@ -1,32 +1,30 @@
 import 'dart:io';
 
+import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
-import '../aves_dialog.dart';
+import 'aves_dialog.dart';
 
-class RenameAlbumDialog extends StatefulWidget {
-  final String album;
+class RenameEntryDialog extends StatefulWidget {
+  final ImageEntry entry;
 
-  const RenameAlbumDialog(this.album);
+  const RenameEntryDialog(this.entry);
 
   @override
-  _RenameAlbumDialogState createState() => _RenameAlbumDialogState();
+  _RenameEntryDialogState createState() => _RenameEntryDialogState();
 }
 
-class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
+class _RenameEntryDialogState extends State<RenameEntryDialog> {
   final TextEditingController _nameController = TextEditingController();
-  final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  String get album => widget.album;
-
-  String get initialValue => path.basename(album);
+  ImageEntry get entry => widget.entry;
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = initialValue;
+    _nameController.text = entry.filenameWithoutExtension ?? entry.sourceTitle;
     _validate();
   }
 
@@ -40,20 +38,16 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
   Widget build(BuildContext context) {
     return AvesDialog(
       context: context,
-      content: ValueListenableBuilder<bool>(
-          valueListenable: _existsNotifier,
-          builder: (context, exists, child) {
-            return TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'New name',
-                helperText: exists ? 'Album already exists' : '',
-              ),
-              autofocus: true,
-              onChanged: (_) => _validate(),
-              onSubmitted: (_) => _submit(context),
-            );
-          }),
+      content: TextField(
+        controller: _nameController,
+        decoration: InputDecoration(
+          labelText: 'New name',
+          suffixText: entry.extension,
+        ),
+        autofocus: true,
+        onChanged: (_) => _validate(),
+        onSubmitted: (_) => _submit(context),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
@@ -72,16 +66,15 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
     );
   }
 
-  String _buildAlbumPath(String name) {
+  String _buildEntryPath(String name) {
     if (name == null || name.isEmpty) return '';
-    return path.join(path.dirname(album), name);
+    return path.join(entry.directory, name + entry.extension);
   }
 
   Future<void> _validate() async {
     final newName = _nameController.text ?? '';
-    final path = _buildAlbumPath(newName);
+    final path = _buildEntryPath(newName);
     final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
-    _existsNotifier.value = exists && newName != initialValue;
     _isValidNotifier.value = newName.isNotEmpty && !exists;
   }
 

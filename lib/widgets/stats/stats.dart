@@ -5,16 +5,16 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
@@ -290,7 +290,7 @@ class EntryByMimeDatum {
   EntryByMimeDatum({
     @required this.mimeType,
     @required this.entryCount,
-  }) : displayText = MimeTypes.displayType(mimeType);
+  }) : displayText = MimeUtils.displayType(mimeType);
 
   Color get color => stringToColor(displayText);
 

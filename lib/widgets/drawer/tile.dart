@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:aves/utils/flutter_utils.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

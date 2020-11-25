@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/widgets/common/image_providers/region_provider.dart';
+import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

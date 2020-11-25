@@ -1,9 +1,9 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_section.dart';

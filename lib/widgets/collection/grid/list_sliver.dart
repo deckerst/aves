@@ -4,8 +4,9 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/collection/grid/list_known_extent.dart';
 import 'package:aves/widgets/collection/grid/list_section_layout.dart';
+import 'package:aves/widgets/collection/grid/scaling.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
-import 'package:aves/widgets/common/routes.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +71,7 @@ class GridThumbnail extends StatelessWidget {
         }
       },
       child: MetaData(
-        metaData: ThumbnailMetadata(entry),
+        metaData: ScalerMetadata(entry),
         child: DecoratedThumbnail(
           entry: entry,
           extent: tileExtent,
@@ -93,11 +94,4 @@ class GridThumbnail extends StatelessWidget {
       ),
     );
   }
-}
-
-// metadata to identify entry from RenderObject hit test during collection scaling
-class ThumbnailMetadata {
-  final ImageEntry entry;
-
-  const ThumbnailMetadata(this.entry);
 }
