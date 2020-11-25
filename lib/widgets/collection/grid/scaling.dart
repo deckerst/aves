@@ -16,8 +16,7 @@ class GridScaleGestureDetector extends StatefulWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<double> extentNotifier;
-  final Size mqSize;
-  final double mqHorizontalPadding;
+  final Size viewportSize;
   final void Function(ImageEntry entry) onScaled;
   final Widget child;
 
@@ -25,8 +24,7 @@ class GridScaleGestureDetector extends StatefulWidget {
     this.scrollableKey,
     @required this.appBarHeightNotifier,
     @required this.extentNotifier,
-    @required this.mqSize,
-    @required this.mqHorizontalPadding,
+    @required this.viewportSize,
     this.onScaled,
     @required this.child,
   });
@@ -73,7 +71,7 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
         _extentMin = gridWidth / (gridWidth / TileExtentManager.tileExtentMin).round();
-        _extentMax = gridWidth / (gridWidth / TileExtentManager.extentMaxForSize(widget.mqSize)).round();
+        _extentMax = gridWidth / (gridWidth / TileExtentManager.extentMaxForSize(widget.viewportSize)).round();
         final halfExtent = _startExtent / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
@@ -104,10 +102,9 @@ class _GridScaleGestureDetectorState extends State<GridScaleGestureDetector> {
         final oldExtent = tileExtentNotifier.value;
         // sanitize and update grid layout if necessary
         final newExtent = TileExtentManager.applyTileExtent(
-          widget.mqSize,
-          widget.mqHorizontalPadding,
+          widget.viewportSize,
           tileExtentNotifier,
-          newExtent: _scaledExtentNotifier.value,
+          userPreferredExtent: _scaledExtentNotifier.value,
         );
         _scaledExtentNotifier = null;
         if (newExtent == oldExtent) {
