@@ -1,8 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/aves_filter_chip.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpandableFilterRow extends StatelessWidget {

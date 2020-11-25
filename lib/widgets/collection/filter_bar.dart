@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/aves_filter_chip.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class FilterBar extends StatefulWidget implements PreferredSizeWidget {

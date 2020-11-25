@@ -1,7 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

@@ -1,5 +1,5 @@
+import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
-import 'package:aves/utils/durations.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

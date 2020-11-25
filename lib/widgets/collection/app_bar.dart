@@ -6,17 +6,17 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/app_shortcut_service.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/collection/collection_actions.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
-import 'package:aves/widgets/common/action_delegates/add_shortcut_dialog.dart';
-import 'package:aves/widgets/common/action_delegates/selection_action_delegate.dart';
+import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
+import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
-import 'package:aves/widgets/common/aves_selection_dialog.dart';
-import 'package:aves/widgets/common/entry_actions.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/search/search_button.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/stats/stats.dart';
@@ -42,7 +42,7 @@ class CollectionAppBar extends StatefulWidget {
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
   final TextEditingController _searchFieldController = TextEditingController();
-  SelectionActionDelegate _actionDelegate;
+  EntrySetActionDelegate _actionDelegate;
   AnimationController _browseToSelectAnimation;
   Future<bool> _canAddShortcutsLoader;
 
@@ -55,7 +55,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _actionDelegate = SelectionActionDelegate(
+    _actionDelegate = EntrySetActionDelegate(
       collection: collection,
     );
     _browseToSelectAnimation = AnimationController(

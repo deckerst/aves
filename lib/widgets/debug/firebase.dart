@@ -1,4 +1,4 @@
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
-import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
+import 'package:aves/image_providers/thumbnail_provider.dart';
+import 'package:aves/image_providers/uri_image_provider.dart';
 
 class EntryCache {
   static Future<void> evict(

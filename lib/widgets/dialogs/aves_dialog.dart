@@ -14,11 +14,13 @@ class AvesDialog extends AlertDialog {
     @required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
         super(
-          title: title != null ? Padding(
-            // padding to avoid transparent border overlapping
-            padding: EdgeInsets.symmetric(horizontal: borderWidth),
-            child: DialogTitle(title: title),
-          ) : null,
+          title: title != null
+              ? Padding(
+                  // padding to avoid transparent border overlapping
+                  padding: EdgeInsets.symmetric(horizontal: borderWidth),
+                  child: DialogTitle(title: title),
+                )
+              : null,
           titlePadding: EdgeInsets.zero,
           // the `scrollable` flag of `AlertDialog` makes it
           // scroll both the title and the content together,

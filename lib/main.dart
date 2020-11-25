@@ -2,10 +2,10 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/route_tracker.dart';
-import 'package:aves/widgets/common/data_providers/settings_provider.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/routes.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/behaviour/route_tracker.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/providers/settings_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';

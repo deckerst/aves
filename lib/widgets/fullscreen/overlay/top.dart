@@ -1,13 +1,13 @@
 import 'dart:math';
 
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/entry_actions.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:aves/widgets/fullscreen/overlay/minimap.dart';

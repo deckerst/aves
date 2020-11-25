@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/widgets/common/fx/outlined_text.dart';
+import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';

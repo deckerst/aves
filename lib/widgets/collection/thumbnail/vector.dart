@@ -1,6 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
+import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';

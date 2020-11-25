@@ -1,11 +1,11 @@
 import 'dart:math';
 
+import 'package:aves/image_providers/thumbnail_provider.dart';
+import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/utils/durations.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
-import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
-import 'package:aves/widgets/common/image_providers/uri_image_provider.dart';
-import 'package:aves/widgets/common/transition_image.dart';
+import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
 
 class ThumbnailRasterImage extends StatefulWidget {

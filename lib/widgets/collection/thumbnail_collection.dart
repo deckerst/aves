@@ -2,24 +2,25 @@ import 'dart:async';
 
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/mime_types.dart';
+import 'package:aves/model/image_entry.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/utils/durations.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/collection/grid/list_section_layout.dart';
 import 'package:aves/widgets/collection/grid/list_sliver.dart';
 import 'package:aves/widgets/collection/grid/scaling.dart';
 import 'package:aves/widgets/collection/grid/tile_extent_manager.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/scroll_thumb.dart';
-import 'package:aves/widgets/common/sloppy_scroll_physics.dart';
+import 'package:aves/widgets/collection/thumbnail/decorated.dart';
+import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
@@ -30,16 +31,14 @@ class ThumbnailCollection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Selector<MediaQueryData, Tuple2<Size, double>>(
-        selector: (context, mq) => Tuple2(mq.size, mq.padding.horizontal),
-        builder: (context, mq, child) {
-          final mqSize = mq.item1;
-          final mqHorizontalPadding = mq.item2;
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final viewportSize = constraints.biggest;
+          assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
+          if (viewportSize.isEmpty) return SizedBox.shrink();
 
-          if (mqSize.isEmpty) return SizedBox.shrink();
-
-          TileExtentManager.applyTileExtent(Size(mqSize.width - mqHorizontalPadding, mqSize.height), _tileExtentNotifier);
-          final cacheExtent = TileExtentManager.extentMaxForSize(mqSize) * 2;
+          TileExtentManager.applyTileExtent(viewportSize, _tileExtentNotifier);
+          final cacheExtent = TileExtentManager.extentMaxForSize(viewportSize) * 2;
 
           // do not replace by Provider.of<CollectionLens>
           // so that view updates on collection filter changes
@@ -58,11 +57,20 @@ class ThumbnailCollection extends StatelessWidget {
                 cacheExtent: cacheExtent,
               );
 
-              final scaler = GridScaleGestureDetector(
+              final scaler = GridScaleGestureDetector<ImageEntry>(
                 scrollableKey: _scrollableKey,
                 appBarHeightNotifier: _appBarHeightNotifier,
                 extentNotifier: _tileExtentNotifier,
-                viewportSize: Size(mqSize.width - mqHorizontalPadding, mqSize.height),
+                viewportSize: viewportSize,
+                scaledBuilder: (entry, extent) => DecoratedThumbnail(
+                  entry: entry,
+                  extent: extent,
+                  showOverlay: false,
+                ),
+                getScaledItemTileRect: (entry) {
+                  final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
+                  return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
+                },
                 onScaled: collection.highlight,
                 child: scrollView,
               );
@@ -71,7 +79,7 @@ class ThumbnailCollection extends StatelessWidget {
                 valueListenable: _tileExtentNotifier,
                 builder: (context, tileExtent, child) => SectionedListLayoutProvider(
                   collection: collection,
-                  scrollableWidth: mqSize.width - mqHorizontalPadding,
+                  scrollableWidth: viewportSize.width,
                   tileExtent: tileExtent,
                   thumbnailBuilder: (entry) => GridThumbnail(
                     key: ValueKey(entry.contentId),

@@ -17,7 +17,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart' as ppath;
 
-import 'mime_types.dart';
+import '../ref/mime_types.dart';
 
 class ImageEntry {
   String uri;
@@ -40,6 +40,9 @@ class ImageEntry {
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
+  // TODO TLAD make it dynamic if it depends on OS/lib versions
+  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
+
   ImageEntry({
     this.uri,
     String path,
@@ -59,7 +62,7 @@ class ImageEntry {
     this.dateModifiedSecs = dateModifiedSecs;
   }
 
-  bool get canDecode => !MimeTypes.undecodable.contains(mimeType);
+  bool get canDecode => !undecodable.contains(mimeType);
 
   ImageEntry copyWith({
     @required String uri,

@@ -1,5 +1,5 @@
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/utils/durations.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
 
 class SourceStateAwareAppBarTitle extends StatelessWidget {

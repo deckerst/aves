@@ -2,12 +2,12 @@ import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
-import 'package:aves/utils/brand_colors.dart';
+import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_tile.dart';

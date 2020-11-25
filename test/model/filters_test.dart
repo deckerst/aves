@@ -5,7 +5,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/mime_types.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:test/test.dart';
 
 void main() {

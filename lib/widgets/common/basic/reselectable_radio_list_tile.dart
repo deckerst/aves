@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 // `RadioListTile` that can trigger `onChanged` on tap when already selected, if `reselectable` is true
-class AvesRadioListTile<T> extends StatelessWidget {
+class ReselectableRadioListTile<T> extends StatelessWidget {
   final T value;
   final T groupValue;
   final ValueChanged<T> onChanged;
@@ -19,7 +19,7 @@ class AvesRadioListTile<T> extends StatelessWidget {
 
   bool get checked => value == groupValue;
 
-  const AvesRadioListTile({
+  const ReselectableRadioListTile({
     Key key,
     @required this.value,
     @required this.groupValue,

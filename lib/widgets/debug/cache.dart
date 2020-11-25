@@ -1,6 +1,6 @@
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

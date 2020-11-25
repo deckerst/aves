@@ -1,8 +1,8 @@
 import 'package:aves/main.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/image_providers/thumbnail_provider.dart';
-import 'package:aves/widgets/common/image_providers/uri_picture_provider.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/image_providers/thumbnail_provider.dart';
+import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/widgets/fullscreen/debug/db.dart';
 import 'package:aves/widgets/fullscreen/debug/metadata.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';

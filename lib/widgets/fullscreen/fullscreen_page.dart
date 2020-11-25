@@ -1,6 +1,6 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_body.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'package:aves/widgets/common/aves_radio_list_tile.dart';
+import 'package:aves/widgets/common/basic/reselectable_radio_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -48,7 +48,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
   }
 
   Widget _buildRadioListTile(T value, String title) {
-    return AvesRadioListTile<T>(
+    return ReselectableRadioListTile<T>(
       key: Key(value.toString()),
       value: value,
       groupValue: _selectedValue,
