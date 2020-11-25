@@ -38,7 +38,7 @@ class ThumbnailCollection extends StatelessWidget {
 
           if (mqSize.isEmpty) return SizedBox.shrink();
 
-          TileExtentManager.applyTileExtent(mqSize, mqHorizontalPadding, _tileExtentNotifier);
+          TileExtentManager.applyTileExtent(Size(mqSize.width - mqHorizontalPadding, mqSize.height), _tileExtentNotifier);
           final cacheExtent = TileExtentManager.extentMaxForSize(mqSize) * 2;
 
           // do not replace by Provider.of<CollectionLens>
@@ -62,8 +62,7 @@ class ThumbnailCollection extends StatelessWidget {
                 scrollableKey: _scrollableKey,
                 appBarHeightNotifier: _appBarHeightNotifier,
                 extentNotifier: _tileExtentNotifier,
-                mqSize: mqSize,
-                mqHorizontalPadding: mqHorizontalPadding,
+                viewportSize: Size(mqSize.width - mqHorizontalPadding, mqSize.height),
                 onScaled: collection.highlight,
                 child: scrollView,
               );
