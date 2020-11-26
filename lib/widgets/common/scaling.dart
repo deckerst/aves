@@ -2,9 +2,9 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/grid/tile_extent_manager.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -16,20 +16,22 @@ class ScalerMetadata<T> {
 }
 
 class GridScaleGestureDetector<T> extends StatefulWidget {
+  final TileExtentManager tileExtentManager;
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
-  final ValueNotifier<double> extentNotifier;
   final Size viewportSize;
+  final bool showScaledGrid;
   final Widget Function(T item, double extent) scaledBuilder;
-  final Rect Function(T item) getScaledItemTileRect;
+  final Rect Function(BuildContext context, T item) getScaledItemTileRect;
   final void Function(T item) onScaled;
   final Widget child;
 
   const GridScaleGestureDetector({
-    this.scrollableKey,
+    @required this.tileExtentManager,
+    @required this.scrollableKey,
     @required this.appBarHeightNotifier,
-    @required this.extentNotifier,
     @required this.viewportSize,
+    @required this.showScaledGrid,
     @required this.scaledBuilder,
     @required this.getScaledItemTileRect,
     @required this.onScaled,
@@ -40,14 +42,16 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState<T>();
 }
 
-class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector> {
+class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T>> {
   double _startExtent, _extentMin, _extentMax;
   bool _applyingScale = false;
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ScalerMetadata<T> _metadata;
 
-  ValueNotifier<double> get tileExtentNotifier => widget.extentNotifier;
+  TileExtentManager get tileExtentManager => widget.tileExtentManager;
+
+  Size get viewportSize => widget.viewportSize;
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +76,15 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector> 
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
         _metadata = renderMetaData.metaData;
-        _startExtent = tileExtentNotifier.value;
+        _startExtent = renderMetaData.size.width;
         _scaledExtentNotifier = ValueNotifier(_startExtent);
 
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
-        _extentMin = gridWidth / (gridWidth / TileExtentManager.tileExtentMin).round();
-        _extentMax = gridWidth / (gridWidth / TileExtentManager.extentMaxForSize(widget.viewportSize)).round();
+
+        _extentMin = tileExtentManager.getEffectiveExtentMin(viewportSize);
+        _extentMax = tileExtentManager.getEffectiveExtentMax(viewportSize);
+
         final halfExtent = _startExtent / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
@@ -87,6 +93,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector> 
             center: thumbnailCenter,
             gridWidth: gridWidth,
             scaledExtentNotifier: _scaledExtentNotifier,
+            showScaledGrid: widget.showScaledGrid,
           ),
         );
         Overlay.of(scrollableContext).insert(_overlayEntry);
@@ -104,11 +111,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector> 
         }
 
         _applyingScale = true;
-        final oldExtent = tileExtentNotifier.value;
+        final oldExtent = tileExtentManager.extentNotifier.value;
         // sanitize and update grid layout if necessary
-        final newExtent = TileExtentManager.applyTileExtent(
-          widget.viewportSize,
-          tileExtentNotifier,
+        final newExtent = tileExtentManager.applyTileExtent(
+          viewportSize: widget.viewportSize,
           userPreferredExtent: _scaledExtentNotifier.value,
         );
         _scaledExtentNotifier = null;
@@ -137,7 +143,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector> 
   void _scrollToItem(T item) {
     final scrollableContext = widget.scrollableKey.currentContext;
     final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
-    final tileRect = widget.getScaledItemTileRect(item);
+    final tileRect = widget.getScaledItemTileRect(context, item);
     // most of the time the app bar will be scrolled away after scaling,
     // so we compensate for it to center the focal point thumbnail
     final appBarHeight = widget.appBarHeightNotifier.value;
@@ -152,12 +158,14 @@ class ScaleOverlay extends StatefulWidget {
   final Offset center;
   final double gridWidth;
   final ValueNotifier<double> scaledExtentNotifier;
+  final bool showScaledGrid;
 
   const ScaleOverlay({
     @required this.builder,
     @required this.center,
     @required this.gridWidth,
     @required this.scaledExtentNotifier,
+    @required this.showScaledGrid,
   });
 
   @override
@@ -217,24 +225,29 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
               }
               final clampedCenter = center.translate(dx, 0);
 
-              return CustomPaint(
-                painter: GridPainter(
-                  center: clampedCenter,
-                  extent: extent,
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: clampedCenter.dx - extent / 2,
-                      top: clampedCenter.dy - extent / 2,
-                      child: DefaultTextStyle(
-                        style: TextStyle(),
-                        child: widget.builder(extent),
-                      ),
+              var child = widget.builder(extent);
+              child = Stack(
+                children: [
+                  Positioned(
+                    left: clampedCenter.dx - extent / 2,
+                    top: clampedCenter.dy - extent / 2,
+                    child: DefaultTextStyle(
+                      style: TextStyle(),
+                      child: child,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
+              if (widget.showScaledGrid) {
+                child = CustomPaint(
+                  painter: GridPainter(
+                    center: clampedCenter,
+                    extent: extent,
+                  ),
+                  child: child,
+                );
+              }
+              return child;
             },
           ),
         ),

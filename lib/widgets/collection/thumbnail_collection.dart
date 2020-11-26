@@ -3,19 +3,20 @@ import 'dart:async';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/collection/grid/list_section_layout.dart';
 import 'package:aves/widgets/collection/grid/list_sliver.dart';
-import 'package:aves/widgets/collection/grid/scaling.dart';
-import 'package:aves/widgets/collection/grid/tile_extent_manager.dart';
+import 'package:aves/widgets/common/scaling.dart';
+import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,10 @@ class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
   final GlobalKey _scrollableKey = GlobalKey();
 
+  static const columnCountMin = 2;
+  static const columnCountDefault = 4;
+  static const extentMin = 46.0;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -37,8 +42,15 @@ class ThumbnailCollection extends StatelessWidget {
           assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
           if (viewportSize.isEmpty) return SizedBox.shrink();
 
-          TileExtentManager.applyTileExtent(viewportSize, _tileExtentNotifier);
-          final cacheExtent = TileExtentManager.extentMaxForSize(viewportSize) * 2;
+          final tileExtentManager = TileExtentManager(
+            routeName: context.currentRouteName,
+            columnCountMin: columnCountMin,
+            columnCountDefault: columnCountDefault,
+            extentMin: extentMin,
+            extentNotifier: _tileExtentNotifier,
+            spacing: 0,
+          )..applyTileExtent(viewportSize: viewportSize);
+          final cacheExtent = tileExtentManager.getEffectiveExtentMax(viewportSize) * 2;
 
           // do not replace by Provider.of<CollectionLens>
           // so that view updates on collection filter changes
@@ -58,16 +70,17 @@ class ThumbnailCollection extends StatelessWidget {
               );
 
               final scaler = GridScaleGestureDetector<ImageEntry>(
+                tileExtentManager: tileExtentManager,
                 scrollableKey: _scrollableKey,
                 appBarHeightNotifier: _appBarHeightNotifier,
-                extentNotifier: _tileExtentNotifier,
                 viewportSize: viewportSize,
+                showScaledGrid: true,
                 scaledBuilder: (entry, extent) => DecoratedThumbnail(
                   entry: entry,
                   extent: extent,
                   showOverlay: false,
                 ),
-                getScaledItemTileRect: (entry) {
+                getScaledItemTileRect: (context, entry) {
                   final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
                   return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
                 },

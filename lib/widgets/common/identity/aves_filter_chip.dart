@@ -14,6 +14,7 @@ class AvesFilterChip extends StatefulWidget {
   final bool showGenericIcon;
   final Widget background;
   final Widget details;
+  final double padding;
   final HeroType heroType;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
@@ -24,7 +25,6 @@ class AvesFilterChip extends StatefulWidget {
   static const double minChipWidth = 80;
   static const double maxChipWidth = 160;
   static const double iconSize = 20;
-  static const double padding = 6;
 
   const AvesFilterChip({
     Key key,
@@ -33,8 +33,9 @@ class AvesFilterChip extends StatefulWidget {
     this.showGenericIcon = true,
     this.background,
     this.details,
+    this.padding = 6.0,
     this.heroType = HeroType.onTap,
-    @required this.onTap,
+    this.onTap,
     this.onLongPress,
   })  : assert(filter != null),
         super(key: key);
@@ -50,6 +51,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   Offset _tapPosition;
 
   CollectionFilter get filter => widget.filter;
+
+  double get padding => widget.padding;
 
   @override
   void initState() {
@@ -80,9 +83,11 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
+    const iconSize = AvesFilterChip.iconSize;
+
     final hasBackground = widget.background != null;
-    final leading = filter.iconBuilder(context, AvesFilterChip.iconSize, showGenericIcon: widget.showGenericIcon, embossed: hasBackground);
-    final trailing = widget.removable ? Icon(AIcons.clear, size: AvesFilterChip.iconSize) : null;
+    final leading = filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon, embossed: hasBackground);
+    final trailing = widget.removable ? Icon(AIcons.clear, size: iconSize) : null;
 
     Widget content = Row(
       mainAxisSize: hasBackground ? MainAxisSize.max : MainAxisSize.min,
@@ -90,7 +95,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       children: [
         if (leading != null) ...[
           leading,
-          SizedBox(width: AvesFilterChip.padding),
+          SizedBox(width: padding),
         ],
         Flexible(
           child: Text(
@@ -101,7 +106,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           ),
         ),
         if (trailing != null) ...[
-          SizedBox(width: AvesFilterChip.padding),
+          SizedBox(width: padding),
           trailing,
         ],
       ],
@@ -118,7 +123,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     }
 
     content = Padding(
-      padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.padding * 2, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: padding * 2, vertical: 2),
       child: content,
     );
 
