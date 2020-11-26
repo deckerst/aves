@@ -4,7 +4,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/collection/grid/list_known_extent.dart';
 import 'package:aves/widgets/collection/grid/list_section_layout.dart';
-import 'package:aves/widgets/collection/grid/scaling.dart';
+import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';

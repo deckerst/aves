@@ -10,7 +10,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
