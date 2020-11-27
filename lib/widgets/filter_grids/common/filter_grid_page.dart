@@ -20,12 +20,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
-class FilterGridPage extends StatelessWidget {
+class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final Widget appBar;
-  final Map<String, ImageEntry> filterEntries;
-  final CollectionFilter Function(String key) filterBuilder;
+  final Map<T, ImageEntry> filterEntries;
+  final ValueNotifier<String> queryNotifier;
   final Widget Function() emptyBuilder;
+  final String settingsRouteKey;
+  final Iterable<T> Function(Iterable<T> filters, String query) applyQuery;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
@@ -39,8 +41,10 @@ class FilterGridPage extends StatelessWidget {
     @required this.source,
     @required this.appBar,
     @required this.filterEntries,
-    @required this.filterBuilder,
+    @required this.queryNotifier,
+    this.applyQuery,
     @required this.emptyBuilder,
+    this.settingsRouteKey,
     double appBarHeight = kToolbarHeight,
     @required this.onTap,
     this.onLongPress,
@@ -48,12 +52,7 @@ class FilterGridPage extends StatelessWidget {
     _appBarHeightNotifier.value = appBarHeight;
   }
 
-  List<String> get filterKeys => filterEntries.keys.toList();
-
   static const Color detailColor = Color(0xFFE0E0E0);
-
-  // TODO TLAD enforce max extent?
-  // static const double maxCrossAxisExtent = 180;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +67,7 @@ class FilterGridPage extends StatelessWidget {
                 if (viewportSize.isEmpty) return SizedBox.shrink();
 
                 final tileExtentManager = TileExtentManager(
-                  routeName: context.currentRouteName,
+                  settingsRouteKey: settingsRouteKey ?? context.currentRouteName,
                   columnCountMin: 2,
                   columnCountDefault: 2,
                   extentMin: 60,
@@ -80,38 +79,51 @@ class FilterGridPage extends StatelessWidget {
                   valueListenable: _tileExtentNotifier,
                   builder: (context, tileExtent, child) {
                     final columnCount = tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent);
-                    final scrollView = AnimationLimiter(
-                      child: _buildDraggableScrollView(_buildScrollView(context, columnCount)),
-                    );
 
-                    return GridScaleGestureDetector<FilterGridItem>(
-                      tileExtentManager: tileExtentManager,
-                      scrollableKey: _scrollableKey,
-                      appBarHeightNotifier: _appBarHeightNotifier,
-                      viewportSize: viewportSize,
-                      showScaledGrid: false,
-                      scaledBuilder: (item, extent) {
-                        final filter = item.filter;
-                        return SizedBox(
-                          width: extent,
-                          height: extent,
-                          child: DecoratedFilterChip(
-                            source: source,
-                            filter: filter,
-                            entry: item.entry,
-                            extent: extent,
-                            pinned: settings.pinnedFilters.contains(filter),
-                          ),
+                    return ValueListenableBuilder<String>(
+                      valueListenable: queryNotifier,
+                      builder: (context, query, child) {
+                        final allFilters = filterEntries.keys;
+                        final visibleFilters = (applyQuery != null ? applyQuery(allFilters, query) : allFilters).toList();
+
+                        final scrollView = AnimationLimiter(
+                          child: _buildDraggableScrollView(_buildScrollView(context, columnCount, visibleFilters)),
+                        );
+
+                        return GridScaleGestureDetector<FilterGridItem>(
+                          tileExtentManager: tileExtentManager,
+                          scrollableKey: _scrollableKey,
+                          appBarHeightNotifier: _appBarHeightNotifier,
+                          viewportSize: viewportSize,
+                          showScaledGrid: false,
+                          scaledBuilder: (item, extent) {
+                            final filter = item.filter;
+                            return SizedBox(
+                              width: extent,
+                              height: extent,
+                              child: DecoratedFilterChip(
+                                source: source,
+                                filter: filter,
+                                entry: item.entry,
+                                extent: extent,
+                                pinned: settings.pinnedFilters.contains(filter),
+                              ),
+                            );
+                          },
+                          getScaledItemTileRect: (context, item) {
+                            final index = visibleFilters.indexOf(item.filter);
+                            final column = index % columnCount;
+                            final row = (index / columnCount).floor();
+                            final left = tileExtent * column + spacing * (column - 1);
+                            final top = tileExtent * row + spacing * (row - 1);
+                            return Rect.fromLTWH(left, top, tileExtent, tileExtent);
+                          },
+                          onScaled: (item) {
+                            // TODO TLAD highlight scaled item
+                          },
+                          child: scrollView,
                         );
                       },
-                      getScaledItemTileRect: (context, item) {
-                        // TODO TLAD
-                        return Rect.zero;
-                      },
-                      onScaled: (item) {
-                        // TODO TLAD
-                      },
-                      child: scrollView,
                     );
                   },
                 );
@@ -148,14 +160,14 @@ class FilterGridPage extends StatelessWidget {
     );
   }
 
-  ScrollView _buildScrollView(BuildContext context, int columnCount) {
+  ScrollView _buildScrollView(BuildContext context, int columnCount, List<T> visibleFilters) {
     final pinnedFilters = settings.pinnedFilters;
     return CustomScrollView(
       key: _scrollableKey,
       controller: PrimaryScrollController.of(context),
       slivers: [
         appBar,
-        filterKeys.isEmpty
+        visibleFilters.isEmpty
             ? SliverFillRemaining(
                 child: Selector<MediaQueryData, double>(
                   selector: (context, mq) => mq.viewInsets.bottom,
@@ -171,13 +183,12 @@ class FilterGridPage extends StatelessWidget {
             : SliverGrid(
                 delegate: SliverChildBuilderDelegate(
                   (context, i) {
-                    final key = filterKeys[i];
-                    final filter = filterBuilder(key);
-                    final entry = filterEntries[key];
+                    final filter = visibleFilters[i];
+                    final entry = filterEntries[filter];
                     final child = MetaData(
                       metaData: ScalerMetadata(FilterGridItem(filter, entry)),
                       child: DecoratedFilterChip(
-                        key: Key(key),
+                        key: Key(filter.key),
                         source: source,
                         filter: filter,
                         entry: entry,
@@ -200,7 +211,7 @@ class FilterGridPage extends StatelessWidget {
                       ),
                     );
                   },
-                  childCount: filterKeys.length,
+                  childCount: visibleFilters.length,
                 ),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: columnCount,
@@ -221,8 +232,8 @@ class FilterGridPage extends StatelessWidget {
   }
 }
 
-class FilterGridItem {
-  final CollectionFilter filter;
+class FilterGridItem<T extends CollectionFilter> {
+  final T filter;
   final ImageEntry entry;
 
   const FilterGridItem(this.filter, this.entry);

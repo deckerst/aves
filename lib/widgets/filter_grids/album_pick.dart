@@ -32,7 +32,7 @@ class AlbumPickPage extends StatefulWidget {
 }
 
 class _AlbumPickPageState extends State<AlbumPickPage> {
-  final _filterNotifier = ValueNotifier('');
+  final _queryNotifier = ValueNotifier('');
 
   CollectionSource get source => widget.source;
 
@@ -41,26 +41,29 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
     Widget appBar = AlbumPickAppBar(
       copy: widget.copy,
       actionDelegate: AlbumChipSetActionDelegate(source: source),
-      filterNotifier: _filterNotifier,
+      queryNotifier: _queryNotifier,
     );
 
     return Selector<Settings, ChipSortFactor>(
       selector: (context, s) => s.albumSortFactor,
       builder: (context, sortFactor, child) {
-        return ValueListenableBuilder<String>(
-          valueListenable: _filterNotifier,
-          builder: (context, filter, child) => FilterGridPage(
-            source: source,
-            appBar: appBar,
-            filterEntries: AlbumListPage.getAlbumEntries(source, filter: filter),
-            filterBuilder: (s) => AlbumFilter(s, source.getUniqueAlbumName(s)),
-            emptyBuilder: () => EmptyContent(
-              icon: AIcons.album,
-              text: 'No albums',
-            ),
-            appBarHeight: AlbumPickAppBar.preferredHeight,
-            onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
+        return FilterGridPage<AlbumFilter>(
+          source: source,
+          appBar: appBar,
+          filterEntries: AlbumListPage.getAlbumEntries(source),
+          applyQuery: (filters, query) {
+            if (query == null || query.isEmpty) return filters;
+            query = query.toUpperCase();
+            return filters.where((filter) => filter.uniqueName.toUpperCase().contains(query)).toList();
+          },
+          queryNotifier: _queryNotifier,
+          emptyBuilder: () => EmptyContent(
+            icon: AIcons.album,
+            text: 'No albums',
           ),
+          settingsRouteKey: AlbumListPage.routeName,
+          appBarHeight: AlbumPickAppBar.preferredHeight,
+          onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
         );
       },
     );
@@ -70,14 +73,14 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
 class AlbumPickAppBar extends StatelessWidget {
   final bool copy;
   final AlbumChipSetActionDelegate actionDelegate;
-  final ValueNotifier<String> filterNotifier;
+  final ValueNotifier<String> queryNotifier;
 
   static const preferredHeight = kToolbarHeight + AlbumFilterBar.preferredHeight;
 
   const AlbumPickAppBar({
     @required this.copy,
     @required this.actionDelegate,
-    @required this.filterNotifier,
+    @required this.queryNotifier,
   });
 
   @override
@@ -86,7 +89,7 @@ class AlbumPickAppBar extends StatelessWidget {
       leading: BackButton(),
       title: Text(copy ? 'Copy to Album' : 'Move to Album'),
       bottom: AlbumFilterBar(
-        filterNotifier: filterNotifier,
+        filterNotifier: queryNotifier,
       ),
       actions: [
         IconButton(

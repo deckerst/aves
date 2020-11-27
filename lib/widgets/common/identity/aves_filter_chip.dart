@@ -18,8 +18,9 @@ class AvesFilterChip extends StatefulWidget {
   final HeroType heroType;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
+  final BorderRadius borderRadius;
 
-  static final BorderRadius borderRadius = BorderRadius.circular(32);
+  static const double defaultRadius = 32;
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
@@ -33,6 +34,7 @@ class AvesFilterChip extends StatefulWidget {
     this.showGenericIcon = true,
     this.background,
     this.details,
+    this.borderRadius = const BorderRadius.all(Radius.circular(defaultRadius)),
     this.padding = 6.0,
     this.heroType = HeroType.onTap,
     this.onTap,
@@ -51,6 +53,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   Offset _tapPosition;
 
   CollectionFilter get filter => widget.filter;
+
+  BorderRadius get borderRadius => widget.borderRadius;
 
   double get padding => widget.padding;
 
@@ -140,8 +144,6 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         ),
       );
     }
-
-    final borderRadius = AvesFilterChip.borderRadius;
 
     Widget chip = Container(
       constraints: BoxConstraints(

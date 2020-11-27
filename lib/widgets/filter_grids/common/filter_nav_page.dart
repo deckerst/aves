@@ -18,20 +18,18 @@ import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/search/search_button.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class FilterNavigationPage extends StatelessWidget {
+class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final String title;
   final ChipSetActionDelegate chipSetActionDelegate;
   final ChipActionDelegate chipActionDelegate;
-  final Map<String, ImageEntry> filterEntries;
-  final CollectionFilter Function(String key) filterBuilder;
+  final Map<T, ImageEntry> filterEntries;
   final Widget Function() emptyBuilder;
-  final List<ChipAction> Function(CollectionFilter filter) chipActionsBuilder;
+  final List<ChipAction> Function(T filter) chipActionsBuilder;
 
   const FilterNavigationPage({
     @required this.source,
@@ -40,13 +38,12 @@ class FilterNavigationPage extends StatelessWidget {
     @required this.chipActionDelegate,
     @required this.chipActionsBuilder,
     @required this.filterEntries,
-    @required this.filterBuilder,
     @required this.emptyBuilder,
   });
 
   @override
   Widget build(BuildContext context) {
-    return FilterGridPage(
+    return FilterGridPage<T>(
       source: source,
       appBar: SliverAppBar(
         title: TappableAppBarTitle(
@@ -61,7 +58,7 @@ class FilterNavigationPage extends StatelessWidget {
         floating: true,
       ),
       filterEntries: filterEntries,
-      filterBuilder: filterBuilder,
+      queryNotifier: ValueNotifier(''),
       emptyBuilder: () => ValueListenableBuilder<SourceState>(
         valueListenable: source.stateNotifier,
         builder: (context, sourceState, child) {
@@ -84,7 +81,7 @@ class FilterNavigationPage extends StatelessWidget {
     );
   }
 
-  Future<void> _showMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
+  Future<void> _showMenu(BuildContext context, T filter, Offset tapPosition) async {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final touchArea = Size(40, 40);
     final selectedAction = await showMenu<ChipAction>(
@@ -144,13 +141,13 @@ class FilterNavigationPage extends StatelessWidget {
         ));
   }
 
-  static int compareChipsByDate(MapEntry<String, ImageEntry> a, MapEntry<String, ImageEntry> b) {
+  static int compareChipsByDate(MapEntry<CollectionFilter, ImageEntry> a, MapEntry<CollectionFilter, ImageEntry> b) {
     final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
-    return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
+    return c != 0 ? c : a.key.compareTo(b.key);
   }
 
-  static int compareChipsByEntryCount(MapEntry<String, num> a, MapEntry<String, num> b) {
+  static int compareChipsByEntryCount(MapEntry<CollectionFilter, num> a, MapEntry<CollectionFilter, num> b) {
     final c = b.value.compareTo(a.value) ?? -1;
-    return c != 0 ? c : compareAsciiUpperCase(a.key, b.key);
+    return c != 0 ? c : a.key.compareTo(b.key);
   }
 }

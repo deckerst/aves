@@ -4,13 +4,13 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/widgets.dart';
 
 class TileExtentManager {
-  final String routeName;
+  final String settingsRouteKey;
   final int columnCountMin, columnCountDefault;
   final double spacing, extentMin;
   final ValueNotifier<double> extentNotifier;
 
   const TileExtentManager({
-    @required this.routeName,
+    @required this.settingsRouteKey,
     @required this.columnCountMin,
     @required this.columnCountDefault,
     @required this.extentMin,
@@ -26,7 +26,7 @@ class TileExtentManager {
     final viewportSizeMin = Size.square(extentMin * columnCountMin);
     viewportSize = Size(max(viewportSize.width, viewportSizeMin.width), max(viewportSize.height, viewportSizeMin.height));
 
-    final oldUserPreferredExtent = settings.getTileExtent(routeName);
+    final oldUserPreferredExtent = settings.getTileExtent(settingsRouteKey);
     final currentExtent = extentNotifier.value;
     final targetExtent = userPreferredExtent > 0
         ? userPreferredExtent
@@ -38,7 +38,7 @@ class TileExtentManager {
     final newExtent = _extentForColumnCount(viewportSize, columnCount);
 
     if (userPreferredExtent > 0 || oldUserPreferredExtent == 0) {
-      settings.setTileExtent(routeName, newExtent);
+      settings.setTileExtent(settingsRouteKey, newExtent);
     }
     if (extentNotifier.value != newExtent) {
       extentNotifier.value = newExtent;
