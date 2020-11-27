@@ -1,5 +1,5 @@
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
+import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/material.dart';
 
 class ErrorThumbnail extends StatelessWidget {
@@ -15,12 +15,14 @@ class ErrorThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      alignment: Alignment.center,
+      color: Colors.black,
       child: Tooltip(
         message: tooltip,
         preferBelow: false,
         child: Text(
-          MimeTypes.displayType(entry.mimeType),
+          MimeUtils.displayType(entry.mimeType),
           style: TextStyle(
             color: Colors.blueGrey,
             fontSize: extent / 5,

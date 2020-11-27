@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
@@ -16,6 +17,18 @@ class AndroidFileService {
       debugPrint('getStorageVolumes failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return [];
+  }
+
+  static Future<int> getFreeSpace(StorageVolume volume) async {
+    try {
+      final result = await platform.invokeMethod('getFreeSpace', <String, dynamic>{
+        'path': volume.path,
+      });
+      return result as int;
+    } on PlatformException catch (e) {
+      debugPrint('getFreeSpace failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return 0;
   }
 
   static Future<List<String>> getGrantedDirectories() async {

@@ -1,6 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 

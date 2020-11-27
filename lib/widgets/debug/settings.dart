@@ -1,5 +1,9 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +31,10 @@ class DebugSettingsSection extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: InfoRowGroup({
-              'collectionTileExtent': '${settings.collectionTileExtent}',
+              'tileExtent - Collection': '${settings.getTileExtent(CollectionPage.routeName)}',
+              'tileExtent - Albums': '${settings.getTileExtent(AlbumListPage.routeName)}',
+              'tileExtent - Countries': '${settings.getTileExtent(CountryListPage.routeName)}',
+              'tileExtent - Tags': '${settings.getTileExtent(TagListPage.routeName)}',
               'infoMapZoom': '${settings.infoMapZoom}',
               'pinnedFilters': toMultiline(settings.pinnedFilters),
               'searchHistory': toMultiline(settings.searchHistory),

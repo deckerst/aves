@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.2.7+33
+version: 1.2.8+34
 
 # brendan-duncan/image (as of v2.1.19):
 # - does not support TIFF with JPEG compression (issue #184)
@@ -59,6 +59,7 @@ dependencies:
   firebase_analytics:
   firebase_crashlytics:
   flushbar:
+  flutter_highlight:
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer
     git:
@@ -92,7 +93,6 @@ dependencies:
   streams_channel:
   tuple:
   url_launcher:
-  uuid:
 
 dev_dependencies:
   flutter_test:

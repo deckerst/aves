@@ -29,11 +29,11 @@ class Settings extends ChangeNotifier {
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
   static const catalogTimeZoneKey = 'catalog_time_zone';
+  static const tileExtentPrefixKey = 'tile_extent_';
 
   // collection
   static const collectionGroupFactorKey = 'collection_group_factor';
   static const collectionSortFactorKey = 'collection_sort_factor';
-  static const collectionTileExtentKey = 'collection_tile_extent';
   static const showThumbnailLocationKey = 'show_thumbnail_location';
   static const showThumbnailRawKey = 'show_thumbnail_raw';
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
@@ -112,6 +112,12 @@ class Settings extends ChangeNotifier {
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
+  double getTileExtent(String routeName) => _prefs.getDouble(tileExtentPrefixKey + routeName) ?? 0;
+
+  // do not notify, as tile extents are only used internally by `TileExtentManager`
+  // and should not trigger rebuilding by change notification
+  void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue, notify: false);
+
   // collection
 
   EntryGroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
@@ -121,12 +127,6 @@ class Settings extends ChangeNotifier {
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, EntrySortFactor.date, EntrySortFactor.values);
 
   set collectionSortFactor(EntrySortFactor newValue) => setAndNotify(collectionSortFactorKey, newValue.toString());
-
-  double get collectionTileExtent => _prefs.getDouble(collectionTileExtentKey) ?? 0;
-
-  // do not notify, as `collectionTileExtent` is only used internally by `TileExtentManager`
-  // and should not trigger rebuilding by change notification
-  set collectionTileExtent(double newValue) => setAndNotify(collectionTileExtentKey, newValue, notify: false);
 
   bool get showThumbnailLocation => getBoolOrDefault(showThumbnailLocationKey, true);
 
@@ -197,14 +197,6 @@ class Settings extends ChangeNotifier {
   List<CollectionFilter> get searchHistory => (_prefs.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
-
-  // utils
-
-  // `RoutePredicate`
-  RoutePredicate navRemoveRoutePredicate(String pushedRouteName) {
-    final home = homePage.routeName;
-    return (route) => pushedRouteName != home && route.settings?.name == home;
-  }
 
   // convenience methods
 

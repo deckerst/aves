@@ -1,6 +1,9 @@
-import 'package:aves/widgets/common/aves_filter_chip.dart';
+import 'dart:math';
+
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class SectionRow extends StatelessWidget {
   final IconData icon;
@@ -54,34 +57,69 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
   int get maxValueLength => widget.maxValueLength;
 
+  static const keyValuePadding = 16;
+  static final baseStyle = TextStyle(fontFamily: 'Concourse');
+  static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 1.7);
+
   @override
   Widget build(BuildContext context) {
     if (keyValues.isEmpty) return SizedBox.shrink();
+
+    // compute the size of keys and space in order to align values
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: '$key', style: keyStyle), textScaleFactor))));
+    final baseSpaceWidth = _getSpanWidth(TextSpan(text: '\u200A' * 100, style: baseStyle), textScaleFactor);
+
     final lastKey = keyValues.keys.last;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SelectableText.rich(
-          TextSpan(
-            children: keyValues.entries.expand(
-              (kv) {
-                final key = kv.key;
-                var value = kv.value;
-                final showPreviewOnly = maxValueLength > 0 && value.length > maxValueLength && !_expandedKeys.contains(key);
-                if (showPreviewOnly) {
-                  value = '${value.substring(0, maxValueLength)}…';
-                }
-                return [
-                  TextSpan(text: '$key     ', style: TextStyle(color: Colors.white70, height: 1.7)),
-                  TextSpan(text: '$value${key == lastKey ? '' : '\n'}', recognizer: showPreviewOnly ? _buildTapRecognizer(key) : null),
-                ];
-              },
-            ).toList(),
-          ),
-          style: TextStyle(fontFamily: 'Concourse'),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // find longest key below threshold
+        final maxBaseValueX = constraints.maxWidth / 3;
+        final baseValueX = keySizes.values.where((size) => size < maxBaseValueX).fold(0.0, max);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SelectableText.rich(
+              TextSpan(
+                children: keyValues.entries.expand(
+                  (kv) {
+                    final key = kv.key;
+                    var value = kv.value;
+                    // long values are clipped, and made expandable by tapping them
+                    final showPreviewOnly = maxValueLength > 0 && value.length > maxValueLength && !_expandedKeys.contains(key);
+                    if (showPreviewOnly) {
+                      value = '${value.substring(0, maxValueLength)}…';
+                    }
+
+                    // as of Flutter v1.22.4, `SelectableText` cannot contain `WidgetSpan`
+                    // so we add padding using multiple hair spaces instead
+                    final thisSpaceSize = max(0.0, (baseValueX - keySizes[key])) + keyValuePadding;
+                    final spaceCount = (100 * thisSpaceSize / baseSpaceWidth).round();
+
+                    return [
+                      TextSpan(text: '$key', style: keyStyle),
+                      TextSpan(text: '\u200A' * spaceCount),
+                      TextSpan(text: '$value${key == lastKey ? '' : '\n'}', recognizer: showPreviewOnly ? _buildTapRecognizer(key) : null),
+                    ];
+                  },
+                ).toList(),
+              ),
+              style: baseStyle,
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  double _getSpanWidth(TextSpan span, double textScaleFactor) {
+    final para = RenderParagraph(
+      span,
+      textDirection: TextDirection.ltr,
+      textScaleFactor: textScaleFactor,
+    )..layout(BoxConstraints(), parentUsesSize: true);
+    return para.getMaxIntrinsicWidth(double.infinity);
   }
 
   GestureRecognizer _buildTapRecognizer(String key) {

@@ -6,9 +6,9 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/utils/durations.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/action_delegates/entry_action_delegate.dart';
+import 'package:aves/widgets/fullscreen/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
@@ -296,7 +296,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(collection.derive(filter)),
       ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+      (route) => false,
     );
   }
 

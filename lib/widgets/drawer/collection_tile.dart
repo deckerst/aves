@@ -51,7 +51,7 @@ class CollectionNavTile extends StatelessWidget {
           sortFactor: settings.collectionSortFactor,
         )),
       ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+      (route) => false,
     );
   }
 }

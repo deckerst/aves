@@ -1,3 +1,5 @@
+import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  FocusNode focusNode = FocusNode();
+  final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -26,8 +29,8 @@ class _SearchPageState extends State<SearchPage> {
     widget.delegate.queryTextController.addListener(_onQueryChanged);
     widget.animation.addStatusListener(_onAnimationStatusChanged);
     widget.delegate.currentBodyNotifier.addListener(_onSearchBodyChanged);
-    focusNode.addListener(_onFocusChanged);
-    widget.delegate.focusNode = focusNode;
+    _focusNode.addListener(_onFocusChanged);
+    widget.delegate.focusNode = _focusNode;
   }
 
   @override
@@ -37,7 +40,7 @@ class _SearchPageState extends State<SearchPage> {
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
     widget.delegate.currentBodyNotifier.removeListener(_onSearchBodyChanged);
     widget.delegate.focusNode = null;
-    focusNode.dispose();
+    _focusNode.dispose();
   }
 
   void _onAnimationStatusChanged(AnimationStatus status) {
@@ -45,7 +48,7 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
-    focusNode.requestFocus();
+    _focusNode.requestFocus();
   }
 
   @override
@@ -57,20 +60,20 @@ class _SearchPageState extends State<SearchPage> {
       oldWidget.delegate.currentBodyNotifier.removeListener(_onSearchBodyChanged);
       widget.delegate.currentBodyNotifier.addListener(_onSearchBodyChanged);
       oldWidget.delegate.focusNode = null;
-      widget.delegate.focusNode = focusNode;
+      widget.delegate.focusNode = _focusNode;
     }
   }
 
   void _onFocusChanged() {
-    if (focusNode.hasFocus && widget.delegate.currentBody != SearchBody.suggestions) {
+    if (_focusNode.hasFocus && widget.delegate.currentBody != SearchBody.suggestions) {
       widget.delegate.showSuggestions(context);
     }
   }
 
   void _onQueryChanged() {
-    setState(() {
-      // rebuild ourselves because query changed.
-    });
+    _debouncer(() => setState(() {
+          // rebuild ourselves because query changed.
+        }));
   }
 
   void _onSearchBodyChanged() {
@@ -106,7 +109,7 @@ class _SearchPageState extends State<SearchPage> {
         leading: widget.delegate.buildLeading(context),
         title: TextField(
           controller: widget.delegate.queryTextController,
-          focusNode: focusNode,
+          focusNode: _focusNode,
           style: theme.textTheme.headline6,
           textInputAction: TextInputAction.search,
           onSubmitted: (_) => widget.delegate.showResults(context),

@@ -3,7 +3,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/utils/file_utils.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
 
 class DebugAppDatabaseSection extends StatefulWidget {

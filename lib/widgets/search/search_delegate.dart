@@ -5,16 +5,16 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/ref/mime_types.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/aves_filter_chip.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/search/expandable_filter_row.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +22,8 @@ import 'package:flutter/services.dart';
 
 class ImageSearchDelegate {
   final CollectionSource source;
-  final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
   final CollectionLens parentCollection;
+  final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
 
   static const searchHistoryCount = 10;
 
@@ -188,14 +188,12 @@ class ImageSearchDelegate {
     if (parentCollection != null) {
       _applyToParentCollectionPage(context, filter);
     } else {
-      _goToCollectionPage(context, filter);
+      _jumpToCollectionPage(context, filter);
     }
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    if (filter != null) {
-      parentCollection.addFilter(filter);
-    }
+    parentCollection.addFilter(filter);
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
@@ -209,7 +207,7 @@ class ImageSearchDelegate {
     Navigator.pop(context);
   }
 
-  void _goToCollectionPage(BuildContext context, CollectionFilter filter) {
+  void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
     _clean();
     Navigator.pushAndRemoveUntil(
       context,
@@ -222,7 +220,7 @@ class ImageSearchDelegate {
           sortFactor: settings.collectionSortFactor,
         )),
       ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+      (route) => false,
     );
   }
 
@@ -259,7 +257,7 @@ class ImageSearchDelegate {
     queryTextController.text = value;
   }
 
-  final ValueNotifier<SearchBody> currentBodyNotifier = ValueNotifier<SearchBody>(null);
+  final ValueNotifier<SearchBody> currentBodyNotifier = ValueNotifier(null);
 
   SearchBody get currentBody => currentBodyNotifier.value;
 

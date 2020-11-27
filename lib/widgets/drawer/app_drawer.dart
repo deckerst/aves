@@ -3,15 +3,16 @@ import 'dart:ui';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/ref/mime_types.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
-import 'package:aves/widgets/common/aves_logo.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/identity/aves_icons.dart';
+import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
 import 'package:aves/widgets/drawer/collection_tile.dart';
 import 'package:aves/widgets/drawer/tile.dart';
@@ -38,37 +39,30 @@ class _AppDrawerState extends State<AppDrawer> {
   @override
   Widget build(BuildContext context) {
     final header = Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: Divider.createBorderSide(context),
-        ),
-      ),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        color: Theme.of(context).accentColor,
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: Wrap(
-                  spacing: 16,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    AvesLogo(size: 64),
-                    Text(
-                      'Aves',
-                      style: TextStyle(
-                        fontSize: 44,
-                        fontFamily: 'Concourse Caps',
-                      ),
+      padding: EdgeInsets.all(16),
+      color: Theme.of(context).accentColor,
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Wrap(
+                spacing: 16,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  AvesLogo(size: 64),
+                  Text(
+                    'Aves',
+                    style: TextStyle(
+                      fontSize: 44,
+                      fontFamily: 'Concourse Caps',
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
