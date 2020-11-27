@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -9,6 +10,7 @@ import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
+import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_manager.dart';
@@ -59,75 +61,76 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     return MediaQueryDataProvider(
       child: Scaffold(
         body: DoubleBackPopScope(
-          child: SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final viewportSize = constraints.biggest;
-                assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
-                if (viewportSize.isEmpty) return SizedBox.shrink();
+          child: HighlightInfoProvider(
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final viewportSize = constraints.biggest;
+                  assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
+                  if (viewportSize.isEmpty) return SizedBox.shrink();
 
-                final tileExtentManager = TileExtentManager(
-                  settingsRouteKey: settingsRouteKey ?? context.currentRouteName,
-                  columnCountMin: 2,
-                  columnCountDefault: 2,
-                  extentMin: 60,
-                  extentNotifier: _tileExtentNotifier,
-                  spacing: spacing,
-                )..applyTileExtent(viewportSize: viewportSize);
+                  final tileExtentManager = TileExtentManager(
+                    settingsRouteKey: settingsRouteKey ?? context.currentRouteName,
+                    columnCountMin: 2,
+                    columnCountDefault: 2,
+                    extentMin: 60,
+                    extentNotifier: _tileExtentNotifier,
+                    spacing: spacing,
+                  )..applyTileExtent(viewportSize: viewportSize);
 
-                return ValueListenableBuilder<double>(
-                  valueListenable: _tileExtentNotifier,
-                  builder: (context, tileExtent, child) {
-                    final columnCount = tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent);
+                  return ValueListenableBuilder<double>(
+                    valueListenable: _tileExtentNotifier,
+                    builder: (context, tileExtent, child) {
+                      final columnCount = tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent);
 
-                    return ValueListenableBuilder<String>(
-                      valueListenable: queryNotifier,
-                      builder: (context, query, child) {
-                        final allFilters = filterEntries.keys;
-                        final visibleFilters = (applyQuery != null ? applyQuery(allFilters, query) : allFilters).toList();
+                      return ValueListenableBuilder<String>(
+                        valueListenable: queryNotifier,
+                        builder: (context, query, child) {
+                          final allFilters = filterEntries.keys;
+                          final visibleFilters = (applyQuery != null ? applyQuery(allFilters, query) : allFilters).toList();
 
-                        final scrollView = AnimationLimiter(
-                          child: _buildDraggableScrollView(_buildScrollView(context, columnCount, visibleFilters)),
-                        );
+                          final scrollView = AnimationLimiter(
+                            child: _buildDraggableScrollView(_buildScrollView(context, columnCount, visibleFilters)),
+                          );
 
-                        return GridScaleGestureDetector<FilterGridItem>(
-                          tileExtentManager: tileExtentManager,
-                          scrollableKey: _scrollableKey,
-                          appBarHeightNotifier: _appBarHeightNotifier,
-                          viewportSize: viewportSize,
-                          showScaledGrid: true,
-                          scaledBuilder: (item, extent) {
-                            final filter = item.filter;
-                            return SizedBox(
-                              width: extent,
-                              height: extent,
-                              child: DecoratedFilterChip(
-                                source: source,
-                                filter: filter,
-                                entry: item.entry,
-                                extent: extent,
-                                pinned: settings.pinnedFilters.contains(filter),
-                              ),
-                            );
-                          },
-                          getScaledItemTileRect: (context, item) {
-                            final index = visibleFilters.indexOf(item.filter);
-                            final column = index % columnCount;
-                            final row = (index / columnCount).floor();
-                            final left = tileExtent * column + spacing * (column - 1);
-                            final top = tileExtent * row + spacing * (row - 1);
-                            return Rect.fromLTWH(left, top, tileExtent, tileExtent);
-                          },
-                          onScaled: (item) {
-                            // TODO TLAD highlight scaled item
-                          },
-                          child: scrollView,
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+                          return GridScaleGestureDetector<FilterGridItem>(
+                            tileExtentManager: tileExtentManager,
+                            scrollableKey: _scrollableKey,
+                            appBarHeightNotifier: _appBarHeightNotifier,
+                            viewportSize: viewportSize,
+                            showScaledGrid: true,
+                            scaledBuilder: (item, extent) {
+                              final filter = item.filter;
+                              return SizedBox(
+                                width: extent,
+                                height: extent,
+                                child: DecoratedFilterChip(
+                                  source: source,
+                                  filter: filter,
+                                  entry: item.entry,
+                                  extent: extent,
+                                  pinned: settings.pinnedFilters.contains(filter),
+                                  highlightable: false,
+                                ),
+                              );
+                            },
+                            getScaledItemTileRect: (context, item) {
+                              final index = visibleFilters.indexOf(item.filter);
+                              final column = index % columnCount;
+                              final row = (index / columnCount).floor();
+                              final left = tileExtent * column + spacing * (column - 1);
+                              final top = tileExtent * row + spacing * (row - 1);
+                              return Rect.fromLTWH(left, top, tileExtent, tileExtent);
+                            },
+                            onScaled: (item) => Provider.of<HighlightInfo>(context, listen: false).add(item.filter),
+                            child: scrollView,
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),

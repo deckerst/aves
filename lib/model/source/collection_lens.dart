@@ -18,7 +18,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
-  final StreamController<ImageEntry> _highlightController = StreamController.broadcast();
 
   List<ImageEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
@@ -69,10 +68,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     _sortedEntries ??= List.of(sections.entries.expand((e) => e.value));
     return _sortedEntries;
   }
-
-  Stream<ImageEntry> get highlightStream => _highlightController.stream;
-
-  void highlight(ImageEntry entry) => _highlightController.add(entry);
 
   bool get showHeaders {
     if (sortFactor == EntrySortFactor.size) return false;
