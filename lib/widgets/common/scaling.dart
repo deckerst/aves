@@ -92,6 +92,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
             builder: (extent) => widget.scaledBuilder(_metadata.item, extent),
             center: thumbnailCenter,
             gridWidth: gridWidth,
+            spacing: tileExtentManager.spacing,
             scaledExtentNotifier: _scaledExtentNotifier,
             showScaledGrid: widget.showScaledGrid,
           ),
@@ -157,6 +158,7 @@ class ScaleOverlay extends StatefulWidget {
   final Widget Function(double extent) builder;
   final Offset center;
   final double gridWidth;
+  final double spacing;
   final ValueNotifier<double> scaledExtentNotifier;
   final bool showScaledGrid;
 
@@ -164,6 +166,7 @@ class ScaleOverlay extends StatefulWidget {
     @required this.builder,
     @required this.center,
     @required this.gridWidth,
+    @required this.spacing,
     @required this.scaledExtentNotifier,
     @required this.showScaledGrid,
   });
@@ -243,6 +246,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                   painter: GridPainter(
                     center: clampedCenter,
                     extent: extent,
+                    spacing: widget.spacing,
                   ),
                   child: child,
                 );
@@ -258,11 +262,12 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
 
 class GridPainter extends CustomPainter {
   final Offset center;
-  final double extent;
+  final double extent, spacing;
 
   const GridPainter({
     @required this.center,
     @required this.extent,
+    @required this.spacing,
   });
 
   @override
@@ -271,7 +276,7 @@ class GridPainter extends CustomPainter {
       ..strokeWidth = DecoratedThumbnail.borderWidth
       ..shader = ui.Gradient.radial(
         center,
-        size.width / 2,
+        size.width * .7,
         [
           DecoratedThumbnail.borderColor,
           Colors.transparent,
@@ -281,10 +286,18 @@ class GridPainter extends CustomPainter {
           1,
         ],
       );
+    void draw(Offset topLeft) {
+      for (var i = -2; i <= 3; i++) {
+        final ref = (extent + spacing) * i;
+        canvas.drawLine(Offset(0, topLeft.dy + ref), Offset(size.width, topLeft.dy + ref), paint);
+        canvas.drawLine(Offset(topLeft.dx + ref, 0), Offset(topLeft.dx + ref, size.height), paint);
+      }
+    }
+
     final topLeft = center.translate(-extent / 2, -extent / 2);
-    for (var i = -1; i <= 2; i++) {
-      canvas.drawLine(Offset(0, topLeft.dy + extent * i), Offset(size.width, topLeft.dy + extent * i), paint);
-      canvas.drawLine(Offset(topLeft.dx + extent * i, 0), Offset(topLeft.dx + extent * i, size.height), paint);
+    draw(topLeft);
+    if (spacing > 0) {
+      draw(topLeft.translate(-spacing, -spacing));
     }
   }
 

@@ -66,7 +66,7 @@ class DecoratedFilterChip extends StatelessWidget {
   Widget _buildDetails(CollectionFilter filter) {
     final padding = min<double>(8.0, extent / 16);
     final iconSize = min<double>(14.0, extent / 8);
-    final fontSize = min<double>(14.0, (extent / 6).roundToDouble());
+    final fontSize = min<double>(14.0, extent / 6);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -84,13 +84,13 @@ class DecoratedFilterChip extends StatelessWidget {
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           AnimatedPadding(
             padding: EdgeInsets.only(right: padding),
+            duration: Durations.chipDecorationAnimation,
             child: DecoratedIcon(
               AIcons.removableStorage,
               color: FilterGridPage.detailColor,
               shadows: [Constants.embossShadow],
               size: iconSize,
             ),
-            duration: Durations.chipDecorationAnimation,
           ),
         Text(
           '${source.count(filter)}',
