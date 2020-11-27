@@ -1,9 +1,9 @@
+import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
-import 'package:aves/theme/icons.dart';
-import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:palette_generator/palette_generator.dart';

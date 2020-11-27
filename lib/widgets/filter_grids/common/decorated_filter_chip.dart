@@ -13,6 +13,7 @@ import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/overlay.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class DecoratedFilterChip extends StatelessWidget {
   final CollectionFilter filter;
   final ImageEntry entry;
   final double extent;
-  final bool pinned;
+  final bool pinned, highlightable;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
@@ -32,6 +33,7 @@ class DecoratedFilterChip extends StatelessWidget {
     @required this.entry,
     @required this.extent,
     this.pinned = false,
+    this.highlightable = true,
     this.onTap,
     this.onLongPress,
   }) : super(key: key);
@@ -49,18 +51,34 @@ class DecoratedFilterChip extends StatelessWidget {
                 entry: entry,
                 extent: extent,
               );
-    final borderRadius = min<double>(AvesFilterChip.defaultRadius, extent / 4);
+    final radius = min<double>(AvesFilterChip.defaultRadius, extent / 4);
     final titlePadding = min<double>(6.0, extent / 16);
-    return AvesFilterChip(
+    final borderRadius = BorderRadius.all(Radius.circular(radius));
+    Widget child = AvesFilterChip(
       filter: filter,
       showGenericIcon: false,
       background: backgroundImage,
       details: _buildDetails(filter),
-      borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+      borderRadius: borderRadius,
       padding: titlePadding,
       onTap: onTap,
       onLongPress: onLongPress,
     );
+
+    child = Stack(
+      fit: StackFit.passthrough,
+      children: [
+        child,
+        if (highlightable)
+          ChipHighlightOverlay(
+            filter: filter,
+            extent: extent,
+            borderRadius: borderRadius,
+          ),
+      ],
+    );
+
+    return child;
   }
 
   Widget _buildDetails(CollectionFilter filter) {

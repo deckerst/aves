@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -12,12 +13,13 @@ import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/collection/grid/list_section_layout.dart';
 import 'package:aves/widgets/collection/grid/list_sliver.dart';
-import 'package:aves/widgets/common/scaling.dart';
-import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
+import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
+import 'package:aves/widgets/common/scaling.dart';
+import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -35,79 +37,82 @@ class ThumbnailCollection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final viewportSize = constraints.biggest;
-          assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
-          if (viewportSize.isEmpty) return SizedBox.shrink();
+    return HighlightInfoProvider(
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final viewportSize = constraints.biggest;
+            assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
+            if (viewportSize.isEmpty) return SizedBox.shrink();
 
-          final tileExtentManager = TileExtentManager(
-            settingsRouteKey: context.currentRouteName,
-            columnCountMin: columnCountMin,
-            columnCountDefault: columnCountDefault,
-            extentMin: extentMin,
-            extentNotifier: _tileExtentNotifier,
-            spacing: 0,
-          )..applyTileExtent(viewportSize: viewportSize);
-          final cacheExtent = tileExtentManager.getEffectiveExtentMax(viewportSize) * 2;
+            final tileExtentManager = TileExtentManager(
+              settingsRouteKey: context.currentRouteName,
+              columnCountMin: columnCountMin,
+              columnCountDefault: columnCountDefault,
+              extentMin: extentMin,
+              extentNotifier: _tileExtentNotifier,
+              spacing: 0,
+            )..applyTileExtent(viewportSize: viewportSize);
+            final cacheExtent = tileExtentManager.getEffectiveExtentMax(viewportSize) * 2;
 
-          // do not replace by Provider.of<CollectionLens>
-          // so that view updates on collection filter changes
-          return Consumer<CollectionLens>(
-            builder: (context, collection, child) {
-              final scrollView = CollectionScrollView(
-                scrollableKey: _scrollableKey,
-                collection: collection,
-                appBar: CollectionAppBar(
-                  appBarHeightNotifier: _appBarHeightNotifier,
+            // do not replace by Provider.of<CollectionLens>
+            // so that view updates on collection filter changes
+            return Consumer<CollectionLens>(
+              builder: (context, collection, child) {
+                final scrollView = CollectionScrollView(
+                  scrollableKey: _scrollableKey,
                   collection: collection,
-                ),
-                appBarHeightNotifier: _appBarHeightNotifier,
-                isScrollingNotifier: _isScrollingNotifier,
-                scrollController: PrimaryScrollController.of(context),
-                cacheExtent: cacheExtent,
-              );
-
-              final scaler = GridScaleGestureDetector<ImageEntry>(
-                tileExtentManager: tileExtentManager,
-                scrollableKey: _scrollableKey,
-                appBarHeightNotifier: _appBarHeightNotifier,
-                viewportSize: viewportSize,
-                showScaledGrid: true,
-                scaledBuilder: (entry, extent) => DecoratedThumbnail(
-                  entry: entry,
-                  extent: extent,
-                  showOverlay: false,
-                ),
-                getScaledItemTileRect: (context, entry) {
-                  final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
-                  return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
-                },
-                onScaled: collection.highlight,
-                child: scrollView,
-              );
-
-              final sectionedListLayoutProvider = ValueListenableBuilder<double>(
-                valueListenable: _tileExtentNotifier,
-                builder: (context, tileExtent, child) => SectionedListLayoutProvider(
-                  collection: collection,
-                  scrollableWidth: viewportSize.width,
-                  tileExtent: tileExtent,
-                  thumbnailBuilder: (entry) => GridThumbnail(
-                    key: ValueKey(entry.contentId),
+                  appBar: CollectionAppBar(
+                    appBarHeightNotifier: _appBarHeightNotifier,
                     collection: collection,
-                    entry: entry,
-                    tileExtent: tileExtent,
-                    isScrollingNotifier: _isScrollingNotifier,
                   ),
-                  child: scaler,
-                ),
-              );
-              return sectionedListLayoutProvider;
-            },
-          );
-        },
+                  appBarHeightNotifier: _appBarHeightNotifier,
+                  isScrollingNotifier: _isScrollingNotifier,
+                  scrollController: PrimaryScrollController.of(context),
+                  cacheExtent: cacheExtent,
+                );
+
+                final scaler = GridScaleGestureDetector<ImageEntry>(
+                  tileExtentManager: tileExtentManager,
+                  scrollableKey: _scrollableKey,
+                  appBarHeightNotifier: _appBarHeightNotifier,
+                  viewportSize: viewportSize,
+                  showScaledGrid: true,
+                  scaledBuilder: (entry, extent) => DecoratedThumbnail(
+                    entry: entry,
+                    extent: extent,
+                    selectable: false,
+                    highlightable: false,
+                  ),
+                  getScaledItemTileRect: (context, entry) {
+                    final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
+                    return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
+                  },
+                  onScaled: (entry) => Provider.of<HighlightInfo>(context, listen: false).add(entry),
+                  child: scrollView,
+                );
+
+                final sectionedListLayoutProvider = ValueListenableBuilder<double>(
+                  valueListenable: _tileExtentNotifier,
+                  builder: (context, tileExtent, child) => SectionedListLayoutProvider(
+                    collection: collection,
+                    scrollableWidth: viewportSize.width,
+                    tileExtent: tileExtent,
+                    thumbnailBuilder: (entry) => GridThumbnail(
+                      key: ValueKey(entry.contentId),
+                      collection: collection,
+                      entry: entry,
+                      tileExtent: tileExtent,
+                      isScrollingNotifier: _isScrollingNotifier,
+                    ),
+                    child: scaler,
+                  ),
+                );
+                return sectionedListLayoutProvider;
+              },
+            );
+          },
+        ),
       ),
     );
   }
