@@ -43,7 +43,7 @@ class ThumbnailCollection extends StatelessWidget {
           if (viewportSize.isEmpty) return SizedBox.shrink();
 
           final tileExtentManager = TileExtentManager(
-            routeName: context.currentRouteName,
+            settingsRouteKey: context.currentRouteName,
             columnCountMin: columnCountMin,
             columnCountDefault: columnCountDefault,
             extentMin: extentMin,
