@@ -1,25 +1,20 @@
+import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/action_delegates/feedback.dart';
-import 'package:aves/widgets/common/action_delegates/permission_aware.dart';
-import 'package:aves/widgets/common/action_delegates/rename_album_dialog.dart';
-import 'package:aves/widgets/common/aves_dialog.dart';
-import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
+import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
+import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
-import 'package:pedantic/pedantic.dart';
 
 class ChipActionDelegate {
-  Future<void> onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) async {
-    // wait for the popup menu to hide before proceeding with the action
-    await Future.delayed(Durations.popupMenuAnimation * timeDilation);
-
+  void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     switch (action) {
       case ChipAction.pin:
         settings.pinnedFilters = settings.pinnedFilters..add(filter);
@@ -33,7 +28,7 @@ class ChipActionDelegate {
   }
 }
 
-class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin {
+class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionSource source;
 
   AlbumChipActionDelegate({
@@ -41,14 +36,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   });
 
   @override
-  Future<void> onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) async {
-    await super.onActionSelected(context, filter, action);
+  void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
+    super.onActionSelected(context, filter, action);
     switch (action) {
       case ChipAction.delete:
-        unawaited(_showDeleteDialog(context, filter as AlbumFilter));
+        _showDeleteDialog(context, filter as AlbumFilter);
         break;
       case ChipAction.rename:
-        unawaited(_showRenameDialog(context, filter as AlbumFilter));
+        _showRenameDialog(context, filter as AlbumFilter);
         break;
       default:
         break;
@@ -56,13 +51,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
-    final selection = source.rawEntries.where(filter.filter).toList();
+    final selection = source.rawEntries.where(filter.filter).toSet();
     final count = selection.length;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AvesDialog(
+          context: context,
           content: Text('Are you sure you want to delete this album and its ${Intl.plural(count, one: 'item', other: '$count items')}?'),
           actions: [
             TextButton(
@@ -110,8 +106,10 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final selection = source.rawEntries.where(filter.filter).toList();
+    final selection = source.rawEntries.where(filter.filter).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
+
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, false)) return;
 
     showOpReport<MoveOpEvent>(
       context: context,

@@ -41,21 +41,6 @@ class _DbTabState extends State<DbTab> {
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text('DB'),
-            ),
-            SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: () async {
-                await metadataDb.removeIds([entry.contentId]);
-                _loadDatabase();
-              },
-              child: Text('Remove from DB'),
-            ),
-          ],
-        ),
         FutureBuilder<DateMetadata>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
@@ -143,7 +128,6 @@ class _DbTabState extends State<DbTab> {
                 Text('DB address:${data == null ? ' no row' : ''}'),
                 if (data != null)
                   InfoRowGroup({
-                    'addressLine': '${data.addressLine}',
                     'countryCode': '${data.countryCode}',
                     'countryName': '${data.countryName}',
                     'adminArea': '${data.adminArea}',

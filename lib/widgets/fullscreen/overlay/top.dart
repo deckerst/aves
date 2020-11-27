@@ -1,17 +1,19 @@
 import 'dart:math';
 
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/entry_actions.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/menu_row.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:aves/widgets/fullscreen/overlay/minimap.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -109,6 +111,8 @@ class FullscreenTopOverlay extends StatelessWidget {
         return entry.canPrint;
       case EntryAction.openMap:
         return entry.hasGps;
+      case EntryAction.viewSource:
+        return entry.isSvg;
       case EntryAction.share:
       case EntryAction.info:
       case EntryAction.open:
@@ -166,7 +170,10 @@ class _TopOverlayRow extends StatelessWidget {
                 _buildPopupMenuItem(EntryAction.debug),
               ]
             ],
-            onSelected: onActionSelected,
+            onSelected: (action) {
+              // wait for the popup menu to hide before proceeding with the action
+              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
+            },
           ),
         ),
       ],
@@ -175,7 +182,7 @@ class _TopOverlayRow extends StatelessWidget {
 
   Widget _buildOverlayButton(EntryAction action) {
     Widget child;
-    void onPressed() => onActionSelected?.call(action);
+    void onPressed() => onActionSelected(action);
     switch (action) {
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(
@@ -191,6 +198,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rotateCW:
       case EntryAction.flip:
       case EntryAction.print:
+      case EntryAction.viewSource:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
@@ -233,6 +241,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rotateCW:
       case EntryAction.flip:
       case EntryAction.print:
+      case EntryAction.viewSource:
       case EntryAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());
         break;

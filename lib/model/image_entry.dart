@@ -8,21 +8,24 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:latlong/latlong.dart';
 import 'package:path/path.dart' as ppath;
-import 'package:tuple/tuple.dart';
 
-import 'mime_types.dart';
+import '../ref/mime_types.dart';
 
 class ImageEntry {
   String uri;
   String _path, _directory, _filename, _extension;
   int contentId;
   final String sourceMimeType;
+
+  // TODO TLAD use SVG viewport as width/height
   int width;
   int height;
   int sourceRotationDegrees;
@@ -36,6 +39,9 @@ class ImageEntry {
   AddressDetails _addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
+
+  // TODO TLAD make it dynamic if it depends on OS/lib versions
+  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
 
   ImageEntry({
     this.uri,
@@ -56,7 +62,7 @@ class ImageEntry {
     this.dateModifiedSecs = dateModifiedSecs;
   }
 
-  bool get canDecode => !MimeTypes.undecodable.contains(mimeType);
+  bool get canDecode => !undecodable.contains(mimeType);
 
   ImageEntry copyWith({
     @required String uri,
@@ -217,7 +223,12 @@ class ImageEntry {
     }
   }
 
-  bool get isPortrait => rotationDegrees % 180 == 90;
+  // The additional comparison of width to height is a workaround for badly registered entries.
+  // e.g. a portrait FHD video should be registered as width=1920, height=1080, orientation=90,
+  // but is incorrectly registered in the Media Store as width=1080, height=1920, orientation=0
+  // Double-checking the width/height during loading or cataloguing is the proper solution,
+  // but it would take space and time, so a basic workaround will do.
+  bool get isPortrait => rotationDegrees % 180 == 90 && (catalogMetadata?.rotationDegrees == null || width > height);
 
   String get resolutionText {
     final w = width ?? '?';
@@ -288,9 +299,14 @@ class ImageEntry {
 
   bool get isLocated => _addressDetails != null;
 
-  Tuple2<double, double> get latLng => isCatalogued ? Tuple2(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
+  LatLng get latLng => isCatalogued ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
-  String get geoUri => hasGps ? 'geo:${_catalogMetadata.latitude},${_catalogMetadata.longitude}?q=${_catalogMetadata.latitude},${_catalogMetadata.longitude}' : null;
+  String get geoUri {
+    if (!hasGps) return null;
+    final latitude = roundToPrecision(_catalogMetadata.latitude, decimals: 6);
+    final longitude = roundToPrecision(_catalogMetadata.longitude, decimals: 6);
+    return 'geo:$latitude,$longitude?q=$latitude,$longitude';
+  }
 
   List<String> get xmpSubjects => _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
 
@@ -359,7 +375,6 @@ class ImageEntry {
         final address = addresses.first;
         addressDetails = AddressDetails(
           contentId: contentId,
-          addressLine: address.addressLine,
           countryCode: address.countryCode,
           countryName: address.countryName,
           adminArea: address.adminArea,
@@ -371,11 +386,29 @@ class ImageEntry {
     }
   }
 
+  Future<String> findAddressLine() async {
+    final latitude = _catalogMetadata?.latitude;
+    final longitude = _catalogMetadata?.longitude;
+    if (latitude == null || longitude == null || (latitude == 0 && longitude == 0)) return null;
+
+    final coordinates = Coordinates(latitude, longitude);
+    try {
+      final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      if (addresses != null && addresses.isNotEmpty) {
+        final address = addresses.first;
+        return address.addressLine;
+      }
+    } catch (error, stackTrace) {
+      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
+    }
+    return null;
+  }
+
   String get shortAddress {
     if (!isLocated) return '';
 
-    // admin area examples: Seoul, Geneva, null
-    // locality examples: Mapo-gu, Geneva, Annecy
+    // `admin area` examples: Seoul, Geneva, null
+    // `locality` examples: Mapo-gu, Geneva, Annecy
     return {
       _addressDetails.countryName,
       _addressDetails.adminArea,
@@ -383,12 +416,13 @@ class ImageEntry {
     }.where((part) => part != null && part.isNotEmpty).join(', ');
   }
 
-  bool search(String query) {
-    if (bestTitle?.toUpperCase()?.contains(query) ?? false) return true;
-    if (_catalogMetadata?.xmpSubjects?.toUpperCase()?.contains(query) ?? false) return true;
-    if (_addressDetails?.addressLine?.toUpperCase()?.contains(query) ?? false) return true;
-    return false;
-  }
+  bool search(String query) => {
+        bestTitle,
+        _catalogMetadata?.xmpSubjects,
+        _addressDetails?.countryName,
+        _addressDetails?.adminArea,
+        _addressDetails?.locality,
+      }.any((s) => s != null && s.toUpperCase().contains(query));
 
   Future<void> _applyNewFields(Map newFields) async {
     final uri = newFields['uri'];

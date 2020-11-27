@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:tuple/tuple.dart';
+import 'package:latlong/latlong.dart';
 
 class Constants {
   // as of Flutter v1.22.3, overflowing `Text` miscalculates height and some text (e.g. 'Å') is clipped
@@ -21,11 +21,23 @@ class Constants {
   static const String overlayUnknown = '—'; // em dash
   static const String infoUnknown = 'unknown';
 
-  static const pointNemo = Tuple2(-48.876667, -123.393333);
+  static final pointNemo = LatLng(-48.876667, -123.393333);
 
   static const int infoGroupMaxValueLength = 140;
 
   static const List<Dependency> androidDependencies = [
+    Dependency(
+      name: 'AndroidX Core-KTX',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/LICENSE.txt',
+      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/core/core-ktx',
+    ),
+    Dependency(
+      name: 'AndroidX Exifinterface',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/LICENSE.txt',
+      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/exifinterface/exifinterface',
+    ),
     Dependency(
       name: 'Android-TiffBitmapFactory',
       license: 'MIT',
@@ -96,7 +108,7 @@ class Constants {
       sourceUrl: 'https://github.com/Skylled/expansion_tile_card',
     ),
     Dependency(
-      name: 'FlutterFire',
+      name: 'FlutterFire (Core, Analytics, Crashlytics)',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/FirebaseExtended/flutterfire/blob/master/LICENSE',
       sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
@@ -106,6 +118,12 @@ class Constants {
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/AndreHaueisen/flushbar/blob/master/LICENSE',
       sourceUrl: 'https://github.com/AndreHaueisen/flushbar',
+    ),
+    Dependency(
+      name: 'Flutter Highlight',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/git-touch/highlight/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/git-touch/highlight',
     ),
     Dependency(
       name: 'Flutter ijkplayer',
@@ -180,7 +198,7 @@ class Constants {
       sourceUrl: 'https://github.com/boyan01/overlay_support',
     ),
     Dependency(
-      name: 'Package info',
+      name: 'Package Info',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/package_info/LICENSE',
       sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/package_info',
@@ -268,12 +286,6 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher',
-    ),
-    Dependency(
-      name: 'UUID',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/Daegalus/dart-uuid/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/Daegalus/dart-uuid',
     ),
   ];
 }

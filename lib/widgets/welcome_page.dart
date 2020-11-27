@@ -1,7 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/aves_logo.dart';
-import 'package:aves/widgets/common/labeled_checkbox.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
+import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

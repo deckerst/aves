@@ -1,9 +1,8 @@
 import 'package:aves/flutter_version.dart';
 import 'package:aves/widgets/about/licenses.dart';
-import 'package:aves/widgets/common/aves_logo.dart';
-import 'package:aves/widgets/common/link_chip.dart';
+import 'package:aves/widgets/common/basic/link_chip.dart';
+import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:package_info/package_info.dart';
 
 class AboutPage extends StatelessWidget {
@@ -16,24 +15,58 @@ class AboutPage extends StatelessWidget {
         title: Text('About'),
       ),
       body: SafeArea(
-        child: AnimationLimiter(
-          child: CustomScrollView(
-            slivers: [
-              SliverPadding(
-                padding: EdgeInsets.only(top: 16),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      AppReference(),
-                      SizedBox(height: 16),
-                      Divider(),
-                    ],
-                  ),
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.only(top: 16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    AppReference(),
+                    SizedBox(height: 16),
+                    Divider(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(minHeight: 48),
+                            child: Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Text(
+                                'Credits',
+                                style: Theme.of(context).textTheme.headline6.copyWith(fontFamily: 'Concourse Caps'),
+                              ),
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(text: 'This app uses the font '),
+                                WidgetSpan(
+                                  child: LinkChip(
+                                    text: 'Concourse',
+                                    url: 'https://mbtype.com/fonts/concourse/',
+                                    textStyle: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  alignment: PlaceholderAlignment.middle,
+                                ),
+                                TextSpan(text: ' for titles and the media information page.'),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                  ],
                 ),
               ),
-              Licenses(),
-            ],
-          ),
+            ),
+            Licenses(),
+          ],
         ),
       ),
     );

@@ -1,11 +1,11 @@
+import 'package:aves/ref/brand_colors.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/utils/durations.dart';
-import 'package:aves/widgets/common/icons.dart';
-import 'package:aves/widgets/common/link_chip.dart';
-import 'package:aves/widgets/common/menu_row.dart';
+import 'package:aves/widgets/common/basic/link_chip.dart';
+import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class Licenses extends StatefulWidget {
   @override
@@ -13,18 +13,20 @@ class Licenses extends StatefulWidget {
 }
 
 class _LicensesState extends State<Licenses> {
+  final ValueNotifier<String> _expandedNotifier = ValueNotifier(null);
   LicenseSort _sort = LicenseSort.name;
-  List<Dependency> _packages;
+  List<Dependency> _platform, _flutter;
 
   @override
   void initState() {
     super.initState();
-    _packages = [...Constants.androidDependencies, ...Constants.flutterPackages];
+    _platform = List.from(Constants.androidDependencies);
+    _flutter = List.from(Constants.flutterPackages);
     _sortPackages();
   }
 
   void _sortPackages() {
-    _packages.sort((a, b) {
+    int compare(Dependency a, Dependency b) {
       switch (_sort) {
         case LicenseSort.license:
           final c = compareAsciiUpperCase(a.license, b.license);
@@ -33,7 +35,10 @@ class _LicensesState extends State<Licenses> {
         default:
           return compareAsciiUpperCase(a.name, b.name);
       }
-    });
+    }
+
+    _platform.sort(compare);
+    _flutter.sort(compare);
   }
 
   @override
@@ -41,25 +46,40 @@ class _LicensesState extends State<Licenses> {
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            if (index-- == 0) {
-              return _buildHeader();
-            }
-            final child = LicenseRow(_packages[index]);
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              duration: Durations.staggeredAnimation,
-              delay: Durations.staggeredAnimationDelay,
-              child: SlideAnimation(
-                verticalOffset: 50.0,
-                child: FadeInAnimation(
-                  child: child,
+        delegate: SliverChildListDelegate(
+          [
+            _buildHeader(),
+            SizedBox(height: 16),
+            AvesExpansionTile(
+              title: 'Android Libraries',
+              color: BrandColors.android,
+              expandedNotifier: _expandedNotifier,
+              children: _platform.map((package) => LicenseRow(package)).toList(),
+            ),
+            AvesExpansionTile(
+              title: 'Flutter Packages',
+              color: BrandColors.flutter,
+              expandedNotifier: _expandedNotifier,
+              children: _flutter.map((package) => LicenseRow(package)).toList(),
+            ),
+            Center(
+              child: TextButton(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Theme(
+                      data: Theme.of(context).copyWith(
+                        // as of Flutter v1.22.4, `cardColor` is used as a background color by `LicensePage`
+                        cardColor: Theme.of(context).scaffoldBackgroundColor,
+                      ),
+                      child: LicensePage(),
+                    ),
+                  ),
                 ),
+                child: Text('Show All Licenses'.toUpperCase()),
               ),
-            );
-          },
-          childCount: _packages.length + 1,
+            ),
+          ],
         ),
       ),
     );
@@ -122,7 +142,7 @@ class LicenseRow extends StatelessWidget {
     final subColor = bodyTextStyle.color.withOpacity(.6);
 
     return Padding(
-      padding: EdgeInsets.only(top: 16),
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

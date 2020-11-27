@@ -1,3 +1,4 @@
+import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
@@ -5,12 +6,11 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/tag.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/common/icons.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/chip_actions.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +39,6 @@ class TagListPage extends StatelessWidget {
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
             ],
             filterEntries: _getTagEntries(),
-            filterBuilder: _buildFilter,
             emptyBuilder: () => EmptyContent(
               icon: AIcons.tag,
               text: 'No tags',
@@ -50,25 +49,23 @@ class TagListPage extends StatelessWidget {
     );
   }
 
-  CollectionFilter _buildFilter(String tag) => TagFilter(tag);
-
-  Map<String, ImageEntry> _getTagEntries() {
-    final pinned = settings.pinnedFilters.whereType<TagFilter>().map((f) => f.tag);
+  Map<TagFilter, ImageEntry> _getTagEntries() {
+    final pinned = settings.pinnedFilters.whereType<TagFilter>();
 
     final entriesByDate = source.sortedEntriesForFilterList;
     // tags are initially sorted by name at the source level
-    var sortedTags = source.sortedTags;
+    var sortedFilters = source.sortedTags.map((tag) => TagFilter(tag));
     if (settings.tagSortFactor == ChipSortFactor.count) {
-      var filtersWithCount = List.of(sortedTags.map((s) => MapEntry(s, source.count(_buildFilter(s)))));
+      final filtersWithCount = List.of(sortedFilters.map((filter) => MapEntry(filter, source.count(filter))));
       filtersWithCount.sort(FilterNavigationPage.compareChipsByEntryCount);
-      sortedTags = filtersWithCount.map((kv) => kv.key).toList();
+      sortedFilters = filtersWithCount.map((kv) => kv.key).toList();
     }
 
-    final allMapEntries = sortedTags.map((tag) => MapEntry(
-          tag,
-          entriesByDate.firstWhere((entry) => entry.xmpSubjects.contains(tag), orElse: () => null),
+    final allMapEntries = sortedFilters.map((filter) => MapEntry(
+          filter,
+          entriesByDate.firstWhere((entry) => entry.xmpSubjects.contains(filter.tag), orElse: () => null),
         ));
-    final byPin = groupBy<MapEntry<String, ImageEntry>, bool>(allMapEntries, (e) => pinned.contains(e.key));
+    final byPin = groupBy<MapEntry<TagFilter, ImageEntry>, bool>(allMapEntries, (e) => pinned.contains(e.key));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 

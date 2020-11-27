@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/utils/durations.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';

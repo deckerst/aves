@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "100907092477-1mredcehjo66opfirr6k3kokjqmc99ee.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "deckers.thibault.aves",
+            "certificate_hash": "59a50013fa7a2f97911b52d681cafaebf83505e8"
+          }
+        },
+        {
           "client_id": "100907092477-ml1c4hr4l24ekg7l7nqid06n03kek6c8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -52,6 +60,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "100907092477-8vgakbtass73c6dad5mqflq2dd4h4904.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "deckers.thibault.aves.debug",
+            "certificate_hash": "744592fedb021fd82372966a6cb30569579fa9cc"
+          }
+        },
+        {
           "client_id": "100907092477-u7sm8gp5t2sotn42oq20ufhtn3craodu.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -80,6 +96,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "100907092477-4a6968gloaaq70uti1offkk7raduond6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "deckers.thibault.aves.profile",
+            "certificate_hash": "744592fedb021fd82372966a6cb30569579fa9cc"
+          }
+        },
         {
           "client_id": "100907092477-u7sm8gp5t2sotn42oq20ufhtn3craodu.apps.googleusercontent.com",
           "client_type": 3

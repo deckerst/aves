@@ -1,7 +1,7 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/widgets/common/aves_expansion_tile.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/debug/android_env.dart';
 import 'package:aves/widgets/debug/cache.dart';
 import 'package:aves/widgets/debug/database.dart';

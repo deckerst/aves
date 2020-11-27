@@ -10,7 +10,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final double extent;
   final CollectionLens collection;
   final ValueNotifier<bool> isScrollingNotifier;
-  final bool showOverlay;
+  final bool selectable, highlightable;
   final Object heroTag;
 
   static final Color borderColor = Colors.grey.shade700;
@@ -22,7 +22,8 @@ class DecoratedThumbnail extends StatelessWidget {
     @required this.extent,
     this.collection,
     this.isScrollingNotifier,
-    this.showOverlay = true,
+    this.selectable = true,
+    this.highlightable = true,
   })  : heroTag = collection?.heroTag(entry),
         super(key: key);
 
@@ -40,29 +41,32 @@ class DecoratedThumbnail extends StatelessWidget {
             isScrollingNotifier: isScrollingNotifier,
             heroTag: heroTag,
           );
-    if (showOverlay) {
-      child = Stack(
-        children: [
-          child,
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: ThumbnailEntryOverlay(
-              entry: entry,
-              extent: extent,
-            ),
+
+    child = Stack(
+      fit: StackFit.passthrough,
+      children: [
+        child,
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: ThumbnailEntryOverlay(
+            entry: entry,
+            extent: extent,
           ),
+        ),
+        if (selectable)
           ThumbnailSelectionOverlay(
             entry: entry,
             extent: extent,
           ),
+        if (highlightable)
           ThumbnailHighlightOverlay(
-            highlightedStream: collection.highlightStream.map((highlighted) => highlighted == entry),
+            entry: entry,
             extent: extent,
           ),
-        ],
-      );
-    }
+      ],
+    );
+
     return Container(
       foregroundDecoration: BoxDecoration(
         border: Border.all(

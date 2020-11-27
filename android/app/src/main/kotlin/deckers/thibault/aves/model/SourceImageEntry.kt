@@ -122,17 +122,15 @@ class SourceImageEntry {
         if (isVideo) {
             fillVideoByMediaMetadataRetriever(context)
             if (isSized && hasDuration) return this
-        }
-        // skip metadata-extractor for raw images because it reports the decoded dimensions instead of the raw dimensions
-        if (!MimeTypes.isRaw(sourceMimeType) && MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)) {
+            fillByMetadataExtractor(context)
+        } else {
             fillByMetadataExtractor(context)
             if (isSized && foundExif) return this
-        }
-        if (ExifInterface.isSupportedMimeType(sourceMimeType)) {
             fillByExifInterface(context)
-            if (isSized) return this
         }
-        fillByBitmapDecode(context)
+        if (!isSized) {
+            fillByBitmapDecode(context)
+        }
         return this
     }
 
@@ -156,6 +154,9 @@ class SourceImageEntry {
 
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
+        // skip raw images because `metadata-extractor` reports the decoded dimensions instead of the raw dimensions
+        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType) || MimeTypes.isRaw(sourceMimeType)) return
+
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
                 val metadata = ImageMetadataReader.readMetadata(input)
@@ -206,6 +207,8 @@ class SourceImageEntry {
 
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
+        if (!ExifInterface.isSupportedMimeType(sourceMimeType)) return;
+
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
                 val exif = ExifInterface(input)

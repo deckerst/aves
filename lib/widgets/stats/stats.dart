@@ -5,15 +5,16 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/mime_types.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/common/data_providers/media_query_data_provider.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
@@ -25,14 +26,18 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 class StatsPage extends StatelessWidget {
   static const routeName = '/collection/stats';
 
-  final CollectionLens collection;
+  final CollectionSource source;
+  final CollectionLens parentCollection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
-  List<ImageEntry> get entries => collection.sortedEntries;
+  List<ImageEntry> get entries => parentCollection?.sortedEntries ?? source.rawEntries;
 
   static const mimeDonutMinWidth = 124.0;
 
-  StatsPage({this.collection}) {
+  StatsPage({
+    @required this.source,
+    this.parentCollection,
+  }) : assert(source != null) {
     entries.forEach((entry) {
       if (entry.isLocated) {
         final address = entry.addressDetails;
@@ -55,7 +60,7 @@ class StatsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget child;
-    if (collection.isEmpty) {
+    if (entries.isEmpty) {
       child = EmptyContent(
         icon: AIcons.image,
         text: 'No images',
@@ -75,7 +80,7 @@ class StatsPage extends StatelessWidget {
 
       final catalogued = entries.where((entry) => entry.isCatalogued);
       final withGps = catalogued.where((entry) => entry.hasGps);
-      final withGpsPercent = withGps.length / collection.entryCount;
+      final withGpsPercent = withGps.length / entries.length;
       final textScaleFactor = MediaQuery.textScaleFactorOf(context);
       final lineHeight = 16 * textScaleFactor;
       final locationIndicator = Padding(
@@ -105,9 +110,9 @@ class StatsPage extends StatelessWidget {
         children: [
           mimeDonuts,
           locationIndicator,
-          ..._buildTopFilters('Top Countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
-          ..._buildTopFilters('Top Places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
-          ..._buildTopFilters('Top Tags', entryCountPerTag, (s) => TagFilter(s)),
+          ..._buildTopFilters(context, 'Top Countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
+          ..._buildTopFilters(context, 'Top Places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
+          ..._buildTopFilters(context, 'Top Tags', entryCountPerTag, (s) => TagFilter(s)),
         ],
       );
     }
@@ -178,7 +183,7 @@ class StatsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: seriesData
               .map((d) => GestureDetector(
-                    onTap: () => _goToCollection(context, MimeFilter(d.mimeType)),
+                    onTap: () => _onFilterSelection(context, MimeFilter(d.mimeType)),
                     child: Text.rich(
                       TextSpan(
                         children: [
@@ -218,6 +223,7 @@ class StatsPage extends StatelessWidget {
   }
 
   List<Widget> _buildTopFilters(
+    BuildContext context,
     String title,
     Map<String, int> entryCountMap,
     CollectionFilter Function(String key) filterBuilder,
@@ -233,22 +239,45 @@ class StatsPage extends StatelessWidget {
         ),
       ),
       FilterTable(
-        collection: collection,
+        totalEntryCount: entries.length,
         entryCountMap: entryCountMap,
         filterBuilder: filterBuilder,
+        onFilterSelection: (filter) => _onFilterSelection(context, filter),
       ),
     ];
   }
 
-  void _goToCollection(BuildContext context, CollectionFilter filter) {
-    if (collection == null) return;
+  void _onFilterSelection(BuildContext context, CollectionFilter filter) {
+    if (parentCollection != null) {
+      _applyToParentCollectionPage(context, filter);
+    } else {
+      _jumpToCollectionPage(context, filter);
+    }
+  }
+
+  void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
+    parentCollection.addFilter(filter);
+    // we post closing the search page after applying the filter selection
+    // so that hero animation target is ready in the `FilterBar`,
+    // even when the target is a child of an `AnimatedList`
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pop(context);
+    });
+  }
+
+  void _jumpToCollectionPage(BuildContext context, CollectionFilter filter) {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(collection.derive(filter)),
+        builder: (context) => CollectionPage(CollectionLens(
+          source: source,
+          filters: [filter],
+          groupFactor: settings.collectionGroupFactor,
+          sortFactor: settings.collectionSortFactor,
+        )),
       ),
-      settings.navRemoveRoutePredicate(CollectionPage.routeName),
+      (route) => false,
     );
   }
 }
@@ -261,7 +290,7 @@ class EntryByMimeDatum {
   EntryByMimeDatum({
     @required this.mimeType,
     @required this.entryCount,
-  }) : displayText = MimeTypes.displayType(mimeType);
+  }) : displayText = MimeUtils.displayType(mimeType);
 
   Color get color => stringToColor(displayText);
 

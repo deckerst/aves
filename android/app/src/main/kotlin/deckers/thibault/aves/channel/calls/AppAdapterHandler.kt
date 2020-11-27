@@ -162,6 +162,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         uri ?: return false
 
         val intent = Intent(Intent.ACTION_VIEW)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(uri, mimeType)
         return safeStartActivityChooser(title, intent)
     }
@@ -177,12 +178,14 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         uri ?: return false
 
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setDataAndType(uri, mimeType)
         return safeStartActivityChooser(title, intent)
     }
 
     private fun shareSingle(title: String?, uri: Uri, mimeType: String): Boolean {
         val intent = Intent(Intent.ACTION_SEND)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setType(mimeType)
         when (uri.scheme?.toLowerCase(Locale.ROOT)) {
             ContentResolver.SCHEME_FILE -> {
@@ -190,7 +193,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 val applicationId = context.applicationContext.packageName
                 val apkUri = FileProvider.getUriForFile(context, "$applicationId.fileprovider", File(path))
                 intent.putExtra(Intent.EXTRA_STREAM, apkUri)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             else -> intent.putExtra(Intent.EXTRA_STREAM, uri)
         }
@@ -222,25 +224,32 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         }
 
         val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList)
             .setType(mimeType)
         return safeStartActivityChooser(title, intent)
     }
 
     private fun safeStartActivity(intent: Intent): Boolean {
-        val canResolve = intent.resolveActivity(context.packageManager) != null
-        if (canResolve) {
+        if (intent.resolveActivity(context.packageManager) == null) return false
+        try {
             context.startActivity(intent)
+            return true
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to start activity for intent=$intent", e)
         }
-        return canResolve
+        return false
     }
 
     private fun safeStartActivityChooser(title: String?, intent: Intent): Boolean {
-        val canResolve = intent.resolveActivity(context.packageManager) != null
-        if (canResolve) {
+        if (intent.resolveActivity(context.packageManager) == null) return false
+        try {
             context.startActivity(Intent.createChooser(intent, title))
+            return true
+        } catch (e: SecurityException) {
+            Log.w(LOG_TAG, "failed to start activity chooser for intent=$intent", e)
         }
-        return canResolve
+        return false
     }
 
     companion object {

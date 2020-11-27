@@ -28,6 +28,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
                 }
                 result.success(volumes)
             }
+            "getFreeSpace" -> getFreeSpace(call, result)
             "getGrantedDirectories" -> result.success(ArrayList(PermissionManager.getGrantedDirs(context)))
             "getInaccessibleDirectories" -> getInaccessibleDirectories(call, result)
             "revokeDirectoryAccess" -> revokeDirectoryAccess(call, result)
@@ -61,6 +62,35 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             }
             return volumes
         }
+
+    private fun getFreeSpace(call: MethodCall, result: MethodChannel.Result) {
+        val path = call.argument<String>("path")
+        if (path == null) {
+            result.error("getFreeSpace-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val sm = context.getSystemService(StorageManager::class.java)
+        if (sm == null) {
+            result.error("getFreeSpace-sm", "failed because of missing Storage Manager", null)
+            return
+        }
+
+        val file = File(path)
+        val volume = sm.getStorageVolume(file)
+        if (volume == null) {
+            result.error("getFreeSpace-volume", "failed because of missing volume for path=$path", null)
+            return
+        }
+
+        // `StorageStatsManager` `getFreeBytes()` is only available from API 26,
+        // and non-primary volume UUIDs cannot be used with it
+        try {
+            result.success(file.freeSpace)
+        } catch (e: SecurityException) {
+            result.error("getFreeSpace-security", "failed because of missing access", e.message)
+        }
+    }
 
     private fun getInaccessibleDirectories(call: MethodCall, result: MethodChannel.Result) {
         val dirPaths = call.argument<List<String>>("dirPaths")

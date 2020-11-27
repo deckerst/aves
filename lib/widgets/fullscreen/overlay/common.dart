@@ -1,5 +1,5 @@
-import 'package:aves/widgets/common/borders.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
 
 const kOverlayBackgroundColor = Colors.black26;

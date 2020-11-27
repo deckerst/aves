@@ -1,5 +1,5 @@
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/common/borders.dart';
+import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
 
 class SvgBackgroundSelector extends StatefulWidget {

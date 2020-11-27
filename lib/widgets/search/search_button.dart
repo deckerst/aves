@@ -1,6 +1,6 @@
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/widgets/common/icons.dart';
+import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +16,7 @@ class SearchButton extends StatelessWidget {
       key: Key('search-button'),
       icon: Icon(AIcons.search),
       onPressed: () => _goToSearch(context),
+      tooltip: 'Search',
     );
   }
 
