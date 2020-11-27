@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.2.7:
-- subsampling and tiling of large images
-- support for TIFF images (single page only)
-- optional minimap in viewer overlay
+v1.2.8:
+- pinch to scale albums, countries & tags
+- SVG source viewer
+- improved detailed metadata layout
 Full changelog available on Github
