@@ -95,7 +95,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                           scrollableKey: _scrollableKey,
                           appBarHeightNotifier: _appBarHeightNotifier,
                           viewportSize: viewportSize,
-                          showScaledGrid: false,
+                          showScaledGrid: true,
                           scaledBuilder: (item, extent) {
                             final filter = item.filter;
                             return SizedBox(
