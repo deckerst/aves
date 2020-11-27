@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.2.8] - 2020-11-27
+### Added
+- Albums / Countries / Tags: pinch to change tile size
+- Album picker: added a field to filter by name
+- check free space before moving entries
+- SVG source viewer
+
+### Changed
+- Navigation: changed page history handling
+- Info: improved layout, especially for XMP
+- About: improved layout
+- faster locating of new entries
+
 ## [v1.2.7] - 2020-11-15
 ### Added
 - Support for TIFF images (single page)
