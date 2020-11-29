@@ -4,11 +4,13 @@ class XMP {
 
   // cf https://exiftool.org/TagNames/XMP.html
   static const Map<String, String> namespaces = {
-    'aux': 'Auxiliary Exif',
+    'aux': 'Exif Aux',
     'Camera': 'Camera',
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',
     'exif': 'Exif',
+    'exifEX': 'Exif Ex',
+    'GettyImagesGIFT': 'Getty Images',
     'GIMP': 'GIMP',
     'illustrator': 'Illustrator',
     'Iptc4xmpCore': 'IPTC Core',
@@ -19,6 +21,7 @@ class XMP {
     'pdfx': 'PDF/X',
     'photomechanic': 'Photo Mechanic',
     'photoshop': 'Photoshop',
+    'plus': 'PLUS',
     'tiff': 'TIFF',
     'xmp': 'Basic',
     'xmpBJ': 'Basic Job Ticket',

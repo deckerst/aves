@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
   final Size viewportSize;
-  final bool showScaledGrid;
+  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
   final Widget Function(T item, double extent) scaledBuilder;
   final Rect Function(BuildContext context, T item) getScaledItemTileRect;
   final void Function(T item) onScaled;
@@ -31,7 +30,7 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
     @required this.scrollableKey,
     @required this.appBarHeightNotifier,
     @required this.viewportSize,
-    @required this.showScaledGrid,
+    this.gridBuilder,
     @required this.scaledBuilder,
     @required this.getScaledItemTileRect,
     @required this.onScaled,
@@ -56,10 +55,6 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onHorizontalDragStart: (details) {
-        // if `onHorizontalDragStart` callback is not defined,
-        // horizontal drag gestures are interpreted as scaling
-      },
       onScaleStart: (details) {
         // the gesture detector wrongly detects a new scaling gesture
         // when scaling ends and we apply the new extent, so we prevent this
@@ -91,10 +86,9 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
           builder: (context) => ScaleOverlay(
             builder: (extent) => widget.scaledBuilder(_metadata.item, extent),
             center: thumbnailCenter,
-            gridWidth: gridWidth,
-            spacing: tileExtentManager.spacing,
+            viewportWidth: gridWidth,
+            gridBuilder: widget.gridBuilder,
             scaledExtentNotifier: _scaledExtentNotifier,
-            showScaledGrid: widget.showScaledGrid,
           ),
         );
         Overlay.of(scrollableContext).insert(_overlayEntry);
@@ -133,7 +127,16 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
           });
         }
       },
-      child: widget.child,
+      child: GestureDetector(
+        // Horizontal/vertical drag gestures are interpreted as scaling
+        // if they are not handled by `onHorizontalDragStart`/`onVerticalDragStart`
+        // at the scaling `GestureDetector` level, or handled beforehand down the widget tree.
+        // Setting `onHorizontalDragStart`, `onVerticalDragStart`, and `onScaleStart`
+        // all at once is not allowed, so we use another `GestureDetector` for that.
+        onVerticalDragStart: (details) {},
+        onHorizontalDragStart: (details) {},
+        child: widget.child,
+      ),
     );
   }
 
@@ -157,18 +160,16 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
 class ScaleOverlay extends StatefulWidget {
   final Widget Function(double extent) builder;
   final Offset center;
-  final double gridWidth;
-  final double spacing;
+  final double viewportWidth;
   final ValueNotifier<double> scaledExtentNotifier;
-  final bool showScaledGrid;
+  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
 
   const ScaleOverlay({
     @required this.builder,
     @required this.center,
-    @required this.gridWidth,
-    @required this.spacing,
+    @required this.viewportWidth,
     @required this.scaledExtentNotifier,
-    @required this.showScaledGrid,
+    this.gridBuilder,
   });
 
   @override
@@ -180,7 +181,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
 
   Offset get center => widget.center;
 
-  double get gridWidth => widget.gridWidth;
+  double get gridWidth => widget.viewportWidth;
 
   @override
   void initState() {
@@ -241,16 +242,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                   ),
                 ],
               );
-              if (widget.showScaledGrid) {
-                child = CustomPaint(
-                  painter: GridPainter(
-                    center: clampedCenter,
-                    extent: extent,
-                    spacing: widget.spacing,
-                  ),
-                  child: child,
-                );
-              }
+              child = widget.gridBuilder?.call(clampedCenter, extent, child) ?? child;
               return child;
             },
           ),
@@ -263,31 +255,36 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
 class GridPainter extends CustomPainter {
   final Offset center;
   final double extent, spacing;
+  final double strokeWidth;
+  final Color color;
 
   const GridPainter({
     @required this.center,
     @required this.extent,
-    @required this.spacing,
+    this.spacing = 0.0,
+    this.strokeWidth = 1.0,
+    @required this.color,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    final radius = extent * 3;
     final paint = Paint()
-      ..strokeWidth = DecoratedThumbnail.borderWidth
+      ..strokeWidth = strokeWidth
       ..shader = ui.Gradient.radial(
         center,
-        size.width * .7,
+        radius,
         [
-          DecoratedThumbnail.borderColor,
+          color,
           Colors.transparent,
         ],
         [
-          min(.5, 2 * extent / size.width),
+          extent / radius,
           1,
         ],
       );
     void draw(Offset topLeft) {
-      for (var i = -2; i <= 3; i++) {
+      for (var i = -1; i <= 2; i++) {
         final ref = (extent + spacing) * i;
         canvas.drawLine(Offset(0, topLeft.dy + ref), Offset(size.width, topLeft.dy + ref), paint);
         canvas.drawLine(Offset(topLeft.dx + ref, 0), Offset(topLeft.dx + ref, size.height), paint);

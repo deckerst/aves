@@ -6,15 +6,16 @@ import 'package:flutter/widgets.dart';
 class TileExtentManager {
   final String settingsRouteKey;
   final int columnCountMin, columnCountDefault;
-  final double spacing, extentMin;
+  final double spacing, extentMin, extentMax;
   final ValueNotifier<double> extentNotifier;
 
   const TileExtentManager({
     @required this.settingsRouteKey,
-    @required this.columnCountMin,
+    @required this.extentNotifier,
+    this.columnCountMin = 2,
     @required this.columnCountDefault,
     @required this.extentMin,
-    @required this.extentNotifier,
+    this.extentMax = 300,
     @required this.spacing,
   });
 
@@ -46,7 +47,7 @@ class TileExtentManager {
     return newExtent;
   }
 
-  double _extentMax(Size viewportSize) => (viewportSize.shortestSide - spacing * (columnCountMin - 1)) / columnCountMin;
+  double _extentMax(Size viewportSize) => min(extentMax, (viewportSize.shortestSide - spacing * (columnCountMin - 1)) / columnCountMin);
 
   double _columnCountForExtent(Size viewportSize, double extent) => (viewportSize.width + spacing) / (extent + spacing);
 
