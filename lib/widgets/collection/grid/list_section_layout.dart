@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/grid/header_generic.dart';
-import 'package:aves/widgets/collection/thumbnail_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,14 +14,14 @@ class SectionedListLayoutProvider extends StatelessWidget {
   final Widget Function(ImageEntry entry) thumbnailBuilder;
   final Widget child;
 
-  SectionedListLayoutProvider({
+  const SectionedListLayoutProvider({
     @required this.collection,
     @required this.scrollableWidth,
     @required this.tileExtent,
+    @required this.columnCount,
     @required this.thumbnailBuilder,
     @required this.child,
-  })  : assert(scrollableWidth != 0),
-        columnCount = max((scrollableWidth / tileExtent).round(), ThumbnailCollection.columnCountMin);
+  }) : assert(scrollableWidth != 0);
 
   @override
   Widget build(BuildContext context) {
