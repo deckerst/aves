@@ -7,6 +7,7 @@ class XMP {
     'adsml-at': 'AdsML',
     'aux': 'Exif Aux',
     'Camera': 'Camera',
+    'creatorAtom': 'After Effects',
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',
     'drone-dji': 'DJI Drone',

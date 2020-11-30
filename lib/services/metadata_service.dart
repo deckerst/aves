@@ -17,6 +17,7 @@ class MetadataService {
       final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       });
       return result as Map;
     } on PlatformException catch (e) {
@@ -44,6 +45,7 @@ class MetadataService {
           'mimeType': entry.mimeType,
           'uri': entry.uri,
           'path': entry.path,
+          'sizeBytes': entry.sizeBytes,
         }) as Map;
         result['contentId'] = entry.contentId;
         return CatalogMetadata.fromMap(result);
@@ -69,6 +71,7 @@ class MetadataService {
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       }) as Map;
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {
@@ -108,7 +111,9 @@ class MetadataService {
     try {
       // return map with all data available from the `ExifInterface` library
       final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
+        'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       }) as Map;
       return result;
     } on PlatformException catch (e) {
@@ -134,7 +139,9 @@ class MetadataService {
     try {
       // return map with the mime type and tag count for each directory found by `metadata-extractor`
       final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
+        'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       }) as Map;
       return result;
     } on PlatformException catch (e) {
@@ -155,10 +162,12 @@ class MetadataService {
     return [];
   }
 
-  static Future<List<Uint8List>> getExifThumbnails(String uri) async {
+  static Future<List<Uint8List>> getExifThumbnails(ImageEntry entry) async {
     try {
       final result = await platform.invokeMethod('getExifThumbnails', <String, dynamic>{
-        'uri': uri,
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       });
       return (result as List).cast<Uint8List>();
     } on PlatformException catch (e) {
@@ -172,6 +181,7 @@ class MetadataService {
       final result = await platform.invokeMethod('getXmpThumbnails', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       });
       return (result as List).cast<Uint8List>();
     } on PlatformException catch (e) {

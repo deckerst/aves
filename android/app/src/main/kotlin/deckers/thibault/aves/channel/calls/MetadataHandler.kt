@@ -52,6 +52,7 @@ import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isMultimedia
+import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
@@ -86,6 +87,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getAllMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getAllMetadata-args", "failed because of missing arguments", null)
             return
@@ -95,10 +97,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         var foundExif = false
         var foundXmp = false
 
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
 
@@ -138,7 +140,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif) {
+        if (!foundExif && isSupportedByExifInterface(mimeType, sizeBytes)) {
             // fallback to read EXIF via ExifInterface
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
@@ -192,12 +194,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val path = call.argument<String>("path")
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getCatalogMetadata-args", "failed because of missing arguments", null)
             return
         }
 
-        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, path))
+        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, path, sizeBytes))
         if (isVideo(mimeType)) {
             metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri))
         }
@@ -213,15 +216,15 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
     // - XMP / dc:title
     // - XMP / dc:description
-    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?): Map<String, Any> {
+    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?, sizeBytes: Long?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
         var foundExif = false
 
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
 
                     // File type
@@ -311,7 +314,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif) {
+        if (!foundExif && isSupportedByExifInterface(mimeType, sizeBytes)) {
             // fallback to read EXIF via ExifInterface
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
@@ -371,6 +374,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getOverlayMetadata-args", "failed because of missing arguments", null)
             return
@@ -396,10 +400,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         var foundExif = false
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
                         dir.getSafeRational(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
@@ -415,7 +419,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif) {
+        if (!foundExif && isSupportedByExifInterface(mimeType, sizeBytes)) {
             // fallback to read EXIF via ExifInterface
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
@@ -488,26 +492,31 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getExifInterfaceMetadata(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        if (uri == null) {
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
             result.error("getExifInterfaceMetadata-args", "failed because of missing arguments", null)
             return
         }
 
-        try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
-                val exif = ExifInterface(input)
-                val metadataMap = HashMap<String, String?>()
-                for (tag in ExifInterfaceHelper.allTags.keys.filter { exif.hasAttribute(it) }) {
-                    metadataMap[tag] = exif.getAttribute(tag)
+        val metadataMap = HashMap<String, String?>()
+        if (isSupportedByExifInterface(mimeType, sizeBytes, strict = false)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val exif = ExifInterface(input)
+                    for (tag in ExifInterfaceHelper.allTags.keys.filter { exif.hasAttribute(it) }) {
+                        metadataMap[tag] = exif.getAttribute(tag)
+                    }
                 }
-                result.success(metadataMap)
-            } ?: result.error("getExifInterfaceMetadata-noinput", "failed to get exif for uri=$uri", null)
-        } catch (e: Exception) {
-            // ExifInterface initialization can fail with a RuntimeException
-            // caused by an internal MediaMetadataRetriever failure
-            result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=$uri", e.message)
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
+                result.error("getExifInterfaceMetadata-failure", "failed to get exif for uri=$uri", e.message)
+                return
+            }
         }
+        result.success(metadataMap)
     }
 
     private fun getMediaMetadataRetrieverMetadata(call: MethodCall, result: MethodChannel.Result) {
@@ -563,46 +572,45 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getMetadataExtractorSummary(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        if (uri == null) {
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
             result.error("getMetadataExtractorSummary-args", "failed because of missing arguments", null)
             return
         }
 
         val metadataMap = HashMap<String, String>()
-        try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
-                metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
-                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
-                        dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
-                    } else ""
+        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                    metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
+                        if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
+                            dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
+                        } else ""
+                    }
+                    metadataMap["typeName"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
+                        if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)) {
+                            dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)
+                        } else ""
+                    }
+                    for (dir in metadata.directories) {
+                        val dirName = dir.name ?: ""
+                        var index = 0
+                        while (metadataMap.containsKey("$dirName ($index)")) index++
+                        var value = "${dir.tagCount} tags"
+                        dir.parent?.let { value += ", parent: ${it.name}" }
+                        metadataMap["$dirName ($index)"] = value
+                    }
                 }
-                metadataMap["typeName"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
-                    if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)) {
-                        dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_TYPE_NAME)
-                    } else ""
-                }
-                for (dir in metadata.directories) {
-                    val dirName = dir.name ?: ""
-                    var index = 0
-                    while (metadataMap.containsKey("$dirName ($index)")) index++
-                    var value = "${dir.tagCount} tags"
-                    dir.parent?.let { value += ", parent: ${it.name}" }
-                    metadataMap["$dirName ($index)"] = value
-                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
             }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
-        } catch (e: NoClassDefFoundError) {
-            Log.w(LOG_TAG, "failed to get metadata by metadata-extractor for uri=$uri", e)
         }
-
-        if (metadataMap.isNotEmpty()) {
-            result.success(metadataMap)
-        } else {
-            result.error("getMetadataExtractorSummary-failure", "failed to get metadata for uri=$uri", null)
-        }
+        result.success(metadataMap)
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {
@@ -628,26 +636,30 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        if (uri == null) {
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
             result.error("getExifThumbnails-args", "failed because of missing arguments", null)
             return
         }
 
         val thumbnails = ArrayList<ByteArray>()
-        try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
-                val exif = ExifInterface(input)
-                val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-                exif.thumbnailBitmap?.let { bitmap ->
-                    TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                        thumbnails.add(it.getBytes(canHaveAlpha = false, recycle = false))
+        if (isSupportedByExifInterface(mimeType, sizeBytes)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val exif = ExifInterface(input)
+                    val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                    exif.thumbnailBitmap?.let { bitmap ->
+                        TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
+                            thumbnails.add(it.getBytes(canHaveAlpha = false, recycle = false))
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                // ExifInterface initialization can fail with a RuntimeException
+                // caused by an internal MediaMetadataRetriever failure
             }
-        } catch (e: Exception) {
-            // ExifInterface initialization can fail with a RuntimeException
-            // caused by an internal MediaMetadataRetriever failure
         }
         result.success(thumbnails)
     }
@@ -655,16 +667,17 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getXmpThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         if (mimeType == null || uri == null) {
             result.error("getXmpThumbnails-args", "failed because of missing arguments", null)
             return
         }
 
         val thumbnails = ArrayList<ByteArray>()
-        if (isSupportedByMetadataExtractor(mimeType)) {
+        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
             try {
                 StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
                     for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
                         val xmpMeta = dir.xmpMeta
                         try {
