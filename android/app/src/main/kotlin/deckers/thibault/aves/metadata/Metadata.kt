@@ -41,6 +41,8 @@ object Metadata {
         }
     }
 
+    // not sure which standards are used for the different video formats,
+    // but looks like some form of ISO 8601 `basic format`:
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
     fun parseVideoMetadataDate(metadataDate: String?): Long {
         var dateString = metadataDate ?: return 0
