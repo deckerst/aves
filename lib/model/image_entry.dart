@@ -299,7 +299,7 @@ class ImageEntry {
 
   bool get isLocated => _addressDetails != null;
 
-  LatLng get latLng => isCatalogued ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
+  LatLng get latLng => hasGps ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
   String get geoUri {
     if (!hasGps) return null;

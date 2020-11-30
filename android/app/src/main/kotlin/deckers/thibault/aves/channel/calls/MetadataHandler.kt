@@ -44,6 +44,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.XMP
+import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
@@ -205,6 +206,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
+    // set `KEY_DATE_MILLIS` from these fields (by precedence):
+    // - Exif / DATETIME_ORIGINAL
+    // - Exif / DATETIME
+    // - XMP / xmp:CreateDate
+    // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
+    // - XMP / dc:title
+    // - XMP / dc:description
     private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
@@ -270,9 +278,12 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                 val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME, it).value }
                                 metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(separator = ";")
                             }
-                            xmpMeta.getSafeLocalizedText(XMP.TITLE_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.TITLE_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DESCRIPTION_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DESCRIPTION_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                            }
+                            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                                xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
                             }
                         } catch (e: XMPException) {
                             Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
