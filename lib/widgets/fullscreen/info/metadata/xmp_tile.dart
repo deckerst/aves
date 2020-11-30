@@ -65,6 +65,7 @@ class XmpDirTile extends StatelessWidget {
                     child: HighlightTitle(
                       title,
                       color: BrandColors.get(title),
+                      selectable: true,
                     ),
                   ),
                 InfoRowGroup(Map.fromEntries(entries), maxValueLength: Constants.infoGroupMaxValueLength),

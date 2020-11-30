@@ -4,14 +4,17 @@ class XMP {
 
   // cf https://exiftool.org/TagNames/XMP.html
   static const Map<String, String> namespaces = {
+    'adsml-at': 'AdsML',
     'aux': 'Exif Aux',
     'Camera': 'Camera',
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',
+    'drone-dji': 'DJI Drone',
     'exif': 'Exif',
     'exifEX': 'Exif Ex',
     'GettyImagesGIFT': 'Getty Images',
     'GIMP': 'GIMP',
+    'GPano': 'Google Photo Sphere',
     'illustrator': 'Illustrator',
     'Iptc4xmpCore': 'IPTC Core',
     'lr': 'Lightroom',
@@ -19,6 +22,7 @@ class XMP {
     'panorama': 'Panorama',
     'pdf': 'PDF',
     'pdfx': 'PDF/X',
+    'PanoStudioXMP': 'PanoramaStudio',
     'photomechanic': 'Photo Mechanic',
     'photoshop': 'Photoshop',
     'plus': 'PLUS',
