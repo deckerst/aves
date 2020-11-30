@@ -36,7 +36,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         _loader = MetadataService.getEmbeddedPictures(uri);
         break;
       case MetadataThumbnailSource.exif:
-        _loader = MetadataService.getExifThumbnails(uri);
+        _loader = MetadataService.getExifThumbnails(entry);
         break;
       case MetadataThumbnailSource.xmp:
         _loader = MetadataService.getXmpThumbnails(entry);

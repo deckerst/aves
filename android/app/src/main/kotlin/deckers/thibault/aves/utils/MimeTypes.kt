@@ -1,5 +1,7 @@
 package deckers.thibault.aves.utils
 
+import androidx.exifinterface.media.ExifInterface
+
 object MimeTypes {
     private const val IMAGE = "image"
 
@@ -65,10 +67,23 @@ object MimeTypes {
         else -> false
     }
 
-    // as of metadata-extractor v2.14.0
-    fun isSupportedByMetadataExtractor(mimeType: String) = when (mimeType) {
+    // opening large TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // so we define an arbitrary threshold to avoid a crash on launch.
+    // It is not clear whether it is because of the file itself or its metadata.
+    private const val tiffSizeBytesMax = 128 * (1 shl 20) // MB
+
+    // as of `metadata-extractor` v2.14.0
+    fun isSupportedByMetadataExtractor(mimeType: String, sizeBytes: Long?) = when (mimeType) {
         WBMP, MP2T, WEBM -> false
+        TIFF -> sizeBytes != null && sizeBytes < tiffSizeBytesMax
         else -> true
+    }
+
+    // as of `ExifInterface` v1.3.1, `isSupportedMimeType` reports
+    // no support for TIFF images, but it can actually open them (maybe other formats too)
+    fun isSupportedByExifInterface(mimeType: String, sizeBytes: Long?, strict: Boolean = true) = when (mimeType) {
+        TIFF -> sizeBytes != null && sizeBytes < tiffSizeBytesMax
+        else -> ExifInterface.isSupportedMimeType(mimeType) || !strict
     }
 
     // Glide automatically applies EXIF orientation when decoding images of known formats

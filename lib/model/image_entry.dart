@@ -173,7 +173,7 @@ class ImageEntry {
   bool get isSvg => mimeType == MimeTypes.svg;
 
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
-  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
+  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(mimeType) || isRaw;
 
   // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
   // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,

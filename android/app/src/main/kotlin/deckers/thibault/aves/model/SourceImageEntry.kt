@@ -27,6 +27,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 
 class SourceImageEntry {
@@ -129,7 +130,10 @@ class SourceImageEntry {
             fillByExifInterface(context)
         }
         if (!isSized) {
-            fillByBitmapDecode(context)
+            when (sourceMimeType) {
+                MimeTypes.TIFF -> fillByTiffDecode(context)
+                else -> fillByBitmapDecode(context)
+            }
         }
         return this
     }
@@ -155,11 +159,13 @@ class SourceImageEntry {
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
         // skip raw images because `metadata-extractor` reports the decoded dimensions instead of the raw dimensions
-        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType) || MimeTypes.isRaw(sourceMimeType)) return
+        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType, sizeBytes)
+            || MimeTypes.isRaw(sourceMimeType)
+        ) return
 
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input)
+                val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
 
                 // do not switch on specific mime types, as the reported mime type could be wrong
                 // (e.g. PNG registered as JPG)
@@ -207,7 +213,7 @@ class SourceImageEntry {
 
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
-        if (!ExifInterface.isSupportedMimeType(sourceMimeType)) return;
+        if (!MimeTypes.isSupportedByExifInterface(sourceMimeType, sizeBytes)) return;
 
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
@@ -239,6 +245,22 @@ class SourceImageEntry {
             // ignore
         }
     }
+
+    private fun fillByTiffDecode(context: Context) {
+        try {
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                val options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                width = options.outWidth
+                height = options.outHeight
+            }
+        } catch (e: Exception) {
+            // ignore
+        }
+    }
+
 
     companion object {
         // convenience method
