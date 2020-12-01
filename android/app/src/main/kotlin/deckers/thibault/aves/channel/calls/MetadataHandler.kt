@@ -353,10 +353,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             if (locationString != null) {
                 val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
                 if (matcher.find() && matcher.groupCount() >= 2) {
-                    // keep `0.0` as `0.0`, not `0`
-                    val latitude = matcher.group(1)?.toDoubleOrNull() ?: 0.0
-                    val longitude = matcher.group(2)?.toDoubleOrNull() ?: 0.0
-                    if (latitude != 0.0 || longitude != 0.0) {
+                    val latitude = matcher.group(1)?.toDoubleOrNull()
+                    val longitude = matcher.group(2)?.toDoubleOrNull()
+                    if (latitude != null && longitude != null) {
                         metadataMap[KEY_LATITUDE] = latitude
                         metadataMap[KEY_LONGITUDE] = longitude
                     }

@@ -34,8 +34,10 @@ class CatalogMetadata {
   bool isFlipped;
   int rotationDegrees;
   final String mimeType, xmpSubjects, xmpTitleDescription;
-  final double latitude, longitude;
+  double latitude, longitude;
   Address address;
+
+  static const double _precisionErrorTolerance = 1e-9;
 
   CatalogMetadata({
     this.contentId,
@@ -48,10 +50,15 @@ class CatalogMetadata {
     this.xmpTitleDescription,
     double latitude,
     double longitude,
-  })  
-  // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
-  : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
-        longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
+  }) {
+    // Geocoder throws an `IllegalArgumentException` when a coordinate has a funky values like `1.7056881853375E7`
+    // We also exclude zero coordinates, taking into account precision errors (e.g. {5.952380952380953e-11,-2.7777777777777777e-10}),
+    // but Flutter's `precisionErrorTolerance` (1e-10) is slightly too lenient for this case.
+    if (latitude != null && longitude != null && (latitude.abs() > _precisionErrorTolerance || longitude.abs() > _precisionErrorTolerance)) {
+      this.latitude = latitude < -90.0 || latitude > 90.0 ? null : latitude;
+      this.longitude = longitude < -180.0 || longitude > 180.0 ? null : longitude;
+    }
+  }
 
   CatalogMetadata copyWith({
     @required int contentId,
