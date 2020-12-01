@@ -45,6 +45,20 @@ class AnimatedImageIcon extends StatelessWidget {
   }
 }
 
+class GeotiffIcon extends StatelessWidget {
+  final double iconSize;
+
+  const GeotiffIcon({Key key, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: AIcons.geo,
+      size: iconSize,
+    );
+  }
+}
+
 class GpsIcon extends StatelessWidget {
   final double iconSize;
 

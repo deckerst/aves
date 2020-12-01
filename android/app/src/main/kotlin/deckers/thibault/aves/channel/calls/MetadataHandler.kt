@@ -43,6 +43,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
@@ -219,6 +220,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?, sizeBytes: Long?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
+        var flags = 0
         var foundExif = false
 
         if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
@@ -258,7 +260,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                         dir.getSafeInt(ExifIFD0Directory.TAG_ORIENTATION) {
                             val orientation = it
-                            metadataMap[KEY_IS_FLIPPED] = isFlippedForExifCode(orientation)
+                            if (isFlippedForExifCode(orientation)) flags = flags or MASK_IS_FLIPPED
                             metadataMap[KEY_ROTATION_DEGREES] = getRotationDegreesForExifCode(orientation)
                         }
                     }
@@ -293,17 +295,22 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
 
-                    // Animated GIF & WEBP
+                    // identification of animated GIF & WEBP, GeoTIFF
                     when (mimeType) {
                         MimeTypes.GIF -> {
-                            metadataMap[KEY_IS_ANIMATED] = metadata.containsDirectoryOfType(GifAnimationDirectory::class.java)
+                            if (metadata.containsDirectoryOfType(GifAnimationDirectory::class.java)) flags = flags or MASK_IS_ANIMATED
                         }
                         MimeTypes.WEBP -> {
                             for (dir in metadata.getDirectoriesOfType(WebpDirectory::class.java)) {
-                                dir.getSafeBoolean(WebpDirectory.TAG_IS_ANIMATION) { metadataMap[KEY_IS_ANIMATED] = it }
+                                dir.getSafeBoolean(WebpDirectory.TAG_IS_ANIMATION) {
+                                    if (it) flags = flags or MASK_IS_ANIMATED
+                                }
                             }
                         }
-                        else -> {
+                        MimeTypes.TIFF -> {
+                            for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
+                                if (dir.isGeoTiff()) flags = flags or MASK_IS_GEOTIFF
+                            }
                         }
                     }
                 }
@@ -324,7 +331,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         exif.getSafeDateMillis(ExifInterface.TAG_DATETIME) { metadataMap[KEY_DATE_MILLIS] = it }
                     }
                     exif.getSafeInt(ExifInterface.TAG_ORIENTATION, acceptZero = false) {
-                        metadataMap[KEY_IS_FLIPPED] = exif.isFlipped
+                        if (exif.isFlipped) flags = flags or MASK_IS_FLIPPED
                         metadataMap[KEY_ROTATION_DEGREES] = exif.rotationDegrees
                     }
                     val latLong = exif.latLong
@@ -339,6 +346,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
             }
         }
+        metadataMap[KEY_FLAGS] = flags
         return metadataMap
     }
 
@@ -711,13 +719,16 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         // catalog metadata
         private const val KEY_MIME_TYPE = "mimeType"
         private const val KEY_DATE_MILLIS = "dateMillis"
-        private const val KEY_IS_ANIMATED = "isAnimated"
-        private const val KEY_IS_FLIPPED = "isFlipped"
+        private const val KEY_FLAGS = "flags"
         private const val KEY_ROTATION_DEGREES = "rotationDegrees"
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_XMP_SUBJECTS = "xmpSubjects"
         private const val KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription"
+
+        private const val MASK_IS_ANIMATED = 1 shl 0
+        private const val MASK_IS_FLIPPED = 1 shl 1
+        private const val MASK_IS_GEOTIFF = 1 shl 2
 
         // overlay metadata
         private const val KEY_APERTURE = "aperture"
