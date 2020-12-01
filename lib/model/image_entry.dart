@@ -375,12 +375,17 @@ class ImageEntry {
           : call());
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
+        final cc = address.countryCode;
+        final cn = address.countryName;
+        final aa = address.adminArea;
         addressDetails = AddressDetails(
           contentId: contentId,
-          countryCode: address.countryCode,
-          countryName: address.countryName,
-          adminArea: address.adminArea,
-          locality: address.locality,
+          countryCode: cc,
+          countryName: cn,
+          adminArea: aa,
+          // if country & admin fields are null, it is likely the ocean,
+          // which is identified by `featureName` but we default to the address line anyway
+          locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
         );
       }
     } catch (error, stackTrace) {

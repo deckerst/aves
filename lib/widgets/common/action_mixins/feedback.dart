@@ -56,7 +56,7 @@ mixin FeedbackMixin {
               stream: opStream,
               builder: (context, snapshot) {
                 Widget child = SizedBox.shrink();
-                if (!snapshot.hasError && snapshot.connectionState == ConnectionState.active) {
+                if (!snapshot.hasError) {
                   final percent = processed.length.toDouble() / selection.length;
                   child = CircularPercentIndicator(
                     percent: percent,
