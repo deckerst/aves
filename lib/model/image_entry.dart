@@ -206,6 +206,8 @@ class ImageEntry {
 
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
+  bool get isGeotiff => _catalogMetadata?.isGeotiff ?? false;
+
   bool get canEdit => path != null;
 
   bool get canPrint => !isVideo;

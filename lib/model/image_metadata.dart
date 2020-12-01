@@ -30,7 +30,7 @@ class DateMetadata {
 
 class CatalogMetadata {
   final int contentId, dateMillis;
-  final bool isAnimated;
+  final bool isAnimated, isGeotiff;
   bool isFlipped;
   int rotationDegrees;
   final String mimeType, xmpSubjects, xmpTitleDescription;
@@ -38,6 +38,9 @@ class CatalogMetadata {
   Address address;
 
   static const double _precisionErrorTolerance = 1e-9;
+  static const isAnimatedMask = 1 << 0;
+  static const isFlippedMask = 1 << 1;
+  static const isGeotiffMask = 1 << 2;
 
   CatalogMetadata({
     this.contentId,
@@ -45,6 +48,7 @@ class CatalogMetadata {
     this.dateMillis,
     this.isAnimated,
     this.isFlipped,
+    this.isGeotiff,
     this.rotationDegrees,
     this.xmpSubjects,
     this.xmpTitleDescription,
@@ -69,6 +73,7 @@ class CatalogMetadata {
       dateMillis: dateMillis,
       isAnimated: isAnimated,
       isFlipped: isFlipped,
+      isGeotiff: isGeotiff,
       rotationDegrees: rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
@@ -77,15 +82,15 @@ class CatalogMetadata {
     );
   }
 
-  factory CatalogMetadata.fromMap(Map map, {bool boolAsInteger = false}) {
-    final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
-    final isFlipped = map['isFlipped'] ?? (boolAsInteger ? 0 : false);
+  factory CatalogMetadata.fromMap(Map map) {
+    final flags = map['flags'] ?? 0;
     return CatalogMetadata(
       contentId: map['contentId'],
       mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
-      isAnimated: boolAsInteger ? isAnimated != 0 : isAnimated,
-      isFlipped: boolAsInteger ? isFlipped != 0 : isFlipped,
+      isAnimated: flags & isAnimatedMask != 0,
+      isFlipped: flags & isFlippedMask != 0,
+      isGeotiff: flags & isGeotiffMask != 0,
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -95,12 +100,11 @@ class CatalogMetadata {
     );
   }
 
-  Map<String, dynamic> toMap({bool boolAsInteger = false}) => {
+  Map<String, dynamic> toMap() => {
         'contentId': contentId,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
-        'isAnimated': boolAsInteger ? (isAnimated ? 1 : 0) : isAnimated,
-        'isFlipped': boolAsInteger ? (isFlipped ? 1 : 0) : isFlipped,
+        'flags': (isAnimated ? isAnimatedMask : 0) | (isFlipped ? isFlippedMask : 0) | (isGeotiff ? isGeotiffMask : 0),
         'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
         'xmpTitleDescription': xmpTitleDescription,
@@ -110,7 +114,7 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

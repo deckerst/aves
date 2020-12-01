@@ -96,6 +96,7 @@ class FullscreenDebugPage extends StatelessWidget {
           'isVideo': '${entry.isVideo}',
           'isCatalogued': '${entry.isCatalogued}',
           'isAnimated': '${entry.isAnimated}',
+          'isGeotiff': '${entry.isGeotiff}',
           'canEdit': '${entry.canEdit}',
           'canEditExif': '${entry.canEditExif}',
           'canPrint': '${entry.canPrint}',
