@@ -178,7 +178,7 @@ class ImageEntry {
   // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
   // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,
   // and it actually fails to decode GIF, DNG and animated WEBP. Other formats were not tested.
-  bool get canTile =>
+  bool get _supportedByBitmapRegionDecoder =>
       [
         MimeTypes.heic,
         MimeTypes.heif,
@@ -195,6 +195,8 @@ class ImageEntry {
         MimeTypes.srw,
       ].contains(mimeType) &&
       !isAnimated;
+
+  bool get canTile => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
 
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 

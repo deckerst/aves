@@ -95,7 +95,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun streamImageByGlide(uri: Uri, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
         val target = Glide.with(activity)
             .asBitmap()
-            .apply(options)
+            .apply(glideOptions)
             .load(uri)
             .submit()
         try {
@@ -118,7 +118,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun streamVideoByGlide(uri: Uri) {
         val target = Glide.with(activity)
             .asBitmap()
-            .apply(options)
+            .apply(glideOptions)
             .load(VideoThumbnail(activity, uri))
             .submit()
         try {
@@ -135,7 +135,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
     }
 
-    private fun streamTiffImage(uri: Uri) {
+    private fun streamTiffImage(uri: Uri, page: Int = 0) {
         val resolver = activity.contentResolver
         try {
             var dirCount = 0
@@ -148,18 +148,17 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             }
 
             // TODO TLAD handle multipage TIFF
-            if (dirCount > 0) {
-                val i = 0
+            if (dirCount > page) {
                 resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
                     val options = TiffBitmapFactory.Options().apply {
                         inJustDecodeBounds = false
-                        inDirectoryNumber = i
+                        inDirectoryNumber = page
                     }
                     val bitmap = TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
                     if (bitmap != null) {
                         success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
                     } else {
-                        error("streamImage-tiff-null", "failed to get tiff image (dir=$i) from uri=$uri", null)
+                        error("streamImage-tiff-null", "failed to get tiff image (dir=$page) from uri=$uri", null)
                     }
                 }
             }
@@ -192,7 +191,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         const val bufferSize = 2 shl 17 // 256kB
 
         // request a fresh image with the highest quality format
-        val options = RequestOptions()
+        val glideOptions = RequestOptions()
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)
