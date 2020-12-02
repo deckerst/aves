@@ -25,6 +25,7 @@ import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDouble
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
+import deckers.thibault.aves.metadata.Geotiff
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
@@ -45,6 +46,7 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.TIFF
 import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
@@ -102,7 +104,18 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[dirName] = dirMap
 
                         // tags
-                        dirMap.putAll(dir.tags.map { Pair(it.tagName, it.description) })
+                        if (mimeType == TIFF && dir is ExifIFD0Directory) {
+                            dirMap.putAll(dir.tags.map {
+                                val name = if (it.hasTagName()) {
+                                    it.tagName
+                                } else {
+                                    Geotiff.getTagName(it.tagType) ?: it.tagName
+                                }
+                                Pair(name, it.description)
+                            })
+                        } else {
+                            dirMap.putAll(dir.tags.map { Pair(it.tagName, it.description) })
+                        }
                         if (dir is XmpDirectory) {
                             try {
                                 val xmpMeta = dir.xmpMeta.apply { sort() }

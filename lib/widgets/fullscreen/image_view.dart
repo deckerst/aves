@@ -205,7 +205,6 @@ class _ImageViewState extends State<ImageView> {
           mimeType: entry.mimeType,
           colorFilter: colorFilter,
         ),
-        placeholderBuilder: (context) => _loadingBuilder(context, fastThumbnailProvider),
       ),
       backgroundDecoration: backgroundDecoration,
       controller: _photoViewController,
