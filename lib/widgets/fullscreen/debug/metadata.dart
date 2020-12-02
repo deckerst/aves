@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
@@ -33,11 +33,11 @@ class _MetadataTabState extends State<MetadataTab> {
   }
 
   void _loadMetadata() {
-    _bitmapFactoryLoader = MetadataService.getBitmapFactoryInfo(entry);
-    _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
-    _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
-    _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
-    _metadataExtractorLoader = MetadataService.getMetadataExtractorSummary(entry);
+    _bitmapFactoryLoader = AndroidDebugService.getBitmapFactoryInfo(entry);
+    _contentResolverMetadataLoader = AndroidDebugService.getContentResolverMetadata(entry);
+    _exifInterfaceMetadataLoader = AndroidDebugService.getExifInterfaceMetadata(entry);
+    _mediaMetadataLoader = AndroidDebugService.getMediaMetadataRetrieverMetadata(entry);
+    _metadataExtractorLoader = AndroidDebugService.getMetadataExtractorSummary(entry);
     setState(() {});
   }
 

@@ -29,7 +29,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getAppIcon" -> GlobalScope.launch { getAppIcon(call, Coresult(result)) }
             "getAppNames" -> GlobalScope.launch { getAppNames(Coresult(result)) }
-            "getEnv" -> result.success(System.getenv())
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
