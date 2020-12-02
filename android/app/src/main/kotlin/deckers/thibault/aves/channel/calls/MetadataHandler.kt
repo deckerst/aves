@@ -17,6 +17,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory
 import com.drew.metadata.exif.GpsDirectory
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
+import com.drew.metadata.iptc.IptcDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
@@ -203,6 +204,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
     // - XMP / dc:title
     // - XMP / dc:description
+    // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
+    // - XMP / dc:subject
+    // - IPTC / keywords
     private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?, sizeBytes: Long?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
@@ -267,7 +271,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME)) {
                                 val count = xmpMeta.countArrayItems(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME)
                                 val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME, it).value }
-                                metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(separator = ";")
+                                metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(separator = XMP_SUBJECTS_SEPARATOR)
                             }
                             xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.TITLE_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
@@ -278,6 +282,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
                         } catch (e: XMPException) {
                             Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
+                        }
+                    }
+
+                    // XMP fallback to IPTC
+                    if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
+                        for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
+                            dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(separator = XMP_SUBJECTS_SEPARATOR) }
                         }
                     }
 
@@ -541,6 +552,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_ANIMATED = 1 shl 0
         private const val MASK_IS_FLIPPED = 1 shl 1
         private const val MASK_IS_GEOTIFF = 1 shl 2
+        private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata
         private const val KEY_APERTURE = "aperture"
