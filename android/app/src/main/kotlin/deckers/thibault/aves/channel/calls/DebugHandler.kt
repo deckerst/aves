@@ -31,6 +31,7 @@ import java.util.*
 class DebugHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
+            "getContextDirs" -> result.success(getContextDirs())
             "getEnv" -> result.success(System.getenv())
             "getBitmapFactoryInfo" -> GlobalScope.launch { getBitmapFactoryInfo(call, Coresult(result)) }
             "getContentResolverMetadata" -> GlobalScope.launch { getContentResolverMetadata(call, Coresult(result)) }
@@ -40,6 +41,16 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             else -> result.notImplemented()
         }
     }
+
+    private fun getContextDirs() = hashMapOf(
+        "dataDir" to context.dataDir,
+        "cacheDir" to context.cacheDir,
+        "codeCacheDir" to context.codeCacheDir,
+        "filesDir" to context.filesDir,
+        "noBackupFilesDir" to context.noBackupFilesDir,
+        "obbDir" to context.obbDir,
+        "externalCacheDir" to context.externalCacheDir,
+    ).mapValues { it.value?.path }
 
     private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }

@@ -200,7 +200,7 @@ class ImageEntry {
 
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
-  bool get isVideo => mimeType.startsWith('video');
+  bool get isVideo => MimeTypes.isVideo(mimeType);
 
   bool get isCatalogued => _catalogMetadata != null;
 

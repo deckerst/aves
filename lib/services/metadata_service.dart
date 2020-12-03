@@ -119,4 +119,19 @@ class MetadataService {
     }
     return [];
   }
+
+  static Future<Map> extractXmpDataProp(ImageEntry entry, String propPath) async {
+    try {
+      final result = await platform.invokeMethod('extractXmpDataProp', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+        'propPath': propPath,
+      });
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('extractXmpDataProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return null;
+  }
 }

@@ -77,7 +77,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         });
         break;
       case EntryAction.share:
-        AndroidAppService.share({entry}).then((success) {
+        AndroidAppService.shareEntries({entry}).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

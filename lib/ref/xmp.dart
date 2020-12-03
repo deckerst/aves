@@ -1,5 +1,5 @@
 class XMP {
-  static const namespaceSeparator = ':';
+  static const propNamespaceSeparator = ':';
   static const structFieldSeparator = '/';
 
   // cf https://exiftool.org/TagNames/XMP.html
@@ -15,7 +15,11 @@ class XMP {
     'exifEX': 'Exif Ex',
     'GettyImagesGIFT': 'Getty Images',
     'GIMP': 'GIMP',
-    'GPano': 'Google Photo Sphere',
+    'GAudio': 'Google Audio',
+    'GDepth': 'Google Depth',
+    'GFocus': 'Google Focus',
+    'GImage': 'Google Image',
+    'GPano': 'Google Panorama',
     'illustrator': 'Illustrator',
     'Iptc4xmpCore': 'IPTC Core',
     'lr': 'Lightroom',
@@ -35,4 +39,11 @@ class XMP {
     'xmpRights': 'Rights Management',
     'xmpTPg': 'Paged-Text',
   };
+
+  // TODO TLAD 'xmp:Thumbnails[\d]/Image'
+  static const dataProps = [
+    'GAudio:Data',
+    'GDepth:Data',
+    'GImage:Data',
+  ];
 }
