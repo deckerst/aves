@@ -5,6 +5,16 @@ import 'package:flutter/services.dart';
 class AndroidDebugService {
   static const platform = MethodChannel('deckers.thibault/aves/debug');
 
+  static Future<Map> getContextDirs() async {
+    try {
+      final result = await platform.invokeMethod('getContextDirs');
+      return result as Map;
+    } on PlatformException catch (e) {
+      debugPrint('getContextDirs failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return {};
+  }
+
   static Future<Map> getEnv() async {
     try {
       final result = await platform.invokeMethod('getEnv');

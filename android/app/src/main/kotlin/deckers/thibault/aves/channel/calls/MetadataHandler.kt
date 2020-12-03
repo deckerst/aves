@@ -42,11 +42,14 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
+import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.provider.FileImageProvider
+import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.TIFF
+import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
@@ -58,6 +61,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -70,6 +74,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
             "getXmpThumbnails" -> GlobalScope.launch { getXmpThumbnails(call, Coresult(result)) }
+            "extractXmpDataProp" -> GlobalScope.launch { extractXmpDataProp(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }
@@ -104,7 +109,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[dirName] = dirMap
 
                         // tags
-                        if (mimeType == TIFF && dir is ExifIFD0Directory) {
+                        if (mimeType == MimeTypes.TIFF && dir is ExifIFD0Directory) {
                             dirMap.putAll(dir.tags.map {
                                 val name = if (it.hasTagName()) {
                                     it.tagName
@@ -118,13 +123,14 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                         if (dir is XmpDirectory) {
                             try {
-                                val xmpMeta = dir.xmpMeta.apply { sort() }
-                                for (prop in xmpMeta) {
+                                for (prop in dir.xmpMeta) {
                                     if (prop is XMPPropertyInfo) {
                                         val path = prop.path
-                                        val value = prop.value
-                                        if (path?.isNotEmpty() == true && value?.isNotEmpty() == true) {
-                                            dirMap[path] = value
+                                        if (path?.isNotEmpty() == true) {
+                                            val value = if (XMP.isDataPath(path)) "[skipped]" else prop.value
+                                            if (value?.isNotEmpty() == true) {
+                                                dirMap[path] = value
+                                            }
                                         }
                                     }
                                 }
@@ -546,6 +552,70 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(thumbnails)
+    }
+
+    private fun extractXmpDataProp(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        val dataPropPath = call.argument<String>("propPath")
+        if (mimeType == null || uri == null || dataPropPath == null) {
+            result.error("extractXmpDataProp-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+            try {
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                    // data can be large and stored in "Extended XMP",
+                    // which is returned as a second XMP directory
+                    val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
+                    try {
+                        val ns = XMP.namespaceForDataPath(dataPropPath)
+                        val mimePropPath = XMP.mimeTypePathForDataPath(dataPropPath)
+                        val embedMimeType = xmpDirs.map { it.xmpMeta.getPropertyString(ns, mimePropPath) }.first { it != null }
+                        val embedBytes = xmpDirs.map { it.xmpMeta.getPropertyBase64(ns, dataPropPath) }.first { it != null }
+                        val embedFile = File.createTempFile("aves", null, context.cacheDir).apply {
+                            deleteOnExit()
+                            outputStream().use { outputStream ->
+                                embedBytes.inputStream().use { inputStream ->
+                                    inputStream.copyTo(outputStream)
+                                }
+                            }
+                        }
+                        val embedUri = Uri.fromFile(embedFile)
+                        val embedFields: FieldMap = hashMapOf(
+                            "uri" to embedUri.toString(),
+                            "mimeType" to embedMimeType,
+                        )
+                        if (isImage(embedMimeType) || isVideo(embedMimeType)) {
+                            GlobalScope.launch {
+                                FileImageProvider().fetchSingle(context, embedUri, embedMimeType, object : ImageProvider.ImageOpCallback {
+                                    override fun onSuccess(fields: FieldMap) {
+                                        embedFields.putAll(fields)
+                                        result.success(embedFields)
+                                    }
+
+                                    override fun onFailure(throwable: Throwable) = result.error("extractXmpDataProp-failure", "failed to get entry for uri=$embedUri mime=$embedMimeType", throwable.message)
+                                })
+                            }
+                        } else {
+                            result.success(embedFields)
+                        }
+                        return
+                    } catch (e: XMPException) {
+                        result.error("extractXmpDataProp-args", "failed to read XMP directory for uri=$uri prop=$dataPropPath", e.message)
+                        return
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to extract file from XMP", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to extract file from XMP", e)
+            }
+        }
+        result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)
     }
 
     companion object {

@@ -213,7 +213,7 @@ class SourceImageEntry {
 
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
-        if (!MimeTypes.isSupportedByExifInterface(sourceMimeType, sizeBytes)) return;
+        if (!MimeTypes.isSupportedByExifInterface(sourceMimeType, sizeBytes)) return
 
         try {
             StorageUtils.openInputStream(context, uri)?.use { input ->
