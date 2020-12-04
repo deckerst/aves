@@ -23,27 +23,66 @@ object XMP {
     private const val GENERIC_LANG = ""
     private const val SPECIFIC_LANG = "en-US"
 
+    // panorama
+    // cf https://developers.google.com/streetview/spherical-metadata
+
+    const val GPANO_SCHEMA_NS = "http://ns.google.com/photos/1.0/panorama/"
+
+    private const val GPANO_CROPPED_AREA_HEIGHT_PROP_NAME = "GPano:CroppedAreaImageHeightPixels"
+    private const val GPANO_CROPPED_AREA_WIDTH_PROP_NAME = "GPano:CroppedAreaImageWidthPixels"
+    private const val GPANO_CROPPED_AREA_LEFT_PROP_NAME = "GPano:CroppedAreaLeftPixels"
+    private const val GPANO_CROPPED_AREA_TOP_PROP_NAME = "GPano:CroppedAreaTopPixels"
+    private const val GPANO_FULL_PANO_HEIGHT_PIXELS_PROP_NAME = "GPano:FullPanoHeightPixels"
+    private const val GPANO_FULL_PANO_WIDTH_PIXELS_PROP_NAME = "GPano:FullPanoWidthPixels"
+    private const val GPANO_PROJECTION_TYPE_PROP_NAME = "GPano:ProjectionType"
+
+    val panoramaRequiredProps = listOf(
+        GPANO_CROPPED_AREA_HEIGHT_PROP_NAME,
+        GPANO_CROPPED_AREA_WIDTH_PROP_NAME,
+        GPANO_CROPPED_AREA_LEFT_PROP_NAME,
+        GPANO_CROPPED_AREA_TOP_PROP_NAME,
+        GPANO_FULL_PANO_HEIGHT_PIXELS_PROP_NAME,
+        GPANO_FULL_PANO_WIDTH_PIXELS_PROP_NAME,
+        GPANO_PROJECTION_TYPE_PROP_NAME,
+    )
+
     // embedded media data properties
+    // cf https://developers.google.com/depthmap-metadata
+    // cf https://developers.google.com/vr/reference/cardboard-camera-vr-photo-format
 
     private const val GAUDIO_SCHEMA_NS = "http://ns.google.com/photos/1.0/audio/"
     private const val GDEPTH_SCHEMA_NS = "http://ns.google.com/photos/1.0/depthmap/"
     private const val GIMAGE_SCHEMA_NS = "http://ns.google.com/photos/1.0/image/"
 
     private const val GAUDIO_DATA_PROP_NAME = "GAudio:Data"
-    private const val GDEPTH_DATA_PROP_NAME = "GDepth:Data"
     private const val GIMAGE_DATA_PROP_NAME = "GImage:Data"
+    private const val GDEPTH_DATA_PROP_NAME = "GDepth:Data"
+    private const val GDEPTH_CONFIDENCE_PROP_NAME = "GDepth:Confidence"
 
-    private val dataProps = hashMapOf(
+    private const val GAUDIO_MIME_PROP_NAME = "GAudio:Mime"
+    private const val GIMAGE_MIME_PROP_NAME = "GImage:Mime"
+    private const val GDEPTH_MIME_PROP_NAME = "GDepth:Mime"
+    private const val GDEPTH_CONFIDENCE_MIME_PROP_NAME = "GDepth:ConfidenceMime"
+
+    private val dataPropNamespaces = hashMapOf(
         GAUDIO_DATA_PROP_NAME to GAUDIO_SCHEMA_NS,
-        GDEPTH_DATA_PROP_NAME to GDEPTH_SCHEMA_NS,
         GIMAGE_DATA_PROP_NAME to GIMAGE_SCHEMA_NS,
+        GDEPTH_DATA_PROP_NAME to GDEPTH_SCHEMA_NS,
+        GDEPTH_CONFIDENCE_PROP_NAME to GDEPTH_SCHEMA_NS,
     )
 
-    fun isDataPath(path: String) = dataProps.containsKey(path)
+    private val dataPropMimeProps = hashMapOf(
+        GAUDIO_DATA_PROP_NAME to GAUDIO_MIME_PROP_NAME,
+        GIMAGE_DATA_PROP_NAME to GIMAGE_MIME_PROP_NAME,
+        GDEPTH_DATA_PROP_NAME to GDEPTH_MIME_PROP_NAME,
+        GDEPTH_CONFIDENCE_PROP_NAME to GDEPTH_CONFIDENCE_MIME_PROP_NAME,
+    )
 
-    fun namespaceForDataPath(path: String) = dataProps[path]
+    fun isDataPath(path: String) = dataPropNamespaces.containsKey(path)
 
-    fun mimeTypePathForDataPath(dataPropPath: String) = dataPropPath.replace("Data", "Mime")
+    fun namespaceForDataPath(dataPropPath: String) = dataPropNamespaces[dataPropPath]
+
+    fun mimeTypePathForDataPath(dataPropPath: String) = dataPropMimeProps[dataPropPath]
 
     // extensions
 

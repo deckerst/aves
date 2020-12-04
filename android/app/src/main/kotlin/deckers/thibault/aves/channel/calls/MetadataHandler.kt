@@ -18,6 +18,7 @@ import com.drew.metadata.exif.GpsDirectory
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
+import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
@@ -299,6 +300,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                                 xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
                             }
+
+                            // identification of panorama (aka photo sphere)
+                            if (XMP.panoramaRequiredProps.all { xmpMeta.doesPropertyExist(XMP.GPANO_SCHEMA_NS, it) }) {
+                                flags = flags or MASK_IS_360
+                            }
                         } catch (e: XMPException) {
                             Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
                         }
@@ -328,6 +334,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                 if (dir.isGeoTiff()) flags = flags or MASK_IS_GEOTIFF
                             }
                         }
+                    }
+
+                    // identification of spherical video (aka 360° video)
+                    if (metadata.getDirectoriesOfType(Mp4UuidBoxDirectory::class.java).any {
+                            it.getString(Mp4UuidBoxDirectory.TAG_UUID) == Metadata.SPHERICAL_VIDEO_V1_UUID
+                        }) {
+                        flags = flags or MASK_IS_360
                     }
                 }
             } catch (e: Exception) {
@@ -635,6 +648,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_ANIMATED = 1 shl 0
         private const val MASK_IS_FLIPPED = 1 shl 1
         private const val MASK_IS_GEOTIFF = 1 shl 2
+        private const val MASK_IS_360 = 1 shl 3
         private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata

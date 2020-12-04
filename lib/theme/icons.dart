@@ -63,6 +63,7 @@ class AIcons {
   static const IconData animated = Icons.slideshow;
   static const IconData geo = Icons.language_outlined;
   static const IconData play = Icons.play_circle_outline;
+  static const IconData threesixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;
 }

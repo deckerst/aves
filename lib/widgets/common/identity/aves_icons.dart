@@ -23,9 +23,10 @@ class VideoIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: AIcons.play,
+      icon: entry.is360 ? AIcons.threesixty : AIcons.play,
       size: iconSize,
       text: showDuration ? entry.durationText : null,
+      iconScale: entry.is360 && showDuration ? .9 : 1,
     );
   }
 }
@@ -54,6 +55,20 @@ class GeotiffIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.geo,
+      size: iconSize,
+    );
+  }
+}
+
+class SphericalImageIcon extends StatelessWidget {
+  final double iconSize;
+
+  const SphericalImageIcon({Key key, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: AIcons.threesixty,
       size: iconSize,
     );
   }

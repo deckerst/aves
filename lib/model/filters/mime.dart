@@ -10,6 +10,9 @@ class MimeFilter extends CollectionFilter {
 
   // fake mime type
   static const animated = 'aves/animated'; // subset of `image/gif` and `image/webp`
+  static const panorama = 'aves/panorama'; // subset of images
+  static const sphericalVideo = 'aves/spherical_video'; // subset of videos
+  static const geotiff = 'aves/geotiff'; // subset of `image/tiff`
 
   final String mime;
   bool Function(ImageEntry) _filter;
@@ -22,6 +25,18 @@ class MimeFilter extends CollectionFilter {
       _filter = (entry) => entry.isAnimated;
       _label = 'Animated';
       _icon = AIcons.animated;
+    } else if (mime == panorama) {
+      _filter = (entry) => entry.isImage && entry.is360;
+      _label = 'Panorama';
+      _icon = AIcons.threesixty;
+    } else if (mime == sphericalVideo) {
+      _filter = (entry) => entry.isVideo && entry.is360;
+      _label = '360° Video';
+      _icon = AIcons.threesixty;
+    } else if (mime == geotiff) {
+      _filter = (entry) => entry.isGeotiff;
+      _label = 'GeoTIFF';
+      _icon = AIcons.geo;
     } else if (lowMime.endsWith('/*')) {
       lowMime = lowMime.substring(0, lowMime.length - 2);
       _filter = (entry) => entry.mimeType.startsWith(lowMime);

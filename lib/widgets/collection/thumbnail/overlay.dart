@@ -50,7 +50,9 @@ class ThumbnailEntryOverlay extends StatelessWidget {
                     iconSize: iconSize,
                     showDuration: settings.showThumbnailVideoDuration,
                   ),
-                ),
+                )
+              else if (entry.is360)
+                SphericalImageIcon(iconSize: iconSize),
             ],
           );
         });
