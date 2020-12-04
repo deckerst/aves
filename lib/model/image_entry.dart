@@ -200,6 +200,8 @@ class ImageEntry {
 
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
+  bool get isImage => MimeTypes.isImage(mimeType);
+
   bool get isVideo => MimeTypes.isVideo(mimeType);
 
   bool get isCatalogued => _catalogMetadata != null;
@@ -207,6 +209,8 @@ class ImageEntry {
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
 
   bool get isGeotiff => _catalogMetadata?.isGeotiff ?? false;
+
+  bool get is360 => _catalogMetadata?.is360 ?? false;
 
   bool get canEdit => path != null;
 
