@@ -1,22 +1,18 @@
 import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/xmp.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/metadata_service.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
-import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_namespaces.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 
@@ -41,13 +37,23 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
-    final sections = SplayTreeMap<_XmpNamespace, List<MapEntry<String, String>>>.of(
+    final sections = SplayTreeMap<XmpNamespace, List<MapEntry<String, String>>>.of(
       groupBy(widget.tags.entries, (kv) {
         final fullKey = kv.key;
         final i = fullKey.indexOf(XMP.propNamespaceSeparator);
-        if (i == -1) return _XmpNamespace('');
-        final namespace = fullKey.substring(0, i);
-        return _XmpNamespace(namespace);
+        final namespace = i == -1 ? '' : fullKey.substring(0, i);
+        switch (namespace) {
+          case XmpBasicNamespace.ns:
+            return XmpBasicNamespace();
+          case XmpIptcCoreNamespace.ns:
+            return XmpIptcCoreNamespace();
+          case XmpMMNamespace.ns:
+            return XmpMMNamespace();
+          case XmpNoteNamespace.ns:
+            return XmpNoteNamespace();
+          default:
+            return XmpNamespace(namespace);
+        }
       }),
       (a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle),
     );
@@ -60,48 +66,12 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: sections.entries.expand((namespaceProps) {
-              final namespace = namespaceProps.key;
-              final displayNamespace = namespace.displayTitle;
-              final linkHandlers = <String, InfoLinkHandler>{};
-
-              final entries = namespaceProps.value.map((prop) {
-                final propPath = prop.key;
-
-                final displayKey = propPath.splitMapJoin(XMP.structFieldSeparator, onNonMatch: (s) {
-                  // strip namespace
-                  final key = s.split(XMP.propNamespaceSeparator).last;
-                  // uppercase first letter
-                  return key.replaceFirstMapped(RegExp('.'), (m) => m.group(0).toUpperCase());
-                });
-
-                var value = prop.value;
-                if (XMP.dataProps.contains(propPath)) {
-                  linkHandlers.putIfAbsent(
-                    displayKey,
-                    () => InfoLinkHandler(linkText: 'Open', onTap: () => _openEmbeddedData(propPath)),
-                  );
-                }
-                return MapEntry(displayKey, value);
-              }).toList()
-                ..sort((a, b) => compareAsciiUpperCaseNatural(a.key, b.key));
-              return [
-                if (displayNamespace.isNotEmpty)
-                  Padding(
-                    padding: EdgeInsets.only(top: 8),
-                    child: HighlightTitle(
-                      displayNamespace,
-                      color: BrandColors.get(displayNamespace),
-                      selectable: true,
-                    ),
-                  ),
-                InfoRowGroup(
-                  Map.fromEntries(entries),
-                  maxValueLength: Constants.infoGroupMaxValueLength,
-                  linkHandlers: linkHandlers,
-                ),
-              ];
-            }).toList(),
+            children: sections.entries
+                .expand((kv) => kv.key.buildNamespaceSection(
+                      props: kv.value,
+                      openEmbeddedData: _openEmbeddedData,
+                    ))
+                .toList(),
           ),
         ),
       ],
@@ -138,27 +108,5 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
         pageBuilder: (c, a, sa) => SingleFullscreenPage(entry: embedEntry),
       ),
     ));
-  }
-}
-
-class _XmpNamespace {
-  final String namespace;
-
-  const _XmpNamespace(this.namespace);
-
-  String get displayTitle => XMP.namespaces[namespace] ?? namespace;
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is _XmpNamespace && other.namespace == namespace;
-  }
-
-  @override
-  int get hashCode => namespace.hashCode;
-
-  @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{namespace=$namespace}';
   }
 }

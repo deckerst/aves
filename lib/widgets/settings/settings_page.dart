@@ -5,7 +5,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
-import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/access_grants.dart';
@@ -222,20 +221,6 @@ class _SettingsPageState extends State<SettingsPage> {
           child: GrantedDirectories(),
         ),
       ],
-    );
-  }
-}
-
-class SectionTitle extends StatelessWidget {
-  final String text;
-
-  const SectionTitle(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 16, top: 6, right: 16, bottom: 12),
-      child: HighlightTitle(text),
     );
   }
 }

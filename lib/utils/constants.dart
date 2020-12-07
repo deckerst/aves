@@ -18,8 +18,8 @@ class Constants {
     offset: Offset(0.5, 1.0),
   );
 
-  static const String overlayUnknown = '—'; // em dash
-  static const String infoUnknown = 'unknown';
+  static const overlayUnknown = '—'; // em dash
+  static const infoUnknown = 'unknown';
 
   static final pointNemo = LatLng(-48.876667, -123.393333);
 

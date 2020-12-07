@@ -30,7 +30,6 @@ class AvesExpansionTile extends StatelessWidget {
         title: HighlightTitle(
           title,
           color: color,
-          fontSize: 18,
           enabled: enabled,
         ),
         expandable: enabled,

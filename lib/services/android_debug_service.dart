@@ -1,4 +1,5 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -91,6 +92,20 @@ class AndroidDebugService {
       return result;
     } on PlatformException catch (e) {
       debugPrint('getMetadataExtractorSummary failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
+  }
+
+  static Future<Map> getTiffStructure(ImageEntry entry) async {
+    if (entry.mimeType != MimeTypes.tiff) return {};
+
+    try {
+      final result = await platform.invokeMethod('getTiffStructure', <String, dynamic>{
+        'uri': entry.uri,
+      }) as Map;
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('getTiffStructure failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
   }

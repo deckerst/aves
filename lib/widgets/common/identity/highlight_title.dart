@@ -11,7 +11,7 @@ class HighlightTitle extends StatelessWidget {
   const HighlightTitle(
     this.title, {
     this.color,
-    this.fontSize = 20,
+    this.fontSize = 18,
     this.enabled = true,
     this.selectable = false,
   }) : assert(title != null);

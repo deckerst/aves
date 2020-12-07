@@ -86,37 +86,42 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     // warning: placing the `AnimationLimiter` as a parent to the `ScrollView`
     // triggers dispose & reinitialization of other sections, including heavy widgets like maps
     return SliverToBoxAdapter(
-      child: AnimatedBuilder(
-        animation: _loadedMetadataUri,
-        builder: (context, child) {
-          Widget content;
-          if (_metadata.isEmpty) {
-            content = SizedBox.shrink();
-          } else {
-            content = Column(
-              children: AnimationConfiguration.toStaggeredList(
-                duration: Durations.staggeredAnimation,
-                delay: Durations.staggeredAnimationDelay,
-                childAnimationBuilder: (child) => SlideAnimation(
-                  verticalOffset: 50.0,
-                  child: FadeInAnimation(
-                    child: child,
+      child: NotificationListener<ScrollNotification>(
+        // cancel notification bubbling so that the info page
+        // does not misinterpret content scrolling for page scrolling
+        onNotification: (notification) => true,
+        child: AnimatedBuilder(
+          animation: _loadedMetadataUri,
+          builder: (context, child) {
+            Widget content;
+            if (_metadata.isEmpty) {
+              content = SizedBox.shrink();
+            } else {
+              content = Column(
+                children: AnimationConfiguration.toStaggeredList(
+                  duration: Durations.staggeredAnimation,
+                  delay: Durations.staggeredAnimationDelay,
+                  childAnimationBuilder: (child) => SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: FadeInAnimation(
+                      child: child,
+                    ),
                   ),
+                  children: [
+                    SectionRow(AIcons.info),
+                    ..._metadata.entries.map((kv) => _buildDirTile(kv.key, kv.value)),
+                  ],
                 ),
-                children: [
-                  SectionRow(AIcons.info),
-                  ..._metadata.entries.map((kv) => _buildDirTile(kv.key, kv.value)),
-                ],
-              ),
+              );
+            }
+            return AnimationLimiter(
+              // we update the limiter key after fetching the metadata of a new entry,
+              // in order to restart the staggered animation of the metadata section
+              key: Key(_loadedMetadataUri.value),
+              child: content,
             );
-          }
-          return AnimationLimiter(
-            // we update the limiter key after fetching the metadata of a new entry,
-            // in order to restart the staggered animation of the metadata section
-            key: Key(_loadedMetadataUri.value),
-            child: content,
-          );
-        },
+          },
+        ),
       ),
     );
   }
