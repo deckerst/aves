@@ -26,7 +26,7 @@ class QueryFilter extends CollectionFilter {
     // allow untrimmed queries wrapped with `"..."`
     final matches = exactRegex.allMatches(upQuery);
     if (matches.length == 1) {
-      upQuery = matches.elementAt(0).group(1);
+      upQuery = matches.first.group(1);
     }
 
     _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);

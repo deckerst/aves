@@ -138,6 +138,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             } catch (e: XMPException) {
                                 Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
                             }
+                            // remove this stat as it is not actual XMP data
+                            dirMap.remove(dir.getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
                         }
                     }
                 }

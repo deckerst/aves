@@ -36,6 +36,7 @@ class Durations {
 
   // info
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
+  static const xmpStructArrayCardTransition = Duration(milliseconds: 300);
 
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 2);

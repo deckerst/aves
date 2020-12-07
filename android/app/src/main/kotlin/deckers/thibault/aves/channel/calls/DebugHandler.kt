@@ -14,6 +14,7 @@ import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
+import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
@@ -25,6 +26,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import java.util.*
 
@@ -38,6 +40,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             "getExifInterfaceMetadata" -> GlobalScope.launch { getExifInterfaceMetadata(call, Coresult(result)) }
             "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
             "getMetadataExtractorSummary" -> GlobalScope.launch { getMetadataExtractorSummary(call, Coresult(result)) }
+            "getTiffStructure" -> GlobalScope.launch { getTiffStructure(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }
@@ -225,6 +228,70 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
         result.success(metadataMap)
     }
+
+    private fun getTiffStructure(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("getTiffStructure-args", "failed because of missing arguments", null)
+            return
+        }
+
+        try {
+            val metadataMap = HashMap<String, FieldMap>()
+            var dirCount: Int? = null
+            context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                val options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                metadataMap["0"] = tiffOptionsToMap(options)
+                dirCount = options.outDirectoryCount
+            }
+            if (dirCount != null) {
+                for (i in 1 until dirCount!!) {
+                    context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
+                        val options = TiffBitmapFactory.Options().apply {
+                            inJustDecodeBounds = true
+                            inDirectoryNumber = i
+                        }
+                        TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+                        metadataMap["$i"] = tiffOptionsToMap(options)
+                    }
+                }
+            }
+            result.success(metadataMap)
+        } catch (e: Exception) {
+            result.error("getTiffStructure-read", "failed to read tiff", e.message)
+        }
+    }
+
+    private fun tiffOptionsToMap(options: TiffBitmapFactory.Options): FieldMap = hashMapOf(
+        "Author" to options.outAuthor,
+        "BitsPerSample" to options.outBitsPerSample.toString(),
+        "CompressionScheme" to options.outCompressionScheme?.toString(),
+        "Copyright" to options.outCopyright,
+        "CurDirectoryNumber" to options.outCurDirectoryNumber.toString(),
+        "Datetime" to options.outDatetime,
+        "DirectoryCount" to options.outDirectoryCount.toString(),
+        "FillOrder" to options.outFillOrder?.toString(),
+        "Height" to options.outHeight.toString(),
+        "HostComputer" to options.outHostComputer,
+        "ImageDescription" to options.outImageDescription,
+        "ImageOrientation" to options.outImageOrientation?.toString(),
+        "NumberOfStrips" to options.outNumberOfStrips.toString(),
+        "Photometric" to options.outPhotometric?.toString(),
+        "PlanarConfig" to options.outPlanarConfig?.toString(),
+        "ResolutionUnit" to options.outResolutionUnit?.toString(),
+        "RowPerStrip" to options.outRowPerStrip.toString(),
+        "SamplePerPixel" to options.outSamplePerPixel.toString(),
+        "Software" to options.outSoftware,
+        "StripSize" to options.outStripSize.toString(),
+        "TileHeight" to options.outTileHeight.toString(),
+        "TileWidth" to options.outTileWidth.toString(),
+        "Width" to options.outWidth.toString(),
+        "XResolution" to options.outXResolution.toString(),
+        "YResolution" to options.outYResolution.toString(),
+    )
 
     companion object {
         private val LOG_TAG = LogUtils.createTag(DebugHandler::class.java)
