@@ -200,6 +200,20 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         return dirMap
     }
 
+    // set `KEY_DATE_MILLIS` from these fields (by precedence):
+    // - ME / Exif / DATETIME_ORIGINAL
+    // - ME / Exif / DATETIME
+    // - EI / Exif / DATETIME_ORIGINAL
+    // - EI / Exif / DATETIME
+    // - ME / XMP / xmp:CreateDate
+    // - ME / XMP / photoshop:DateCreated
+    // - MMR / METADATA_KEY_DATE
+    // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
+    // - ME / XMP / dc:title
+    // - ME / XMP / dc:description
+    // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
+    // - ME / XMP / dc:subject
+    // - ME / IPTC / keywords
     private fun getCatalogMetadata(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -211,24 +225,14 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, path, sizeBytes))
-        if (isVideo(mimeType)) {
-            metadataMap.putAll(getVideoCatalogMetadataByMediaMetadataRetriever(uri))
+        if (isMultimedia(mimeType)) {
+            metadataMap.putAll(getMultimediaCatalogMetadataByMediaMetadataRetriever(uri))
         }
 
         // report success even when empty
         result.success(metadataMap)
     }
 
-    // set `KEY_DATE_MILLIS` from these fields (by precedence):
-    // - Exif / DATETIME_ORIGINAL
-    // - Exif / DATETIME
-    // - XMP / xmp:CreateDate
-    // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
-    // - XMP / dc:title
-    // - XMP / dc:description
-    // set `KEY_XMP_SUBJECTS` from these fields (by precedence):
-    // - XMP / dc:subject
-    // - IPTC / keywords
     private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?, sizeBytes: Long?): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
 
@@ -301,6 +305,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
                             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                                 xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                                if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                                    xmpMeta.getSafeDateMillis(XMP.PHOTOSHOP_SCHEMA_NS, XMP.PS_DATE_CREATED_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
+                                }
                             }
 
                             // identification of panorama (aka photo sphere)
@@ -381,22 +388,26 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         return metadataMap
     }
 
-    private fun getVideoCatalogMetadataByMediaMetadataRetriever(uri: Uri): Map<String, Any> {
+    private fun getMultimediaCatalogMetadataByMediaMetadataRetriever(uri: Uri): Map<String, Any> {
         val metadataMap = HashMap<String, Any>()
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return metadataMap
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
-            retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { metadataMap[KEY_DATE_MILLIS] = it }
+            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                retriever.getSafeDateMillis(MediaMetadataRetriever.METADATA_KEY_DATE) { metadataMap[KEY_DATE_MILLIS] = it }
+            }
 
-            val locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION)
-            if (locationString != null) {
-                val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
-                if (matcher.find() && matcher.groupCount() >= 2) {
-                    val latitude = matcher.group(1)?.toDoubleOrNull()
-                    val longitude = matcher.group(2)?.toDoubleOrNull()
-                    if (latitude != null && longitude != null) {
-                        metadataMap[KEY_LATITUDE] = latitude
-                        metadataMap[KEY_LONGITUDE] = longitude
+            if (!metadataMap.containsKey(KEY_LATITUDE)) {
+                val locationString = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION)
+                if (locationString != null) {
+                    val matcher = Metadata.VIDEO_LOCATION_PATTERN.matcher(locationString)
+                    if (matcher.find() && matcher.groupCount() >= 2) {
+                        val latitude = matcher.group(1)?.toDoubleOrNull()
+                        val longitude = matcher.group(2)?.toDoubleOrNull()
+                        if (latitude != null && longitude != null) {
+                            metadataMap[KEY_LATITUDE] = latitude
+                            metadataMap[KEY_LONGITUDE] = longitude
+                        }
                     }
                 }
             }

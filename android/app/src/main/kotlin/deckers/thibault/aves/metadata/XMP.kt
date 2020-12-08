@@ -10,12 +10,14 @@ object XMP {
     private val LOG_TAG = LogUtils.createTag(XMP::class.java)
 
     const val DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/"
+    const val PHOTOSHOP_SCHEMA_NS = "http://ns.adobe.com/photoshop/1.0/"
     const val XMP_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/"
     const val IMG_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/g/img/"
 
     const val SUBJECT_PROP_NAME = "dc:subject"
     const val TITLE_PROP_NAME = "dc:title"
     const val DESCRIPTION_PROP_NAME = "dc:description"
+    const val PS_DATE_CREATED_PROP_NAME = "photoshop:DateCreated";
     const val CREATE_DATE_PROP_NAME = "xmp:CreateDate"
     const val THUMBNAIL_PROP_NAME = "xmp:Thumbnails"
     const val THUMBNAIL_IMAGE_PROP_NAME = "xmpGImg:image"
