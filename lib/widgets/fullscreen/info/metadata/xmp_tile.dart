@@ -12,6 +12,11 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_namespaces.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/exif.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/iptc.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/photoshop.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/tiff.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
@@ -45,12 +50,18 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
         switch (namespace) {
           case XmpBasicNamespace.ns:
             return XmpBasicNamespace();
+          case XmpExifNamespace.ns:
+            return XmpExifNamespace();
           case XmpIptcCoreNamespace.ns:
             return XmpIptcCoreNamespace();
           case XmpMMNamespace.ns:
             return XmpMMNamespace();
           case XmpNoteNamespace.ns:
             return XmpNoteNamespace();
+          case XmpPhotoshopNamespace.ns:
+            return XmpPhotoshopNamespace();
+          case XmpTiffNamespace.ns:
+            return XmpTiffNamespace();
           default:
             return XmpNamespace(namespace);
         }
@@ -68,7 +79,7 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: sections.entries
                 .expand((kv) => kv.key.buildNamespaceSection(
-                      props: kv.value,
+                      rawProps: kv.value,
                       openEmbeddedData: _openEmbeddedData,
                     ))
                 .toList(),
