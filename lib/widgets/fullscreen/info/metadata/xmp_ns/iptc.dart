@@ -12,6 +12,9 @@ class XmpIptcCoreNamespace extends XmpNamespace {
   XmpIptcCoreNamespace() : super(ns);
 
   @override
+  String get displayTitle => 'IPTC Core';
+
+  @override
   bool extractData(XmpProp prop) => extractStruct(prop, creatorContactInfoPattern, creatorContactInfo);
 
   @override

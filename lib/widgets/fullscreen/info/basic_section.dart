@@ -33,17 +33,23 @@ class BasicSection extends StatelessWidget {
     final showMegaPixels = entry.isPhoto && entry.megaPixels != null && entry.megaPixels > 0;
     final resolutionText = '${entry.resolutionText}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
+    // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
+    // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
+    final title = entry.bestTitle ?? Constants.infoUnknown;
+    final uri = entry.uri ?? Constants.infoUnknown;
+    final path = entry.path;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InfoRowGroup({
-          'Title': entry.bestTitle ?? Constants.infoUnknown,
+          'Title': title,
           'Date': dateText,
           if (entry.isVideo) ..._buildVideoRows(),
           if (!entry.isSvg) 'Resolution': resolutionText,
           'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.infoUnknown,
-          'URI': entry.uri ?? Constants.infoUnknown,
-          if (entry.path != null) 'Path': entry.path,
+          'URI': uri,
+          if (path != null) 'Path': path,
         }),
         _buildChips(),
       ],

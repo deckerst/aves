@@ -11,17 +11,12 @@ class XMP {
     'crs': 'Camera Raw Settings',
     'dc': 'Dublin Core',
     'drone-dji': 'DJI Drone',
-    'exif': 'Exif',
     'exifEX': 'Exif Ex',
     'GettyImagesGIFT': 'Getty Images',
     'GIMP': 'GIMP',
-    'GAudio': 'Google Audio',
-    'GDepth': 'Google Depth',
     'GFocus': 'Google Focus',
-    'GImage': 'Google Image',
     'GPano': 'Google Panorama',
     'illustrator': 'Illustrator',
-    'Iptc4xmpCore': 'IPTC Core',
     'lr': 'Lightroom',
     'MicrosoftPhoto': 'Microsoft Photo',
     'panorama': 'Panorama',
@@ -29,21 +24,10 @@ class XMP {
     'pdfx': 'PDF/X',
     'PanoStudioXMP': 'PanoramaStudio',
     'photomechanic': 'Photo Mechanic',
-    'photoshop': 'Photoshop',
     'plus': 'PLUS',
-    'tiff': 'TIFF',
-    'xmp': 'Basic',
     'xmpBJ': 'Basic Job Ticket',
     'xmpDM': 'Dynamic Media',
-    'xmpMM': 'Media Management',
     'xmpRights': 'Rights Management',
     'xmpTPg': 'Paged-Text',
   };
-
-  // TODO TLAD 'xmp:Thumbnails[\d]/Image'
-  static const dataProps = [
-    'GAudio:Data',
-    'GDepth:Data',
-    'GImage:Data',
-  ];
 }

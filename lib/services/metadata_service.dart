@@ -106,27 +106,14 @@ class MetadataService {
     return [];
   }
 
-  static Future<List<Uint8List>> getXmpThumbnails(ImageEntry entry) async {
-    try {
-      final result = await platform.invokeMethod('getXmpThumbnails', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      });
-      return (result as List).cast<Uint8List>();
-    } on PlatformException catch (e) {
-      debugPrint('getXmpThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return [];
-  }
-
-  static Future<Map> extractXmpDataProp(ImageEntry entry, String propPath) async {
+  static Future<Map> extractXmpDataProp(ImageEntry entry, String propPath, String propMimeType) async {
     try {
       final result = await platform.invokeMethod('extractXmpDataProp', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
         'propPath': propPath,
+        'propMimeType': propMimeType,
       });
       return result;
     } on PlatformException catch (e) {

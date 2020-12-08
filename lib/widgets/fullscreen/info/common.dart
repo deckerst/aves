@@ -99,7 +99,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                       final handler = linkHandlers[key];
                       value = handler.linkText;
                       // open link on tap
-                      recognizer = TapGestureRecognizer()..onTap = handler.onTap;
+                      recognizer = TapGestureRecognizer()..onTap = () => handler.onTap(context);
                       style = linkStyle;
                     } else {
                       value = kv.value;
@@ -149,7 +149,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
 class InfoLinkHandler {
   final String linkText;
-  final VoidCallback onTap;
+  final void Function(BuildContext context) onTap;
 
   const InfoLinkHandler({
     @required this.linkText,
