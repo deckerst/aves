@@ -7,38 +7,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class XmpProp {
-  final String path, value;
-  final String displayKey;
-
-  static final sentenceCaseStep1 = RegExp(r'([A-Z][a-z]|\[)');
-  static final sentenceCaseStep2 = RegExp(r'([a-z])([A-Z])');
-
-  XmpProp(this.path, this.value) : displayKey = formatKey(path);
-
-  bool get isOpenable => XMP.dataProps.contains(path);
-
-  static String formatKey(String propPath) {
-    return propPath.splitMapJoin(XMP.structFieldSeparator,
-        onMatch: (match) => ' ${match.group(0)} ',
-        onNonMatch: (s) {
-          // strip namespace
-          var key = s.split(XMP.propNamespaceSeparator).last;
-
-          // uppercase first letter
-          key = key.replaceFirstMapped(RegExp('.'), (m) => m.group(0).toUpperCase());
-
-          // sentence case
-          return key.replaceAllMapped(sentenceCaseStep1, (m) => ' ${m.group(1)}').replaceAllMapped(sentenceCaseStep2, (m) => '${m.group(1)} ${m.group(2)}').trim();
-        });
-  }
-
-  @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
-  }
-}
-
 class XmpNamespace {
   final String namespace;
 
@@ -48,22 +16,11 @@ class XmpNamespace {
 
   List<Widget> buildNamespaceSection({
     @required List<MapEntry<String, String>> rawProps,
-    @required void Function(String propPath) openEmbeddedData,
   }) {
-    final linkHandlers = <String, InfoLinkHandler>{};
-
     final props = rawProps
         .map((kv) {
           final prop = XmpProp(kv.key, kv.value);
-          if (extractData(prop)) return null;
-
-          if (prop.isOpenable) {
-            linkHandlers.putIfAbsent(
-              prop.displayKey,
-              () => InfoLinkHandler(linkText: 'Open', onTap: () => openEmbeddedData(prop.path)),
-            );
-          }
-          return prop;
+          return extractData(prop) ? null : prop;
         })
         .where((e) => e != null)
         .toList()
@@ -74,7 +31,7 @@ class XmpNamespace {
         InfoRowGroup(
           Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, formatValue(prop)))),
           maxValueLength: Constants.infoGroupMaxValueLength,
-          linkHandlers: linkHandlers,
+          linkHandlers: linkifyValues(props),
         ),
       ...buildFromExtractedData(),
     ];
@@ -123,6 +80,8 @@ class XmpNamespace {
 
   String formatValue(XmpProp prop) => prop.value;
 
+  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) => null;
+
   // identity
 
   @override
@@ -137,5 +96,50 @@ class XmpNamespace {
   @override
   String toString() {
     return '$runtimeType#${shortHash(this)}{namespace=$namespace}';
+  }
+}
+
+class XmpProp {
+  final String path, value;
+  final String displayKey;
+
+  static final sentenceCaseStep1 = RegExp(r'([A-Z][a-z]|\[)');
+  static final sentenceCaseStep2 = RegExp(r'([a-z])([A-Z])');
+
+  XmpProp(this.path, this.value) : displayKey = formatKey(path);
+
+  static String formatKey(String propPath) {
+    return propPath.splitMapJoin(XMP.structFieldSeparator,
+        onMatch: (match) => ' ${match.group(0)} ',
+        onNonMatch: (s) {
+          // strip namespace
+          var key = s.split(XMP.propNamespaceSeparator).last;
+
+          // uppercase first letter
+          key = key.replaceFirstMapped(RegExp('.'), (m) => m.group(0).toUpperCase());
+
+          // sentence case
+          return key.replaceAllMapped(sentenceCaseStep1, (m) => ' ${m.group(1)}').replaceAllMapped(sentenceCaseStep2, (m) => '${m.group(1)} ${m.group(2)}').trim();
+        });
+  }
+
+  @override
+  String toString() {
+    return '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
+  }
+}
+
+class OpenEmbeddedDataNotification extends Notification {
+  final String propPath;
+  final String mimeType;
+
+  const OpenEmbeddedDataNotification({
+    @required this.propPath,
+    @required this.mimeType,
+  });
+
+  @override
+  String toString() {
+    return '$runtimeType#${shortHash(this)}{propPath=$propPath, mimeType=$mimeType}';
   }
 }

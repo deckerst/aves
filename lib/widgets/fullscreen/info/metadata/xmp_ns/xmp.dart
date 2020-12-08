@@ -1,3 +1,5 @@
+import 'package:aves/ref/mime_types.dart';
+import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_structs.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +8,14 @@ class XmpBasicNamespace extends XmpNamespace {
   static const ns = 'xmp';
 
   static final thumbnailsPattern = RegExp(r'xmp:Thumbnails\[(\d+)\]/(.*)');
+  static const thumbnailDataDisplayKey = 'Image';
 
   final thumbnails = <int, Map<String, String>>{};
 
   XmpBasicNamespace() : super(ns);
+
+  @override
+  String get displayTitle => 'Basic';
 
   @override
   bool extractData(XmpProp prop) => extractIndexedStruct(prop, thumbnailsPattern, thumbnails);
@@ -20,6 +26,19 @@ class XmpBasicNamespace extends XmpNamespace {
           XmpStructArrayCard(
             title: 'Thumbnail',
             structByIndex: thumbnails,
+            linkifier: (index) {
+              final struct = thumbnails[index];
+              return {
+                if (struct.containsKey(thumbnailDataDisplayKey))
+                  thumbnailDataDisplayKey: InfoLinkHandler(
+                    linkText: 'Open',
+                    onTap: (context) => OpenEmbeddedDataNotification(
+                      propPath: 'xmp:Thumbnails[$index]/xmpGImg:image',
+                      mimeType: MimeTypes.jpeg,
+                    ).dispatch(context),
+                  ),
+              };
+            },
           )
       ];
 }
@@ -39,7 +58,14 @@ class XmpMMNamespace extends XmpNamespace {
   XmpMMNamespace() : super(ns);
 
   @override
-  bool extractData(XmpProp prop) => extractStruct(prop, derivedFromPattern, derivedFrom) || extractIndexedStruct(prop, historyPattern, history);
+  String get displayTitle => 'Media Management';
+
+  @override
+  bool extractData(XmpProp prop) {
+    final hasStructs = extractStruct(prop, derivedFromPattern, derivedFrom);
+    final hasIndexedStructs = extractIndexedStruct(prop, historyPattern, history);
+    return hasStructs || hasIndexedStructs;
+  }
 
   @override
   List<Widget> buildFromExtractedData() => [

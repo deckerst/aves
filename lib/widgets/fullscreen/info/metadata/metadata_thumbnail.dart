@@ -5,7 +5,7 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:flutter/material.dart';
 
-enum MetadataThumbnailSource { embedded, exif, xmp }
+enum MetadataThumbnailSource { embedded, exif }
 
 class MetadataThumbnails extends StatefulWidget {
   final MetadataThumbnailSource source;
@@ -37,9 +37,6 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         break;
       case MetadataThumbnailSource.exif:
         _loader = MetadataService.getExifThumbnails(entry);
-        break;
-      case MetadataThumbnailSource.xmp:
-        _loader = MetadataService.getXmpThumbnails(entry);
         break;
     }
   }

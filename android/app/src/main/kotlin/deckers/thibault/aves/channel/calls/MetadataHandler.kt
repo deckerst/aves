@@ -74,7 +74,6 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getOverlayMetadata" -> GlobalScope.launch { getOverlayMetadata(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
-            "getXmpThumbnails" -> GlobalScope.launch { getXmpThumbnails(call, Coresult(result)) }
             "extractXmpDataProp" -> GlobalScope.launch { extractXmpDataProp(call, Coresult(result)) }
             else -> result.notImplemented()
         }
@@ -539,53 +538,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(thumbnails)
     }
 
-    private fun getXmpThumbnails(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType")
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
-        if (mimeType == null || uri == null) {
-            result.error("getXmpThumbnails-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val thumbnails = ArrayList<ByteArray>()
-        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
-            try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
-                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
-                        val xmpMeta = dir.xmpMeta
-                        try {
-                            if (xmpMeta.doesPropertyExist(XMP.XMP_SCHEMA_NS, XMP.THUMBNAIL_PROP_NAME)) {
-                                val count = xmpMeta.countArrayItems(XMP.XMP_SCHEMA_NS, XMP.THUMBNAIL_PROP_NAME)
-                                for (i in 1 until count + 1) {
-                                    val structName = "${XMP.THUMBNAIL_PROP_NAME}[$i]"
-                                    val image = xmpMeta.getStructField(XMP.XMP_SCHEMA_NS, structName, XMP.IMG_SCHEMA_NS, XMP.THUMBNAIL_IMAGE_PROP_NAME)
-                                    if (image != null) {
-                                        thumbnails.add(XMPUtils.decodeBase64(image.value))
-                                    }
-                                }
-                            }
-                        } catch (e: XMPException) {
-                            Log.w(LOG_TAG, "failed to read XMP directory for uri=$uri", e)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
-            } catch (e: NoClassDefFoundError) {
-                Log.w(LOG_TAG, "failed to extract xmp thumbnail", e)
-            }
-        }
-        result.success(thumbnails)
-    }
-
     private fun extractXmpDataProp(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
         val dataPropPath = call.argument<String>("propPath")
-        if (mimeType == null || uri == null || dataPropPath == null) {
+        val embedMimeType = call.argument<String>("propMimeType")
+        if (mimeType == null || uri == null || dataPropPath == null || embedMimeType == null) {
             result.error("extractXmpDataProp-args", "failed because of missing arguments", null)
             return
         }
@@ -598,10 +557,22 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
                     try {
-                        val ns = XMP.namespaceForDataPath(dataPropPath)
-                        val mimePropPath = XMP.mimeTypePathForDataPath(dataPropPath)
-                        val embedMimeType = xmpDirs.map { it.xmpMeta.getPropertyString(ns, mimePropPath) }.first { it != null }
-                        val embedBytes = xmpDirs.map { it.xmpMeta.getPropertyBase64(ns, dataPropPath) }.first { it != null }
+                        val pathParts = dataPropPath.split('/')
+
+                        val embedBytes: ByteArray = if (pathParts.size == 1) {
+                            val propName = pathParts[0]
+                            val propNs = XMP.namespaceForPropPath(propName)
+                            xmpDirs.map { it.xmpMeta.getPropertyBase64(propNs, propName) }.first { it != null }
+                        } else {
+                            val structName = pathParts[0]
+                            val structNs = XMP.namespaceForPropPath(structName)
+                            val fieldName = pathParts[1]
+                            val fieldNs = XMP.namespaceForPropPath(fieldName)
+                            xmpDirs.map { it.xmpMeta.getStructField(structNs, structName, fieldNs, fieldName) }.first { it != null }.let {
+                                XMPUtils.decodeBase64(it.value)
+                            }
+                        }
+
                         val embedFile = File.createTempFile("aves", null, context.cacheDir).apply {
                             deleteOnExit()
                             outputStream().use { outputStream ->

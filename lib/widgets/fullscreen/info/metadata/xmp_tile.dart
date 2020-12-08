@@ -10,9 +10,9 @@ import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
-import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/exif.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/google.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/iptc.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_ns/tiff.dart';
@@ -41,7 +41,6 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
 
   @override
   Widget build(BuildContext context) {
-    final thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.xmp, entry: entry);
     final sections = SplayTreeMap<XmpNamespace, List<MapEntry<String, String>>>.of(
       groupBy(widget.tags.entries, (kv) {
         final fullKey = kv.key;
@@ -52,6 +51,12 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
             return XmpBasicNamespace();
           case XmpExifNamespace.ns:
             return XmpExifNamespace();
+          case XmpGAudioNamespace.ns:
+            return XmpGAudioNamespace();
+          case XmpGDepthNamespace.ns:
+            return XmpGDepthNamespace();
+          case XmpGImageNamespace.ns:
+            return XmpGImageNamespace();
           case XmpIptcCoreNamespace.ns:
             return XmpIptcCoreNamespace();
           case XmpMMNamespace.ns:
@@ -72,25 +77,29 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
       title: 'XMP',
       expandedNotifier: widget.expandedNotifier,
       children: [
-        if (thumbnail != null) thumbnail,
-        Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: sections.entries
-                .expand((kv) => kv.key.buildNamespaceSection(
-                      rawProps: kv.value,
-                      openEmbeddedData: _openEmbeddedData,
-                    ))
-                .toList(),
+        NotificationListener<OpenEmbeddedDataNotification>(
+          onNotification: (notification) {
+            _openEmbeddedData(notification.propPath, notification.mimeType);
+            return true;
+          },
+          child: Padding(
+            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: sections.entries
+                  .expand((kv) => kv.key.buildNamespaceSection(
+                        rawProps: kv.value,
+                      ))
+                  .toList(),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Future<void> _openEmbeddedData(String propPath) async {
-    final fields = await MetadataService.extractXmpDataProp(entry, propPath);
+  Future<void> _openEmbeddedData(String propPath, String propMimeType) async {
+    final fields = await MetadataService.extractXmpDataProp(entry, propPath, propMimeType);
     if (fields == null || !fields.containsKey('mimeType') || !fields.containsKey('uri')) {
       showFeedback(context, 'Failed');
       return;

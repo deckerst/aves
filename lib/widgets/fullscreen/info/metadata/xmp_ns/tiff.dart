@@ -5,6 +5,9 @@ import 'package:aves/widgets/fullscreen/info/metadata/xmp_namespaces.dart';
 class XmpTiffNamespace extends XmpNamespace {
   static const ns = 'tiff';
 
+  @override
+  String get displayTitle => 'TIFF';
+
   XmpTiffNamespace() : super(ns);
 
   @override
