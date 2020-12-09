@@ -10,6 +10,7 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/svg_tile.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -135,6 +136,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         expandedNotifier: _expandedDirectoryNotifier,
       );
     }
+
     Widget thumbnail;
     final prefixChildren = <Widget>[];
     switch (dirName) {
@@ -168,7 +170,11 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         if (thumbnail != null) thumbnail,
         Padding(
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: InfoRowGroup(dir.tags, maxValueLength: Constants.infoGroupMaxValueLength),
+          child: InfoRowGroup(
+            dir.tags,
+            maxValueLength: Constants.infoGroupMaxValueLength,
+            linkHandlers: dirName == SvgMetadata.directory ? SvgMetadata.getLinkHandlers(dir.tags) : null,
+          ),
         ),
       ],
     );
@@ -184,7 +190,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     if (entry == null) return;
     if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
-      final rawMetadata = await MetadataService.getAllMetadata(entry) ?? {};
+      final rawMetadata = await (entry.isSvg ? SvgMetadata.getAllMetadata(entry) : MetadataService.getAllMetadata(entry)) ?? {};
       final directories = rawMetadata.entries.map((dirKV) {
         var directoryName = dirKV.key as String ?? '';
 

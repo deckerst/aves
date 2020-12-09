@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/services/image_file_service.dart';
 import 'package:aves/widgets/common/aves_highlight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/darcula.dart';
@@ -9,10 +5,10 @@ import 'package:flutter_highlight/themes/darcula.dart';
 class SourceViewerPage extends StatefulWidget {
   static const routeName = '/fullscreen/source';
 
-  final ImageEntry entry;
+  final Future<String> Function() loader;
 
   const SourceViewerPage({
-    @required this.entry,
+    @required this.loader,
   });
 
   @override
@@ -22,12 +18,10 @@ class SourceViewerPage extends StatefulWidget {
 class _SourceViewerPageState extends State<SourceViewerPage> {
   Future<String> _loader;
 
-  ImageEntry get entry => widget.entry;
-
   @override
   void initState() {
     super.initState();
-    _loader = ImageFileService.getImage(entry.uri, entry.mimeType, 0, false).then(utf8.decode);
+    _loader = widget.loader();
   }
 
   @override
@@ -40,12 +34,8 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
         child: FutureBuilder<String>(
           future: _loader,
           builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            if (snapshot.connectionState != ConnectionState.done) {
-              return SizedBox.shrink();
-            }
+            if (snapshot.hasError) return Text(snapshot.error.toString());
+            if (!snapshot.hasData) return SizedBox.shrink();
 
             final source = snapshot.data;
             final highlightView = AvesHighlightView(

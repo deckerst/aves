@@ -1,6 +1,7 @@
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/ref/xmp.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:collection/collection.dart';
@@ -103,23 +104,14 @@ class XmpProp {
   final String path, value;
   final String displayKey;
 
-  static final sentenceCaseStep1 = RegExp(r'([A-Z][a-z]|\[)');
-  static final sentenceCaseStep2 = RegExp(r'([a-z])([A-Z])');
-
   XmpProp(this.path, this.value) : displayKey = formatKey(path);
 
   static String formatKey(String propPath) {
     return propPath.splitMapJoin(XMP.structFieldSeparator,
         onMatch: (match) => ' ${match.group(0)} ',
         onNonMatch: (s) {
-          // strip namespace
-          var key = s.split(XMP.propNamespaceSeparator).last;
-
-          // uppercase first letter
-          key = key.replaceFirstMapped(RegExp('.'), (m) => m.group(0).toUpperCase());
-
-          // sentence case
-          return key.replaceAllMapped(sentenceCaseStep1, (m) => ' ${m.group(1)}').replaceAllMapped(sentenceCaseStep2, (m) => '${m.group(1)} ${m.group(2)}').trim();
+          // strip namespace & format
+          return s.split(XMP.propNamespaceSeparator).last.toSentenceCase();
         });
   }
 

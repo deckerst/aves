@@ -293,6 +293,12 @@ class Constants {
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher',
     ),
+    Dependency(
+      name: 'XML',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/renggli/dart-xml/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/renggli/dart-xml',
+    ),
   ];
 }
 
