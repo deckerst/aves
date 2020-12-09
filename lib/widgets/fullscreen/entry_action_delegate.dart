@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/image_entry.dart';
@@ -202,7 +204,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: SourceViewerPage.routeName),
-        builder: (context) => SourceViewerPage(entry: entry),
+        builder: (context) => SourceViewerPage(
+          loader: () => ImageFileService.getImage(entry.uri, entry.mimeType, 0, false).then(utf8.decode),
+        ),
       ),
     );
   }
