@@ -10,22 +10,17 @@ import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
-import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class VideoControlOverlay extends StatefulWidget {
   final ImageEntry entry;
-  final Animation<double> scale;
   final IjkMediaController controller;
-  final EdgeInsets viewInsets, viewPadding;
+  final Animation<double> scale;
 
   const VideoControlOverlay({
     Key key,
     @required this.entry,
     @required this.controller,
     @required this.scale,
-    this.viewInsets,
-    this.viewPadding,
   }) : super(key: key);
 
   @override
@@ -99,63 +94,48 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
 
   @override
   Widget build(BuildContext context) {
-    final mq = context.select<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
-    final mqWidth = mq.item1;
-    final mqViewInsets = mq.item2;
-    final mqViewPadding = mq.item3;
-
-    final viewInsets = widget.viewInsets ?? mqViewInsets;
-    final viewPadding = widget.viewPadding ?? mqViewPadding;
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
-
-    return Padding(
-      padding: safePadding,
-      child: SizedBox(
-        width: mqWidth - safePadding.horizontal,
-        child: StreamBuilder<IjkStatus>(
-            stream: controller.ijkStatusStream,
-            builder: (context, snapshot) {
-              // do not use stream snapshot because it is obsolete when switching between videos
-              final status = controller.ijkStatus;
-              return TooltipTheme(
-                data: TooltipTheme.of(context).copyWith(
-                  preferBelow: false,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: status == IjkStatus.error
-                      ? [
-                          OverlayButton(
-                            scale: scale,
-                            child: IconButton(
-                              icon: Icon(AIcons.openInNew),
-                              onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
-                              tooltip: 'Open',
-                            ),
+    return StreamBuilder<IjkStatus>(
+        stream: controller.ijkStatusStream,
+        builder: (context, snapshot) {
+          // do not use stream snapshot because it is obsolete when switching between videos
+          final status = controller.ijkStatus;
+          return TooltipTheme(
+            data: TooltipTheme.of(context).copyWith(
+              preferBelow: false,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: status == IjkStatus.error
+                  ? [
+                      OverlayButton(
+                        scale: scale,
+                        child: IconButton(
+                          icon: Icon(AIcons.openInNew),
+                          onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
+                          tooltip: 'Open',
+                        ),
+                      ),
+                    ]
+                  : [
+                      Expanded(
+                        child: _buildProgressBar(),
+                      ),
+                      SizedBox(width: 8),
+                      OverlayButton(
+                        scale: scale,
+                        child: IconButton(
+                          icon: AnimatedIcon(
+                            icon: AnimatedIcons.play_pause,
+                            progress: _playPauseAnimation,
                           ),
-                        ]
-                      : [
-                          Expanded(
-                            child: _buildProgressBar(),
-                          ),
-                          SizedBox(width: 8),
-                          OverlayButton(
-                            scale: scale,
-                            child: IconButton(
-                              icon: AnimatedIcon(
-                                icon: AnimatedIcons.play_pause,
-                                progress: _playPauseAnimation,
-                              ),
-                              onPressed: _playPause,
-                              tooltip: isPlaying ? 'Pause' : 'Play',
-                            ),
-                          ),
-                        ],
-                ),
-              );
-            }),
-      ),
-    );
+                          onPressed: _playPause,
+                          tooltip: isPlaying ? 'Pause' : 'Play',
+                        ),
+                      ),
+                    ],
+            ),
+          );
+        });
   }
 
   Widget _buildProgressBar() {
