@@ -210,6 +210,12 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/palette_generator',
     ),
     Dependency(
+      name: 'Panorama',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/zesage/panorama/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/zesage/panorama',
+    ),
+    Dependency(
       name: 'PDF for Dart and Flutter',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/DavBfr/dart_pdf/blob/master/LICENSE',

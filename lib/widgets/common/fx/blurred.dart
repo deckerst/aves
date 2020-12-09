@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+final _filter = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
+
 class BlurredRect extends StatelessWidget {
   final Widget child;
 
@@ -11,7 +13,7 @@ class BlurredRect extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+        filter: _filter,
         child: child,
       ),
     );
@@ -29,7 +31,7 @@ class BlurredRRect extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+        filter: _filter,
         child: child,
       ),
     );
@@ -45,7 +47,7 @@ class BlurredOval extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipOval(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+        filter: _filter,
         child: child,
       ),
     );
