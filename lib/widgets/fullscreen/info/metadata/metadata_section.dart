@@ -173,7 +173,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           child: InfoRowGroup(
             dir.tags,
             maxValueLength: Constants.infoGroupMaxValueLength,
-            linkHandlers: dirName == SvgMetadata.directory ? SvgMetadata.getLinkHandlers(dir.tags) : null,
+            linkHandlers: dirName == SvgMetadata.metadataDirectory ? SvgMetadata.getLinkHandlers(dir.tags) : null,
           ),
         ),
       ],

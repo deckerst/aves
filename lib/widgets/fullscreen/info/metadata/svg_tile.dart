@@ -12,7 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
 
 class SvgMetadata {
-  static const directory = 'SVG';
+  static const docDirectory = 'Document';
+  static const metadataDirectory = 'Metadata';
 
   static const _attributes = ['x', 'y', 'width', 'height', 'preserveAspectRatio', 'viewBox'];
   static const _textElements = ['title', 'desc'];
@@ -20,21 +21,24 @@ class SvgMetadata {
 
   static Future<Map<String, Map<String, String>>> getAllMetadata(ImageEntry entry) async {
     try {
-      final result = <String, String>{};
       final data = await ImageFileService.getImage(entry.uri, entry.mimeType, 0, false);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;
 
-      final metadata = root.getElement(_metadataElement);
-      result.addEntries([
+      final docDir = Map.fromEntries([
         ...root.attributes.where((a) => _attributes.contains(a.name.qualified)).map((a) => MapEntry(_formatKey(a.name.qualified), a.value)),
         ..._textElements.map((name) => MapEntry(_formatKey(name), root.getElement(name)?.text)).where((kv) => kv.value != null),
+      ]);
+
+      final metadata = root.getElement(_metadataElement);
+      final metadataDir = Map.fromEntries([
         if (metadata != null) MapEntry('Metadata', metadata.toXmlString(pretty: true)),
       ]);
 
       return {
-        directory: result,
+        if (docDir.isNotEmpty) docDirectory: docDir,
+        if (metadataDir.isNotEmpty) metadataDirectory: metadataDir,
       };
     } catch (exception, stack) {
       debugPrint('failed to parse XML from SVG with exception=$exception\n$stack');
