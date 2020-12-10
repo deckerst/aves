@@ -9,11 +9,6 @@ version: 1.2.8+34
 # - does not support TIFF with JPEG compression (issue #184)
 # - TIFF tile decoding is not public (issue #258)
 
-# dnfield/flutter_svg (as of v0.19.1):
-# - `Could not parse "currentColor" as a color`: https://github.com/dnfield/flutter_svg/issues/31
-# - `The <style> element is not implemented in this library.`: https://github.com/dnfield/flutter_svg/issues/105
-# - inconsistent % unit support: https://github.com/dnfield/flutter_svg/issues/110
-
 # video_player (as of v0.10.8+2, backed by ExoPlayer):
 # - does not support content URIs (by default, but trivial by fork)
 # - does not support AVI/XVID, AC3
