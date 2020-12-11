@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Upgraded Flutter to stable v1.22.5
 
 ## [v1.2.8] - 2020-11-27
 ### Added
