@@ -43,6 +43,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
+import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.FileImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
@@ -298,9 +299,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                 val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME, it).value }
                                 metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(separator = XMP_SUBJECTS_SEPARATOR)
                             }
-                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.TITLE_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                            xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
-                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DESCRIPTION_PROP_NAME) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
+                                xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.DESCRIPTION_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             }
                             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
                                 xmpMeta.getSafeDateMillis(XMP.XMP_SCHEMA_NS, XMP.CREATE_DATE_PROP_NAME) { metadataMap[KEY_DATE_MILLIS] = it }
@@ -310,7 +311,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
 
                             // identification of panorama (aka photo sphere)
-                            if (XMP.panoramaRequiredProps.all { xmpMeta.doesPropertyExist(XMP.GPANO_SCHEMA_NS, it) }) {
+                            if (xmpMeta.isPanorama()) {
                                 flags = flags or MASK_IS_360
                             }
                         } catch (e: XMPException) {

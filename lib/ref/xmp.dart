@@ -25,6 +25,7 @@ class XMP {
     'PanoStudioXMP': 'PanoramaStudio',
     'photomechanic': 'Photo Mechanic',
     'plus': 'PLUS',
+    'pmtm': 'Photomatix',
     'xmpBJ': 'Basic Job Ticket',
     'xmpDM': 'Dynamic Media',
     'xmpRights': 'Rights Management',
