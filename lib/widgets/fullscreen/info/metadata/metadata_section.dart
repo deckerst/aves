@@ -128,6 +128,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   Widget _buildDirTile(String title, _MetadataDirectory dir) {
+    if (dir.tags.isEmpty) return SizedBox.shrink();
+
     final dirName = dir.name;
     if (dirName == xmpDirectory) {
       return XmpDirTile(
