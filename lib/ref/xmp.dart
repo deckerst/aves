@@ -6,6 +6,7 @@ class XMP {
   static const Map<String, String> namespaces = {
     'adsml-at': 'AdsML',
     'aux': 'Exif Aux',
+    'avm': 'Astronomy Visualization',
     'Camera': 'Camera',
     'creatorAtom': 'After Effects',
     'crs': 'Camera Raw Settings',
