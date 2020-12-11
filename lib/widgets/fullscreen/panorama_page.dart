@@ -23,6 +23,7 @@ class PanoramaPage extends StatelessWidget {
             expectedContentLength: entry.sizeBytes,
           ),
         ),
+        sensorControl: SensorControl.None,
       ),
       resizeToAvoidBottomInset: false,
     );
