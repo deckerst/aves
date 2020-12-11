@@ -20,6 +20,7 @@ import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMi
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeLong
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeString
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
@@ -159,13 +160,13 @@ class SourceImageEntry {
     // finds: width, height, orientation, date, duration
     private fun fillByMetadataExtractor(context: Context) {
         // skip raw images because `metadata-extractor` reports the decoded dimensions instead of the raw dimensions
-        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType, sizeBytes)
+        if (!MimeTypes.isSupportedByMetadataExtractor(sourceMimeType)
             || MimeTypes.isRaw(sourceMimeType)
         ) return
 
         try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
-                val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+            Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
+                val metadata = ImageMetadataReader.readMetadata(input)
 
                 // do not switch on specific mime types, as the reported mime type could be wrong
                 // (e.g. PNG registered as JPG)
@@ -213,10 +214,10 @@ class SourceImageEntry {
 
     // finds: width, height, orientation, date
     private fun fillByExifInterface(context: Context) {
-        if (!MimeTypes.isSupportedByExifInterface(sourceMimeType, sizeBytes)) return
+        if (!MimeTypes.isSupportedByExifInterface(sourceMimeType)) return
 
         try {
-            StorageUtils.openInputStream(context, uri)?.use { input ->
+            Metadata.openSafeInputStream(context, uri, sourceMimeType, sizeBytes)?.use { input ->
                 val exif = ExifInterface(input)
                 foundExif = true
                 exif.getSafeInt(ExifInterface.TAG_IMAGE_WIDTH, acceptZero = false) { width = it }

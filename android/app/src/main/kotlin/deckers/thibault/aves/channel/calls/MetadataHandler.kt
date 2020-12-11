@@ -92,10 +92,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         var foundExif = false
         var foundXmp = false
 
-        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+        if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
 
@@ -149,10 +149,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif && isSupportedByExifInterface(mimeType, sizeBytes)) {
+        if (!foundExif && isSupportedByExifInterface(mimeType)) {
             // fallback to read EXIF via ExifInterface
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
                     val allTags = describeAll(exif).toMutableMap()
                     if (foundXmp) {
@@ -238,10 +238,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         var flags = 0
         var foundExif = false
 
-        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+        if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
 
                     // File type
@@ -358,10 +358,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif && isSupportedByExifInterface(mimeType, sizeBytes)) {
+        if (!foundExif && isSupportedByExifInterface(mimeType)) {
             // fallback to read EXIF via ExifInterface
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
                     exif.getSafeDateMillis(ExifInterface.TAG_DATETIME_ORIGINAL) { metadataMap[KEY_DATE_MILLIS] = it }
                     if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
@@ -448,10 +448,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         var foundExif = false
-        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+        if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
                     for (dir in metadata.getDirectoriesOfType(ExifSubIFDDirectory::class.java)) {
                         foundExif = true
                         dir.getSafeRational(ExifSubIFDDirectory.TAG_FNUMBER) { metadataMap[KEY_APERTURE] = it.numerator.toDouble() / it.denominator }
@@ -467,10 +467,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (!foundExif && isSupportedByExifInterface(mimeType, sizeBytes)) {
+        if (!foundExif && isSupportedByExifInterface(mimeType)) {
             // fallback to read EXIF via ExifInterface
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
                     exif.getSafeDouble(ExifInterface.TAG_F_NUMBER) { metadataMap[KEY_APERTURE] = it }
                     exif.getSafeRational(ExifInterface.TAG_EXPOSURE_TIME, saveExposureTime)
@@ -519,9 +519,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val thumbnails = ArrayList<ByteArray>()
-        if (isSupportedByExifInterface(mimeType, sizeBytes)) {
+        if (isSupportedByExifInterface(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->
@@ -549,10 +549,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+        if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
                     // data can be large and stored in "Extended XMP",
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
