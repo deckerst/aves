@@ -30,7 +30,7 @@ class VideoThumbnailGlideModule : LibraryGlideModule() {
 class VideoThumbnail(val context: Context, val uri: Uri)
 
 internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, InputStream> {
-    override fun buildLoadData(model: VideoThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream>? {
+    override fun buildLoadData(model: VideoThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream> {
         return ModelLoader.LoadData(ObjectKey(model.uri), VideoThumbnailFetcher(model))
     }
 

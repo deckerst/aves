@@ -13,6 +13,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import deckers.thibault.aves.decoder.TiffThumbnail
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
@@ -21,7 +22,6 @@ import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
 import io.flutter.plugin.common.MethodChannel
-import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 
 class ThumbnailFetcher internal constructor(
     private val context: Context,
@@ -45,9 +45,7 @@ class ThumbnailFetcher internal constructor(
         var exception: Exception? = null
 
         try {
-            if (mimeType == MimeTypes.TIFF) {
-                bitmap = getTiff()
-            } else if ((width == defaultSize || height == defaultSize) && !isFlipped) {
+            if (mimeType != MimeTypes.TIFF && (width == defaultSize || height == defaultSize) && !isFlipped) {
                 // Fetch low quality thumbnails when size is not specified.
                 // As of Android R, the Media Store content resolver may return a thumbnail
                 // that is automatically rotated according to EXIF orientation, but not flipped,
@@ -121,10 +119,11 @@ class ThumbnailFetcher internal constructor(
                 .load(VideoThumbnail(context, uri))
                 .submit(width, height)
         } else {
+            val model: Any = if (mimeType == MimeTypes.TIFF) TiffThumbnail(context, uri) else uri
             Glide.with(context)
                 .asBitmap()
                 .apply(options)
-                .load(uri)
+                .load(model)
                 .submit(width, height)
         }
 
@@ -136,33 +135,6 @@ class ThumbnailFetcher internal constructor(
             bitmap
         } finally {
             Glide.with(context).clear(target)
-        }
-    }
-
-    private fun getTiff(): Bitmap? {
-        // determine sample size
-        var sampleSize = 1
-        context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-            val options = TiffBitmapFactory.Options().apply {
-                inJustDecodeBounds = true
-            }
-            TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-            val imageWidth = options.outWidth
-            val imageHeight = options.outHeight
-            if (imageHeight > height || imageWidth > width) {
-                while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
-                    sampleSize *= 2
-                }
-            }
-        }
-
-        // decode
-        return context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-            val options = TiffBitmapFactory.Options().apply {
-                inJustDecodeBounds = false
-                inSampleSize = sampleSize
-            }
-            return TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
         }
     }
 }
