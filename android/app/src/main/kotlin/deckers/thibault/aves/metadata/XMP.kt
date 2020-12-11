@@ -42,7 +42,8 @@ object XMP {
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
 
-    const val GPANO_SCHEMA_NS = "http://ns.google.com/photos/1.0/panorama/"
+    private const val GPANO_SCHEMA_NS = "http://ns.google.com/photos/1.0/panorama/"
+    private const val PMTM_SCHEMA_NS = "http://www.hdrsoft.com/photomatix_settings01"
 
     private const val GPANO_CROPPED_AREA_HEIGHT_PROP_NAME = "GPano:CroppedAreaImageHeightPixels"
     private const val GPANO_CROPPED_AREA_WIDTH_PROP_NAME = "GPano:CroppedAreaImageWidthPixels"
@@ -52,7 +53,9 @@ object XMP {
     private const val GPANO_FULL_PANO_WIDTH_PIXELS_PROP_NAME = "GPano:FullPanoWidthPixels"
     private const val GPANO_PROJECTION_TYPE_PROP_NAME = "GPano:ProjectionType"
 
-    val panoramaRequiredProps = listOf(
+    private const val PMTM_IS_PANO360 = "pmtm:IsPano360"
+
+    private val gpanoRequiredProps = listOf(
         GPANO_CROPPED_AREA_HEIGHT_PROP_NAME,
         GPANO_CROPPED_AREA_WIDTH_PROP_NAME,
         GPANO_CROPPED_AREA_LEFT_PROP_NAME,
@@ -64,12 +67,22 @@ object XMP {
 
     // extensions
 
-    fun XMPMeta.getSafeLocalizedText(schema: String, propName: String, save: (value: String) -> Unit) {
+    fun XMPMeta.isPanorama(): Boolean {
+        // Google
+        if (gpanoRequiredProps.all { doesPropertyExist(GPANO_SCHEMA_NS, it) }) return true
+        // Photomatix
+        if (getPropertyString(PMTM_SCHEMA_NS, PMTM_IS_PANO360) == "Yes") return true
+        return false
+    }
+
+    fun XMPMeta.getSafeLocalizedText(schema: String, propName: String, acceptBlank: Boolean = true, save: (value: String) -> Unit) {
         try {
-            if (this.doesPropertyExist(schema, propName)) {
-                val item = this.getLocalizedText(schema, propName, GENERIC_LANG, SPECIFIC_LANG)
+            if (doesPropertyExist(schema, propName)) {
+                val item = getLocalizedText(schema, propName, GENERIC_LANG, SPECIFIC_LANG)
                 // double check retrieved items as the property sometimes is reported to exist but it is actually null
-                if (item != null) save(item.value)
+                if (item != null && (acceptBlank || item.value.isNotBlank())) {
+                    save(item.value)
+                }
             }
         } catch (e: XMPException) {
             Log.w(LOG_TAG, "failed to get text for XMP schema=$schema, propName=$propName", e)
@@ -78,8 +91,8 @@ object XMP {
 
     fun XMPMeta.getSafeDateMillis(schema: String, propName: String, save: (value: Long) -> Unit) {
         try {
-            if (this.doesPropertyExist(schema, propName)) {
-                val item = this.getPropertyDate(schema, propName)
+            if (doesPropertyExist(schema, propName)) {
+                val item = getPropertyDate(schema, propName)
                 // double check retrieved items as the property sometimes is reported to exist but it is actually null
                 if (item != null) {
                     // strip time zone from XMP dates so that we show date/times as local ones
