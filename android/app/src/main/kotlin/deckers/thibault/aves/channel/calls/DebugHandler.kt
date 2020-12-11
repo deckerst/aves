@@ -14,6 +14,7 @@ import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.file.FileTypeDirectory
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
+import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
@@ -145,9 +146,9 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         val metadataMap = HashMap<String, String?>()
-        if (isSupportedByExifInterface(mimeType, sizeBytes, strict = false)) {
+        if (isSupportedByExifInterface(mimeType, strict = false)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val exif = ExifInterface(input)
                     for (tag in ExifInterfaceHelper.allTags.keys.filter { exif.hasAttribute(it) }) {
                         metadataMap[tag] = exif.getAttribute(tag)
@@ -197,10 +198,10 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         val metadataMap = HashMap<String, String>()
-        if (isSupportedByMetadataExtractor(mimeType, sizeBytes)) {
+        if (isSupportedByMetadataExtractor(mimeType)) {
             try {
-                StorageUtils.openInputStream(context, uri)?.use { input ->
-                    val metadata = ImageMetadataReader.readMetadata(input, sizeBytes ?: -1)
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
                     metadataMap["mimeType"] = metadata.getDirectoriesOfType(FileTypeDirectory::class.java).joinToString { dir ->
                         if (dir.containsTag(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)) {
                             dir.getString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE)
