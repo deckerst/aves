@@ -23,6 +23,7 @@ class PanoramaPage extends StatelessWidget {
             expectedContentLength: entry.sizeBytes,
           ),
         ),
+        // TODO TLAD toggle sensor control
         sensorControl: SensorControl.None,
       ),
       resizeToAvoidBottomInset: false,
