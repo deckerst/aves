@@ -42,6 +42,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   static const spacing = 8.0;
 
   FilterGridPage({
+    Key key,
     @required this.source,
     @required this.appBar,
     @required this.filterEntries,
@@ -52,7 +53,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     double appBarHeight = kToolbarHeight,
     @required this.onTap,
     this.onLongPress,
-  }) {
+  }) : super(key: key) {
     _appBarHeightNotifier.value = appBarHeight;
   }
 
