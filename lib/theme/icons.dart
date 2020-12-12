@@ -26,11 +26,9 @@ class AIcons {
   // actions
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData clear = Icons.clear_outlined;
-  static const IconData collapse = Icons.expand_less_outlined;
   static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
-  static const IconData expand = Icons.expand_more_outlined;
   static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
   static const IconData favouriteActive = Icons.favorite;
@@ -52,6 +50,10 @@ class AIcons {
   static const IconData stats = Icons.pie_chart_outlined;
   static const IconData zoomIn = Icons.add_outlined;
   static const IconData zoomOut = Icons.remove_outlined;
+  static const IconData collapse = Icons.expand_less_outlined;
+  static const IconData expand = Icons.expand_more_outlined;
+  static const IconData previous = Icons.chevron_left_outlined;
+  static const IconData next = Icons.chevron_right_outlined;
 
   // albums
   static const IconData album = Icons.photo_album_outlined;
@@ -61,7 +63,9 @@ class AIcons {
 
   // thumbnail overlay
   static const IconData animated = Icons.slideshow;
+  static const IconData geo = Icons.language_outlined;
   static const IconData play = Icons.play_circle_outline;
+  static const IconData threesixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;
 }

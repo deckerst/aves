@@ -30,6 +30,8 @@ void main() {
     });
 
     agreeToTerms();
+    visitAbout();
+    visitSettings();
     sortCollection();
     groupCollection();
     selectFirstAlbum();
@@ -43,7 +45,7 @@ void main() {
     test('contemplation', () async {
       await Future.delayed(Duration(seconds: 5));
     });
-  }, timeout: Timeout(Duration(seconds: 10)));
+  }, timeout: Timeout(Duration(seconds: 30)));
 }
 
 void agreeToTerms() {
@@ -57,6 +59,30 @@ void agreeToTerms() {
     await driver.waitUntilNoTransientCallbacks();
 
     expect(await driver.getText(find.byValueKey('appbar-title')), 'Collection');
+  });
+}
+
+void visitAbout() {
+  test('[collection] visit about page', () async {
+    await driver.tap(find.byValueKey('appbar-leading-button'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.byValueKey('About-tile'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await pressDeviceBackButton();
+  });
+}
+
+void visitSettings() {
+  test('[collection] visit about page', () async {
+    await driver.tap(find.byValueKey('appbar-leading-button'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await driver.tap(find.byValueKey('Settings-tile'));
+    await driver.waitUntilNoTransientCallbacks();
+
+    await pressDeviceBackButton();
   });
 }
 
@@ -92,8 +118,11 @@ void selectFirstAlbum() {
     await driver.tap(find.byValueKey('Albums-tile'));
     await driver.waitUntilNoTransientCallbacks();
 
+    // wait for collection loading
+    await driver.waitForCondition(NoPendingPlatformMessages());
+
     await driver.tap(find.descendant(
-      of: find.byType('FilterGridPage'),
+      of: find.byValueKey('filter-grid-page'),
       matching: find.byType('DecoratedFilterChip'),
       firstMatchOnly: true,
     ));

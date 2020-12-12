@@ -29,7 +29,6 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getAppIcon" -> GlobalScope.launch { getAppIcon(call, Coresult(result)) }
             "getAppNames" -> GlobalScope.launch { getAppNames(Coresult(result)) }
-            "getEnv" -> result.success(System.getenv())
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -154,7 +153,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Intent.ACTION_EDIT)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(uri, mimeType)
+            .setDataAndType(getShareableUri(uri), mimeType)
         return safeStartActivityChooser(title, intent)
     }
 
@@ -163,7 +162,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .setDataAndType(uri, mimeType)
+            .setDataAndType(getShareableUri(uri), mimeType)
         return safeStartActivityChooser(title, intent)
     }
 
@@ -179,7 +178,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
 
         val intent = Intent(Intent.ACTION_ATTACH_DATA)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .setDataAndType(uri, mimeType)
+            .setDataAndType(getShareableUri(uri), mimeType)
         return safeStartActivityChooser(title, intent)
     }
 
@@ -187,15 +186,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         val intent = Intent(Intent.ACTION_SEND)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .setType(mimeType)
-        when (uri.scheme?.toLowerCase(Locale.ROOT)) {
-            ContentResolver.SCHEME_FILE -> {
-                val path = uri.path ?: return false
-                val applicationId = context.applicationContext.packageName
-                val apkUri = FileProvider.getUriForFile(context, "$applicationId.fileprovider", File(path))
-                intent.putExtra(Intent.EXTRA_STREAM, apkUri)
-            }
-            else -> intent.putExtra(Intent.EXTRA_STREAM, uri)
-        }
+            .putExtra(Intent.EXTRA_STREAM, getShareableUri(uri))
         return safeStartActivityChooser(title, intent)
     }
 
@@ -250,6 +241,18 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
             Log.w(LOG_TAG, "failed to start activity chooser for intent=$intent", e)
         }
         return false
+    }
+
+    private fun getShareableUri(uri: Uri): Uri? {
+        return when (uri.scheme?.toLowerCase(Locale.ROOT)) {
+            ContentResolver.SCHEME_FILE -> {
+                uri.path?.let { path ->
+                    val applicationId = context.applicationContext.packageName
+                    FileProvider.getUriForFile(context, "$applicationId.fileprovider", File(path))
+                }
+            }
+            else -> uri
+        }
     }
 
     companion object {

@@ -173,12 +173,12 @@ class ImageEntry {
   bool get isSvg => mimeType == MimeTypes.svg;
 
   // guess whether this is a photo, according to file type (used as a hint to e.g. display megapixels)
-  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg].contains(mimeType) || isRaw;
+  bool get isPhoto => [MimeTypes.heic, MimeTypes.heif, MimeTypes.jpeg, MimeTypes.tiff].contains(mimeType) || isRaw;
 
   // Android's `BitmapRegionDecoder` documentation states that "only the JPEG and PNG formats are supported"
   // but in practice (tested on API 25, 27, 29), it successfully decodes the formats listed below,
   // and it actually fails to decode GIF, DNG and animated WEBP. Other formats were not tested.
-  bool get canTile =>
+  bool get _supportedByBitmapRegionDecoder =>
       [
         MimeTypes.heic,
         MimeTypes.heif,
@@ -196,13 +196,21 @@ class ImageEntry {
       ].contains(mimeType) &&
       !isAnimated;
 
+  bool get canTile => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
+
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
-  bool get isVideo => mimeType.startsWith('video');
+  bool get isImage => MimeTypes.isImage(mimeType);
+
+  bool get isVideo => MimeTypes.isVideo(mimeType);
 
   bool get isCatalogued => _catalogMetadata != null;
 
   bool get isAnimated => _catalogMetadata?.isAnimated ?? false;
+
+  bool get isGeotiff => _catalogMetadata?.isGeotiff ?? false;
+
+  bool get is360 => _catalogMetadata?.is360 ?? false;
 
   bool get canEdit => path != null;
 
@@ -299,7 +307,7 @@ class ImageEntry {
 
   bool get isLocated => _addressDetails != null;
 
-  LatLng get latLng => isCatalogued ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
+  LatLng get latLng => hasGps ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
   String get geoUri {
     if (!hasGps) return null;
@@ -373,12 +381,17 @@ class ImageEntry {
           : call());
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
+        final cc = address.countryCode;
+        final cn = address.countryName;
+        final aa = address.adminArea;
         addressDetails = AddressDetails(
           contentId: contentId,
-          countryCode: address.countryCode,
-          countryName: address.countryName,
-          adminArea: address.adminArea,
-          locality: address.locality,
+          countryCode: cc,
+          countryName: cn,
+          adminArea: aa,
+          // if country & admin fields are null, it is likely the ocean,
+          // which is identified by `featureName` but we default to the address line anyway
+          locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
         );
       }
     } catch (error, stackTrace) {

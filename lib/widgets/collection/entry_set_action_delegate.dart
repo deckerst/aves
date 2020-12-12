@@ -34,7 +34,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _showDeleteDialog(context);
         break;
       case EntryAction.share:
-        AndroidAppService.share(selection).then((success) {
+        AndroidAppService.shareEntries(selection).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;

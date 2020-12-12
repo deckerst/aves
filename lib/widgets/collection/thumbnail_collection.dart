@@ -31,9 +31,9 @@ class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
   final GlobalKey _scrollableKey = GlobalKey();
 
-  static const columnCountMin = 2;
   static const columnCountDefault = 4;
   static const extentMin = 46.0;
+  static const spacing = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +47,10 @@ class ThumbnailCollection extends StatelessWidget {
 
             final tileExtentManager = TileExtentManager(
               settingsRouteKey: context.currentRouteName,
-              columnCountMin: columnCountMin,
+              extentNotifier: _tileExtentNotifier,
               columnCountDefault: columnCountDefault,
               extentMin: extentMin,
-              extentNotifier: _tileExtentNotifier,
-              spacing: 0,
+              spacing: spacing,
             )..applyTileExtent(viewportSize: viewportSize);
             final cacheExtent = tileExtentManager.getEffectiveExtentMax(viewportSize) * 2;
 
@@ -77,7 +76,18 @@ class ThumbnailCollection extends StatelessWidget {
                   scrollableKey: _scrollableKey,
                   appBarHeightNotifier: _appBarHeightNotifier,
                   viewportSize: viewportSize,
-                  showScaledGrid: true,
+                  gridBuilder: (center, extent, child) => CustomPaint(
+                    // painting the thumbnail half-border on top of the grid yields artifacts,
+                    // so we use a `foregroundPainter` to cover them instead
+                    foregroundPainter: GridPainter(
+                      center: center,
+                      extent: extent,
+                      spacing: tileExtentManager.spacing,
+                      strokeWidth: DecoratedThumbnail.borderWidth * 2,
+                      color: DecoratedThumbnail.borderColor,
+                    ),
+                    child: child,
+                  ),
                   scaledBuilder: (entry, extent) => DecoratedThumbnail(
                     entry: entry,
                     extent: extent,
@@ -98,6 +108,7 @@ class ThumbnailCollection extends StatelessWidget {
                     collection: collection,
                     scrollableWidth: viewportSize.width,
                     tileExtent: tileExtent,
+                    columnCount: tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent),
                     thumbnailBuilder: (entry) => GridThumbnail(
                       key: ValueKey(entry.contentId),
                       collection: collection,

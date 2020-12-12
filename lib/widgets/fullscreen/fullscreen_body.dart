@@ -5,8 +5,8 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/fullscreen/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
@@ -14,6 +14,7 @@ import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/notifications.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
+import 'package:aves/widgets/fullscreen/overlay/panorama.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
 import 'package:aves/widgets/fullscreen/overlay/video.dart';
 import 'package:flutter/foundation.dart';
@@ -223,22 +224,33 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     Widget bottomOverlay = ValueListenableBuilder<ImageEntry>(
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
-        Widget videoOverlay;
-        if (entry != null) {
-          final videoController = entry.isVideo ? _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2 : null;
+        if (entry == null) return SizedBox.shrink();
+
+        Widget extraBottomOverlay;
+        if (entry.isVideo) {
+          final videoController = _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
           if (videoController != null) {
-            videoOverlay = VideoControlOverlay(
+            extraBottomOverlay = VideoControlOverlay(
               entry: entry,
               controller: videoController,
               scale: _bottomOverlayScale,
-              viewInsets: _frozenViewInsets,
-              viewPadding: _frozenViewPadding,
             );
           }
+        } else if (entry.is360) {
+          extraBottomOverlay = PanoramaOverlay(
+            entry: entry,
+            scale: _bottomOverlayScale,
+          );
         }
+
         final child = Column(
           children: [
-            if (videoOverlay != null) videoOverlay,
+            if (extraBottomOverlay != null)
+              ExtraBottomOverlay(
+                viewInsets: _frozenViewInsets,
+                viewPadding: _frozenViewPadding,
+                child: extraBottomOverlay,
+              ),
             SlideTransition(
               position: _bottomOverlayOffset,
               child: FullscreenBottomOverlay(
@@ -255,7 +267,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           valueListenable: _overlayAnimationController,
           builder: (context, animation, child) {
             return Visibility(
-              visible: entry != null && _overlayAnimationController.status != AnimationStatus.dismissed,
+              visible: _overlayAnimationController.status != AnimationStatus.dismissed,
               child: child,
             );
           },

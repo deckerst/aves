@@ -1,6 +1,7 @@
 Thanks for using Aves!
-v1.2.8:
-- pinch to scale albums, countries & tags
-- SVG source viewer
-- improved detailed metadata layout
+v1.2.9:
+- identify 360 photos/videos, GeoTIFF
+- open panoramas (360 photos)
+- open GImage/GAudio/GDepth media and thumbnails embedded in XMP
+- improved large TIFF handling
 Full changelog available on Github

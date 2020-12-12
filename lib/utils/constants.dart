@@ -18,8 +18,8 @@ class Constants {
     offset: Offset(0.5, 1.0),
   );
 
-  static const String overlayUnknown = '—'; // em dash
-  static const String infoUnknown = 'unknown';
+  static const overlayUnknown = '—'; // em dash
+  static const infoUnknown = 'unknown';
 
   static final pointNemo = LatLng(-48.876667, -123.393333);
 
@@ -210,6 +210,12 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/palette_generator',
     ),
     Dependency(
+      name: 'Panorama',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/zesage/panorama/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/zesage/panorama',
+    ),
+    Dependency(
       name: 'PDF for Dart and Flutter',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/DavBfr/dart_pdf/blob/master/LICENSE',
@@ -286,6 +292,12 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher',
+    ),
+    Dependency(
+      name: 'XML',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/renggli/dart-xml/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/renggli/dart-xml',
     ),
   ];
 }

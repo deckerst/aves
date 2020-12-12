@@ -48,7 +48,7 @@ class SingleFullscreenPage extends StatelessWidget {
         body: FullscreenBody(
           initialEntry: entry,
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: Navigator.canPop(context) ? Colors.transparent : Colors.black,
         resizeToAvoidBottomInset: false,
       ),
     );

@@ -30,12 +30,18 @@ class DateMetadata {
 
 class CatalogMetadata {
   final int contentId, dateMillis;
-  final bool isAnimated;
+  final bool isAnimated, isGeotiff, is360;
   bool isFlipped;
   int rotationDegrees;
   final String mimeType, xmpSubjects, xmpTitleDescription;
-  final double latitude, longitude;
+  double latitude, longitude;
   Address address;
+
+  static const double _precisionErrorTolerance = 1e-9;
+  static const _isAnimatedMask = 1 << 0;
+  static const _isFlippedMask = 1 << 1;
+  static const _isGeotiffMask = 1 << 2;
+  static const _is360Mask = 1 << 3;
 
   CatalogMetadata({
     this.contentId,
@@ -43,15 +49,22 @@ class CatalogMetadata {
     this.dateMillis,
     this.isAnimated,
     this.isFlipped,
+    this.isGeotiff,
+    this.is360,
     this.rotationDegrees,
     this.xmpSubjects,
     this.xmpTitleDescription,
     double latitude,
     double longitude,
-  })  
-  // Geocoder throws an IllegalArgumentException when a coordinate has a funky values like 1.7056881853375E7
-  : latitude = latitude == null || latitude < -90.0 || latitude > 90.0 ? null : latitude,
-        longitude = longitude == null || longitude < -180.0 || longitude > 180.0 ? null : longitude;
+  }) {
+    // Geocoder throws an `IllegalArgumentException` when a coordinate has a funky values like `1.7056881853375E7`
+    // We also exclude zero coordinates, taking into account precision errors (e.g. {5.952380952380953e-11,-2.7777777777777777e-10}),
+    // but Flutter's `precisionErrorTolerance` (1e-10) is slightly too lenient for this case.
+    if (latitude != null && longitude != null && (latitude.abs() > _precisionErrorTolerance || longitude.abs() > _precisionErrorTolerance)) {
+      this.latitude = latitude < -90.0 || latitude > 90.0 ? null : latitude;
+      this.longitude = longitude < -180.0 || longitude > 180.0 ? null : longitude;
+    }
+  }
 
   CatalogMetadata copyWith({
     @required int contentId,
@@ -62,6 +75,8 @@ class CatalogMetadata {
       dateMillis: dateMillis,
       isAnimated: isAnimated,
       isFlipped: isFlipped,
+      isGeotiff: isGeotiff,
+      is360: is360,
       rotationDegrees: rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
@@ -70,15 +85,16 @@ class CatalogMetadata {
     );
   }
 
-  factory CatalogMetadata.fromMap(Map map, {bool boolAsInteger = false}) {
-    final isAnimated = map['isAnimated'] ?? (boolAsInteger ? 0 : false);
-    final isFlipped = map['isFlipped'] ?? (boolAsInteger ? 0 : false);
+  factory CatalogMetadata.fromMap(Map map) {
+    final flags = map['flags'] ?? 0;
     return CatalogMetadata(
       contentId: map['contentId'],
       mimeType: map['mimeType'],
       dateMillis: map['dateMillis'] ?? 0,
-      isAnimated: boolAsInteger ? isAnimated != 0 : isAnimated,
-      isFlipped: boolAsInteger ? isFlipped != 0 : isFlipped,
+      isAnimated: flags & _isAnimatedMask != 0,
+      isFlipped: flags & _isFlippedMask != 0,
+      isGeotiff: flags & _isGeotiffMask != 0,
+      is360: flags & _is360Mask != 0,
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -88,12 +104,11 @@ class CatalogMetadata {
     );
   }
 
-  Map<String, dynamic> toMap({bool boolAsInteger = false}) => {
+  Map<String, dynamic> toMap() => {
         'contentId': contentId,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
-        'isAnimated': boolAsInteger ? (isAnimated ? 1 : 0) : isAnimated,
-        'isFlipped': boolAsInteger ? (isFlipped ? 1 : 0) : isFlipped,
+        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0),
         'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
         'xmpTitleDescription': xmpTitleDescription,
@@ -103,7 +118,7 @@ class CatalogMetadata {
 
   @override
   String toString() {
-    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
   }
 }
 

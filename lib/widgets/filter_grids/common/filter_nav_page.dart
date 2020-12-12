@@ -44,6 +44,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilterGridPage<T>(
+      key: ValueKey('filter-grid-page'),
       source: source,
       appBar: SliverAppBar(
         title: TappableAppBarTitle(

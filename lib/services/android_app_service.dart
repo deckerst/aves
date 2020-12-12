@@ -31,16 +31,6 @@ class AndroidAppService {
     return null;
   }
 
-  static Future<Map> getEnv() async {
-    try {
-      final result = await platform.invokeMethod('getEnv');
-      return result as Map;
-    } on PlatformException catch (e) {
-      debugPrint('getEnv failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
-    }
-    return {};
-  }
-
   static Future<bool> edit(String uri, String mimeType) async {
     try {
       return await platform.invokeMethod('edit', <String, dynamic>{
@@ -91,7 +81,7 @@ class AndroidAppService {
     return false;
   }
 
-  static Future<bool> share(Iterable<ImageEntry> entries) async {
+  static Future<bool> shareEntries(Iterable<ImageEntry> entries) async {
     // loosen mime type to a generic one, so we can share with badly defined apps
     // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
     final urisByMimeType = groupBy<ImageEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
@@ -101,7 +91,21 @@ class AndroidAppService {
         'urisByMimeType': urisByMimeType,
       });
     } on PlatformException catch (e) {
-      debugPrint('share failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      debugPrint('shareEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return false;
+  }
+
+  static Future<bool> shareSingle(String uri, String mimeType) async {
+    try {
+      return await platform.invokeMethod('share', <String, dynamic>{
+        'title': 'Share via:',
+        'urisByMimeType': {
+          mimeType: [uri]
+        },
+      });
+    } on PlatformException catch (e) {
+      debugPrint('shareSingle failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return false;
   }
