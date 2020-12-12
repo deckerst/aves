@@ -1,5 +1,7 @@
 package deckers.thibault.aves.utils
 
+import androidx.exifinterface.media.ExifInterface
+
 object MimeTypes {
     private const val IMAGE = "image"
 
@@ -65,11 +67,15 @@ object MimeTypes {
         else -> false
     }
 
-    // as of metadata-extractor v2.14.0
+    // as of `metadata-extractor` v2.14.0
     fun isSupportedByMetadataExtractor(mimeType: String) = when (mimeType) {
         WBMP, MP2T, WEBM -> false
         else -> true
     }
+
+    // as of `ExifInterface` v1.3.1, `isSupportedMimeType` reports
+    // no support for TIFF images, but it can actually open them (maybe other formats too)
+    fun isSupportedByExifInterface(mimeType: String, strict: Boolean = true) = ExifInterface.isSupportedMimeType(mimeType) || !strict
 
     // Glide automatically applies EXIF orientation when decoding images of known formats
     // but we need to rotate the decoded bitmap for the other formats

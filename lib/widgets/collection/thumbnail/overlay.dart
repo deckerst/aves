@@ -36,6 +36,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
             children: [
               if (entry.hasGps && settings.showThumbnailLocation) GpsIcon(iconSize: iconSize),
               if (entry.isRaw && settings.showThumbnailRaw) RawIcon(iconSize: iconSize),
+              if (entry.isGeotiff) GeotiffIcon(iconSize: iconSize),
               if (entry.isAnimated)
                 AnimatedImageIcon(iconSize: iconSize)
               else if (entry.isVideo)
@@ -49,7 +50,9 @@ class ThumbnailEntryOverlay extends StatelessWidget {
                     iconSize: iconSize,
                     showDuration: settings.showThumbnailVideoDuration,
                   ),
-                ),
+                )
+              else if (entry.is360)
+                SphericalImageIcon(iconSize: iconSize),
             ],
           );
         });

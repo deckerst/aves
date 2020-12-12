@@ -87,6 +87,7 @@ class _LicensesState extends State<Licenses> {
 
   Widget _buildHeader() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsetsDirectional.only(start: 8),

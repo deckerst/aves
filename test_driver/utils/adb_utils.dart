@@ -42,3 +42,5 @@ Future<void> copyContent(String sourceDir, String targetDir) async {
 Future<void> grantPermissions(String packageName, Iterable<String> permissions) async {
   await Future.forEach(permissions, (permission) => runAdb(['shell', 'pm', 'grant', packageName, permission]));
 }
+
+Future<void> pressDeviceBackButton() => runAdb(['shell', 'input', 'keyevent', 'KEYCODE_BACK']);

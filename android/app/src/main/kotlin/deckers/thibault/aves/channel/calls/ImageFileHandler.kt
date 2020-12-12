@@ -10,6 +10,7 @@ import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
+import deckers.thibault.aves.utils.MimeTypes
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -95,14 +96,24 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        regionFetcher.fetch(
-            uri,
-            mimeType,
-            sampleSize,
-            Rect(x, y, x + width, y + height),
-            Size(imageWidth, imageHeight),
-            result,
-        )
+        val regionRect = Rect(x, y, x + width, y + height)
+        when (mimeType) {
+            MimeTypes.TIFF -> TiffRegionFetcher(activity).fetch(
+                uri,
+                sampleSize,
+                regionRect,
+                page = 0,
+                result,
+            )
+            else -> regionFetcher.fetch(
+                uri,
+                mimeType,
+                sampleSize,
+                regionRect,
+                Size(imageWidth, imageHeight),
+                result,
+            )
+        }
     }
 
     private suspend fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {

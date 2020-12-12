@@ -1,6 +1,12 @@
 package deckers.thibault.aves.metadata
 
+import android.content.Context
+import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
+import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.StorageUtils
+import java.io.File
+import java.io.InputStream
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,6 +18,9 @@ object Metadata {
     // "+37.5090+127.0243/" (Samsung)
     // "+51.3328-000.7053+113.474/" (Apple)
     val VIDEO_LOCATION_PATTERN: Pattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*")
+
+    // cf https://github.com/google/spatial-media
+    const val SPHERICAL_VIDEO_V1_UUID = "ffcc8263-f855-4a93-8814-587a02521fdd"
 
     // directory names, as shown when listing all metadata
     const val DIR_GPS = "GPS" // from metadata-extractor
@@ -41,6 +50,8 @@ object Metadata {
         }
     }
 
+    // not sure which standards are used for the different video formats,
+    // but looks like some form of ISO 8601 `basic format`:
     // yyyyMMddTHHmmss(.sss)?(Z|+/-hhmm)?
     fun parseVideoMetadataDate(metadataDate: String?): Long {
         var dateString = metadataDate ?: return 0
@@ -82,5 +93,43 @@ object Metadata {
             }
         }
         return dateMillis
+    }
+
+    // opening large TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // so we define an arbitrary threshold to avoid a crash on launch.
+    // It is not clear whether it is because of the file itself or its metadata.
+    const val tiffSizeBytesMax = 100 * (1 shl 20) // MB
+
+    // we try and read metadata from large files by copying an arbitrary amount from its beginning
+    // to a temporary file, and reusing that preview file for all metadata reading purposes
+    private const val previewSize = 5 * (1 shl 20) // MB
+
+    private val previewFiles = HashMap<Uri, File>()
+
+    private fun getSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): Uri {
+        if (mimeType != MimeTypes.TIFF) return uri
+
+        if (sizeBytes != null && sizeBytes < tiffSizeBytesMax) return uri
+
+        var previewFile = previewFiles[uri]
+        if (previewFile == null) {
+            previewFile = File.createTempFile("aves", null, context.cacheDir).apply {
+                deleteOnExit()
+                outputStream().use { outputStream ->
+                    StorageUtils.openInputStream(context, uri)?.use { inputStream ->
+                        val b = ByteArray(previewSize)
+                        inputStream.read(b, 0, previewSize)
+                        outputStream.write(b)
+                    }
+                }
+            }
+            previewFiles[uri] = previewFile
+        }
+        return Uri.fromFile(previewFile)
+    }
+
+    fun openSafeInputStream(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): InputStream? {
+        val safeUri = getSafeUri(context, uri, mimeType, sizeBytes)
+        return StorageUtils.openInputStream(context, safeUri)
     }
 }

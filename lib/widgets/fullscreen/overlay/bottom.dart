@@ -303,3 +303,35 @@ class _ShootingRow extends StatelessWidget {
     );
   }
 }
+
+class ExtraBottomOverlay extends StatelessWidget {
+  final EdgeInsets viewInsets, viewPadding;
+  final Widget child;
+
+  const ExtraBottomOverlay({
+    Key key,
+    this.viewInsets,
+    this.viewPadding,
+    @required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = context.select<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>((mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding));
+    final mqWidth = mq.item1;
+    final mqViewInsets = mq.item2;
+    final mqViewPadding = mq.item3;
+
+    final viewInsets = this.viewInsets ?? mqViewInsets;
+    final viewPadding = this.viewPadding ?? mqViewPadding;
+    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
+
+    return Padding(
+      padding: safePadding,
+      child: SizedBox(
+        width: mqWidth - safePadding.horizontal,
+        child: child,
+      ),
+    );
+  }
+}

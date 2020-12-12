@@ -145,7 +145,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
             tag: heroTag,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
               ImageProvider heroImageProvider = _fastThumbnailProvider;
-              if (!entry.isVideo && !entry.isSvg) {
+              if (!entry.isVideo) {
                 final imageProvider = UriImage(
                   uri: entry.uri,
                   mimeType: entry.mimeType,

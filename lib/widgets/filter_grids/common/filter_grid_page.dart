@@ -37,9 +37,12 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
   final GlobalKey _scrollableKey = GlobalKey();
 
+  static const columnCountDefault = 2;
+  static const extentMin = 60.0;
   static const spacing = 8.0;
 
   FilterGridPage({
+    Key key,
     @required this.source,
     @required this.appBar,
     @required this.filterEntries,
@@ -50,7 +53,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     double appBarHeight = kToolbarHeight,
     @required this.onTap,
     this.onLongPress,
-  }) {
+  }) : super(key: key) {
     _appBarHeightNotifier.value = appBarHeight;
   }
 
@@ -71,10 +74,9 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
                   final tileExtentManager = TileExtentManager(
                     settingsRouteKey: settingsRouteKey ?? context.currentRouteName,
-                    columnCountMin: 2,
-                    columnCountDefault: 2,
-                    extentMin: 60,
                     extentNotifier: _tileExtentNotifier,
+                    columnCountDefault: columnCountDefault,
+                    extentMin: extentMin,
                     spacing: spacing,
                   )..applyTileExtent(viewportSize: viewportSize);
 
@@ -98,7 +100,15 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                             scrollableKey: _scrollableKey,
                             appBarHeightNotifier: _appBarHeightNotifier,
                             viewportSize: viewportSize,
-                            showScaledGrid: true,
+                            gridBuilder: (center, extent, child) => CustomPaint(
+                              painter: GridPainter(
+                                center: center,
+                                extent: extent,
+                                spacing: tileExtentManager.spacing,
+                                color: Colors.grey.shade700,
+                              ),
+                              child: child,
+                            ),
                             scaledBuilder: (item, extent) {
                               final filter = item.filter;
                               return SizedBox(

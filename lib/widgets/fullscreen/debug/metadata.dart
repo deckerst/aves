@@ -2,7 +2,8 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
@@ -18,7 +19,7 @@ class MetadataTab extends StatefulWidget {
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader;
+  Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader, _tiffStructureLoader;
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
@@ -33,20 +34,19 @@ class _MetadataTabState extends State<MetadataTab> {
   }
 
   void _loadMetadata() {
-    _bitmapFactoryLoader = MetadataService.getBitmapFactoryInfo(entry);
-    _contentResolverMetadataLoader = MetadataService.getContentResolverMetadata(entry);
-    _exifInterfaceMetadataLoader = MetadataService.getExifInterfaceMetadata(entry);
-    _mediaMetadataLoader = MetadataService.getMediaMetadataRetrieverMetadata(entry);
-    _metadataExtractorLoader = MetadataService.getMetadataExtractorSummary(entry);
+    _bitmapFactoryLoader = AndroidDebugService.getBitmapFactoryInfo(entry);
+    _contentResolverMetadataLoader = AndroidDebugService.getContentResolverMetadata(entry);
+    _exifInterfaceMetadataLoader = AndroidDebugService.getExifInterfaceMetadata(entry);
+    _mediaMetadataLoader = AndroidDebugService.getMediaMetadataRetrieverMetadata(entry);
+    _metadataExtractorLoader = AndroidDebugService.getMetadataExtractorSummary(entry);
+    _tiffStructureLoader = AndroidDebugService.getTiffStructure(entry);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget builder(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
-      if (snapshot.hasError) return Text(snapshot.error.toString());
-      if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-      final data = SplayTreeMap.of(snapshot.data.map((k, v) {
+    Widget builderFromSnapshotData(BuildContext context, Map snapshotData, String title) {
+      final data = SplayTreeMap.of(snapshotData.map((k, v) {
         final key = k.toString();
         var value = v?.toString() ?? 'null';
         if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
@@ -76,29 +76,47 @@ class _MetadataTabState extends State<MetadataTab> {
       );
     }
 
+    Widget builderFromSnapshot(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
+      if (snapshot.hasError) return Text(snapshot.error.toString());
+      if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+      return builderFromSnapshotData(context, snapshot.data, title);
+    }
+
     return ListView(
       padding: EdgeInsets.all(8),
       children: [
         FutureBuilder<Map>(
           future: _bitmapFactoryLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Bitmap Factory'),
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Bitmap Factory'),
         ),
         FutureBuilder<Map>(
           future: _contentResolverMetadataLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Content Resolver'),
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Content Resolver'),
         ),
         FutureBuilder<Map>(
           future: _exifInterfaceMetadataLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Exif Interface'),
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Exif Interface'),
         ),
         FutureBuilder<Map>(
           future: _mediaMetadataLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Media Metadata Retriever'),
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Media Metadata Retriever'),
         ),
         FutureBuilder<Map>(
           future: _metadataExtractorLoader,
-          builder: (context, snapshot) => builder(context, snapshot, 'Metadata Extractor'),
+          builder: (context, snapshot) => builderFromSnapshot(context, snapshot, 'Metadata Extractor'),
         ),
+        if (entry.mimeType == MimeTypes.tiff)
+          FutureBuilder<Map>(
+            future: _tiffStructureLoader,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) return Text(snapshot.error.toString());
+              if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: snapshot.data.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),
+              );
+            },
+          ),
       ],
     );
   }
