@@ -2,8 +2,21 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.2.9] - 2020-12-12
+### Added
+- Collection: identify 360 photos/videos, GeoTIFF
+- Viewer: open panoramas (360 photos)
+- Info: open GImage/GAudio/GDepth media and thumbnails embedded in XMP
+- Info: SVG metadata
+
 ### Changed
 - Upgraded Flutter to stable v1.22.5
+- Viewer: TIFF subsampling & tiling
+- Info: improved XMP layout
+
+### Fixed
+- Fixed large TIFF handling
 
 ## [v1.2.8] - 2020-11-27
 ### Added
