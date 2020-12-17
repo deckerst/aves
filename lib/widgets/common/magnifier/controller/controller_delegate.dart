@@ -51,8 +51,7 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     if (nextScaleState == ScaleState.covering || nextScaleState == ScaleState.originalSize) {
       final childFocalPoint = scaleStateChange.childFocalPoint;
       if (childFocalPoint != null) {
-        final childCenter = scaleBoundaries.childSize.center(Offset.zero);
-        nextPosition = (childCenter - childFocalPoint) * nextScale;
+        nextPosition = scaleBoundaries.childToStatePosition(nextScale, childFocalPoint);
       }
     }
 
@@ -99,7 +98,6 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   void updateScaleStateFromNewScale(double newScale, ChangeSource source) {
-    // debugPrint('updateScaleStateFromNewScale scale=$newScale, source=$source');
     var newScaleState = ScaleState.initial;
     if (scale != scaleBoundaries.initialScale) {
       newScaleState = (newScale > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
@@ -108,7 +106,6 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
   }
 
   void nextScaleState(ChangeSource source, {Offset childFocalPoint}) {
-    // debugPrint('$runtimeType nextScaleState source=$source');
     final scaleState = scaleStateController.scaleState.state;
     if (scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut) {
       scaleStateController.setScaleState(scaleStateCycle(scaleState), source, childFocalPoint: childFocalPoint);

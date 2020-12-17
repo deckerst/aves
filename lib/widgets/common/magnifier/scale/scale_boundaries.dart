@@ -40,13 +40,20 @@ class ScaleBoundaries {
 
   double get initialScale => _scaleForLevel(_initialScale).clamp(minScale, maxScale);
 
-  Offset toChildPosition(MagnifierController controller, Offset viewportPosition) {
-    final position = controller.position;
-    final scale = controller.scale;
-    final viewportCenter = viewportSize.center(Offset.zero);
-    final childCenter = childSize.center(Offset.zero);
-    final childPosition = (viewportPosition - viewportCenter) / scale - position / scale + childCenter;
-    return childPosition;
+  Offset get _viewportCenter => viewportSize.center(Offset.zero);
+
+  Offset get _childCenter => childSize.center(Offset.zero);
+
+  Offset viewportToStatePosition(MagnifierController controller, Offset viewportPosition) {
+    return viewportPosition - _viewportCenter - controller.position;
+  }
+
+  Offset viewportToChildPosition(MagnifierController controller, Offset viewportPosition) {
+    return viewportToStatePosition(controller, viewportPosition) / controller.scale + _childCenter;
+  }
+
+  Offset childToStatePosition(double scale, Offset childPosition) {
+    return (_childCenter - childPosition) * scale;
   }
 
   @override

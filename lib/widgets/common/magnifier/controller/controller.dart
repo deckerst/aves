@@ -51,7 +51,6 @@ class MagnifierController {
   }
 
   void setPosition(Offset position, ChangeSource source) {
-    // debugPrint('$runtimeType setPosition position=$position, source=$source');
     if (value.position == position) return;
 
     prevValue = value;
@@ -66,7 +65,6 @@ class MagnifierController {
   Offset get position => value.position;
 
   void setScale(double scale, ChangeSource source) {
-    // debugPrint('$runtimeType setScale scale=$scale source=$source');
     if (value.scale == scale) return;
 
     prevValue = value;
@@ -86,7 +84,6 @@ class MagnifierController {
     double scale,
     @required ChangeSource source,
   }) {
-    // debugPrint('$runtimeType updateMultiple position=$position scale=$scale, source=$source');
     prevValue = value;
     _setValue(MagnifierState(
       position: position ?? value.position,
@@ -99,7 +96,6 @@ class MagnifierController {
   MagnifierState get value => _valueNotifier.value;
 
   void _setValue(MagnifierState newValue) {
-    // debugPrint('$runtimeType setValue value=$newValue');
     if (_valueNotifier.value == newValue) return;
     _valueNotifier.value = newValue;
   }

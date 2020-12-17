@@ -43,8 +43,8 @@ class MagnifierCore extends StatefulWidget {
 }
 
 class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
-  Offset _normalizedPosition;
-  double _scaleBefore;
+  Offset _prevViewportFocalPosition;
+  double _gestureStartScale;
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -63,24 +63,27 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _scaleBefore = scale;
-    _normalizedPosition = details.focalPoint - controller.position;
+    _gestureStartScale = scale;
+    _prevViewportFocalPosition = details.localFocalPoint;
+
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
-    final newScale = _scaleBefore * details.scale;
-    final delta = details.focalPoint - _normalizedPosition;
+    final newScale = _gestureStartScale * details.scale;
+    final panPositionDelta = details.focalPoint - _prevViewportFocalPosition;
+    final scalePositionDelta = scaleBoundaries.viewportToStatePosition(controller, details.focalPoint) * (scale / newScale - 1);
+    final newPosition = position + panPositionDelta + scalePositionDelta;
 
     updateScaleStateFromNewScale(newScale, ChangeSource.gesture);
-
-    //
     updateMultiple(
       scale: newScale,
-      position: clampPosition(position: delta * details.scale),
+      position: newPosition,
       source: ChangeSource.gesture,
     );
+
+    _prevViewportFocalPosition = details.focalPoint;
   }
 
   void onScaleEnd(ScaleEndDetails details) {
@@ -118,7 +121,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
     final magnitude = details.velocity.pixelsPerSecond.distance;
 
     // animate velocity only if there is no scale change and a significant magnitude
-    if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
+    if (_gestureStartScale / _scale == 1.0 && magnitude >= 400.0) {
       final direction = details.velocity.pixelsPerSecond / magnitude;
       animatePosition(
         _position,
@@ -131,13 +134,13 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
     if (widget.onTap == null) return;
 
     final viewportTapPosition = details.localPosition;
-    final childTapPosition = scaleBoundaries.toChildPosition(controller, viewportTapPosition);
+    final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
     widget.onTap.call(context, details, controller.value, childTapPosition);
   }
 
   void onDoubleTap(TapDownDetails details) {
     final viewportTapPosition = details?.localPosition;
-    final childTapPosition = scaleBoundaries.toChildPosition(controller, viewportTapPosition);
+    final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
     nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
   }
 
