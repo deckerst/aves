@@ -21,25 +21,27 @@ class Minimap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<MediaQueryData, Size>(
-        selector: (context, mq) => mq.size,
-        builder: (context, mqSize, child) {
-          return AnimatedBuilder(
-              animation: viewStateNotifier,
-              builder: (context, child) {
-                final viewState = viewStateNotifier.value;
-                return CustomPaint(
-                  painter: MinimapPainter(
-                    viewportSize: mqSize,
-                    entrySize: viewState.size ?? entry.displaySize,
-                    viewCenterOffset: viewState.position,
-                    viewScale: viewState.scale,
-                    minimapBorderColor: Colors.white30,
-                  ),
-                  size: size,
-                );
-              });
-        });
+    return IgnorePointer(
+      child: Selector<MediaQueryData, Size>(
+          selector: (context, mq) => mq.size,
+          builder: (context, mqSize, child) {
+            return AnimatedBuilder(
+                animation: viewStateNotifier,
+                builder: (context, child) {
+                  final viewState = viewStateNotifier.value;
+                  return CustomPaint(
+                    painter: MinimapPainter(
+                      viewportSize: mqSize,
+                      entrySize: viewState.size ?? entry.displaySize,
+                      viewCenterOffset: viewState.position,
+                      viewScale: viewState.scale,
+                      minimapBorderColor: Colors.white30,
+                    ),
+                    size: size,
+                  );
+                });
+          }),
+    );
   }
 }
 

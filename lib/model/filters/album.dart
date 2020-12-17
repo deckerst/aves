@@ -87,7 +87,5 @@ class AlbumFilter extends CollectionFilter {
   int get hashCode => hashValues(type, album);
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{album=$album}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{album=$album}';
 }

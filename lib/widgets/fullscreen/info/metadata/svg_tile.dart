@@ -6,7 +6,6 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/source_viewer_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';

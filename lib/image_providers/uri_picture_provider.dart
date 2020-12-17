@@ -54,5 +54,5 @@ class UriPicture extends PictureProvider<UriPicture> {
   int get hashCode => hashValues(uri, colorFilter);
 
   @override
-  String toString() => '${objectRuntimeType(this, 'UriPicture')}(uri=$uri, mimeType=$mimeType, colorFilter=$colorFilter)';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, colorFilter=$colorFilter}';
 }

@@ -116,7 +116,5 @@ class ThumbnailProviderKey {
       );
 
   @override
-  String toString() {
-    return 'ThumbnailProviderKey{uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, extent=$extent, scale=$scale}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, extent=$extent, scale=$scale}';
 }

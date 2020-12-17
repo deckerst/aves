@@ -1,9 +1,10 @@
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
+import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:tuple/tuple.dart';
 
 class MultiImagePage extends StatefulWidget {
@@ -34,13 +35,13 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
   Widget build(BuildContext context) {
     super.build(context);
 
-    return PhotoViewGestureDetectorScope(
+    return MagnifierGestureDetectorScope(
       axis: [Axis.horizontal, Axis.vertical],
       child: PageView.builder(
         key: Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
         controller: widget.pageController,
-        physics: PhotoViewPageViewScrollPhysics(parent: BouncingScrollPhysics()),
+        physics: MagnifierScrollerPhysics(parent: BouncingScrollPhysics()),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           final entry = entries[index];
@@ -49,7 +50,7 @@ class MultiImagePageState extends State<MultiImagePage> with AutomaticKeepAliveC
               key: Key('imageview'),
               entry: entry,
               heroTag: widget.collection.heroTag(entry),
-              onTap: widget.onTap,
+              onTap: (_) => widget.onTap?.call(),
               videoControllers: widget.videoControllers,
               onDisposed: () => widget.onViewDisposed?.call(entry.uri),
             ),
@@ -84,11 +85,11 @@ class SingleImagePageState extends State<SingleImagePage> with AutomaticKeepAliv
   Widget build(BuildContext context) {
     super.build(context);
 
-    return PhotoViewGestureDetectorScope(
+    return MagnifierGestureDetectorScope(
       axis: [Axis.vertical],
       child: ImageView(
         entry: widget.entry,
-        onTap: widget.onTap,
+        onTap: (_) => widget.onTap?.call(),
         videoControllers: widget.videoControllers,
       ),
     );

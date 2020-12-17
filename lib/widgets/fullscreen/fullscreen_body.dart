@@ -8,6 +8,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/fullscreen/entry_action_delegate.dart';
 import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
@@ -22,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:screen/screen.dart';
 import 'package:tuple/tuple.dart';
@@ -557,7 +557,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
         key: Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
-        physics: PhotoViewPageViewScrollPhysics(parent: PageScrollPhysics()),
+        physics: MagnifierScrollerPhysics(parent: PageScrollPhysics()),
         onPageChanged: (page) {
           widget.onVerticalPageChanged(page);
           _infoPageVisibleNotifier.value = page == pages.length - 1;

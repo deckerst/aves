@@ -70,10 +70,6 @@ dependencies:
   pedantic:
   percent_indicator:
   permission_handler:
-  photo_view:
-#    path: ../photo_view
-    git:
-      url: git://github.com/deckerst/photo_view.git
   printing:
   provider:
   screen:

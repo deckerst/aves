@@ -134,9 +134,7 @@ class ImageEntry {
   }
 
   @override
-  String toString() {
-    return 'ImageEntry{uri=$uri, path=$path}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path}';
 
   set path(String path) {
     _path = path;

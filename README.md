@@ -26,7 +26,6 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 
 ## Known Issues
 
-- gesture: double tap on image does not zoom on tapped area (cf [photo_view issue #82](https://github.com/renancaraujo/photo_view/issues/82))
 - performance: image info page stutters the first time it loads a Google Maps view (cf [flutter issue #28493](https://github.com/flutter/flutter/issues/28493))
 - SVG: unsupported `currentColor` (cf [flutter_svg issue #31](https://github.com/dnfield/flutter_svg/issues/31))
 - SVG: unsupported out of order defs/references (cf [flutter_svg issue #102](https://github.com/dnfield/flutter_svg/issues/102))

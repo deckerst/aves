@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
 import 'package:intl/intl.dart';
@@ -23,9 +24,7 @@ class DateMetadata {
       };
 
   @override
-  String toString() {
-    return 'DateMetadata{contentId=$contentId, dateMillis=$dateMillis}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, dateMillis=$dateMillis}';
 }
 
 class CatalogMetadata {
@@ -117,9 +116,7 @@ class CatalogMetadata {
       };
 
   @override
-  String toString() {
-    return 'CatalogMetadata{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
 }
 
 class OverlayMetadata {
@@ -150,9 +147,7 @@ class OverlayMetadata {
   bool get isEmpty => aperture == null && exposureTime == null && focalLength == null && iso == null;
 
   @override
-  String toString() {
-    return 'OverlayMetadata{aperture=$aperture, exposureTime=$exposureTime, focalLength=$focalLength, iso=$iso}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{aperture=$aperture, exposureTime=$exposureTime, focalLength=$focalLength, iso=$iso}';
 }
 
 class AddressDetails {
@@ -200,9 +195,7 @@ class AddressDetails {
       };
 
   @override
-  String toString() {
-    return 'AddressDetails{contentId=$contentId, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
 }
 
 @immutable
@@ -237,7 +230,5 @@ class FavouriteRow {
   int get hashCode => hashValues(contentId, path);
 
   @override
-  String toString() {
-    return 'FavouriteRow{contentId=$contentId, path=$path}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, path=$path}';
 }

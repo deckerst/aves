@@ -95,9 +95,7 @@ class XmpNamespace {
   int get hashCode => namespace.hashCode;
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{namespace=$namespace}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{namespace=$namespace}';
 }
 
 class XmpProp {
@@ -116,9 +114,7 @@ class XmpProp {
   }
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
 }
 
 class OpenEmbeddedDataNotification extends Notification {
@@ -131,7 +127,5 @@ class OpenEmbeddedDataNotification extends Notification {
   });
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{propPath=$propPath, mimeType=$mimeType}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{propPath=$propPath, mimeType=$mimeType}';
 }
