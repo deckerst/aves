@@ -10,7 +10,10 @@ class ServicePolicy {
   final StreamController<QueueState> _queueStreamController = StreamController<QueueState>.broadcast();
   final Map<Object, Tuple2<int, _Task>> _paused = {};
   final SplayTreeMap<int, Queue<_Task>> _queues = SplayTreeMap();
-  _Task _running;
+  final Queue<_Task> _runningQueue = Queue();
+
+  // magic number
+  static const concurrentTaskMax = 4;
 
   Stream<QueueState> get queueStream => _queueStreamController.stream;
 
@@ -23,6 +26,7 @@ class ServicePolicy {
     Object key,
   }) {
     _Task task;
+    key ??= platformCall.hashCode;
     final priorityTask = _paused.remove(key);
     if (priorityTask != null) {
       debugPrint('resume task with key=$key');
@@ -39,7 +43,7 @@ class ServicePolicy {
           completer.completeError(error, stackTrace);
         }
         if (debugLabel != null) debugPrint('$runtimeType $debugLabel completed');
-        _running = null;
+        _runningQueue.removeWhere((task) => task.key == key);
         _pickNext();
       },
       completer,
@@ -64,10 +68,13 @@ class ServicePolicy {
 
   void _pickNext() {
     _notifyQueueState();
-    if (_running != null) return;
+    if (_runningQueue.length >= concurrentTaskMax) return;
     final queue = _queues.entries.firstWhere((kv) => kv.value.isNotEmpty, orElse: () => null)?.value;
-    _running = queue?.removeFirst();
-    _running?.callback?.call();
+    final task = queue?.removeFirst();
+    if (task != null) {
+      _runningQueue.addLast(task);
+      task.callback();
+    }
   }
 
   bool _takeOut(Object key, Iterable<int> priorities, void Function(int priority, _Task task) action) {
@@ -99,7 +106,7 @@ class ServicePolicy {
     if (!_queueStreamController.hasListener) return;
 
     final queueByPriority = Map.fromEntries(_queues.entries.map((kv) => MapEntry(kv.key, kv.value.length)));
-    _queueStreamController.add(QueueState(queueByPriority));
+    _queueStreamController.add(QueueState(queueByPriority, _runningQueue.length));
   }
 }
 
@@ -124,6 +131,7 @@ class ServiceCallPriority {
 
 class QueueState {
   final Map<int, int> queueByPriority;
+  final int runningQueue;
 
-  const QueueState(this.queueByPriority);
+  const QueueState(this.queueByPriority, this.runningQueue);
 }
