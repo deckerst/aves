@@ -26,12 +26,12 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getObsoleteEntries" -> GlobalScope.launch { getObsoleteEntries(call, Coresult(result)) }
-            "getImageEntry" -> GlobalScope.launch { getImageEntry(call, Coresult(result)) }
-            "getThumbnail" -> GlobalScope.launch { getThumbnail(call, Coresult(result)) }
-            "getRegion" -> GlobalScope.launch { getRegion(call, Coresult(result)) }
+            "getObsoleteEntries" -> GlobalScope.launch(Dispatchers.IO) { getObsoleteEntries(call, Coresult(result)) }
+            "getImageEntry" -> GlobalScope.launch(Dispatchers.IO) { getImageEntry(call, Coresult(result)) }
+            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { getThumbnail(call, Coresult(result)) }
+            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { getRegion(call, Coresult(result)) }
             "clearSizedThumbnailDiskCache" -> {
-                GlobalScope.launch { Glide.get(activity).clearDiskCache() }
+                GlobalScope.launch(Dispatchers.IO) { Glide.get(activity).clearDiskCache() }
                 result.success(null)
             }
             "rename" -> GlobalScope.launch(Dispatchers.IO) { rename(call, Coresult(result)) }

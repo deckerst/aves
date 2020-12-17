@@ -61,6 +61,7 @@ import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -70,12 +71,12 @@ import kotlin.math.roundToLong
 class MetadataHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAllMetadata" -> GlobalScope.launch { getAllMetadata(call, Coresult(result)) }
-            "getCatalogMetadata" -> GlobalScope.launch { getCatalogMetadata(call, Coresult(result)) }
-            "getOverlayMetadata" -> GlobalScope.launch { getOverlayMetadata(call, Coresult(result)) }
-            "getEmbeddedPictures" -> GlobalScope.launch { getEmbeddedPictures(call, Coresult(result)) }
-            "getExifThumbnails" -> GlobalScope.launch { getExifThumbnails(call, Coresult(result)) }
-            "extractXmpDataProp" -> GlobalScope.launch { extractXmpDataProp(call, Coresult(result)) }
+            "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { getAllMetadata(call, Coresult(result)) }
+            "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { getCatalogMetadata(call, Coresult(result)) }
+            "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { getOverlayMetadata(call, Coresult(result)) }
+            "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { getEmbeddedPictures(call, Coresult(result)) }
+            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { getExifThumbnails(call, Coresult(result)) }
+            "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { extractXmpDataProp(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }
@@ -588,7 +589,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             "mimeType" to embedMimeType,
                         )
                         if (isImage(embedMimeType) || isVideo(embedMimeType)) {
-                            GlobalScope.launch {
+                            GlobalScope.launch(Dispatchers.IO) {
                                 FileImageProvider().fetchSingle(context, embedUri, embedMimeType, object : ImageProvider.ImageOpCallback {
                                     override fun onSuccess(fields: FieldMap) {
                                         embedFields.putAll(fields)

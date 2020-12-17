@@ -17,6 +17,7 @@ import deckers.thibault.aves.utils.LogUtils.createTag
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -27,8 +28,8 @@ import kotlin.math.roundToInt
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAppIcon" -> GlobalScope.launch { getAppIcon(call, Coresult(result)) }
-            "getAppNames" -> GlobalScope.launch { getAppNames(Coresult(result)) }
+            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { getAppIcon(call, Coresult(result)) }
+            "getAppNames" -> GlobalScope.launch(Dispatchers.IO) { getAppNames(Coresult(result)) }
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
