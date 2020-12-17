@@ -20,7 +20,12 @@ class DebugTaskQueueOverlay extends StatelessWidget {
                   stream: servicePolicy.queueStream,
                   builder: (context, snapshot) {
                     if (snapshot.hasError) return SizedBox.shrink();
-                    final queuedEntries = (snapshot.hasData ? snapshot.data.queueByPriority.entries.toList() : []);
+                    final queuedEntries = <MapEntry<dynamic, int>>[];
+                    if (snapshot.hasData) {
+                      final state = snapshot.data;
+                      queuedEntries.add(MapEntry('run', state.runningQueue));
+                      queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));
+                    }
                     queuedEntries.sort((a, b) => a.key.compareTo(b.key));
                     return Column(
                       mainAxisSize: MainAxisSize.min,
