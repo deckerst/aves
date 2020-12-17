@@ -62,9 +62,7 @@ class LocationFilter extends CollectionFilter {
   int get hashCode => hashValues(type, level, _location);
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{level=$level, location=$_location}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{level=$level, location=$_location}';
 
   // U+0041 Latin Capital letter A
   // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A

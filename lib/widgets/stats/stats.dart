@@ -295,7 +295,5 @@ class EntryByMimeDatum {
   Color get color => stringToColor(displayText);
 
   @override
-  String toString() {
-    return '[$runtimeType#${shortHash(this)}: mimeType=$mimeType, displayText=$displayText, entryCount=$entryCount]';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{mimeType=$mimeType, displayText=$displayText, entryCount=$entryCount}';
 }

@@ -1,8 +1,9 @@
 import 'dart:math';
 
+import 'package:aves/image_providers/region_provider.dart';
+import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,16 @@ class _TiledImageViewState extends State<TiledImageView> {
   Size get viewportSize => widget.viewportSize;
 
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
+
+  bool get useTiles => entry.canTile && (entry.width > 4096 || entry.height > 4096);
+
+  ImageProvider get fullImage => UriImage(
+        uri: entry.uri,
+        mimeType: entry.mimeType,
+        rotationDegrees: entry.rotationDegrees,
+        isFlipped: entry.isFlipped,
+        expectedContentLength: entry.sizeBytes,
+      );
 
   // magic number used to derive sample size from scale
   static const scaleFactor = 2.0;
@@ -80,79 +91,102 @@ class _TiledImageViewState extends State<TiledImageView> {
     final displayHeight = entry.displaySize.height.round();
 
     return AnimatedBuilder(
-        animation: viewStateNotifier,
-        builder: (context, child) {
-          final viewState = viewStateNotifier.value;
-          var scale = viewState.scale;
-          if (scale == 0.0) {
-            // for initial scale as `PhotoViewComputedScale.contained`
-            scale = _initialScale;
-          }
+      animation: viewStateNotifier,
+      builder: (context, child) {
+        final viewState = viewStateNotifier.value;
+        var scale = viewState.scale;
+        if (scale == 0.0) {
+          // for initial scale as `contained`
+          scale = _initialScale;
+        }
+        final scaledSize = entry.displaySize * scale;
+        final loading = SizedBox(
+          width: scaledSize.width,
+          height: scaledSize.height,
+          child: widget.baseChild,
+        );
 
-          final centerOffset = viewState.position;
-          final viewOrigin = Offset(
-            ((displayWidth * scale - viewportSize.width) / 2 - centerOffset.dx),
-            ((displayHeight * scale - viewportSize.height) / 2 - centerOffset.dy),
-          );
-          final viewRect = viewOrigin & viewportSize;
+        List<Widget> children;
+        if (useTiles) {
+          children = [
+            loading,
+            ..._getTiles(viewState, displayWidth, displayHeight, scale),
+          ];
+        } else {
+          children = [
+            if (!imageCache.statusForKey(fullImage).keepAlive) loading,
+            Image(
+              image: fullImage,
+              gaplessPlayback: true,
+              errorBuilder: widget.errorBuilder,
+              width: scaledSize.width,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.medium,
+            )
+          ];
+        }
 
-          final tiles = <RegionTile>[];
-          var minSampleSize = min(_sampleSizeForScale(scale), _maxSampleSize);
-          for (var sampleSize = _maxSampleSize; sampleSize >= minSampleSize; sampleSize = (sampleSize / 2).floor()) {
-            // for the largest sample size (matching the initial scale), the whole image is in view
-            // so we subsample the whole image instead of splitting it in tiles
-            final useTiles = sampleSize != _maxSampleSize;
-            final regionSide = (_tileSide * sampleSize).round();
-            final layerRegionWidth = useTiles ? regionSide : displayWidth;
-            final layerRegionHeight = useTiles ? regionSide : displayHeight;
-            for (var x = 0; x < displayWidth; x += layerRegionWidth) {
-              for (var y = 0; y < displayHeight; y += layerRegionHeight) {
-                final nextX = x + layerRegionWidth;
-                final nextY = y + layerRegionHeight;
-                final thisRegionWidth = layerRegionWidth - (nextX >= displayWidth ? nextX - displayWidth : 0);
-                final thisRegionHeight = layerRegionHeight - (nextY >= displayHeight ? nextY - displayHeight : 0);
-                final tileRect = Rect.fromLTWH(x * scale, y * scale, thisRegionWidth * scale, thisRegionHeight * scale);
+        return Stack(
+          alignment: Alignment.center,
+          children: children,
+        );
+      },
+    );
+  }
 
-                // only build visible tiles
-                if (viewRect.overlaps(tileRect)) {
-                  Rectangle<int> regionRect;
+  List<RegionTile> _getTiles(ViewState viewState, int displayWidth, int displayHeight, double scale) {
+    final centerOffset = viewState.position;
+    final viewOrigin = Offset(
+      ((displayWidth * scale - viewportSize.width) / 2 - centerOffset.dx),
+      ((displayHeight * scale - viewportSize.height) / 2 - centerOffset.dy),
+    );
+    final viewRect = viewOrigin & viewportSize;
 
-                  if (_transform != null) {
-                    // apply EXIF orientation
-                    final regionRectDouble = Rect.fromLTWH(x.toDouble(), y.toDouble(), thisRegionWidth.toDouble(), thisRegionHeight.toDouble());
-                    final tl = MatrixUtils.transformPoint(_transform, regionRectDouble.topLeft);
-                    final br = MatrixUtils.transformPoint(_transform, regionRectDouble.bottomRight);
-                    regionRect = Rectangle<int>.fromPoints(
-                      Point<int>(tl.dx.round(), tl.dy.round()),
-                      Point<int>(br.dx.round(), br.dy.round()),
-                    );
-                  } else {
-                    regionRect = Rectangle<int>(x, y, thisRegionWidth, thisRegionHeight);
-                  }
+    final tiles = <RegionTile>[];
+    var minSampleSize = min(_sampleSizeForScale(scale), _maxSampleSize);
+    for (var sampleSize = _maxSampleSize; sampleSize >= minSampleSize; sampleSize = (sampleSize / 2).floor()) {
+      // for the largest sample size (matching the initial scale), the whole image is in view
+      // so we subsample the whole image instead of splitting it in tiles
+      final useTiles = sampleSize != _maxSampleSize;
+      final regionSide = (_tileSide * sampleSize).round();
+      final layerRegionWidth = useTiles ? regionSide : displayWidth;
+      final layerRegionHeight = useTiles ? regionSide : displayHeight;
+      for (var x = 0; x < displayWidth; x += layerRegionWidth) {
+        for (var y = 0; y < displayHeight; y += layerRegionHeight) {
+          final nextX = x + layerRegionWidth;
+          final nextY = y + layerRegionHeight;
+          final thisRegionWidth = layerRegionWidth - (nextX >= displayWidth ? nextX - displayWidth : 0);
+          final thisRegionHeight = layerRegionHeight - (nextY >= displayHeight ? nextY - displayHeight : 0);
+          final tileRect = Rect.fromLTWH(x * scale, y * scale, thisRegionWidth * scale, thisRegionHeight * scale);
 
-                  tiles.add(RegionTile(
-                    entry: entry,
-                    tileRect: tileRect,
-                    regionRect: regionRect,
-                    sampleSize: sampleSize,
-                  ));
-                }
-              }
+          // only build visible tiles
+          if (viewRect.overlaps(tileRect)) {
+            Rectangle<int> regionRect;
+
+            if (_transform != null) {
+              // apply EXIF orientation
+              final regionRectDouble = Rect.fromLTWH(x.toDouble(), y.toDouble(), thisRegionWidth.toDouble(), thisRegionHeight.toDouble());
+              final tl = MatrixUtils.transformPoint(_transform, regionRectDouble.topLeft);
+              final br = MatrixUtils.transformPoint(_transform, regionRectDouble.bottomRight);
+              regionRect = Rectangle<int>.fromPoints(
+                Point<int>(tl.dx.round(), tl.dy.round()),
+                Point<int>(br.dx.round(), br.dy.round()),
+              );
+            } else {
+              regionRect = Rectangle<int>(x, y, thisRegionWidth, thisRegionHeight);
             }
-          }
 
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              SizedBox(
-                width: displayWidth * scale,
-                height: displayHeight * scale,
-                child: widget.baseChild,
-              ),
-              ...tiles,
-            ],
-          );
-        });
+            tiles.add(RegionTile(
+              entry: entry,
+              tileRect: tileRect,
+              regionRect: regionRect,
+              sampleSize: sampleSize,
+            ));
+          }
+        }
+      }
+    }
+    return tiles;
   }
 
   int _sampleSizeForScale(double scale) {
