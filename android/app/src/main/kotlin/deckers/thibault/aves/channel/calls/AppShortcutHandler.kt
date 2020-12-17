@@ -12,6 +12,7 @@ import deckers.thibault.aves.utils.BitmapUtils.centerSquareCrop
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -20,7 +21,7 @@ class AppShortcutHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "canPin" -> result.success(canPin())
             "pin" -> {
-                GlobalScope.launch { pin(call) }
+                GlobalScope.launch(Dispatchers.IO) { pin(call) }
                 result.success(null)
             }
             else -> result.notImplemented()
