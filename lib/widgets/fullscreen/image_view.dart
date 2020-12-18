@@ -160,9 +160,11 @@ class _ImageViewState extends State<ImageView> {
           colorFilter: colorFilter,
         ),
       ),
+      childSize: entry.displaySize,
       controller: _magnifierController,
       minScale: minScale,
       initialScale: initialScale,
+      scaleStateCycle: _vectorScaleStateCycle,
       onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
     );
   }
@@ -189,6 +191,15 @@ class _ImageViewState extends State<ImageView> {
     final viewState = ViewState(v.position, v.scale, _magnifierChildSize);
     _viewStateNotifier.value = viewState;
     ViewStateNotification(entry.uri, viewState).dispatch(context);
+  }
+
+  static ScaleState _vectorScaleStateCycle(ScaleState actual) {
+    switch (actual) {
+      case ScaleState.initial:
+        return ScaleState.covering;
+      default:
+        return ScaleState.initial;
+    }
   }
 }
 

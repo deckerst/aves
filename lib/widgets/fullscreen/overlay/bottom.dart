@@ -278,7 +278,7 @@ class _DateRow extends StatelessWidget {
         DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        if (!entry.isSvg) Expanded(flex: 2, child: Text(entry.resolutionText, strutStyle: Constants.overflowStrutStyle)),
+        Expanded(flex: 2, child: Text(entry.isSvg ? entry.aspectRatioText : entry.resolutionText, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }

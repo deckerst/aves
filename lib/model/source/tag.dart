@@ -23,7 +23,7 @@ mixin TagMixin on SourceBase {
 
   Future<void> catalogEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final todo = rawEntries.where((entry) => !entry.isCatalogued && !entry.isSvg).toList();
+    final todo = rawEntries.where((entry) => !entry.isCatalogued).toList();
     if (todo.isEmpty) return;
 
     var progressDone = 0;
