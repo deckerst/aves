@@ -70,7 +70,7 @@ class _MagnifierState extends State<Magnifier> {
   MagnifierScaleStateController _scaleStateController;
 
   void _setChildSize(Size childSize) {
-    _childSize = childSize;
+    _childSize = childSize.isEmpty ? null : childSize;
   }
 
   @override
