@@ -43,7 +43,6 @@ class DecoratedThumbnail extends StatelessWidget {
           );
 
     child = Stack(
-      fit: StackFit.passthrough,
       children: [
         child,
         Positioned(

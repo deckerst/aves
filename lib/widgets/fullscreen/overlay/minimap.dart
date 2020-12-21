@@ -4,7 +4,6 @@ import 'package:aves/model/image_entry.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Minimap extends StatelessWidget {
   final ImageEntry entry;
@@ -22,24 +21,21 @@ class Minimap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: Selector<MediaQueryData, Size>(
-          selector: (context, mq) => mq.size,
-          builder: (context, mqSize, child) {
-            return AnimatedBuilder(
-                animation: viewStateNotifier,
-                builder: (context, child) {
-                  final viewState = viewStateNotifier.value;
-                  return CustomPaint(
-                    painter: MinimapPainter(
-                      viewportSize: mqSize,
-                      entrySize: viewState.size ?? entry.displaySize,
-                      viewCenterOffset: viewState.position,
-                      viewScale: viewState.scale,
-                      minimapBorderColor: Colors.white30,
-                    ),
-                    size: size,
-                  );
-                });
+      child: ValueListenableBuilder<ViewState>(
+          valueListenable: viewStateNotifier,
+          builder: (context, viewState, child) {
+            final viewportSize = viewState.viewportSize;
+            if (viewportSize == null) return SizedBox.shrink();
+            return CustomPaint(
+              painter: MinimapPainter(
+                viewportSize: viewportSize,
+                entrySize: entry.displaySize,
+                viewCenterOffset: viewState.position,
+                viewScale: viewState.scale,
+                minimapBorderColor: Colors.white30,
+              ),
+              size: size,
+            );
           }),
     );
   }

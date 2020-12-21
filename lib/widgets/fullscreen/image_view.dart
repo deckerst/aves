@@ -1,16 +1,19 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
+import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
-import 'package:aves/widgets/common/magnifier/scale/scalestate_controller.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:aves/widgets/fullscreen/tiled_view.dart';
 import 'package:aves/widgets/fullscreen/video_view.dart';
@@ -18,7 +21,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ImageView extends StatefulWidget {
@@ -43,10 +45,8 @@ class ImageView extends StatefulWidget {
 
 class _ImageViewState extends State<ImageView> {
   final MagnifierController _magnifierController = MagnifierController();
-  final MagnifierScaleStateController _magnifierScaleStateController = MagnifierScaleStateController();
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
-  StreamSubscription<MagnifierState> _subscription;
-  Size _magnifierChildSize;
+  final List<StreamSubscription> _subscriptions = [];
 
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
@@ -56,17 +56,20 @@ class _ImageViewState extends State<ImageView> {
 
   MagnifierTapCallback get onTap => widget.onTap;
 
+  static const decorationCheckSize = 20.0;
+
   @override
   void initState() {
     super.initState();
-    _subscription = _magnifierController.outputStateStream.listen(_onViewChanged);
-    _magnifierChildSize = entry.displaySize;
+    _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
+    _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
-    _subscription = null;
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
     widget.onDisposed?.call();
     super.dispose();
   }
@@ -118,30 +121,14 @@ class _ImageViewState extends State<ImageView> {
     return Magnifier(
       // key includes size and orientation to refresh when the image is rotated
       key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
-      child: Selector<MediaQueryData, Size>(
-        selector: (context, mq) => mq.size,
-        builder: (context, mqSize, child) {
-          // When the scale state is cycled to be in its `initial` state (i.e. `contained`), and the device is rotated,
-          // `Magnifier` keeps the scale state as `contained`, but the controller does not update or notify the new scale value.
-          // We cannot monitor scale state changes as a workaround, because the scale state is updated before animating the scale,
-          // so we keep receiving scale updates after the scale state update.
-          // Instead we check the scale state here when the constraints change, so we can reset the obsolete scale value.
-          if (_magnifierScaleStateController.scaleState.state == ScaleState.initial) {
-            final value = MagnifierState(position: Offset.zero, scale: 0, source: ChangeSource.internal);
-            WidgetsBinding.instance.addPostFrameCallback((_) => _onViewChanged(value));
-          }
-          return TiledImageView(
-            entry: entry,
-            viewportSize: mqSize,
-            viewStateNotifier: _viewStateNotifier,
-            baseChild: _loadingBuilder(context, fastThumbnailProvider),
-            errorBuilder: (context, error, stackTrace) => ErrorChild(onTap: () => onTap?.call(null)),
-          );
-        },
+      child: TiledImageView(
+        entry: entry,
+        viewStateNotifier: _viewStateNotifier,
+        baseChild: _loadingBuilder(context, fastThumbnailProvider),
+        errorBuilder: (context, error, stackTrace) => ErrorChild(onTap: () => onTap?.call(null)),
       ),
       childSize: entry.displaySize,
       controller: _magnifierController,
-      scaleStateController: _magnifierScaleStateController,
       maxScale: maxScale,
       minScale: minScale,
       initialScale: initialScale,
@@ -151,8 +138,10 @@ class _ImageViewState extends State<ImageView> {
   }
 
   Widget _buildSvgView() {
-    final colorFilter = ColorFilter.mode(Color(settings.svgBackground), BlendMode.dstOver);
-    return Magnifier(
+    final background = settings.vectorBackground;
+    final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
+
+    Widget child = Magnifier(
       child: SvgPicture(
         UriPicture(
           uri: entry.uri,
@@ -167,6 +156,42 @@ class _ImageViewState extends State<ImageView> {
       scaleStateCycle: _vectorScaleStateCycle,
       onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
     );
+
+    if (background == EntryBackground.checkered) {
+      child = ValueListenableBuilder<ViewState>(
+        valueListenable: _viewStateNotifier,
+        builder: (context, viewState, child) {
+          final viewportSize = viewState.viewportSize;
+          if (viewportSize == null) return child;
+
+          final side = viewportSize.shortestSide;
+          final checkSize = side / ((side / decorationCheckSize).round());
+
+          final viewSize = entry.displaySize * viewState.scale;
+          final decorationSize = Size(min(viewSize.width, viewportSize.width), min(viewSize.height, viewportSize.height));
+          final offset = Offset(decorationSize.width - viewportSize.width, decorationSize.height - viewportSize.height) / 2;
+
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned(
+                width: decorationSize.width,
+                height: decorationSize.height,
+                child: DecoratedBox(
+                  decoration: CheckeredDecoration(
+                    checkSize: checkSize,
+                    offset: offset,
+                  ),
+                ),
+              ),
+              child,
+            ],
+          );
+        },
+        child: child,
+      );
+    }
+    return child;
   }
 
   Widget _buildVideoView() {
@@ -187,8 +212,16 @@ class _ImageViewState extends State<ImageView> {
     );
   }
 
-  void _onViewChanged(MagnifierState v) {
-    final viewState = ViewState(v.position, v.scale, _magnifierChildSize);
+  void _onViewStateChanged(MagnifierState v) {
+    final current = _viewStateNotifier.value;
+    final viewState = ViewState(v.position, v.scale, current.viewportSize);
+    _viewStateNotifier.value = viewState;
+    ViewStateNotification(entry.uri, viewState).dispatch(context);
+  }
+
+  void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
+    final current = _viewStateNotifier.value;
+    final viewState = ViewState(current.position, current.scale, v.viewportSize);
     _viewStateNotifier.value = viewState;
     ViewStateNotification(entry.uri, viewState).dispatch(context);
   }
@@ -206,14 +239,14 @@ class _ImageViewState extends State<ImageView> {
 class ViewState {
   final Offset position;
   final double scale;
-  final Size size;
+  final Size viewportSize;
 
-  static const ViewState zero = ViewState(Offset(0.0, 0.0), 0, null);
+  static const ViewState zero = ViewState(Offset.zero, 0, null);
 
-  const ViewState(this.position, this.scale, this.size);
+  const ViewState(this.position, this.scale, this.viewportSize);
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{position=$position, scale=$scale, size=$size}';
+  String toString() => '$runtimeType#${shortHash(this)}{position=$position, scale=$scale, viewportSize=$viewportSize}';
 }
 
 class ViewStateNotification extends Notification {

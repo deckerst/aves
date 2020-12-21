@@ -92,9 +92,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         // cancel notification bubbling so that the info page
         // does not misinterpret content scrolling for page scrolling
         onNotification: (notification) => true,
-        child: AnimatedBuilder(
-          animation: _loadedMetadataUri,
-          builder: (context, child) {
+        child: ValueListenableBuilder<String>(
+          valueListenable: _loadedMetadataUri,
+          builder: (context, uri, child) {
             Widget content;
             if (_metadata.isEmpty) {
               content = SizedBox.shrink();
@@ -119,7 +119,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
             return AnimationLimiter(
               // we update the limiter key after fetching the metadata of a new entry,
               // in order to restart the staggered animation of the metadata section
-              key: Key(_loadedMetadataUri.value),
+              key: Key(uri),
               child: content,
             );
           },

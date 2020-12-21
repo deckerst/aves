@@ -10,14 +10,12 @@ import 'package:flutter/material.dart';
 
 class TiledImageView extends StatefulWidget {
   final ImageEntry entry;
-  final Size viewportSize;
   final ValueNotifier<ViewState> viewStateNotifier;
   final Widget baseChild;
   final ImageErrorWidgetBuilder errorBuilder;
 
   const TiledImageView({
     @required this.entry,
-    @required this.viewportSize,
     @required this.viewStateNotifier,
     @required this.baseChild,
     @required this.errorBuilder,
@@ -28,13 +26,12 @@ class TiledImageView extends StatefulWidget {
 }
 
 class _TiledImageViewState extends State<TiledImageView> {
+  bool _initialized = false;
   double _tileSide, _initialScale;
   int _maxSampleSize;
   Matrix4 _transform;
 
   ImageEntry get entry => widget.entry;
-
-  Size get viewportSize => widget.viewportSize;
 
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
 
@@ -52,23 +49,20 @@ class _TiledImageViewState extends State<TiledImageView> {
   static const scaleFactor = 2.0;
 
   @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  @override
   void didUpdateWidget(TiledImageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.viewportSize != widget.viewportSize || oldWidget.entry.displaySize != widget.entry.displaySize) {
-      _init();
+    final oldViewState = oldWidget.viewStateNotifier.value;
+    final viewState = widget.viewStateNotifier.value;
+    if (oldViewState.viewportSize != viewState.viewportSize || oldWidget.entry.displaySize != widget.entry.displaySize) {
+      _initialized = false;
     }
   }
 
-  void _init() {
+  void _initFromViewport(Size viewportSize) {
+    final displaySize = entry.displaySize;
     _tileSide = viewportSize.shortestSide * scaleFactor;
-    _initialScale = min(viewportSize.width / entry.displaySize.width, viewportSize.height / entry.displaySize.height);
+    _initialScale = min(viewportSize.width / displaySize.width, viewportSize.height / displaySize.height);
     _maxSampleSize = _sampleSizeForScale(_initialScale);
 
     final rotationDegrees = entry.rotationDegrees;
@@ -79,8 +73,9 @@ class _TiledImageViewState extends State<TiledImageView> {
         ..translate(entry.width / 2.0, entry.height / 2.0)
         ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
         ..rotateZ(-toRadians(rotationDegrees.toDouble()))
-        ..translate(-entry.displaySize.width / 2.0, -entry.displaySize.height / 2.0);
+        ..translate(-displaySize.width / 2.0, -displaySize.height / 2.0);
     }
+    _initialized = true;
   }
 
   @override
@@ -90,10 +85,13 @@ class _TiledImageViewState extends State<TiledImageView> {
     final displayWidth = entry.displaySize.width.round();
     final displayHeight = entry.displaySize.height.round();
 
-    return AnimatedBuilder(
-      animation: viewStateNotifier,
-      builder: (context, child) {
-        final viewState = viewStateNotifier.value;
+    return ValueListenableBuilder<ViewState>(
+      valueListenable: viewStateNotifier,
+      builder: (context, viewState, child) {
+        final viewportSize = viewState.viewportSize;
+        if (viewportSize == null) return SizedBox.shrink();
+        if (!_initialized) _initFromViewport(viewportSize);
+
         var scale = viewState.scale;
         if (scale == 0.0) {
           // for initial scale as `contained`
@@ -136,6 +134,7 @@ class _TiledImageViewState extends State<TiledImageView> {
 
   List<RegionTile> _getTiles(ViewState viewState, int displayWidth, int displayHeight, double scale) {
     final centerOffset = viewState.position;
+    final viewportSize = viewState.viewportSize;
     final viewOrigin = Offset(
       ((displayWidth * scale - viewportSize.width) / 2 - centerOffset.dx),
       ((displayHeight * scale - viewportSize.height) / 2 - centerOffset.dy),

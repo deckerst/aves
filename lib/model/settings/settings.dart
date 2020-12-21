@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
@@ -54,7 +55,7 @@ class Settings extends ChangeNotifier {
   static const coordinateFormatKey = 'coordinates_format';
 
   // rendering
-  static const svgBackgroundKey = 'svg_background';
+  static const vectorBackgroundKey = 'vector_background';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -184,9 +185,9 @@ class Settings extends ChangeNotifier {
 
   // rendering
 
-  int get svgBackground => _prefs.getInt(svgBackgroundKey) ?? 0xFFFFFFFF;
+  EntryBackground get vectorBackground => getEnumOrDefault(vectorBackgroundKey, EntryBackground.white, EntryBackground.values);
 
-  set svgBackground(int newValue) => setAndNotify(svgBackgroundKey, newValue);
+  set vectorBackground(EntryBackground newValue) => setAndNotify(vectorBackgroundKey, newValue.toString());
 
   // search
 

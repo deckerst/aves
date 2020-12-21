@@ -2,101 +2,127 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
+import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
+import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
+import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:flutter/widgets.dart';
 
 class MagnifierController {
+  final StreamController<MagnifierState> _stateStreamController = StreamController.broadcast();
+  final StreamController<ScaleBoundaries> _scaleBoundariesStreamController = StreamController.broadcast();
+  final StreamController<ScaleStateChange> _scaleStateChangeStreamController = StreamController.broadcast();
+
+  MagnifierState _currentState, initial, previousState;
+  ScaleBoundaries _scaleBoundaries;
+  ScaleStateChange _currentScaleState, previousScaleState;
+
   MagnifierController({
     Offset initialPosition = Offset.zero,
-  })  : _valueNotifier = ValueNotifier(
-          MagnifierState(
-            position: initialPosition,
-            scale: null,
-            source: ChangeSource.internal,
-          ),
-        ),
-        super() {
-    initial = value;
-    prevValue = initial;
+  }) : super() {
+    initial = MagnifierState(
+      position: initialPosition,
+      scale: null,
+      source: ChangeSource.internal,
+    );
+    previousState = initial;
+    _setState(initial);
 
-    _valueNotifier.addListener(_changeListener);
-    _outputCtrl = StreamController<MagnifierState>.broadcast();
-    _outputCtrl.sink.add(initial);
+    final _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: ChangeSource.internal);
+    previousScaleState = _initialScaleState;
+    _setScaleState(_initialScaleState);
   }
 
-  final ValueNotifier<MagnifierState> _valueNotifier;
+  Stream<MagnifierState> get stateStream => _stateStreamController.stream;
 
-  MagnifierState initial;
+  Stream<ScaleBoundaries> get scaleBoundariesStream => _scaleBoundariesStreamController.stream;
 
-  StreamController<MagnifierState> _outputCtrl;
+  Stream<ScaleStateChange> get scaleStateChangeStream => _scaleStateChangeStreamController.stream;
 
-  /// The output for state/value updates. Usually a broadcast [Stream]
-  Stream<MagnifierState> get outputStateStream => _outputCtrl.stream;
+  MagnifierState get currentState => _currentState;
 
-  /// The state value before the last change or the initial state if the state has not been changed.
-  MagnifierState prevValue;
+  Offset get position => currentState.position;
 
-  /// Resets the state to the initial value;
-  void reset() {
-    _setValue(initial);
-  }
+  double get scale => currentState.scale;
 
-  void _changeListener() {
-    _outputCtrl.sink.add(value);
-  }
+  ScaleBoundaries get scaleBoundaries => _scaleBoundaries;
+
+  ScaleStateChange get scaleState => _currentScaleState;
+
+  bool get hasScaleSateChanged => previousScaleState != scaleState;
+
+  bool get isZooming => scaleState.state == ScaleState.zoomedIn || scaleState.state == ScaleState.zoomedOut;
 
   /// Closes streams and removes eventual listeners.
   void dispose() {
-    _outputCtrl.close();
-    _valueNotifier.dispose();
+    _stateStreamController.close();
+    _scaleBoundariesStreamController.close();
+    _scaleStateChangeStreamController.close();
   }
 
-  void setPosition(Offset position, ChangeSource source) {
-    if (value.position == position) return;
-
-    prevValue = value;
-    _setValue(MagnifierState(
-      position: position,
-      scale: scale,
-      source: source,
-    ));
-  }
-
-  /// The position of the image in the screen given its offset after pan gestures.
-  Offset get position => value.position;
-
-  void setScale(double scale, ChangeSource source) {
-    if (value.scale == scale) return;
-
-    prevValue = value;
-    _setValue(MagnifierState(
-      position: position,
-      scale: scale,
-      source: source,
-    ));
-  }
-
-  /// The scale factor to transform the child (image or a customChild).
-  double get scale => value.scale;
-
-  /// Update multiple fields of the state with only one update streamed.
-  void updateMultiple({
+  void update({
     Offset position,
     double scale,
     @required ChangeSource source,
   }) {
-    prevValue = value;
-    _setValue(MagnifierState(
-      position: position ?? value.position,
-      scale: scale ?? value.scale,
+    position = position ?? this.position;
+    scale = scale ?? this.scale;
+    if (this.position == position && this.scale == scale) return;
+
+    previousState = currentState;
+    _setState(MagnifierState(
+      position: position,
+      scale: scale,
       source: source,
     ));
   }
 
-  /// The actual state value
-  MagnifierState get value => _valueNotifier.value;
+  void setScaleState(ScaleState newValue, ChangeSource source, {Offset childFocalPoint}) {
+    if (_currentScaleState.state == newValue) return;
 
-  void _setValue(MagnifierState newValue) {
-    if (_valueNotifier.value == newValue) return;
-    _valueNotifier.value = newValue;
+    previousScaleState = _currentScaleState;
+    _currentScaleState = ScaleStateChange(state: newValue, source: source, childFocalPoint: childFocalPoint);
+    _scaleStateChangeStreamController.sink.add(scaleState);
+  }
+
+  void _setState(MagnifierState state) {
+    if (_currentState == state) return;
+    _currentState = state;
+    _stateStreamController.sink.add(state);
+  }
+
+  void setScaleBoundaries(ScaleBoundaries scaleBoundaries) {
+    if (_scaleBoundaries == scaleBoundaries) return;
+    _scaleBoundaries = scaleBoundaries;
+    _scaleBoundariesStreamController.sink.add(scaleBoundaries);
+
+    if (!isZooming) {
+      update(
+        scale: getScaleForScaleState(_currentScaleState.state),
+        source: ChangeSource.internal,
+      );
+    }
+  }
+
+  void _setScaleState(ScaleStateChange scaleState) {
+    if (_currentScaleState == scaleState) return;
+    _currentScaleState = scaleState;
+    _scaleStateChangeStreamController.sink.add(_currentScaleState);
+  }
+
+  double getScaleForScaleState(ScaleState scaleState) {
+    double _clamp(double scale, ScaleBoundaries boundaries) => scale.clamp(boundaries.minScale, boundaries.maxScale);
+
+    switch (scaleState) {
+      case ScaleState.initial:
+      case ScaleState.zoomedIn:
+      case ScaleState.zoomedOut:
+        return _clamp(scaleBoundaries.initialScale, scaleBoundaries);
+      case ScaleState.covering:
+        return _clamp(ScaleLevel.scaleForCovering(scaleBoundaries.viewportSize, scaleBoundaries.childSize), scaleBoundaries);
+      case ScaleState.originalSize:
+        return _clamp(1.0, scaleBoundaries);
+      default:
+        return null;
+    }
   }
 }
