@@ -3,7 +3,6 @@ import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/core/core.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
-import 'package:aves/widgets/common/magnifier/scale/scalestate_controller.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:flutter/material.dart';
 
@@ -16,14 +15,13 @@ import 'package:flutter/material.dart';
 /// - fixed corner hit detection when in containers scrollable in both axes
 /// - fixed corner hit detection issues due to imprecise double comparisons
 /// - added single & double tap position feedback
-/// - fixed focusing on tap position when scaling by double tap
+/// - fixed focus when scaling by double-tap/pinch
 class Magnifier extends StatefulWidget {
   const Magnifier({
     Key key,
     @required this.child,
     this.childSize,
     this.controller,
-    this.scaleStateController,
     this.maxScale,
     this.minScale,
     this.initialScale,
@@ -48,7 +46,6 @@ class Magnifier extends StatefulWidget {
   final ScaleLevel initialScale;
 
   final MagnifierController controller;
-  final MagnifierScaleStateController scaleStateController;
   final ScaleStateCycle scaleStateCycle;
   final MagnifierTapCallback onTap;
   final HitTestBehavior gestureDetectorBehavior;
@@ -66,9 +63,6 @@ class _MagnifierState extends State<Magnifier> {
   bool _controlledController;
   MagnifierController _controller;
 
-  bool _controlledScaleStateController;
-  MagnifierScaleStateController _scaleStateController;
-
   void _setChildSize(Size childSize) {
     _childSize = childSize.isEmpty ? null : childSize;
   }
@@ -83,14 +77,6 @@ class _MagnifierState extends State<Magnifier> {
     } else {
       _controlledController = false;
       _controller = widget.controller;
-    }
-
-    if (widget.scaleStateController == null) {
-      _controlledScaleStateController = true;
-      _scaleStateController = MagnifierScaleStateController();
-    } else {
-      _controlledScaleStateController = false;
-      _scaleStateController = widget.scaleStateController;
     }
   }
 
@@ -110,16 +96,6 @@ class _MagnifierState extends State<Magnifier> {
       _controlledController = false;
       _controller = widget.controller;
     }
-
-    if (widget.scaleStateController == null) {
-      if (!_controlledScaleStateController) {
-        _controlledScaleStateController = true;
-        _scaleStateController = MagnifierScaleStateController();
-      }
-    } else {
-      _controlledScaleStateController = false;
-      _scaleStateController = widget.scaleStateController;
-    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -128,9 +104,6 @@ class _MagnifierState extends State<Magnifier> {
     if (_controlledController) {
       _controller.dispose();
     }
-    if (_controlledScaleStateController) {
-      _scaleStateController.dispose();
-    }
     super.dispose();
   }
 
@@ -138,20 +111,18 @@ class _MagnifierState extends State<Magnifier> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final scaleBoundaries = ScaleBoundaries(
+        _controller.setScaleBoundaries(ScaleBoundaries(
           widget.minScale ?? 0.0,
           widget.maxScale ?? ScaleLevel(factor: double.infinity),
           widget.initialScale ?? ScaleLevel(ref: ScaleReference.contained),
           constraints.biggest,
           _childSize ?? constraints.biggest,
-        );
+        ));
 
         return MagnifierCore(
           child: widget.child,
           controller: _controller,
-          scaleStateController: _scaleStateController,
           scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
-          scaleBoundaries: scaleBoundaries,
           onTap: widget.onTap,
           gestureDetectorBehavior: widget.gestureDetectorBehavior,
           applyScale: widget.applyScale ?? true,

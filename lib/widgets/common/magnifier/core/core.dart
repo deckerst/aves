@@ -5,7 +5,6 @@ import 'package:aves/widgets/common/magnifier/core/gesture_detector.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
 import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/scalestate_controller.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,17 +17,13 @@ class MagnifierCore extends StatefulWidget {
     @required this.onTap,
     @required this.gestureDetectorBehavior,
     @required this.controller,
-    @required this.scaleBoundaries,
     @required this.scaleStateCycle,
-    @required this.scaleStateController,
     @required this.applyScale,
   }) : super(key: key);
 
   final Widget child;
 
   final MagnifierController controller;
-  final MagnifierScaleStateController scaleStateController;
-  final ScaleBoundaries scaleBoundaries;
   final ScaleStateCycle scaleStateCycle;
 
   final MagnifierTapCallback onTap;
@@ -59,7 +54,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
   }
 
   void handlePositionAnimate() {
-    controller.setPosition(_positionAnimation.value, ChangeSource.animation);
+    controller.update(position: _positionAnimation.value, source: ChangeSource.animation);
   }
 
   void onScaleStart(ScaleStartDetails details) {
@@ -135,7 +130,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
 
     final viewportTapPosition = details.localPosition;
     final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
-    widget.onTap.call(context, details, controller.value, childTapPosition);
+    widget.onTap.call(context, details, controller.currentState, childTapPosition);
   }
 
   void onDoubleTap(TapDownDetails details) {
@@ -169,8 +164,8 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
 
   /// Check if scale is equal to initial after scale animation update
   void onAnimationStatusCompleted() {
-    if (scaleStateController.scaleState.state != ScaleState.initial && scale == scaleBoundaries.initialScale) {
-      scaleStateController.setScaleState(ScaleState.initial, ChangeSource.animation);
+    if (controller.scaleState.state != ScaleState.initial && scale == scaleBoundaries.initialScale) {
+      controller.setScaleState(ScaleState.initial, ChangeSource.animation);
     }
   }
 
@@ -183,9 +178,9 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
     _positionAnimationController = AnimationController(vsync: this)..addListener(handlePositionAnimate);
 
     startListeners();
-    addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
+    setScaleStateUpdateAnimation(animateOnScaleStateUpdate);
 
-    cachedScaleBoundaries = widget.scaleBoundaries;
+    cachedScaleBoundaries = widget.controller.scaleBoundaries;
   }
 
   void animateOnScaleStateUpdate(double prevScale, double nextScale, Offset nextPosition) {
@@ -204,49 +199,47 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
   @override
   Widget build(BuildContext context) {
     // Check if we need a recalc on the scale
-    if (widget.scaleBoundaries != cachedScaleBoundaries) {
+    if (widget.controller.scaleBoundaries != cachedScaleBoundaries) {
       markNeedsScaleRecalc = true;
-      cachedScaleBoundaries = widget.scaleBoundaries;
+      cachedScaleBoundaries = widget.controller.scaleBoundaries;
     }
 
     return StreamBuilder<MagnifierState>(
-        stream: controller.outputStateStream,
-        initialData: controller.prevValue,
+        stream: controller.stateStream,
+        initialData: controller.previousState,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final value = snapshot.data;
-            final applyScale = widget.applyScale;
+          if (!snapshot.hasData) return Container();
 
-            final computedScale = applyScale ? scale : 1.0;
+          final magnifierState = snapshot.data;
+          final position = magnifierState.position;
+          final applyScale = widget.applyScale;
 
-            final matrix = Matrix4.identity()
-              ..translate(value.position.dx, value.position.dy)
-              ..scale(computedScale);
+          Widget child = CustomSingleChildLayout(
+            delegate: _CenterWithOriginalSizeDelegate(
+              scaleBoundaries.childSize,
+              basePosition,
+              applyScale,
+            ),
+            child: widget.child,
+          );
 
-            final Widget customChildLayout = CustomSingleChildLayout(
-              delegate: _CenterWithOriginalSizeDelegate(
-                scaleBoundaries.childSize,
-                basePosition,
-                applyScale,
-              ),
-              child: widget.child,
-            );
-            return MagnifierGestureDetector(
-              child: Transform(
-                child: customChildLayout,
-                transform: matrix,
-                alignment: basePosition,
-              ),
-              onDoubleTap: onDoubleTap,
-              onScaleStart: onScaleStart,
-              onScaleUpdate: onScaleUpdate,
-              onScaleEnd: onScaleEnd,
-              hitDetector: this,
-              onTapUp: widget.onTap == null ? null : onTap,
-            );
-          } else {
-            return Container();
-          }
+          child = Transform(
+            transform: Matrix4.identity()
+              ..translate(position.dx, position.dy)
+              ..scale(applyScale ? scale : 1.0),
+            alignment: basePosition,
+            child: child,
+          );
+
+          return MagnifierGestureDetector(
+            child: child,
+            onDoubleTap: onDoubleTap,
+            onScaleStart: onScaleStart,
+            onScaleUpdate: onScaleUpdate,
+            onScaleEnd: onScaleEnd,
+            hitDetector: this,
+            onTapUp: widget.onTap == null ? null : onTap,
+          );
         });
   }
 }

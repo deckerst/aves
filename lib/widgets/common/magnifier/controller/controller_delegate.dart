@@ -5,8 +5,6 @@ import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/core/core.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
-import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
-import 'package:aves/widgets/common/magnifier/scale/scalestate_controller.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:flutter/widgets.dart';
 
@@ -16,9 +14,7 @@ import 'package:flutter/widgets.dart';
 mixin MagnifierControllerDelegate on State<MagnifierCore> {
   MagnifierController get controller => widget.controller;
 
-  MagnifierScaleStateController get scaleStateController => widget.scaleStateController;
-
-  ScaleBoundaries get scaleBoundaries => widget.scaleBoundaries;
+  ScaleBoundaries get scaleBoundaries => controller.scaleBoundaries;
 
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
 
@@ -29,24 +25,24 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
   /// Mark if scale need recalculation, useful for scale boundaries changes.
   bool markNeedsScaleRecalc = true;
 
-  final List<StreamSubscription> _streamSubs = [];
+  final List<StreamSubscription> _subscriptions = [];
 
   void startListeners() {
-    _streamSubs.add(controller.outputStateStream.listen(_onMagnifierStateChange));
-    _streamSubs.add(scaleStateController.scaleStateChangeStream.listen(_onScaleStateChange));
+    _subscriptions.add(controller.stateStream.listen(_onMagnifierStateChange));
+    _subscriptions.add(controller.scaleStateChangeStream.listen(_onScaleStateChange));
   }
 
   void _onScaleStateChange(ScaleStateChange scaleStateChange) {
     if (scaleStateChange.source == ChangeSource.internal) return;
-    if (!scaleStateController.hasChanged) return;
+    if (!controller.hasScaleSateChanged) return;
 
-    if (_animateScale == null || scaleStateController.isZooming) {
-      controller.setScale(scale, scaleStateChange.source);
+    if (_animateScale == null || controller.isZooming) {
+      controller.update(scale: scale, source: scaleStateChange.source);
       return;
     }
 
     final nextScaleState = scaleStateChange.state;
-    final nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
+    final nextScale = controller.getScaleForScaleState(nextScaleState);
     var nextPosition = Offset.zero;
     if (nextScaleState == ScaleState.covering || nextScaleState == ScaleState.originalSize) {
       final childFocalPoint = scaleStateChange.childFocalPoint;
@@ -55,31 +51,31 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
       }
     }
 
-    final prevScale = controller.scale ?? getScaleForScaleState(scaleStateController.prevScaleState.state, scaleBoundaries);
+    final prevScale = controller.scale ?? controller.getScaleForScaleState(controller.previousScaleState.state);
     _animateScale(prevScale, nextScale, nextPosition);
   }
 
-  void addAnimateOnScaleStateUpdate(void Function(double prevScale, double nextScale, Offset nextPosition) animateScale) {
+  void setScaleStateUpdateAnimation(void Function(double prevScale, double nextScale, Offset nextPosition) animateScale) {
     _animateScale = animateScale;
   }
 
   void _onMagnifierStateChange(MagnifierState state) {
-    controller.setPosition(clampPosition(), state.source);
-    if (controller.scale == controller.prevValue.scale) return;
+    controller.update(position: clampPosition(), source: state.source);
+    if (controller.scale == controller.previousState.scale) return;
 
     if (state.source == ChangeSource.internal || state.source == ChangeSource.animation) return;
     final newScaleState = (scale > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
-    scaleStateController.setScaleState(newScaleState, state.source);
+    controller.setScaleState(newScaleState, state.source);
   }
 
   Offset get position => controller.position;
 
   double get scale {
-    final scaleState = scaleStateController.scaleState.state;
+    final scaleState = controller.scaleState.state;
     final needsRecalc = markNeedsScaleRecalc && !(scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut);
     final scaleExistsOnController = controller.scale != null;
     if (needsRecalc || !scaleExistsOnController) {
-      final newScale = getScaleForScaleState(scaleState, scaleBoundaries);
+      final newScale = controller.getScaleForScaleState(scaleState);
       markNeedsScaleRecalc = false;
       setScale(newScale, ChangeSource.internal);
       return newScale;
@@ -87,14 +83,14 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     return controller.scale;
   }
 
-  void setScale(double scale, ChangeSource source) => controller.setScale(scale, source);
+  void setScale(double scale, ChangeSource source) => controller.update(scale: scale, source: source);
 
   void updateMultiple({
-    Offset position,
-    double scale,
+    @required Offset position,
+    @required double scale,
     @required ChangeSource source,
   }) {
-    controller.updateMultiple(position: position, scale: scale, source: source);
+    controller.update(position: position, scale: scale, source: source);
   }
 
   void updateScaleStateFromNewScale(double newScale, ChangeSource source) {
@@ -102,19 +98,16 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     if (scale != scaleBoundaries.initialScale) {
       newScaleState = (newScale > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
     }
-    scaleStateController.setScaleState(newScaleState, source);
+    controller.setScaleState(newScaleState, source);
   }
 
   void nextScaleState(ChangeSource source, {Offset childFocalPoint}) {
-    final scaleState = scaleStateController.scaleState.state;
+    final scaleState = controller.scaleState.state;
     if (scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut) {
-      scaleStateController.setScaleState(scaleStateCycle(scaleState), source, childFocalPoint: childFocalPoint);
+      controller.setScaleState(scaleStateCycle(scaleState), source, childFocalPoint: childFocalPoint);
       return;
     }
-    final originalScale = getScaleForScaleState(
-      scaleState,
-      scaleBoundaries,
-    );
+    final originalScale = controller.getScaleForScaleState(scaleState);
 
     var prevScale = originalScale;
     var prevScaleState = scaleState;
@@ -125,11 +118,11 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
       prevScale = nextScale;
       prevScaleState = nextScaleState;
       nextScaleState = scaleStateCycle(prevScaleState);
-      nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
+      nextScale = controller.getScaleForScaleState(nextScaleState);
     } while (prevScale == nextScale && scaleState != nextScaleState);
 
     if (originalScale == nextScale) return;
-    scaleStateController.setScaleState(nextScaleState, source, childFocalPoint: childFocalPoint);
+    controller.setScaleState(nextScaleState, source, childFocalPoint: childFocalPoint);
   }
 
   CornersRange cornersX({double scale}) {
@@ -188,29 +181,9 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
   @override
   void dispose() {
     _animateScale = null;
-    _streamSubs.forEach((sub) => sub.cancel());
-    _streamSubs.clear();
+    _subscriptions.forEach((sub) => sub.cancel());
+    _subscriptions.clear();
     super.dispose();
-  }
-
-  double getScaleForScaleState(
-    ScaleState scaleState,
-    ScaleBoundaries scaleBoundaries,
-  ) {
-    double _clamp(double scale, ScaleBoundaries boundaries) => scale.clamp(boundaries.minScale, boundaries.maxScale);
-
-    switch (scaleState) {
-      case ScaleState.initial:
-      case ScaleState.zoomedIn:
-      case ScaleState.zoomedOut:
-        return _clamp(scaleBoundaries.initialScale, scaleBoundaries);
-      case ScaleState.covering:
-        return _clamp(ScaleLevel.scaleForCovering(scaleBoundaries.viewportSize, scaleBoundaries.childSize), scaleBoundaries);
-      case ScaleState.originalSize:
-        return _clamp(1.0, scaleBoundaries);
-      default:
-        return null;
-    }
   }
 }
 

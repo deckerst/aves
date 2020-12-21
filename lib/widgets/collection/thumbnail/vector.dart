@@ -1,6 +1,10 @@
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/settings/settings.dart';
+import 'dart:math';
+
 import 'package:aves/image_providers/uri_picture_provider.dart';
+import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/settings/entry_background.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -19,23 +23,39 @@ class ThumbnailVectorImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = Container(
-      // center `SvgPicture` inside `Container` with the thumbnail dimensions
-      // so that `SvgPicture` doesn't get aligned by the `Stack` like the overlay icons
-      width: extent,
-      height: extent,
-      child: Selector<Settings, int>(
-        selector: (context, s) => s.svgBackground,
-        builder: (context, svgBackground, child) {
-          final colorFilter = ColorFilter.mode(Color(svgBackground), BlendMode.dstOver);
-          return SvgPicture(
-            UriPicture(
-              uri: entry.uri,
-              mimeType: entry.mimeType,
-              colorFilter: colorFilter,
-            ),
-            width: extent,
-            height: extent,
+    final pictureProvider = UriPicture(
+      uri: entry.uri,
+      mimeType: entry.mimeType,
+    );
+
+    final child = Center(
+      child: Selector<Settings, EntryBackground>(
+        selector: (context, s) => s.vectorBackground,
+        builder: (context, background, child) {
+          if (background == EntryBackground.transparent) {
+            return SvgPicture(
+              pictureProvider,
+              width: extent,
+              height: extent,
+            );
+          }
+
+          final longestSide = max(entry.width, entry.height);
+          final picture = SvgPicture(
+            pictureProvider,
+            width: extent * (entry.width / longestSide),
+            height: extent * (entry.height / longestSide),
+          );
+
+          Decoration decoration;
+          if (background == EntryBackground.checkered) {
+            decoration = CheckeredDecoration(checkSize: extent / 8);
+          } else if (background.isColor) {
+            decoration = BoxDecoration(color: background.color);
+          }
+          return DecoratedBox(
+            decoration: decoration,
+            child: picture,
           );
         },
       ),
