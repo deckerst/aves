@@ -43,6 +43,7 @@ class DecoratedThumbnail extends StatelessWidget {
           );
 
     child = Stack(
+      alignment: Alignment.center,
       children: [
         child,
         Positioned(

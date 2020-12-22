@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/entry_background.dart';
@@ -23,42 +21,47 @@ class ThumbnailVectorImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pictureProvider = UriPicture(
-      uri: entry.uri,
-      mimeType: entry.mimeType,
-    );
-
-    final child = Center(
-      child: Selector<Settings, EntryBackground>(
-        selector: (context, s) => s.vectorBackground,
-        builder: (context, background, child) {
-          if (background == EntryBackground.transparent) {
-            return SvgPicture(
-              pictureProvider,
-              width: extent,
-              height: extent,
-            );
-          }
-
-          final longestSide = max(entry.width, entry.height);
-          final picture = SvgPicture(
-            pictureProvider,
-            width: extent * (entry.width / longestSide),
-            height: extent * (entry.height / longestSide),
+    final child = Selector<Settings, EntryBackground>(
+      selector: (context, s) => s.vectorBackground,
+      builder: (context, background, child) {
+        const fit = BoxFit.contain;
+        if (background == EntryBackground.checkered) {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final availableSize = constraints.biggest;
+              final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
+              final offset = fitSize / 2 - availableSize / 2;
+              final child = DecoratedBox(
+                decoration: CheckeredDecoration(checkSize: extent / 8, offset: offset),
+                child: SvgPicture(
+                  UriPicture(
+                    uri: entry.uri,
+                    mimeType: entry.mimeType,
+                  ),
+                  width: fitSize.width,
+                  height: fitSize.height,
+                  fit: fit,
+                ),
+              );
+              // the thumbnail is centered for correct decoration sizing
+              // when constraints are tight during hero animation
+              return constraints.isTight ? Center(child: child) : child;
+            },
           );
+        }
 
-          Decoration decoration;
-          if (background == EntryBackground.checkered) {
-            decoration = CheckeredDecoration(checkSize: extent / 8);
-          } else if (background.isColor) {
-            decoration = BoxDecoration(color: background.color);
-          }
-          return DecoratedBox(
-            decoration: decoration,
-            child: picture,
-          );
-        },
-      ),
+        final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
+        return SvgPicture(
+          UriPicture(
+            uri: entry.uri,
+            mimeType: entry.mimeType,
+            colorFilter: colorFilter,
+          ),
+          width: extent,
+          height: extent,
+          fit: fit,
+        );
+      },
     );
     return heroTag == null
         ? child
