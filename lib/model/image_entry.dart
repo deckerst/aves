@@ -63,6 +63,8 @@ class ImageEntry {
 
   bool get canDecode => !undecodable.contains(mimeType);
 
+  bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
+
   ImageEntry copyWith({
     @required String uri,
     @required String path,
