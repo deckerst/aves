@@ -38,8 +38,9 @@ class MagnifierCore extends StatefulWidget {
 }
 
 class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
-  Offset _prevViewportFocalPosition;
-  double _gestureStartScale;
+  Offset _startFocalPoint, _lastViewportFocalPosition;
+  double _startScale, _quickScaleLastY, _quickScaleLastDistance;
+  bool _doubleTap, _quickScaleMoved;
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -57,18 +58,40 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
     controller.update(position: _positionAnimation.value, source: ChangeSource.animation);
   }
 
-  void onScaleStart(ScaleStartDetails details) {
-    _gestureStartScale = scale;
-    _prevViewportFocalPosition = details.localFocalPoint;
+  void onScaleStart(ScaleStartDetails details, bool doubleTap) {
+    _startScale = scale;
+    _startFocalPoint = details.localFocalPoint;
+    _lastViewportFocalPosition = _startFocalPoint;
+    _doubleTap = doubleTap;
+    _quickScaleLastDistance = null;
+    _quickScaleLastY = _startFocalPoint.dy;
+    _quickScaleMoved = false;
 
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
-    final newScale = _gestureStartScale * details.scale;
-    final panPositionDelta = details.focalPoint - _prevViewportFocalPosition;
-    final scalePositionDelta = scaleBoundaries.viewportToStatePosition(controller, details.focalPoint) * (scale / newScale - 1);
+    double newScale;
+    if (_doubleTap) {
+      // quick scale, aka one finger zoom
+      // magic numbers from `davemorrissey/subsampling-scale-image-view`
+      final focalPointY = details.focalPoint.dy;
+      final distance = (focalPointY - _startFocalPoint.dy).abs() * 2 + 20;
+      _quickScaleLastDistance ??= distance;
+      final spanDiff = (1 - (distance / _quickScaleLastDistance)).abs() * .5;
+      _quickScaleMoved |= spanDiff > .03;
+      final factor = _quickScaleMoved ? (focalPointY > _quickScaleLastY ? (1 + spanDiff) : (1 - spanDiff)) : 1;
+      _quickScaleLastDistance = distance;
+      _quickScaleLastY = focalPointY;
+      newScale = scale * factor;
+    } else {
+      newScale = _startScale * details.scale;
+    }
+    final scaleFocalPoint = _doubleTap ? _startFocalPoint : details.focalPoint;
+
+    final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition;
+    final scalePositionDelta = scaleBoundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale / newScale - 1);
     final newPosition = position + panPositionDelta + scalePositionDelta;
 
     updateScaleStateFromNewScale(newScale, ChangeSource.gesture);
@@ -78,7 +101,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
       source: ChangeSource.gesture,
     );
 
-    _prevViewportFocalPosition = details.focalPoint;
+    _lastViewportFocalPosition = scaleFocalPoint;
   }
 
   void onScaleEnd(ScaleEndDetails details) {
@@ -116,7 +139,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
     final magnitude = details.velocity.pixelsPerSecond.distance;
 
     // animate velocity only if there is no scale change and a significant magnitude
-    if (_gestureStartScale / _scale == 1.0 && magnitude >= 400.0) {
+    if (_startScale / _scale == 1.0 && magnitude >= 400.0) {
       final direction = details.velocity.pixelsPerSecond / magnitude;
       animatePosition(
         _position,
