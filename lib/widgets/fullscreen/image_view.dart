@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:math';
 
-import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/entry_background.dart';
@@ -30,6 +28,8 @@ class ImageView extends StatefulWidget {
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final VoidCallback onDisposed;
 
+  static const decorationCheckSize = 20.0;
+
   const ImageView({
     Key key,
     @required this.entry,
@@ -55,8 +55,6 @@ class _ImageViewState extends State<ImageView> {
   ImageEntry get entry => widget.entry;
 
   MagnifierTapCallback get onTap => widget.onTap;
-
-  static const decorationCheckSize = 20.0;
 
   @override
   void initState() {
@@ -98,25 +96,6 @@ class _ImageViewState extends State<ImageView> {
         : child;
   }
 
-  ImageProvider get fastThumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
-
-  // this loading builder shows a transition image until the final image is ready
-  // if the image is already in the cache it will show the final image, otherwise the thumbnail
-  // in any case, we should use `Center` + `AspectRatio` + `BoxFit.fill` so that the transition image
-  // is laid the same way as the final image when `contained`
-  Widget _loadingBuilder(BuildContext context, ImageProvider imageProvider) {
-    return Center(
-      child: AspectRatio(
-        // enforce original aspect ratio, as some thumbnails aspect ratios slightly differ
-        aspectRatio: entry.displayAspectRatio,
-        child: Image(
-          image: imageProvider,
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
-  }
-
   Widget _buildRasterView() {
     return Magnifier(
       // key includes size and orientation to refresh when the image is rotated
@@ -124,7 +103,6 @@ class _ImageViewState extends State<ImageView> {
       child: TiledImageView(
         entry: entry,
         viewStateNotifier: _viewStateNotifier,
-        baseChild: _loadingBuilder(context, fastThumbnailProvider),
         errorBuilder: (context, error, stackTrace) => ErrorChild(onTap: () => onTap?.call(null)),
       ),
       childSize: entry.displaySize,
@@ -165,11 +143,11 @@ class _ImageViewState extends State<ImageView> {
           if (viewportSize == null) return child;
 
           final side = viewportSize.shortestSide;
-          final checkSize = side / ((side / decorationCheckSize).round());
+          final checkSize = side / ((side / ImageView.decorationCheckSize).round());
 
           final viewSize = entry.displaySize * viewState.scale;
-          final decorationSize = Size(min(viewSize.width, viewportSize.width), min(viewSize.height, viewportSize.height));
-          final offset = Offset(decorationSize.width - viewportSize.width, decorationSize.height - viewportSize.height) / 2;
+          final decorationSize = applyBoxFit(BoxFit.none, viewSize, viewportSize).source;
+          final offset = ((decorationSize - viewportSize) as Offset) / 2;
 
           return Stack(
             alignment: Alignment.center,

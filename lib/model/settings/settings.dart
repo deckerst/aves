@@ -55,6 +55,7 @@ class Settings extends ChangeNotifier {
   static const coordinateFormatKey = 'coordinates_format';
 
   // rendering
+  static const rasterBackgroundKey = 'raster_background';
   static const vectorBackgroundKey = 'vector_background';
 
   // search
@@ -184,6 +185,10 @@ class Settings extends ChangeNotifier {
   set coordinateFormat(CoordinateFormat newValue) => setAndNotify(coordinateFormatKey, newValue.toString());
 
   // rendering
+
+  EntryBackground get rasterBackground => getEnumOrDefault(rasterBackgroundKey, EntryBackground.transparent, EntryBackground.values);
+
+  set rasterBackground(EntryBackground newValue) => setAndNotify(rasterBackgroundKey, newValue.toString());
 
   EntryBackground get vectorBackground => getEnumOrDefault(vectorBackgroundKey, EntryBackground.white, EntryBackground.values);
 
