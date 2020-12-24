@@ -19,6 +19,7 @@ class MagnifierCore extends StatefulWidget {
     @required this.controller,
     @required this.scaleStateCycle,
     @required this.applyScale,
+    this.panInertia = .2,
   }) : super(key: key);
 
   final Widget child;
@@ -30,6 +31,7 @@ class MagnifierCore extends StatefulWidget {
 
   final HitTestBehavior gestureDetectorBehavior;
   final bool applyScale;
+  final double panInertia;
 
   @override
   State<StatefulWidget> createState() {
@@ -41,6 +43,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
   Offset _startFocalPoint, _lastViewportFocalPosition;
   double _startScale, _quickScaleLastY, _quickScaleLastDistance;
   bool _doubleTap, _quickScaleMoved;
+  DateTime _lastScaleGestureDate;
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -105,47 +108,55 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    final _scale = scale;
     final _position = controller.position;
+    final _scale = controller.scale;
     final maxScale = scaleBoundaries.maxScale;
     final minScale = scaleBoundaries.minScale;
 
-    //animate back to maxScale if gesture exceeded the maxScale specified
-    if (_scale > maxScale) {
-      final scaleComebackRatio = maxScale / _scale;
-      animateScale(_scale, maxScale);
-      final clampedPosition = clampPosition(
-        position: _position * scaleComebackRatio,
-        scale: maxScale,
-      );
-      animatePosition(_position, clampedPosition);
+    // animate back to min/max scale if gesture yielded a scale exceeding them
+    if (_scale > maxScale || _scale < minScale) {
+      final newScale = _scale.clamp(minScale, maxScale);
+      final newPosition = clampPosition(position: _position * newScale / _scale, scale: newScale);
+      animateScale(_scale, newScale);
+      animatePosition(_position, newPosition);
       return;
     }
 
-    //animate back to minScale if gesture fell smaller than the minScale specified
-    if (_scale < minScale) {
-      final scaleComebackRatio = minScale / _scale;
-      animateScale(_scale, minScale);
-      animatePosition(
-        _position,
-        clampPosition(
-          position: _position * scaleComebackRatio,
-          scale: minScale,
-        ),
-      );
-      return;
-    }
-    // get magnitude from gesture velocity
-    final magnitude = details.velocity.pixelsPerSecond.distance;
+    // The gesture recognizer triggers a new `onScaleStart` every time a pointer/finger is added or removed.
+    // Following a pinch-to-zoom gesture, a new panning gesture may start if the user does not lift both fingers at the same time,
+    // so we dismiss such panning gestures when it looks like it followed a scaling gesture.
+    final isPanning = _scale == _startScale && (DateTime.now().difference(_lastScaleGestureDate)).inMilliseconds > 100;
 
-    // animate velocity only if there is no scale change and a significant magnitude
-    if (_startScale / _scale == 1.0 && magnitude >= 400.0) {
-      final direction = details.velocity.pixelsPerSecond / magnitude;
-      animatePosition(
-        _position,
-        clampPosition(position: _position + direction * 100.0),
-      );
+    // animate position only when panning without scaling
+    if (isPanning) {
+      final pps = details.velocity.pixelsPerSecond;
+      if (pps != Offset.zero) {
+        final newPosition = clampPosition(position: _position + pps * widget.panInertia);
+        final tween = Tween<Offset>(begin: _position, end: newPosition);
+        const curve = Curves.easeOutCubic;
+        _positionAnimation = tween.animate(CurvedAnimation(parent: _positionAnimationController, curve: curve));
+        _positionAnimationController
+          ..duration = _getAnimationDurationForVelocity(curve: curve, tween: tween, targetPixelPerSecond: pps)
+          ..forward(from: 0.0);
+      }
     }
+
+    if (_scale != _startScale) {
+      _lastScaleGestureDate = DateTime.now();
+    }
+  }
+
+  Duration _getAnimationDurationForVelocity({
+    Cubic curve,
+    Tween<Offset> tween,
+    Offset targetPixelPerSecond,
+  }) {
+    assert(targetPixelPerSecond != Offset.zero);
+    // find initial animation velocity over the first 20% of the specified curve
+    const t = 0.2;
+    final animationVelocity = (tween.end - tween.begin).distance * curve.transform(t) / t;
+    final gestureVelocity = targetPixelPerSecond.distance;
+    return Duration(milliseconds: (animationVelocity / gestureVelocity * 1000).round());
   }
 
   void onTap(TapUpDetails details) {
