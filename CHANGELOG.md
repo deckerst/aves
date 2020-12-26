@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.3.0] - 2020-12-26
+### Added
+- Viewer: quick scale (aka one finger zoom)
+- Viewer: optional checkered background for transparent images
+
+### Changed
+- Viewer: changed panning inertia
+
+### Fixed
+- Viewer: fixed scaling focus when zooming by double-tap or pinch
+- Viewer: fixed panning during scaling
+
 ## [v1.2.9] - 2020-12-12
 ### Added
 - Collection: identify 360 photos/videos, GeoTIFF

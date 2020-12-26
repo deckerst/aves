@@ -177,9 +177,9 @@ class _AlbumFilterBarState extends State<AlbumFilterBar> {
           ),
           ConstrainedBox(
             constraints: BoxConstraints(minWidth: 16),
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) => AnimatedSwitcher(
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _controller,
+              builder: (context, value, child) => AnimatedSwitcher(
                 duration: Durations.appBarActionChangeAnimation,
                 transitionBuilder: (child, animation) => FadeTransition(
                   opacity: animation,
@@ -189,7 +189,7 @@ class _AlbumFilterBarState extends State<AlbumFilterBar> {
                     child: child,
                   ),
                 ),
-                child: _controller.text.isNotEmpty ? clearButton : SizedBox.shrink(),
+                child: value.text.isNotEmpty ? clearButton : SizedBox.shrink(),
               ),
             ),
           )

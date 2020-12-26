@@ -300,9 +300,7 @@ class ImageOpEvent {
   int get hashCode => hashValues(success, uri);
 
   @override
-  String toString() {
-    return 'ImageOpEvent{success=$success, uri=$uri}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri}';
 }
 
 class MoveOpEvent extends ImageOpEvent {
@@ -323,9 +321,7 @@ class MoveOpEvent extends ImageOpEvent {
   }
 
   @override
-  String toString() {
-    return 'MoveOpEvent{success=$success, uri=$uri, newFields=$newFields}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri, newFields=$newFields}';
 }
 
 // cf flutter/foundation `consolidateHttpClientResponseBytes`

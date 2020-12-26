@@ -8,7 +8,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/access_grants.dart';
-import 'package:aves/widgets/settings/svg_background.dart';
+import 'package:aves/widgets/settings/entry_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -115,8 +115,18 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
         ListTile(
-          title: Text('SVG background'),
-          trailing: SvgBackgroundSelector(),
+          title: Text('Raster image background'),
+          trailing: EntryBackgroundSelector(
+            getter: () => settings.rasterBackground,
+            setter: (value) => settings.rasterBackground = value,
+          ),
+        ),
+        ListTile(
+          title: Text('Vector image background'),
+          trailing: EntryBackgroundSelector(
+            getter: () => settings.vectorBackground,
+            setter: (value) => settings.vectorBackground = value,
+          ),
         ),
         ListTile(
           title: Text('Coordinate format'),

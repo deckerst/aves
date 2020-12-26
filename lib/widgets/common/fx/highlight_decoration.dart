@@ -6,15 +6,15 @@ class HighlightDecoration extends Decoration {
   const HighlightDecoration({@required this.color});
 
   @override
-  HighlightDecorationPainter createBoxPainter([VoidCallback onChanged]) {
-    return HighlightDecorationPainter(this, onChanged);
+  _HighlightDecorationPainter createBoxPainter([VoidCallback onChanged]) {
+    return _HighlightDecorationPainter(this, onChanged);
   }
 }
 
-class HighlightDecorationPainter extends BoxPainter {
+class _HighlightDecorationPainter extends BoxPainter {
   final HighlightDecoration decoration;
 
-  const HighlightDecorationPainter(this.decoration, VoidCallback onChanged) : super(onChanged);
+  const _HighlightDecorationPainter(this.decoration, VoidCallback onChanged) : super(onChanged);
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {

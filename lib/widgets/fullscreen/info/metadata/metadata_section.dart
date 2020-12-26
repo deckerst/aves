@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
@@ -10,8 +11,8 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
-import 'package:aves/widgets/fullscreen/info/metadata/svg_tile.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/xmp_tile.dart';
+import 'package:aves/widgets/fullscreen/source_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -91,9 +92,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         // cancel notification bubbling so that the info page
         // does not misinterpret content scrolling for page scrolling
         onNotification: (notification) => true,
-        child: AnimatedBuilder(
-          animation: _loadedMetadataUri,
-          builder: (context, child) {
+        child: ValueListenableBuilder<String>(
+          valueListenable: _loadedMetadataUri,
+          builder: (context, uri, child) {
             Widget content;
             if (_metadata.isEmpty) {
               content = SizedBox.shrink();
@@ -118,7 +119,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
             return AnimationLimiter(
               // we update the limiter key after fetching the metadata of a new entry,
               // in order to restart the staggered animation of the metadata section
-              key: Key(_loadedMetadataUri.value),
+              key: Key(uri),
               child: content,
             );
           },
@@ -175,7 +176,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           child: InfoRowGroup(
             dir.tags,
             maxValueLength: Constants.infoGroupMaxValueLength,
-            linkHandlers: dirName == SvgMetadata.metadataDirectory ? SvgMetadata.getLinkHandlers(dir.tags) : null,
+            linkHandlers: dirName == SvgMetadataService.metadataDirectory ? getSvgLinkHandlers(dir.tags) : null,
           ),
         ),
       ],
@@ -192,7 +193,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     if (entry == null) return;
     if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
-      final rawMetadata = await (entry.isSvg ? SvgMetadata.getAllMetadata(entry) : MetadataService.getAllMetadata(entry)) ?? {};
+      final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : MetadataService.getAllMetadata(entry)) ?? {};
       final directories = rawMetadata.entries.map((dirKV) {
         var directoryName = dirKV.key as String ?? '';
 
@@ -228,6 +229,25 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       _loadedMetadataUri.value = null;
     }
     _expandedDirectoryNotifier.value = null;
+  }
+
+  static Map<String, InfoLinkHandler> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
+    return {
+      'Metadata': InfoLinkHandler(
+        linkText: 'View XML',
+        onTap: (context) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              settings: RouteSettings(name: SourceViewerPage.routeName),
+              builder: (context) => SourceViewerPage(
+                loader: () => SynchronousFuture(tags['Metadata']),
+              ),
+            ),
+          );
+        },
+      ),
+    };
   }
 
   @override

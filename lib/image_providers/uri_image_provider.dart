@@ -80,5 +80,5 @@ class UriImage extends ImageProvider<UriImage> {
   int get hashCode => hashValues(uri, scale);
 
   @override
-  String toString() => '${objectRuntimeType(this, 'UriImage')}(uri=$uri, mimeType=$mimeType, scale=$scale)';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, scale=$scale}';
 }

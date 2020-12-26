@@ -88,7 +88,5 @@ class MimeFilter extends CollectionFilter {
   int get hashCode => hashValues(type, mime);
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{mime=$mime}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{mime=$mime}';
 }
