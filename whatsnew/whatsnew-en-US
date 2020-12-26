@@ -1,7 +1,5 @@
 Thanks for using Aves!
-v1.2.9:
-- identify 360 photos/videos, GeoTIFF
-- open panoramas (360 photos)
-- open GImage/GAudio/GDepth media and thumbnails embedded in XMP
-- improved large TIFF handling
+v1.3.0:
+- added quick scale (aka one finger zoom) gesture to the viewer
+- fixed zoom focus with double-tap or pinch-to-zoom gestures
 Full changelog available on Github

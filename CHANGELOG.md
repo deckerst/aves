@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.3.0] - 2020-12-26
 ### Added
 - Viewer: quick scale (aka one finger zoom)
 - Viewer: optional checkered background for transparent images
