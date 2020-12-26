@@ -11,6 +11,7 @@ import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -32,7 +33,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getGrantedDirectories" -> result.success(ArrayList(PermissionManager.getGrantedDirs(context)))
             "getInaccessibleDirectories" -> getInaccessibleDirectories(call, result)
             "revokeDirectoryAccess" -> revokeDirectoryAccess(call, result)
-            "scanFile" -> GlobalScope.launch { scanFile(call, Coresult(result)) }
+            "scanFile" -> GlobalScope.launch(Dispatchers.IO) { scanFile(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }

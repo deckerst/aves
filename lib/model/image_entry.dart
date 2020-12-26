@@ -7,6 +7,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
+import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/time_utils.dart';
@@ -24,8 +25,6 @@ class ImageEntry {
   String _path, _directory, _filename, _extension;
   int contentId;
   final String sourceMimeType;
-
-  // TODO TLAD use SVG viewport as width/height
   int width;
   int height;
   int sourceRotationDegrees;
@@ -63,6 +62,8 @@ class ImageEntry {
   }
 
   bool get canDecode => !undecodable.contains(mimeType);
+
+  bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
   ImageEntry copyWith({
     @required String uri,
@@ -134,9 +135,7 @@ class ImageEntry {
   }
 
   @override
-  String toString() {
-    return 'ImageEntry{uri=$uri, path=$path}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path}';
 
   set path(String path) {
     _path = path;
@@ -238,10 +237,24 @@ class ImageEntry {
   // but it would take space and time, so a basic workaround will do.
   bool get isPortrait => rotationDegrees % 180 == 90 && (catalogMetadata?.rotationDegrees == null || width > height);
 
+  static const ratioSeparator = '\u2236';
+  static const resolutionSeparator = ' \u00D7 ';
+
   String get resolutionText {
     final w = width ?? '?';
     final h = height ?? '?';
-    return isPortrait ? '$h × $w' : '$w × $h';
+    return isPortrait ? '$h$resolutionSeparator$w' : '$w$resolutionSeparator$h';
+  }
+
+  String get aspectRatioText {
+    if (width != null && height != null && width > 0 && height > 0) {
+      final gcd = width.gcd(height);
+      final w = width ~/ gcd;
+      final h = height ~/ gcd;
+      return isPortrait ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
+    } else {
+      return '?$ratioSeparator?';
+    }
   }
 
   double get displayAspectRatio {
@@ -321,7 +334,7 @@ class ImageEntry {
   String _bestTitle;
 
   String get bestTitle {
-    _bestTitle ??= (isCatalogued && _catalogMetadata.xmpTitleDescription.isNotEmpty) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= (isCatalogued && _catalogMetadata.xmpTitleDescription?.isNotEmpty == true) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
     return _bestTitle;
   }
 
@@ -352,7 +365,20 @@ class ImageEntry {
 
   Future<void> catalog({bool background = false}) async {
     if (isCatalogued) return;
-    catalogMetadata = await MetadataService.getCatalogMetadata(this, background: background);
+    if (isSvg) {
+      // vector image sizing is not essential, so we should not spend time for it during loading
+      // but it is useful anyway (for aspect ratios etc.) so we size them during cataloguing
+      final size = await SvgMetadataService.getSize(this);
+      if (size != null) {
+        await _applyNewFields({
+          'width': size.width.round(),
+          'height': size.height.round(),
+        });
+      }
+      catalogMetadata = CatalogMetadata(contentId: contentId);
+    } else {
+      catalogMetadata = await MetadataService.getCatalogMetadata(this, background: background);
+    }
   }
 
   AddressDetails get addressDetails => _addressDetails;
@@ -449,6 +475,12 @@ class ImageEntry {
       this.sourceTitle = sourceTitle;
       _bestTitle = null;
     }
+
+    final width = newFields['width'];
+    if (width is int) this.width = width;
+    final height = newFields['height'];
+    if (height is int) this.height = height;
+
     final dateModifiedSecs = newFields['dateModifiedSecs'];
     if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
     final rotationDegrees = newFields['rotationDegrees'];

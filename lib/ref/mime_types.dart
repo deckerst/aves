@@ -1,15 +1,17 @@
 class MimeTypes {
   static const anyImage = 'image/*';
 
+  static const bmp = 'image/bmp';
   static const gif = 'image/gif';
   static const heic = 'image/heic';
   static const heif = 'image/heif';
+  static const ico = 'image/x-icon';
   static const jpeg = 'image/jpeg';
   static const png = 'image/png';
   static const svg = 'image/svg+xml';
+  static const tiff = 'image/tiff';
   static const webp = 'image/webp';
 
-  static const tiff = 'image/tiff';
   static const psd = 'image/vnd.adobe.photoshop';
 
   static const arw = 'image/x-sony-arw';
@@ -40,6 +42,10 @@ class MimeTypes {
   static const mp4 = 'video/mp4';
 
   // groups
+
+  // formats that support transparency
+  static const List<String> alphaImages = [bmp, gif, ico, png, svg, tiff, webp];
+
   static const List<String> rawImages = [arw, cr2, crw, dcr, dng, erf, k25, kdc, mrw, nef, nrw, orf, pef, raf, raw, rw2, sr2, srf, srw, x3f];
 
   static bool isImage(String mimeType) => mimeType.startsWith('image');

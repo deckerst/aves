@@ -48,7 +48,5 @@ class TagFilter extends CollectionFilter {
   int get hashCode => hashValues(type, tag);
 
   @override
-  String toString() {
-    return '$runtimeType#${shortHash(this)}{tag=$tag}';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{tag=$tag}';
 }

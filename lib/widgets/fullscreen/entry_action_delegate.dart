@@ -15,8 +15,6 @@ import 'package:aves/widgets/fullscreen/source_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
@@ -100,34 +98,32 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     final documentName = entry.bestTitle ?? 'Aves';
     final doc = pdf.Document(title: documentName);
 
-    PdfImage pdfImage;
+    pdf.Widget pdfChild;
     if (entry.isSvg) {
       final bytes = await ImageFileService.getImage(uri, mimeType, entry.rotationDegrees, entry.isFlipped);
       if (bytes != null && bytes.isNotEmpty) {
-        final svgRoot = await svg.fromSvgBytes(bytes, uri);
-        final viewBox = svgRoot.viewport.viewBox;
-        // 1000 is arbitrary, but large enough to look ok in the print preview
-        final targetSize = viewBox * 1000 / viewBox.longestSide;
-        final picture = svgRoot.toPicture(size: targetSize);
-        final uiImage = await picture.toImage(targetSize.width.ceil(), targetSize.height.ceil());
-        pdfImage = await pdfImageFromImage(
-          pdf: doc.document,
-          image: uiImage,
-        );
+        pdfChild = pdf.SvgImage(svg: utf8.decode(bytes));
       }
     } else {
-      pdfImage = await pdfImageFromImageProvider(
-        pdf: doc.document,
-        image: UriImage(
+      pdfChild = pdf.Image.provider(await flutterImageProvider(
+        UriImage(
           uri: uri,
           mimeType: mimeType,
           rotationDegrees: rotationDegrees,
           isFlipped: isFlipped,
         ),
-      );
+      ));
     }
-    if (pdfImage != null) {
-      doc.addPage(pdf.Page(build: (context) => pdf.Center(child: pdf.Image(pdfImage)))); // Page
+    if (pdfChild != null) {
+      doc.addPage(pdf.Page(
+        orientation: entry.isPortrait ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
+        build: (context) => pdf.FullPage(
+          ignoreMargins: true,
+          child: pdf.Center(
+            child: pdfChild,
+          ),
+        ),
+      )); // Page
       unawaited(Printing.layoutPdf(
         onLayout: (format) => doc.save(),
         name: documentName,

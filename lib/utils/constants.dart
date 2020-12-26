@@ -240,12 +240,6 @@ class Constants {
       sourceUrl: 'https://github.com/Baseflow/flutter-permission-handler',
     ),
     Dependency(
-      name: 'Photo View',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/renancaraujo/photo_view/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/renancaraujo/photo_view',
-    ),
-    Dependency(
       name: 'Printing',
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/DavBfr/dart_pdf/blob/master/LICENSE',

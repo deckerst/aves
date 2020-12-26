@@ -25,6 +25,7 @@ import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
@@ -36,12 +37,12 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getContextDirs" -> result.success(getContextDirs())
             "getEnv" -> result.success(System.getenv())
-            "getBitmapFactoryInfo" -> GlobalScope.launch { getBitmapFactoryInfo(call, Coresult(result)) }
-            "getContentResolverMetadata" -> GlobalScope.launch { getContentResolverMetadata(call, Coresult(result)) }
-            "getExifInterfaceMetadata" -> GlobalScope.launch { getExifInterfaceMetadata(call, Coresult(result)) }
-            "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
-            "getMetadataExtractorSummary" -> GlobalScope.launch { getMetadataExtractorSummary(call, Coresult(result)) }
-            "getTiffStructure" -> GlobalScope.launch { getTiffStructure(call, Coresult(result)) }
+            "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { getBitmapFactoryInfo(call, Coresult(result)) }
+            "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { getContentResolverMetadata(call, Coresult(result)) }
+            "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { getExifInterfaceMetadata(call, Coresult(result)) }
+            "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch(Dispatchers.IO) { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
+            "getMetadataExtractorSummary" -> GlobalScope.launch(Dispatchers.IO) { getMetadataExtractorSummary(call, Coresult(result)) }
+            "getTiffStructure" -> GlobalScope.launch(Dispatchers.IO) { getTiffStructure(call, Coresult(result)) }
             else -> result.notImplemented()
         }
     }

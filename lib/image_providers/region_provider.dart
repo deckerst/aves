@@ -125,7 +125,5 @@ class RegionProviderKey {
       );
 
   @override
-  String toString() {
-    return 'RegionProviderKey(uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, regionRect=$regionRect, imageSize=$imageSize, scale=$scale)';
-  }
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, regionRect=$regionRect, imageSize=$imageSize, scale=$scale}';
 }
