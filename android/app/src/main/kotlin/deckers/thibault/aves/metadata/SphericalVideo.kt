@@ -6,7 +6,8 @@ import deckers.thibault.aves.utils.LogUtils
 import org.xmlpull.v1.XmlPullParser
 import java.io.ByteArrayInputStream
 
-class GSpherical(bytes: ByteArray) {
+// `xmlBytes`: bytes representing the XML embedded in a MP4 `uuid` box, according to Spherical Video V1 spec
+class GSpherical(xmlBytes: ByteArray) {
     var spherical: Boolean = false
     var stitched: Boolean = false
     var stitchingSoftware: String = ""
@@ -26,7 +27,7 @@ class GSpherical(bytes: ByteArray) {
 
     init {
         try {
-            ByteArrayInputStream(bytes).use {
+            ByteArrayInputStream(xmlBytes).use {
                 val parser = Xml.newPullParser().apply {
                     setInput(it, null)
                     nextTag()
