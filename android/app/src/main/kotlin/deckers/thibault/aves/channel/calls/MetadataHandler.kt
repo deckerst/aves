@@ -144,6 +144,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             if (dir.getString(Mp4UuidBoxDirectory.TAG_UUID) == GSpherical.SPHERICAL_VIDEO_V1_UUID) {
                                 val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
                                 metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
+                                metadataMap.remove(dirName)
                             }
                         }
                     }
