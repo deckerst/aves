@@ -21,17 +21,15 @@ import com.drew.metadata.iptc.IptcDirectory
 import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
+import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDouble
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeInt
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeRational
-import deckers.thibault.aves.metadata.Geotiff
-import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescription
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
-import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
@@ -40,7 +38,6 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
-import deckers.thibault.aves.metadata.XMP
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.metadata.XMP.isPanorama
@@ -141,6 +138,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
                             // remove this stat as it is not actual XMP data
                             dirMap.remove(dir.getTagName(XmpDirectory.TAG_XMP_VALUE_COUNT))
+                        }
+
+                        if (dir is Mp4UuidBoxDirectory) {
+                            if (dir.getString(Mp4UuidBoxDirectory.TAG_UUID) == GSpherical.SPHERICAL_VIDEO_V1_UUID) {
+                                val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
+                                metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
+                            }
                         }
                     }
                 }
@@ -348,7 +352,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
                     // identification of spherical video (aka 360° video)
                     if (metadata.getDirectoriesOfType(Mp4UuidBoxDirectory::class.java).any {
-                            it.getString(Mp4UuidBoxDirectory.TAG_UUID) == Metadata.SPHERICAL_VIDEO_V1_UUID
+                            it.getString(Mp4UuidBoxDirectory.TAG_UUID) == GSpherical.SPHERICAL_VIDEO_V1_UUID
                         }) {
                         flags = flags or MASK_IS_360
                     }
