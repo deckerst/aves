@@ -19,9 +19,6 @@ object Metadata {
     // "+51.3328-000.7053+113.474/" (Apple)
     val VIDEO_LOCATION_PATTERN: Pattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*")
 
-    // cf https://github.com/google/spatial-media
-    const val SPHERICAL_VIDEO_V1_UUID = "ffcc8263-f855-4a93-8814-587a02521fdd"
-
     // directory names, as shown when listing all metadata
     const val DIR_GPS = "GPS" // from metadata-extractor
     const val DIR_XMP = "XMP" // from metadata-extractor
