@@ -168,6 +168,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                 borderRadius: borderRadius,
               ),
               child: InkWell(
+                // as of Flutter v1.22.5, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
+                // so we get the long press details from the tap instead
                 onTapDown: (details) => _tapPosition = details.globalPosition,
                 onTap: widget.onTap != null
                     ? () {

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/grid/header_generic.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -143,6 +144,25 @@ class SectionedListLayout {
     final top = sectionLayout.indexToLayoutOffset(listIndex);
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
   }
+
+  ImageEntry getEntryAt(Offset position) {
+    var dy = position.dy;
+    final sectionLayout = sectionLayouts.firstWhere((sl) => dy < sl.maxOffset, orElse: () => null);
+    if (sectionLayout == null) return null;
+
+    final section = collection.sections[sectionLayout.sectionKey];
+    if (section == null) return null;
+
+    dy -= sectionLayout.minOffset + sectionLayout.headerExtent;
+    if (dy < 0) return null;
+
+    final row = dy ~/ tileExtent;
+    final column = position.dx ~/ tileExtent;
+    final index = row * columnCount + column;
+    if (index >= section.length) return null;
+
+    return section[index];
+  }
 }
 
 class SectionLayout {
@@ -184,4 +204,7 @@ class SectionLayout {
     scrollOffset -= minOffset + headerExtent;
     return firstIndex + (scrollOffset < 0 ? 0 : (scrollOffset / tileExtent).ceil() - 1);
   }
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{sectionKey=$sectionKey, firstIndex=$firstIndex, lastIndex=$lastIndex, minOffset=$minOffset, maxOffset=$maxOffset, headerExtent=$headerExtent}';
 }

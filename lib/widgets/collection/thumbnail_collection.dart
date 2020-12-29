@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aves/main.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/highlight.dart';
@@ -13,6 +14,7 @@ import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/collection/grid/list_section_layout.dart';
 import 'package:aves/widgets/collection/grid/list_sliver.dart';
+import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
@@ -53,6 +55,7 @@ class ThumbnailCollection extends StatelessWidget {
               spacing: spacing,
             )..applyTileExtent(viewportSize: viewportSize);
             final cacheExtent = tileExtentManager.getEffectiveExtentMax(viewportSize) * 2;
+            final scrollController = PrimaryScrollController.of(context);
 
             // do not replace by Provider.of<CollectionLens>
             // so that view updates on collection filter changes
@@ -67,7 +70,7 @@ class ThumbnailCollection extends StatelessWidget {
                   ),
                   appBarHeightNotifier: _appBarHeightNotifier,
                   isScrollingNotifier: _isScrollingNotifier,
-                  scrollController: PrimaryScrollController.of(context),
+                  scrollController: scrollController,
                   cacheExtent: cacheExtent,
                 );
 
@@ -102,6 +105,14 @@ class ThumbnailCollection extends StatelessWidget {
                   child: scrollView,
                 );
 
+                final selector = GridSelectionGestureDetector(
+                  selectable: AvesApp.mode == AppMode.main,
+                  collection: collection,
+                  scrollController: scrollController,
+                  appBarHeightNotifier: _appBarHeightNotifier,
+                  child: scaler,
+                );
+
                 final sectionedListLayoutProvider = ValueListenableBuilder<double>(
                   valueListenable: _tileExtentNotifier,
                   builder: (context, tileExtent, child) => SectionedListLayoutProvider(
@@ -116,7 +127,7 @@ class ThumbnailCollection extends StatelessWidget {
                       tileExtent: tileExtent,
                       isScrollingNotifier: _isScrollingNotifier,
                     ),
-                    child: scaler,
+                    child: selector,
                   ),
                 );
                 return sectionedListLayoutProvider;

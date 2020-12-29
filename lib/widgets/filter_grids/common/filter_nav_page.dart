@@ -85,6 +85,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   Future<void> _showMenu(BuildContext context, T filter, Offset tapPosition) async {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final touchArea = Size(40, 40);
+    // TODO TLAD show menu within safe area
     final selectedAction = await showMenu<ChipAction>(
       context: context,
       position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
