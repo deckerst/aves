@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Collection: long press and move to select/deselect multiple entries
+- Info: show Spherical Video V1 metadata
 
 ## [v1.3.0] - 2020-12-26
 ### Added
