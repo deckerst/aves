@@ -172,7 +172,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   List<Widget> _buildActions() {
     return [
       if (collection.isBrowsing)
-        SearchButton(
+        CollectionSearchButton(
           source,
           parentCollection: collection,
         ),
@@ -361,7 +361,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     Navigator.push(
         context,
         SearchPageRoute(
-          delegate: ImageSearchDelegate(
+          delegate: CollectionSearchDelegate(
             source: collection.source,
             parentCollection: collection,
           ),

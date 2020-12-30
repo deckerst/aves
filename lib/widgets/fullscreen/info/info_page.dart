@@ -2,9 +2,9 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/fullscreen/info/basic_section.dart';
+import 'package:aves/widgets/fullscreen/info/info_app_bar.dart';
 import 'package:aves/widgets/fullscreen/info/location_section.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/fullscreen/info/notifications.dart';
@@ -38,17 +38,6 @@ class InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appBar = SliverAppBar(
-      leading: IconButton(
-        key: Key('back-button'),
-        icon: Icon(AIcons.goUp),
-        onPressed: _goToImage,
-        tooltip: 'Back to viewer',
-      ),
-      title: Text('Info'),
-      floating: true,
-    );
-
     return MediaQueryDataProvider(
       child: Scaffold(
         body: SafeArea(
@@ -68,9 +57,9 @@ class InfoPageState extends State<InfoPage> {
                             entry: entry,
                             visibleNotifier: widget.visibleNotifier,
                             scrollController: _scrollController,
-                            appBar: appBar,
                             split: mqWidth > 400,
                             mqViewInsetsBottom: mqViewInsetsBottom,
+                            goToViewer: _goToViewer,
                           )
                         : SizedBox.shrink();
                   },
@@ -97,7 +86,7 @@ class InfoPageState extends State<InfoPage> {
           _scrollStartFromTop = false;
         } else if (notification is OverscrollNotification) {
           if (notification.overscroll < 0) {
-            _goToImage();
+            _goToViewer();
             _scrollStartFromTop = false;
           }
         }
@@ -106,7 +95,7 @@ class InfoPageState extends State<InfoPage> {
     return false;
   }
 
-  void _goToImage() {
+  void _goToViewer() {
     BackUpNotification().dispatch(context);
     _scrollController.animateTo(
       0,
@@ -121,9 +110,9 @@ class _InfoPageContent extends StatefulWidget {
   final ImageEntry entry;
   final ValueNotifier<bool> visibleNotifier;
   final ScrollController scrollController;
-  final SliverAppBar appBar;
   final bool split;
   final double mqViewInsetsBottom;
+  final VoidCallback goToViewer;
 
   const _InfoPageContent({
     Key key,
@@ -131,9 +120,9 @@ class _InfoPageContent extends StatefulWidget {
     @required this.entry,
     @required this.visibleNotifier,
     @required this.scrollController,
-    @required this.appBar,
     @required this.split,
     @required this.mqViewInsetsBottom,
+    @required this.goToViewer,
   }) : super(key: key);
 
   @override
@@ -142,6 +131,8 @@ class _InfoPageContent extends StatefulWidget {
 
 class _InfoPageContentState extends State<_InfoPageContent> {
   static const horizontalPadding = EdgeInsets.symmetric(horizontal: 8);
+
+  final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
 
   CollectionLens get collection => widget.collection;
 
@@ -178,13 +169,18 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           );
     final metadataSliver = MetadataSectionSliver(
       entry: entry,
+      metadataNotifier: _metadataNotifier,
       visibleNotifier: widget.visibleNotifier,
     );
 
     return CustomScrollView(
       controller: widget.scrollController,
       slivers: [
-        widget.appBar,
+        InfoAppBar(
+          entry: entry,
+          metadataNotifier: _metadataNotifier,
+          onBackPressed: widget.goToViewer,
+        ),
         SliverPadding(
           padding: horizontalPadding + EdgeInsets.only(top: 8),
           sliver: basicAndLocationSliver,

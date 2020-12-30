@@ -3,10 +3,9 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/dialogs/create_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
@@ -116,84 +115,25 @@ class AlbumPickAppBar extends StatelessWidget {
   }
 }
 
-class AlbumFilterBar extends StatefulWidget implements PreferredSizeWidget {
+class AlbumFilterBar extends StatelessWidget implements PreferredSizeWidget {
   final ValueNotifier<String> filterNotifier;
 
   static const preferredHeight = kToolbarHeight;
 
-  const AlbumFilterBar({@required this.filterNotifier});
+  const AlbumFilterBar({
+    @required this.filterNotifier,
+  });
 
   @override
   Size get preferredSize => Size.fromHeight(preferredHeight);
 
   @override
-  _AlbumFilterBarState createState() => _AlbumFilterBarState();
-}
-
-class _AlbumFilterBarState extends State<AlbumFilterBar> {
-  final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
-  TextEditingController _controller;
-
-  ValueNotifier<String> get filterNotifier => widget.filterNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: filterNotifier.value);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final clearButton = IconButton(
-      icon: Icon(AIcons.clear),
-      onPressed: () {
-        _controller.clear();
-        filterNotifier.value = '';
-      },
-      tooltip: 'Clear',
-    );
     return Container(
       height: AlbumFilterBar.preferredHeight,
       alignment: Alignment.topCenter,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon(AIcons.search),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              decoration: InputDecoration(
-                icon: Padding(
-                  padding: EdgeInsetsDirectional.only(start: 16),
-                  child: Icon(AIcons.search),
-                ),
-                // border: OutlineInputBorder(),
-                hintText: MaterialLocalizations.of(context).searchFieldLabel,
-                hintStyle: Theme.of(context).inputDecorationTheme.hintStyle,
-              ),
-              textInputAction: TextInputAction.search,
-              onChanged: (s) => _debouncer(() => filterNotifier.value = s),
-            ),
-          ),
-          ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 16),
-            child: ValueListenableBuilder<TextEditingValue>(
-              valueListenable: _controller,
-              builder: (context, value, child) => AnimatedSwitcher(
-                duration: Durations.appBarActionChangeAnimation,
-                transitionBuilder: (child, animation) => FadeTransition(
-                  opacity: animation,
-                  child: SizeTransition(
-                    axis: Axis.horizontal,
-                    sizeFactor: animation,
-                    child: child,
-                  ),
-                ),
-                child: value.text.isNotEmpty ? clearButton : SizedBox.shrink(),
-              ),
-            ),
-          )
-        ],
+      child: QueryBar(
+        filterNotifier: filterNotifier,
       ),
     );
   }

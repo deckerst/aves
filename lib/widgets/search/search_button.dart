@@ -4,11 +4,11 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/material.dart';
 
-class SearchButton extends StatelessWidget {
+class CollectionSearchButton extends StatelessWidget {
   final CollectionSource source;
   final CollectionLens parentCollection;
 
-  const SearchButton(this.source, {this.parentCollection});
+  const CollectionSearchButton(this.source, {this.parentCollection});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class SearchButton extends StatelessWidget {
     Navigator.push(
         context,
         SearchPageRoute(
-          delegate: ImageSearchDelegate(
+          delegate: CollectionSearchDelegate(
             source: source,
             parentCollection: parentCollection,
           ),

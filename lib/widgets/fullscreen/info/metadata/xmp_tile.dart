@@ -25,11 +25,13 @@ class XmpDirTile extends StatefulWidget {
   final ImageEntry entry;
   final SplayTreeMap<String, String> tags;
   final ValueNotifier<String> expandedNotifier;
+  final bool initiallyExpanded;
 
   const XmpDirTile({
     @required this.entry,
     @required this.tags,
     @required this.expandedNotifier,
+    @required this.initiallyExpanded,
   });
 
   @override
@@ -76,6 +78,7 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
     return AvesExpansionTile(
       title: 'XMP',
       expandedNotifier: widget.expandedNotifier,
+      initiallyExpanded: widget.initiallyExpanded,
       children: [
         NotificationListener<OpenEmbeddedDataNotification>(
           onNotification: (notification) {
