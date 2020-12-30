@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
         );
       case SearchPage.routeName:
         return SearchPageRoute(
-          delegate: ImageSearchDelegate(source: _mediaStore),
+          delegate: CollectionSearchDelegate(source: _mediaStore),
         );
       case CollectionPage.routeName:
       default:

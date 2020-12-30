@@ -20,14 +20,14 @@ import 'package:aves/widgets/search/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ImageSearchDelegate {
+class CollectionSearchDelegate {
   final CollectionSource source;
   final CollectionLens parentCollection;
   final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
 
   static const searchHistoryCount = 10;
 
-  ImageSearchDelegate({@required this.source, this.parentCollection});
+  CollectionSearchDelegate({@required this.source, this.parentCollection});
 
   ThemeData appBarTheme(BuildContext context) {
     return Theme.of(context);
@@ -289,7 +289,7 @@ class SearchPageRoute<T> extends PageRoute<T> {
     delegate.route = this;
   }
 
-  final ImageSearchDelegate delegate;
+  final CollectionSearchDelegate delegate;
 
   @override
   Color get barrierColor => null;

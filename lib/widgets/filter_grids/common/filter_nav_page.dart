@@ -104,7 +104,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
 
   List<Widget> _buildActions(BuildContext context) {
     return [
-      SearchButton(source),
+      CollectionSearchButton(source),
       PopupMenuButton<ChipSetAction>(
         key: Key('appbar-menu-button'),
         itemBuilder: (context) {
@@ -137,7 +137,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     Navigator.push(
         context,
         SearchPageRoute(
-          delegate: ImageSearchDelegate(
+          delegate: CollectionSearchDelegate(
             source: source,
           ),
         ));
