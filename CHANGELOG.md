@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Collection: long press and move to select/deselect multiple entries
 - Info: show Spherical Video V1 metadata
+- Info: metadata search
+
+### Fixed
+- Viewer: fixed panning inertia following double-tap scaling
 
 ## [v1.3.0] - 2020-12-26
 ### Added
