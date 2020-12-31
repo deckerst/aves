@@ -43,7 +43,7 @@ class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMi
   Offset _startFocalPoint, _lastViewportFocalPosition;
   double _startScale, _quickScaleLastY, _quickScaleLastDistance;
   bool _doubleTap, _quickScaleMoved;
-  DateTime _lastScaleGestureDate;
+  DateTime _lastScaleGestureDate = DateTime.now();
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
