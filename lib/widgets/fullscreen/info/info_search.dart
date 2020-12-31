@@ -3,6 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_dir_tile.dart';
 import 'package:aves/widgets/fullscreen/info/metadata/metadata_section.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class InfoSearchDelegate extends SearchDelegate {
@@ -12,11 +13,11 @@ class InfoSearchDelegate extends SearchDelegate {
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
   static const suggestions = {
-    'Date & time': 'date or time or when',
-    'Description': 'abtract or description or comment',
-    'Dimensions': 'width or height or dimension or framesize',
+    'Date & time': 'date or time or when -timer -uptime -exposure',
+    'Description': 'abstract or description or comment',
+    'Dimensions': 'width or height or dimension or framesize or imagelength',
     'Resolution': 'resolution',
-    'Rights': 'rights or copyright or artist or creator or by-line or credit',
+    'Rights': 'rights or copyright or artist or creator or by-line or credit -tool',
   };
 
   InfoSearchDelegate({
@@ -78,8 +79,16 @@ class InfoSearchDelegate extends SearchDelegate {
       return SizedBox();
     }
 
-    final effectiveQueries = query.toUpperCase().split(' OR ').map((query) => query.trim());
-    bool testKey(String key) => effectiveQueries.any(key.toUpperCase().contains);
+    final queryParts = query.toUpperCase().split(' ')..removeWhere((s) => s.isEmpty);
+    final queryExcludeIncludeGroups = groupBy<String, bool>(queryParts, (s) => s.startsWith('-'));
+    final queryExcludeAll = (queryExcludeIncludeGroups[true] ?? []).map((s) => s.substring(1));
+    final queryIncludeAny = (queryExcludeIncludeGroups[false] ?? []).join(' ').split(' OR ');
+
+    bool testKey(String key) {
+      key = key.toUpperCase();
+      return queryIncludeAny.any(key.contains) && queryExcludeAll.every((q) => !key.contains(q));
+    }
+
     final filteredMetadata = Map.fromEntries(metadata.entries.map((kv) {
       final filteredDir = kv.value.filterKeys(testKey);
       return MapEntry(kv.key, filteredDir);
