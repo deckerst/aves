@@ -13,7 +13,7 @@ class InfoSearchDelegate extends SearchDelegate {
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
   static const suggestions = {
-    'Date & time': 'date or time or when -timer -uptime -exposure',
+    'Date & time': 'date or time or when -timer -uptime -exposure -timeline',
     'Description': 'abstract or description or comment',
     'Dimensions': 'width or height or dimension or framesize or imagelength',
     'Resolution': 'resolution',
