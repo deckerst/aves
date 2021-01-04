@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class SearchPage extends StatefulWidget {
   static const routeName = '/search';
 
-  final ImageSearchDelegate delegate;
+  final CollectionSearchDelegate delegate;
   final Animation<double> animation;
 
   const SearchPage({
@@ -115,7 +115,7 @@ class _SearchPageState extends State<SearchPage> {
           onSubmitted: (_) => widget.delegate.showResults(context),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: MaterialLocalizations.of(context).searchFieldLabel,
+            hintText: 'Search collection',
             hintStyle: theme.inputDecorationTheme.hintStyle,
           ),
         ),

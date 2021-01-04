@@ -249,14 +249,13 @@ class SourceImageEntry {
 
     private fun fillByTiffDecode(context: Context) {
         try {
-            context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                val options = TiffBitmapFactory.Options().apply {
-                    inJustDecodeBounds = true
-                }
-                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-                width = options.outWidth
-                height = options.outHeight
+            val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd() ?: return
+            val options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = true
             }
+            TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            width = options.outWidth
+            height = options.outHeight
         } catch (e: Exception) {
             // ignore
         }

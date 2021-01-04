@@ -89,7 +89,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               // without clipping the text
               padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
-                structs[_index],
+                structs[_index] ?? {},
                 maxValueLength: Constants.infoGroupMaxValueLength,
                 linkHandlers: widget.linkifier?.call(_index + 1),
               ),
