@@ -48,30 +48,35 @@ internal class TiffThumbnailFetcher(val model: TiffThumbnail, val width: Int, va
         val uri = model.uri
 
         // determine sample size
+        var fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
+        if (fd == null) {
+            callback.onLoadFailed(Exception("null file descriptor"))
+            return
+        }
         var sampleSize = 1
-        context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-            val options = TiffBitmapFactory.Options().apply {
-                inJustDecodeBounds = true
-            }
-            TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-            val imageWidth = options.outWidth
-            val imageHeight = options.outHeight
-            if (imageHeight > height || imageWidth > width) {
-                while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
-                    sampleSize *= 2
-                }
+        var options = TiffBitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        TiffBitmapFactory.decodeFileDescriptor(fd, options)
+        val imageWidth = options.outWidth
+        val imageHeight = options.outHeight
+        if (imageHeight > height || imageWidth > width) {
+            while (imageHeight / (sampleSize * 2) > height && imageWidth / (sampleSize * 2) > width) {
+                sampleSize *= 2
             }
         }
 
         // decode
-        val bitmap = context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-            val options = TiffBitmapFactory.Options().apply {
-                inJustDecodeBounds = false
-                inSampleSize = sampleSize
-            }
-            TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
+        fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
+        if (fd == null) {
+            callback.onLoadFailed(Exception("null file descriptor"))
+            return
         }
-
+        options = TiffBitmapFactory.Options().apply {
+            inJustDecodeBounds = false
+            inSampleSize = sampleSize
+        }
+        val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
         if (bitmap == null) {
             callback.onLoadFailed(Exception("null bitmap"))
         } else {
