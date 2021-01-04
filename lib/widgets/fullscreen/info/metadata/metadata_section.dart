@@ -1,18 +1,12 @@
 import 'dart:collection';
 
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/color_utils.dart';
-import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/fullscreen/info/common.dart';
-import 'package:aves/widgets/fullscreen/info/metadata/metadata_thumbnail.dart';
-import 'package:aves/widgets/fullscreen/info/metadata/xmp_tile.dart';
-import 'package:aves/widgets/fullscreen/source_viewer_page.dart';
+import 'package:aves/widgets/fullscreen/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +15,12 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 class MetadataSectionSliver extends StatefulWidget {
   final ImageEntry entry;
   final ValueNotifier<bool> visibleNotifier;
+  final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
   const MetadataSectionSliver({
     @required this.entry,
     @required this.visibleNotifier,
+    @required this.metadataNotifier,
   });
 
   @override
@@ -32,7 +28,6 @@ class MetadataSectionSliver extends StatefulWidget {
 }
 
 class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
-  Map<String, _MetadataDirectory> _metadata = {};
   final ValueNotifier<String> _loadedMetadataUri = ValueNotifier(null);
   final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
 
@@ -40,10 +35,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
   bool get isVisible => widget.visibleNotifier.value;
 
-  // special directory names
-  static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
-  static const xmpDirectory = 'XMP'; // from metadata-extractor
-  static const mediaDirectory = 'Media'; // additional media (video/audio/images) directory
+  ValueNotifier<Map<String, MetadataDirectory>> get metadataNotifier => widget.metadataNotifier;
+
+  Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
   // directory names may contain the name of their parent directory
   // if so, they are separated by this character
@@ -53,6 +47,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   void initState() {
     super.initState();
     _registerWidget(widget);
+    metadataNotifier.value = {};
     _getMetadata();
   }
 
@@ -96,7 +91,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           valueListenable: _loadedMetadataUri,
           builder: (context, uri, child) {
             Widget content;
-            if (_metadata.isEmpty) {
+            if (metadata.isEmpty) {
               content = SizedBox.shrink();
             } else {
               content = Column(
@@ -111,7 +106,12 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
                   ),
                   children: [
                     SectionRow(AIcons.info),
-                    ..._metadata.entries.map((kv) => _buildDirTile(kv.key, kv.value)),
+                    ...metadata.entries.map((kv) => MetadataDirTile(
+                          entry: entry,
+                          title: kv.key,
+                          dir: kv.value,
+                          expandedDirectoryNotifier: _expandedDirectoryNotifier,
+                        )),
                   ],
                 ),
               );
@@ -128,64 +128,9 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     );
   }
 
-  Widget _buildDirTile(String title, _MetadataDirectory dir) {
-    if (dir.tags.isEmpty) return SizedBox.shrink();
-
-    final dirName = dir.name;
-    if (dirName == xmpDirectory) {
-      return XmpDirTile(
-        entry: entry,
-        tags: dir.tags,
-        expandedNotifier: _expandedDirectoryNotifier,
-      );
-    }
-
-    Widget thumbnail;
-    final prefixChildren = <Widget>[];
-    switch (dirName) {
-      case exifThumbnailDirectory:
-        thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.exif, entry: entry);
-        break;
-      case mediaDirectory:
-        thumbnail = MetadataThumbnails(source: MetadataThumbnailSource.embedded, entry: entry);
-        Widget builder(IconData data) => Padding(
-              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: Icon(data),
-            );
-        if (dir.tags['Has Video'] == 'yes') prefixChildren.add(builder(AIcons.video));
-        if (dir.tags['Has Audio'] == 'yes') prefixChildren.add(builder(AIcons.audio));
-        if (dir.tags['Has Image'] == 'yes') {
-          int count;
-          if (dir.tags.containsKey('Image Count')) {
-            count = int.tryParse(dir.tags['Image Count']);
-          }
-          prefixChildren.addAll(List.generate(count ?? 1, (i) => builder(AIcons.image)));
-        }
-        break;
-    }
-
-    return AvesExpansionTile(
-      title: title,
-      color: BrandColors.get(dirName) ?? stringToColor(dirName),
-      expandedNotifier: _expandedDirectoryNotifier,
-      children: [
-        if (prefixChildren.isNotEmpty) Wrap(children: prefixChildren),
-        if (thumbnail != null) thumbnail,
-        Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: InfoRowGroup(
-            dir.tags,
-            maxValueLength: Constants.infoGroupMaxValueLength,
-            linkHandlers: dirName == SvgMetadataService.metadataDirectory ? getSvgLinkHandlers(dir.tags) : null,
-          ),
-        ),
-      ],
-    );
-  }
-
   void _onMetadataChanged() {
     _loadedMetadataUri.value = null;
-    _metadata = {};
+    metadataNotifier.value = {};
     _getMetadata();
   }
 
@@ -211,7 +156,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
           final tagName = tagKV.key as String ?? '';
           return MapEntry(tagName, value);
         }).where((kv) => kv != null)));
-        return _MetadataDirectory(directoryName, parent, tags);
+        return MetadataDirectory(directoryName, parent, tags);
       }).toList();
 
       final titledDirectories = directories.map((dir) {
@@ -222,42 +167,36 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         return MapEntry(title, dir);
       }).toList()
         ..sort((a, b) => compareAsciiUpperCase(a.key, b.key));
-      _metadata = Map.fromEntries(titledDirectories);
+      metadataNotifier.value = Map.fromEntries(titledDirectories);
       _loadedMetadataUri.value = entry.uri;
     } else {
-      _metadata = {};
+      metadataNotifier.value = {};
       _loadedMetadataUri.value = null;
     }
     _expandedDirectoryNotifier.value = null;
-  }
-
-  static Map<String, InfoLinkHandler> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
-    return {
-      'Metadata': InfoLinkHandler(
-        linkText: 'View XML',
-        onTap: (context) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              settings: RouteSettings(name: SourceViewerPage.routeName),
-              builder: (context) => SourceViewerPage(
-                loader: () => SynchronousFuture(tags['Metadata']),
-              ),
-            ),
-          );
-        },
-      ),
-    };
   }
 
   @override
   bool get wantKeepAlive => true;
 }
 
-class _MetadataDirectory {
+class MetadataDirectory {
   final String name;
   final String parent;
+  final SplayTreeMap<String, String> allTags;
   final SplayTreeMap<String, String> tags;
 
-  const _MetadataDirectory(this.name, this.parent, this.tags);
+  // special directory names
+  static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
+  static const xmpDirectory = 'XMP'; // from metadata-extractor
+  static const mediaDirectory = 'Media'; // additional media (video/audio/images) directory
+
+  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String> tags})
+      : allTags = allTags,
+        tags = tags ?? allTags;
+
+  MetadataDirectory filterKeys(bool Function(String key) testKey) {
+    final filteredTags = SplayTreeMap.of(Map.fromEntries(allTags.entries.where((kv) => testKey(kv.key))));
+    return MetadataDirectory(name, parent, tags, tags: filteredTags);
+  }
 }

@@ -65,11 +65,6 @@ class GridThumbnail extends StatelessWidget {
           ViewerService.pick(entry.uri);
         }
       },
-      onLongPress: () {
-        if (AvesApp.mode == AppMode.main) {
-          collection.toggleSelection(entry);
-        }
-      },
       child: MetaData(
         metaData: ScalerMetadata(entry),
         child: DecoratedThumbnail(

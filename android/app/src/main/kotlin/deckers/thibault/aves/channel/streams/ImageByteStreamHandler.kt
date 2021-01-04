@@ -139,28 +139,33 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun streamTiffImage(uri: Uri, page: Int = 0) {
         val resolver = activity.contentResolver
         try {
-            var dirCount = 0
-            resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                val options = TiffBitmapFactory.Options().apply {
-                    inJustDecodeBounds = true
-                }
-                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-                dirCount = options.outDirectoryCount
+            var fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
+            if (fd == null) {
+                error("streamImage-tiff-fd", "failed to get file descriptor for uri=$uri", null)
+                return
             }
+            var options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+            TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            val dirCount = options.outDirectoryCount
 
             // TODO TLAD handle multipage TIFF
             if (dirCount > page) {
-                resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                    val options = TiffBitmapFactory.Options().apply {
-                        inJustDecodeBounds = false
-                        inDirectoryNumber = page
-                    }
-                    val bitmap = TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-                    if (bitmap != null) {
-                        success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-                    } else {
-                        error("streamImage-tiff-null", "failed to get tiff image (dir=$page) from uri=$uri", null)
-                    }
+                fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
+                if (fd == null) {
+                    error("streamImage-tiff-fd", "failed to get file descriptor for uri=$uri", null)
+                    return
+                }
+                options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = false
+                    inDirectoryNumber = page
+                }
+                val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+                if (bitmap != null) {
+                    success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+                } else {
+                    error("streamImage-tiff-null", "failed to get tiff image (dir=$page) from uri=$uri", null)
                 }
             }
         } catch (e: Exception) {

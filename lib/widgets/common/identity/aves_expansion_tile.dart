@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 class AvesExpansionTile extends StatelessWidget {
   final String title;
   final Color color;
-  final List<Widget> children;
   final ValueNotifier<String> expandedNotifier;
+  final bool initiallyExpanded;
+  final List<Widget> children;
 
   const AvesExpansionTile({
     @required this.title,
     this.color,
     this.expandedNotifier,
+    this.initiallyExpanded = false,
     @required this.children,
   });
 
@@ -33,6 +35,9 @@ class AvesExpansionTile extends StatelessWidget {
           enabled: enabled,
         ),
         expandable: enabled,
+        initiallyExpanded: initiallyExpanded,
+        baseColor: Colors.grey[900],
+        expandedColor: Colors.grey[850],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -41,8 +46,6 @@ class AvesExpansionTile extends StatelessWidget {
             if (enabled) ...children,
           ],
         ),
-        baseColor: Colors.grey[900],
-        expandedColor: Colors.grey[850],
       ),
     );
   }

@@ -51,9 +51,13 @@ class XmpMMNamespace extends XmpNamespace {
 
   static final derivedFromPattern = RegExp(r'xmpMM:DerivedFrom/(.*)');
   static final historyPattern = RegExp(r'xmpMM:History\[(\d+)\]/(.*)');
+  static final ingredientsPattern = RegExp(r'xmpMM:Ingredients\[(\d+)\]/(.*)');
+  static final pantryPattern = RegExp(r'xmpMM:Pantry\[(\d+)\]/(.*)');
 
   final derivedFrom = <String, String>{};
   final history = <int, Map<String, String>>{};
+  final ingredients = <int, Map<String, String>>{};
+  final pantry = <int, Map<String, String>>{};
 
   XmpMMNamespace() : super(ns);
 
@@ -63,7 +67,9 @@ class XmpMMNamespace extends XmpNamespace {
   @override
   bool extractData(XmpProp prop) {
     final hasStructs = extractStruct(prop, derivedFromPattern, derivedFrom);
-    final hasIndexedStructs = extractIndexedStruct(prop, historyPattern, history);
+    var hasIndexedStructs = extractIndexedStruct(prop, historyPattern, history);
+    hasIndexedStructs |= extractIndexedStruct(prop, ingredientsPattern, ingredients);
+    hasIndexedStructs |= extractIndexedStruct(prop, pantryPattern, pantry);
     return hasStructs || hasIndexedStructs;
   }
 
@@ -78,6 +84,16 @@ class XmpMMNamespace extends XmpNamespace {
           XmpStructArrayCard(
             title: 'History',
             structByIndex: history,
+          ),
+        if (ingredients.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Ingredients',
+            structByIndex: ingredients,
+          ),
+        if (pantry.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Pantry',
+            structByIndex: pantry,
           ),
       ];
 
