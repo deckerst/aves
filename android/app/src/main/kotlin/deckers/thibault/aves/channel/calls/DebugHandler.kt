@@ -240,26 +240,29 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
         try {
             val metadataMap = HashMap<String, FieldMap>()
-            var dirCount: Int? = null
-            context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                val options = TiffBitmapFactory.Options().apply {
-                    inJustDecodeBounds = true
-                }
-                TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-                metadataMap["0"] = tiffOptionsToMap(options)
-                dirCount = options.outDirectoryCount
+            var fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
+            if (fd == null) {
+                result.error("getTiffStructure-fd", "failed to get file descriptor", null)
+                return
             }
-            if (dirCount != null) {
-                for (i in 1 until dirCount!!) {
-                    context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                        val options = TiffBitmapFactory.Options().apply {
-                            inJustDecodeBounds = true
-                            inDirectoryNumber = i
-                        }
-                        TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-                        metadataMap["$i"] = tiffOptionsToMap(options)
-                    }
+            var options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+            }
+            TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            metadataMap["0"] = tiffOptionsToMap(options)
+            val dirCount = options.outDirectoryCount
+            for (i in 1 until dirCount) {
+                fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
+                if (fd == null) {
+                    result.error("getTiffStructure-fd", "failed to get file descriptor", null)
+                    return
                 }
+                options = TiffBitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                    inDirectoryNumber = i
+                }
+                TiffBitmapFactory.decodeFileDescriptor(fd, options)
+                metadataMap["$i"] = tiffOptionsToMap(options)
             }
             result.success(metadataMap)
         } catch (e: Exception) {

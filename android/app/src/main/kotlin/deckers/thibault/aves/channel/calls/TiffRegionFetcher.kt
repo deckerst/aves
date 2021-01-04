@@ -18,20 +18,22 @@ class TiffRegionFetcher internal constructor(
         page: Int = 0,
         result: MethodChannel.Result,
     ) {
-        val resolver = context.contentResolver
         try {
-            resolver.openFileDescriptor(uri, "r")?.use { descriptor ->
-                val options = TiffBitmapFactory.Options().apply {
-                    inDirectoryNumber = page
-                    inSampleSize = sampleSize
-                    inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())
-                }
-                val bitmap = TiffBitmapFactory.decodeFileDescriptor(descriptor.fd, options)
-                if (bitmap != null) {
-                    result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-                } else {
-                    result.error("getRegion-tiff-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
-                }
+            val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
+            if (fd == null) {
+                result.error("getRegion-tiff-fd", "failed to get file descriptor for uri=$uri", null)
+                return
+            }
+            val options = TiffBitmapFactory.Options().apply {
+                inDirectoryNumber = page
+                inSampleSize = sampleSize
+                inDecodeArea = DecodeArea(regionRect.left, regionRect.top, regionRect.width(), regionRect.height())
+            }
+            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            if (bitmap != null) {
+                result.success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+            } else {
+                result.error("getRegion-tiff-null", "failed to decode region for uri=$uri page=$page regionRect=$regionRect", null)
             }
         } catch (e: Exception) {
             result.error("getRegion-tiff-read-exception", "failed to read from uri=$uri page=$page regionRect=$regionRect", e.message)
