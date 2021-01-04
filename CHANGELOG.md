@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.3.1] - 2021-01-04
 ### Added
 - Collection: long press and move to select/deselect multiple entries
 - Info: show Spherical Video V1 metadata
@@ -9,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Viewer: fixed panning inertia following double-tap scaling
+- Collection: fixed crash when loading TIFF files on Android 11
 
 ## [v1.3.0] - 2020-12-26
 ### Added
