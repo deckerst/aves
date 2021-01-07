@@ -113,7 +113,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                 val name = if (it.hasTagName()) {
                                     it.tagName
                                 } else {
-                                    Geotiff.getTagName(it.tagType) ?: it.tagName
+                                    TiffTags.getTagName(it.tagType) ?: it.tagName
                                 }
                                 Pair(name, it.description)
                             })
