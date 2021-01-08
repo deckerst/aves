@@ -36,6 +36,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
             children: [
               if (entry.hasGps && settings.showThumbnailLocation) GpsIcon(iconSize: iconSize),
               if (entry.isRaw && settings.showThumbnailRaw) RawIcon(iconSize: iconSize),
+              if (entry.isMultipage) MultipageIcon(iconSize: iconSize),
               if (entry.isGeotiff) GeotiffIcon(iconSize: iconSize),
               if (entry.isAnimated)
                 AnimatedImageIcon(iconSize: iconSize)

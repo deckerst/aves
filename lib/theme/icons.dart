@@ -64,6 +64,7 @@ class AIcons {
   // thumbnail overlay
   static const IconData animated = Icons.slideshow;
   static const IconData geo = Icons.language_outlined;
+  static const IconData multipage = Icons.burst_mode_outlined;
   static const IconData play = Icons.play_circle_outline;
   static const IconData threesixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;
