@@ -211,6 +211,8 @@ class ImageEntry {
 
   bool get is360 => _catalogMetadata?.is360 ?? false;
 
+  bool get isMultipage => _catalogMetadata?.isMultipage ?? false;
+
   bool get canEdit => path != null;
 
   bool get canPrint => !isVideo;
