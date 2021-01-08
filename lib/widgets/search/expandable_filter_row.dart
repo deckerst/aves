@@ -105,7 +105,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
   Widget _buildFilterChip(CollectionFilter filter) {
     return AvesFilterChip(
-      key: Key(filter.key),
+      key: ValueKey(filter),
       filter: filter,
       heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,
       onTap: onTap,
