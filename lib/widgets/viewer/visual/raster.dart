@@ -52,7 +52,9 @@ class _TiledImageViewState extends State<TiledImageView> {
 
   bool get useBackground => entry.canHaveAlpha && settings.rasterBackground != EntryBackground.transparent;
 
-  bool get useTiles => entry.canTile && (entry.width > 4096 || entry.height > 4096);
+  // as of panorama v0.3.1, the `Panorama` widget throws on initialization when the image is already resolved
+  // so we use tiles for panoramas as a workaround to not collide with the `panorama` package resolution
+  bool get useTiles => entry.canTile && (entry.getDisplaySize(multiPageInfo: widget.multiPageInfo, page: page).longestSide > 4096 || entry.is360);
 
   ImageProvider get thumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry, page: page));
 
