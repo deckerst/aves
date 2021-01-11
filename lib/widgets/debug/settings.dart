@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
-import 'package:aves/widgets/fullscreen/info/common.dart';
+import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

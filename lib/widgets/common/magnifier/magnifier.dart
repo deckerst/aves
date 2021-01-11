@@ -106,7 +106,7 @@ class _MagnifierState extends State<Magnifier> {
           widget.maxScale ?? ScaleLevel(factor: double.infinity),
           widget.initialScale ?? ScaleLevel(ref: ScaleReference.contained),
           constraints.biggest,
-          widget.childSize?.isEmpty == true ? constraints.biggest: widget.childSize,
+          widget.childSize?.isEmpty == true ? constraints.biggest : widget.childSize,
         ));
 
         return MagnifierCore(

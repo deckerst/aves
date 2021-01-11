@@ -3,7 +3,7 @@ import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
-import 'package:aves/widgets/fullscreen/info/location_section.dart';
+import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -99,7 +99,7 @@ class Settings extends ChangeNotifier {
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
 
-  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.fullscreenOnly, KeepScreenOn.values);
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.viewerOnly, KeepScreenOn.values);
 
   set keepScreenOn(KeepScreenOn newValue) {
     setAndNotify(keepScreenOnKey, newValue.toString());

@@ -10,7 +10,7 @@ import 'package:aves/widgets/debug/firebase.dart';
 import 'package:aves/widgets/debug/overlay.dart';
 import 'package:aves/widgets/debug/settings.dart';
 import 'package:aves/widgets/debug/storage.dart';
-import 'package:aves/widgets/fullscreen/info/common.dart';
+import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -22,10 +22,10 @@ class AppDebugPage extends StatefulWidget {
   const AppDebugPage({this.source});
 
   @override
-  State<StatefulWidget> createState() => AppDebugPageState();
+  State<StatefulWidget> createState() => _AppDebugPageState();
 }
 
-class AppDebugPageState extends State<AppDebugPage> {
+class _AppDebugPageState extends State<AppDebugPage> {
   List<ImageEntry> get entries => widget.source.rawEntries;
 
   static OverlayEntry _taskQueueOverlayEntry;

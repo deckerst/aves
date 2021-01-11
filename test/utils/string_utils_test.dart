@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:aves/utils/string_utils.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('Sentence case', () {
