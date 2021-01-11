@@ -52,7 +52,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   @override
-  void didUpdateWidget(MetadataSectionSliver oldWidget) {
+  void didUpdateWidget(covariant MetadataSectionSliver oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);

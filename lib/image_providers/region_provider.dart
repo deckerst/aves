@@ -40,6 +40,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         key.sampleSize,
         key.regionRect,
         key.imageSize,
+        page: key.page,
         taskKey: key,
       );
       if (bytes == null) {
@@ -63,7 +64,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
 
 class RegionProviderKey {
   final String uri, mimeType;
-  final int rotationDegrees, sampleSize;
+  final int rotationDegrees, sampleSize, page;
   final bool isFlipped;
   final Rectangle<int> regionRect;
   final Size imageSize;
@@ -74,6 +75,7 @@ class RegionProviderKey {
     @required this.mimeType,
     @required this.rotationDegrees,
     @required this.isFlipped,
+    this.page = 0,
     @required this.sampleSize,
     @required this.regionRect,
     @required this.imageSize,
@@ -91,6 +93,7 @@ class RegionProviderKey {
   // but the entry attributes may change over time
   factory RegionProviderKey.fromEntry(
     ImageEntry entry, {
+    int page = 0,
     @required int sampleSize,
     @required Rectangle<int> rect,
   }) {
@@ -99,6 +102,7 @@ class RegionProviderKey {
       mimeType: entry.mimeType,
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
+      page: page,
       sampleSize: sampleSize,
       regionRect: rect,
       imageSize: Size(entry.width.toDouble(), entry.height.toDouble()),
@@ -108,7 +112,7 @@ class RegionProviderKey {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.regionRect == regionRect && other.imageSize == imageSize && other.scale == scale;
+    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.page == page && other.sampleSize == sampleSize && other.regionRect == regionRect && other.imageSize == imageSize && other.scale == scale;
   }
 
   @override
@@ -117,7 +121,7 @@ class RegionProviderKey {
         mimeType,
         rotationDegrees,
         isFlipped,
-        mimeType,
+        page,
         sampleSize,
         regionRect,
         imageSize,
@@ -125,5 +129,5 @@ class RegionProviderKey {
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, regionRect=$regionRect, imageSize=$imageSize, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, page=$page, sampleSize=$sampleSize, regionRect=$regionRect, imageSize=$imageSize, scale=$scale}';
 }

@@ -4,6 +4,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/image_metadata.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -242,10 +243,19 @@ class ImageEntry {
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
 
-  String get resolutionText {
-    final w = width ?? '?';
-    final h = height ?? '?';
-    return isPortrait ? '$h$resolutionSeparator$w' : '$w$resolutionSeparator$h';
+  String getResolutionText({MultiPageInfo multiPageInfo, int page}) {
+    int w;
+    int h;
+    if (multiPageInfo != null && page != null) {
+      final pageInfo = multiPageInfo.pages[page];
+      w = pageInfo?.width;
+      h = pageInfo?.height;
+    }
+    w ??= width;
+    h ??= height;
+    final ws = w ?? '?';
+    final hs = h ?? '?';
+    return isPortrait ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
   }
 
   String get aspectRatioText {
@@ -264,7 +274,18 @@ class ImageEntry {
     return isPortrait ? height / width : width / height;
   }
 
-  Size get displaySize => isPortrait ? Size(height.toDouble(), width.toDouble()) : Size(width.toDouble(), height.toDouble());
+  Size getDisplaySize({MultiPageInfo multiPageInfo, int page}) {
+    int w;
+    int h;
+    if (multiPageInfo != null && page != null) {
+      final pageInfo = multiPageInfo.pages[page];
+      w = pageInfo?.width;
+      h = pageInfo?.height;
+    }
+    w ??= width;
+    h ??= height;
+    return isPortrait ? Size(h.toDouble(), w.toDouble()) : Size(w.toDouble(), h.toDouble());
+  }
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
 

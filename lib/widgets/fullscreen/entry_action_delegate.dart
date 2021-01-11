@@ -109,6 +109,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         UriImage(
           uri: uri,
           mimeType: mimeType,
+          // TODO TLAD multipage print
+          page: 0,
           rotationDegrees: rotationDegrees,
           isFlipped: isFlipped,
         ),

@@ -8,7 +8,12 @@ class PanoramaPage extends StatelessWidget {
 
   final ImageEntry entry;
 
-  const PanoramaPage({@required this.entry});
+  final int page;
+
+  const PanoramaPage({
+    @required this.entry,
+    this.page = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +23,7 @@ class PanoramaPage extends StatelessWidget {
           image: UriImage(
             uri: entry.uri,
             mimeType: entry.mimeType,
+            page: page,
             rotationDegrees: entry.rotationDegrees,
             isFlipped: entry.isFlipped,
             expectedContentLength: entry.sizeBytes,

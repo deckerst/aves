@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 class ThumbnailRasterImage extends StatefulWidget {
   final ImageEntry entry;
   final double extent;
+  final int page;
   final ValueNotifier<bool> isScrollingNotifier;
   final Object heroTag;
 
@@ -18,6 +19,7 @@ class ThumbnailRasterImage extends StatefulWidget {
     Key key,
     @required this.entry,
     @required this.extent,
+    this.page = 0,
     this.isScrollingNotifier,
     this.heroTag,
   }) : super(key: key);
@@ -30,6 +32,8 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
   ImageEntry get entry => widget.entry;
+
+  int get page => widget.page;
 
   double get extent => widget.extent;
 
@@ -47,7 +51,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   }
 
   @override
-  void didUpdateWidget(ThumbnailRasterImage oldWidget) {
+  void didUpdateWidget(covariant ThumbnailRasterImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != entry) {
       _unregisterWidget(oldWidget);
@@ -75,11 +79,11 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     if (!entry.canDecode) return;
 
     _fastThumbnailProvider = ThumbnailProvider(
-      ThumbnailProviderKey.fromEntry(entry),
+      ThumbnailProviderKey.fromEntry(entry, page: page),
     );
     if (!entry.isVideo) {
       _sizedThumbnailProvider = ThumbnailProvider(
-        ThumbnailProviderKey.fromEntry(entry, extent: requestExtent),
+        ThumbnailProviderKey.fromEntry(entry, page: page, extent: requestExtent),
       );
     }
   }
@@ -149,6 +153,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                 final imageProvider = UriImage(
                   uri: entry.uri,
                   mimeType: entry.mimeType,
+                  page: page,
                   rotationDegrees: entry.rotationDegrees,
                   isFlipped: entry.isFlipped,
                   expectedContentLength: entry.sizeBytes,

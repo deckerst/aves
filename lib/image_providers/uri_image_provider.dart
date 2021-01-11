@@ -7,20 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 
 class UriImage extends ImageProvider<UriImage> {
+  final String uri, mimeType;
+  final int page, rotationDegrees, expectedContentLength;
+  final bool isFlipped;
+  final double scale;
+
   const UriImage({
     @required this.uri,
     @required this.mimeType,
+    this.page = 0,
     @required this.rotationDegrees,
     @required this.isFlipped,
     this.expectedContentLength,
     this.scale = 1.0,
   })  : assert(uri != null),
         assert(scale != null);
-
-  final String uri, mimeType;
-  final int rotationDegrees, expectedContentLength;
-  final bool isFlipped;
-  final double scale;
 
   @override
   Future<UriImage> obtainKey(ImageConfiguration configuration) {
@@ -50,6 +51,7 @@ class UriImage extends ImageProvider<UriImage> {
         mimeType,
         rotationDegrees,
         isFlipped,
+        page: page,
         expectedContentLength: expectedContentLength,
         onBytesReceived: (cumulative, total) {
           chunkEvents.add(ImageChunkEvent(
@@ -73,12 +75,19 @@ class UriImage extends ImageProvider<UriImage> {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is UriImage && other.uri == uri && other.scale == scale;
+    return other is UriImage && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.page == page && other.scale == scale;
   }
 
   @override
-  int get hashCode => hashValues(uri, scale);
+  int get hashCode => hashValues(
+        uri,
+        mimeType,
+        rotationDegrees,
+        isFlipped,
+        page,
+        scale,
+      );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, page=$page, scale=$scale}';
 }

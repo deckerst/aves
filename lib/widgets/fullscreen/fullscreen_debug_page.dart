@@ -80,7 +80,7 @@ class FullscreenDebugPage extends StatelessWidget {
           'isFlipped': '${entry.isFlipped}',
           'portrait': '${entry.isPortrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
-          'displaySize': '${entry.displaySize}',
+          'displaySize': '${entry.getDisplaySize()}',
         }),
         Divider(),
         InfoRowGroup({

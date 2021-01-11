@@ -32,12 +32,14 @@ class ThumbnailFetcher internal constructor(
     private val isFlipped: Boolean,
     width: Int?,
     height: Int?,
+    page: Int?,
     private val defaultSize: Int,
     private val result: MethodChannel.Result,
 ) {
-    val uri: Uri = Uri.parse(uri)
-    val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
-    val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
+    private val uri: Uri = Uri.parse(uri)
+    private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
+    private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
+    private val page = page ?: 0
 
     fun fetch() {
         var bitmap: Bitmap? = null
@@ -108,7 +110,7 @@ class ThumbnailFetcher internal constructor(
         // add signature to ignore cache for images which got modified but kept the same URI
         var options = RequestOptions()
             .format(DecodeFormat.PREFER_RGB_565)
-            .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width"))
+            .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width-$page"))
             .override(width, height)
 
         val target = if (isVideo(mimeType)) {
@@ -119,7 +121,7 @@ class ThumbnailFetcher internal constructor(
                 .load(VideoThumbnail(context, uri))
                 .submit(width, height)
         } else {
-            val model: Any = if (mimeType == MimeTypes.TIFF) TiffThumbnail(context, uri) else uri
+            val model: Any = if (mimeType == MimeTypes.TIFF) TiffThumbnail(context, uri, page) else uri
             Glide.with(context)
                 .asBitmap()
                 .apply(options)

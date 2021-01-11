@@ -41,7 +41,7 @@ class EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveC
   }
 
   @override
-  void didUpdateWidget(EntryGoogleMap oldWidget) {
+  void didUpdateWidget(covariant EntryGoogleMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.latLng != oldWidget.latLng && _controller != null) {
       _controller.moveCamera(CameraUpdate.newLatLng(widget.latLng));

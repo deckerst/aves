@@ -116,7 +116,7 @@ class MarkerPointerPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 // generate bitmap from widget, for Google Maps

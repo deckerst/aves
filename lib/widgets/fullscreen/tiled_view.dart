@@ -4,6 +4,7 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -15,11 +16,15 @@ import 'package:tuple/tuple.dart';
 
 class TiledImageView extends StatefulWidget {
   final ImageEntry entry;
+  final MultiPageInfo multiPageInfo;
+  final int page;
   final ValueNotifier<ViewState> viewStateNotifier;
   final ImageErrorWidgetBuilder errorBuilder;
 
   const TiledImageView({
     @required this.entry,
+    this.multiPageInfo,
+    this.page = 0,
     @required this.viewStateNotifier,
     @required this.errorBuilder,
   });
@@ -29,6 +34,7 @@ class TiledImageView extends StatefulWidget {
 }
 
 class _TiledImageViewState extends State<TiledImageView> {
+  Size _displaySize;
   bool _isTilingInitialized = false;
   int _maxSampleSize;
   double _tileSide;
@@ -39,19 +45,21 @@ class _TiledImageViewState extends State<TiledImageView> {
 
   ImageEntry get entry => widget.entry;
 
+  int get page => widget.page;
+
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
 
   bool get useBackground => entry.canHaveAlpha && settings.rasterBackground != EntryBackground.transparent;
 
   bool get useTiles => entry.canTile && (entry.width > 4096 || entry.height > 4096);
 
-  ImageProvider get thumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
+  ImageProvider get thumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry, page: page));
 
   ImageProvider get fullImageProvider {
     if (useTiles) {
       assert(_isTilingInitialized);
-      final displayWidth = entry.displaySize.width.round();
-      final displayHeight = entry.displaySize.height.round();
+      final displayWidth = _displaySize.width.round();
+      final displayHeight = _displaySize.height.round();
       final viewState = viewStateNotifier.value;
       final regionRect = _getTileRects(
         x: 0,
@@ -62,9 +70,10 @@ class _TiledImageViewState extends State<TiledImageView> {
         displayHeight: displayHeight,
         scale: viewState.scale,
         viewRect: _getViewRect(viewState, displayWidth, displayHeight),
-      ).item2;
+      )?.item2;
       return RegionProvider(RegionProviderKey.fromEntry(
         entry,
+        page: page,
         sampleSize: _maxSampleSize,
         rect: regionRect,
       ));
@@ -72,6 +81,7 @@ class _TiledImageViewState extends State<TiledImageView> {
       return UriImage(
         uri: entry.uri,
         mimeType: entry.mimeType,
+        page: page,
         rotationDegrees: entry.rotationDegrees,
         isFlipped: entry.isFlipped,
         expectedContentLength: entry.sizeBytes,
@@ -85,17 +95,18 @@ class _TiledImageViewState extends State<TiledImageView> {
   @override
   void initState() {
     super.initState();
+    _displaySize = entry.getDisplaySize(multiPageInfo: widget.multiPageInfo, page: page);
     _fullImageListener = ImageStreamListener(_onFullImageCompleted);
     if (!useTiles) _registerFullImage();
   }
 
   @override
-  void didUpdateWidget(TiledImageView oldWidget) {
+  void didUpdateWidget(covariant TiledImageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     final oldViewState = oldWidget.viewStateNotifier.value;
     final viewState = widget.viewStateNotifier.value;
-    if (oldWidget.entry != widget.entry || oldViewState.viewportSize != viewState.viewportSize) {
+    if (oldWidget.entry != widget.entry || oldViewState.viewportSize != viewState.viewportSize || oldWidget.page != page) {
       _isTilingInitialized = false;
       _fullImageLoaded.value = false;
       _unregisterFullImage();
@@ -135,7 +146,7 @@ class _TiledImageViewState extends State<TiledImageView> {
         if (viewportSized && useTiles && !_isTilingInitialized) _initTiling(viewportSize);
 
         return SizedBox.fromSize(
-          size: entry.displaySize * viewState.scale,
+          size: _displaySize * viewState.scale,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -147,7 +158,7 @@ class _TiledImageViewState extends State<TiledImageView> {
                   image: fullImageProvider,
                   gaplessPlayback: true,
                   errorBuilder: widget.errorBuilder,
-                  width: (entry.displaySize * viewState.scale).width,
+                  width: (_displaySize * viewState.scale).width,
                   fit: BoxFit.contain,
                   filterQuality: FilterQuality.medium,
                 ),
@@ -159,10 +170,9 @@ class _TiledImageViewState extends State<TiledImageView> {
   }
 
   void _initTiling(Size viewportSize) {
-    final displaySize = entry.displaySize;
     _tileSide = viewportSize.shortestSide * scaleFactor;
     // scale for initial state `contained`
-    final containedScale = min(viewportSize.width / displaySize.width, viewportSize.height / displaySize.height);
+    final containedScale = min(viewportSize.width / _displaySize.width, viewportSize.height / _displaySize.height);
     _maxSampleSize = _sampleSizeForScale(containedScale);
 
     final rotationDegrees = entry.rotationDegrees;
@@ -173,7 +183,7 @@ class _TiledImageViewState extends State<TiledImageView> {
         ..translate(entry.width / 2.0, entry.height / 2.0)
         ..scale(isFlipped ? -1.0 : 1.0, 1.0, 1.0)
         ..rotateZ(-toRadians(rotationDegrees.toDouble()))
-        ..translate(-displaySize.width / 2.0, -displaySize.height / 2.0);
+        ..translate(-_displaySize.width / 2.0, -_displaySize.height / 2.0);
     }
     _isTilingInitialized = true;
     _registerFullImage();
@@ -203,7 +213,7 @@ class _TiledImageViewState extends State<TiledImageView> {
     final viewportSize = viewState.viewportSize;
     assert(viewportSize != null);
 
-    final viewSize = entry.displaySize * viewState.scale;
+    final viewSize = _displaySize * viewState.scale;
     final decorationOffset = ((viewSize - viewportSize) as Offset) / 2 - viewState.position;
     final decorationSize = applyBoxFit(BoxFit.none, viewSize, viewportSize).source;
 
@@ -236,8 +246,8 @@ class _TiledImageViewState extends State<TiledImageView> {
   List<Widget> _getTiles(ViewState viewState) {
     if (!_isTilingInitialized) return [];
 
-    final displayWidth = entry.displaySize.width.round();
-    final displayHeight = entry.displaySize.height.round();
+    final displayWidth = _displaySize.width.round();
+    final displayHeight = _displaySize.height.round();
     final viewRect = _getViewRect(viewState, displayWidth, displayHeight);
     final scale = viewState.scale;
 
@@ -265,6 +275,7 @@ class _TiledImageViewState extends State<TiledImageView> {
           if (rects != null) {
             tiles.add(RegionTile(
               entry: entry,
+              page: page,
               tileRect: rects.item1,
               regionRect: rects.item2,
               sampleSize: sampleSize,
@@ -333,6 +344,7 @@ class _TiledImageViewState extends State<TiledImageView> {
 
 class RegionTile extends StatefulWidget {
   final ImageEntry entry;
+  final int page;
 
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
@@ -342,6 +354,7 @@ class RegionTile extends StatefulWidget {
 
   const RegionTile({
     @required this.entry,
+    @required this.page,
     @required this.tileRect,
     @required this.regionRect,
     @required this.sampleSize,
@@ -363,7 +376,7 @@ class _RegionTileState extends State<RegionTile> {
   }
 
   @override
-  void didUpdateWidget(RegionTile oldWidget) {
+  void didUpdateWidget(covariant RegionTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != widget.entry || oldWidget.tileRect != widget.tileRect || oldWidget.sampleSize != widget.sampleSize || oldWidget.sampleSize != widget.sampleSize) {
       _unregisterWidget(oldWidget);
@@ -390,6 +403,7 @@ class _RegionTileState extends State<RegionTile> {
 
     _provider = RegionProvider(RegionProviderKey.fromEntry(
       entry,
+      page: widget.page,
       sampleSize: widget.sampleSize,
       rect: widget.regionRect,
     ));

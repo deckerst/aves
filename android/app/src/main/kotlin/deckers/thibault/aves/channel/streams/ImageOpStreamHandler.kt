@@ -51,15 +51,33 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
 
     // {String uri, bool success, [Map<String, Object> newFields]}
     private fun success(result: Map<String, *>) {
-        handler.post { eventSink.success(result) }
+        handler.post {
+            try {
+                eventSink.success(result)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
-        handler.post { eventSink.error(errorCode, errorMessage, errorDetails) }
+        handler.post {
+            try {
+                eventSink.error(errorCode, errorMessage, errorDetails)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun endOfStream() {
-        handler.post { eventSink.endOfStream() }
+        handler.post {
+            try {
+                eventSink.endOfStream()
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private suspend fun move() {

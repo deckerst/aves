@@ -58,19 +58,14 @@ class Magnifier extends StatefulWidget {
 }
 
 class _MagnifierState extends State<Magnifier> {
-  Size _childSize;
-
   bool _controlledController;
   MagnifierController _controller;
 
-  void _setChildSize(Size childSize) {
-    _childSize = childSize.isEmpty ? null : childSize;
-  }
+  Size get childSize => widget.childSize;
 
   @override
   void initState() {
     super.initState();
-    _setChildSize(widget.childSize);
     if (widget.controller == null) {
       _controlledController = true;
       _controller = MagnifierController();
@@ -81,12 +76,8 @@ class _MagnifierState extends State<Magnifier> {
   }
 
   @override
-  void didUpdateWidget(Magnifier oldWidget) {
-    if (oldWidget.childSize != widget.childSize && widget.childSize != null) {
-      setState(() {
-        _setChildSize(widget.childSize);
-      });
-    }
+  void didUpdateWidget(covariant Magnifier oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (widget.controller == null) {
       if (!_controlledController) {
         _controlledController = true;
@@ -96,7 +87,6 @@ class _MagnifierState extends State<Magnifier> {
       _controlledController = false;
       _controller = widget.controller;
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -116,7 +106,7 @@ class _MagnifierState extends State<Magnifier> {
           widget.maxScale ?? ScaleLevel(factor: double.infinity),
           widget.initialScale ?? ScaleLevel(ref: ScaleReference.contained),
           constraints.biggest,
-          _childSize ?? constraints.biggest,
+          widget.childSize?.isEmpty == true ? constraints.biggest: widget.childSize,
         ));
 
         return MagnifierCore(
