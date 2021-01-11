@@ -325,11 +325,14 @@ class _PositionTitleRow extends StatelessWidget {
       future: multiPageController.info,
       builder: (context, snapshot) {
         final multiPageInfo = snapshot.data;
-        final pageCount = multiPageInfo?.pageCount ?? '?';
+        final pageCount = multiPageInfo?.pageCount;
+        // page count may be 0 when we know an entry to have multiple pages
+        // but fail to get information about these pages
+        final missingInfo = pageCount == 0;
         return ValueListenableBuilder<int>(
           valueListenable: multiPageController.pageNotifier,
           builder: (context, page, child) {
-            return toText(pagePosition: '${page + 1}/$pageCount');
+            return toText(pagePosition: missingInfo ? null : '${page + 1}/${pageCount ?? '?'}');
           },
         );
       },
