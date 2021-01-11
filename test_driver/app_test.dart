@@ -36,7 +36,7 @@ void main() {
     groupCollection();
     selectFirstAlbum();
     searchAlbum();
-    showFullscreen();
+    showViewer();
     toggleOverlay();
     zoom();
     showInfoMetadata();
@@ -145,8 +145,8 @@ void searchAlbum() {
   });
 }
 
-void showFullscreen() {
-  test('[collection] show fullscreen', () async {
+void showViewer() {
+  test('[collection] show viewer', () async {
     await driver.tap(find.byType('DecoratedThumbnail'));
     await driver.waitUntilNoTransientCallbacks();
     await Future.delayed(Duration(seconds: 2));
@@ -154,7 +154,7 @@ void showFullscreen() {
 }
 
 void toggleOverlay() {
-  test('[fullscreen] toggle overlay', () async {
+  test('[viewer] toggle overlay', () async {
     final imageView = find.byValueKey('imageview');
 
     print('* hide overlay');
@@ -168,7 +168,7 @@ void toggleOverlay() {
 }
 
 void zoom() {
-  test('[fullscreen] zoom cycle', () async {
+  test('[viewer] zoom cycle', () async {
     final imageView = find.byValueKey('imageview');
 
     await driver.doubleTap(imageView);
@@ -183,7 +183,7 @@ void zoom() {
 }
 
 void showInfoMetadata() {
-  test('[fullscreen] show info', () async {
+  test('[viewer] show info', () async {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     print('* scroll down to info');
@@ -214,7 +214,7 @@ void showInfoMetadata() {
 }
 
 void scrollOffImage() {
-  test('[fullscreen] scroll off', () async {
+  test('[viewer] scroll off', () async {
     await driver.scroll(find.byValueKey('imageview'), 0, 800, Duration(milliseconds: 600));
     await Future.delayed(Duration(seconds: 1));
   });

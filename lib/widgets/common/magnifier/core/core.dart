@@ -35,11 +35,11 @@ class MagnifierCore extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return MagnifierCoreState();
+    return _MagnifierCoreState();
   }
 }
 
-class MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
+class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
   Offset _startFocalPoint, _lastViewportFocalPosition;
   double _startScale, _quickScaleLastY, _quickScaleLastDistance;
   bool _doubleTap, _quickScaleMoved;

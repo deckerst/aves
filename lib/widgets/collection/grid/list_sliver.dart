@@ -7,7 +7,7 @@ import 'package:aves/widgets/collection/grid/list_section_layout.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/scaling.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +57,7 @@ class GridThumbnail extends StatelessWidget {
       onTap: () {
         if (AvesApp.mode == AppMode.main) {
           if (collection.isBrowsing) {
-            _goToFullscreen(context);
+            _goToViewer(context);
           } else if (collection.isSelecting) {
             collection.toggleSelection(entry);
           }
@@ -77,12 +77,12 @@ class GridThumbnail extends StatelessWidget {
     );
   }
 
-  void _goToFullscreen(BuildContext context) {
+  void _goToViewer(BuildContext context) {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        settings: RouteSettings(name: MultiFullscreenPage.routeName),
-        pageBuilder: (c, a, sa) => MultiFullscreenPage(
+        settings: RouteSettings(name: MultiEntryViewerPage.routeName),
+        pageBuilder: (c, a, sa) => MultiEntryViewerPage(
           collection: collection,
           initialEntry: entry,
         ),

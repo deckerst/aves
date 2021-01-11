@@ -1,5 +1,5 @@
-import 'package:test/test.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('Comparison extension functions', () {
