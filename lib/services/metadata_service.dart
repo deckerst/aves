@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -76,6 +77,19 @@ class MetadataService {
       return OverlayMetadata.fromMap(result);
     } on PlatformException catch (e) {
       debugPrint('getOverlayMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return null;
+  }
+
+  static Future<MultiPageInfo> getMultiPageInfo(ImageEntry entry) async {
+    try {
+      final result = await platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+      }) as Map;
+      return MultiPageInfo.fromMap(result);
+    } on PlatformException catch (e) {
+      debugPrint('getMultiPageInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }

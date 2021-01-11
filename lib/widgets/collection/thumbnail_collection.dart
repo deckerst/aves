@@ -173,7 +173,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   }
 
   @override
-  void didUpdateWidget(CollectionScrollView oldWidget) {
+  void didUpdateWidget(covariant CollectionScrollView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);

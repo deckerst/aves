@@ -1,13 +1,16 @@
 import 'dart:math';
 
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
+import 'package:aves/widgets/fullscreen/multipage_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Minimap extends StatelessWidget {
   final ImageEntry entry;
   final ValueNotifier<ViewState> viewStateNotifier;
+  final MultiPageController multiPageController;
   final Size size;
 
   static const defaultSize = Size(96, 96);
@@ -15,29 +18,47 @@ class Minimap extends StatelessWidget {
   const Minimap({
     @required this.entry,
     @required this.viewStateNotifier,
+    @required this.multiPageController,
     this.size = defaultSize,
   });
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: ValueListenableBuilder<ViewState>(
-          valueListenable: viewStateNotifier,
-          builder: (context, viewState, child) {
-            final viewportSize = viewState.viewportSize;
-            if (viewportSize == null) return SizedBox.shrink();
-            return CustomPaint(
-              painter: MinimapPainter(
-                viewportSize: viewportSize,
-                entrySize: entry.displaySize,
-                viewCenterOffset: viewState.position,
-                viewScale: viewState.scale,
-                minimapBorderColor: Colors.white30,
-              ),
-              size: size,
-            );
-          }),
+      child: multiPageController != null
+          ? FutureBuilder<MultiPageInfo>(
+              future: multiPageController.info,
+              builder: (context, snapshot) {
+                final multiPageInfo = snapshot.data;
+                if (multiPageInfo == null) return SizedBox.shrink();
+                return ValueListenableBuilder<int>(
+                  valueListenable: multiPageController.pageNotifier,
+                  builder: (context, page, child) {
+                    return _buildForEntrySize(entry.getDisplaySize(multiPageInfo: multiPageInfo, page: page));
+                  },
+                );
+              })
+          : _buildForEntrySize(entry.getDisplaySize()),
     );
+  }
+
+  Widget _buildForEntrySize(Size entrySize) {
+    return ValueListenableBuilder<ViewState>(
+        valueListenable: viewStateNotifier,
+        builder: (context, viewState, child) {
+          final viewportSize = viewState.viewportSize;
+          if (viewportSize == null) return SizedBox.shrink();
+          return CustomPaint(
+            painter: MinimapPainter(
+              viewportSize: viewportSize,
+              entrySize: entrySize,
+              viewCenterOffset: viewState.position,
+              viewScale: viewState.scale,
+              minimapBorderColor: Colors.white30,
+            ),
+            size: size,
+          );
+        });
   }
 }
 

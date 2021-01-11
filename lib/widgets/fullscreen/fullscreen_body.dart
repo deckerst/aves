@@ -14,6 +14,7 @@ import 'package:aves/widgets/fullscreen/image_page.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
 import 'package:aves/widgets/fullscreen/info/info_page.dart';
 import 'package:aves/widgets/fullscreen/info/notifications.dart';
+import 'package:aves/widgets/fullscreen/multipage_controller.dart';
 import 'package:aves/widgets/fullscreen/overlay/bottom.dart';
 import 'package:aves/widgets/fullscreen/overlay/panorama.dart';
 import 'package:aves/widgets/fullscreen/overlay/top.dart';
@@ -54,6 +55,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   EntryActionDelegate _actionDelegate;
   final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
+  final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
 
   CollectionLens get collection => widget.collection;
@@ -78,7 +80,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);
     _overlayAnimationController = AnimationController(
-      duration: Durations.fullscreenOverlayAnimation,
+      duration: Durations.viewerOverlayAnimation,
       vsync: this,
     );
     _topOverlayScale = CurvedAnimation(
@@ -110,7 +112,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   }
 
   @override
-  void didUpdateWidget(FullscreenBody oldWidget) {
+  void didUpdateWidget(covariant FullscreenBody oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -122,6 +124,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _videoControllers.forEach((kv) => kv.item2.dispose());
     _videoControllers.clear();
+    _multiPageControllers.forEach((kv) => kv.item2.dispose());
+    _multiPageControllers.clear();
     _verticalPager.removeListener(_onVerticalPageControllerChange);
     WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
@@ -170,6 +174,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
               collection: collection,
               entryNotifier: _entryNotifier,
               videoControllers: _videoControllers,
+              multiPageControllers: _multiPageControllers,
               verticalPager: _verticalPager,
               horizontalPager: _horizontalPager,
               onVerticalPageChanged: _onVerticalPageChanged,
@@ -196,6 +201,9 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
+
+        final multiPageController = _getMultiPageController(entry);
+
         final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
         return FullscreenTopOverlay(
           entry: entry,
@@ -205,6 +213,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
           viewPadding: _frozenViewPadding,
           onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
           viewStateNotifier: viewStateNotifier,
+          multiPageController: multiPageController,
         );
       },
     );
@@ -225,6 +234,8 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
+
+        final multiPageController = _getMultiPageController(entry);
 
         Widget extraBottomOverlay;
         if (entry.isVideo) {
@@ -259,6 +270,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
                 showPosition: hasCollection,
                 viewInsets: _frozenViewInsets,
                 viewPadding: _frozenViewPadding,
+                multiPageController: multiPageController,
               ),
             ),
           ],
@@ -296,6 +308,10 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
     return bottomOverlay;
   }
 
+  MultiPageController _getMultiPageController(ImageEntry entry) {
+    return entry.isMultipage ? _multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2 : null;
+  }
+
   void _onVerticalPageControllerChange() {
     _verticalScrollNotifier.notifyListeners();
   }
@@ -315,7 +331,7 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
   Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
-      duration: Durations.fullscreenPageAnimation,
+      duration: Durations.viewerPageAnimation,
       curve: Curves.easeInOut,
     );
   }
@@ -428,6 +444,14 @@ class FullscreenBodyState extends State<FullscreenBody> with SingleTickerProvide
         (_) => _.dispose(),
       );
     }
+    if (entry.isMultipage) {
+      _initViewSpecificController<MultiPageController>(
+        uri,
+        _multiPageControllers,
+        () => MultiPageController(entry),
+        (_) => _.dispose(),
+      );
+    }
 
     setState(() {});
   }
@@ -452,6 +476,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
   final ValueNotifier<ImageEntry> entryNotifier;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
+  final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImageTap, onImagePageRequested;
@@ -461,6 +486,7 @@ class FullscreenVerticalPageView extends StatefulWidget {
     @required this.collection,
     @required this.entryNotifier,
     @required this.videoControllers,
+    @required this.multiPageControllers,
     @required this.verticalPager,
     @required this.horizontalPager,
     @required this.onVerticalPageChanged,
@@ -492,7 +518,7 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
   }
 
   @override
-  void didUpdateWidget(FullscreenVerticalPageView oldWidget) {
+  void didUpdateWidget(covariant FullscreenVerticalPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -528,12 +554,14 @@ class _FullscreenVerticalPageViewState extends State<FullscreenVerticalPageView>
               onTap: widget.onImageTap,
               onPageChanged: widget.onHorizontalPageChanged,
               videoControllers: widget.videoControllers,
+              multiPageControllers: widget.multiPageControllers,
               onViewDisposed: widget.onViewDisposed,
             )
           : SingleImagePage(
               entry: entry,
               onTap: widget.onImageTap,
               videoControllers: widget.videoControllers,
+              multiPageControllers: widget.multiPageControllers,
             ),
       NotificationListener(
         onNotification: (notification) {

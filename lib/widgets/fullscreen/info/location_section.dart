@@ -51,7 +51,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
   }
 
   @override
-  void didUpdateWidget(LocationSection oldWidget) {
+  void didUpdateWidget(covariant LocationSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);

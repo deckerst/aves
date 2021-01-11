@@ -26,12 +26,16 @@ class BasicSection extends StatelessWidget {
     @required this.onFilter,
   }) : super(key: key);
 
+  int get megaPixels => entry.megaPixels;
+
+  bool get showMegaPixels => entry.isPhoto && megaPixels != null && megaPixels > 0;
+
+  String get rasterResolutionText => '${entry.getResolutionText()}${showMegaPixels ? ' ($megaPixels MP)' : ''}';
+
   @override
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.infoUnknown;
-    final showMegaPixels = entry.isPhoto && entry.megaPixels != null && entry.megaPixels > 0;
-    final resolutionText = '${entry.resolutionText}${showMegaPixels ? ' (${entry.megaPixels} MP)' : ''}';
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
     // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
@@ -46,7 +50,7 @@ class BasicSection extends StatelessWidget {
           'Title': title,
           'Date': dateText,
           if (entry.isVideo) ..._buildVideoRows(),
-          if (!entry.isSvg) 'Resolution': resolutionText,
+          if (!entry.isSvg) 'Resolution': rasterResolutionText,
           'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.infoUnknown,
           'URI': uri,
           if (path != null) 'Path': path,

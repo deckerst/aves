@@ -41,6 +41,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
         key.isFlipped,
         key.extent,
         key.extent,
+        page: key.page,
         taskKey: key,
       );
       if (bytes == null) {
@@ -64,7 +65,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
 class ThumbnailProviderKey {
   final String uri, mimeType;
-  final int dateModifiedSecs, rotationDegrees;
+  final int dateModifiedSecs, rotationDegrees, page;
   final bool isFlipped;
   final double extent, scale;
 
@@ -74,6 +75,7 @@ class ThumbnailProviderKey {
     @required this.dateModifiedSecs,
     @required this.rotationDegrees,
     @required this.isFlipped,
+    this.page = 0,
     this.extent = 0,
     this.scale = 1,
   })  : assert(uri != null),
@@ -86,7 +88,7 @@ class ThumbnailProviderKey {
 
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
-  factory ThumbnailProviderKey.fromEntry(ImageEntry entry, {double extent = 0}) {
+  factory ThumbnailProviderKey.fromEntry(ImageEntry entry, {int page = 0, double extent = 0}) {
     return ThumbnailProviderKey(
       uri: entry.uri,
       mimeType: entry.mimeType,
@@ -94,6 +96,7 @@ class ThumbnailProviderKey {
       dateModifiedSecs: entry.dateModifiedSecs ?? -1,
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
+      page: page,
       extent: extent,
     );
   }
@@ -101,7 +104,7 @@ class ThumbnailProviderKey {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.uri == uri && other.extent == extent && other.mimeType == mimeType && other.dateModifiedSecs == dateModifiedSecs && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.scale == scale;
+    return other is ThumbnailProviderKey && other.uri == uri && other.extent == extent && other.mimeType == mimeType && other.dateModifiedSecs == dateModifiedSecs && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.page == page && other.scale == scale;
   }
 
   @override
@@ -111,10 +114,11 @@ class ThumbnailProviderKey {
         dateModifiedSecs,
         rotationDegrees,
         isFlipped,
+        page,
         extent,
         scale,
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, extent=$extent, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, dateModifiedSecs=$dateModifiedSecs, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, page=$page, extent=$extent, scale=$scale}';
 }

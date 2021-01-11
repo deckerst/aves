@@ -9,6 +9,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/fullscreen/image_view.dart';
+import 'package:aves/widgets/fullscreen/multipage_controller.dart';
 import 'package:aves/widgets/fullscreen/overlay/common.dart';
 import 'package:aves/widgets/fullscreen/overlay/minimap.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +25,7 @@ class FullscreenTopOverlay extends StatelessWidget {
   final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
   final ValueNotifier<ViewState> viewStateNotifier;
+  final MultiPageController multiPageController;
 
   static const double padding = 8;
 
@@ -39,7 +41,8 @@ class FullscreenTopOverlay extends StatelessWidget {
     @required this.viewInsets,
     @required this.viewPadding,
     @required this.onActionSelected,
-    this.viewStateNotifier,
+    @required this.viewStateNotifier,
+    @required this.multiPageController,
   }) : super(key: key);
 
   @override
@@ -85,6 +88,7 @@ class FullscreenTopOverlay extends StatelessWidget {
                         child: Minimap(
                           entry: entry,
                           viewStateNotifier: viewStateNotifier,
+                          multiPageController: multiPageController,
                         ),
                       )
                     ],
@@ -320,7 +324,7 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
   }
 
   @override
-  void didUpdateWidget(_FavouriteToggler oldWidget) {
+  void didUpdateWidget(covariant _FavouriteToggler oldWidget) {
     super.didUpdateWidget(oldWidget);
     _onChanged();
   }

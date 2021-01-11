@@ -29,10 +29,11 @@ class Durations {
   // search animations
   static const filterRowExpandAnimation = Duration(milliseconds: 300);
 
-  // fullscreen animations
-  static const fullscreenPageAnimation = Duration(milliseconds: 300);
-  static const fullscreenOverlayAnimation = Duration(milliseconds: 200);
-  static const fullscreenOverlayChangeAnimation = Duration(milliseconds: 150);
+  // viewer animations
+  static const viewerPageAnimation = Duration(milliseconds: 300);
+  static const viewerOverlayAnimation = Duration(milliseconds: 200);
+  static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
+  static const viewerOverlayPageChooserAnimation = Duration(milliseconds: 200);
 
   // info
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);

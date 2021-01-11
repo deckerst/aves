@@ -74,6 +74,7 @@ class ImageFileService {
     String mimeType,
     int rotationDegrees,
     bool isFlipped, {
+    int page = 0,
     int expectedContentLength,
     BytesReceivedCallback onBytesReceived,
   }) {
@@ -86,6 +87,7 @@ class ImageFileService {
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
         'isFlipped': isFlipped ?? false,
+        'page': page ?? 0,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -123,6 +125,7 @@ class ImageFileService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
+    int page = 0,
     Object taskKey,
     int priority,
   }) {
@@ -132,6 +135,7 @@ class ImageFileService {
           final result = await platform.invokeMethod('getRegion', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
+            'page': page,
             'sampleSize': sampleSize,
             'regionX': regionRect.left,
             'regionY': regionRect.top,
@@ -159,6 +163,7 @@ class ImageFileService {
     bool isFlipped,
     double width,
     double height, {
+    int page,
     Object taskKey,
     int priority,
   }) {
@@ -176,6 +181,7 @@ class ImageFileService {
             'isFlipped': isFlipped,
             'widthDip': width,
             'heightDip': height,
+            'page': page,
             'defaultSizeDip': thumbnailDefaultSize,
           });
           return result as Uint8List;
@@ -217,7 +223,6 @@ class ImageFileService {
   }
 
   static Stream<MoveOpEvent> move(Iterable<ImageEntry> entries, {@required bool copy, @required String destinationAlbum}) {
-    debugPrint('move ${entries.length} entries');
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',

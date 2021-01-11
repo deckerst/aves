@@ -3,8 +3,10 @@ package deckers.thibault.aves.channel.streams
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
+import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.Dispatchers
@@ -34,11 +36,23 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     override fun onCancel(arguments: Any?) {}
 
     private fun success(result: FieldMap) {
-        handler.post { eventSink.success(result) }
+        handler.post {
+            try {
+                eventSink.success(result)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun endOfStream() {
-        handler.post { eventSink.endOfStream() }
+        handler.post {
+            try {
+                eventSink.endOfStream()
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private suspend fun fetchAll() {
@@ -47,6 +61,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag(MediaStoreStreamHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/mediastorestream"
     }
 }

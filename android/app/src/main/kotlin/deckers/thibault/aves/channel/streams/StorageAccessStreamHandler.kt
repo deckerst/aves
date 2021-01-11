@@ -3,6 +3,8 @@ package deckers.thibault.aves.channel.streams
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.PermissionManager.requestVolumeAccess
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -30,15 +32,28 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     override fun onCancel(arguments: Any?) {}
 
     private fun success(result: Boolean) {
-        handler.post { eventSink.success(result) }
+        handler.post {
+            try {
+                eventSink.success(result)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
         endOfStream()
     }
 
     private fun endOfStream() {
-        handler.post { eventSink.endOfStream() }
+        handler.post {
+            try {
+                eventSink.endOfStream()
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag(StorageAccessStreamHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/storageaccessstream"
     }
 }

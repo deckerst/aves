@@ -11,10 +11,7 @@ import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.Rational
-import com.drew.metadata.exif.ExifDirectoryBase
-import com.drew.metadata.exif.ExifIFD0Directory
-import com.drew.metadata.exif.ExifSubIFDDirectory
-import com.drew.metadata.exif.GpsDirectory
+import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
@@ -72,6 +69,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { getAllMetadata(call, Coresult(result)) }
             "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { getCatalogMetadata(call, Coresult(result)) }
             "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { getOverlayMetadata(call, Coresult(result)) }
+            "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { getMultiPageInfo(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { getExifThumbnails(call, Coresult(result)) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { extractXmpDataProp(call, Coresult(result)) }
@@ -109,7 +107,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[dirName] = dirMap
 
                         // tags
-                        if (mimeType == MimeTypes.TIFF && dir is ExifIFD0Directory) {
+                        if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
                             dirMap.putAll(dir.tags.map {
                                 val name = if (it.hasTagName()) {
                                     it.tagName
@@ -397,7 +395,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (mimeType == MimeTypes.TIFF && getTiffDirCount(uri) > 1) flags = flags or MASK_IS_MULTIPAGE
+        if (mimeType == MimeTypes.TIFF && isMultiPageTiff(uri)) flags = flags or MASK_IS_MULTIPAGE
 
         metadataMap[KEY_FLAGS] = flags
     }
@@ -512,6 +510,33 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         result.success(metadataMap)
+    }
+
+    private fun getMultiPageInfo(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (mimeType == null || uri == null) {
+            result.error("getMultiPageInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val pages = HashMap<Int, Any>()
+        if (mimeType == MimeTypes.TIFF) {
+            fun toMap(options: TiffBitmapFactory.Options): Map<String, Any> {
+                return hashMapOf(
+                    "width" to options.outWidth,
+                    "height" to options.outHeight,
+                )
+            }
+            getTiffPageInfo(uri, 0)?.let { first ->
+                pages[0] = toMap(first)
+                val pageCount = first.outDirectoryCount
+                for (i in 1 until pageCount) {
+                    getTiffPageInfo(uri, i)?.let { pages[i] = toMap(it) }
+                }
+            }
+        }
+        result.success(pages)
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {
@@ -642,23 +667,25 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)
     }
 
-    private fun getTiffDirCount(uri: Uri): Int {
-        var dirCount = 1
+    private fun isMultiPageTiff(uri: Uri) = getTiffPageInfo(uri, 0)?.outDirectoryCount ?: 1 > 1
+
+    private fun getTiffPageInfo(uri: Uri, page: Int): TiffBitmapFactory.Options? {
         try {
             val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
             if (fd == null) {
                 Log.w(LOG_TAG, "failed to get file descriptor for uri=$uri")
-            } else {
-                val options = TiffBitmapFactory.Options().apply {
-                    inJustDecodeBounds = true
-                }
-                TiffBitmapFactory.decodeFileDescriptor(fd, options)
-                dirCount = options.outDirectoryCount
+                return null
             }
+            val options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+                inDirectoryNumber = page
+            }
+            TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            return options
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get TIFF dir count for uri=$uri", e)
+            Log.w(LOG_TAG, "failed to get TIFF page info for uri=$uri page=$page", e)
         }
-        return dirCount
+        return null
     }
 
     companion object {

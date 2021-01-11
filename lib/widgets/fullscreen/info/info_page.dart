@@ -99,7 +99,7 @@ class InfoPageState extends State<InfoPage> {
     BackUpNotification().dispatch(context);
     _scrollController.animateTo(
       0,
-      duration: Durations.fullscreenPageAnimation,
+      duration: Durations.viewerPageAnimation,
       curve: Curves.easeInOut,
     );
   }

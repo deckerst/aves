@@ -33,7 +33,6 @@ class SectionedListLayoutProvider extends StatelessWidget {
   }
 
   SectionedListLayout _updateLayouts(BuildContext context) {
-//    debugPrint('$runtimeType _updateLayouts entries=${collection.entryCount} columnCount=$columnCount tileExtent=$tileExtent');
     final sectionLayouts = <SectionLayout>[];
     final showHeaders = collection.showHeaders;
     final source = collection.source;

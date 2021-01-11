@@ -34,7 +34,7 @@ class AvesVideoState extends State<AvesVideo> {
   }
 
   @override
-  void didUpdateWidget(AvesVideo oldWidget) {
+  void didUpdateWidget(covariant AvesVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -101,6 +101,7 @@ class AvesVideoState extends State<AvesVideo> {
                   image: UriImage(
                     uri: entry.uri,
                     mimeType: entry.mimeType,
+                    page: 0,
                     rotationDegrees: entry.rotationDegrees,
                     isFlipped: entry.isFlipped,
                     expectedContentLength: entry.sizeBytes,

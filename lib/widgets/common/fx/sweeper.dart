@@ -57,7 +57,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
   }
 
   @override
-  void didUpdateWidget(Sweeper oldWidget) {
+  void didUpdateWidget(covariant Sweeper oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);

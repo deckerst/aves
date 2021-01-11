@@ -65,7 +65,7 @@ class VideoControlOverlayState extends State<VideoControlOverlay> with SingleTic
   }
 
   @override
-  void didUpdateWidget(VideoControlOverlay oldWidget) {
+  void didUpdateWidget(covariant VideoControlOverlay oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);

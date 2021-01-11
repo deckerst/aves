@@ -251,7 +251,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
             TiffBitmapFactory.decodeFileDescriptor(fd, options)
             metadataMap["0"] = tiffOptionsToMap(options)
             val dirCount = options.outDirectoryCount
-            for (i in 1 until dirCount) {
+            for (page in 1 until dirCount) {
                 fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
                 if (fd == null) {
                     result.error("getTiffStructure-fd", "failed to get file descriptor", null)
@@ -259,10 +259,10 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 }
                 options = TiffBitmapFactory.Options().apply {
                     inJustDecodeBounds = true
-                    inDirectoryNumber = i
+                    inDirectoryNumber = page
                 }
                 TiffBitmapFactory.decodeFileDescriptor(fd, options)
-                metadataMap["$i"] = tiffOptionsToMap(options)
+                metadataMap["$page"] = tiffOptionsToMap(options)
             }
             result.success(metadataMap)
         } catch (e: Exception) {

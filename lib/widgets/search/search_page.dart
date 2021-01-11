@@ -52,7 +52,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   @override
-  void didUpdateWidget(SearchPage oldWidget) {
+  void didUpdateWidget(covariant SearchPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.delegate != oldWidget.delegate) {
       oldWidget.delegate.queryTextController.removeListener(_onQueryChanged);

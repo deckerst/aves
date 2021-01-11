@@ -35,7 +35,7 @@ class EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliv
   final MapController _mapController = MapController();
 
   @override
-  void didUpdateWidget(EntryLeafletMap oldWidget) {
+  void didUpdateWidget(covariant EntryLeafletMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.latLng != oldWidget.latLng && _mapController != null) {
       _mapController.move(widget.latLng, settings.infoMapZoom);

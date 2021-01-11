@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/icons.dart';
@@ -23,6 +24,8 @@ import 'package:tuple/tuple.dart';
 
 class ImageView extends StatefulWidget {
   final ImageEntry entry;
+  final MultiPageInfo multiPageInfo;
+  final int page;
   final Object heroTag;
   final MagnifierTapCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
@@ -33,6 +36,8 @@ class ImageView extends StatefulWidget {
   const ImageView({
     Key key,
     @required this.entry,
+    this.multiPageInfo,
+    this.page = 0,
     this.heroTag,
     @required this.onTap,
     @required this.videoControllers,
@@ -54,7 +59,13 @@ class _ImageViewState extends State<ImageView> {
 
   ImageEntry get entry => widget.entry;
 
+  MultiPageInfo get multiPageInfo => widget.multiPageInfo;
+
+  int get page => widget.page;
+
   MagnifierTapCallback get onTap => widget.onTap;
+
+  Size get pageDisplaySize => entry.getDisplaySize(multiPageInfo: multiPageInfo, page: page);
 
   @override
   void initState() {
@@ -99,13 +110,15 @@ class _ImageViewState extends State<ImageView> {
   Widget _buildRasterView() {
     return Magnifier(
       // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
+      key: ValueKey('${page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
       child: TiledImageView(
         entry: entry,
+        multiPageInfo: multiPageInfo,
+        page: page,
         viewStateNotifier: _viewStateNotifier,
         errorBuilder: (context, error, stackTrace) => ErrorChild(onTap: () => onTap?.call(null)),
       ),
-      childSize: entry.displaySize,
+      childSize: pageDisplaySize,
       controller: _magnifierController,
       maxScale: maxScale,
       minScale: minScale,
@@ -127,7 +140,7 @@ class _ImageViewState extends State<ImageView> {
           colorFilter: colorFilter,
         ),
       ),
-      childSize: entry.displaySize,
+      childSize: pageDisplaySize,
       controller: _magnifierController,
       minScale: minScale,
       initialScale: initialScale,
@@ -145,7 +158,7 @@ class _ImageViewState extends State<ImageView> {
           final side = viewportSize.shortestSide;
           final checkSize = side / ((side / ImageView.decorationCheckSize).round());
 
-          final viewSize = entry.displaySize * viewState.scale;
+          final viewSize = pageDisplaySize * viewState.scale;
           final decorationSize = applyBoxFit(BoxFit.none, viewSize, viewportSize).source;
           final offset = ((decorationSize - viewportSize) as Offset) / 2;
 
@@ -181,7 +194,7 @@ class _ImageViewState extends State<ImageView> {
               controller: videoController,
             )
           : SizedBox(),
-      childSize: entry.displaySize,
+      childSize: pageDisplaySize,
       controller: _magnifierController,
       maxScale: maxScale,
       minScale: minScale,
