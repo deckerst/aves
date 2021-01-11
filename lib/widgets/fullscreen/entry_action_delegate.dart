@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -11,13 +10,12 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/fullscreen/fullscreen_debug_page.dart';
+import 'package:aves/widgets/fullscreen/printing.dart';
 import 'package:aves/widgets/fullscreen/source_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:pdf/widgets.dart' as pdf;
 import 'package:pedantic/pedantic.dart';
-import 'package:printing/printing.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
   final CollectionLens collection;
@@ -45,7 +43,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         _showRenameDialog(context, entry);
         break;
       case EntryAction.print:
-        _print(entry);
+        EntryPrinter(entry).print();
         break;
       case EntryAction.rotateCCW:
         _rotate(context, entry, clockwise: false);
@@ -87,49 +85,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       case EntryAction.debug:
         _goToDebug(context, entry);
         break;
-    }
-  }
-
-  Future<void> _print(ImageEntry entry) async {
-    final uri = entry.uri;
-    final mimeType = entry.mimeType;
-    final rotationDegrees = entry.rotationDegrees;
-    final isFlipped = entry.isFlipped;
-    final documentName = entry.bestTitle ?? 'Aves';
-    final doc = pdf.Document(title: documentName);
-
-    pdf.Widget pdfChild;
-    if (entry.isSvg) {
-      final bytes = await ImageFileService.getImage(uri, mimeType, entry.rotationDegrees, entry.isFlipped);
-      if (bytes != null && bytes.isNotEmpty) {
-        pdfChild = pdf.SvgImage(svg: utf8.decode(bytes));
-      }
-    } else {
-      pdfChild = pdf.Image.provider(await flutterImageProvider(
-        UriImage(
-          uri: uri,
-          mimeType: mimeType,
-          // TODO TLAD multipage print
-          page: 0,
-          rotationDegrees: rotationDegrees,
-          isFlipped: isFlipped,
-        ),
-      ));
-    }
-    if (pdfChild != null) {
-      doc.addPage(pdf.Page(
-        orientation: entry.isPortrait ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
-        build: (context) => pdf.FullPage(
-          ignoreMargins: true,
-          child: pdf.Center(
-            child: pdfChild,
-          ),
-        ),
-      )); // Page
-      unawaited(Printing.layoutPdf(
-        onLayout: (format) => doc.save(),
-        name: documentName,
-      ));
     }
   }
 
