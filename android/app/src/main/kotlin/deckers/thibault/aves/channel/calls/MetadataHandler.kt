@@ -70,6 +70,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { getCatalogMetadata(call, Coresult(result)) }
             "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { getOverlayMetadata(call, Coresult(result)) }
             "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { getMultiPageInfo(call, Coresult(result)) }
+            "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { getPanoramaInfo(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { getExifThumbnails(call, Coresult(result)) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { extractXmpDataProp(call, Coresult(result)) }
@@ -537,6 +538,46 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(pages)
+    }
+
+    private fun getPanoramaInfo(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
+            result.error("getPanoramaInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (isSupportedByMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
+                    try {
+                        fun getProp(propName: String): Int? = xmpDirs.map { it.xmpMeta.getPropertyInteger(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
+                        val fields: FieldMap = hashMapOf(
+                            "croppedAreaLeft" to getProp(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME),
+                            "croppedAreaTop" to getProp(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME),
+                            "croppedAreaWidth" to getProp(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME),
+                            "croppedAreaHeight" to getProp(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME),
+                            "fullPanoWidth" to getProp(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME),
+                            "fullPanoHeight" to getProp(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME),
+                        )
+                        result.success(fields)
+                        return
+                    } catch (e: XMPException) {
+                        result.error("getPanoramaInfo-args", "failed to read XMP for uri=$uri", e.message)
+                        return
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read XMP", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read XMP", e)
+            }
+        }
+        result.error("getPanoramaInfo-empty", "failed to read XMP from uri=$uri", null)
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {

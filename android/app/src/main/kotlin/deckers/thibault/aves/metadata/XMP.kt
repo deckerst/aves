@@ -42,15 +42,15 @@ object XMP {
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
 
-    private const val GPANO_SCHEMA_NS = "http://ns.google.com/photos/1.0/panorama/"
+    const val GPANO_SCHEMA_NS = "http://ns.google.com/photos/1.0/panorama/"
     private const val PMTM_SCHEMA_NS = "http://www.hdrsoft.com/photomatix_settings01"
 
-    private const val GPANO_CROPPED_AREA_HEIGHT_PROP_NAME = "GPano:CroppedAreaImageHeightPixels"
-    private const val GPANO_CROPPED_AREA_WIDTH_PROP_NAME = "GPano:CroppedAreaImageWidthPixels"
-    private const val GPANO_CROPPED_AREA_LEFT_PROP_NAME = "GPano:CroppedAreaLeftPixels"
-    private const val GPANO_CROPPED_AREA_TOP_PROP_NAME = "GPano:CroppedAreaTopPixels"
-    private const val GPANO_FULL_PANO_HEIGHT_PIXELS_PROP_NAME = "GPano:FullPanoHeightPixels"
-    private const val GPANO_FULL_PANO_WIDTH_PIXELS_PROP_NAME = "GPano:FullPanoWidthPixels"
+    const val GPANO_CROPPED_AREA_HEIGHT_PROP_NAME = "GPano:CroppedAreaImageHeightPixels"
+    const val GPANO_CROPPED_AREA_WIDTH_PROP_NAME = "GPano:CroppedAreaImageWidthPixels"
+    const val GPANO_CROPPED_AREA_LEFT_PROP_NAME = "GPano:CroppedAreaLeftPixels"
+    const val GPANO_CROPPED_AREA_TOP_PROP_NAME = "GPano:CroppedAreaTopPixels"
+    const val GPANO_FULL_PANO_HEIGHT_PROP_NAME = "GPano:FullPanoHeightPixels"
+    const val GPANO_FULL_PANO_WIDTH_PROP_NAME = "GPano:FullPanoWidthPixels"
     private const val GPANO_PROJECTION_TYPE_PROP_NAME = "GPano:ProjectionType"
 
     private const val PMTM_IS_PANO360 = "pmtm:IsPano360"
@@ -60,8 +60,8 @@ object XMP {
         GPANO_CROPPED_AREA_WIDTH_PROP_NAME,
         GPANO_CROPPED_AREA_LEFT_PROP_NAME,
         GPANO_CROPPED_AREA_TOP_PROP_NAME,
-        GPANO_FULL_PANO_HEIGHT_PIXELS_PROP_NAME,
-        GPANO_FULL_PANO_WIDTH_PIXELS_PROP_NAME,
+        GPANO_FULL_PANO_HEIGHT_PROP_NAME,
+        GPANO_FULL_PANO_WIDTH_PROP_NAME,
         GPANO_PROJECTION_TYPE_PROP_NAME,
     )
 
