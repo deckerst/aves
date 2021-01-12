@@ -297,6 +297,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
+            // TODO TLAD replace when using Flutter version adapted for null safety
+            // bottom: (_verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
             bottom: (_verticalPager.offset ?? 0) - mqHeight,
             child: child,
           ),
