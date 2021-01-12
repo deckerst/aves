@@ -1,7 +1,9 @@
 import 'package:aves/model/image_entry.dart';
+import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
 import 'package:flutter/material.dart';
+import 'package:pedantic/pedantic.dart';
 
 class PanoramaOverlay extends StatelessWidget {
   final ImageEntry entry;
@@ -21,14 +23,18 @@ class PanoramaOverlay extends StatelessWidget {
         OverlayTextButton(
           scale: scale,
           text: 'Open Panorama',
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            final info = await MetadataService.getPanoramaInfo(entry);
+            unawaited(Navigator.push(
               context,
               MaterialPageRoute(
                 settings: RouteSettings(name: PanoramaPage.routeName),
-                builder: (context) => PanoramaPage(entry: entry),
+                builder: (context) => PanoramaPage(
+                  entry: entry,
+                  info: info,
+                ),
               ),
-            );
+            ));
           },
         )
       ],

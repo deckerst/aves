@@ -18,6 +18,8 @@ class AIcons {
   static const IconData raw = Icons.camera_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
+  static const IconData sensorControl = Icons.explore_outlined;
+  static const IconData sensorControlOff = Icons.explore_off_outlined;
   static const IconData settings = Icons.settings_outlined;
   static const IconData text = Icons.format_quote_outlined;
   static const IconData tag = Icons.local_offer_outlined;
