@@ -25,33 +25,42 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
         ),
-        body: SafeArea(
-          child: Consumer<Settings>(
-            builder: (context, settings, child) => AnimationLimiter(
-              child: ListView(
-                padding: EdgeInsets.all(8),
-                children: AnimationConfiguration.toStaggeredList(
-                  duration: Durations.staggeredAnimation,
-                  delay: Durations.staggeredAnimationDelay,
-                  childAnimationBuilder: (child) => SlideAnimation(
-                    verticalOffset: 50.0,
-                    child: FadeInAnimation(
-                      child: child,
+        body: Theme(
+          data: theme.copyWith(
+            textTheme: theme.textTheme.copyWith(
+              // dense style font for tile subtitles, without modifying title font
+              bodyText2: TextStyle(fontSize: 12),
+            ),
+          ),
+          child: SafeArea(
+            child: Consumer<Settings>(
+              builder: (context, settings, child) => AnimationLimiter(
+                child: ListView(
+                  padding: EdgeInsets.all(8),
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: Durations.staggeredAnimation,
+                    delay: Durations.staggeredAnimationDelay,
+                    childAnimationBuilder: (child) => SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: child,
+                      ),
                     ),
+                    children: [
+                      _buildNavigationSection(context),
+                      _buildDisplaySection(context),
+                      _buildThumbnailsSection(context),
+                      _buildViewerSection(context),
+                      _buildSearchSection(context),
+                      _buildPrivacySection(context),
+                    ],
                   ),
-                  children: [
-                    _buildNavigationSection(context),
-                    _buildDisplaySection(context),
-                    _buildThumbnailsSection(context),
-                    _buildViewerSection(context),
-                    _buildSearchSection(context),
-                    _buildPrivacySection(context),
-                  ],
                 ),
               ),
             ),
@@ -189,8 +198,14 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text('Show minimap'),
         ),
         SwitchListTile(
+          value: settings.showOverlayInfo,
+          onChanged: (v) => settings.showOverlayInfo = v,
+          title: Text('Show information'),
+          subtitle: Text('Show title, date, location, etc.'),
+        ),
+        SwitchListTile(
           value: settings.showOverlayShootingDetails,
-          onChanged: (v) => settings.showOverlayShootingDetails = v,
+          onChanged: settings.showOverlayInfo ? (v) => settings.showOverlayShootingDetails = v : null,
           title: Text('Show shooting details'),
         ),
       ],

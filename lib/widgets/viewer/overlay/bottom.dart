@@ -51,6 +51,8 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
     return index < entries.length ? entries[index] : null;
   }
 
+  MultiPageController get multiPageController => widget.multiPageController;
+
   @override
   void initState() {
     super.initState();
@@ -71,7 +73,9 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
   @override
   Widget build(BuildContext context) {
+    final hasEdgeContent = settings.showOverlayInfo || multiPageController != null;
     return BlurredRect(
+      enabled: hasEdgeContent,
       child: Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
         selector: (c, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
         builder: (c, mq, child) {
@@ -84,7 +88,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           final availableWidth = mqWidth - viewPadding.horizontal;
 
           return Container(
-            color: kOverlayBackgroundColor,
+            color: hasEdgeContent ? kOverlayBackgroundColor: Colors.transparent,
             padding: viewInsets + viewPadding.copyWith(top: 0),
             child: FutureBuilder<OverlayMetadata>(
               future: _detailLoader,
@@ -100,7 +104,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
                         details: _lastDetails,
                         position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
                         availableWidth: availableWidth,
-                        multiPageController: widget.multiPageController,
+                        multiPageController: multiPageController,
                       );
               },
             ),
@@ -136,8 +140,6 @@ class _BottomOverlayContent extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final infoMaxWidth = availableWidth - infoPadding.horizontal;
-
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2.copyWith(
         shadows: [Constants.embossShadow],
@@ -150,48 +152,11 @@ class _BottomOverlayContent extends AnimatedWidget {
         child: Selector<MediaQueryData, Orientation>(
           selector: (c, mq) => mq.orientation,
           builder: (c, orientation, child) {
-            final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
-            final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
-            final positionTitle = _PositionTitleRow(entry: entry, collectionPosition: position, multiPageController: multiPageController);
-            final hasShootingDetails = details != null && !details.isEmpty && settings.showOverlayShootingDetails;
+            Widget infoColumn;
 
-            Widget infoColumn = Padding(
-              padding: infoPadding,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (positionTitle.isNotEmpty) positionTitle,
-                  _buildSoloLocationRow(),
-                  if (twoColumns)
-                    Padding(
-                      padding: EdgeInsets.only(top: _interRowPadding),
-                      child: Row(
-                        children: [
-                          Container(
-                              width: subRowWidth,
-                              child: _DateRow(
-                                entry: entry,
-                                multiPageController: multiPageController,
-                              )),
-                          _buildDuoShootingRow(subRowWidth, hasShootingDetails),
-                        ],
-                      ),
-                    )
-                  else ...[
-                    Container(
-                      padding: EdgeInsets.only(top: _interRowPadding),
-                      width: subRowWidth,
-                      child: _DateRow(
-                        entry: entry,
-                        multiPageController: multiPageController,
-                      ),
-                    ),
-                    _buildSoloShootingRow(subRowWidth, hasShootingDetails),
-                  ],
-                ],
-              ),
-            );
+            if (settings.showOverlayInfo) {
+              infoColumn = _buildInfoColumn(orientation);
+            }
 
             if (multiPageController != null) {
               infoColumn = Column(
@@ -203,14 +168,60 @@ class _BottomOverlayContent extends AnimatedWidget {
                     controller: multiPageController,
                     availableWidth: availableWidth,
                   ),
-                  infoColumn,
+                  if (infoColumn != null) infoColumn,
                 ],
               );
             }
 
-            return infoColumn;
+            return infoColumn ?? SizedBox();
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoColumn(Orientation orientation) {
+    final infoMaxWidth = availableWidth - infoPadding.horizontal;
+    final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
+    final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
+    final positionTitle = _PositionTitleRow(entry: entry, collectionPosition: position, multiPageController: multiPageController);
+    final hasShootingDetails = details != null && !details.isEmpty && settings.showOverlayShootingDetails;
+
+    return Padding(
+      padding: infoPadding,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (positionTitle.isNotEmpty) positionTitle,
+          _buildSoloLocationRow(),
+          if (twoColumns)
+            Padding(
+              padding: EdgeInsets.only(top: _interRowPadding),
+              child: Row(
+                children: [
+                  Container(
+                      width: subRowWidth,
+                      child: _DateRow(
+                        entry: entry,
+                        multiPageController: multiPageController,
+                      )),
+                  _buildDuoShootingRow(subRowWidth, hasShootingDetails),
+                ],
+              ),
+            )
+          else ...[
+            Container(
+              padding: EdgeInsets.only(top: _interRowPadding),
+              width: subRowWidth,
+              child: _DateRow(
+                entry: entry,
+                multiPageController: multiPageController,
+              ),
+            ),
+            _buildSoloShootingRow(subRowWidth, hasShootingDetails),
+          ],
+        ],
       ),
     );
   }

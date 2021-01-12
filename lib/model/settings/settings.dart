@@ -47,6 +47,7 @@ class Settings extends ChangeNotifier {
 
   // viewer
   static const showOverlayMinimapKey = 'show_overlay_minimap';
+  static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
 
   // info
@@ -165,6 +166,10 @@ class Settings extends ChangeNotifier {
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
+
+  bool get showOverlayInfo => getBoolOrDefault(showOverlayInfoKey, true);
+
+  set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
   bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, true);
 
