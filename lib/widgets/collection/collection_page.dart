@@ -1,6 +1,7 @@
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/collection/thumbnail_collection.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
+import 'package:aves/widgets/common/gesture_area_protector.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:flutter/foundation.dart';
@@ -30,7 +31,9 @@ class CollectionPage extends StatelessWidget {
               return SynchronousFuture(true);
             },
             child: DoubleBackPopScope(
-              child: ThumbnailCollection(),
+              child: GestureAreaProtectorStack(
+                child: ThumbnailCollection(),
+              ),
             ),
           ),
           drawer: AppDrawer(
