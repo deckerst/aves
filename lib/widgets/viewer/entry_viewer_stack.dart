@@ -8,6 +8,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/gesture_area_protector.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_scroller.dart';
@@ -185,6 +186,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             ),
             _buildTopOverlay(),
             _buildBottomOverlay(),
+            BottomGestureAreaProtector(),
           ],
         ),
       ),

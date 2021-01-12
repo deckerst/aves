@@ -2,6 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/gesture_area_protector.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
@@ -40,31 +41,33 @@ class _InfoPageState extends State<InfoPage> {
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
-        body: SafeArea(
-          child: NotificationListener(
-            onNotification: _handleTopScroll,
-            child: Selector<MediaQueryData, Tuple2<double, double>>(
-              selector: (c, mq) => Tuple2(mq.size.width, mq.viewInsets.bottom),
-              builder: (c, mq, child) {
-                final mqWidth = mq.item1;
-                final mqViewInsetsBottom = mq.item2;
-                return ValueListenableBuilder<ImageEntry>(
-                  valueListenable: widget.entryNotifier,
-                  builder: (context, entry, child) {
-                    return entry != null
-                        ? _InfoPageContent(
-                            collection: collection,
-                            entry: entry,
-                            visibleNotifier: widget.visibleNotifier,
-                            scrollController: _scrollController,
-                            split: mqWidth > 400,
-                            mqViewInsetsBottom: mqViewInsetsBottom,
-                            goToViewer: _goToViewer,
-                          )
-                        : SizedBox.shrink();
-                  },
-                );
-              },
+        body: GestureAreaProtectorStack(
+          child: SafeArea(
+            child: NotificationListener(
+              onNotification: _handleTopScroll,
+              child: Selector<MediaQueryData, Tuple2<double, double>>(
+                selector: (c, mq) => Tuple2(mq.size.width, mq.viewInsets.bottom),
+                builder: (c, mq, child) {
+                  final mqWidth = mq.item1;
+                  final mqViewInsetsBottom = mq.item2;
+                  return ValueListenableBuilder<ImageEntry>(
+                    valueListenable: widget.entryNotifier,
+                    builder: (context, entry, child) {
+                      return entry != null
+                          ? _InfoPageContent(
+                              collection: collection,
+                              entry: entry,
+                              visibleNotifier: widget.visibleNotifier,
+                              scrollController: _scrollController,
+                              split: mqWidth > 400,
+                              mqViewInsetsBottom: mqViewInsetsBottom,
+                              goToViewer: _goToViewer,
+                            )
+                          : SizedBox.shrink();
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),
