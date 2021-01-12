@@ -5,18 +5,25 @@ import 'package:flutter/material.dart';
 final _filter = ImageFilter.blur(sigmaX: 4, sigmaY: 4);
 
 class BlurredRect extends StatelessWidget {
+  final bool enabled;
   final Widget child;
 
-  const BlurredRect({Key key, this.child}) : super(key: key);
+  const BlurredRect({
+    Key key,
+    this.enabled = true,
+    this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: _filter,
-        child: child,
-      ),
-    );
+    return enabled
+        ? ClipRect(
+            child: BackdropFilter(
+              filter: _filter,
+              child: child,
+            ),
+          )
+        : child;
   }
 }
 
