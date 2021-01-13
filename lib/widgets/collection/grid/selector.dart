@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/widgets/collection/grid/list_section_layout.dart';
+import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +135,8 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
     // but when it is scrolling (through controller animation), result is incomplete and children are missing,
     // so we use custom layout computation instead to find the entry.
     final offset = Offset(0, scrollController.offset - appBarHeight) + localPosition;
-    return context.read<SectionedListLayout>().getEntryAt(offset);
+    final sectionedListLayout = context.read<SectionedListLayout<ImageEntry>>();
+    return sectionedListLayout.getEntryAt(offset);
   }
 
   void _toggleSelectionToIndex(int toIndex) {

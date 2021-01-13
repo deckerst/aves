@@ -1,5 +1,6 @@
+import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/collection/grid/header_generic.dart';
+import 'package:aves/widgets/common/grid/header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -35,8 +36,8 @@ class DaySectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TitleSectionHeader(
-      sectionKey: date,
+    return SectionHeader(
+      sectionKey: DateSectionKey(date),
       title: text,
     );
   }
@@ -64,8 +65,8 @@ class MonthSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TitleSectionHeader(
-      sectionKey: date,
+    return SectionHeader(
+      sectionKey: DateSectionKey(date),
       title: text,
     );
   }

@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailVectorImage extends StatelessWidget {
+class VectorImageThumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
   final Object heroTag;
 
-  const ThumbnailVectorImage({
+  const VectorImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,

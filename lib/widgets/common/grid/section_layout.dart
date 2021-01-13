@@ -1,49 +1,46 @@
 import 'dart:math';
 
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/collection/grid/header_generic.dart';
+import 'package:aves/model/source/section_keys.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SectionedListLayoutProvider extends StatelessWidget {
-  final CollectionLens collection;
-  final int columnCount;
+abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final double scrollableWidth;
+  final int columnCount;
   final double tileExtent;
-  final Widget Function(ImageEntry entry) thumbnailBuilder;
+  final Widget Function(T entry) tileBuilder;
   final Widget child;
 
   const SectionedListLayoutProvider({
-    @required this.collection,
     @required this.scrollableWidth,
-    @required this.tileExtent,
     @required this.columnCount,
-    @required this.thumbnailBuilder,
+    @required this.tileExtent,
+    @required this.tileBuilder,
     @required this.child,
   }) : assert(scrollableWidth != 0);
 
   @override
   Widget build(BuildContext context) {
-    return ProxyProvider0<SectionedListLayout>(
+    return ProxyProvider0<SectionedListLayout<T>>(
       update: (context, __) => _updateLayouts(context),
       child: child,
     );
   }
 
-  SectionedListLayout _updateLayouts(BuildContext context) {
-    final sectionLayouts = <SectionLayout>[];
-    final showHeaders = collection.showHeaders;
-    final source = collection.source;
-    final sections = collection.sections;
+  SectionedListLayout<T> _updateLayouts(BuildContext context) {
+    final showHeaders = needHeaders();
+    final sections = getSections();
     final sectionKeys = sections.keys.toList();
+
+    final sectionLayouts = <SectionLayout>[];
     var currentIndex = 0, currentOffset = 0.0;
     sectionKeys.forEach((sectionKey) {
-      final sectionEntryCount = sections[sectionKey].length;
+      final section = sections[sectionKey];
+      final sectionEntryCount = section.length;
       final sectionChildCount = 1 + (sectionEntryCount / columnCount).ceil();
 
-      final headerExtent = showHeaders ? SectionHeader.computeHeaderHeight(context, source, sectionKey, scrollableWidth) : 0.0;
+      final headerExtent = showHeaders ? getHeaderExtent(context, sectionKey) : 0.0;
 
       final sectionFirstIndex = currentIndex;
       currentIndex += sectionChildCount;
@@ -63,29 +60,30 @@ class SectionedListLayoutProvider extends StatelessWidget {
           headerExtent: headerExtent,
           tileExtent: tileExtent,
           builder: (context, listIndex) => _buildInSection(
+            context,
+            section,
             listIndex - sectionFirstIndex,
-            collection,
             sectionKey,
             headerExtent,
           ),
         ),
       );
     });
-    return SectionedListLayout(
-      collection: collection,
+    return SectionedListLayout<T>(
+      sections: sections,
+      showHeaders: showHeaders,
       columnCount: columnCount,
       tileExtent: tileExtent,
       sectionLayouts: sectionLayouts,
     );
   }
 
-  Widget _buildInSection(int sectionChildIndex, CollectionLens collection, dynamic sectionKey, double headerExtent) {
+  Widget _buildInSection(BuildContext context, List<T> section, int sectionChildIndex, SectionKey sectionKey, double headerExtent) {
     if (sectionChildIndex == 0) {
-      return headerBuilder(collection, sectionKey, headerExtent);
+      return headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : SizedBox.shrink();
     }
     sectionChildIndex--;
 
-    final section = collection.sections[sectionKey];
     final sectionEntryCount = section.length;
 
     final minEntryIndex = sectionChildIndex * columnCount;
@@ -93,7 +91,7 @@ class SectionedListLayoutProvider extends StatelessWidget {
     final children = <Widget>[];
     for (var i = minEntryIndex; i < maxEntryIndex; i++) {
       final entry = section[i];
-      children.add(thumbnailBuilder(entry));
+      children.add(tileBuilder(entry));
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -101,39 +99,38 @@ class SectionedListLayoutProvider extends StatelessWidget {
     );
   }
 
-  Widget headerBuilder(CollectionLens collection, dynamic sectionKey, double headerExtent) {
-    return collection.showHeaders
-        ? SectionHeader(
-            collection: collection,
-            sectionKey: sectionKey,
-            height: headerExtent,
-          )
-        : SizedBox.shrink();
-  }
+  bool needHeaders();
+
+  Map<SectionKey, List<T>> getSections();
+
+  double getHeaderExtent(BuildContext context, SectionKey sectionKey);
+
+  Widget buildHeader(BuildContext context, SectionKey sectionKey, double headerExtent);
 }
 
-class SectionedListLayout {
-  final CollectionLens collection;
+class SectionedListLayout<T> {
+  final Map<SectionKey, List<T>> sections;
+  final bool showHeaders;
   final int columnCount;
   final double tileExtent;
   final List<SectionLayout> sectionLayouts;
 
   const SectionedListLayout({
-    @required this.collection,
+    @required this.sections,
+    @required this.showHeaders,
     @required this.columnCount,
     @required this.tileExtent,
     @required this.sectionLayouts,
   });
 
-  Rect getTileRect(ImageEntry entry) {
-    final section = collection.sections.entries.firstWhere((kv) => kv.value.contains(entry), orElse: () => null);
+  Rect getTileRect(T entry) {
+    final section = sections.entries.firstWhere((kv) => kv.value.contains(entry), orElse: () => null);
     if (section == null) return null;
 
     final sectionKey = section.key;
     final sectionLayout = sectionLayouts.firstWhere((sl) => sl.sectionKey == sectionKey, orElse: () => null);
     if (sectionLayout == null) return null;
 
-    final showHeaders = collection.showHeaders;
     final sectionEntryIndex = section.value.indexOf(entry);
     final column = sectionEntryIndex % columnCount;
     final row = (sectionEntryIndex / columnCount).floor();
@@ -144,12 +141,12 @@ class SectionedListLayout {
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
   }
 
-  ImageEntry getEntryAt(Offset position) {
+  T getEntryAt(Offset position) {
     var dy = position.dy;
     final sectionLayout = sectionLayouts.firstWhere((sl) => dy < sl.maxOffset, orElse: () => null);
     if (sectionLayout == null) return null;
 
-    final section = collection.sections[sectionLayout.sectionKey];
+    final section = sections[sectionLayout.sectionKey];
     if (section == null) return null;
 
     dy -= sectionLayout.minOffset + sectionLayout.headerExtent;
@@ -165,7 +162,7 @@ class SectionedListLayout {
 }
 
 class SectionLayout {
-  final dynamic sectionKey;
+  final SectionKey sectionKey;
   final int firstIndex, lastIndex;
   final double minOffset, maxOffset;
   final double headerExtent, tileExtent;

@@ -8,14 +8,14 @@ import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
 
-class ThumbnailRasterImage extends StatefulWidget {
+class RasterImageThumbnail extends StatefulWidget {
   final ImageEntry entry;
   final double extent;
   final int page;
   final ValueNotifier<bool> isScrollingNotifier;
   final Object heroTag;
 
-  const ThumbnailRasterImage({
+  const RasterImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
@@ -25,10 +25,10 @@ class ThumbnailRasterImage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ThumbnailRasterImageState createState() => _ThumbnailRasterImageState();
+  _RasterImageThumbnailState createState() => _RasterImageThumbnailState();
 }
 
-class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
+class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
   ImageEntry get entry => widget.entry;
@@ -51,7 +51,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   }
 
   @override
-  void didUpdateWidget(covariant ThumbnailRasterImage oldWidget) {
+  void didUpdateWidget(covariant RasterImageThumbnail oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != entry) {
       _unregisterWidget(oldWidget);
@@ -65,12 +65,12 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     super.dispose();
   }
 
-  void _registerWidget(ThumbnailRasterImage widget) {
+  void _registerWidget(RasterImageThumbnail widget) {
     widget.entry.imageChangeNotifier.addListener(_onImageChanged);
     _initProvider();
   }
 
-  void _unregisterWidget(ThumbnailRasterImage widget) {
+  void _unregisterWidget(RasterImageThumbnail widget) {
     widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
     _pauseProvider();
   }
