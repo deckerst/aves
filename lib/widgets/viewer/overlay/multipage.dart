@@ -120,7 +120,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                       child: Container(
                         width: extent,
                         height: extent,
-                        child: ThumbnailRasterImage(
+                        child: RasterImageThumbnail(
                           entry: entry,
                           extent: extent,
                           page: page,

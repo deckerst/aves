@@ -5,6 +5,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:collection/collection.dart';
@@ -22,7 +23,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   List<ImageEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
 
-  Map<dynamic, List<ImageEntry>> sections = Map.unmodifiable({});
+  Map<SectionKey, List<ImageEntry>> sections = Map.unmodifiable({});
 
   CollectionLens({
     @required this.source,
@@ -138,13 +139,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       case EntrySortFactor.date:
         switch (groupFactor) {
           case EntryGroupFactor.album:
-            sections = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
+            sections = groupBy<ImageEntry, AlbumSectionKey>(_filteredEntries, (entry) => AlbumSectionKey(entry.directory));
             break;
           case EntryGroupFactor.month:
-            sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.monthTaken);
+            sections = groupBy<ImageEntry, DateSectionKey>(_filteredEntries, (entry) => DateSectionKey(entry.monthTaken));
             break;
           case EntryGroupFactor.day:
-            sections = groupBy<ImageEntry, DateTime>(_filteredEntries, (entry) => entry.dayTaken);
+            sections = groupBy<ImageEntry, DateSectionKey>(_filteredEntries, (entry) => DateSectionKey(entry.dayTaken));
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
@@ -159,8 +160,8 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         ]);
         break;
       case EntrySortFactor.name:
-        final byAlbum = groupBy<ImageEntry, String>(_filteredEntries, (entry) => entry.directory);
-        sections = SplayTreeMap<String, List<ImageEntry>>.of(byAlbum, source.compareAlbumsByName);
+        final byAlbum = groupBy<ImageEntry, AlbumSectionKey>(_filteredEntries, (entry) => AlbumSectionKey(entry.directory));
+        sections = SplayTreeMap<AlbumSectionKey, List<ImageEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
         break;
     }
     sections = Map.unmodifiable(sections);

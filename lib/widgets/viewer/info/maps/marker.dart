@@ -27,11 +27,11 @@ class ImageMarker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final thumbnail = entry.isSvg
-        ? ThumbnailVectorImage(
+        ? VectorImageThumbnail(
             entry: entry,
             extent: extent,
           )
-        : ThumbnailRasterImage(
+        : RasterImageThumbnail(
             entry: entry,
             extent: extent,
           );

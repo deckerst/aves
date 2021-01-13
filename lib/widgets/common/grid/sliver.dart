@@ -1,32 +1,59 @@
 import 'dart:math' as math;
 
-import 'package:aves/widgets/collection/grid/list_section_layout.dart';
+import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
-class SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
+// Use a `SliverList` instead of multiple `SliverGrid` because having one `SliverGrid` per section does not scale up.
+// With the multiple `SliverGrid` solution, thumbnails at the beginning of each sections are built even though they are offscreen
+// because of `RenderSliverMultiBoxAdaptor.addInitialChild` called by `RenderSliverGrid.performLayout` (line 547), as of Flutter v1.17.0.
+class SectionedListSliver<T> extends StatelessWidget {
+  const SectionedListSliver();
+
+  @override
+  Widget build(BuildContext context) {
+    final sectionLayouts = context.watch<SectionedListLayout<T>>().sectionLayouts;
+    final childCount = sectionLayouts.isEmpty ? 0 : sectionLayouts.last.lastIndex + 1;
+    return _SliverKnownExtentList(
+      sectionLayouts: sectionLayouts,
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          if (index >= childCount) return null;
+          final sectionLayout = sectionLayouts.firstWhere((section) => section.hasChild(index), orElse: () => null);
+          return sectionLayout?.builder(context, index) ?? SizedBox.shrink();
+        },
+        childCount: childCount,
+        addAutomaticKeepAlives: false,
+      ),
+    );
+  }
+}
+
+class _SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
   final List<SectionLayout> sectionLayouts;
 
-  const SliverKnownExtentList({
+  const _SliverKnownExtentList({
     Key key,
     @required SliverChildDelegate delegate,
     @required this.sectionLayouts,
   }) : super(key: key, delegate: delegate);
 
   @override
-  RenderSliverKnownExtentBoxAdaptor createRenderObject(BuildContext context) {
+  _RenderSliverKnownExtentBoxAdaptor createRenderObject(BuildContext context) {
     final element = context as SliverMultiBoxAdaptorElement;
-    return RenderSliverKnownExtentBoxAdaptor(childManager: element, sectionLayouts: sectionLayouts);
+    return _RenderSliverKnownExtentBoxAdaptor(childManager: element, sectionLayouts: sectionLayouts);
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderSliverKnownExtentBoxAdaptor renderObject) {
+  void updateRenderObject(BuildContext context, _RenderSliverKnownExtentBoxAdaptor renderObject) {
     renderObject.sectionLayouts = sectionLayouts;
   }
 }
 
-class RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
+class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
   List<SectionLayout> _sectionLayouts;
 
   List<SectionLayout> get sectionLayouts => _sectionLayouts;
@@ -38,7 +65,7 @@ class RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     markNeedsLayout();
   }
 
-  RenderSliverKnownExtentBoxAdaptor({
+  _RenderSliverKnownExtentBoxAdaptor({
     @required RenderSliverBoxChildManager childManager,
     @required List<SectionLayout> sectionLayouts,
   })  : _sectionLayouts = sectionLayouts,

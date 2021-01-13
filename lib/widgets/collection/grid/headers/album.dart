@@ -1,17 +1,20 @@
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/collection/grid/header_generic.dart';
+import 'package:aves/widgets/common/grid/header.dart';
+import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 
 class AlbumSectionHeader extends StatelessWidget {
   final String folderPath, albumName;
 
-  const AlbumSectionHeader({
+  AlbumSectionHeader({
     Key key,
+    @required CollectionSource source,
     @required this.folderPath,
-    @required this.albumName,
-  }) : super(key: key);
+  })  : albumName = source.getUniqueAlbumName(folderPath),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,8 @@ class AlbumSectionHeader extends StatelessWidget {
         child: albumIcon,
       );
     }
-    return TitleSectionHeader(
-      sectionKey: folderPath,
+    return SectionHeader(
+      sectionKey: AlbumSectionKey(folderPath),
       leading: albumIcon,
       title: albumName,
       trailing: androidFileUtils.isOnRemovableStorage(folderPath)
@@ -36,6 +39,17 @@ class AlbumSectionHeader extends StatelessWidget {
               color: Color(0xFF757575),
             )
           : null,
+    );
+  }
+
+  static double getPreferredHeight(BuildContext context, double maxWidth, CollectionSource source, AlbumSectionKey sectionKey) {
+    final folderPath = sectionKey.folderPath;
+    return SectionHeader.getPreferredHeight(
+      context: context,
+      maxWidth: maxWidth,
+      title: source.getUniqueAlbumName(folderPath),
+      hasLeading: androidFileUtils.getAlbumType(folderPath) != AlbumType.regular,
+      hasTrailing: androidFileUtils.isOnRemovableStorage(folderPath),
     );
   }
 }

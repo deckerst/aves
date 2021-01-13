@@ -1,115 +1,19 @@
-import 'dart:math';
-
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/collection/grid/header_album.dart';
-import 'package:aves/widgets/collection/grid/header_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {
-  final CollectionLens collection;
-  final dynamic sectionKey;
-  final double height;
-
-  const SectionHeader({
-    Key key,
-    @required this.collection,
-    @required this.sectionKey,
-    @required this.height,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Widget header;
-    switch (collection.sortFactor) {
-      case EntrySortFactor.date:
-        switch (collection.groupFactor) {
-          case EntryGroupFactor.album:
-            header = _buildAlbumSectionHeader();
-            break;
-          case EntryGroupFactor.month:
-            header = MonthSectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
-            break;
-          case EntryGroupFactor.day:
-            header = DaySectionHeader(key: ValueKey(sectionKey), date: sectionKey as DateTime);
-            break;
-          case EntryGroupFactor.none:
-            break;
-        }
-        break;
-      case EntrySortFactor.size:
-        break;
-      case EntrySortFactor.name:
-        header = _buildAlbumSectionHeader();
-        break;
-    }
-    return header != null
-        ? SizedBox(
-            height: height,
-            child: header,
-          )
-        : SizedBox.shrink();
-  }
-
-  Widget _buildAlbumSectionHeader() {
-    final folderPath = sectionKey as String;
-    return AlbumSectionHeader(
-      key: ValueKey(folderPath),
-      folderPath: folderPath,
-      albumName: collection.source.getUniqueAlbumName(folderPath),
-    );
-  }
-
-  // TODO TLAD cache header extent computation?
-  static double computeHeaderHeight(BuildContext context, CollectionSource source, dynamic sectionKey, double scrollableWidth) {
-    var headerExtent = 0.0;
-    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    if (sectionKey is String) {
-      // only compute height for album headers, as they're the only likely ones to split on multiple lines
-      final hasLeading = androidFileUtils.getAlbumType(sectionKey) != AlbumType.regular;
-      final hasTrailing = androidFileUtils.isOnRemovableStorage(sectionKey);
-      final text = source.getUniqueAlbumName(sectionKey);
-      final maxWidth = scrollableWidth - TitleSectionHeader.padding.horizontal;
-      final para = RenderParagraph(
-        TextSpan(
-          children: [
-            // as of Flutter v1.22.3, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
-            // so we use a hair space times a magic number to match width
-            TextSpan(
-              text: '\u200A' * (hasLeading ? 23 : 1),
-              // force a higher first line to match leading icon/selector dimension
-              style: TextStyle(height: 2.3 * textScaleFactor),
-            ), // 23 hair spaces match a width of 40.0
-            if (hasTrailing) TextSpan(text: '\u200A' * 17),
-            TextSpan(
-              text: text,
-              style: Constants.titleTextStyle,
-            ),
-          ],
-        ),
-        textDirection: TextDirection.ltr,
-        textScaleFactor: textScaleFactor,
-      )..layout(BoxConstraints(maxWidth: maxWidth), parentUsesSize: true);
-      headerExtent = para.getMaxIntrinsicHeight(maxWidth);
-    }
-    headerExtent = max(headerExtent, TitleSectionHeader.leadingDimension * textScaleFactor) + TitleSectionHeader.padding.vertical;
-    return headerExtent;
-  }
-}
-
-class TitleSectionHeader extends StatelessWidget {
-  final dynamic sectionKey;
+  final SectionKey sectionKey;
   final Widget leading, trailing;
   final String title;
 
-  const TitleSectionHeader({
+  const SectionHeader({
     Key key,
     @required this.sectionKey,
     this.leading,
@@ -136,7 +40,7 @@ class TitleSectionHeader extends StatelessWidget {
             children: [
               WidgetSpan(
                 alignment: widgetSpanAlignment,
-                child: SectionSelectableLeading(
+                child: _SectionSelectableLeading(
                   sectionKey: sectionKey,
                   browsingBuilder: leading != null
                       ? (context) => Container(
@@ -178,21 +82,54 @@ class TitleSectionHeader extends StatelessWidget {
       collection.addToSelection(sectionEntries);
     }
   }
+
+  // TODO TLAD cache header extent computation?
+  static double getPreferredHeight({
+    @required BuildContext context,
+    @required double maxWidth,
+    @required String title,
+    bool hasLeading = false,
+    bool hasTrailing = false,
+  }) {
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final maxContentWidth = maxWidth - SectionHeader.padding.horizontal;
+    final para = RenderParagraph(
+      TextSpan(
+        children: [
+          // as of Flutter v1.22.3, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
+          // so we use a hair space times a magic number to match width
+          TextSpan(
+            text: '\u200A' * (hasLeading ? 23 : 1),
+            // force a higher first line to match leading icon/selector dimension
+            style: TextStyle(height: 2.3 * textScaleFactor),
+          ), // 23 hair spaces match a width of 40.0
+          if (hasTrailing) TextSpan(text: '\u200A' * 17),
+          TextSpan(
+            text: title,
+            style: Constants.titleTextStyle,
+          ),
+        ],
+      ),
+      textDirection: TextDirection.ltr,
+      textScaleFactor: textScaleFactor,
+    )..layout(BoxConstraints(maxWidth: maxContentWidth), parentUsesSize: true);
+    return para.getMaxIntrinsicHeight(maxContentWidth);
+  }
 }
 
-class SectionSelectableLeading extends StatelessWidget {
-  final dynamic sectionKey;
+class _SectionSelectableLeading extends StatelessWidget {
+  final SectionKey sectionKey;
   final WidgetBuilder browsingBuilder;
   final VoidCallback onPressed;
 
-  const SectionSelectableLeading({
+  const _SectionSelectableLeading({
     Key key,
     @required this.sectionKey,
     @required this.browsingBuilder,
     @required this.onPressed,
   }) : super(key: key);
 
-  static const leadingDimension = TitleSectionHeader.leadingDimension;
+  static const leadingDimension = SectionHeader.leadingDimension;
 
   @override
   Widget build(BuildContext context) {

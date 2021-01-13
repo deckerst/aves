@@ -12,12 +12,14 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/empty.dart';
-import 'package:aves/widgets/collection/grid/list_section_layout.dart';
-import 'package:aves/widgets/collection/grid/list_sliver.dart';
+import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
+import 'package:aves/widgets/collection/grid/thumbnail.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
+import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/scaling.dart';
@@ -98,7 +100,7 @@ class ThumbnailCollection extends StatelessWidget {
                     highlightable: false,
                   ),
                   getScaledItemTileRect: (context, entry) {
-                    final sectionedListLayout = Provider.of<SectionedListLayout>(context, listen: false);
+                    final sectionedListLayout = context.read<SectionedListLayout<ImageEntry>>();
                     return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
                   },
                   onScaled: (entry) => Provider.of<HighlightInfo>(context, listen: false).add(entry),
@@ -115,12 +117,12 @@ class ThumbnailCollection extends StatelessWidget {
 
                 final sectionedListLayoutProvider = ValueListenableBuilder<double>(
                   valueListenable: _tileExtentNotifier,
-                  builder: (context, tileExtent, child) => SectionedListLayoutProvider(
+                  builder: (context, tileExtent, child) => SectionedEntryListLayoutProvider(
                     collection: collection,
                     scrollableWidth: viewportSize.width,
                     tileExtent: tileExtent,
                     columnCount: tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent),
-                    thumbnailBuilder: (entry) => GridThumbnail(
+                    tileBuilder: (entry) => InteractiveThumbnail(
                       key: ValueKey(entry.contentId),
                       collection: collection,
                       entry: entry,
@@ -215,7 +217,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
                 child: _buildEmptyCollectionPlaceholder(collection),
                 hasScrollBody: false,
               )
-            : CollectionListSliver(),
+            : SectionedListSliver<ImageEntry>(),
         SliverToBoxAdapter(
           child: Selector<MediaQueryData, double>(
             selector: (context, mq) => mq.viewInsets.bottom,
