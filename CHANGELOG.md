@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.3.2] - 2021-01-17
+### Added
+Collection: identify multipage TIFF & multitrack HEIC/HEIF
+Viewer: support for multipage TIFF
+Viewer: support for cropped panoramas
+Albums: grouping options
+
+### Changed
+upgraded libtiff to 4.2.0 for TIFF decoding
+
+### Fixed
+- prevent scrolling when using Android Q style gesture navigation
+
 ## [v1.3.1] - 2021-01-04
 ### Added
 - Collection: long press and move to select/deselect multiple entries

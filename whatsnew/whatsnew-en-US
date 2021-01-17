@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.3.1:
-- long press and move to select/deselect multiple entries
-- metadata search in the Info page
-- fixed crash when opening a collection with TIFF files on Android 11
+v1.3.2:
+- multi-page TIFF support
+- cropped panorama support
+- album grouping options
 Full changelog available on Github
