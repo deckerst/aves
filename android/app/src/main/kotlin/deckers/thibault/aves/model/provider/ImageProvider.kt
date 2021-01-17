@@ -10,7 +10,7 @@ import androidx.exifinterface.media.ExifInterface
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.AvesImageEntry
 import deckers.thibault.aves.model.ExifOrientationOp
-import deckers.thibault.aves.utils.LogUtils.createTag
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils.copyFileToTemp
@@ -195,7 +195,7 @@ abstract class ImageProvider {
     }
 
     companion object {
-        private val LOG_TAG = createTag(ImageProvider::class.java)
+        private val LOG_TAG = LogUtils.createTag(ImageProvider::class.java)
     }
 }
 

@@ -2,6 +2,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:flutter/widgets.dart';
 
 enum ChipSetAction {
+  group,
   sort,
   refresh,
   stats,

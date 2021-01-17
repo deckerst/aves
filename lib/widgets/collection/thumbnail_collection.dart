@@ -27,6 +27,7 @@ import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class ThumbnailCollection extends StatelessWidget {
@@ -63,17 +64,19 @@ class ThumbnailCollection extends StatelessWidget {
             // so that view updates on collection filter changes
             return Consumer<CollectionLens>(
               builder: (context, collection, child) {
-                final scrollView = CollectionScrollView(
-                  scrollableKey: _scrollableKey,
-                  collection: collection,
-                  appBar: CollectionAppBar(
-                    appBarHeightNotifier: _appBarHeightNotifier,
+                final scrollView = AnimationLimiter(
+                  child: CollectionScrollView(
+                    scrollableKey: _scrollableKey,
                     collection: collection,
+                    appBar: CollectionAppBar(
+                      appBarHeightNotifier: _appBarHeightNotifier,
+                      collection: collection,
+                    ),
+                    appBarHeightNotifier: _appBarHeightNotifier,
+                    isScrollingNotifier: _isScrollingNotifier,
+                    scrollController: scrollController,
+                    cacheExtent: cacheExtent,
                   ),
-                  appBarHeightNotifier: _appBarHeightNotifier,
-                  isScrollingNotifier: _isScrollingNotifier,
-                  scrollController: scrollController,
-                  cacheExtent: cacheExtent,
                 );
 
                 final scaler = GridScaleGestureDetector<ImageEntry>(

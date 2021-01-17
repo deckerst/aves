@@ -88,7 +88,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
           final availableWidth = mqWidth - viewPadding.horizontal;
 
           return Container(
-            color: hasEdgeContent ? kOverlayBackgroundColor: Colors.transparent,
+            color: hasEdgeContent ? kOverlayBackgroundColor : Colors.transparent,
             padding: viewInsets + viewPadding.copyWith(top: 0),
             child: FutureBuilder<OverlayMetadata>(
               future: _detailLoader,

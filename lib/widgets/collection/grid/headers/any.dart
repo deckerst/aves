@@ -36,7 +36,7 @@ class CollectionSectionHeader extends StatelessWidget {
     Widget _buildAlbumHeader() => AlbumSectionHeader(
           key: ValueKey(sectionKey),
           source: collection.source,
-          folderPath: (sectionKey as AlbumSectionKey).folderPath,
+          folderPath: (sectionKey as EntryAlbumSectionKey).folderPath,
         );
 
     switch (collection.sortFactor) {
@@ -45,9 +45,9 @@ class CollectionSectionHeader extends StatelessWidget {
           case EntryGroupFactor.album:
             return _buildAlbumHeader();
           case EntryGroupFactor.month:
-            return MonthSectionHeader(key: ValueKey(sectionKey), date: (sectionKey as DateSectionKey).date);
+            return MonthSectionHeader(key: ValueKey(sectionKey), date: (sectionKey as EntryDateSectionKey).date);
           case EntryGroupFactor.day:
-            return DaySectionHeader(key: ValueKey(sectionKey), date: (sectionKey as DateSectionKey).date);
+            return DaySectionHeader(key: ValueKey(sectionKey), date: (sectionKey as EntryDateSectionKey).date);
           case EntryGroupFactor.none:
             break;
         }
@@ -62,7 +62,7 @@ class CollectionSectionHeader extends StatelessWidget {
 
   static double getPreferredHeight(BuildContext context, double maxWidth, CollectionSource source, SectionKey sectionKey) {
     var headerExtent = 0.0;
-    if (sectionKey is AlbumSectionKey) {
+    if (sectionKey is EntryAlbumSectionKey) {
       // only compute height for album headers, as they're the only likely ones to split on multiple lines
       headerExtent = AlbumSectionHeader.getPreferredHeight(context, maxWidth, source, sectionKey);
     }

@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
-import deckers.thibault.aves.utils.LogUtils.createTag
+import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -257,7 +257,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = createTag(AppAdapterHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag(AppAdapterHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/app"
     }
 }

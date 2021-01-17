@@ -74,3 +74,20 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
     return c != 0 ? c : compareAsciiUpperCase(label, other.label);
   }
 }
+
+// TODO TLAD replace this by adding getters to CollectionFilter, with cached entry/count coming from Source
+class FilterGridItem<T extends CollectionFilter> {
+  final T filter;
+  final ImageEntry entry;
+
+  const FilterGridItem(this.filter, this.entry);
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is FilterGridItem && other.filter == filter && other.entry == entry;
+  }
+
+  @override
+  int get hashCode => hashValues(filter, entry);
+}

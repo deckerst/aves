@@ -24,6 +24,8 @@ abstract class ChipSetActionDelegate {
       case ChipSetAction.stats:
         _goToStats(context);
         break;
+      default:
+        break;
     }
   }
 
@@ -71,6 +73,36 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
 
   @override
   set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
+
+  @override
+  void onActionSelected(BuildContext context, ChipSetAction action) {
+    switch (action) {
+      case ChipSetAction.group:
+        _showGroupDialog(context);
+        break;
+      default:
+        break;
+    }
+    super.onActionSelected(context, action);
+  }
+
+  Future<void> _showGroupDialog(BuildContext context) async {
+    final factor = await showDialog<AlbumChipGroupFactor>(
+      context: context,
+      builder: (context) => AvesSelectionDialog<AlbumChipGroupFactor>(
+        initialValue: settings.albumGroupFactor,
+        options: {
+          AlbumChipGroupFactor.importance: 'By importance',
+          AlbumChipGroupFactor.volume: 'By storage volume',
+          AlbumChipGroupFactor.none: 'Do not group',
+        },
+        title: 'Group',
+      ),
+    );
+    if (factor != null) {
+      settings.albumGroupFactor = factor;
+    }
+  }
 }
 
 class CountryChipSetActionDelegate extends ChipSetActionDelegate {

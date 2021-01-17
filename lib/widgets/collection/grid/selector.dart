@@ -29,7 +29,7 @@ class GridSelectionGestureDetector extends StatefulWidget {
 }
 
 class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetector> {
-  bool _pressing, _selecting;
+  bool _pressing = false, _selecting;
   int _fromIndex, _lastToIndex;
   Offset _localPosition;
   EdgeInsets _scrollableInsets;
@@ -136,7 +136,7 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
     // so we use custom layout computation instead to find the entry.
     final offset = Offset(0, scrollController.offset - appBarHeight) + localPosition;
     final sectionedListLayout = context.read<SectionedListLayout<ImageEntry>>();
-    return sectionedListLayout.getEntryAt(offset);
+    return sectionedListLayout.getItemAt(offset);
   }
 
   void _toggleSelectionToIndex(int toIndex) {

@@ -1,20 +1,23 @@
 import 'dart:math';
 
 import 'package:aves/model/source/section_keys.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final double scrollableWidth;
   final int columnCount;
-  final double tileExtent;
-  final Widget Function(T entry) tileBuilder;
+  final double spacing, tileExtent;
+  final Widget Function(T item) tileBuilder;
   final Widget child;
 
   const SectionedListLayoutProvider({
     @required this.scrollableWidth,
     @required this.columnCount,
+    this.spacing = 0,
     @required this.tileExtent,
     @required this.tileBuilder,
     @required this.child,
@@ -29,25 +32,26 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   }
 
   SectionedListLayout<T> _updateLayouts(BuildContext context) {
-    final showHeaders = needHeaders();
-    final sections = getSections();
-    final sectionKeys = sections.keys.toList();
+    final _showHeaders = showHeaders;
+    final _sections = sections;
+    final sectionKeys = _sections.keys.toList();
 
     final sectionLayouts = <SectionLayout>[];
     var currentIndex = 0, currentOffset = 0.0;
     sectionKeys.forEach((sectionKey) {
-      final section = sections[sectionKey];
-      final sectionEntryCount = section.length;
-      final sectionChildCount = 1 + (sectionEntryCount / columnCount).ceil();
+      final section = _sections[sectionKey];
+      final sectionItemCount = section.length;
+      final rowCount = (sectionItemCount / columnCount).ceil();
+      final sectionChildCount = 1 + rowCount;
 
-      final headerExtent = showHeaders ? getHeaderExtent(context, sectionKey) : 0.0;
+      final headerExtent = _showHeaders ? getHeaderExtent(context, sectionKey) : 0.0;
 
       final sectionFirstIndex = currentIndex;
       currentIndex += sectionChildCount;
       final sectionLastIndex = currentIndex - 1;
 
       final sectionMinOffset = currentOffset;
-      currentOffset += headerExtent + tileExtent * (sectionChildCount - 1);
+      currentOffset += headerExtent + tileExtent * rowCount + spacing * (rowCount - 1);
       final sectionMaxOffset = currentOffset;
 
       sectionLayouts.add(
@@ -59,9 +63,11 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
           maxOffset: sectionMaxOffset,
           headerExtent: headerExtent,
           tileExtent: tileExtent,
+          spacing: spacing,
           builder: (context, listIndex) => _buildInSection(
             context,
             section,
+            listIndex * columnCount,
             listIndex - sectionFirstIndex,
             sectionKey,
             headerExtent,
@@ -70,28 +76,39 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       );
     });
     return SectionedListLayout<T>(
-      sections: sections,
-      showHeaders: showHeaders,
+      sections: _sections,
+      showHeaders: _showHeaders,
       columnCount: columnCount,
       tileExtent: tileExtent,
+      spacing: spacing,
       sectionLayouts: sectionLayouts,
     );
   }
 
-  Widget _buildInSection(BuildContext context, List<T> section, int sectionChildIndex, SectionKey sectionKey, double headerExtent) {
+  Widget _buildInSection(
+    BuildContext context,
+    List<T> section,
+    int sectionGridIndex,
+    int sectionChildIndex,
+    SectionKey sectionKey,
+    double headerExtent,
+  ) {
     if (sectionChildIndex == 0) {
-      return headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : SizedBox.shrink();
+      final header = headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : SizedBox.shrink();
+      return _buildAnimation(sectionGridIndex, header);
     }
     sectionChildIndex--;
 
-    final sectionEntryCount = section.length;
+    final sectionItemCount = section.length;
 
-    final minEntryIndex = sectionChildIndex * columnCount;
-    final maxEntryIndex = min(sectionEntryCount, minEntryIndex + columnCount);
+    final minItemIndex = sectionChildIndex * columnCount;
+    final maxItemIndex = min(sectionItemCount, minItemIndex + columnCount);
     final children = <Widget>[];
-    for (var i = minEntryIndex; i < maxEntryIndex; i++) {
-      final entry = section[i];
-      children.add(tileBuilder(entry));
+    for (var i = minItemIndex; i < maxItemIndex; i++) {
+      final itemGridIndex = sectionGridIndex + i - minItemIndex;
+      final item = tileBuilder(section[i]);
+      if (i != minItemIndex) children.add(SizedBox(width: spacing));
+      children.add(_buildAnimation(itemGridIndex, item));
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -99,9 +116,24 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     );
   }
 
-  bool needHeaders();
+  Widget _buildAnimation(int index, Widget child) {
+    return AnimationConfiguration.staggeredGrid(
+      position: index,
+      columnCount: columnCount,
+      duration: Durations.staggeredAnimation,
+      delay: Durations.staggeredAnimationDelay,
+      child: SlideAnimation(
+        verticalOffset: 50.0,
+        child: FadeInAnimation(
+          child: child,
+        ),
+      ),
+    );
+  }
 
-  Map<SectionKey, List<T>> getSections();
+  bool get showHeaders;
+
+  Map<SectionKey, List<T>> get sections;
 
   double getHeaderExtent(BuildContext context, SectionKey sectionKey);
 
@@ -112,7 +144,7 @@ class SectionedListLayout<T> {
   final Map<SectionKey, List<T>> sections;
   final bool showHeaders;
   final int columnCount;
-  final double tileExtent;
+  final double tileExtent, spacing;
   final List<SectionLayout> sectionLayouts;
 
   const SectionedListLayout({
@@ -120,28 +152,29 @@ class SectionedListLayout<T> {
     @required this.showHeaders,
     @required this.columnCount,
     @required this.tileExtent,
+    @required this.spacing,
     @required this.sectionLayouts,
   });
 
-  Rect getTileRect(T entry) {
-    final section = sections.entries.firstWhere((kv) => kv.value.contains(entry), orElse: () => null);
+  Rect getTileRect(T item) {
+    final section = sections.entries.firstWhere((kv) => kv.value.contains(item), orElse: () => null);
     if (section == null) return null;
 
     final sectionKey = section.key;
     final sectionLayout = sectionLayouts.firstWhere((sl) => sl.sectionKey == sectionKey, orElse: () => null);
     if (sectionLayout == null) return null;
 
-    final sectionEntryIndex = section.value.indexOf(entry);
-    final column = sectionEntryIndex % columnCount;
-    final row = (sectionEntryIndex / columnCount).floor();
+    final sectionItemIndex = section.value.indexOf(item);
+    final column = sectionItemIndex % columnCount;
+    final row = (sectionItemIndex / columnCount).floor();
     final listIndex = sectionLayout.firstIndex + (showHeaders ? 1 : 0) + row;
 
-    final left = tileExtent * column;
+    final left = tileExtent * column + spacing * (column - 1);
     final top = sectionLayout.indexToLayoutOffset(listIndex);
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
   }
 
-  T getEntryAt(Offset position) {
+  T getItemAt(Offset position) {
     var dy = position.dy;
     final sectionLayout = sectionLayouts.firstWhere((sl) => dy < sl.maxOffset, orElse: () => null);
     if (sectionLayout == null) return null;
@@ -152,8 +185,8 @@ class SectionedListLayout<T> {
     dy -= sectionLayout.minOffset + sectionLayout.headerExtent;
     if (dy < 0) return null;
 
-    final row = dy ~/ tileExtent;
-    final column = position.dx ~/ tileExtent;
+    final row = dy ~/ (tileExtent + spacing);
+    final column = position.dx ~/ (tileExtent + spacing);
     final index = row * columnCount + column;
     if (index >= section.length) return null;
 
@@ -163,9 +196,9 @@ class SectionedListLayout<T> {
 
 class SectionLayout {
   final SectionKey sectionKey;
-  final int firstIndex, lastIndex;
-  final double minOffset, maxOffset;
-  final double headerExtent, tileExtent;
+  final int firstIndex, lastIndex, bodyFirstIndex;
+  final double minOffset, maxOffset, bodyMinOffset;
+  final double headerExtent, tileExtent, spacing, mainAxisStride;
   final IndexedWidgetBuilder builder;
 
   const SectionLayout({
@@ -176,31 +209,34 @@ class SectionLayout {
     @required this.maxOffset,
     @required this.headerExtent,
     @required this.tileExtent,
+    @required this.spacing,
     @required this.builder,
-  });
+  })  : bodyFirstIndex = firstIndex + 1,
+        bodyMinOffset = minOffset + headerExtent,
+        mainAxisStride = tileExtent + spacing;
 
   bool hasChild(int index) => firstIndex <= index && index <= lastIndex;
 
   bool hasChildAtOffset(double scrollOffset) => minOffset <= scrollOffset && scrollOffset <= maxOffset;
 
   double indexToLayoutOffset(int index) {
-    return minOffset + (index == firstIndex ? 0 : headerExtent + (index - firstIndex - 1) * tileExtent);
-  }
-
-  double indexToMaxScrollOffset(int index) {
-    return minOffset + headerExtent + (index - firstIndex) * tileExtent;
+    index -= bodyFirstIndex;
+    if (index < 0) return minOffset;
+    return bodyMinOffset + index * mainAxisStride;
   }
 
   int getMinChildIndexForScrollOffset(double scrollOffset) {
-    scrollOffset -= minOffset + headerExtent;
-    return firstIndex + (scrollOffset < 0 ? 0 : (scrollOffset / tileExtent).floor());
+    scrollOffset -= bodyMinOffset;
+    if (scrollOffset < 0) return firstIndex;
+    return bodyFirstIndex + scrollOffset ~/ mainAxisStride;
   }
 
   int getMaxChildIndexForScrollOffset(double scrollOffset) {
-    scrollOffset -= minOffset + headerExtent;
-    return firstIndex + (scrollOffset < 0 ? 0 : (scrollOffset / tileExtent).ceil() - 1);
+    scrollOffset -= bodyMinOffset;
+    if (scrollOffset < 0) return firstIndex;
+    return bodyFirstIndex + (scrollOffset / mainAxisStride).ceil() - 1;
   }
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{sectionKey=$sectionKey, firstIndex=$firstIndex, lastIndex=$lastIndex, minOffset=$minOffset, maxOffset=$maxOffset, headerExtent=$headerExtent}';
+  String toString() => '$runtimeType#${shortHash(this)}{sectionKey=$sectionKey, firstIndex=$firstIndex, lastIndex=$lastIndex, minOffset=$minOffset, maxOffset=$maxOffset, headerExtent=$headerExtent, tileExtent=$tileExtent, spacing=$spacing}';
 }

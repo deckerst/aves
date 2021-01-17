@@ -40,6 +40,7 @@ class Settings extends ChangeNotifier {
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
+  static const albumGroupFactorKey = 'album_group_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
@@ -144,6 +145,10 @@ class Settings extends ChangeNotifier {
   set showThumbnailVideoDuration(bool newValue) => setAndNotify(showThumbnailVideoDurationKey, newValue);
 
   // filter grids
+
+  AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(albumGroupFactorKey, AlbumChipGroupFactor.importance, AlbumChipGroupFactor.values);
+
+  set albumGroupFactor(AlbumChipGroupFactor newValue) => setAndNotify(albumGroupFactorKey, newValue.toString());
 
   ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
 

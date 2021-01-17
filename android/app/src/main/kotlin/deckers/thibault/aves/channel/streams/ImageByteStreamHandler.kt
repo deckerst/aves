@@ -40,7 +40,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     override fun onCancel(o: Any) {}
 
-    private fun success(bytes: ByteArray) {
+    private fun success(bytes: ByteArray?) {
         handler.post {
             try {
                 eventSink.success(bytes)

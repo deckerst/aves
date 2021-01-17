@@ -619,7 +619,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                            thumbnails.add(it.getBytes(canHaveAlpha = false, recycle = false))
+                            it.getBytes(canHaveAlpha = false, recycle = false)?.let { thumbnails.add(it) }
                         }
                     }
                 }

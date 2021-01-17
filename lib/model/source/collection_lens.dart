@@ -139,13 +139,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       case EntrySortFactor.date:
         switch (groupFactor) {
           case EntryGroupFactor.album:
-            sections = groupBy<ImageEntry, AlbumSectionKey>(_filteredEntries, (entry) => AlbumSectionKey(entry.directory));
+            sections = groupBy<ImageEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             break;
           case EntryGroupFactor.month:
-            sections = groupBy<ImageEntry, DateSectionKey>(_filteredEntries, (entry) => DateSectionKey(entry.monthTaken));
+            sections = groupBy<ImageEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
             break;
           case EntryGroupFactor.day:
-            sections = groupBy<ImageEntry, DateSectionKey>(_filteredEntries, (entry) => DateSectionKey(entry.dayTaken));
+            sections = groupBy<ImageEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
@@ -160,8 +160,8 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         ]);
         break;
       case EntrySortFactor.name:
-        final byAlbum = groupBy<ImageEntry, AlbumSectionKey>(_filteredEntries, (entry) => AlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<AlbumSectionKey, List<ImageEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
+        final byAlbum = groupBy<ImageEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+        sections = SplayTreeMap<EntryAlbumSectionKey, List<ImageEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
         break;
     }
     sections = Map.unmodifiable(sections);

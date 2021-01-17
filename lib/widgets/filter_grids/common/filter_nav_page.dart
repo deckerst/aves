@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:aves/main.dart';
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
+import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/search/search_button.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
@@ -26,18 +27,21 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final String title;
   final ChipSetActionDelegate chipSetActionDelegate;
+  final bool groupable, showHeaders;
   final ChipActionDelegate chipActionDelegate;
-  final Map<T, ImageEntry> filterEntries;
-  final Widget Function() emptyBuilder;
   final List<ChipAction> Function(T filter) chipActionsBuilder;
+  final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
     @required this.source,
     @required this.title,
+    this.groupable = false,
+    this.showHeaders = false,
     @required this.chipSetActionDelegate,
     @required this.chipActionDelegate,
     @required this.chipActionsBuilder,
-    @required this.filterEntries,
+    @required this.filterSections,
     @required this.emptyBuilder,
   });
 
@@ -58,7 +62,8 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
         titleSpacing: 0,
         floating: true,
       ),
-      filterEntries: filterEntries,
+      filterSections: filterSections,
+      showHeaders: showHeaders,
       queryNotifier: ValueNotifier(''),
       emptyBuilder: () => ValueListenableBuilder<SourceState>(
         valueListenable: source.stateNotifier,
@@ -114,6 +119,11 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
               value: ChipSetAction.sort,
               child: MenuRow(text: 'Sort…', icon: AIcons.sort),
             ),
+            if (groupable)
+              PopupMenuItem(
+                value: ChipSetAction.group,
+                child: MenuRow(text: 'Group…', icon: AIcons.group),
+              ),
             if (kDebugMode)
               PopupMenuItem(
                 value: ChipSetAction.refresh,
@@ -143,13 +153,40 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
         ));
   }
 
-  static int compareChipsByDate(MapEntry<CollectionFilter, ImageEntry> a, MapEntry<CollectionFilter, ImageEntry> b) {
-    final c = b.value.bestDate?.compareTo(a.value.bestDate) ?? -1;
+  static int compareFiltersByDate(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
+    final c = b.entry.bestDate?.compareTo(a.entry.bestDate) ?? -1;
+    return c != 0 ? c : a.filter.compareTo(b.filter);
+  }
+
+  static int compareFiltersByEntryCount(MapEntry<CollectionFilter, num> a, MapEntry<CollectionFilter, num> b) {
+    final c = b.value.compareTo(a.value) ?? -1;
     return c != 0 ? c : a.key.compareTo(b.key);
   }
 
-  static int compareChipsByEntryCount(MapEntry<CollectionFilter, num> a, MapEntry<CollectionFilter, num> b) {
-    final c = b.value.compareTo(a.value) ?? -1;
-    return c != 0 ? c : a.key.compareTo(b.key);
+  static Iterable<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Iterable<T> filters) {
+    Iterable<FilterGridItem<T>> toGridItem(CollectionSource source, Iterable<T> filters) {
+      final entriesByDate = source.sortedEntriesForFilterList;
+      return filters.map((filter) => FilterGridItem(
+            filter,
+            entriesByDate.firstWhere(filter.filter, orElse: () => null),
+          ));
+    }
+
+    Iterable<FilterGridItem<T>> allMapEntries;
+    switch (sortFactor) {
+      case ChipSortFactor.name:
+        allMapEntries = toGridItem(source, filters);
+        break;
+      case ChipSortFactor.date:
+        allMapEntries = toGridItem(source, filters).toList()..sort(compareFiltersByDate);
+        break;
+      case ChipSortFactor.count:
+        final filtersWithCount = List.of(filters.map((filter) => MapEntry(filter, source.count(filter))));
+        filtersWithCount.sort(compareFiltersByEntryCount);
+        filters = filtersWithCount.map((kv) => kv.key).toList();
+        allMapEntries = toGridItem(source, filters);
+        break;
+    }
+    return allMapEntries;
   }
 }

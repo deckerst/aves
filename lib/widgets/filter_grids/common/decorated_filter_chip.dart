@@ -78,6 +78,12 @@ class DecoratedFilterChip extends StatelessWidget {
       ],
     );
 
+    child = SizedBox(
+      width: extent,
+      height: extent,
+      child: child,
+    );
+
     return child;
   }
 

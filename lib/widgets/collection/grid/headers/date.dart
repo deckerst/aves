@@ -37,7 +37,7 @@ class DaySectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionHeader(
-      sectionKey: DateSectionKey(date),
+      sectionKey: EntryDateSectionKey(date),
       title: text,
     );
   }
@@ -66,7 +66,7 @@ class MonthSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SectionHeader(
-      sectionKey: DateSectionKey(date),
+      sectionKey: EntryDateSectionKey(date),
       title: text,
     );
   }
