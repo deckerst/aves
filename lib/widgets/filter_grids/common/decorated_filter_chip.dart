@@ -43,11 +43,11 @@ class DecoratedFilterChip extends StatelessWidget {
     final backgroundImage = entry == null
         ? Container(color: Colors.white)
         : entry.isSvg
-            ? ThumbnailVectorImage(
+            ? VectorImageThumbnail(
                 entry: entry,
                 extent: extent,
               )
-            : ThumbnailRasterImage(
+            : RasterImageThumbnail(
                 entry: entry,
                 extent: extent,
               );
@@ -76,6 +76,12 @@ class DecoratedFilterChip extends StatelessWidget {
             borderRadius: borderRadius,
           ),
       ],
+    );
+
+    child = SizedBox(
+      width: extent,
+      height: extent,
+      child: child,
     );
 
     return child;

@@ -12,7 +12,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/fullscreen/fullscreen_page.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -121,8 +121,8 @@ class _HomePageState extends State<HomePage> {
   Route _getRedirectRoute() {
     if (AvesApp.mode == AppMode.view) {
       return DirectMaterialPageRoute(
-        settings: RouteSettings(name: SingleFullscreenPage.routeName),
-        builder: (_) => SingleFullscreenPage(entry: _viewerEntry),
+        settings: RouteSettings(name: SingleEntryViewerPage.routeName),
+        builder: (_) => SingleEntryViewerPage(entry: _viewerEntry),
       );
     }
 

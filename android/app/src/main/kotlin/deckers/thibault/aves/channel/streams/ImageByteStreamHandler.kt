@@ -4,6 +4,7 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -11,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -38,16 +40,34 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     override fun onCancel(o: Any) {}
 
-    private fun success(bytes: ByteArray) {
-        handler.post { eventSink.success(bytes) }
+    private fun success(bytes: ByteArray?) {
+        handler.post {
+            try {
+                eventSink.success(bytes)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
-        handler.post { eventSink.error(errorCode, errorMessage, errorDetails) }
+        handler.post {
+            try {
+                eventSink.error(errorCode, errorMessage, errorDetails)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun endOfStream() {
-        handler.post { eventSink.endOfStream() }
+        handler.post {
+            try {
+                eventSink.endOfStream()
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     // Supported image formats:
@@ -64,6 +84,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         val uri = (arguments["uri"] as String?)?.let { Uri.parse(it) }
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
+        val page = arguments["page"] as Int
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "failed because of missing arguments", null)
@@ -74,7 +95,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri)
         } else if (mimeType == MimeTypes.TIFF) {
-            streamTiffImage(uri)
+            streamTiffImage(uri, page)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, mimeType, rotationDegrees, isFlipped)
@@ -139,34 +160,19 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun streamTiffImage(uri: Uri, page: Int = 0) {
         val resolver = activity.contentResolver
         try {
-            var fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
+            val fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
             if (fd == null) {
                 error("streamImage-tiff-fd", "failed to get file descriptor for uri=$uri", null)
                 return
             }
-            var options = TiffBitmapFactory.Options().apply {
-                inJustDecodeBounds = true
+            val options = TiffBitmapFactory.Options().apply {
+                inDirectoryNumber = page
             }
-            TiffBitmapFactory.decodeFileDescriptor(fd, options)
-            val dirCount = options.outDirectoryCount
-
-            // TODO TLAD handle multipage TIFF
-            if (dirCount > page) {
-                fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
-                if (fd == null) {
-                    error("streamImage-tiff-fd", "failed to get file descriptor for uri=$uri", null)
-                    return
-                }
-                options = TiffBitmapFactory.Options().apply {
-                    inJustDecodeBounds = false
-                    inDirectoryNumber = page
-                }
-                val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
-                if (bitmap != null) {
-                    success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-                } else {
-                    error("streamImage-tiff-null", "failed to get tiff image (dir=$page) from uri=$uri", null)
-                }
+            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            if (bitmap != null) {
+                success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
+            } else {
+                error("streamImage-tiff-null", "failed to get tiff image (dir=$page) from uri=$uri", null)
             }
         } catch (e: Exception) {
             error("streamImage-tiff-exception", "failed to get image from uri=$uri", toErrorDetails(e))
@@ -192,6 +198,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     }
 
     companion object {
+        private val LOG_TAG = LogUtils.createTag(ImageByteStreamHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/imagebytestream"
 
         const val bufferSize = 2 shl 17 // 256kB

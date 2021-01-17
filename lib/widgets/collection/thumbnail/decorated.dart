@@ -30,12 +30,12 @@ class DecoratedThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var child = entry.isSvg
-        ? ThumbnailVectorImage(
+        ? VectorImageThumbnail(
             entry: entry,
             extent: extent,
             heroTag: heroTag,
           )
-        : ThumbnailRasterImage(
+        : RasterImageThumbnail(
             entry: entry,
             extent: extent,
             isScrollingNotifier: isScrollingNotifier,

@@ -29,15 +29,25 @@ mixin AlbumMixin on SourceBase {
   }
 
   String getUniqueAlbumName(String album) {
-    final volumeRoot = androidFileUtils.getStorageVolume(album)?.path ?? '';
-    final otherAlbums = _folderPaths.where((item) => item != album && item.startsWith(volumeRoot));
+    final otherAlbums = _folderPaths.where((item) => item != album);
     final parts = album.split(separator);
     var partCount = 0;
     String testName;
     do {
       testName = separator + parts.skip(parts.length - ++partCount).join(separator);
     } while (otherAlbums.any((item) => item.endsWith(testName)));
-    return parts.skip(parts.length - partCount).join(separator);
+    final uniqueName = parts.skip(parts.length - partCount).join(separator);
+
+    final volume = androidFileUtils.getStorageVolume(album);
+    final volumeRoot = volume?.path ?? '';
+    final albumRelativePath = album.substring(volumeRoot.length);
+    if (uniqueName.length < albumRelativePath.length || volume == null) {
+      return uniqueName;
+    } else if (volume.isPrimary) {
+      return albumRelativePath;
+    } else {
+      return '$albumRelativePath (${volume.description})';
+    }
   }
 
   Map<String, ImageEntry> getAlbumEntries() {

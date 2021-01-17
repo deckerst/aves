@@ -26,7 +26,7 @@ class TiffThumbnailGlideModule : LibraryGlideModule() {
     }
 }
 
-class TiffThumbnail(val context: Context, val uri: Uri)
+class TiffThumbnail(val context: Context, val uri: Uri, val page: Int)
 
 internal class TiffThumbnailLoader : ModelLoader<TiffThumbnail, InputStream> {
     override fun buildLoadData(model: TiffThumbnail, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream> {
@@ -46,6 +46,7 @@ internal class TiffThumbnailFetcher(val model: TiffThumbnail, val width: Int, va
     override fun loadData(priority: Priority, callback: DataCallback<in InputStream>) {
         val context = model.context
         val uri = model.uri
+        val page = model.page
 
         // determine sample size
         var fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
@@ -56,6 +57,7 @@ internal class TiffThumbnailFetcher(val model: TiffThumbnail, val width: Int, va
         var sampleSize = 1
         var options = TiffBitmapFactory.Options().apply {
             inJustDecodeBounds = true
+            inDirectoryNumber = page
         }
         TiffBitmapFactory.decodeFileDescriptor(fd, options)
         val imageWidth = options.outWidth
@@ -74,13 +76,14 @@ internal class TiffThumbnailFetcher(val model: TiffThumbnail, val width: Int, va
         }
         options = TiffBitmapFactory.Options().apply {
             inJustDecodeBounds = false
+            inDirectoryNumber = page
             inSampleSize = sampleSize
         }
         val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
         if (bitmap == null) {
             callback.onLoadFailed(Exception("null bitmap"))
         } else {
-            callback.onDataReady(bitmap.getBytes().inputStream())
+            callback.onDataReady(bitmap.getBytes()?.inputStream())
         }
     }
 

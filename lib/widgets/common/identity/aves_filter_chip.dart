@@ -66,7 +66,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   }
 
   @override
-  void didUpdateWidget(AvesFilterChip oldWidget) {
+  void didUpdateWidget(covariant AvesFilterChip oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.filter != filter) {
       _initColorLoader();

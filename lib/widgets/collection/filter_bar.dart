@@ -29,7 +29,7 @@ class _FilterBarState extends State<FilterBar> {
   CollectionFilter _userRemovedFilter;
 
   @override
-  void didUpdateWidget(FilterBar oldWidget) {
+  void didUpdateWidget(covariant FilterBar oldWidget) {
     super.didUpdateWidget(oldWidget);
     final current = widget.filters;
     final existing = oldWidget.filters;

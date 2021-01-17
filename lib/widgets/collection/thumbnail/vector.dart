@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailVectorImage extends StatelessWidget {
+class VectorImageThumbnail extends StatelessWidget {
   final ImageEntry entry;
   final double extent;
   final Object heroTag;
 
-  const ThumbnailVectorImage({
+  const VectorImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
@@ -29,7 +29,7 @@ class ThumbnailVectorImage extends StatelessWidget {
           return LayoutBuilder(
             builder: (context, constraints) {
               final availableSize = constraints.biggest;
-              final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
+              final fitSize = applyBoxFit(fit, entry.getDisplaySize(), availableSize).destination;
               final offset = fitSize / 2 - availableSize / 2;
               final child = DecoratedBox(
                 decoration: CheckeredDecoration(checkSize: extent / 8, offset: offset),

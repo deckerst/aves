@@ -3,7 +3,7 @@ import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
-import 'package:aves/widgets/fullscreen/info/location_section.dart';
+import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -40,6 +40,7 @@ class Settings extends ChangeNotifier {
   static const showThumbnailVideoDurationKey = 'show_thumbnail_video_duration';
 
   // filter grids
+  static const albumGroupFactorKey = 'album_group_factor';
   static const albumSortFactorKey = 'album_sort_factor';
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
@@ -47,6 +48,7 @@ class Settings extends ChangeNotifier {
 
   // viewer
   static const showOverlayMinimapKey = 'show_overlay_minimap';
+  static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
 
   // info
@@ -99,7 +101,7 @@ class Settings extends ChangeNotifier {
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
 
-  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.fullscreenOnly, KeepScreenOn.values);
+  KeepScreenOn get keepScreenOn => getEnumOrDefault(keepScreenOnKey, KeepScreenOn.viewerOnly, KeepScreenOn.values);
 
   set keepScreenOn(KeepScreenOn newValue) {
     setAndNotify(keepScreenOnKey, newValue.toString());
@@ -144,6 +146,10 @@ class Settings extends ChangeNotifier {
 
   // filter grids
 
+  AlbumChipGroupFactor get albumGroupFactor => getEnumOrDefault(albumGroupFactorKey, AlbumChipGroupFactor.importance, AlbumChipGroupFactor.values);
+
+  set albumGroupFactor(AlbumChipGroupFactor newValue) => setAndNotify(albumGroupFactorKey, newValue.toString());
+
   ChipSortFactor get albumSortFactor => getEnumOrDefault(albumSortFactorKey, ChipSortFactor.name, ChipSortFactor.values);
 
   set albumSortFactor(ChipSortFactor newValue) => setAndNotify(albumSortFactorKey, newValue.toString());
@@ -165,6 +171,10 @@ class Settings extends ChangeNotifier {
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
+
+  bool get showOverlayInfo => getBoolOrDefault(showOverlayInfoKey, true);
+
+  set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
   bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, true);
 

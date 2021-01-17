@@ -18,6 +18,8 @@ class AIcons {
   static const IconData raw = Icons.camera_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
+  static const IconData sensorControl = Icons.explore_outlined;
+  static const IconData sensorControlOff = Icons.explore_off_outlined;
   static const IconData settings = Icons.settings_outlined;
   static const IconData text = Icons.format_quote_outlined;
   static const IconData tag = Icons.local_offer_outlined;
@@ -64,6 +66,7 @@ class AIcons {
   // thumbnail overlay
   static const IconData animated = Icons.slideshow;
   static const IconData geo = Icons.language_outlined;
+  static const IconData multipage = Icons.burst_mode_outlined;
   static const IconData play = Icons.play_circle_outline;
   static const IconData threesixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;

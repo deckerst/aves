@@ -102,6 +102,21 @@ class RawIcon extends StatelessWidget {
   }
 }
 
+class MultipageIcon extends StatelessWidget {
+  final double iconSize;
+
+  const MultipageIcon({Key key, this.iconSize}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayIcon(
+      icon: AIcons.multipage,
+      size: iconSize,
+      iconScale: .8,
+    );
+  }
+}
+
 class OverlayIcon extends StatelessWidget {
   final IconData icon;
   final double size;
