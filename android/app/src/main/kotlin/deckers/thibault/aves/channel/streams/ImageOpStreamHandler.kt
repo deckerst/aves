@@ -9,7 +9,7 @@ import deckers.thibault.aves.model.AvesImageEntry
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.utils.LogUtils.createTag
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -51,15 +51,33 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
 
     // {String uri, bool success, [Map<String, Object> newFields]}
     private fun success(result: Map<String, *>) {
-        handler.post { eventSink.success(result) }
+        handler.post {
+            try {
+                eventSink.success(result)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
-        handler.post { eventSink.error(errorCode, errorMessage, errorDetails) }
+        handler.post {
+            try {
+                eventSink.error(errorCode, errorMessage, errorDetails)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun endOfStream() {
-        handler.post { eventSink.endOfStream() }
+        handler.post {
+            try {
+                eventSink.endOfStream()
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private suspend fun move() {
@@ -127,7 +145,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
     }
 
     companion object {
-        private val LOG_TAG = createTag(ImageOpStreamHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag(ImageOpStreamHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/imageopstream"
     }
 }

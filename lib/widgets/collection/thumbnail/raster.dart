@@ -8,28 +8,32 @@ import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
 
-class ThumbnailRasterImage extends StatefulWidget {
+class RasterImageThumbnail extends StatefulWidget {
   final ImageEntry entry;
   final double extent;
+  final int page;
   final ValueNotifier<bool> isScrollingNotifier;
   final Object heroTag;
 
-  const ThumbnailRasterImage({
+  const RasterImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
+    this.page = 0,
     this.isScrollingNotifier,
     this.heroTag,
   }) : super(key: key);
 
   @override
-  _ThumbnailRasterImageState createState() => _ThumbnailRasterImageState();
+  _RasterImageThumbnailState createState() => _RasterImageThumbnailState();
 }
 
-class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
+class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
   ImageEntry get entry => widget.entry;
+
+  int get page => widget.page;
 
   double get extent => widget.extent;
 
@@ -47,7 +51,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
   }
 
   @override
-  void didUpdateWidget(ThumbnailRasterImage oldWidget) {
+  void didUpdateWidget(covariant RasterImageThumbnail oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != entry) {
       _unregisterWidget(oldWidget);
@@ -61,12 +65,12 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     super.dispose();
   }
 
-  void _registerWidget(ThumbnailRasterImage widget) {
+  void _registerWidget(RasterImageThumbnail widget) {
     widget.entry.imageChangeNotifier.addListener(_onImageChanged);
     _initProvider();
   }
 
-  void _unregisterWidget(ThumbnailRasterImage widget) {
+  void _unregisterWidget(RasterImageThumbnail widget) {
     widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
     _pauseProvider();
   }
@@ -75,11 +79,11 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
     if (!entry.canDecode) return;
 
     _fastThumbnailProvider = ThumbnailProvider(
-      ThumbnailProviderKey.fromEntry(entry),
+      ThumbnailProviderKey.fromEntry(entry, page: page),
     );
     if (!entry.isVideo) {
       _sizedThumbnailProvider = ThumbnailProvider(
-        ThumbnailProviderKey.fromEntry(entry, extent: requestExtent),
+        ThumbnailProviderKey.fromEntry(entry, page: page, extent: requestExtent),
       );
     }
   }
@@ -149,6 +153,7 @@ class _ThumbnailRasterImageState extends State<ThumbnailRasterImage> {
                 final imageProvider = UriImage(
                   uri: entry.uri,
                   mimeType: entry.mimeType,
+                  page: page,
                   rotationDegrees: entry.rotationDegrees,
                   isFlipped: entry.isFlipped,
                   expectedContentLength: entry.sizeBytes,

@@ -8,8 +8,8 @@ object MimeTypes {
     // generic raster
     private const val BMP = "image/bmp"
     const val GIF = "image/gif"
-    private const val HEIC = "image/heic"
-    private const val HEIF = "image/heif"
+    const val HEIC = "image/heic"
+    const val HEIF = "image/heif"
     private const val ICO = "image/x-icon"
     private const val JPEG = "image/jpeg"
     private const val PNG = "image/png"

@@ -11,10 +11,7 @@ import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.Rational
-import com.drew.metadata.exif.ExifDirectoryBase
-import com.drew.metadata.exif.ExifIFD0Directory
-import com.drew.metadata.exif.ExifSubIFDDirectory
-import com.drew.metadata.exif.GpsDirectory
+import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
@@ -61,6 +58,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.File
 import java.util.*
 import kotlin.math.roundToLong
@@ -71,6 +69,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { getAllMetadata(call, Coresult(result)) }
             "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { getCatalogMetadata(call, Coresult(result)) }
             "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { getOverlayMetadata(call, Coresult(result)) }
+            "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { getMultiPageInfo(call, Coresult(result)) }
+            "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { getPanoramaInfo(call, Coresult(result)) }
             "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { getEmbeddedPictures(call, Coresult(result)) }
             "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { getExifThumbnails(call, Coresult(result)) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { extractXmpDataProp(call, Coresult(result)) }
@@ -108,12 +108,12 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[dirName] = dirMap
 
                         // tags
-                        if (mimeType == MimeTypes.TIFF && dir is ExifIFD0Directory) {
+                        if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
                             dirMap.putAll(dir.tags.map {
                                 val name = if (it.hasTagName()) {
                                     it.tagName
                                 } else {
-                                    Geotiff.getTagName(it.tagType) ?: it.tagName
+                                    TiffTags.getTagName(it.tagType) ?: it.tagName
                                 }
                                 Pair(name, it.description)
                             })
@@ -230,19 +230,24 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val metadataMap = HashMap(getCatalogMetadataByMetadataExtractor(uri, mimeType, path, sizeBytes))
+        val metadataMap = HashMap<String, Any>()
+        getCatalogMetadataByMetadataExtractor(uri, mimeType, path, sizeBytes, metadataMap)
         if (isMultimedia(mimeType)) {
-            metadataMap.putAll(getMultimediaCatalogMetadataByMediaMetadataRetriever(uri))
+            getMultimediaCatalogMetadataByMediaMetadataRetriever(uri, mimeType, metadataMap)
         }
 
         // report success even when empty
         result.success(metadataMap)
     }
 
-    private fun getCatalogMetadataByMetadataExtractor(uri: Uri, mimeType: String, path: String?, sizeBytes: Long?): Map<String, Any> {
-        val metadataMap = HashMap<String, Any>()
-
-        var flags = 0
+    private fun getCatalogMetadataByMetadataExtractor(
+        uri: Uri,
+        mimeType: String,
+        path: String?,
+        sizeBytes: Long?,
+        metadataMap: HashMap<String, Any>,
+    ) {
+        var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         var foundExif = false
 
         if (isSupportedByMetadataExtractor(mimeType)) {
@@ -390,13 +395,20 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to get metadata by ExifInterface for uri=$uri", e)
             }
         }
+
+        if (mimeType == MimeTypes.TIFF && isMultiPageTiff(uri)) flags = flags or MASK_IS_MULTIPAGE
+
         metadataMap[KEY_FLAGS] = flags
-        return metadataMap
     }
 
-    private fun getMultimediaCatalogMetadataByMediaMetadataRetriever(uri: Uri): Map<String, Any> {
-        val metadataMap = HashMap<String, Any>()
-        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return metadataMap
+    private fun getMultimediaCatalogMetadataByMediaMetadataRetriever(
+        uri: Uri,
+        mimeType: String,
+        metadataMap: HashMap<String, Any>,
+    ) {
+        val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return
+
+        var flags = (metadataMap[KEY_FLAGS] ?: 0) as Int
         try {
             retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION) { metadataMap[KEY_ROTATION_DEGREES] = it }
             if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
@@ -417,13 +429,20 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     }
                 }
             }
+
+            if (mimeType == MimeTypes.HEIC || mimeType == MimeTypes.HEIF) {
+                retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS) {
+                    if (it > 1) flags = flags or MASK_IS_MULTIPAGE
+                }
+            }
+
+            metadataMap[KEY_FLAGS] = flags
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get catalog metadata by MediaMetadataRetriever for uri=$uri", e)
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
             retriever.release()
         }
-        return metadataMap
     }
 
     private fun getOverlayMetadata(call: MethodCall, result: MethodChannel.Result) {
@@ -494,6 +513,73 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(metadataMap)
     }
 
+    private fun getMultiPageInfo(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (mimeType == null || uri == null) {
+            result.error("getMultiPageInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val pages = HashMap<Int, Any>()
+        if (mimeType == MimeTypes.TIFF) {
+            fun toMap(options: TiffBitmapFactory.Options): Map<String, Any> {
+                return hashMapOf(
+                    "width" to options.outWidth,
+                    "height" to options.outHeight,
+                )
+            }
+            getTiffPageInfo(uri, 0)?.let { first ->
+                pages[0] = toMap(first)
+                val pageCount = first.outDirectoryCount
+                for (i in 1 until pageCount) {
+                    getTiffPageInfo(uri, i)?.let { pages[i] = toMap(it) }
+                }
+            }
+        }
+        result.success(pages)
+    }
+
+    private fun getPanoramaInfo(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null) {
+            result.error("getPanoramaInfo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (isSupportedByMetadataExtractor(mimeType)) {
+            try {
+                Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    val metadata = ImageMetadataReader.readMetadata(input)
+                    val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
+                    try {
+                        fun getProp(propName: String): Int? = xmpDirs.map { it.xmpMeta.getPropertyInteger(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
+                        val fields: FieldMap = hashMapOf(
+                            "croppedAreaLeft" to getProp(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME),
+                            "croppedAreaTop" to getProp(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME),
+                            "croppedAreaWidth" to getProp(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME),
+                            "croppedAreaHeight" to getProp(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME),
+                            "fullPanoWidth" to getProp(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME),
+                            "fullPanoHeight" to getProp(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME),
+                        )
+                        result.success(fields)
+                        return
+                    } catch (e: XMPException) {
+                        result.error("getPanoramaInfo-args", "failed to read XMP for uri=$uri", e.message)
+                        return
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to read XMP", e)
+            } catch (e: NoClassDefFoundError) {
+                Log.w(LOG_TAG, "failed to read XMP", e)
+            }
+        }
+        result.error("getPanoramaInfo-empty", "failed to read XMP from uri=$uri", null)
+    }
+
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
@@ -533,7 +619,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                            thumbnails.add(it.getBytes(canHaveAlpha = false, recycle = false))
+                            it.getBytes(canHaveAlpha = false, recycle = false)?.let { thumbnails.add(it) }
                         }
                     }
                 }
@@ -622,6 +708,27 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)
     }
 
+    private fun isMultiPageTiff(uri: Uri) = getTiffPageInfo(uri, 0)?.outDirectoryCount ?: 1 > 1
+
+    private fun getTiffPageInfo(uri: Uri, page: Int): TiffBitmapFactory.Options? {
+        try {
+            val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
+            if (fd == null) {
+                Log.w(LOG_TAG, "failed to get file descriptor for uri=$uri")
+                return null
+            }
+            val options = TiffBitmapFactory.Options().apply {
+                inJustDecodeBounds = true
+                inDirectoryNumber = page
+            }
+            TiffBitmapFactory.decodeFileDescriptor(fd, options)
+            return options
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get TIFF page info for uri=$uri page=$page", e)
+        }
+        return null
+    }
+
     companion object {
         private val LOG_TAG = LogUtils.createTag(MetadataHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/metadata"
@@ -640,6 +747,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val MASK_IS_FLIPPED = 1 shl 1
         private const val MASK_IS_GEOTIFF = 1 shl 2
         private const val MASK_IS_360 = 1 shl 3
+        private const val MASK_IS_MULTIPAGE = 1 shl 4
         private const val XMP_SUBJECTS_SEPARATOR = ";"
 
         // overlay metadata

@@ -49,11 +49,12 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
         return FilterGridPage<AlbumFilter>(
           source: source,
           appBar: appBar,
-          filterEntries: AlbumListPage.getAlbumEntries(source),
+          filterSections: AlbumListPage.getAlbumEntries(source),
+          showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
           applyQuery: (filters, query) {
             if (query == null || query.isEmpty) return filters;
             query = query.toUpperCase();
-            return filters.where((filter) => filter.uniqueName.toUpperCase().contains(query)).toList();
+            return filters.where((item) => item.filter.uniqueName.toUpperCase().contains(query)).toList();
           },
           queryNotifier: _queryNotifier,
           emptyBuilder: () => EmptyContent(

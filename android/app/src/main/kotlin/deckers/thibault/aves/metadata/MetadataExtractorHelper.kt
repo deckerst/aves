@@ -45,13 +45,13 @@ object MetadataExtractorHelper {
     - If the ModelPixelScaleTag is included in an IFD, then a ModelTiepointTag SHALL also be included.
      */
     fun ExifIFD0Directory.isGeoTiff(): Boolean {
-        if (!this.containsTag(Geotiff.TAG_GEO_KEY_DIRECTORY)) return false
+        if (!this.containsTag(TiffTags.TAG_GEO_KEY_DIRECTORY)) return false
 
-        val modelTiepoint = this.containsTag(Geotiff.TAG_MODEL_TIEPOINT)
-        val modelTransformation = this.containsTag(Geotiff.TAG_MODEL_TRANSFORMATION)
+        val modelTiepoint = this.containsTag(TiffTags.TAG_MODEL_TIEPOINT)
+        val modelTransformation = this.containsTag(TiffTags.TAG_MODEL_TRANSFORMATION)
         if (!modelTiepoint && !modelTransformation) return false
 
-        val modelPixelScale = this.containsTag(Geotiff.TAG_MODEL_PIXEL_SCALE)
+        val modelPixelScale = this.containsTag(TiffTags.TAG_MODEL_PIXEL_SCALE)
         if ((modelTransformation && modelPixelScale) || (modelPixelScale && !modelTiepoint)) return false
 
         return true

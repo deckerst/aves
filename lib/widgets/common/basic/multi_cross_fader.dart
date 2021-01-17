@@ -30,7 +30,7 @@ class _MultiCrossFaderState extends State<MultiCrossFader> {
   }
 
   @override
-  void didUpdateWidget(MultiCrossFader oldWidget) {
+  void didUpdateWidget(covariant MultiCrossFader oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_first == oldWidget.child) {
       _second = widget.child;

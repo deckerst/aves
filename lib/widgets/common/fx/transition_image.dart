@@ -57,7 +57,7 @@ class _TransitionImageState extends State<TransitionImage> {
   }
 
   @override
-  void didUpdateWidget(TransitionImage oldWidget) {
+  void didUpdateWidget(covariant TransitionImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_isListeningToStream) {
       _imageStream.removeListener(_getListener());

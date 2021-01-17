@@ -1,13 +1,13 @@
 import 'package:screen/screen.dart';
 
-enum KeepScreenOn { never, fullscreenOnly, always }
+enum KeepScreenOn { never, viewerOnly, always }
 
 extension ExtraKeepScreenOn on KeepScreenOn {
   String get name {
     switch (this) {
       case KeepScreenOn.never:
         return 'Never';
-      case KeepScreenOn.fullscreenOnly:
+      case KeepScreenOn.viewerOnly:
         return 'Viewer page only';
       case KeepScreenOn.always:
         return 'Always';
