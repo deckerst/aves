@@ -1,7 +1,6 @@
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
@@ -11,6 +10,7 @@ import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
+import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class TagListPage extends StatelessWidget {
       builder: (context, s, child) {
         return StreamBuilder(
           stream: source.eventBus.on<TagsChangedEvent>(),
-          builder: (context, snapshot) => FilterNavigationPage(
+          builder: (context, snapshot) => FilterNavigationPage<TagFilter>(
             source: source,
             title: 'Tags',
             chipSetActionDelegate: TagChipSetActionDelegate(source: source),
@@ -38,7 +38,7 @@ class TagListPage extends StatelessWidget {
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
             ],
-            filterEntries: _getTagEntries(),
+            filterSections: _getTagEntries(),
             emptyBuilder: () => EmptyContent(
               icon: AIcons.tag,
               text: 'No tags',
@@ -49,31 +49,26 @@ class TagListPage extends StatelessWidget {
     );
   }
 
-  Map<TagFilter, ImageEntry> _getTagEntries() {
-    final pinned = settings.pinnedFilters.whereType<TagFilter>();
-
-    final entriesByDate = source.sortedEntriesForFilterList;
+  Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _getTagEntries() {
     // tags are initially sorted by name at the source level
-    var sortedFilters = source.sortedTags.map((tag) => TagFilter(tag));
-    if (settings.tagSortFactor == ChipSortFactor.count) {
-      final filtersWithCount = List.of(sortedFilters.map((filter) => MapEntry(filter, source.count(filter))));
-      filtersWithCount.sort(FilterNavigationPage.compareChipsByEntryCount);
-      sortedFilters = filtersWithCount.map((kv) => kv.key).toList();
-    }
+    final filters = source.sortedTags.map((tag) => TagFilter(tag));
 
-    final allMapEntries = sortedFilters.map((filter) => MapEntry(
-          filter,
-          entriesByDate.firstWhere((entry) => entry.xmpSubjects.contains(filter.tag), orElse: () => null),
-        ));
-    final byPin = groupBy<MapEntry<TagFilter, ImageEntry>, bool>(allMapEntries, (e) => pinned.contains(e.key));
+    final sorted = FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
+    return _group(sorted);
+  }
+
+  static Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _group(Iterable<FilterGridItem<TagFilter>> sortedMapEntries) {
+    final pinned = settings.pinnedFilters.whereType<TagFilter>();
+    final byPin = groupBy<FilterGridItem<TagFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
     final pinnedMapEntries = (byPin[true] ?? []);
     final unpinnedMapEntries = (byPin[false] ?? []);
 
-    if (settings.tagSortFactor == ChipSortFactor.date) {
-      pinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
-      unpinnedMapEntries.sort(FilterNavigationPage.compareChipsByDate);
-    }
-
-    return Map.fromEntries([...pinnedMapEntries, ...unpinnedMapEntries]);
+    return {
+      if (pinnedMapEntries.isNotEmpty || unpinnedMapEntries.isNotEmpty)
+        ChipSectionKey(): [
+          ...pinnedMapEntries,
+          ...unpinnedMapEntries,
+        ],
+    };
   }
 }

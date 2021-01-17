@@ -9,7 +9,7 @@ import deckers.thibault.aves.model.AvesImageEntry
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.utils.LogUtils.createTag
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -145,7 +145,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
     }
 
     companion object {
-        private val LOG_TAG = createTag(ImageOpStreamHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag(ImageOpStreamHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/imageopstream"
     }
 }

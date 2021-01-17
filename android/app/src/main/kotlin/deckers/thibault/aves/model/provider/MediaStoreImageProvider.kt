@@ -10,7 +10,7 @@ import android.util.Log
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.AvesImageEntry
 import deckers.thibault.aves.model.SourceImageEntry
-import deckers.thibault.aves.utils.LogUtils.createTag
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -312,7 +312,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     companion object {
-        private val LOG_TAG = createTag(MediaStoreImageProvider::class.java)
+        private val LOG_TAG = LogUtils.createTag(MediaStoreImageProvider::class.java)
 
         private val IMAGE_CONTENT_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         private val VIDEO_CONTENT_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI

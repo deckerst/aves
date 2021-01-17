@@ -186,6 +186,7 @@ class _WelcomePageState extends State<WelcomePage> {
             child = AnimationConfiguration.staggeredList(
               position: index,
               duration: duration,
+              delay: delay,
               child: childAnimationBuilder(child),
             );
             child = widget is Flexible ? Flexible(child: child) : child;

@@ -12,6 +12,7 @@ class SectionHeader extends StatelessWidget {
   final SectionKey sectionKey;
   final Widget leading, trailing;
   final String title;
+  final bool selectable;
 
   const SectionHeader({
     Key key,
@@ -19,6 +20,7 @@ class SectionHeader extends StatelessWidget {
     this.leading,
     @required this.title,
     this.trailing,
+    this.selectable = true,
   }) : super(key: key);
 
   static const leadingDimension = 32.0;
@@ -41,6 +43,7 @@ class SectionHeader extends StatelessWidget {
               WidgetSpan(
                 alignment: widgetSpanAlignment,
                 child: _SectionSelectableLeading(
+                  selectable: selectable,
                   sectionKey: sectionKey,
                   browsingBuilder: leading != null
                       ? (context) => Container(
@@ -118,12 +121,14 @@ class SectionHeader extends StatelessWidget {
 }
 
 class _SectionSelectableLeading extends StatelessWidget {
+  final bool selectable;
   final SectionKey sectionKey;
   final WidgetBuilder browsingBuilder;
   final VoidCallback onPressed;
 
   const _SectionSelectableLeading({
     Key key,
+    this.selectable = true,
     @required this.sectionKey,
     @required this.browsingBuilder,
     @required this.onPressed,
@@ -133,6 +138,8 @@ class _SectionSelectableLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!selectable) return _buildBrowsing(context);
+
     final collection = Provider.of<CollectionLens>(context);
     return ValueListenableBuilder<Activity>(
       valueListenable: collection.activityNotifier,
@@ -173,7 +180,7 @@ class _SectionSelectableLeading extends StatelessWidget {
                   );
                 },
               )
-            : browsingBuilder?.call(context) ?? SizedBox(height: leadingDimension);
+            : _buildBrowsing(context);
         return AnimatedSwitcher(
           duration: Durations.sectionHeaderAnimation,
           switchInCurve: Curves.easeInOut,
@@ -199,4 +206,6 @@ class _SectionSelectableLeading extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: leadingDimension);
 }

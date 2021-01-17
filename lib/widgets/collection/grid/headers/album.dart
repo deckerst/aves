@@ -1,8 +1,8 @@
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/grid/header.dart';
-import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,7 @@ class AlbumSectionHeader extends StatelessWidget {
       );
     }
     return SectionHeader(
-      sectionKey: AlbumSectionKey(folderPath),
+      sectionKey: EntryAlbumSectionKey(folderPath),
       leading: albumIcon,
       title: albumName,
       trailing: androidFileUtils.isOnRemovableStorage(folderPath)
@@ -42,7 +42,7 @@ class AlbumSectionHeader extends StatelessWidget {
     );
   }
 
-  static double getPreferredHeight(BuildContext context, double maxWidth, CollectionSource source, AlbumSectionKey sectionKey) {
+  static double getPreferredHeight(BuildContext context, double maxWidth, CollectionSource source, EntryAlbumSectionKey sectionKey) {
     final folderPath = sectionKey.folderPath;
     return SectionHeader.getPreferredHeight(
       context: context,

@@ -146,7 +146,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
 
     if (firstChild != null) {
       final leadingGarbage = _calculateLeadingGarbage(firstIndex);
-      final trailingGarbage = _calculateTrailingGarbage(targetLastIndex);
+      final trailingGarbage = targetLastIndex != null ? _calculateTrailingGarbage(targetLastIndex) : 0;
       collectGarbage(leadingGarbage, trailingGarbage);
     } else {
       collectGarbage(0, 0);
@@ -191,7 +191,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
         // Reset the scroll offset to offset all items prior and up to the
         // missing item. Let parent re-layout everything.
         final layout = sectionAtIndex(index) ?? sectionLayouts.first;
-        geometry = SliverGeometry(scrollOffsetCorrection: layout.indexToMaxScrollOffset(index));
+        geometry = SliverGeometry(scrollOffsetCorrection: layout.indexToLayoutOffset(index));
         return;
       }
       final childParentData = child.parentData as SliverMultiBoxAdaptorParentData;
@@ -215,7 +215,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
         if (child == null) {
           // We have run out of children.
           final layout = sectionAtIndex(index) ?? sectionLayouts.last;
-          estimatedMaxScrollOffset = layout.indexToMaxScrollOffset(index);
+          estimatedMaxScrollOffset = layout.indexToLayoutOffset(index);
           break;
         }
       } else {
@@ -250,7 +250,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
 
     final paintExtent = calculatePaintOffset(
       constraints,
-      from: leadingScrollOffset,
+      from: math.min(constraints.scrollOffset, leadingScrollOffset),
       to: trailingScrollOffset,
     );
 

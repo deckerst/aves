@@ -83,7 +83,7 @@ internal class TiffThumbnailFetcher(val model: TiffThumbnail, val width: Int, va
         if (bitmap == null) {
             callback.onLoadFailed(Exception("null bitmap"))
         } else {
-            callback.onDataReady(bitmap.getBytes().inputStream())
+            callback.onDataReady(bitmap.getBytes()?.inputStream())
         }
     }
 

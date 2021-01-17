@@ -2,13 +2,13 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/gesture_area_protector.dart';
+import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
@@ -17,6 +17,8 @@ import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_manager.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
+import 'package:aves/widgets/filter_grids/common/section_keys.dart';
+import 'package:aves/widgets/filter_grids/common/section_layout.dart';
 import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +28,12 @@ import 'package:provider/provider.dart';
 class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final Widget appBar;
-  final Map<T, ImageEntry> filterEntries;
+  final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
   final Widget Function() emptyBuilder;
   final String settingsRouteKey;
-  final Iterable<T> Function(Iterable<T> filters, String query) applyQuery;
+  final Iterable<FilterGridItem<T>> Function(Iterable<FilterGridItem<T>> filters, String query) applyQuery;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
@@ -46,7 +49,8 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     Key key,
     @required this.source,
     @required this.appBar,
-    @required this.filterEntries,
+    @required this.filterSections,
+    this.showHeaders = false,
     @required this.queryNotifier,
     this.applyQuery,
     @required this.emptyBuilder,
@@ -82,63 +86,90 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                       spacing: spacing,
                     )..applyTileExtent(viewportSize: viewportSize);
 
-                    return ValueListenableBuilder<double>(
-                      valueListenable: _tileExtentNotifier,
-                      builder: (context, tileExtent, child) {
-                        final columnCount = tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent);
+                    final pinnedFilters = settings.pinnedFilters;
+                    return ValueListenableBuilder<String>(
+                      valueListenable: queryNotifier,
+                      builder: (context, query, child) {
+                        Map<ChipSectionKey, List<FilterGridItem<T>>> visibleFilterSections;
+                        if (applyQuery == null) {
+                          visibleFilterSections = filterSections;
+                        } else {
+                          visibleFilterSections = {};
+                          filterSections.forEach((sectionKey, sectionFilters) {
+                            final visibleFilters = applyQuery(sectionFilters, query);
+                            if (visibleFilters.isNotEmpty) {
+                              visibleFilterSections[sectionKey] = visibleFilters.toList();
+                            }
+                          });
+                        }
 
-                        return ValueListenableBuilder<String>(
-                          valueListenable: queryNotifier,
-                          builder: (context, query, child) {
-                            final allFilters = filterEntries.keys;
-                            final visibleFilters = (applyQuery != null ? applyQuery(allFilters, query) : allFilters).toList();
+                        final scrollView = AnimationLimiter(
+                          child: _buildDraggableScrollView(_buildScrollView(context, visibleFilterSections.isEmpty)),
+                        );
 
-                            final scrollView = AnimationLimiter(
-                              child: _buildDraggableScrollView(_buildScrollView(context, columnCount, visibleFilters)),
-                            );
-
-                            return GridScaleGestureDetector<FilterGridItem>(
-                              tileExtentManager: tileExtentManager,
-                              scrollableKey: _scrollableKey,
-                              appBarHeightNotifier: _appBarHeightNotifier,
-                              viewportSize: viewportSize,
-                              gridBuilder: (center, extent, child) => CustomPaint(
-                                painter: GridPainter(
-                                  center: center,
-                                  extent: extent,
-                                  spacing: tileExtentManager.spacing,
-                                  color: Colors.grey.shade700,
-                                ),
-                                child: child,
-                              ),
-                              scaledBuilder: (item, extent) {
-                                final filter = item.filter;
-                                return SizedBox(
-                                  width: extent,
-                                  height: extent,
-                                  child: DecoratedFilterChip(
-                                    source: source,
-                                    filter: filter,
-                                    entry: item.entry,
-                                    extent: extent,
-                                    pinned: settings.pinnedFilters.contains(filter),
-                                    highlightable: false,
-                                  ),
-                                );
-                              },
-                              getScaledItemTileRect: (context, item) {
-                                final index = visibleFilters.indexOf(item.filter);
-                                final column = index % columnCount;
-                                final row = (index / columnCount).floor();
-                                final left = tileExtent * column + spacing * (column - 1);
-                                final top = tileExtent * row + spacing * (row - 1);
-                                return Rect.fromLTWH(left, top, tileExtent, tileExtent);
-                              },
-                              onScaled: (item) => Provider.of<HighlightInfo>(context, listen: false).add(item.filter),
-                              child: scrollView,
+                        final scaler = GridScaleGestureDetector<FilterGridItem<T>>(
+                          tileExtentManager: tileExtentManager,
+                          scrollableKey: _scrollableKey,
+                          appBarHeightNotifier: _appBarHeightNotifier,
+                          viewportSize: viewportSize,
+                          gridBuilder: (center, extent, child) => CustomPaint(
+                            painter: GridPainter(
+                              center: center,
+                              extent: extent,
+                              spacing: tileExtentManager.spacing,
+                              color: Colors.grey.shade700,
+                            ),
+                            child: child,
+                          ),
+                          scaledBuilder: (item, extent) {
+                            final filter = item.filter;
+                            return DecoratedFilterChip(
+                              source: source,
+                              filter: filter,
+                              entry: item.entry,
+                              extent: extent,
+                              pinned: pinnedFilters.contains(filter),
+                              highlightable: false,
                             );
                           },
+                          getScaledItemTileRect: (context, item) {
+                            final sectionedListLayout = context.read<SectionedListLayout<FilterGridItem<T>>>();
+                            return sectionedListLayout.getTileRect(item) ?? Rect.zero;
+                          },
+                          onScaled: (item) => Provider.of<HighlightInfo>(context, listen: false).add(item.filter),
+                          child: scrollView,
                         );
+
+                        final sectionedListLayoutProvider = ValueListenableBuilder<double>(
+                          valueListenable: _tileExtentNotifier,
+                          builder: (context, tileExtent, child) => SectionedFilterListLayoutProvider<T>(
+                            sections: visibleFilterSections,
+                            showHeaders: showHeaders,
+                            scrollableWidth: viewportSize.width,
+                            tileExtent: tileExtent,
+                            columnCount: tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent),
+                            spacing: spacing,
+                            tileBuilder: (gridItem) {
+                              final filter = gridItem.filter;
+                              final entry = gridItem.entry;
+                              return MetaData(
+                                metaData: ScalerMetadata(FilterGridItem<T>(filter, entry)),
+                                child: DecoratedFilterChip(
+                                  key: Key(filter.key),
+                                  source: source,
+                                  filter: filter,
+                                  entry: entry,
+                                  extent: _tileExtentNotifier.value,
+                                  pinned: pinnedFilters.contains(filter),
+                                  onTap: onTap,
+                                  onLongPress: onLongPress,
+                                ),
+                              );
+                            },
+                            child: scaler,
+                          ),
+                        );
+                        return sectionedListLayoutProvider;
                       },
                     );
                   },
@@ -176,81 +207,42 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     );
   }
 
-  ScrollView _buildScrollView(BuildContext context, int columnCount, List<T> visibleFilters) {
-    final pinnedFilters = settings.pinnedFilters;
+  ScrollView _buildScrollView(BuildContext context, bool empty) {
+    Widget content;
+    if (empty) {
+      content = SliverFillRemaining(
+        child: Selector<MediaQueryData, double>(
+          selector: (context, mq) => mq.viewInsets.bottom,
+          builder: (context, mqViewInsetsBottom, child) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: mqViewInsetsBottom),
+              child: emptyBuilder(),
+            );
+          },
+        ),
+        hasScrollBody: false,
+      );
+    } else {
+      content = SectionedListSliver<FilterGridItem<T>>();
+    }
+
+    final padding = SliverToBoxAdapter(
+      child: Selector<MediaQueryData, double>(
+        selector: (context, mq) => mq.viewInsets.bottom,
+        builder: (context, mqViewInsetsBottom, child) {
+          return SizedBox(height: mqViewInsetsBottom);
+        },
+      ),
+    );
+
     return CustomScrollView(
       key: _scrollableKey,
       controller: PrimaryScrollController.of(context),
       slivers: [
         appBar,
-        visibleFilters.isEmpty
-            ? SliverFillRemaining(
-                child: Selector<MediaQueryData, double>(
-                  selector: (context, mq) => mq.viewInsets.bottom,
-                  builder: (context, mqViewInsetsBottom, child) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: mqViewInsetsBottom),
-                      child: emptyBuilder(),
-                    );
-                  },
-                ),
-                hasScrollBody: false,
-              )
-            : SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) {
-                    final filter = visibleFilters[i];
-                    final entry = filterEntries[filter];
-                    final child = MetaData(
-                      metaData: ScalerMetadata(FilterGridItem(filter, entry)),
-                      child: DecoratedFilterChip(
-                        key: Key(filter.key),
-                        source: source,
-                        filter: filter,
-                        entry: entry,
-                        extent: _tileExtentNotifier.value,
-                        pinned: pinnedFilters.contains(filter),
-                        onTap: onTap,
-                        onLongPress: onLongPress,
-                      ),
-                    );
-                    return AnimationConfiguration.staggeredGrid(
-                      position: i,
-                      columnCount: columnCount,
-                      duration: Durations.staggeredAnimation,
-                      delay: Durations.staggeredAnimationDelay,
-                      child: SlideAnimation(
-                        verticalOffset: 50.0,
-                        child: FadeInAnimation(
-                          child: child,
-                        ),
-                      ),
-                    );
-                  },
-                  childCount: visibleFilters.length,
-                ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columnCount,
-                  mainAxisSpacing: spacing,
-                  crossAxisSpacing: spacing,
-                ),
-              ),
-        SliverToBoxAdapter(
-          child: Selector<MediaQueryData, double>(
-            selector: (context, mq) => mq.viewInsets.bottom,
-            builder: (context, mqViewInsetsBottom, child) {
-              return SizedBox(height: mqViewInsetsBottom);
-            },
-          ),
-        ),
+        content,
+        padding,
       ],
     );
   }
-}
-
-class FilterGridItem<T extends CollectionFilter> {
-  final T filter;
-  final ImageEntry entry;
-
-  const FilterGridItem(this.filter, this.entry);
 }

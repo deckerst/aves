@@ -4,15 +4,15 @@ class SectionKey {
   const SectionKey();
 }
 
-class AlbumSectionKey extends SectionKey {
+class EntryAlbumSectionKey extends SectionKey {
   final String folderPath;
 
-  const AlbumSectionKey(this.folderPath);
+  const EntryAlbumSectionKey(this.folderPath);
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is AlbumSectionKey && other.folderPath == folderPath;
+    return other is EntryAlbumSectionKey && other.folderPath == folderPath;
   }
 
   @override
@@ -22,15 +22,15 @@ class AlbumSectionKey extends SectionKey {
   String toString() => '$runtimeType#${shortHash(this)}{folderPath=$folderPath}';
 }
 
-class DateSectionKey extends SectionKey {
+class EntryDateSectionKey extends SectionKey {
   final DateTime date;
 
-  const DateSectionKey(this.date);
+  const EntryDateSectionKey(this.date);
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is DateSectionKey && other.date == date;
+    return other is EntryDateSectionKey && other.date == date;
   }
 
   @override
