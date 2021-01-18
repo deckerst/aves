@@ -36,7 +36,7 @@ class SectionHeader extends StatelessWidget {
       padding: padding,
       constraints: BoxConstraints(minHeight: leadingDimension),
       child: GestureDetector(
-        onTap: () => _toggleSectionSelection(context),
+        onTap: selectable ? () => _toggleSectionSelection(context) : null,
         child: Text.rich(
           TextSpan(
             children: [
@@ -53,7 +53,7 @@ class SectionHeader extends StatelessWidget {
                             child: leading,
                           )
                       : null,
-                  onPressed: () => _toggleSectionSelection(context),
+                  onPressed: selectable ? () => _toggleSectionSelection(context) : null,
                 ),
               ),
               TextSpan(
