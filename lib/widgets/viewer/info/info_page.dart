@@ -43,6 +43,7 @@ class _InfoPageState extends State<InfoPage> {
       child: Scaffold(
         body: GestureAreaProtectorStack(
           child: SafeArea(
+            bottom: false,
             child: NotificationListener(
               onNotification: _handleTopScroll,
               child: Selector<MediaQueryData, Tuple2<double, double>>(

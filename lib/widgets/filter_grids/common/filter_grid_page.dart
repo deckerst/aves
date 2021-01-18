@@ -72,6 +72,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
           child: HighlightInfoProvider(
             child: GestureAreaProtectorStack(
               child: SafeArea(
+                bottom: false,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final viewportSize = constraints.biggest;
