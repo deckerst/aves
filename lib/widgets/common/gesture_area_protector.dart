@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // This widget should be added on top of Scaffolds with:
 // - `resizeToAvoidBottomInset` set to false,
@@ -11,12 +14,20 @@ class BottomGestureAreaProtector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: systemGestureInsetsBottom,
-      child: AbsorbPointer(),
+    return Selector<MediaQueryData, double>(
+      selector: (c, mq) => max(mq.viewPadding.bottom, mq.viewInsets.bottom),
+      builder: (c, mqPaddingBottom, child) {
+        // devices with physical navigation buttons have no bottom insets
+        // we assume these devices do not use gesture navigation
+        if (mqPaddingBottom == 0) return SizedBox();
+        return Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: systemGestureInsetsBottom,
+          child: AbsorbPointer(),
+        );
+      },
     );
   }
 }

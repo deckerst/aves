@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
@@ -38,10 +39,52 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final header = Container(
+    final drawerItems = <Widget>[
+      _buildHeader(context),
+      allCollectionTile,
+      videoTile,
+      favouriteTile,
+      _buildSpecialAlbumSection(),
+      Divider(),
+      albumListTile,
+      countryListTile,
+      tagListTile,
+      Divider(),
+      settingsTile,
+      aboutTile,
+      if (kDebugMode) ...[
+        Divider(),
+        debugTile,
+      ],
+    ];
+
+    return Drawer(
+      child: Selector<MediaQueryData, double>(
+        selector: (c, mq) => max(mq.viewPadding.bottom, mq.viewInsets.bottom),
+        builder: (c, mqPaddingBottom, child) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: mqPaddingBottom),
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                // color used by `ExpansionTile` for leading icon
+                unselectedWidgetColor: Colors.white,
+              ),
+              child: Column(
+                children: drawerItems,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
       padding: EdgeInsets.all(16),
       color: Theme.of(context).accentColor,
       child: SafeArea(
+        bottom: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -64,45 +107,6 @@ class _AppDrawerState extends State<AppDrawer> {
             ),
           ],
         ),
-      ),
-    );
-
-    final drawerItems = <Widget>[
-      header,
-      allCollectionTile,
-      videoTile,
-      favouriteTile,
-      _buildSpecialAlbumSection(),
-      Divider(),
-      albumListTile,
-      countryListTile,
-      tagListTile,
-      Divider(),
-      settingsTile,
-      aboutTile,
-      if (kDebugMode) ...[
-        Divider(),
-        debugTile,
-      ],
-    ];
-
-    return Drawer(
-      child: Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.viewInsets.bottom,
-        builder: (c, mqViewInsetsBottom, child) {
-          return SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: mqViewInsetsBottom),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                // color used by `ExpansionTile` for leading icon
-                unselectedWidgetColor: Colors.white,
-              ),
-              child: Column(
-                children: drawerItems,
-              ),
-            ),
-          );
-        },
       ),
     );
   }

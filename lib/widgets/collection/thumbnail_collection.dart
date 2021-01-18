@@ -44,6 +44,7 @@ class ThumbnailCollection extends StatelessWidget {
   Widget build(BuildContext context) {
     return HighlightInfoProvider(
       child: SafeArea(
+        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final viewportSize = constraints.biggest;
