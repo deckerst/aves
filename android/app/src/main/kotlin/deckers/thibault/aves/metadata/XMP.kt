@@ -1,6 +1,7 @@
 package deckers.thibault.aves.metadata
 
 import android.util.Log
+import com.adobe.internal.xmp.XMPError
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
 import deckers.thibault.aves.utils.LogUtils
@@ -9,6 +10,8 @@ import java.util.*
 object XMP {
     private val LOG_TAG = LogUtils.createTag(XMP::class.java)
 
+    // standard namespaces
+    // cf com.adobe.internal.xmp.XMPConst
     const val DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/"
     const val PHOTOSHOP_SCHEMA_NS = "http://ns.adobe.com/photoshop/1.0/"
     const val XMP_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/"
@@ -69,9 +72,27 @@ object XMP {
 
     fun XMPMeta.isPanorama(): Boolean {
         // Google
-        if (gpanoRequiredProps.all { doesPropertyExist(GPANO_SCHEMA_NS, it) }) return true
+        try {
+            if (gpanoRequiredProps.all { doesPropertyExist(GPANO_SCHEMA_NS, it) }) return true
+        } catch (e: XMPException) {
+            if (e.errorCode != XMPError.BADSCHEMA) {
+                // `BADSCHEMA` code is reported when we check a property
+                // from a non standard namespace, and that namespace is not declared in the XMP
+                Log.w(LOG_TAG, "failed to check Google panorama props from XMP", e)
+            }
+        }
+
         // Photomatix
-        if (getPropertyString(PMTM_SCHEMA_NS, PMTM_IS_PANO360) == "Yes") return true
+        try {
+            if (getPropertyString(PMTM_SCHEMA_NS, PMTM_IS_PANO360) == "Yes") return true
+        } catch (e: XMPException) {
+            if (e.errorCode != XMPError.BADSCHEMA) {
+                // `BADSCHEMA` code is reported when we check a property
+                // from a non standard namespace, and that namespace is not declared in the XMP
+                Log.w(LOG_TAG, "failed to check Photomatix panorama props from XMP", e)
+            }
+        }
+
         return false
     }
 
@@ -102,7 +123,7 @@ object XMP {
                 }
             }
         } catch (e: XMPException) {
-            Log.w(LOG_TAG, "failed to get text for XMP schema=$schema, propName=$propName", e)
+            Log.w(LOG_TAG, "failed to get date for XMP schema=$schema, propName=$propName", e)
         }
     }
 }
