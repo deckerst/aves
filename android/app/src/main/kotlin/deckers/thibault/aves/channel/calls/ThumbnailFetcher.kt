@@ -13,7 +13,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import deckers.thibault.aves.decoder.MultiTrackThumbnail
+import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffThumbnail
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
@@ -128,7 +128,7 @@ class ThumbnailFetcher internal constructor(
             val model: Any = if (tiffFetch) {
                 TiffThumbnail(context, uri, page ?: 0)
             } else if (multiTrackFetch) {
-                MultiTrackThumbnail(context, uri, page ?: 0)
+                MultiTrackImage(context, uri, page ?: 0)
             } else uri
             Glide.with(context)
                 .asBitmap()

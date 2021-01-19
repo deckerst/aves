@@ -33,7 +33,7 @@ internal class TiffThumbnailLoader : ModelLoader<TiffThumbnail, InputStream> {
         return ModelLoader.LoadData(ObjectKey(model.uri), TiffThumbnailFetcher(model, width, height))
     }
 
-    override fun handles(tiffThumbnail: TiffThumbnail): Boolean = true
+    override fun handles(model: TiffThumbnail): Boolean = true
 
     internal class Factory : ModelLoaderFactory<TiffThumbnail, InputStream> {
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<TiffThumbnail, InputStream> = TiffThumbnailLoader()

@@ -224,7 +224,8 @@ class ImageEntry {
         MimeTypes.rw2,
         MimeTypes.srw,
       ].contains(mimeType) &&
-      !isAnimated;
+      !isAnimated &&
+      page == null;
 
   bool get canTile => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
 
