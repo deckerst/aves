@@ -4,9 +4,10 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
-import 'package:aves/widgets/common/gesture_area_protector.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -189,8 +190,8 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {
     return Selector<MediaQueryData, double>(
-      selector: (context, mq) => mq.viewInsets.bottom,
-      builder: (context, mqViewInsetsBottom, child) => DraggableScrollbar(
+      selector: (context, mq) => mq.effectiveBottomPadding,
+      builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
         heightScrollThumb: avesScrollThumbHeight,
         backgroundColor: Colors.white,
         scrollThumbBuilder: avesScrollThumbBuilder(
@@ -201,7 +202,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
         padding: EdgeInsets.only(
           // padding to keep scroll thumb between app bar above and nav bar below
           top: _appBarHeightNotifier.value,
-          bottom: mqViewInsetsBottom,
+          bottom: mqPaddingBottom,
         ),
         child: scrollView,
       ),
@@ -213,10 +214,10 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     if (empty) {
       content = SliverFillRemaining(
         child: Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.viewInsets.bottom,
-          builder: (context, mqViewInsetsBottom, child) {
+          selector: (context, mq) => mq.effectiveBottomPadding,
+          builder: (context, mqPaddingBottom, child) {
             return Padding(
-              padding: EdgeInsets.only(bottom: mqViewInsetsBottom),
+              padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: emptyBuilder(),
             );
           },
@@ -227,22 +228,13 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
       content = SectionedListSliver<FilterGridItem<T>>();
     }
 
-    final padding = SliverToBoxAdapter(
-      child: Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.viewInsets.bottom,
-        builder: (context, mqViewInsetsBottom, child) {
-          return SizedBox(height: mqViewInsetsBottom);
-        },
-      ),
-    );
-
     return CustomScrollView(
       key: _scrollableKey,
       controller: PrimaryScrollController.of(context),
       slivers: [
         appBar,
         content,
-        padding,
+        BottomPaddingSliver(),
       ],
     );
   }

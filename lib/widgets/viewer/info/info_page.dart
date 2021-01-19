@@ -2,7 +2,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/gesture_area_protector.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
@@ -11,7 +11,6 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class InfoPage extends StatefulWidget {
   final CollectionLens collection;
@@ -46,11 +45,9 @@ class _InfoPageState extends State<InfoPage> {
             bottom: false,
             child: NotificationListener(
               onNotification: _handleTopScroll,
-              child: Selector<MediaQueryData, Tuple2<double, double>>(
-                selector: (c, mq) => Tuple2(mq.size.width, mq.viewInsets.bottom),
-                builder: (c, mq, child) {
-                  final mqWidth = mq.item1;
-                  final mqViewInsetsBottom = mq.item2;
+              child: Selector<MediaQueryData, double>(
+                selector: (c, mq) => mq.size.width,
+                builder: (c, mqWidth, child) {
                   return ValueListenableBuilder<ImageEntry>(
                     valueListenable: widget.entryNotifier,
                     builder: (context, entry, child) {
@@ -61,7 +58,6 @@ class _InfoPageState extends State<InfoPage> {
                               visibleNotifier: widget.visibleNotifier,
                               scrollController: _scrollController,
                               split: mqWidth > 400,
-                              mqViewInsetsBottom: mqViewInsetsBottom,
                               goToViewer: _goToViewer,
                             )
                           : SizedBox.shrink();
@@ -115,7 +111,6 @@ class _InfoPageContent extends StatefulWidget {
   final ValueNotifier<bool> visibleNotifier;
   final ScrollController scrollController;
   final bool split;
-  final double mqViewInsetsBottom;
   final VoidCallback goToViewer;
 
   const _InfoPageContent({
@@ -125,7 +120,6 @@ class _InfoPageContent extends StatefulWidget {
     @required this.visibleNotifier,
     @required this.scrollController,
     @required this.split,
-    @required this.mqViewInsetsBottom,
     @required this.goToViewer,
   }) : super(key: key);
 
@@ -190,9 +184,10 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           sliver: basicAndLocationSliver,
         ),
         SliverPadding(
-          padding: horizontalPadding + EdgeInsets.only(bottom: 8 + widget.mqViewInsetsBottom),
+          padding: horizontalPadding + EdgeInsets.only(bottom: 8),
           sliver: metadataSliver,
         ),
+        BottomPaddingSliver(),
       ],
     );
   }

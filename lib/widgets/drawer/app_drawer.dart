@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
@@ -12,6 +11,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
@@ -60,7 +60,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     return Drawer(
       child: Selector<MediaQueryData, double>(
-        selector: (c, mq) => max(mq.viewPadding.bottom, mq.viewInsets.bottom),
+        selector: (c, mq) => mq.effectiveBottomPadding,
         builder: (c, mqPaddingBottom, child) {
           return SingleChildScrollView(
             padding: EdgeInsets.only(bottom: mqPaddingBottom),

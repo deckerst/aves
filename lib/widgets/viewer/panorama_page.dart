@@ -2,7 +2,7 @@ import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/gesture_area_protector.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';

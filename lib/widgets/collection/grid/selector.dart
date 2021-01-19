@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/math_utils.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -62,7 +63,7 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
               _lastToIndex = _fromIndex;
               _scrollableInsets = EdgeInsets.only(
                 top: appBarHeight,
-                bottom: context.read<MediaQueryData>().viewInsets.bottom,
+                bottom: context.read<MediaQueryData>().effectiveBottomPadding,
               );
               _scrollSpeedFactor = 0;
               _pressing = true;

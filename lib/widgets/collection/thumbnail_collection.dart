@@ -16,8 +16,10 @@ import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
@@ -222,14 +224,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
                 hasScrollBody: false,
               )
             : SectionedListSliver<ImageEntry>(),
-        SliverToBoxAdapter(
-          child: Selector<MediaQueryData, double>(
-            selector: (context, mq) => mq.viewInsets.bottom,
-            builder: (context, mqViewInsetsBottom, child) {
-              return SizedBox(height: mqViewInsetsBottom);
-            },
-          ),
-        ),
+        BottomPaddingSliver(),
       ],
     );
   }
@@ -238,8 +233,8 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
       builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.viewInsets.bottom,
-        builder: (context, mqViewInsetsBottom, child) => DraggableScrollbar(
+        selector: (context, mq) => mq.effectiveBottomPadding,
+        builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
           heightScrollThumb: avesScrollThumbHeight,
           backgroundColor: Colors.white,
           scrollThumbBuilder: avesScrollThumbBuilder(
@@ -250,7 +245,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
           padding: EdgeInsets.only(
             // padding to keep scroll thumb between app bar above and nav bar below
             top: appBarHeight,
-            bottom: mqViewInsetsBottom,
+            bottom: mqPaddingBottom,
           ),
           child: scrollView,
         ),
