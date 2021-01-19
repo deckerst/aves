@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-extension ExtraContext on BuildContext {
-  String get currentRouteName => ModalRoute.of(this)?.settings?.name;
-}
-
 class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
   DirectMaterialPageRoute({
     RouteSettings settings,

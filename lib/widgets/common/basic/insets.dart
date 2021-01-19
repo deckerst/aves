@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +14,7 @@ class BottomGestureAreaProtector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
-      selector: (c, mq) => max(mq.viewPadding.bottom, mq.viewInsets.bottom),
+      selector: (c, mq) => mq.effectiveBottomPadding,
       builder: (c, mqPaddingBottom, child) {
         // devices with physical navigation buttons have no bottom insets
         // we assume these devices do not use gesture navigation
@@ -44,6 +43,20 @@ class GestureAreaProtectorStack extends StatelessWidget {
         child,
         BottomGestureAreaProtector(),
       ],
+    );
+  }
+}
+
+class BottomPaddingSliver extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Selector<MediaQueryData, double>(
+        selector: (context, mq) => mq.effectiveBottomPadding,
+        builder: (context, mqPaddingBottom, child) {
+          return SizedBox(height: mqPaddingBottom);
+        },
+      ),
     );
   }
 }
