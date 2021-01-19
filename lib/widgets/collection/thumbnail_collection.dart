@@ -195,10 +195,12 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   }
 
   void _registerWidget(CollectionScrollView widget) {
+    widget.collection.filterChangeNotifier.addListener(_onFilterChange);
     widget.scrollController.addListener(_onScrollChange);
   }
 
   void _unregisterWidget(CollectionScrollView widget) {
+    widget.collection.filterChangeNotifier.removeListener(_onFilterChange);
     widget.scrollController.removeListener(_onScrollChange);
   }
 
@@ -280,6 +282,8 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       },
     );
   }
+
+  void _onFilterChange() => widget.scrollController.jumpTo(0);
 
   void _onScrollChange() {
     widget.isScrollingNotifier.value = true;
