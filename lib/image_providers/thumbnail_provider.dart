@@ -24,7 +24,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${key.uri}, extent=${key.extent}');
+        yield ErrorDescription('uri=${key.uri}, page=${key.page}, mimeType=${key.mimeType}, extent=${key.extent}');
       },
     );
   }
@@ -32,6 +32,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
+    final page = key.page;
     try {
       final bytes = await ImageFileService.getThumbnail(
         uri,
@@ -41,7 +42,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
         key.isFlipped,
         key.extent,
         key.extent,
-        page: key.page,
+        page: page,
         taskKey: key,
       );
       if (bytes == null) {
@@ -50,7 +51,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with uri=$uri, error=$error');
-      throw StateError('$mimeType decoding failed');
+      throw StateError('$mimeType decoding failed (page $page)');
     }
   }
 
@@ -75,7 +76,7 @@ class ThumbnailProviderKey {
     @required this.dateModifiedSecs,
     @required this.rotationDegrees,
     @required this.isFlipped,
-    this.page = 0,
+    this.page,
     this.extent = 0,
     this.scale = 1,
   })  : assert(uri != null),
@@ -88,7 +89,7 @@ class ThumbnailProviderKey {
 
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
-  factory ThumbnailProviderKey.fromEntry(ImageEntry entry, {int page = 0, double extent = 0}) {
+  factory ThumbnailProviderKey.fromEntry(ImageEntry entry, {double extent = 0}) {
     return ThumbnailProviderKey(
       uri: entry.uri,
       mimeType: entry.mimeType,
@@ -96,7 +97,7 @@ class ThumbnailProviderKey {
       dateModifiedSecs: entry.dateModifiedSecs ?? -1,
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
-      page: page,
+      page: entry.page,
       extent: extent,
     );
   }

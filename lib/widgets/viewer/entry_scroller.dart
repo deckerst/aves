@@ -79,10 +79,10 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  EntryPageView _buildViewer(ImageEntry entry, {MultiPageInfo multiPageInfo, int page = 0}) {
+  EntryPageView _buildViewer(ImageEntry entry, {MultiPageInfo multiPageInfo, int page}) {
     return EntryPageView(
       key: Key('imageview'),
-      entry: entry,
+      mainEntry: entry,
       multiPageInfo: multiPageInfo,
       page: page,
       heroTag: widget.collection.heroTag(entry),
@@ -150,9 +150,9 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  EntryPageView _buildViewer({MultiPageInfo multiPageInfo, int page = 0}) {
+  EntryPageView _buildViewer({MultiPageInfo multiPageInfo, int page}) {
     return EntryPageView(
-      entry: entry,
+      mainEntry: entry,
       multiPageInfo: multiPageInfo,
       page: page,
       onTap: (_) => widget.onTap?.call(),

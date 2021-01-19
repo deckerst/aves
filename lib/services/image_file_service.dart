@@ -74,7 +74,7 @@ class ImageFileService {
     String mimeType,
     int rotationDegrees,
     bool isFlipped, {
-    int page = 0,
+    int page,
     int expectedContentLength,
     BytesReceivedCallback onBytesReceived,
   }) {
@@ -87,7 +87,7 @@ class ImageFileService {
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
         'isFlipped': isFlipped ?? false,
-        'page': page ?? 0,
+        'page': page,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -125,7 +125,7 @@ class ImageFileService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int page = 0,
+    int page,
     Object taskKey,
     int priority,
   }) {

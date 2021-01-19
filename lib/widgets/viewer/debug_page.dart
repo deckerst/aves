@@ -80,7 +80,7 @@ class ViewerDebugPage extends StatelessWidget {
           'isFlipped': '${entry.isFlipped}',
           'portrait': '${entry.isPortrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
-          'displaySize': '${entry.getDisplaySize()}',
+          'displaySize': '${entry.displaySize}',
         }),
         Divider(),
         InfoRowGroup({

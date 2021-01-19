@@ -4,7 +4,6 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -17,15 +16,11 @@ import 'package:tuple/tuple.dart';
 
 class TiledImageView extends StatefulWidget {
   final ImageEntry entry;
-  final MultiPageInfo multiPageInfo;
-  final int page;
   final ValueNotifier<ViewState> viewStateNotifier;
   final ImageErrorWidgetBuilder errorBuilder;
 
   const TiledImageView({
     @required this.entry,
-    this.multiPageInfo,
-    this.page = 0,
     @required this.viewStateNotifier,
     @required this.errorBuilder,
   });
@@ -46,17 +41,15 @@ class _TiledImageViewState extends State<TiledImageView> {
 
   ImageEntry get entry => widget.entry;
 
-  int get page => widget.page;
-
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
 
   bool get useBackground => entry.canHaveAlpha && settings.rasterBackground != EntryBackground.transparent;
 
   // as of panorama v0.3.1, the `Panorama` widget throws on initialization when the image is already resolved
   // so we use tiles for panoramas as a workaround to not collide with the `panorama` package resolution
-  bool get useTiles => entry.canTile && (entry.getDisplaySize(multiPageInfo: widget.multiPageInfo, page: page).longestSide > 4096 || entry.is360);
+  bool get useTiles => entry.canTile && (entry.displaySize.longestSide > 4096 || entry.is360);
 
-  ImageProvider get thumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry, page: page));
+  ImageProvider get thumbnailProvider => ThumbnailProvider(ThumbnailProviderKey.fromEntry(entry));
 
   ImageProvider get fullImageProvider {
     if (useTiles) {
@@ -76,7 +69,6 @@ class _TiledImageViewState extends State<TiledImageView> {
       )?.item2;
       return RegionProvider(RegionProviderKey.fromEntry(
         entry,
-        page: page,
         sampleSize: _maxSampleSize,
         rect: regionRect,
       ));
@@ -84,7 +76,7 @@ class _TiledImageViewState extends State<TiledImageView> {
       return UriImage(
         uri: entry.uri,
         mimeType: entry.mimeType,
-        page: page,
+        page: entry.page,
         rotationDegrees: entry.rotationDegrees,
         isFlipped: entry.isFlipped,
         expectedContentLength: entry.sizeBytes,
@@ -98,7 +90,7 @@ class _TiledImageViewState extends State<TiledImageView> {
   @override
   void initState() {
     super.initState();
-    _displaySize = entry.getDisplaySize(multiPageInfo: widget.multiPageInfo, page: page);
+    _displaySize = entry.displaySize;
     _fullImageListener = ImageStreamListener(_onFullImageCompleted);
     if (!useTiles) _registerFullImage();
   }
@@ -109,7 +101,7 @@ class _TiledImageViewState extends State<TiledImageView> {
 
     final oldViewState = oldWidget.viewStateNotifier.value;
     final viewState = widget.viewStateNotifier.value;
-    if (oldWidget.entry != widget.entry || oldViewState.viewportSize != viewState.viewportSize || oldWidget.page != page) {
+    if (oldWidget.entry != widget.entry || oldViewState.viewportSize != viewState.viewportSize) {
       _isTilingInitialized = false;
       _fullImageLoaded.value = false;
       _unregisterFullImage();
@@ -278,7 +270,6 @@ class _TiledImageViewState extends State<TiledImageView> {
           if (rects != null) {
             tiles.add(RegionTile(
               entry: entry,
-              page: page,
               tileRect: rects.item1,
               regionRect: rects.item2,
               sampleSize: sampleSize,
@@ -347,7 +338,6 @@ class _TiledImageViewState extends State<TiledImageView> {
 
 class RegionTile extends StatefulWidget {
   final ImageEntry entry;
-  final int page;
 
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
@@ -357,7 +347,6 @@ class RegionTile extends StatefulWidget {
 
   const RegionTile({
     @required this.entry,
-    @required this.page,
     @required this.tileRect,
     @required this.regionRect,
     @required this.sampleSize,
@@ -406,7 +395,6 @@ class _RegionTileState extends State<RegionTile> {
 
     _provider = RegionProvider(RegionProviderKey.fromEntry(
       entry,
-      page: widget.page,
       sampleSize: widget.sampleSize,
       rect: widget.regionRect,
     ));

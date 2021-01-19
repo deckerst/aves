@@ -1,6 +1,8 @@
 package deckers.thibault.aves.channel.calls
 
 import android.content.Context
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.util.Log
@@ -45,6 +47,7 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.isHeifLike
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
@@ -430,7 +433,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 }
             }
 
-            if (mimeType == MimeTypes.HEIC || mimeType == MimeTypes.HEIF) {
+            if (isHeifLike(mimeType)) {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS) {
                     if (it > 1) flags = flags or MASK_IS_MULTIPAGE
                 }
@@ -525,8 +528,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         if (mimeType == MimeTypes.TIFF) {
             fun toMap(options: TiffBitmapFactory.Options): Map<String, Any> {
                 return hashMapOf(
-                    "width" to options.outWidth,
-                    "height" to options.outHeight,
+                    KEY_MIME_TYPE to mimeType,
+                    KEY_WIDTH to options.outWidth,
+                    KEY_HEIGHT to options.outHeight,
                 )
             }
             getTiffPageInfo(uri, 0)?.let { first ->
@@ -536,6 +540,36 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     getTiffPageInfo(uri, i)?.let { pages[i] = toMap(it) }
                 }
             }
+        } else if (isHeifLike(mimeType)) {
+            fun MediaFormat.getSafeInt(key: String, save: (value: Int) -> Unit) {
+                if (this.containsKey(key)) save(this.getInteger(key))
+            }
+
+            fun MediaFormat.getSafeLong(key: String, save: (value: Long) -> Unit) {
+                if (this.containsKey(key)) save(this.getLong(key))
+            }
+
+            val extractor = MediaExtractor()
+            extractor.setDataSource(context, uri, null)
+            for (i in 0 until extractor.trackCount) {
+                try {
+                    val format = extractor.getTrackFormat(i)
+                    format.getString(MediaFormat.KEY_MIME)?.let { mime ->
+                        val trackMime = if (mime == MediaFormat.MIMETYPE_IMAGE_ANDROID_HEIC) MimeTypes.HEIC else mime
+                        val page = hashMapOf<String, Any>(KEY_MIME_TYPE to trackMime)
+                        format.getSafeInt(MediaFormat.KEY_TRACK_ID) { page[KEY_TRACK_ID] = it }
+                        format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
+                        format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
+                        if (isVideo(trackMime)) {
+                            format.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
+                        }
+                        pages[i] = page
+                    }
+                } catch (e: Exception) {
+                    Log.w(LOG_TAG, "failed to get track information for uri=$uri, track num=$i", e)
+                }
+            }
+            extractor.release()
         }
         result.success(pages)
     }
@@ -619,7 +653,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->
                         TransformationUtils.rotateImageExif(BitmapUtils.getBitmapPool(context), bitmap, orientation)?.let {
-                            it.getBytes(canHaveAlpha = false, recycle = false)?.let { thumbnails.add(it) }
+                            it.getBytes(canHaveAlpha = false, recycle = false)?.let { bytes -> thumbnails.add(bytes) }
                         }
                     }
                 }
@@ -733,7 +767,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private val LOG_TAG = LogUtils.createTag(MetadataHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/metadata"
 
-        // catalog metadata
+        // catalog metadata & page info
         private const val KEY_MIME_TYPE = "mimeType"
         private const val KEY_DATE_MILLIS = "dateMillis"
         private const val KEY_FLAGS = "flags"
@@ -742,6 +776,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_LONGITUDE = "longitude"
         private const val KEY_XMP_SUBJECTS = "xmpSubjects"
         private const val KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription"
+        private const val KEY_HEIGHT = "height"
+        private const val KEY_WIDTH = "width"
+        private const val KEY_TRACK_ID = "trackId"
+        private const val KEY_DURATION = "durationMillis"
 
         private const val MASK_IS_ANIMATED = 1 shl 0
         private const val MASK_IS_FLIPPED = 1 shl 1

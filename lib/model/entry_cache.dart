@@ -12,14 +12,12 @@ class EntryCache {
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
-    // TODO TLAD revisit this for multipage items, if someday image editing features are added for them
-    const page = 0;
+    // TODO TLAD provide page parameter for multipage items, if someday image editing features are added for them
 
     // evict fullscreen image
     await UriImage(
       uri: uri,
       mimeType: mimeType,
-      page: page,
       rotationDegrees: oldRotationDegrees,
       isFlipped: oldIsFlipped,
     ).evict();
@@ -31,7 +29,6 @@ class EntryCache {
       dateModifiedSecs: dateModifiedSecs,
       rotationDegrees: oldRotationDegrees,
       isFlipped: oldIsFlipped,
-      page: page,
     )).evict();
 
     // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)
@@ -44,7 +41,6 @@ class EntryCache {
               dateModifiedSecs: dateModifiedSecs,
               rotationDegrees: oldRotationDegrees,
               isFlipped: oldIsFlipped,
-              page: page,
               extent: extent,
             )).evict());
   }

@@ -30,7 +30,7 @@ class BasicSection extends StatelessWidget {
 
   bool get showMegaPixels => entry.isPhoto && megaPixels != null && megaPixels > 0;
 
-  String get rasterResolutionText => '${entry.getResolutionText()}${showMegaPixels ? ' ($megaPixels MP)' : ''}';
+  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' ($megaPixels MP)' : ''}';
 
   @override
   Widget build(BuildContext context) {

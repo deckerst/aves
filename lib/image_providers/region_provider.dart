@@ -23,7 +23,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${key.uri}, regionRect=${key.regionRect}');
+        yield ErrorDescription('uri=${key.uri}, page=${key.page}, mimeType=${key.mimeType}, regionRect=${key.regionRect}');
       },
     );
   }
@@ -31,6 +31,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
   Future<ui.Codec> _loadAsync(RegionProviderKey key, DecoderCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
+    final page = key.page;
     try {
       final bytes = await ImageFileService.getRegion(
         uri,
@@ -40,7 +41,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         key.sampleSize,
         key.regionRect,
         key.imageSize,
-        page: key.page,
+        page: page,
         taskKey: key,
       );
       if (bytes == null) {
@@ -49,7 +50,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw StateError('$mimeType region decoding failed');
+      throw StateError('$mimeType region decoding failed (page $page)');
     }
   }
 
@@ -75,7 +76,7 @@ class RegionProviderKey {
     @required this.mimeType,
     @required this.rotationDegrees,
     @required this.isFlipped,
-    this.page = 0,
+    this.page,
     @required this.sampleSize,
     @required this.regionRect,
     @required this.imageSize,
@@ -93,7 +94,6 @@ class RegionProviderKey {
   // but the entry attributes may change over time
   factory RegionProviderKey.fromEntry(
     ImageEntry entry, {
-    int page = 0,
     @required int sampleSize,
     @required Rectangle<int> rect,
   }) {
@@ -102,7 +102,7 @@ class RegionProviderKey {
       mimeType: entry.mimeType,
       rotationDegrees: entry.rotationDegrees,
       isFlipped: entry.isFlipped,
-      page: page,
+      page: entry.page,
       sampleSize: sampleSize,
       regionRect: rect,
       imageSize: Size(entry.width.toDouble(), entry.height.toDouble()),

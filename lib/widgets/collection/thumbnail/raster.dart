@@ -19,7 +19,7 @@ class RasterImageThumbnail extends StatefulWidget {
     Key key,
     @required this.entry,
     @required this.extent,
-    this.page = 0,
+    this.page,
     this.isScrollingNotifier,
     this.heroTag,
   }) : super(key: key);
@@ -32,8 +32,6 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
   ImageEntry get entry => widget.entry;
-
-  int get page => widget.page;
 
   double get extent => widget.extent;
 
@@ -79,11 +77,11 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     if (!entry.canDecode) return;
 
     _fastThumbnailProvider = ThumbnailProvider(
-      ThumbnailProviderKey.fromEntry(entry, page: page),
+      ThumbnailProviderKey.fromEntry(entry),
     );
     if (!entry.isVideo) {
       _sizedThumbnailProvider = ThumbnailProvider(
-        ThumbnailProviderKey.fromEntry(entry, page: page, extent: requestExtent),
+        ThumbnailProviderKey.fromEntry(entry, extent: requestExtent),
       );
     }
   }
@@ -153,7 +151,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
                 final imageProvider = UriImage(
                   uri: entry.uri,
                   mimeType: entry.mimeType,
-                  page: page,
+                  page: entry.page,
                   rotationDegrees: entry.rotationDegrees,
                   isFlipped: entry.isFlipped,
                   expectedContentLength: entry.sizeBytes,

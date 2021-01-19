@@ -86,7 +86,7 @@ class ViewerTopOverlay extends StatelessWidget {
                       FadeTransition(
                         opacity: scale,
                         child: Minimap(
-                          entry: entry,
+                          mainEntry: entry,
                           viewStateNotifier: viewStateNotifier,
                           multiPageController: multiPageController,
                         ),

@@ -15,7 +15,7 @@ class UriImage extends ImageProvider<UriImage> {
   const UriImage({
     @required this.uri,
     @required this.mimeType,
-    this.page = 0,
+    this.page,
     @required this.rotationDegrees,
     @required this.isFlipped,
     this.expectedContentLength,
@@ -37,7 +37,7 @@ class UriImage extends ImageProvider<UriImage> {
       scale: key.scale,
       chunkEvents: chunkEvents.stream,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=$uri, mimeType=$mimeType');
+        yield ErrorDescription('uri=$uri, page=$page, mimeType=$mimeType');
       },
     );
   }
@@ -66,7 +66,7 @@ class UriImage extends ImageProvider<UriImage> {
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw StateError('$mimeType decoding failed');
+      throw StateError('$mimeType decoding failed (page $page)');
     } finally {
       unawaited(chunkEvents.close());
     }
