@@ -61,13 +61,7 @@ class MetadataDirTile extends StatelessWidget {
               );
           if (tags['Has Video'] == 'yes') prefixChildren.add(builder(AIcons.video));
           if (tags['Has Audio'] == 'yes') prefixChildren.add(builder(AIcons.audio));
-          if (tags['Has Image'] == 'yes') {
-            int count;
-            if (tags.containsKey('Image Count')) {
-              count = int.tryParse(tags['Image Count']);
-            }
-            prefixChildren.addAll(List.generate(count ?? 1, (i) => builder(AIcons.image)));
-          }
+          if (tags['Has Image'] == 'yes') prefixChildren.add(builder(AIcons.image));
           break;
       }
     }
