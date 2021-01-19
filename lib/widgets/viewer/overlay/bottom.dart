@@ -97,15 +97,32 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
                   _lastDetails = snapshot.data;
                   _lastEntry = entry;
                 }
-                return _lastEntry == null
-                    ? SizedBox.shrink()
-                    : _BottomOverlayContent(
-                        entry: _lastEntry,
-                        details: _lastDetails,
-                        position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
-                        availableWidth: availableWidth,
-                        multiPageController: multiPageController,
-                      );
+                if (_lastEntry == null) return SizedBox.shrink();
+
+                Widget _buildContent({MultiPageInfo multiPageInfo, int page}) => _BottomOverlayContent(
+                      mainEntry: _lastEntry,
+                      multiPageInfo: multiPageInfo,
+                      page: page,
+                      details: _lastDetails,
+                      position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
+                      availableWidth: availableWidth,
+                      multiPageController: multiPageController,
+                    );
+
+                if (multiPageController == null) return _buildContent();
+
+                return FutureBuilder<MultiPageInfo>(
+                  future: multiPageController.info,
+                  builder: (context, snapshot) {
+                    final multiPageInfo = snapshot.data;
+                    return ValueListenableBuilder<int>(
+                      valueListenable: multiPageController.pageNotifier,
+                      builder: (context, page, child) {
+                        return _buildContent(multiPageInfo: multiPageInfo, page: page);
+                      },
+                    );
+                  },
+                );
               },
             ),
           );
@@ -121,7 +138,9 @@ const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
 class _BottomOverlayContent extends AnimatedWidget {
-  final ImageEntry entry;
+  final ImageEntry mainEntry, entry;
+  final MultiPageInfo multiPageInfo;
+  final int page;
   final OverlayMetadata details;
   final String position;
   final double availableWidth;
@@ -131,12 +150,15 @@ class _BottomOverlayContent extends AnimatedWidget {
 
   _BottomOverlayContent({
     Key key,
-    this.entry,
+    this.mainEntry,
+    this.multiPageInfo,
+    this.page,
     this.details,
     this.position,
     this.availableWidth,
     this.multiPageController,
-  }) : super(key: key, listenable: entry.metadataChangeNotifier);
+  })  : entry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page),
+        super(key: key, listenable: mainEntry.metadataChangeNotifier);
 
   @override
   Widget build(BuildContext context) {
@@ -158,13 +180,13 @@ class _BottomOverlayContent extends AnimatedWidget {
               infoColumn = _buildInfoColumn(orientation);
             }
 
-            if (multiPageController != null) {
+            if (mainEntry.isMultipage && multiPageController != null) {
               infoColumn = Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MultiPageOverlay(
-                    entry: entry,
+                    mainEntry: mainEntry,
                     controller: multiPageController,
                     availableWidth: availableWidth,
                   ),
@@ -340,12 +362,7 @@ class _PositionTitleRow extends StatelessWidget {
         // page count may be 0 when we know an entry to have multiple pages
         // but fail to get information about these pages
         final missingInfo = pageCount == 0;
-        return ValueListenableBuilder<int>(
-          valueListenable: multiPageController.pageNotifier,
-          builder: (context, page, child) {
-            return toText(pagePosition: missingInfo ? null : '${page + 1}/${pageCount ?? '?'}');
-          },
-        );
+        return toText(pagePosition: missingInfo ? null : '${(entry.page ?? 0) + 1}/${pageCount ?? '?'}');
       },
     );
   }
@@ -364,40 +381,14 @@ class _DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.overlayUnknown;
+    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.resolutionText;
 
-    Text toText({MultiPageInfo multiPageInfo, int page}) => Text(
-          entry.isSvg
-              ? entry.aspectRatioText
-              : entry.getResolutionText(
-                  multiPageInfo: multiPageInfo,
-                  page: page,
-                ),
-          strutStyle: Constants.overflowStrutStyle,
-        );
-
-    Widget resolutionText;
-    if (multiPageController != null) {
-      resolutionText = FutureBuilder<MultiPageInfo>(
-        future: multiPageController.info,
-        builder: (context, snapshot) {
-          final multiPageInfo = snapshot.data;
-          return ValueListenableBuilder<int>(
-            valueListenable: multiPageController.pageNotifier,
-            builder: (context, page, child) {
-              return toText(multiPageInfo: multiPageInfo, page: page);
-            },
-          );
-        },
-      );
-    } else {
-      resolutionText = toText();
-    }
     return Row(
       children: [
         DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(flex: 2, child: resolutionText),
+        Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }

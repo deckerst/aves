@@ -16,12 +16,10 @@ class PanoramaPage extends StatefulWidget {
   static const routeName = '/viewer/panorama';
 
   final ImageEntry entry;
-  final int page;
   final PanoramaInfo info;
 
   const PanoramaPage({
     @required this.entry,
-    this.page = 0,
     @required this.info,
   });
 
@@ -77,7 +75,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   image: UriImage(
                     uri: entry.uri,
                     mimeType: entry.mimeType,
-                    page: widget.page,
+                    page: entry.page,
                     rotationDegrees: entry.rotationDegrees,
                     isFlipped: entry.isFlipped,
                     expectedContentLength: entry.sizeBytes,

@@ -29,7 +29,7 @@ class VectorImageThumbnail extends StatelessWidget {
           return LayoutBuilder(
             builder: (context, constraints) {
               final availableSize = constraints.biggest;
-              final fitSize = applyBoxFit(fit, entry.getDisplaySize(), availableSize).destination;
+              final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
               final offset = fitSize / 2 - availableSize / 2;
               final child = DecoratedBox(
                 decoration: CheckeredDecoration(checkSize: extent / 8, offset: offset),

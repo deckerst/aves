@@ -9,11 +9,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.decoder.MultiTrackThumbnail
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.isHeifLike
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -84,7 +86,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         val uri = (arguments["uri"] as String?)?.let { Uri.parse(it) }
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
-        val page = arguments["page"] as Int
+        val page = arguments["page"] as Int?
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "failed because of missing arguments", null)
@@ -98,7 +100,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             streamTiffImage(uri, page)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
-            streamImageByGlide(uri, mimeType, rotationDegrees, isFlipped)
+            streamImageByGlide(uri, page, mimeType, rotationDegrees, isFlipped)
         } else {
             // to be decoded by Flutter
             streamImageAsIs(uri)
@@ -114,11 +116,17 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
     }
 
-    private fun streamImageByGlide(uri: Uri, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
+    private fun streamImageByGlide(uri: Uri, page: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
+        val model: Any = if (isHeifLike(mimeType) && page != null) {
+            MultiTrackThumbnail(activity, uri, page)
+        } else {
+            uri
+        }
+
         val target = Glide.with(activity)
             .asBitmap()
             .apply(glideOptions)
-            .load(uri)
+            .load(model)
             .submit()
         try {
             var bitmap = target.get()
@@ -157,7 +165,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
     }
 
-    private fun streamTiffImage(uri: Uri, page: Int = 0) {
+    private fun streamTiffImage(uri: Uri, page: Int?) {
         val resolver = activity.contentResolver
         try {
             val fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
@@ -166,7 +174,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
                 return
             }
             val options = TiffBitmapFactory.Options().apply {
-                inDirectoryNumber = page
+                inDirectoryNumber = page ?: 0
             }
             val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
             if (bitmap != null) {

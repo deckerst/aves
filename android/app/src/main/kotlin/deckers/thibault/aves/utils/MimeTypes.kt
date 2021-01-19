@@ -9,7 +9,7 @@ object MimeTypes {
     private const val BMP = "image/bmp"
     const val GIF = "image/gif"
     const val HEIC = "image/heic"
-    const val HEIF = "image/heif"
+    private const val HEIF = "image/heif"
     private const val ICO = "image/x-icon"
     private const val JPEG = "image/jpeg"
     private const val PNG = "image/png"
@@ -41,10 +41,9 @@ object MimeTypes {
 
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith(VIDEO)
 
-    fun isMultimedia(mimeType: String?) = when (mimeType) {
-        HEIC, HEIF -> true
-        else -> isVideo(mimeType)
-    }
+    fun isHeifLike(mimeType: String?) = mimeType != null && (mimeType == HEIC || mimeType == HEIF)
+
+    fun isMultimedia(mimeType: String?) = isVideo(mimeType) || isHeifLike(mimeType)
 
     fun isRaw(mimeType: String): Boolean {
         return when (mimeType) {

@@ -24,7 +24,7 @@ import '../ref/mime_types.dart';
 class ImageEntry {
   String uri;
   String _path, _directory, _filename, _extension;
-  int contentId;
+  int page, contentId;
   final String sourceMimeType;
   int width;
   int height;
@@ -47,6 +47,7 @@ class ImageEntry {
     this.uri,
     String path,
     this.contentId,
+    this.page,
     this.sourceMimeType,
     @required this.width,
     @required this.height,
@@ -91,6 +92,35 @@ class ImageEntry {
       ..addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
 
     return copied;
+  }
+
+  ImageEntry getPageEntry({
+    @required MultiPageInfo multiPageInfo,
+    @required int page,
+  }) {
+    final pageInfo = (multiPageInfo?.pages ?? {})[page];
+    if (pageInfo == null) return this;
+    return AvesPageEntry(
+      pageInfo: pageInfo,
+      uri: uri,
+      path: path,
+      contentId: contentId,
+      page: page,
+      sourceMimeType: sourceMimeType,
+      width: width,
+      height: height,
+      sourceRotationDegrees: sourceRotationDegrees,
+      sizeBytes: sizeBytes,
+      sourceTitle: sourceTitle,
+      dateModifiedSecs: dateModifiedSecs,
+      sourceDateTakenMillis: sourceDateTakenMillis,
+      durationMillis: durationMillis,
+    )
+      ..catalogMetadata = _catalogMetadata?.copyWith(
+        mimeType: pageInfo.mimeType,
+        isMultipage: false,
+      )
+      ..addressDetails = _addressDetails?.copyWith();
   }
 
   // from DB or platform source entry
@@ -243,18 +273,9 @@ class ImageEntry {
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
 
-  String getResolutionText({MultiPageInfo multiPageInfo, int page}) {
-    int w;
-    int h;
-    if (multiPageInfo != null && page != null) {
-      final pageInfo = multiPageInfo.pages[page];
-      w = pageInfo?.width;
-      h = pageInfo?.height;
-    }
-    w ??= width;
-    h ??= height;
-    final ws = w ?? '?';
-    final hs = h ?? '?';
+  String get resolutionText {
+    final ws = width ?? '?';
+    final hs = height ?? '?';
     return isPortrait ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
   }
 
@@ -274,17 +295,10 @@ class ImageEntry {
     return isPortrait ? height / width : width / height;
   }
 
-  Size getDisplaySize({MultiPageInfo multiPageInfo, int page}) {
-    int w;
-    int h;
-    if (multiPageInfo != null && page != null) {
-      final pageInfo = multiPageInfo.pages[page];
-      w = pageInfo?.width;
-      h = pageInfo?.height;
-    }
-    w ??= width;
-    h ??= height;
-    return isPortrait ? Size(h.toDouble(), w.toDouble()) : Size(w.toDouble(), h.toDouble());
+  Size get displaySize {
+    final w = width.toDouble();
+    final h = height.toDouble();
+    return isPortrait ? Size(h, w) : Size(w, h);
   }
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;

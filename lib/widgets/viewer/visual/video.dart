@@ -101,7 +101,7 @@ class _AvesVideoState extends State<AvesVideo> {
                   image: UriImage(
                     uri: entry.uri,
                     mimeType: entry.mimeType,
-                    page: 0,
+                    page: entry.page,
                     rotationDegrees: entry.rotationDegrees,
                     isFlipped: entry.isFlipped,
                     expectedContentLength: entry.sizeBytes,

@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Minimap extends StatelessWidget {
-  final ImageEntry entry;
+  final ImageEntry mainEntry;
   final ValueNotifier<ViewState> viewStateNotifier;
   final MultiPageController multiPageController;
   final Size size;
@@ -16,7 +16,7 @@ class Minimap extends StatelessWidget {
   static const defaultSize = Size(96, 96);
 
   const Minimap({
-    @required this.entry,
+    @required this.mainEntry,
     @required this.viewStateNotifier,
     @required this.multiPageController,
     this.size = defaultSize,
@@ -34,11 +34,12 @@ class Minimap extends StatelessWidget {
                 return ValueListenableBuilder<int>(
                   valueListenable: multiPageController.pageNotifier,
                   builder: (context, page, child) {
-                    return _buildForEntrySize(entry.getDisplaySize(multiPageInfo: multiPageInfo, page: page));
+                    final pageEntry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page);
+                    return _buildForEntrySize(pageEntry.displaySize);
                   },
                 );
               })
-          : _buildForEntrySize(entry.getDisplaySize()),
+          : _buildForEntrySize(mainEntry.displaySize),
     );
   }
 

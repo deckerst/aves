@@ -36,16 +36,17 @@ class EntryPageView extends StatefulWidget {
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
   static const maxScale = ScaleLevel(factor: 2.0);
 
-  const EntryPageView({
+  EntryPageView({
     Key key,
-    @required this.entry,
+    ImageEntry mainEntry,
     this.multiPageInfo,
-    this.page = 0,
+    this.page,
     this.heroTag,
     @required this.onTap,
     @required this.videoControllers,
     this.onDisposed,
-  }) : super(key: key);
+  })  : entry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page) ?? mainEntry,
+        super(key: key);
 
   @override
   _EntryPageViewState createState() => _EntryPageViewState();
@@ -58,13 +59,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   ImageEntry get entry => widget.entry;
 
-  MultiPageInfo get multiPageInfo => widget.multiPageInfo;
-
-  int get page => widget.page;
-
   MagnifierTapCallback get onTap => widget.onTap;
-
-  Size get pageDisplaySize => entry.getDisplaySize(multiPageInfo: multiPageInfo, page: page);
 
   @override
   void initState() {
@@ -86,7 +81,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget build(BuildContext context) {
     Widget child;
     if (entry.isVideo) {
-      if (entry.width > 0 && entry.height > 0) {
+      if (!entry.displaySize.isEmpty) {
         child = _buildVideoView();
       }
     } else if (entry.isSvg) {
@@ -109,15 +104,13 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget _buildRasterView() {
     return Magnifier(
       // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
+      key: ValueKey('${entry.page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
       child: TiledImageView(
         entry: entry,
-        multiPageInfo: multiPageInfo,
-        page: page,
         viewStateNotifier: _viewStateNotifier,
         errorBuilder: (context, error, stackTrace) => ErrorView(onTap: () => onTap?.call(null)),
       ),
-      childSize: pageDisplaySize,
+      childSize: entry.displaySize,
       controller: _magnifierController,
       maxScale: EntryPageView.maxScale,
       minScale: EntryPageView.minScale,
@@ -139,7 +132,7 @@ class _EntryPageViewState extends State<EntryPageView> {
           colorFilter: colorFilter,
         ),
       ),
-      childSize: pageDisplaySize,
+      childSize: entry.displaySize,
       controller: _magnifierController,
       minScale: EntryPageView.minScale,
       initialScale: EntryPageView.initialScale,
@@ -149,7 +142,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
     if (background == EntryBackground.checkered) {
       child = VectorViewCheckeredBackground(
-        displaySize: pageDisplaySize,
+        displaySize: entry.displaySize,
         viewStateNotifier: _viewStateNotifier,
         child: child,
       );
@@ -166,7 +159,7 @@ class _EntryPageViewState extends State<EntryPageView> {
               controller: videoController,
             )
           : SizedBox(),
-      childSize: pageDisplaySize,
+      childSize: entry.displaySize,
       controller: _magnifierController,
       maxScale: EntryPageView.maxScale,
       minScale: EntryPageView.minScale,

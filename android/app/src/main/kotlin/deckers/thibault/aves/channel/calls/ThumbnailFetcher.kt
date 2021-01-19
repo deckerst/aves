@@ -13,11 +13,13 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import deckers.thibault.aves.decoder.MultiTrackThumbnail
 import deckers.thibault.aves.decoder.TiffThumbnail
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.isHeifLike
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -32,14 +34,16 @@ class ThumbnailFetcher internal constructor(
     private val isFlipped: Boolean,
     width: Int?,
     height: Int?,
-    page: Int?,
+    private val page: Int?,
     private val defaultSize: Int,
     private val result: MethodChannel.Result,
 ) {
     private val uri: Uri = Uri.parse(uri)
     private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
     private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
-    private val page = page ?: 0
+    private val tiffFetch = mimeType == MimeTypes.TIFF
+    private val multiTrackFetch = isHeifLike(mimeType) && page != null
+    private val customFetch = tiffFetch || multiTrackFetch
 
     fun fetch() {
         var bitmap: Bitmap? = null
@@ -47,7 +51,7 @@ class ThumbnailFetcher internal constructor(
         var exception: Exception? = null
 
         try {
-            if (mimeType != MimeTypes.TIFF && (width == defaultSize || height == defaultSize) && !isFlipped) {
+            if (!customFetch && (width == defaultSize || height == defaultSize) && !isFlipped) {
                 // Fetch low quality thumbnails when size is not specified.
                 // As of Android R, the Media Store content resolver may return a thumbnail
                 // that is automatically rotated according to EXIF orientation, but not flipped,
@@ -121,7 +125,11 @@ class ThumbnailFetcher internal constructor(
                 .load(VideoThumbnail(context, uri))
                 .submit(width, height)
         } else {
-            val model: Any = if (mimeType == MimeTypes.TIFF) TiffThumbnail(context, uri, page) else uri
+            val model: Any = if (tiffFetch) {
+                TiffThumbnail(context, uri, page ?: 0)
+            } else if (multiTrackFetch) {
+                MultiTrackThumbnail(context, uri, page ?: 0)
+            } else uri
             Glide.with(context)
                 .asBitmap()
                 .apply(options)

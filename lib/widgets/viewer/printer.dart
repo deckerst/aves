@@ -57,7 +57,7 @@ class EntryPrinter {
     return pages;
   }
 
-  Future<pdf.Widget> _buildPageImage({page = 0}) async {
+  Future<pdf.Widget> _buildPageImage({int page}) async {
     final uri = entry.uri;
     final mimeType = entry.mimeType;
     final rotationDegrees = entry.rotationDegrees;

@@ -3,22 +3,25 @@ import 'dart:math';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/collection/thumbnail/overlay.dart';
 import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MultiPageOverlay extends StatefulWidget {
-  final ImageEntry entry;
+  final ImageEntry mainEntry;
   final MultiPageController controller;
   final double availableWidth;
 
-  const MultiPageOverlay({
+  MultiPageOverlay({
     Key key,
-    @required this.entry,
+    @required this.mainEntry,
     @required this.controller,
     @required this.availableWidth,
-  }) : super(key: key);
+  })  : assert(mainEntry.isMultipage),
+        assert(controller != null),
+        super(key: key);
 
   @override
   _MultiPageOverlayState createState() => _MultiPageOverlayState();
@@ -31,7 +34,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   static const double extent = 48;
   static const double separatorWidth = 2;
 
-  ImageEntry get entry => widget.entry;
+  ImageEntry get mainEntry => widget.mainEntry;
 
   MultiPageController get controller => widget.controller;
 
@@ -97,7 +100,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                 width: availableWidth,
                 height: extent,
                 child: ListView.separated(
-                  key: ValueKey(entry),
+                  key: ValueKey(mainEntry),
                   scrollDirection: Axis.horizontal,
                   controller: _scrollController,
                   // default padding in scroll direction matches `MediaQuery.viewPadding`,
@@ -106,6 +109,8 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                   itemBuilder: (context, index) {
                     if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
                     final page = index - 1;
+                    final pageEntry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page);
+
                     return GestureDetector(
                       onTap: () async {
                         _syncScroll = false;
@@ -117,15 +122,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                         );
                         _syncScroll = true;
                       },
-                      child: Container(
-                        width: extent,
-                        height: extent,
-                        child: RasterImageThumbnail(
-                          entry: entry,
-                          extent: extent,
-                          page: page,
-                        ),
-                      ),
+                      child: _buildPageThumbnail(pageEntry),
                     );
                   },
                   separatorBuilder: (context, index) => separator,
@@ -162,6 +159,35 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildPageThumbnail(ImageEntry entry) {
+    Widget child = RasterImageThumbnail(
+      entry: entry,
+      extent: extent,
+      page: entry.page,
+    );
+
+    child = Stack(
+      alignment: Alignment.center,
+      children: [
+        child,
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: ThumbnailEntryOverlay(
+            entry: entry,
+            extent: extent,
+          ),
+        ),
+      ],
+    );
+
+    return Container(
+      width: extent,
+      height: extent,
+      child: child,
     );
   }
 
