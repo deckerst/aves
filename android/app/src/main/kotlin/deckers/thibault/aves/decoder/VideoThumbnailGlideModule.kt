@@ -34,7 +34,7 @@ internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, InputStream> {
         return ModelLoader.LoadData(ObjectKey(model.uri), VideoThumbnailFetcher(model))
     }
 
-    override fun handles(videoThumbnail: VideoThumbnail): Boolean = true
+    override fun handles(model: VideoThumbnail): Boolean = true
 
     internal class Factory : ModelLoaderFactory<VideoThumbnail, InputStream> {
         override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<VideoThumbnail, InputStream> = VideoThumbnailLoader()

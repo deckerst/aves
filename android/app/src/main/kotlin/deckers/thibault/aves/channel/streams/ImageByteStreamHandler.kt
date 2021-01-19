@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import deckers.thibault.aves.decoder.MultiTrackThumbnail
+import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
@@ -118,7 +118,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     private fun streamImageByGlide(uri: Uri, page: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
         val model: Any = if (isHeifLike(mimeType) && page != null) {
-            MultiTrackThumbnail(activity, uri, page)
+            MultiTrackImage(activity, uri, page)
         } else {
             uri
         }
