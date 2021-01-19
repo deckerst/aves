@@ -53,7 +53,7 @@ class EntryPageView extends StatefulWidget {
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
-  final MagnifierController _magnifierController = MagnifierController();
+  MagnifierController _magnifierController;
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
 
@@ -64,17 +64,39 @@ class _EntryPageViewState extends State<EntryPageView> {
   @override
   void initState() {
     super.initState();
-    _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
-    _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
+    _registerWidget();
+  }
+
+  @override
+  void didUpdateWidget(covariant EntryPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.entry.displaySize != entry.displaySize) {
+      // do not reset the magnifier view state unless page dimensions change,
+      // in effect locking the zoom & position when browsing entry pages of the same size
+      _unregisterWidget();
+      _registerWidget();
+    }
   }
 
   @override
   void dispose() {
+    _unregisterWidget();
+    widget.onDisposed?.call();
+    super.dispose();
+  }
+
+  void _registerWidget() {
+    _viewStateNotifier.value = ViewState.zero;
+    _magnifierController = MagnifierController();
+    _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
+    _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
+  }
+
+  void _unregisterWidget() {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    widget.onDisposed?.call();
-    super.dispose();
   }
 
   @override
