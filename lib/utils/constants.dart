@@ -90,12 +90,6 @@ class Constants {
       sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
     ),
     Dependency(
-      name: 'Draggable Scrollbar',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/fluttercommunity/flutter-draggable-scrollbar/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/fluttercommunity/flutter-draggable-scrollbar',
-    ),
-    Dependency(
       name: 'Event Bus',
       license: 'MIT',
       licenseUrl: 'https://github.com/marcojakob/dart-event-bus/blob/master/LICENSE',

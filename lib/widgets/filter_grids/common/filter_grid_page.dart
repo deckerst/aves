@@ -4,6 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -20,7 +21,6 @@ import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -192,8 +192,8 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     return Selector<MediaQueryData, double>(
       selector: (context, mq) => mq.effectiveBottomPadding,
       builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
-        heightScrollThumb: avesScrollThumbHeight,
         backgroundColor: Colors.white,
+        scrollThumbHeight: avesScrollThumbHeight,
         scrollThumbBuilder: avesScrollThumbBuilder(
           height: avesScrollThumbHeight,
           backgroundColor: Colors.white,
