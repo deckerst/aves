@@ -34,10 +34,6 @@ dependencies:
   charts_flutter:
   collection:
   decorated_icon:
-  draggable_scrollbar:
-#    path: ../flutter-draggable-scrollbar
-    git:
-      url: git://github.com/deckerst/flutter-draggable-scrollbar.git
   event_bus:
   expansion_tile_card:
 #    path: ../expansion_tile_card

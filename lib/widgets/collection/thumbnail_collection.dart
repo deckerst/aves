@@ -16,6 +16,7 @@ import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -26,7 +27,6 @@ import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_manager.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -237,8 +237,8 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
         selector: (context, mq) => mq.effectiveBottomPadding,
         builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
-          heightScrollThumb: avesScrollThumbHeight,
           backgroundColor: Colors.white,
+          scrollThumbHeight: avesScrollThumbHeight,
           scrollThumbBuilder: avesScrollThumbBuilder(
             height: avesScrollThumbHeight,
             backgroundColor: Colors.white,

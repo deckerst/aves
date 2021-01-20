@@ -1,4 +1,4 @@
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 
 const double avesScrollThumbHeight = 48;
@@ -35,7 +35,6 @@ ScrollThumbBuilder avesScrollThumbBuilder({
       thumbAnimation: thumbAnimation,
       labelAnimation: labelAnimation,
       labelText: labelText,
-      alwaysVisibleScrollThumb: false,
     );
   };
 }
