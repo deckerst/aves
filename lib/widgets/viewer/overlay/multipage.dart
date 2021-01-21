@@ -3,8 +3,7 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/thumbnail/overlay.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
+import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +121,12 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                         );
                         _syncScroll = true;
                       },
-                      child: _buildPageThumbnail(pageEntry),
+                      child: DecoratedThumbnail(
+                        entry: pageEntry,
+                        extent: extent,
+                        selectable: false,
+                        highlightable: false,
+                      ),
                     );
                   },
                   separatorBuilder: (context, index) => separator,
@@ -159,35 +163,6 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildPageThumbnail(AvesEntry entry) {
-    Widget child = RasterImageThumbnail(
-      entry: entry,
-      extent: extent,
-      page: entry.page,
-    );
-
-    child = Stack(
-      alignment: Alignment.center,
-      children: [
-        child,
-        Positioned(
-          bottom: 0,
-          left: 0,
-          child: ThumbnailEntryOverlay(
-            entry: entry,
-            extent: extent,
-          ),
-        ),
-      ],
-    );
-
-    return Container(
-      width: extent,
-      height: extent,
-      child: child,
     );
   }
 
