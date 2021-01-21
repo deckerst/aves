@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
@@ -98,7 +100,7 @@ class _VideoViewState extends State<VideoView> {
                   backgroundColor: Colors.transparent,
                 )
               : Image(
-                  image: entry.getBestThumbnail(entry.displaySize.longestSide),
+                  image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
                   fit: BoxFit.contain,
                 );
         });
