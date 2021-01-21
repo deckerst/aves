@@ -70,9 +70,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     if (!entry.canDecode) return;
 
     _fastThumbnailProvider = entry.getThumbnail();
-    if (!entry.isVideo) {
-      _sizedThumbnailProvider = entry.getThumbnail(extent: extent);
-    }
+    _sizedThumbnailProvider = entry.getThumbnail(extent: extent);
   }
 
   void _pauseProvider() {
