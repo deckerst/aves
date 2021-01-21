@@ -158,7 +158,7 @@ class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
         type: MaterialType.transparency,
         child: Stack(
           children: widget.markers.map((i) {
-            final key = GlobalKey();
+            final key = GlobalKey(debugLabel: 'map-marker-$i');
             _globalKeys.add(key);
             return RepaintBoundary(
               key: key,

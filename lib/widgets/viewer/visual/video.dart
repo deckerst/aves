@@ -1,26 +1,26 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:aves/image_providers/uri_image_provider.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
-class AvesVideo extends StatefulWidget {
+class VideoView extends StatefulWidget {
   final ImageEntry entry;
   final IjkMediaController controller;
 
-  const AvesVideo({
+  const VideoView({
     Key key,
     @required this.entry,
     @required this.controller,
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _AvesVideoState();
+  State<StatefulWidget> createState() => _VideoViewState();
 }
 
-class _AvesVideoState extends State<AvesVideo> {
+class _VideoViewState extends State<VideoView> {
   final List<StreamSubscription> _subscriptions = [];
 
   ImageEntry get entry => widget.entry;
@@ -34,7 +34,7 @@ class _AvesVideoState extends State<AvesVideo> {
   }
 
   @override
-  void didUpdateWidget(covariant AvesVideo oldWidget) {
+  void didUpdateWidget(covariant VideoView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -46,11 +46,11 @@ class _AvesVideoState extends State<AvesVideo> {
     super.dispose();
   }
 
-  void _registerWidget(AvesVideo widget) {
+  void _registerWidget(VideoView widget) {
     _subscriptions.add(widget.controller.playFinishStream.listen(_onPlayFinish));
   }
 
-  void _unregisterWidget(AvesVideo widget) {
+  void _unregisterWidget(VideoView widget) {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -98,16 +98,8 @@ class _AvesVideoState extends State<AvesVideo> {
                   backgroundColor: Colors.transparent,
                 )
               : Image(
-                  image: UriImage(
-                    uri: entry.uri,
-                    mimeType: entry.mimeType,
-                    page: entry.page,
-                    rotationDegrees: entry.rotationDegrees,
-                    isFlipped: entry.isFlipped,
-                    expectedContentLength: entry.sizeBytes,
-                  ),
-                  width: entry.width.toDouble(),
-                  height: entry.height.toDouble(),
+                  image: entry.getBestThumbnail(entry.displaySize.longestSide),
+                  fit: BoxFit.contain,
                 );
         });
   }

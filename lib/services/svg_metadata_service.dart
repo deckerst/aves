@@ -17,7 +17,7 @@ class SvgMetadataService {
 
   static Future<Size> getSize(ImageEntry entry) async {
     try {
-      final data = await ImageFileService.getImage(entry.uri, entry.mimeType, 0, false);
+      final data = await ImageFileService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;
@@ -59,7 +59,7 @@ class SvgMetadataService {
     }
 
     try {
-      final data = await ImageFileService.getImage(entry.uri, entry.mimeType, 0, false);
+      final data = await ImageFileService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;

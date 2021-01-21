@@ -28,7 +28,7 @@ class VideoControlOverlay extends StatefulWidget {
 }
 
 class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTickerProviderStateMixin {
-  final GlobalKey _progressBarKey = GlobalKey();
+  final GlobalKey _progressBarKey = GlobalKey(debugLabel: 'video-progress-bar');
   bool _playingOnDragStart = false;
   AnimationController _playPauseAnimation;
   final List<StreamSubscription> _subscriptions = [];

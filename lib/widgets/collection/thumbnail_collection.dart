@@ -36,7 +36,7 @@ class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
-  final GlobalKey _scrollableKey = GlobalKey();
+  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
 
   static const columnCountDefault = 4;
   static const extentMin = 46.0;

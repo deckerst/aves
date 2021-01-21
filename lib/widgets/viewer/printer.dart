@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:aves/image_providers/uri_image_provider.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
@@ -47,37 +47,25 @@ class EntryPrinter {
       final multiPageInfo = await MetadataService.getMultiPageInfo(entry);
       if (multiPageInfo.pageCount > 1) {
         for (final kv in multiPageInfo.pages.entries) {
-          _addPdfPage(await _buildPageImage(page: kv.key));
+          final pageEntry = entry.getPageEntry(multiPageInfo: multiPageInfo, page: kv.key);
+          _addPdfPage(await _buildPageImage(pageEntry));
         }
       }
     }
     if (pages.isEmpty) {
-      _addPdfPage(await _buildPageImage());
+      _addPdfPage(await _buildPageImage(entry));
     }
     return pages;
   }
 
-  Future<pdf.Widget> _buildPageImage({int page}) async {
-    final uri = entry.uri;
-    final mimeType = entry.mimeType;
-    final rotationDegrees = entry.rotationDegrees;
-    final isFlipped = entry.isFlipped;
-
+  Future<pdf.Widget> _buildPageImage(ImageEntry entry) async {
     if (entry.isSvg) {
-      final bytes = await ImageFileService.getImage(uri, mimeType, rotationDegrees, isFlipped);
+      final bytes = await ImageFileService.getSvg(entry.uri, entry.mimeType);
       if (bytes != null && bytes.isNotEmpty) {
         return pdf.SvgImage(svg: utf8.decode(bytes));
       }
     } else {
-      return pdf.Image(await flutterImageProvider(
-        UriImage(
-          uri: uri,
-          mimeType: mimeType,
-          page: page,
-          rotationDegrees: rotationDegrees,
-          isFlipped: isFlipped,
-        ),
-      ));
+      return pdf.Image(await flutterImageProvider(entry.uriImage));
     }
     return null;
   }

@@ -69,6 +69,21 @@ class ImageFileService {
     return null;
   }
 
+  static Future<Uint8List> getSvg(
+    String uri,
+    String mimeType, {
+    int expectedContentLength,
+    BytesReceivedCallback onBytesReceived,
+  }) =>
+      getImage(
+        uri,
+        mimeType,
+        0,
+        false,
+        expectedContentLength: expectedContentLength,
+        onBytesReceived: onBytesReceived,
+      );
+
   static Future<Uint8List> getImage(
     String uri,
     String mimeType,
@@ -155,15 +170,14 @@ class ImageFileService {
     );
   }
 
-  static Future<Uint8List> getThumbnail(
-    String uri,
-    String mimeType,
-    int dateModifiedSecs,
-    int rotationDegrees,
-    bool isFlipped,
-    double width,
-    double height, {
-    int page,
+  static Future<Uint8List> getThumbnail({
+    @required String uri,
+    @required String mimeType,
+    @required int rotationDegrees,
+    @required int page,
+    @required bool isFlipped,
+    @required int dateModifiedSecs,
+    @required double extent,
     Object taskKey,
     int priority,
   }) {
@@ -179,8 +193,8 @@ class ImageFileService {
             'dateModifiedSecs': dateModifiedSecs,
             'rotationDegrees': rotationDegrees,
             'isFlipped': isFlipped,
-            'widthDip': width,
-            'heightDip': height,
+            'widthDip': extent,
+            'heightDip': extent,
             'page': page,
             'defaultSizeDip': thumbnailDefaultSize,
           });
@@ -191,7 +205,7 @@ class ImageFileService {
         return null;
       },
 //      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
-      priority: priority ?? (width == 0 || height == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
+      priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
   }

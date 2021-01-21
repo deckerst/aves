@@ -47,8 +47,8 @@ class _AvesAppState extends State<AvesApp> {
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final EventChannel _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   static const accentColor = Colors.indigoAccent;
 

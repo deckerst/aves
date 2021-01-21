@@ -13,11 +13,13 @@ class EntryCache {
     bool oldIsFlipped,
   ) async {
     // TODO TLAD provide page parameter for multipage items, if someday image editing features are added for them
+    int page;
 
     // evict fullscreen image
     await UriImage(
       uri: uri,
       mimeType: mimeType,
+      page: page,
       rotationDegrees: oldRotationDegrees,
       isFlipped: oldIsFlipped,
     ).evict();
@@ -26,6 +28,7 @@ class EntryCache {
     await ThumbnailProvider(ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
+      page: page,
       dateModifiedSecs: dateModifiedSecs,
       rotationDegrees: oldRotationDegrees,
       isFlipped: oldIsFlipped,
@@ -38,6 +41,7 @@ class EntryCache {
         (extent) => ThumbnailProvider(ThumbnailProviderKey(
               uri: uri,
               mimeType: mimeType,
+              page: page,
               dateModifiedSecs: dateModifiedSecs,
               rotationDegrees: oldRotationDegrees,
               isFlipped: oldIsFlipped,

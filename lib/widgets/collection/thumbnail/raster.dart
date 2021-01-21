@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:aves/image_providers/thumbnail_provider.dart';
-import 'package:aves/image_providers/uri_image_provider.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
@@ -37,11 +35,6 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
 
   Object get heroTag => widget.heroTag;
 
-  // we standardize the thumbnail loading dimension by taking the nearest larger power of 2
-  // so that there are less variants of the thumbnails to load and cache
-  // it increases the chance of cache hit when loading similarly sized columns (e.g. on orientation change)
-  double get requestExtent => pow(2, (log(extent) / log(2)).ceil()).toDouble();
-
   @override
   void initState() {
     super.initState();
@@ -76,13 +69,9 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   void _initProvider() {
     if (!entry.canDecode) return;
 
-    _fastThumbnailProvider = ThumbnailProvider(
-      ThumbnailProviderKey.fromEntry(entry),
-    );
+    _fastThumbnailProvider = entry.getThumbnail();
     if (!entry.isVideo) {
-      _sizedThumbnailProvider = ThumbnailProvider(
-        ThumbnailProviderKey.fromEntry(entry, extent: requestExtent),
-      );
+      _sizedThumbnailProvider = entry.getThumbnail(extent: extent);
     }
   }
 
@@ -146,22 +135,8 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
         : Hero(
             tag: heroTag,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-              ImageProvider heroImageProvider = _fastThumbnailProvider;
-              if (!entry.isVideo) {
-                final imageProvider = UriImage(
-                  uri: entry.uri,
-                  mimeType: entry.mimeType,
-                  page: entry.page,
-                  rotationDegrees: entry.rotationDegrees,
-                  isFlipped: entry.isFlipped,
-                  expectedContentLength: entry.sizeBytes,
-                );
-                if (imageCache.statusForKey(imageProvider).keepAlive) {
-                  heroImageProvider = imageProvider;
-                }
-              }
               return TransitionImage(
-                image: heroImageProvider,
+                image: entry.getBestThumbnail(extent),
                 animation: animation,
               );
             },

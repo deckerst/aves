@@ -158,7 +158,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       MaterialPageRoute(
         settings: RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
-          loader: () => ImageFileService.getImage(entry.uri, entry.mimeType, 0, false).then(utf8.decode),
+          loader: () => ImageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
       ),
     );

@@ -26,21 +26,20 @@ class EntryPageView extends StatefulWidget {
   final ImageEntry entry;
   final MultiPageInfo multiPageInfo;
   final int page;
+  final Size viewportSize;
   final Object heroTag;
   final MagnifierTapCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final VoidCallback onDisposed;
 
   static const decorationCheckSize = 20.0;
-  static const initialScale = ScaleLevel(ref: ScaleReference.contained);
-  static const minScale = ScaleLevel(ref: ScaleReference.contained);
-  static const maxScale = ScaleLevel(factor: 2.0);
 
   EntryPageView({
     Key key,
     ImageEntry mainEntry,
     this.multiPageInfo,
     this.page,
+    this.viewportSize,
     this.heroTag,
     @required this.onTap,
     @required this.videoControllers,
@@ -59,7 +58,13 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   ImageEntry get entry => widget.entry;
 
+  Size get viewportSize => widget.viewportSize;
+
   MagnifierTapCallback get onTap => widget.onTap;
+
+  static const initialScale = ScaleLevel(ref: ScaleReference.contained);
+  static const minScale = ScaleLevel(ref: ScaleReference.contained);
+  static const maxScale = ScaleLevel(factor: 2.0);
 
   @override
   void initState() {
@@ -87,13 +92,28 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   void _registerWidget() {
-    _viewStateNotifier.value = ViewState.zero;
+    // try to initialize the view state to match magnifier initial state
+    _viewStateNotifier.value = viewportSize != null
+        ? ViewState(
+            Offset.zero,
+            ScaleBoundaries(
+              minScale: minScale,
+              maxScale: maxScale,
+              initialScale: initialScale,
+              viewportSize: viewportSize,
+              childSize: entry.displaySize,
+            ).initialScale,
+            viewportSize,
+          )
+        : ViewState.zero;
+
     _magnifierController = MagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
   }
 
   void _unregisterWidget() {
+    _magnifierController.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -113,8 +133,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     }
     child ??= ErrorView(onTap: () => onTap?.call(null));
 
-    // no hero for videos, as a typical video first frame is different from its thumbnail
-    return widget.heroTag != null && !entry.isVideo
+    return widget.heroTag != null
         ? Hero(
             tag: widget.heroTag,
             transitionOnUserGestures: true,
@@ -124,21 +143,13 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   Widget _buildRasterView() {
-    return Magnifier(
-      // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${entry.page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
-      child: TiledImageView(
+    return _buildMagnifier(
+      applyScale: false,
+      child: RasterImageView(
         entry: entry,
         viewStateNotifier: _viewStateNotifier,
         errorBuilder: (context, error, stackTrace) => ErrorView(onTap: () => onTap?.call(null)),
       ),
-      childSize: entry.displaySize,
-      controller: _magnifierController,
-      maxScale: EntryPageView.maxScale,
-      minScale: EntryPageView.minScale,
-      initialScale: EntryPageView.initialScale,
-      onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
-      applyScale: false,
     );
   }
 
@@ -146,7 +157,9 @@ class _EntryPageViewState extends State<EntryPageView> {
     final background = settings.vectorBackground;
     final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
 
-    Widget child = Magnifier(
+    var child = _buildMagnifier(
+      maxScale: ScaleLevel(factor: double.infinity),
+      scaleStateCycle: _vectorScaleStateCycle,
       child: SvgPicture(
         UriPicture(
           uri: entry.uri,
@@ -154,12 +167,6 @@ class _EntryPageViewState extends State<EntryPageView> {
           colorFilter: colorFilter,
         ),
       ),
-      childSize: entry.displaySize,
-      controller: _magnifierController,
-      minScale: EntryPageView.minScale,
-      initialScale: EntryPageView.initialScale,
-      scaleStateCycle: _vectorScaleStateCycle,
-      onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
     );
 
     if (background == EntryBackground.checkered) {
@@ -174,19 +181,33 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   Widget _buildVideoView() {
     final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+    if (videoController == null) return SizedBox();
+    return _buildMagnifier(
+      child: VideoView(
+        entry: entry,
+        controller: videoController,
+      ),
+    );
+  }
+
+  Widget _buildMagnifier({
+    ScaleLevel maxScale = maxScale,
+    ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
+    bool applyScale = true,
+    @required Widget child,
+  }) {
     return Magnifier(
-      child: videoController != null
-          ? AvesVideo(
-              entry: entry,
-              controller: videoController,
-            )
-          : SizedBox(),
-      childSize: entry.displaySize,
+      // key includes size and orientation to refresh when the image is rotated
+      key: ValueKey('${entry.page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
       controller: _magnifierController,
-      maxScale: EntryPageView.maxScale,
-      minScale: EntryPageView.minScale,
-      initialScale: EntryPageView.initialScale,
+      childSize: entry.displaySize,
+      minScale: minScale,
+      maxScale: maxScale,
+      initialScale: initialScale,
+      scaleStateCycle: scaleStateCycle,
+      applyScale: applyScale,
       onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
+      child: child,
     );
   }
 

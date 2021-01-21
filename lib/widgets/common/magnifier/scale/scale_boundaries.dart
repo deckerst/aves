@@ -7,19 +7,21 @@ import 'package:flutter/foundation.dart';
 /// Internal class to wrap custom scale boundaries (min, max and initial)
 /// Also, stores values regarding the two sizes: the container and the child.
 class ScaleBoundaries {
-  const ScaleBoundaries(
-    this._minScale,
-    this._maxScale,
-    this._initialScale,
-    this.viewportSize,
-    this.childSize,
-  );
-
   final ScaleLevel _minScale;
   final ScaleLevel _maxScale;
   final ScaleLevel _initialScale;
   final Size viewportSize;
   final Size childSize;
+
+  const ScaleBoundaries({
+    @required ScaleLevel minScale,
+    @required ScaleLevel maxScale,
+    @required ScaleLevel initialScale,
+    @required this.viewportSize,
+    @required this.childSize,
+  })  : _minScale = minScale,
+        _maxScale = maxScale,
+        _initialScale = initialScale;
 
   double _scaleForLevel(ScaleLevel level) {
     final factor = level.factor;
