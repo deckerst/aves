@@ -185,7 +185,8 @@ class _RasterImageViewState extends State<RasterImageView> {
 
     final viewSize = _displaySize * viewState.scale;
     final decorationOffset = ((viewSize - viewportSize) as Offset) / 2 - viewState.position;
-    final decorationSize = applyBoxFit(BoxFit.none, viewSize, viewportSize).source;
+    // deflate as a quick way to prevent background bleed
+    final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - Offset(.5, .5)) as Size;
 
     Widget child;
     final background = settings.rasterBackground;
