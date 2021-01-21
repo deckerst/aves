@@ -31,8 +31,8 @@ class VectorImageThumbnail extends StatelessWidget {
               final availableSize = constraints.biggest;
               final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
               final offset = fitSize / 2 - availableSize / 2;
-              final child = DecoratedBox(
-                decoration: CheckeredDecoration(checkSize: extent / 8, offset: offset),
+              final child = CustomPaint(
+                painter: CheckeredPainter(checkSize: extent / 8, offset: offset),
                 child: SvgPicture(
                   UriPicture(
                     uri: entry.uri,
