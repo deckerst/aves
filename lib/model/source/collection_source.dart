@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -16,15 +16,15 @@ import 'package:flutter/foundation.dart';
 import 'enums.dart';
 
 mixin SourceBase {
-  final List<ImageEntry> _rawEntries = [];
+  final List<AvesEntry> _rawEntries = [];
 
-  List<ImageEntry> get rawEntries => List.unmodifiable(_rawEntries);
+  List<AvesEntry> get rawEntries => List.unmodifiable(_rawEntries);
 
   final EventBus _eventBus = EventBus();
 
   EventBus get eventBus => _eventBus;
 
-  List<ImageEntry> get sortedEntriesForFilterList;
+  List<AvesEntry> get sortedEntriesForFilterList;
 
   final Map<CollectionFilter, int> _filterEntryCountMap = {};
 
@@ -39,7 +39,7 @@ mixin SourceBase {
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
   @override
-  List<ImageEntry> get sortedEntriesForFilterList => CollectionLens(
+  List<AvesEntry> get sortedEntriesForFilterList => CollectionLens(
         source: this,
         groupFactor: EntryGroupFactor.none,
         sortFactor: EntrySortFactor.date,
@@ -55,7 +55,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
-  void addAll(Iterable<ImageEntry> entries) {
+  void addAll(Iterable<AvesEntry> entries) {
     if (_rawEntries.isNotEmpty) {
       final newContentIds = entries.map((entry) => entry.contentId).toList();
       _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
@@ -70,7 +70,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     eventBus.fire(EntryAddedEvent());
   }
 
-  void removeEntries(List<ImageEntry> entries) {
+  void removeEntries(List<AvesEntry> entries) {
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
@@ -91,7 +91,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   // `dateModifiedSecs` changes when moving entries to another directory,
   // but it does not change when renaming the containing directory
-  Future<void> moveEntry(ImageEntry entry, Map newFields) async {
+  Future<void> moveEntry(AvesEntry entry, Map newFields) async {
     final oldContentId = entry.contentId;
     final newContentId = newFields['contentId'] as int;
     final newDateModifiedSecs = newFields['dateModifiedSecs'] as int;
@@ -109,7 +109,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   void updateAfterMove({
-    @required Set<ImageEntry> selection,
+    @required Set<AvesEntry> selection,
     @required bool copy,
     @required String destinationAlbum,
     @required Iterable<MoveOpEvent> movedOps,
@@ -117,7 +117,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     if (movedOps.isEmpty) return;
 
     final fromAlbums = <String>{};
-    final movedEntries = <ImageEntry>[];
+    final movedEntries = <AvesEntry>[];
     if (copy) {
       movedOps.forEach((movedOp) {
         final sourceUri = movedOp.uri;
@@ -166,25 +166,25 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> refresh();
 
-  Future<void> refreshMetadata(Set<ImageEntry> entries);
+  Future<void> refreshMetadata(Set<AvesEntry> entries);
 }
 
 enum SourceState { loading, cataloguing, locating, ready }
 
 class EntryAddedEvent {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const EntryAddedEvent([this.entry]);
 }
 
 class EntryRemovedEvent {
-  final Iterable<ImageEntry> entries;
+  final Iterable<AvesEntry> entries;
 
   const EntryRemovedEvent(this.entries);
 }
 
 class EntryMovedEvent {
-  final Iterable<ImageEntry> entries;
+  final Iterable<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
 }

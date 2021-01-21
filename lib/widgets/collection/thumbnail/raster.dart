@@ -1,13 +1,13 @@
 import 'package:aves/image_providers/thumbnail_provider.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
 
 class RasterImageThumbnail extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
   final int page;
   final ValueNotifier<bool> isScrollingNotifier;
@@ -29,7 +29,7 @@ class RasterImageThumbnail extends StatefulWidget {
 class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   double get extent => widget.extent;
 

@@ -4,11 +4,11 @@ import 'dart:ui';
 import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-extension ExtraAvesEntry on ImageEntry {
+extension ExtraAvesEntry on AvesEntry {
   ThumbnailProvider getThumbnail({double extent = 0}) => ThumbnailProvider(_getThumbnailProviderKey(extent));
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {

@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/xmp.dart';
 import 'package:aves/services/android_app_service.dart';
@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 
 class XmpDirTile extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final SplayTreeMap<String, String> tags;
   final ValueNotifier<String> expandedNotifier;
   final bool initiallyExpanded;
@@ -39,7 +39,7 @@ class XmpDirTile extends StatefulWidget {
 }
 
 class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +123,7 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
       return;
     }
 
-    final embedEntry = ImageEntry.fromMap(fields);
+    final embedEntry = AvesEntry.fromMap(fields);
     unawaited(Navigator.push(
       context,
       TransparentMaterialPageRoute(

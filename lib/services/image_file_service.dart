@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
@@ -18,7 +18,7 @@ class ImageFileService {
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
   static const double thumbnailDefaultSize = 64.0;
 
-  static Map<String, dynamic> _toPlatformEntryMap(ImageEntry entry) {
+  static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
     return {
       'uri': entry.uri,
       'path': entry.path,
@@ -32,13 +32,13 @@ class ImageFileService {
   }
 
   // knownEntries: map of contentId -> dateModifiedSecs
-  static Stream<ImageEntry> getImageEntries(Map<int, int> knownEntries) {
+  static Stream<AvesEntry> getEntries(Map<int, int> knownEntries) {
     try {
       return mediaStoreChannel.receiveBroadcastStream(<String, dynamic>{
         'knownEntries': knownEntries,
-      }).map((event) => ImageEntry.fromMap(event));
+      }).map((event) => AvesEntry.fromMap(event));
     } on PlatformException catch (e) {
-      debugPrint('getImageEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      debugPrint('getEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       return Stream.error(e);
     }
   }
@@ -55,16 +55,16 @@ class ImageFileService {
     return [];
   }
 
-  static Future<ImageEntry> getImageEntry(String uri, String mimeType) async {
-    debugPrint('getImageEntry for uri=$uri, mimeType=$mimeType');
+  static Future<AvesEntry> getEntry(String uri, String mimeType) async {
+    debugPrint('getEntry for uri=$uri, mimeType=$mimeType');
     try {
-      final result = await platform.invokeMethod('getImageEntry', <String, dynamic>{
+      final result = await platform.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }) as Map;
-      return ImageEntry.fromMap(result);
+      return AvesEntry.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getImageEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      debugPrint('getEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }
@@ -224,7 +224,7 @@ class ImageFileService {
 
   static Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
-  static Stream<ImageOpEvent> delete(Iterable<ImageEntry> entries) {
+  static Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
@@ -236,7 +236,7 @@ class ImageFileService {
     }
   }
 
-  static Stream<MoveOpEvent> move(Iterable<ImageEntry> entries, {@required bool copy, @required String destinationAlbum}) {
+  static Stream<MoveOpEvent> move(Iterable<AvesEntry> entries, {@required bool copy, @required String destinationAlbum}) {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
@@ -250,7 +250,7 @@ class ImageFileService {
     }
   }
 
-  static Future<Map> rename(ImageEntry entry, String newName) async {
+  static Future<Map> rename(AvesEntry entry, String newName) async {
     try {
       // return map with: 'contentId' 'path' 'title' 'uri' (all optional)
       final result = await platform.invokeMethod('rename', <String, dynamic>{
@@ -264,7 +264,7 @@ class ImageFileService {
     return {};
   }
 
-  static Future<Map> rotate(ImageEntry entry, {@required bool clockwise}) async {
+  static Future<Map> rotate(AvesEntry entry, {@required bool clockwise}) async {
     try {
       // return map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
@@ -278,7 +278,7 @@ class ImageFileService {
     return {};
   }
 
-  static Future<Map> flip(ImageEntry entry) async {
+  static Future<Map> flip(AvesEntry entry) async {
     try {
       // return map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('flip', <String, dynamic>{

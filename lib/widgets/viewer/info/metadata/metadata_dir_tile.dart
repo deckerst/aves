@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/icons.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MetadataDirTile extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final String title;
   final MetadataDirectory dir;
   final ValueNotifier<String> expandedDirectoryNotifier;

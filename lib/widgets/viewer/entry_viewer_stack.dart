@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -31,7 +31,7 @@ import 'package:tuple/tuple.dart';
 
 class EntryViewerStack extends StatefulWidget {
   final CollectionLens collection;
-  final ImageEntry initialEntry;
+  final AvesEntry initialEntry;
 
   const EntryViewerStack({
     Key key,
@@ -44,7 +44,7 @@ class EntryViewerStack extends StatefulWidget {
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final ValueNotifier<ImageEntry> _entryNotifier = ValueNotifier(null);
+  final ValueNotifier<AvesEntry> _entryNotifier = ValueNotifier(null);
   int _currentHorizontalPage;
   ValueNotifier<int> _currentVerticalPage;
   PageController _horizontalPager, _verticalPager;
@@ -63,7 +63,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   bool get hasCollection => collection != null;
 
-  List<ImageEntry> get entries => hasCollection ? collection.sortedEntries : [widget.initialEntry];
+  List<AvesEntry> get entries => hasCollection ? collection.sortedEntries : [widget.initialEntry];
 
   static const int transitionPage = 0;
 
@@ -199,7 +199,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   Widget _buildTopOverlay() {
-    final child = ValueListenableBuilder<ImageEntry>(
+    final child = ValueListenableBuilder<AvesEntry>(
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
@@ -232,7 +232,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   Widget _buildBottomOverlay() {
-    Widget bottomOverlay = ValueListenableBuilder<ImageEntry>(
+    Widget bottomOverlay = ValueListenableBuilder<AvesEntry>(
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
@@ -312,7 +312,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     return bottomOverlay;
   }
 
-  MultiPageController _getMultiPageController(ImageEntry entry) {
+  MultiPageController _getMultiPageController(AvesEntry entry) {
     return entry.isMultipage ? _multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2 : null;
   }
 
@@ -478,7 +478,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
-  final ValueNotifier<ImageEntry> entryNotifier;
+  final ValueNotifier<AvesEntry> entryNotifier;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final PageController horizontalPager, verticalPager;
@@ -507,13 +507,13 @@ class ViewerVerticalPageView extends StatefulWidget {
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
   final ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
-  ImageEntry _oldEntry;
+  AvesEntry _oldEntry;
 
   CollectionLens get collection => widget.collection;
 
   bool get hasCollection => collection != null;
 
-  ImageEntry get entry => widget.entryNotifier.value;
+  AvesEntry get entry => widget.entryNotifier.value;
 
   @override
   void initState() {

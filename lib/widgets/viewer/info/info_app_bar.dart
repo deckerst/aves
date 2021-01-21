@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/viewer/info/info_search.dart';
@@ -6,7 +6,7 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:flutter/material.dart';
 
 class InfoAppBar extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
   final VoidCallback onBackPressed;
 

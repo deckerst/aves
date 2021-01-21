@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 class DecoratedFilterChip extends StatelessWidget {
   final CollectionSource source;
   final CollectionFilter filter;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
   final bool pinned, highlightable;
   final FilterCallback onTap;

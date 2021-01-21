@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/any.dart';
@@ -6,7 +6,7 @@ import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<ImageEntry> {
+class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesEntry> {
   final CollectionLens collection;
 
   const SectionedEntryListLayoutProvider({
@@ -14,7 +14,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<Image
     @required double scrollableWidth,
     @required int columnCount,
     @required double tileExtent,
-    @required Widget Function(ImageEntry entry) tileBuilder,
+    @required Widget Function(AvesEntry entry) tileBuilder,
     @required Widget child,
   }) : super(
           scrollableWidth: scrollableWidth,
@@ -28,7 +28,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<Image
   bool get showHeaders => collection.showHeaders;
 
   @override
-  Map<SectionKey, List<ImageEntry>> get sections => collection.sections;
+  Map<SectionKey, List<AvesEntry>> get sections => collection.sections;
 
   @override
   double getHeaderExtent(BuildContext context, SectionKey sectionKey) {

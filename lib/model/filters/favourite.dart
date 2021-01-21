@@ -1,5 +1,5 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -13,7 +13,7 @@ class FavouriteFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(ImageEntry entry) => entry.isFavourite;
+  bool filter(AvesEntry entry) => entry.isFavourite;
 
   @override
   String get label => 'Favourite';

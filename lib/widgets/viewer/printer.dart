@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:pdf/widgets.dart' as pdf;
@@ -9,7 +9,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:printing/printing.dart';
 
 class EntryPrinter {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const EntryPrinter(this.entry);
 
@@ -58,7 +58,7 @@ class EntryPrinter {
     return pages;
   }
 
-  Future<pdf.Widget> _buildPageImage(ImageEntry entry) async {
+  Future<pdf.Widget> _buildPageImage(AvesEntry entry) async {
     if (entry.isSvg) {
       final bytes = await ImageFileService.getSvg(entry.uri, entry.mimeType);
       if (bytes != null && bytes.isNotEmpty) {

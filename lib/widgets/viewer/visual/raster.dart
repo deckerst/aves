@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 class RasterImageView extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final ValueNotifier<ViewState> viewStateNotifier;
   final ImageErrorWidgetBuilder errorBuilder;
 
@@ -39,7 +39,7 @@ class _RasterImageViewState extends State<RasterImageView> {
   ImageStreamListener _fullImageListener;
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
 
@@ -323,7 +323,7 @@ class _RasterImageViewState extends State<RasterImageView> {
 }
 
 class RegionTile extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
@@ -354,7 +354,7 @@ class RegionTile extends StatefulWidget {
 class _RegionTileState extends State<RegionTile> {
   RegionProvider _provider;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   void initState() {

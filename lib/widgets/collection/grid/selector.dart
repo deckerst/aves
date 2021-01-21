@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
@@ -39,7 +39,7 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
 
   CollectionLens get collection => widget.collection;
 
-  List<ImageEntry> get entries => collection.sortedEntries;
+  List<AvesEntry> get entries => collection.sortedEntries;
 
   ScrollController get scrollController => widget.scrollController;
 
@@ -131,12 +131,12 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
     }
   }
 
-  ImageEntry _getEntryAt(Offset localPosition) {
+  AvesEntry _getEntryAt(Offset localPosition) {
     // as of Flutter v1.22.5, `hitTest` on the `ScrollView` render object works fine when it is static,
     // but when it is scrolling (through controller animation), result is incomplete and children are missing,
     // so we use custom layout computation instead to find the entry.
     final offset = Offset(0, scrollController.offset - appBarHeight) + localPosition;
-    final sectionedListLayout = context.read<SectionedListLayout<ImageEntry>>();
+    final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
     return sectionedListLayout.getItemAt(offset);
   }
 

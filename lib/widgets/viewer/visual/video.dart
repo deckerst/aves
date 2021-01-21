@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
 class VideoView extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final IjkMediaController controller;
 
   const VideoView({
@@ -23,7 +23,7 @@ class VideoView extends StatefulWidget {
 class _VideoViewState extends State<VideoView> {
   final List<StreamSubscription> _subscriptions = [];
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   IjkMediaController get controller => widget.controller;
 

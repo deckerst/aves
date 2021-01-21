@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -55,14 +55,14 @@ class MediaStoreSource extends CollectionSource {
     // fetch new entries
     var refreshCount = 10;
     const refreshCountMax = 1000;
-    final allNewEntries = <ImageEntry>[], pendingNewEntries = <ImageEntry>[];
+    final allNewEntries = <AvesEntry>[], pendingNewEntries = <AvesEntry>[];
     void addPendingEntries() {
       allNewEntries.addAll(pendingNewEntries);
       addAll(pendingNewEntries);
       pendingNewEntries.clear();
     }
 
-    ImageFileService.getImageEntries(knownEntryMap).listen(
+    ImageFileService.getEntries(knownEntryMap).listen(
       (entry) {
         pendingNewEntries.add(entry);
         if (pendingNewEntries.length >= refreshCount) {
@@ -96,7 +96,7 @@ class MediaStoreSource extends CollectionSource {
   }
 
   @override
-  Future<void> refreshMetadata(Set<ImageEntry> entries) {
+  Future<void> refreshMetadata(Set<AvesEntry> entries) {
     final contentIds = entries.map((entry) => entry.contentId).toSet();
     metadataDb.removeIds(contentIds, updateFavourites: false);
     return refresh();

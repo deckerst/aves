@@ -1,5 +1,5 @@
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 class PanoramaPage extends StatefulWidget {
   static const routeName = '/viewer/panorama';
 
-  final ImageEntry entry;
+  final AvesEntry entry;
   final PanoramaInfo info;
 
   const PanoramaPage({
@@ -31,7 +31,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(SensorControl.None);
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   PanoramaInfo get info => widget.info;
 

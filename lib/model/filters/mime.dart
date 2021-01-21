@@ -1,5 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +15,7 @@ class MimeFilter extends CollectionFilter {
   static const geotiff = 'aves/geotiff'; // subset of `image/tiff`
 
   final String mime;
-  bool Function(ImageEntry) _filter;
+  bool Function(AvesEntry) _filter;
   String _label;
   IconData _icon;
 
@@ -67,7 +67,7 @@ class MimeFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(ImageEntry entry) => _filter(entry);
+  bool filter(AvesEntry entry) => _filter(entry);
 
   @override
   String get label => _label;

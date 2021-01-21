@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ThumbnailEntryOverlay extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
 
   const ThumbnailEntryOverlay({
@@ -61,7 +61,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
 }
 
 class ThumbnailSelectionOverlay extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
 
   const ThumbnailSelectionOverlay({
@@ -121,7 +121,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 }
 
 class ThumbnailHighlightOverlay extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
 
   const ThumbnailHighlightOverlay({
@@ -137,7 +137,7 @@ class ThumbnailHighlightOverlay extends StatefulWidget {
 class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
   final ValueNotifier<bool> _highlightedNotifier = ValueNotifier(false);
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   Widget build(BuildContext context) {

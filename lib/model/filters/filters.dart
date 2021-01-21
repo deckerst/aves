@@ -1,12 +1,12 @@
 import 'dart:convert';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -49,7 +49,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String toJson() => jsonEncode(toMap());
 
-  bool filter(ImageEntry entry);
+  bool filter(AvesEntry entry);
 
   bool get isUnique => true;
 
@@ -78,7 +78,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 // TODO TLAD replace this by adding getters to CollectionFilter, with cached entry/count coming from Source
 class FilterGridItem<T extends CollectionFilter> {
   final T filter;
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const FilterGridItem(this.filter, this.entry);
 

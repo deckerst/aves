@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
@@ -34,7 +34,7 @@ class MultiEntryScroller extends StatefulWidget {
 }
 
 class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticKeepAliveClientMixin {
-  List<ImageEntry> get entries => widget.collection.sortedEntries;
+  List<AvesEntry> get entries => widget.collection.sortedEntries;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  Widget _buildViewer(ImageEntry entry, {MultiPageInfo multiPageInfo, int page}) {
+  Widget _buildViewer(AvesEntry entry, {MultiPageInfo multiPageInfo, int page}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
@@ -99,7 +99,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  MultiPageController _getMultiPageController(ImageEntry entry) {
+  MultiPageController _getMultiPageController(AvesEntry entry) {
     return widget.multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
   }
 
@@ -108,7 +108,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 }
 
 class SingleEntryScroller extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final VoidCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
@@ -125,7 +125,7 @@ class SingleEntryScroller extends StatefulWidget {
 }
 
 class _SingleEntryScrollerState extends State<SingleEntryScroller> with AutomaticKeepAliveClientMixin {
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +173,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  MultiPageController _getMultiPageController(ImageEntry entry) {
+  MultiPageController _getMultiPageController(AvesEntry entry) {
     return widget.multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
   }
 

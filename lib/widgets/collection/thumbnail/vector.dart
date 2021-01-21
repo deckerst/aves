@@ -1,5 +1,5 @@
 import 'package:aves/image_providers/uri_picture_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class VectorImageThumbnail extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
   final Object heroTag;
 

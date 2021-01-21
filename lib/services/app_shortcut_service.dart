@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +26,7 @@ class AppShortcutService {
     return false;
   }
 
-  static Future<void> pin(String label, ImageEntry entry, Set<CollectionFilter> filters) async {
+  static Future<void> pin(String label, AvesEntry entry, Set<CollectionFilter> filters) async {
     Uint8List iconBytes;
     if (entry != null) {
       final size = entry.isVideo ? 0.0 : 256.0;

@@ -1,5 +1,5 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -35,7 +35,7 @@ class LocationFilter extends CollectionFilter {
   String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
 
   @override
-  bool filter(ImageEntry entry) => _location.isEmpty ? !entry.isLocated : entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
+  bool filter(AvesEntry entry) => _location.isEmpty ? !entry.isLocated : entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
 
   @override
   String get label => _location.isEmpty ? emptyLabel : _location;

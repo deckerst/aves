@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:flushbar/flushbar.dart';
@@ -31,7 +31,7 @@ mixin FeedbackMixin {
 
   void showOpReport<T extends ImageOpEvent>({
     @required BuildContext context,
-    @required Set<ImageEntry> selection,
+    @required Set<AvesEntry> selection,
     @required Stream<T> opStream,
     @required void Function(Set<T> processed) onDone,
   }) {

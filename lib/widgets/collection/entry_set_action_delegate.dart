@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
@@ -22,7 +22,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   CollectionSource get source => collection.source;
 
-  Set<ImageEntry> get selection => collection.selection;
+  Set<AvesEntry> get selection => collection.selection;
 
   EntrySetActionDelegate({
     @required this.collection,

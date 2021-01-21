@@ -1,7 +1,7 @@
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/main.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
@@ -13,7 +13,7 @@ import 'package:tuple/tuple.dart';
 class ViewerDebugPage extends StatelessWidget {
   static const routeName = '/viewer/debug';
 
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const ViewerDebugPage({@required this.entry});
 

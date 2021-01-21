@@ -1,10 +1,10 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
-  Future<bool> checkStoragePermission(BuildContext context, Set<ImageEntry> entries) {
+  Future<bool> checkStoragePermission(BuildContext context, Set<AvesEntry> entries) {
     return checkStoragePermissionForAlbums(context, entries.where((e) => e.path != null).map((e) => e.directory).toSet());
   }
 

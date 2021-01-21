@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
@@ -7,7 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class InfoSearchDelegate extends SearchDelegate {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;

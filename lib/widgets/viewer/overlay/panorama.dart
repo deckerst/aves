@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 
 class PanoramaOverlay extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final Animation<double> scale;
 
   const PanoramaOverlay({

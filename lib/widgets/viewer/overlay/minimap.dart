@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Minimap extends StatelessWidget {
-  final ImageEntry mainEntry;
+  final AvesEntry mainEntry;
   final ValueNotifier<ViewState> viewStateNotifier;
   final MultiPageController multiPageController;
   final Size size;

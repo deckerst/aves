@@ -3,7 +3,7 @@ package deckers.thibault.aves.model.provider
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import deckers.thibault.aves.model.SourceImageEntry
+import deckers.thibault.aves.model.SourceEntry
 
 internal class ContentImageProvider : ImageProvider() {
     override suspend fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
@@ -28,7 +28,7 @@ internal class ContentImageProvider : ImageProvider() {
             return
         }
 
-        val entry = SourceImageEntry(map).fillPreCatalogMetadata(context)
+        val entry = SourceEntry(map).fillPreCatalogMetadata(context)
         if (entry.isSized || entry.isSvg) {
             callback.onSuccess(entry.toMap())
         } else {
