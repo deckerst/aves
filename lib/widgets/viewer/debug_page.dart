@@ -1,6 +1,6 @@
-import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/main.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
@@ -135,18 +135,14 @@ class ViewerDebugPage extends StatelessWidget {
           Text('Raster (fast)'),
           Center(
             child: Image(
-              image: ThumbnailProvider(
-                ThumbnailProviderKey.fromEntry(entry),
-              ),
+              image: entry.getThumbnail(),
             ),
           ),
           SizedBox(height: 16),
           Text('Raster ($extent)'),
           Center(
             child: Image(
-              image: ThumbnailProvider(
-                ThumbnailProviderKey.fromEntry(entry, extent: extent),
-              ),
+              image: entry.getThumbnail(extent: extent),
             ),
           ),
         ],

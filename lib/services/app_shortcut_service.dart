@@ -26,18 +26,18 @@ class AppShortcutService {
     return false;
   }
 
-  static Future<void> pin(String label, ImageEntry iconEntry, Set<CollectionFilter> filters) async {
+  static Future<void> pin(String label, ImageEntry entry, Set<CollectionFilter> filters) async {
     Uint8List iconBytes;
-    if (iconEntry != null) {
-      final size = iconEntry.isVideo ? 0.0 : 256.0;
+    if (entry != null) {
+      final size = entry.isVideo ? 0.0 : 256.0;
       iconBytes = await ImageFileService.getThumbnail(
-        iconEntry.uri,
-        iconEntry.mimeType,
-        iconEntry.dateModifiedSecs,
-        iconEntry.rotationDegrees,
-        iconEntry.isFlipped,
-        size,
-        size,
+        uri: entry.uri,
+        mimeType: entry.mimeType,
+        page: entry.page,
+        rotationDegrees: entry.rotationDegrees,
+        isFlipped: entry.isFlipped,
+        dateModifiedSecs: entry.dateModifiedSecs,
+        extent: size,
       );
     }
     try {

@@ -7,6 +7,7 @@ import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class MultiEntryScroller extends StatefulWidget {
@@ -79,16 +80,22 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  EntryPageView _buildViewer(ImageEntry entry, {MultiPageInfo multiPageInfo, int page}) {
-    return EntryPageView(
-      key: Key('imageview'),
-      mainEntry: entry,
-      multiPageInfo: multiPageInfo,
-      page: page,
-      heroTag: widget.collection.heroTag(entry),
-      onTap: (_) => widget.onTap?.call(),
-      videoControllers: widget.videoControllers,
-      onDisposed: () => widget.onViewDisposed?.call(entry.uri),
+  Widget _buildViewer(ImageEntry entry, {MultiPageInfo multiPageInfo, int page}) {
+    return Selector<MediaQueryData, Size>(
+      selector: (c, mq) => mq.size,
+      builder: (c, mqSize, child) {
+        return EntryPageView(
+          key: Key('imageview'),
+          mainEntry: entry,
+          multiPageInfo: multiPageInfo,
+          page: page,
+          viewportSize: mqSize,
+          heroTag: widget.collection.heroTag(entry),
+          onTap: (_) => widget.onTap?.call(),
+          videoControllers: widget.videoControllers,
+          onDisposed: () => widget.onViewDisposed?.call(entry.uri),
+        );
+      },
     );
   }
 
@@ -150,13 +157,19 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  EntryPageView _buildViewer({MultiPageInfo multiPageInfo, int page}) {
-    return EntryPageView(
-      mainEntry: entry,
-      multiPageInfo: multiPageInfo,
-      page: page,
-      onTap: (_) => widget.onTap?.call(),
-      videoControllers: widget.videoControllers,
+  Widget _buildViewer({MultiPageInfo multiPageInfo, int page}) {
+    return Selector<MediaQueryData, Size>(
+      selector: (c, mq) => mq.size,
+      builder: (c, mqSize, child) {
+        return EntryPageView(
+          mainEntry: entry,
+          multiPageInfo: multiPageInfo,
+          page: page,
+          viewportSize: mqSize,
+          onTap: (_) => widget.onTap?.call(),
+          videoControllers: widget.videoControllers,
+        );
+      },
     );
   }
 

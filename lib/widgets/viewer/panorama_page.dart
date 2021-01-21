@@ -1,4 +1,4 @@
-import 'package:aves/image_providers/uri_image_provider.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
@@ -72,14 +72,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   );
                 },
                 child: Image(
-                  image: UriImage(
-                    uri: entry.uri,
-                    mimeType: entry.mimeType,
-                    page: entry.page,
-                    rotationDegrees: entry.rotationDegrees,
-                    isFlipped: entry.isFlipped,
-                    expectedContentLength: entry.sizeBytes,
-                  ),
+                  image: entry.uriImage,
                 ),
               ),
               Positioned(

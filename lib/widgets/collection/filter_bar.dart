@@ -25,7 +25,7 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _FilterBarState extends State<FilterBar> {
-  final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey();
+  final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'filter-bar-animated-list');
   CollectionFilter _userRemovedFilter;
 
   @override

@@ -40,7 +40,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
-  final GlobalKey _scrollableKey = GlobalKey();
+  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'filter-grid-page-scrollable');
 
   static const columnCountDefault = 2;
   static const extentMin = 60.0;

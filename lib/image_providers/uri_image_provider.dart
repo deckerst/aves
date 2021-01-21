@@ -3,7 +3,7 @@ import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pedantic/pedantic.dart';
 
 class UriImage extends ImageProvider<UriImage> {
@@ -15,7 +15,7 @@ class UriImage extends ImageProvider<UriImage> {
   const UriImage({
     @required this.uri,
     @required this.mimeType,
-    this.page,
+    @required this.page,
     @required this.rotationDegrees,
     @required this.isFlipped,
     this.expectedContentLength,
