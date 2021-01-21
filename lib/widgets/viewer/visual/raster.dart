@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:aves/image_providers/region_provider.dart';
-import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -199,8 +199,8 @@ class _RasterImageViewState extends State<RasterImageView> {
         builder: (context, fullImageLoaded, child) {
           if (!fullImageLoaded) return SizedBox.shrink();
 
-          return DecoratedBox(
-            decoration: CheckeredDecoration(
+          return CustomPaint(
+            painter: CheckeredPainter(
               checkSize: checkSize,
               offset: offset,
             ),
