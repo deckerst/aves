@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerBottomOverlay extends StatefulWidget {
-  final List<ImageEntry> entries;
+  final List<AvesEntry> entries;
   final int index;
   final bool showPosition;
   final EdgeInsets viewInsets, viewPadding;
@@ -42,10 +42,10 @@ class ViewerBottomOverlay extends StatefulWidget {
 
 class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   Future<OverlayMetadata> _detailLoader;
-  ImageEntry _lastEntry;
+  AvesEntry _lastEntry;
   OverlayMetadata _lastDetails;
 
-  ImageEntry get entry {
+  AvesEntry get entry {
     final entries = widget.entries;
     final index = widget.index;
     return index < entries.length ? entries[index] : null;
@@ -138,7 +138,7 @@ const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
 class _BottomOverlayContent extends AnimatedWidget {
-  final ImageEntry mainEntry, entry;
+  final AvesEntry mainEntry, entry;
   final MultiPageInfo multiPageInfo;
   final int page;
   final OverlayMetadata details;
@@ -302,7 +302,7 @@ class _BottomOverlayContent extends AnimatedWidget {
 }
 
 class _LocationRow extends AnimatedWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   _LocationRow({
     Key key,
@@ -328,7 +328,7 @@ class _LocationRow extends AnimatedWidget {
 }
 
 class _PositionTitleRow extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final String collectionPosition;
   final MultiPageController multiPageController;
 
@@ -369,7 +369,7 @@ class _PositionTitleRow extends StatelessWidget {
 }
 
 class _DateRow extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final MultiPageController multiPageController;
 
   const _DateRow({

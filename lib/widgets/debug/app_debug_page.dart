@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -26,7 +26,7 @@ class AppDebugPage extends StatefulWidget {
 }
 
 class _AppDebugPageState extends State<AppDebugPage> {
-  List<ImageEntry> get entries => widget.source.rawEntries;
+  List<AvesEntry> get entries => widget.source.rawEntries;
 
   static OverlayEntry _taskQueueOverlayEntry;
 

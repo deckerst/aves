@@ -27,7 +27,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getObsoleteEntries" -> GlobalScope.launch(Dispatchers.IO) { getObsoleteEntries(call, Coresult(result)) }
-            "getImageEntry" -> GlobalScope.launch(Dispatchers.IO) { getImageEntry(call, Coresult(result)) }
+            "getEntry" -> GlobalScope.launch(Dispatchers.IO) { getEntry(call, Coresult(result)) }
             "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { getThumbnail(call, Coresult(result)) }
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { getRegion(call, Coresult(result)) }
             "clearSizedThumbnailDiskCache" -> {
@@ -119,23 +119,23 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
-    private suspend fun getImageEntry(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getEntry(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
-            result.error("getImageEntry-args", "failed because of missing arguments", null)
+            result.error("getEntry-args", "failed because of missing arguments", null)
             return
         }
 
         val provider = getProvider(uri)
         if (provider == null) {
-            result.error("getImageEntry-provider", "failed to find provider for uri=$uri", null)
+            result.error("getEntry-provider", "failed to find provider for uri=$uri", null)
             return
         }
 
         provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("getImageEntry-failure", "failed to get entry for uri=$uri", throwable.message)
+            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
         })
     }
 

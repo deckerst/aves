@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
@@ -8,7 +8,7 @@ class MultiEntryViewerPage extends AnimatedWidget {
   static const routeName = '/viewer';
 
   final CollectionLens collection;
-  final ImageEntry initialEntry;
+  final AvesEntry initialEntry;
 
   const MultiEntryViewerPage({
     Key key,
@@ -34,7 +34,7 @@ class MultiEntryViewerPage extends AnimatedWidget {
 class SingleEntryViewerPage extends StatelessWidget {
   static const routeName = '/viewer';
 
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const SingleEntryViewerPage({
     Key key,

@@ -1,9 +1,9 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/material.dart';
 
 class ErrorThumbnail extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
   final String tooltip;
 

@@ -3,7 +3,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/utils/constants.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final CollectionLens collection;
   final FilterCallback onFilter;
 

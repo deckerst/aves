@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/image_providers/uri_picture_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -23,7 +23,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final MultiPageInfo multiPageInfo;
   final int page;
   final Size viewportSize;
@@ -36,7 +36,7 @@ class EntryPageView extends StatefulWidget {
 
   EntryPageView({
     Key key,
-    ImageEntry mainEntry,
+    AvesEntry mainEntry,
     this.multiPageInfo,
     this.page,
     this.viewportSize,
@@ -56,7 +56,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   Size get viewportSize => widget.viewportSize;
 

@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import deckers.thibault.aves.model.AvesImageEntry
+import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
@@ -102,7 +102,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         }
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
-        val entries = entryMapList.map(::AvesImageEntry)
+        val entries = entryMapList.map(::AvesEntry)
         provider.moveMultiple(context, copy, destinationDir, entries, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)

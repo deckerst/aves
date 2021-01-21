@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +26,7 @@ class AndroidDebugService {
     return {};
   }
 
-  static Future<Map> getBitmapFactoryInfo(ImageEntry entry) async {
+  static Future<Map> getBitmapFactoryInfo(AvesEntry entry) async {
     try {
       // return map with all data available when decoding image bounds with `BitmapFactory`
       final result = await platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
@@ -39,7 +39,7 @@ class AndroidDebugService {
     return {};
   }
 
-  static Future<Map> getContentResolverMetadata(ImageEntry entry) async {
+  static Future<Map> getContentResolverMetadata(AvesEntry entry) async {
     try {
       // return map with all data available from the content resolver
       final result = await platform.invokeMethod('getContentResolverMetadata', <String, dynamic>{
@@ -53,7 +53,7 @@ class AndroidDebugService {
     return {};
   }
 
-  static Future<Map> getExifInterfaceMetadata(ImageEntry entry) async {
+  static Future<Map> getExifInterfaceMetadata(AvesEntry entry) async {
     try {
       // return map with all data available from the `ExifInterface` library
       final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
@@ -68,7 +68,7 @@ class AndroidDebugService {
     return {};
   }
 
-  static Future<Map> getMediaMetadataRetrieverMetadata(ImageEntry entry) async {
+  static Future<Map> getMediaMetadataRetrieverMetadata(AvesEntry entry) async {
     try {
       // return map with all data available from `MediaMetadataRetriever`
       final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
@@ -81,7 +81,7 @@ class AndroidDebugService {
     return {};
   }
 
-  static Future<Map> getMetadataExtractorSummary(ImageEntry entry) async {
+  static Future<Map> getMetadataExtractorSummary(AvesEntry entry) async {
     try {
       // return map with the mime type and tag count for each directory found by `metadata-extractor`
       final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
@@ -96,7 +96,7 @@ class AndroidDebugService {
     return {};
   }
 
-  static Future<Map> getTiffStructure(ImageEntry entry) async {
+  static Future<Map> getTiffStructure(AvesEntry entry) async {
     if (entry.mimeType != MimeTypes.tiff) return {};
 
     try {

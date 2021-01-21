@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/overlay.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MultiPageOverlay extends StatefulWidget {
-  final ImageEntry mainEntry;
+  final AvesEntry mainEntry;
   final MultiPageController controller;
   final double availableWidth;
 
@@ -34,7 +34,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   static const double extent = 48;
   static const double separatorWidth = 2;
 
-  ImageEntry get mainEntry => widget.mainEntry;
+  AvesEntry get mainEntry => widget.mainEntry;
 
   MultiPageController get controller => widget.controller;
 
@@ -162,7 +162,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     );
   }
 
-  Widget _buildPageThumbnail(ImageEntry entry) {
+  Widget _buildPageThumbnail(AvesEntry entry) {
     Widget child = RasterImageThumbnail(
       entry: entry,
       extent: extent,

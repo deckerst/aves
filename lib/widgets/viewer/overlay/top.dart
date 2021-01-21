@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -19,7 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerTopOverlay extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
   final Function(EntryAction value) onActionSelected;
@@ -135,7 +135,7 @@ class _TopOverlayRow extends StatelessWidget {
   final List<EntryAction> inAppActions;
   final List<EntryAction> externalAppActions;
   final Animation<double> scale;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final Function(EntryAction value) onActionSelected;
 
   const _TopOverlayRow({
@@ -299,7 +299,7 @@ class _TopOverlayRow extends StatelessWidget {
 }
 
 class _FavouriteToggler extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final bool isMenuItem;
   final VoidCallback onPressed;
 

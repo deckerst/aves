@@ -4,7 +4,7 @@ import 'package:aves/main.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -82,7 +82,7 @@ class ThumbnailCollection extends StatelessWidget {
                   ),
                 );
 
-                final scaler = GridScaleGestureDetector<ImageEntry>(
+                final scaler = GridScaleGestureDetector<AvesEntry>(
                   tileExtentManager: tileExtentManager,
                   scrollableKey: _scrollableKey,
                   appBarHeightNotifier: _appBarHeightNotifier,
@@ -106,7 +106,7 @@ class ThumbnailCollection extends StatelessWidget {
                     highlightable: false,
                   ),
                   getScaledItemTileRect: (context, entry) {
-                    final sectionedListLayout = context.read<SectionedListLayout<ImageEntry>>();
+                    final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
                     return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
                   },
                   onScaled: (entry) => Provider.of<HighlightInfo>(context, listen: false).add(entry),
@@ -225,7 +225,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
                 child: _buildEmptyCollectionPlaceholder(collection),
                 hasScrollBody: false,
               )
-            : SectionedListSliver<ImageEntry>(),
+            : SectionedListSliver<AvesEntry>(),
         BottomPaddingSliver(),
       ],
     );

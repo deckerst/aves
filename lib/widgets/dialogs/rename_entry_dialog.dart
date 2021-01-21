@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
 import 'aves_dialog.dart';
 
 class RenameEntryDialog extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const RenameEntryDialog(this.entry);
 
@@ -19,7 +19,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   void initState() {

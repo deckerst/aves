@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -81,10 +81,10 @@ class AndroidAppService {
     return false;
   }
 
-  static Future<bool> shareEntries(Iterable<ImageEntry> entries) async {
+  static Future<bool> shareEntries(Iterable<AvesEntry> entries) async {
     // loosen mime type to a generic one, so we can share with badly defined apps
     // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
-    final urisByMimeType = groupBy<ImageEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
+    final urisByMimeType = groupBy<AvesEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
     try {
       return await platform.invokeMethod('share', <String, dynamic>{
         'title': 'Share via:',

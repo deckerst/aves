@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class MetadataSectionSliver extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final ValueNotifier<bool> visibleNotifier;
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
@@ -31,7 +31,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   final ValueNotifier<String> _loadedMetadataUri = ValueNotifier(null);
   final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   bool get isVisible => widget.visibleNotifier.value;
 

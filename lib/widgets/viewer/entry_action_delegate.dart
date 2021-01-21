@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -28,7 +28,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
 
   bool get hasCollection => collection != null;
 
-  void onActionSelected(BuildContext context, ImageEntry entry, EntryAction action) {
+  void onActionSelected(BuildContext context, AvesEntry entry, EntryAction action) {
     switch (action) {
       case EntryAction.toggleFavourite:
         entry.toggleFavourite();
@@ -88,21 +88,21 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     }
   }
 
-  Future<void> _flip(BuildContext context, ImageEntry entry) async {
+  Future<void> _flip(BuildContext context, AvesEntry entry) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.flip();
     if (!success) showFeedback(context, 'Failed');
   }
 
-  Future<void> _rotate(BuildContext context, ImageEntry entry, {@required bool clockwise}) async {
+  Future<void> _rotate(BuildContext context, AvesEntry entry, {@required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.rotate(clockwise: clockwise);
     if (!success) showFeedback(context, 'Failed');
   }
 
-  Future<void> _showDeleteDialog(BuildContext context, ImageEntry entry) async {
+  Future<void> _showDeleteDialog(BuildContext context, AvesEntry entry) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -140,7 +140,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     }
   }
 
-  Future<void> _showRenameDialog(BuildContext context, ImageEntry entry) async {
+  Future<void> _showRenameDialog(BuildContext context, AvesEntry entry) async {
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameEntryDialog(entry),
@@ -152,7 +152,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
   }
 
-  void _goToSourceViewer(BuildContext context, ImageEntry entry) {
+  void _goToSourceViewer(BuildContext context, AvesEntry entry) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -164,7 +164,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
     );
   }
 
-  void _goToDebug(BuildContext context, ImageEntry entry) {
+  void _goToDebug(BuildContext context, AvesEntry entry) {
     Navigator.push(
       context,
       MaterialPageRoute(

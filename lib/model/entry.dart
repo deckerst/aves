@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -21,7 +21,7 @@ import 'package:path/path.dart' as ppath;
 
 import '../ref/mime_types.dart';
 
-class ImageEntry {
+class AvesEntry {
   String uri;
   String _path, _directory, _filename, _extension;
   int page, contentId;
@@ -45,7 +45,7 @@ class ImageEntry {
   // TODO TLAD make it dynamic if it depends on OS/lib versions
   static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
 
-  ImageEntry({
+  AvesEntry({
     this.uri,
     String path,
     this.contentId,
@@ -69,14 +69,14 @@ class ImageEntry {
 
   bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
-  ImageEntry copyWith({
+  AvesEntry copyWith({
     @required String uri,
     @required String path,
     @required int contentId,
     @required int dateModifiedSecs,
   }) {
     final copyContentId = contentId ?? this.contentId;
-    final copied = ImageEntry(
+    final copied = AvesEntry(
       uri: uri ?? uri,
       path: path ?? this.path,
       contentId: copyContentId,
@@ -96,7 +96,7 @@ class ImageEntry {
     return copied;
   }
 
-  ImageEntry getPageEntry({
+  AvesEntry getPageEntry({
     @required MultiPageInfo multiPageInfo,
     @required int page,
   }) {
@@ -126,8 +126,8 @@ class ImageEntry {
   }
 
   // from DB or platform source entry
-  factory ImageEntry.fromMap(Map map) {
-    return ImageEntry(
+  factory AvesEntry.fromMap(Map map) {
+    return AvesEntry(
       uri: map['uri'] as String,
       path: map['path'] as String,
       contentId: map['contentId'] as int,
@@ -619,7 +619,7 @@ class ImageEntry {
   // compare by:
   // 1) title ascending
   // 2) extension ascending
-  static int compareByName(ImageEntry a, ImageEntry b) {
+  static int compareByName(AvesEntry a, AvesEntry b) {
     final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
     return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
   }
@@ -627,7 +627,7 @@ class ImageEntry {
   // compare by:
   // 1) size descending
   // 2) name ascending
-  static int compareBySize(ImageEntry a, ImageEntry b) {
+  static int compareBySize(AvesEntry a, AvesEntry b) {
     final c = b.sizeBytes.compareTo(a.sizeBytes);
     return c != 0 ? c : compareByName(a, b);
   }
@@ -637,7 +637,7 @@ class ImageEntry {
   // compare by:
   // 1) date descending
   // 2) name ascending
-  static int compareByDate(ImageEntry a, ImageEntry b) {
+  static int compareByDate(AvesEntry a, AvesEntry b) {
     final c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     return c != 0 ? c : compareByName(a, b);
   }

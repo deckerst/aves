@@ -2,7 +2,7 @@ package deckers.thibault.aves.model.provider
 
 import android.content.Context
 import android.net.Uri
-import deckers.thibault.aves.model.SourceImageEntry
+import deckers.thibault.aves.model.SourceEntry
 import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
@@ -12,7 +12,7 @@ internal class FileImageProvider : ImageProvider() {
             return
         }
 
-        val entry = SourceImageEntry(uri, mimeType)
+        val entry = SourceEntry(uri, mimeType)
 
         val path = uri.path
         if (path != null) {

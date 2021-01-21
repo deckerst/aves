@@ -1,6 +1,6 @@
 import 'package:aves/main.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -35,7 +35,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   MediaStoreSource _mediaStore;
-  ImageEntry _viewerEntry;
+  AvesEntry _viewerEntry;
   String _shortcutRouteName;
   List<String> _shortcutFilters;
 
@@ -108,8 +108,8 @@ class _HomePageState extends State<HomePage> {
     unawaited(Navigator.pushReplacement(context, _getRedirectRoute()));
   }
 
-  Future<ImageEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
-    final entry = await ImageFileService.getImageEntry(uri, mimeType);
+  Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
+    final entry = await ImageFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for geolocation and video rotation
       await entry.catalog();

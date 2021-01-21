@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.model.AvesImageEntry
+import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
@@ -32,7 +32,7 @@ abstract class ImageProvider {
         throw UnsupportedOperationException()
     }
 
-    open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesImageEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException())
     }
 

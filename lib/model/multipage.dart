@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
@@ -50,7 +50,7 @@ class SinglePageInfo {
   String toString() => '$runtimeType#${shortHash(this)}{mimeType=$mimeType, width=$width, height=$height, trackId=$trackId, durationMillis=$durationMillis}';
 }
 
-class AvesPageEntry extends ImageEntry {
+class AvesPageEntry extends AvesEntry {
   final SinglePageInfo pageInfo;
 
   AvesPageEntry({

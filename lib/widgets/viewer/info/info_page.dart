@@ -1,5 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 
 class InfoPage extends StatefulWidget {
   final CollectionLens collection;
-  final ValueNotifier<ImageEntry> entryNotifier;
+  final ValueNotifier<AvesEntry> entryNotifier;
   final ValueNotifier<bool> visibleNotifier;
 
   const InfoPage({
@@ -34,7 +34,7 @@ class _InfoPageState extends State<InfoPage> {
 
   CollectionLens get collection => widget.collection;
 
-  ImageEntry get entry => widget.entryNotifier.value;
+  AvesEntry get entry => widget.entryNotifier.value;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class _InfoPageState extends State<InfoPage> {
               child: Selector<MediaQueryData, double>(
                 selector: (c, mq) => mq.size.width,
                 builder: (c, mqWidth, child) {
-                  return ValueListenableBuilder<ImageEntry>(
+                  return ValueListenableBuilder<AvesEntry>(
                     valueListenable: widget.entryNotifier,
                     builder: (context, entry, child) {
                       return entry != null
@@ -107,7 +107,7 @@ class _InfoPageState extends State<InfoPage> {
 
 class _InfoPageContent extends StatefulWidget {
   final CollectionLens collection;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final ValueNotifier<bool> visibleNotifier;
   final ScrollController scrollController;
   final bool split;
@@ -134,7 +134,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   CollectionLens get collection => widget.collection;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   Widget build(BuildContext context) {

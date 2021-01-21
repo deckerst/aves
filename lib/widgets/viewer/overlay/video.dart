@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
 class VideoControlOverlay extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final IjkMediaController controller;
   final Animation<double> scale;
 
@@ -37,7 +37,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   // video info is not refreshed by default, so we use a timer to do so
   Timer _progressTimer;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
 

@@ -1,5 +1,5 @@
 import 'package:aves/main.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class InteractiveThumbnail extends StatelessWidget {
   final CollectionLens collection;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double tileExtent;
   final ValueNotifier<bool> isScrollingNotifier;
 
