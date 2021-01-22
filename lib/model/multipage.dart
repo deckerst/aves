@@ -2,7 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
-  final Map<int, SinglePageInfo> pages;
+  final List<SinglePageInfo> pages;
 
   int get pageCount => pages.length;
 
@@ -10,44 +10,49 @@ class MultiPageInfo {
     this.pages,
   });
 
-  factory MultiPageInfo.fromMap(Map map) {
-    final pages = <int, SinglePageInfo>{};
-    map.keys.forEach((key) {
-      final index = key as int;
-      pages.putIfAbsent(index, () => SinglePageInfo.fromMap(map[key]));
-    });
-    return MultiPageInfo(pages: pages);
+  factory MultiPageInfo.fromPageMaps(List<Map> pageMaps) {
+    return MultiPageInfo(pages: pageMaps.map((page) => SinglePageInfo.fromMap(page)).toList());
   }
+
+  SinglePageInfo getByIndex(int index) => pages.firstWhere((page) => page.index == index, orElse: () => null);
+
+  SinglePageInfo getById(int pageId) => pages.firstWhere((page) => page.pageId == pageId, orElse: () => null);
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{pages=$pages}';
 }
 
 class SinglePageInfo {
+  final int index, pageId;
   final String mimeType;
-  final int width, height;
-  final int trackId, durationMillis;
+  final bool isDefault;
+  final int width, height, durationMillis;
 
   SinglePageInfo({
+    this.index,
+    this.pageId,
     this.mimeType,
+    this.isDefault,
     this.width,
     this.height,
-    this.trackId,
     this.durationMillis,
   });
 
   factory SinglePageInfo.fromMap(Map map) {
+    final index = map['page'] as int;
     return SinglePageInfo(
+      index: index,
+      pageId: map['trackId'] as int ?? index,
       mimeType: map['mimeType'] as String,
-      width: map['width'] as int,
-      height: map['height'] as int,
-      trackId: map['trackId'] as int,
+      isDefault: map['isDefault'] as bool ?? false,
+      width: map['width'] as int ?? 0,
+      height: map['height'] as int ?? 0,
       durationMillis: map['durationMillis'] as int,
     );
   }
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{mimeType=$mimeType, width=$width, height=$height, trackId=$trackId, durationMillis=$durationMillis}';
+  String toString() => '$runtimeType#${shortHash(this)}{index=$index, pageId=$pageId, mimeType=$mimeType, isDefault=$isDefault, width=$width, height=$height, durationMillis=$durationMillis}';
 }
 
 class AvesPageEntry extends AvesEntry {
@@ -58,7 +63,7 @@ class AvesPageEntry extends AvesEntry {
     String uri,
     String path,
     int contentId,
-    int page,
+    int pageId,
     String sourceMimeType,
     int width,
     int height,
@@ -72,7 +77,7 @@ class AvesPageEntry extends AvesEntry {
           uri: uri,
           path: path,
           contentId: contentId,
-          page: page,
+          pageId: pageId,
           sourceMimeType: pageInfo.mimeType ?? sourceMimeType,
           width: pageInfo.width ?? width,
           height: pageInfo.height ?? height,

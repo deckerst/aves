@@ -7,10 +7,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MultiPageController extends ChangeNotifier {
-  final Future<MultiPageInfo> info;
-  final ValueNotifier<int> pageNotifier = ValueNotifier(0);
+  Future<MultiPageInfo> info;
+  final ValueNotifier<int> pageNotifier = ValueNotifier(null);
 
-  MultiPageController(AvesEntry entry) : info = MetadataService.getMultiPageInfo(entry);
+  MultiPageController(AvesEntry entry) {
+    info = MetadataService.getMultiPageInfo(entry).then((value) {
+      final defaultPage = value.pages.firstWhere((page) => page.isDefault, orElse: () => null);
+        pageNotifier.value = defaultPage?.index ?? 0;
+      return value;
+    });
+  }
 
   int get page => pageNotifier.value;
 

@@ -87,8 +87,9 @@ class MetadataService {
       final result = await platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
-      }) as Map;
-      return MultiPageInfo.fromMap(result);
+      });
+      final pageMaps = (result as List).cast<Map>();
+      return MultiPageInfo.fromPageMaps(pageMaps);
     } on PlatformException catch (e) {
       debugPrint('getMultiPageInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }

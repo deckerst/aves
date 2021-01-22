@@ -58,7 +58,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val isFlipped = call.argument<Boolean>("isFlipped")
         val widthDip = call.argument<Double>("widthDip")
         val heightDip = call.argument<Double>("heightDip")
-        val page = call.argument<Int>("page")
+        val pageId = call.argument<Int>("pageId")
         val defaultSizeDip = call.argument<Double>("defaultSizeDip")
 
         if (uri == null || mimeType == null || dateModifiedSecs == null || rotationDegrees == null || isFlipped == null || widthDip == null || heightDip == null || defaultSizeDip == null) {
@@ -76,7 +76,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             isFlipped,
             width = (widthDip * density).roundToInt(),
             height = (heightDip * density).roundToInt(),
-            page = page,
+            pageId = pageId,
             defaultSize = (defaultSizeDip * density).roundToInt(),
             result,
         ).fetch()
@@ -85,7 +85,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     private fun getRegion(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
-        val page = call.argument<Int>("page")
+        val pageId = call.argument<Int>("pageId")
         val sampleSize = call.argument<Int>("sampleSize")
         val x = call.argument<Int>("regionX")
         val y = call.argument<Int>("regionY")
@@ -105,7 +105,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
                 uri,
                 sampleSize,
                 regionRect,
-                page = page ?: 0,
+                page = pageId ?: 0,
                 result,
             )
             else -> regionFetcher.fetch(

@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final int page;
   final ValueNotifier<bool> isScrollingNotifier;
   final Object heroTag;
 
@@ -17,7 +16,6 @@ class RasterImageThumbnail extends StatefulWidget {
     Key key,
     @required this.entry,
     @required this.extent,
-    this.page,
     this.isScrollingNotifier,
     this.heroTag,
   }) : super(key: key);

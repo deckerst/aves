@@ -34,7 +34,7 @@ class ThumbnailFetcher internal constructor(
     private val isFlipped: Boolean,
     width: Int?,
     height: Int?,
-    private val page: Int?,
+    private val pageId: Int?,
     private val defaultSize: Int,
     private val result: MethodChannel.Result,
 ) {
@@ -42,7 +42,7 @@ class ThumbnailFetcher internal constructor(
     private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
     private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
     private val tiffFetch = mimeType == MimeTypes.TIFF
-    private val multiTrackFetch = isHeifLike(mimeType) && page != null
+    private val multiTrackFetch = isHeifLike(mimeType) && pageId != null
     private val customFetch = tiffFetch || multiTrackFetch
 
     fun fetch() {
@@ -114,7 +114,7 @@ class ThumbnailFetcher internal constructor(
         // add signature to ignore cache for images which got modified but kept the same URI
         var options = RequestOptions()
             .format(DecodeFormat.PREFER_RGB_565)
-            .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width-$page"))
+            .signature(ObjectKey("$dateModifiedSecs-$rotationDegrees-$isFlipped-$width-$pageId"))
             .override(width, height)
 
         val target = if (isVideo(mimeType)) {
@@ -125,11 +125,11 @@ class ThumbnailFetcher internal constructor(
                 .load(VideoThumbnail(context, uri))
                 .submit(width, height)
         } else {
-            val model: Any = if (tiffFetch) {
-                TiffThumbnail(context, uri, page ?: 0)
-            } else if (multiTrackFetch) {
-                MultiTrackImage(context, uri, page ?: 0)
-            } else uri
+            val model: Any = when {
+                tiffFetch -> TiffThumbnail(context, uri, pageId ?: 0)
+                multiTrackFetch -> MultiTrackImage(context, uri, pageId)
+                else -> uri
+            }
             Glide.with(context)
                 .asBitmap()
                 .apply(options)
