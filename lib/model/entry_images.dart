@@ -9,7 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAvesEntry on AvesEntry {
-  ThumbnailProvider getThumbnail({double extent = 0}) => ThumbnailProvider(_getThumbnailProviderKey(extent));
+  ThumbnailProvider getThumbnail({double extent = 0}) {
+    return ThumbnailProvider(_getThumbnailProviderKey(extent));
+  }
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {
     // we standardize the thumbnail loading dimension by taking the nearest larger power of 2
@@ -28,9 +30,11 @@ extension ExtraAvesEntry on AvesEntry {
     );
   }
 
-  RegionProvider getRegion({@required int sampleSize, Rectangle<int> region}) => RegionProvider(getRegionProviderKey(sampleSize, region));
+  RegionProvider getRegion({@required int sampleSize, Rectangle<int> region}) {
+    return RegionProvider(_getRegionProviderKey(sampleSize, region));
+  }
 
-  RegionProviderKey getRegionProviderKey(int sampleSize, Rectangle<int> region) {
+  RegionProviderKey _getRegionProviderKey(int sampleSize, Rectangle<int> region) {
     return RegionProviderKey(
       uri: uri,
       mimeType: mimeType,

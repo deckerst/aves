@@ -1,4 +1,3 @@
-import 'package:aves/model/entry.dart';
 import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
@@ -8,11 +7,22 @@ class MultiPageInfo {
 
   MultiPageInfo({
     this.pages,
-  });
+  }) {
+    if (pages.isNotEmpty) {
+      pages.sort();
+      // make sure there is a page marked as default
+      if (defaultPage == null) {
+        final firstPage = pages.removeAt(0);
+        pages.insert(0, firstPage.copyWith(isDefault: true));
+      }
+    }
+  }
 
   factory MultiPageInfo.fromPageMaps(List<Map> pageMaps) {
     return MultiPageInfo(pages: pageMaps.map((page) => SinglePageInfo.fromMap(page)).toList());
   }
+
+  SinglePageInfo get defaultPage => pages.firstWhere((page) => page.isDefault, orElse: () => null);
 
   SinglePageInfo getByIndex(int index) => pages.firstWhere((page) => page.index == index, orElse: () => null);
 
@@ -22,13 +32,13 @@ class MultiPageInfo {
   String toString() => '$runtimeType#${shortHash(this)}{pages=$pages}';
 }
 
-class SinglePageInfo {
+class SinglePageInfo implements Comparable<SinglePageInfo> {
   final int index, pageId;
   final String mimeType;
   final bool isDefault;
   final int width, height, durationMillis;
 
-  SinglePageInfo({
+  const SinglePageInfo({
     this.index,
     this.pageId,
     this.mimeType,
@@ -37,6 +47,20 @@ class SinglePageInfo {
     this.height,
     this.durationMillis,
   });
+
+  SinglePageInfo copyWith({
+    bool isDefault,
+  }) {
+    return SinglePageInfo(
+      index: index,
+      pageId: pageId,
+      mimeType: mimeType,
+      isDefault: isDefault ?? this.isDefault,
+      width: width,
+      height: height,
+      durationMillis: durationMillis,
+    );
+  }
 
   factory SinglePageInfo.fromMap(Map map) {
     final index = map['page'] as int;
@@ -53,39 +77,7 @@ class SinglePageInfo {
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{index=$index, pageId=$pageId, mimeType=$mimeType, isDefault=$isDefault, width=$width, height=$height, durationMillis=$durationMillis}';
-}
 
-class AvesPageEntry extends AvesEntry {
-  final SinglePageInfo pageInfo;
-
-  AvesPageEntry({
-    @required this.pageInfo,
-    String uri,
-    String path,
-    int contentId,
-    int pageId,
-    String sourceMimeType,
-    int width,
-    int height,
-    int sourceRotationDegrees,
-    int sizeBytes,
-    String sourceTitle,
-    int dateModifiedSecs,
-    int sourceDateTakenMillis,
-    int durationMillis,
-  }) : super(
-          uri: uri,
-          path: path,
-          contentId: contentId,
-          pageId: pageId,
-          sourceMimeType: pageInfo.mimeType ?? sourceMimeType,
-          width: pageInfo.width ?? width,
-          height: pageInfo.height ?? height,
-          sourceRotationDegrees: sourceRotationDegrees,
-          sizeBytes: sizeBytes,
-          sourceTitle: sourceTitle,
-          dateModifiedSecs: dateModifiedSecs,
-          sourceDateTakenMillis: sourceDateTakenMillis,
-          durationMillis: pageInfo.durationMillis ?? durationMillis,
-        );
+  @override
+  int compareTo(SinglePageInfo other) => index.compareTo(other.index);
 }

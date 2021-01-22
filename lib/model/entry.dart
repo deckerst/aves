@@ -98,21 +98,26 @@ class AvesEntry {
 
   AvesEntry getPageEntry(SinglePageInfo pageInfo) {
     if (pageInfo == null) return this;
-    return AvesPageEntry(
-      pageInfo: pageInfo,
+
+    // do not provide the page ID for the default page,
+    // so that we can treat this page like the main entry
+    // and retrieve cached images for it
+    final pageId = pageInfo.isDefault ? null : pageInfo.pageId;
+
+    return AvesEntry(
       uri: uri,
       path: path,
       contentId: contentId,
-      pageId: pageInfo.pageId,
-      sourceMimeType: sourceMimeType,
-      width: width,
-      height: height,
+      pageId: pageId,
+      sourceMimeType: pageInfo.mimeType ?? sourceMimeType,
+      width: pageInfo.width ?? width,
+      height: pageInfo.height ?? height,
       sourceRotationDegrees: sourceRotationDegrees,
       sizeBytes: sizeBytes,
       sourceTitle: sourceTitle,
       dateModifiedSecs: dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
-      durationMillis: durationMillis,
+      durationMillis: pageInfo.durationMillis ?? durationMillis,
     )
       ..catalogMetadata = _catalogMetadata?.copyWith(
         mimeType: pageInfo.mimeType,
