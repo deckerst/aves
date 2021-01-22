@@ -363,7 +363,7 @@ class _PositionTitleRow extends StatelessWidget {
           // but fail to get information about these pages
           final pageCount = multiPageInfo.pageCount;
           if (pageCount > 0) {
-            final page = multiPageInfo.getById(entry.pageId);
+            final page = multiPageInfo.getById(entry.pageId) ?? multiPageInfo.defaultPage;
             pagePosition = '${(page?.index ?? 0) + 1}/$pageCount';
           }
         }

@@ -12,8 +12,7 @@ class MultiPageController extends ChangeNotifier {
 
   MultiPageController(AvesEntry entry) {
     info = MetadataService.getMultiPageInfo(entry).then((value) {
-      final defaultPage = value.pages.firstWhere((page) => page.isDefault, orElse: () => null);
-        pageNotifier.value = defaultPage?.index ?? 0;
+      pageNotifier.value = value.defaultPage.index;
       return value;
     });
   }
