@@ -34,7 +34,7 @@ class Minimap extends StatelessWidget {
                 return ValueListenableBuilder<int>(
                   valueListenable: multiPageController.pageNotifier,
                   builder: (context, page, child) {
-                    final pageEntry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page);
+                    final pageEntry = mainEntry.getPageEntry(multiPageInfo?.getByIndex(page));
                     return _buildForEntrySize(pageEntry.displaySize);
                   },
                 );

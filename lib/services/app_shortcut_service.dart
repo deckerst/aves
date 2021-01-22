@@ -33,7 +33,7 @@ class AppShortcutService {
       iconBytes = await ImageFileService.getThumbnail(
         uri: entry.uri,
         mimeType: entry.mimeType,
-        page: entry.page,
+        pageId: entry.pageId,
         rotationDegrees: entry.rotationDegrees,
         isFlipped: entry.isFlipped,
         dateModifiedSecs: entry.dateModifiedSecs,

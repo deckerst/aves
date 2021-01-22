@@ -62,7 +62,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
                   return ValueListenableBuilder<int>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
-                      return _buildViewer(entry, multiPageInfo: multiPageInfo, page: page);
+                      return _buildViewer(entry, page: multiPageInfo?.getByIndex(page));
                     },
                   );
                 },
@@ -80,14 +80,13 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  Widget _buildViewer(AvesEntry entry, {MultiPageInfo multiPageInfo, int page}) {
+  Widget _buildViewer(AvesEntry entry, {SinglePageInfo page}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
           key: Key('imageview'),
           mainEntry: entry,
-          multiPageInfo: multiPageInfo,
           page: page,
           viewportSize: mqSize,
           heroTag: widget.collection.heroTag(entry),
@@ -142,7 +141,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
             return ValueListenableBuilder<int>(
               valueListenable: multiPageController.pageNotifier,
               builder: (context, page, child) {
-                return _buildViewer(multiPageInfo: multiPageInfo, page: page);
+                return _buildViewer(page: multiPageInfo?.getByIndex(page));
               },
             );
           },
@@ -157,13 +156,12 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  Widget _buildViewer({MultiPageInfo multiPageInfo, int page}) {
+  Widget _buildViewer({SinglePageInfo page}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
           mainEntry: entry,
-          multiPageInfo: multiPageInfo,
           page: page,
           viewportSize: mqSize,
           onTap: (_) => widget.onTap?.call(),

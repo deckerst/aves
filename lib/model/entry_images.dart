@@ -20,7 +20,7 @@ extension ExtraAvesEntry on AvesEntry {
     return ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
-      page: page,
+      pageId: pageId,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       dateModifiedSecs: dateModifiedSecs ?? -1,
@@ -34,7 +34,7 @@ extension ExtraAvesEntry on AvesEntry {
     return RegionProviderKey(
       uri: uri,
       mimeType: mimeType,
-      page: page,
+      pageId: pageId,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       sampleSize: sampleSize,
@@ -46,7 +46,7 @@ extension ExtraAvesEntry on AvesEntry {
   UriImage get uriImage => UriImage(
         uri: uri,
         mimeType: mimeType,
-        page: page,
+        pageId: pageId,
         rotationDegrees: rotationDegrees,
         isFlipped: isFlipped,
         expectedContentLength: sizeBytes,

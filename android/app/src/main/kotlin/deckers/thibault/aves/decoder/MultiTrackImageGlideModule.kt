@@ -28,7 +28,7 @@ class MultiTrackImageGlideModule : LibraryGlideModule() {
     }
 }
 
-class MultiTrackImage(val context: Context, val uri: Uri, val trackIndex: Int)
+class MultiTrackImage(val context: Context, val uri: Uri, val trackId: Int?)
 
 internal class MultiTrackThumbnailLoader : ModelLoader<MultiTrackImage, InputStream> {
     override fun buildLoadData(model: MultiTrackImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream> {
@@ -53,9 +53,9 @@ internal class MultiTrackImageFetcher(val model: MultiTrackImage, val width: Int
 
         val context = model.context
         val uri = model.uri
-        val trackIndex = model.trackIndex
+        val trackId = model.trackId
 
-        val bitmap = MultiTrackMedia.getImage(context, uri, trackIndex)
+        val bitmap = MultiTrackMedia.getImage(context, uri, trackId)
         if (bitmap == null) {
             callback.onLoadFailed(Exception("null bitmap"))
         } else {

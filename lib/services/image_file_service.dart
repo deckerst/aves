@@ -89,7 +89,7 @@ class ImageFileService {
     String mimeType,
     int rotationDegrees,
     bool isFlipped, {
-    int page,
+    int pageId,
     int expectedContentLength,
     BytesReceivedCallback onBytesReceived,
   }) {
@@ -102,7 +102,7 @@ class ImageFileService {
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
         'isFlipped': isFlipped ?? false,
-        'page': page,
+        'pageId': pageId,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -140,7 +140,7 @@ class ImageFileService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int page,
+    int pageId,
     Object taskKey,
     int priority,
   }) {
@@ -150,7 +150,7 @@ class ImageFileService {
           final result = await platform.invokeMethod('getRegion', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
-            'page': page,
+            'pageId': pageId,
             'sampleSize': sampleSize,
             'regionX': regionRect.left,
             'regionY': regionRect.top,
@@ -174,7 +174,7 @@ class ImageFileService {
     @required String uri,
     @required String mimeType,
     @required int rotationDegrees,
-    @required int page,
+    @required int pageId,
     @required bool isFlipped,
     @required int dateModifiedSecs,
     @required double extent,
@@ -195,7 +195,7 @@ class ImageFileService {
             'isFlipped': isFlipped,
             'widthDip': extent,
             'heightDip': extent,
-            'page': page,
+            'pageId': pageId,
             'defaultSizeDip': thumbnailDefaultSize,
           });
           return result as Uint8List;

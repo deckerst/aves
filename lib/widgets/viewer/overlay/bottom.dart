@@ -101,8 +101,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
                 Widget _buildContent({MultiPageInfo multiPageInfo, int page}) => _BottomOverlayContent(
                       mainEntry: _lastEntry,
-                      multiPageInfo: multiPageInfo,
-                      page: page,
+                      page: multiPageInfo?.getByIndex(page),
                       details: _lastDetails,
                       position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
                       availableWidth: availableWidth,
@@ -139,8 +138,7 @@ const double _subRowMinWidth = 300.0;
 
 class _BottomOverlayContent extends AnimatedWidget {
   final AvesEntry mainEntry, entry;
-  final MultiPageInfo multiPageInfo;
-  final int page;
+  final SinglePageInfo page;
   final OverlayMetadata details;
   final String position;
   final double availableWidth;
@@ -151,13 +149,12 @@ class _BottomOverlayContent extends AnimatedWidget {
   _BottomOverlayContent({
     Key key,
     this.mainEntry,
-    this.multiPageInfo,
     this.page,
     this.details,
     this.position,
     this.availableWidth,
     this.multiPageController,
-  })  : entry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page),
+  })  : entry = mainEntry.getPageEntry(page),
         super(key: key, listenable: mainEntry.metadataChangeNotifier);
 
   @override
@@ -342,6 +339,8 @@ class _PositionTitleRow extends StatelessWidget {
 
   bool get isNotEmpty => collectionPosition != null || multiPageController != null || title != null;
 
+  static const separator = ' • ';
+
   @override
   Widget build(BuildContext context) {
     Text toText({String pagePosition}) => Text(
@@ -349,7 +348,7 @@ class _PositionTitleRow extends StatelessWidget {
           if (collectionPosition != null) collectionPosition,
           if (pagePosition != null) pagePosition,
           if (title != null) title,
-        ].join(' • '),
+        ].join(separator),
         strutStyle: Constants.overflowStrutStyle);
 
     if (multiPageController == null) return toText();
@@ -358,11 +357,17 @@ class _PositionTitleRow extends StatelessWidget {
       future: multiPageController.info,
       builder: (context, snapshot) {
         final multiPageInfo = snapshot.data;
-        final pageCount = multiPageInfo?.pageCount;
-        // page count may be 0 when we know an entry to have multiple pages
-        // but fail to get information about these pages
-        final missingInfo = pageCount == 0;
-        return toText(pagePosition: missingInfo ? null : '${(entry.page ?? 0) + 1}/${pageCount ?? '?'}');
+        String pagePosition;
+        if (multiPageInfo != null) {
+          // page count may be 0 when we know an entry to have multiple pages
+          // but fail to get information about these pages
+          final pageCount = multiPageInfo.pageCount;
+          if (pageCount > 0) {
+            final page = multiPageInfo.getById(entry.pageId);
+            pagePosition = '${(page?.index ?? 0) + 1}/$pageCount';
+          }
+        }
+        return toText(pagePosition: pagePosition);
       },
     );
   }

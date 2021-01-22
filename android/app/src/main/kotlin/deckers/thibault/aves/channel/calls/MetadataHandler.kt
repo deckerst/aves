@@ -524,20 +524,21 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val pages = HashMap<Int, Any>()
+        val pages = ArrayList<Map<String, Any>>()
         if (mimeType == MimeTypes.TIFF) {
-            fun toMap(options: TiffBitmapFactory.Options): Map<String, Any> {
+            fun toMap(page: Int, options: TiffBitmapFactory.Options): HashMap<String, Any> {
                 return hashMapOf(
+                    KEY_PAGE to page,
                     KEY_MIME_TYPE to mimeType,
                     KEY_WIDTH to options.outWidth,
                     KEY_HEIGHT to options.outHeight,
                 )
             }
             getTiffPageInfo(uri, 0)?.let { first ->
-                pages[0] = toMap(first)
+                pages.add(toMap(0, first))
                 val pageCount = first.outDirectoryCount
                 for (i in 1 until pageCount) {
-                    getTiffPageInfo(uri, i)?.let { pages[i] = toMap(it) }
+                    getTiffPageInfo(uri, i)?.let { pages.add(toMap(i, it)) }
                 }
             }
         } else if (isHeifLike(mimeType)) {
@@ -556,14 +557,18 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     val format = extractor.getTrackFormat(i)
                     format.getString(MediaFormat.KEY_MIME)?.let { mime ->
                         val trackMime = if (mime == MediaFormat.MIMETYPE_IMAGE_ANDROID_HEIC) MimeTypes.HEIC else mime
-                        val page = hashMapOf<String, Any>(KEY_MIME_TYPE to trackMime)
+                        val page = hashMapOf<String, Any>(
+                            KEY_PAGE to i,
+                            KEY_MIME_TYPE to trackMime,
+                        )
+                        format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { page[KEY_IS_DEFAULT] = it != 0 }
                         format.getSafeInt(MediaFormat.KEY_TRACK_ID) { page[KEY_TRACK_ID] = it }
                         format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
                         format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
                         if (isVideo(trackMime)) {
                             format.getSafeLong(MediaFormat.KEY_DURATION) { page[KEY_DURATION] = it / 1000 }
                         }
-                        pages[i] = page
+                        pages.add(page)
                     }
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to get track information for uri=$uri, track num=$i", e)
@@ -778,7 +783,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_XMP_TITLE_DESCRIPTION = "xmpTitleDescription"
         private const val KEY_HEIGHT = "height"
         private const val KEY_WIDTH = "width"
+        private const val KEY_PAGE = "page"
         private const val KEY_TRACK_ID = "trackId"
+        private const val KEY_IS_DEFAULT = "isDefault"
         private const val KEY_DURATION = "durationMillis"
 
         private const val MASK_IS_ANIMATED = 1 shl 0

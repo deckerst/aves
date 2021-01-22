@@ -24,7 +24,7 @@ import '../ref/mime_types.dart';
 class AvesEntry {
   String uri;
   String _path, _directory, _filename, _extension;
-  int page, contentId;
+  int pageId, contentId;
   final String sourceMimeType;
   int width;
   int height;
@@ -49,7 +49,7 @@ class AvesEntry {
     this.uri,
     String path,
     this.contentId,
-    this.page,
+    this.pageId,
     this.sourceMimeType,
     @required this.width,
     @required this.height,
@@ -96,18 +96,14 @@ class AvesEntry {
     return copied;
   }
 
-  AvesEntry getPageEntry({
-    @required MultiPageInfo multiPageInfo,
-    @required int page,
-  }) {
-    final pageInfo = (multiPageInfo?.pages ?? {})[page];
+  AvesEntry getPageEntry(SinglePageInfo pageInfo) {
     if (pageInfo == null) return this;
     return AvesPageEntry(
       pageInfo: pageInfo,
       uri: uri,
       path: path,
       contentId: contentId,
-      page: page,
+      pageId: pageInfo.pageId,
       sourceMimeType: sourceMimeType,
       width: width,
       height: height,
@@ -168,7 +164,7 @@ class AvesEntry {
   }
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path, pageId=$pageId}';
 
   set path(String path) {
     _path = path;
@@ -227,7 +223,7 @@ class AvesEntry {
         MimeTypes.srw,
       ].contains(mimeType) &&
       !isAnimated &&
-      page == null;
+      pageId == null;
 
   bool get supportTiling => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
 

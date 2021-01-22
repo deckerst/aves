@@ -86,7 +86,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         val uri = (arguments["uri"] as String?)?.let { Uri.parse(it) }
         val rotationDegrees = arguments["rotationDegrees"] as Int
         val isFlipped = arguments["isFlipped"] as Boolean
-        val page = arguments["page"] as Int?
+        val pageId = arguments["pageId"] as Int?
 
         if (mimeType == null || uri == null) {
             error("streamImage-args", "failed because of missing arguments", null)
@@ -97,10 +97,10 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri)
         } else if (mimeType == MimeTypes.TIFF) {
-            streamTiffImage(uri, page)
+            streamTiffImage(uri, pageId)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
-            streamImageByGlide(uri, page, mimeType, rotationDegrees, isFlipped)
+            streamImageByGlide(uri, pageId, mimeType, rotationDegrees, isFlipped)
         } else {
             // to be decoded by Flutter
             streamImageAsIs(uri)
@@ -116,9 +116,9 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
     }
 
-    private fun streamImageByGlide(uri: Uri, page: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
-        val model: Any = if (isHeifLike(mimeType) && page != null) {
-            MultiTrackImage(activity, uri, page)
+    private fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
+        val model: Any = if (isHeifLike(mimeType) && pageId != null) {
+            MultiTrackImage(activity, uri, pageId)
         } else {
             uri
         }

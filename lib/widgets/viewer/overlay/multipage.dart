@@ -62,7 +62,8 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   }
 
   void _registerWidget() {
-    final scrollOffset = pageToScrollOffset(controller.page);
+    final page = controller.page ?? 0;
+    final scrollOffset = pageToScrollOffset(page);
     _scrollController = ScrollController(initialScrollOffset: scrollOffset);
     _scrollController.addListener(_onScrollChange);
   }
@@ -108,7 +109,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                   itemBuilder: (context, index) {
                     if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
                     final page = index - 1;
-                    final pageEntry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page);
+                    final pageEntry = mainEntry.getPageEntry(multiPageInfo.getByIndex(page));
 
                     return GestureDetector(
                       onTap: () async {

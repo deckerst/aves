@@ -46,8 +46,8 @@ class EntryPrinter {
     if (entry.isMultipage) {
       final multiPageInfo = await MetadataService.getMultiPageInfo(entry);
       if (multiPageInfo.pageCount > 1) {
-        for (final kv in multiPageInfo.pages.entries) {
-          final pageEntry = entry.getPageEntry(multiPageInfo: multiPageInfo, page: kv.key);
+        for (final page in multiPageInfo.pages) {
+          final pageEntry = entry.getPageEntry(page);
           _addPdfPage(await _buildPageImage(pageEntry));
         }
       }

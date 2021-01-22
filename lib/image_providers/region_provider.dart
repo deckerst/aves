@@ -22,7 +22,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${key.uri}, page=${key.page}, mimeType=${key.mimeType}, region=${key.region}');
+        yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, region=${key.region}');
       },
     );
   }
@@ -30,7 +30,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
   Future<ui.Codec> _loadAsync(RegionProviderKey key, DecoderCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
-    final page = key.page;
+    final pageId = key.pageId;
     try {
       final bytes = await ImageFileService.getRegion(
         uri,
@@ -40,7 +40,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         key.sampleSize,
         key.region,
         key.imageSize,
-        page: page,
+        pageId: pageId,
         taskKey: key,
       );
       if (bytes == null) {
@@ -49,7 +49,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw StateError('$mimeType region decoding failed (page $page)');
+      throw StateError('$mimeType region decoding failed (page $pageId)');
     }
   }
 
@@ -66,7 +66,7 @@ class RegionProviderKey {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
-  final int page, rotationDegrees, sampleSize;
+  final int pageId, rotationDegrees, sampleSize;
   final bool isFlipped;
   final Rectangle<int> region;
   final Size imageSize;
@@ -75,7 +75,7 @@ class RegionProviderKey {
   const RegionProviderKey({
     @required this.uri,
     @required this.mimeType,
-    @required this.page,
+    @required this.pageId,
     @required this.rotationDegrees,
     @required this.isFlipped,
     @required this.sampleSize,
@@ -94,14 +94,14 @@ class RegionProviderKey {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.page == page && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.region == region && other.imageSize == imageSize && other.scale == scale;
+    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.pageId == pageId && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.region == region && other.imageSize == imageSize && other.scale == scale;
   }
 
   @override
   int get hashCode => hashValues(
         uri,
         mimeType,
-        page,
+        pageId,
         rotationDegrees,
         isFlipped,
         sampleSize,
@@ -111,5 +111,5 @@ class RegionProviderKey {
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, page=$page, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, region=$region, imageSize=$imageSize, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, region=$region, imageSize=$imageSize, scale=$scale}';
 }

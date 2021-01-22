@@ -23,7 +23,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=${key.uri}, page=${key.page}, mimeType=${key.mimeType}, extent=${key.extent}');
+        yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, extent=${key.extent}');
       },
     );
   }
@@ -31,12 +31,12 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   Future<ui.Codec> _loadAsync(ThumbnailProviderKey key, DecoderCallback decode) async {
     final uri = key.uri;
     final mimeType = key.mimeType;
-    final page = key.page;
+    final pageId = key.pageId;
     try {
       final bytes = await ImageFileService.getThumbnail(
         uri: uri,
         mimeType: mimeType,
-        page: page,
+        pageId: pageId,
         rotationDegrees: key.rotationDegrees,
         isFlipped: key.isFlipped,
         dateModifiedSecs: key.dateModifiedSecs,
@@ -49,7 +49,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with uri=$uri, error=$error');
-      throw StateError('$mimeType decoding failed (page $page)');
+      throw StateError('$mimeType decoding failed (page $pageId)');
     }
   }
 
@@ -66,7 +66,7 @@ class ThumbnailProviderKey {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
-  final int page, rotationDegrees;
+  final int pageId, rotationDegrees;
   final bool isFlipped;
   final int dateModifiedSecs;
   final double extent, scale;
@@ -74,7 +74,7 @@ class ThumbnailProviderKey {
   const ThumbnailProviderKey({
     @required this.uri,
     @required this.mimeType,
-    @required this.page,
+    @required this.pageId,
     @required this.rotationDegrees,
     @required this.isFlipped,
     @required this.dateModifiedSecs,
@@ -91,14 +91,14 @@ class ThumbnailProviderKey {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.uri == uri && other.mimeType == mimeType && other.page == page && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.dateModifiedSecs == dateModifiedSecs && other.extent == extent && other.scale == scale;
+    return other is ThumbnailProviderKey && other.uri == uri && other.mimeType == mimeType && other.pageId == pageId && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.dateModifiedSecs == dateModifiedSecs && other.extent == extent && other.scale == scale;
   }
 
   @override
   int get hashCode => hashValues(
         uri,
         mimeType,
-        page,
+        pageId,
         rotationDegrees,
         isFlipped,
         dateModifiedSecs,
@@ -107,5 +107,5 @@ class ThumbnailProviderKey {
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, page=$page, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent, scale=$scale}';
 }

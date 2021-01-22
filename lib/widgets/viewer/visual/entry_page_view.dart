@@ -24,8 +24,7 @@ import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry entry;
-  final MultiPageInfo multiPageInfo;
-  final int page;
+  final SinglePageInfo page;
   final Size viewportSize;
   final Object heroTag;
   final MagnifierTapCallback onTap;
@@ -37,14 +36,13 @@ class EntryPageView extends StatefulWidget {
   EntryPageView({
     Key key,
     AvesEntry mainEntry,
-    this.multiPageInfo,
     this.page,
     this.viewportSize,
     this.heroTag,
     @required this.onTap,
     @required this.videoControllers,
     this.onDisposed,
-  })  : entry = mainEntry.getPageEntry(multiPageInfo: multiPageInfo, page: page) ?? mainEntry,
+  })  : entry = mainEntry.getPageEntry(page) ?? mainEntry,
         super(key: key);
 
   @override
@@ -198,7 +196,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }) {
     return Magnifier(
       // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${entry.page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
+      key: ValueKey('${entry.pageId}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
       controller: _magnifierController,
       childSize: entry.displaySize,
       minScale: minScale,
