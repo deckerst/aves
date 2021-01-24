@@ -5,10 +5,10 @@ import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/service_policy.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 class ImageFileService {
@@ -22,6 +22,7 @@ class ImageFileService {
     return {
       'uri': entry.uri,
       'path': entry.path,
+      'pageId': entry.pageId,
       'mimeType': entry.mimeType,
       'width': entry.width,
       'height': entry.height,
@@ -236,7 +237,11 @@ class ImageFileService {
     }
   }
 
-  static Stream<MoveOpEvent> move(Iterable<AvesEntry> entries, {@required bool copy, @required String destinationAlbum}) {
+  static Stream<MoveOpEvent> move(
+    Iterable<AvesEntry> entries, {
+    @required bool copy,
+    @required String destinationAlbum,
+  }) {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
@@ -246,6 +251,24 @@ class ImageFileService {
       }).map((event) => MoveOpEvent.fromMap(event));
     } on PlatformException catch (e) {
       debugPrint('move failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      return Stream.error(e);
+    }
+  }
+
+  static Stream<ExportOpEvent> export(
+    Iterable<AvesEntry> entries, {
+    String mimeType = MimeTypes.jpeg,
+    @required String destinationAlbum,
+  }) {
+    try {
+      return opChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'export',
+        'entries': entries.map(_toPlatformEntryMap).toList(),
+        'mimeType': mimeType,
+        'destinationPath': destinationAlbum,
+      }).map((event) => ExportOpEvent.fromMap(event));
+    } on PlatformException catch (e) {
+      debugPrint('export failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       return Stream.error(e);
     }
   }
@@ -290,57 +313,6 @@ class ImageFileService {
     }
     return {};
   }
-}
-
-@immutable
-class ImageOpEvent {
-  final bool success;
-  final String uri;
-
-  const ImageOpEvent({
-    this.success,
-    this.uri,
-  });
-
-  factory ImageOpEvent.fromMap(Map map) {
-    return ImageOpEvent(
-      success: map['success'] ?? false,
-      uri: map['uri'],
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is ImageOpEvent && other.success == success && other.uri == uri;
-  }
-
-  @override
-  int get hashCode => hashValues(success, uri);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri}';
-}
-
-class MoveOpEvent extends ImageOpEvent {
-  final Map newFields;
-
-  const MoveOpEvent({bool success, String uri, this.newFields})
-      : super(
-          success: success,
-          uri: uri,
-        );
-
-  factory MoveOpEvent.fromMap(Map map) {
-    return MoveOpEvent(
-      success: map['success'] ?? false,
-      uri: map['uri'],
-      newFields: map['newFields'],
-    );
-  }
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri, newFields=$newFields}';
 }
 
 // cf flutter/foundation `consolidateHttpClientResponseBytes`

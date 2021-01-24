@@ -1,6 +1,7 @@
 package deckers.thibault.aves.decoder
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import com.bumptech.glide.Glide
@@ -17,35 +18,33 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory
 import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.metadata.MultiTrackMedia
-import deckers.thibault.aves.utils.BitmapUtils.getBytes
-import java.io.InputStream
 
 
 @GlideModule
 class MultiTrackImageGlideModule : LibraryGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        registry.append(MultiTrackImage::class.java, InputStream::class.java, MultiTrackThumbnailLoader.Factory())
+        registry.append(MultiTrackImage::class.java, Bitmap::class.java, MultiTrackThumbnailLoader.Factory())
     }
 }
 
 class MultiTrackImage(val context: Context, val uri: Uri, val trackId: Int?)
 
-internal class MultiTrackThumbnailLoader : ModelLoader<MultiTrackImage, InputStream> {
-    override fun buildLoadData(model: MultiTrackImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<InputStream> {
+internal class MultiTrackThumbnailLoader : ModelLoader<MultiTrackImage, Bitmap> {
+    override fun buildLoadData(model: MultiTrackImage, width: Int, height: Int, options: Options): ModelLoader.LoadData<Bitmap> {
         return ModelLoader.LoadData(ObjectKey(model.uri), MultiTrackImageFetcher(model, width, height))
     }
 
     override fun handles(model: MultiTrackImage): Boolean = true
 
-    internal class Factory : ModelLoaderFactory<MultiTrackImage, InputStream> {
-        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<MultiTrackImage, InputStream> = MultiTrackThumbnailLoader()
+    internal class Factory : ModelLoaderFactory<MultiTrackImage, Bitmap> {
+        override fun build(multiFactory: MultiModelLoaderFactory): ModelLoader<MultiTrackImage, Bitmap> = MultiTrackThumbnailLoader()
 
         override fun teardown() {}
     }
 }
 
-internal class MultiTrackImageFetcher(val model: MultiTrackImage, val width: Int, val height: Int) : DataFetcher<InputStream> {
-    override fun loadData(priority: Priority, callback: DataCallback<in InputStream>) {
+internal class MultiTrackImageFetcher(val model: MultiTrackImage, val width: Int, val height: Int) : DataFetcher<Bitmap> {
+    override fun loadData(priority: Priority, callback: DataCallback<in Bitmap>) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             callback.onLoadFailed(Exception("unsupported Android version"))
             return
@@ -59,17 +58,16 @@ internal class MultiTrackImageFetcher(val model: MultiTrackImage, val width: Int
         if (bitmap == null) {
             callback.onLoadFailed(Exception("null bitmap"))
         } else {
-            callback.onDataReady(bitmap.getBytes()?.inputStream())
+            callback.onDataReady(bitmap)
         }
     }
 
-    // already cleaned up in loadData and ByteArrayInputStream will be GC'd
     override fun cleanup() {}
 
     // cannot cancel
     override fun cancel() {}
 
-    override fun getDataClass(): Class<InputStream> = InputStream::class.java
+    override fun getDataClass(): Class<Bitmap> = Bitmap::class.java
 
     override fun getDataSource(): DataSource = DataSource.LOCAL
 }

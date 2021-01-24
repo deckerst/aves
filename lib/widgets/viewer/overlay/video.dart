@@ -110,7 +110,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                       OverlayButton(
                         scale: scale,
                         child: IconButton(
-                          icon: Icon(AIcons.openInNew),
+                          icon: Icon(AIcons.openOutside),
                           onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                           tooltip: 'Open',
                         ),

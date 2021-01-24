@@ -31,6 +31,7 @@ class AIcons {
   static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
+  static const IconData export = Icons.save_alt_outlined;
   static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
   static const IconData favouriteActive = Icons.favorite;
@@ -38,7 +39,7 @@ class AIcons {
   static const IconData group = Icons.group_work_outlined;
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
-  static const IconData openInNew = Icons.open_in_new_outlined;
+  static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData print = Icons.print_outlined;
   static const IconData refresh = Icons.refresh_outlined;

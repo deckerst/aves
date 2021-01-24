@@ -36,6 +36,10 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException())
     }
 
+    open suspend fun exportMultiple(context: Context, mimeType: String, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+        callback.onFailure(UnsupportedOperationException())
+    }
+
     suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
         val oldFile = File(oldPath)
         val newFile = File(oldFile.parent, newFilename)

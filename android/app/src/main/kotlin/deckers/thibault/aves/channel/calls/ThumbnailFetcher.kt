@@ -14,7 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.decoder.MultiTrackImage
-import deckers.thibault.aves.decoder.TiffThumbnail
+import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
@@ -126,7 +126,7 @@ class ThumbnailFetcher internal constructor(
                 .submit(width, height)
         } else {
             val model: Any = when {
-                tiffFetch -> TiffThumbnail(context, uri, pageId ?: 0)
+                tiffFetch -> TiffImage(context, uri, pageId)
                 multiTrackFetch -> MultiTrackImage(context, uri, pageId)
                 else -> uri
             }

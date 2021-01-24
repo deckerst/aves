@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 enum EntryAction {
   delete,
   edit,
+  export,
   flip,
   info,
   open,
@@ -31,6 +32,7 @@ class EntryActions {
     EntryAction.share,
     EntryAction.delete,
     EntryAction.rename,
+    EntryAction.export,
     EntryAction.print,
     EntryAction.viewSource,
   ];
@@ -52,6 +54,8 @@ extension ExtraEntryAction on EntryAction {
         return null;
       case EntryAction.delete:
         return 'Delete';
+      case EntryAction.export:
+        return 'Export';
       case EntryAction.info:
         return 'Info';
       case EntryAction.rename:
@@ -91,6 +95,8 @@ extension ExtraEntryAction on EntryAction {
         return null;
       case EntryAction.delete:
         return AIcons.delete;
+      case EntryAction.export:
+        return AIcons.export;
       case EntryAction.info:
         return AIcons.info;
       case EntryAction.rename:

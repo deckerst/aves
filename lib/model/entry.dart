@@ -96,13 +96,13 @@ class AvesEntry {
     return copied;
   }
 
-  AvesEntry getPageEntry(SinglePageInfo pageInfo) {
+  AvesEntry getPageEntry(SinglePageInfo pageInfo, {bool eraseDefaultPageId = true}) {
     if (pageInfo == null) return this;
 
     // do not provide the page ID for the default page,
     // so that we can treat this page like the main entry
     // and retrieve cached images for it
-    final pageId = pageInfo.isDefault ? null : pageInfo.pageId;
+    final pageId = eraseDefaultPageId && pageInfo.isDefault ? null : pageInfo.pageId;
 
     return AvesEntry(
       uri: uri,
@@ -253,8 +253,6 @@ class AvesEntry {
   bool get isMultipage => _catalogMetadata?.isMultipage ?? false;
 
   bool get canEdit => path != null;
-
-  bool get canPrint => !isVideo;
 
   bool get canRotateAndFlip => canEdit && canEditExif;
 
@@ -637,9 +635,9 @@ class AvesEntry {
 
   // compare by:
   // 1) date descending
-  // 2) name ascending
+  // 2) name descending
   static int compareByDate(AvesEntry a, AvesEntry b) {
     final c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
-    return c != 0 ? c : compareByName(a, b);
+    return c != 0 ? c : -compareByName(a, b);
   }
 }

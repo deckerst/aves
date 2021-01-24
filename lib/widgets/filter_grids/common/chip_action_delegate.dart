@@ -1,9 +1,11 @@
 import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -109,7 +111,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     final selection = source.rawEntries.where(filter.filter).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, false)) return;
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, MoveType.move)) return;
 
     showOpReport<MoveOpEvent>(
       context: context,

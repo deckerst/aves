@@ -100,7 +100,6 @@ class ViewerDebugPage extends StatelessWidget {
           'is360': '${entry.is360}',
           'canEdit': '${entry.canEdit}',
           'canEditExif': '${entry.canEditExif}',
-          'canPrint': '${entry.canPrint}',
           'canRotateAndFlip': '${entry.canRotateAndFlip}',
           'xmpSubjects': '${entry.xmpSubjects}',
         }),
