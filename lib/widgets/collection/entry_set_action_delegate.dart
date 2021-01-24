@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -46,10 +48,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   void onCollectionActionSelected(BuildContext context, CollectionAction action) {
     switch (action) {
       case CollectionAction.copy:
-        _moveSelection(context, copy: true);
+        _moveSelection(context, moveType: MoveType.copy);
         break;
       case CollectionAction.move:
-        _moveSelection(context, copy: false);
+        _moveSelection(context, moveType: MoveType.move);
         break;
       case CollectionAction.refreshMetadata:
         source.refreshMetadata(selection);
@@ -61,12 +63,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  Future<void> _moveSelection(BuildContext context, {@required bool copy}) async {
+  Future<void> _moveSelection(BuildContext context, {@required MoveType moveType}) async {
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
         settings: RouteSettings(name: AlbumPickPage.routeName),
-        builder: (context) => AlbumPickPage(source: source, copy: copy),
+        builder: (context) => AlbumPickPage(source: source, moveType: moveType),
       ),
     );
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
@@ -74,8 +76,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (!await checkStoragePermission(context, selection)) return;
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, copy)) return;
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
 
+    final copy = moveType == MoveType.copy;
     showOpReport<MoveOpEvent>(
       context: context,
       selection: selection,

@@ -63,7 +63,7 @@ class MapButtonPanel extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 MapOverlayButton(
-                  icon: AIcons.openInNew,
+                  icon: AIcons.openOutside,
                   onPressed: () => AndroidAppService.openMap(geoUri).then((success) {
                     if (!success) showNoMatchingAppDialog(context);
                   }),

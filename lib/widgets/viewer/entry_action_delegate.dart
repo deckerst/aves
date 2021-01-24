@@ -1,23 +1,29 @@
 import 'dart:convert';
 
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
+import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
+import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
+import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/debug_page.dart';
 import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
 
-class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
+class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
   final VoidCallback showInfo;
 
@@ -35,6 +41,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
         break;
       case EntryAction.delete:
         _showDeleteDialog(context, entry);
+        break;
+      case EntryAction.export:
+        _showExportDialog(context, entry);
         break;
       case EntryAction.info:
         showInfo();
@@ -138,6 +147,62 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin {
       // leave viewer
       unawaited(SystemNavigator.pop());
     }
+  }
+
+  Future<void> _showExportDialog(BuildContext context, AvesEntry entry) async {
+    String destinationAlbum;
+    if (hasCollection) {
+      final source = collection.source;
+      destinationAlbum = await Navigator.push(
+        context,
+        MaterialPageRoute<String>(
+          settings: RouteSettings(name: AlbumPickPage.routeName),
+          builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
+        ),
+      );
+    } else {
+      destinationAlbum = entry.directory;
+    }
+
+    if (destinationAlbum == null || destinationAlbum.isEmpty) return;
+    if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
+
+    if (!await checkStoragePermission(context, {entry})) return;
+
+    if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
+
+    final selection = <AvesEntry>{};
+    if (entry.isMultipage) {
+      final multiPageInfo = await MetadataService.getMultiPageInfo(entry);
+      if (multiPageInfo.pageCount > 1) {
+        for (final page in multiPageInfo.pages) {
+          final pageEntry = entry.getPageEntry(page, eraseDefaultPageId: false);
+          selection.add(pageEntry);
+        }
+      }
+    } else {
+      selection.add(entry);
+    }
+
+    showOpReport<ExportOpEvent>(
+      context: context,
+      selection: selection,
+      opStream: ImageFileService.export(selection, destinationAlbum: destinationAlbum),
+      onDone: (processed) {
+        final movedOps = processed.where((e) => e.success);
+        final movedCount = movedOps.length;
+        final selectionCount = selection.length;
+        if (movedCount < selectionCount) {
+          final count = selectionCount - movedCount;
+          showFeedback(context, 'Failed to export ${Intl.plural(count, one: '$count page', other: '$count pages')}');
+        } else {
+          showFeedback(context, 'Done!');
+        }
+        if (hasCollection) {
+          collection.source.refresh();
+        }
+      },
+    );
   }
 
   Future<void> _showRenameDialog(BuildContext context, AvesEntry entry) async {

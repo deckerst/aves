@@ -1,15 +1,15 @@
 import 'dart:async';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 

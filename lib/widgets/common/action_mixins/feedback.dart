@@ -1,5 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';

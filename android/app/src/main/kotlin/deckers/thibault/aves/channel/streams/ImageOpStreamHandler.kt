@@ -42,6 +42,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
 
         when (op) {
             "delete" -> GlobalScope.launch(Dispatchers.IO) { delete() }
+            "export" -> GlobalScope.launch(Dispatchers.IO) { export() }
             "move" -> GlobalScope.launch(Dispatchers.IO) { move() }
             else -> endOfStream()
         }
@@ -80,36 +81,6 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
         }
     }
 
-    private suspend fun move() {
-        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
-            endOfStream()
-            return
-        }
-
-        // assume same provider for all entries
-        val firstEntry = entryMapList.first()
-        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
-        if (provider == null) {
-            error("move-provider", "failed to find provider for entry=$firstEntry", null)
-            return
-        }
-
-        val copy = arguments["copy"] as Boolean?
-        var destinationDir = arguments["destinationPath"] as String?
-        if (copy == null || destinationDir == null) {
-            error("move-args", "failed because of missing arguments", null)
-            return
-        }
-
-        destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
-        val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(context, copy, destinationDir, entries, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = success(fields)
-            override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
-        })
-        endOfStream()
-    }
-
     private suspend fun delete() {
         if (entryMapList.isEmpty()) {
             endOfStream()
@@ -141,6 +112,66 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
                 success(result)
             }
         }
+        endOfStream()
+    }
+
+    private suspend fun export() {
+        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
+            endOfStream()
+            return
+        }
+
+        var destinationDir = arguments["destinationPath"] as String?
+        val mimeType = arguments["mimeType"] as String?
+        if (destinationDir == null || mimeType == null) {
+            error("export-args", "failed because of missing arguments", null)
+            return
+        }
+
+        // assume same provider for all entries
+        val firstEntry = entryMapList.first()
+        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
+        if (provider == null) {
+            error("export-provider", "failed to find provider for entry=$firstEntry", null)
+            return
+        }
+
+        destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
+        val entries = entryMapList.map(::AvesEntry)
+        provider.exportMultiple(context, mimeType, destinationDir, entries, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = success(fields)
+            override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
+        })
+        endOfStream()
+    }
+
+    private suspend fun move() {
+        if (arguments !is Map<*, *> || entryMapList.isEmpty()) {
+            endOfStream()
+            return
+        }
+
+        val copy = arguments["copy"] as Boolean?
+        var destinationDir = arguments["destinationPath"] as String?
+        if (copy == null || destinationDir == null) {
+            error("move-args", "failed because of missing arguments", null)
+            return
+        }
+
+        // assume same provider for all entries
+        val firstEntry = entryMapList.first()
+        val provider = (firstEntry["uri"] as String?)?.let { Uri.parse(it) }?.let { getProvider(it) }
+        if (provider == null) {
+            error("move-provider", "failed to find provider for entry=$firstEntry", null)
+            return
+        }
+
+        destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
+        val entries = entryMapList.map(::AvesEntry)
+        provider.moveMultiple(context, copy, destinationDir, entries, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = success(fields)
+            override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
+        })
         endOfStream()
     }
 

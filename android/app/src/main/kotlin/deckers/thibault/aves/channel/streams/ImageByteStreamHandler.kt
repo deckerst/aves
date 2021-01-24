@@ -10,6 +10,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
@@ -25,7 +26,6 @@ import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 import java.io.InputStream
 
@@ -96,8 +96,6 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
         if (isVideo(mimeType)) {
             streamVideoByGlide(uri)
-        } else if (mimeType == MimeTypes.TIFF) {
-            streamTiffImage(uri, pageId)
         } else if (!isSupportedByFlutter(mimeType, rotationDegrees, isFlipped)) {
             // decode exotic format on platform side, then encode it in portable format for Flutter
             streamImageByGlide(uri, pageId, mimeType, rotationDegrees, isFlipped)
@@ -119,6 +117,8 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     private fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
         val model: Any = if (isHeifLike(mimeType) && pageId != null) {
             MultiTrackImage(activity, uri, pageId)
+        } else if (mimeType == MimeTypes.TIFF) {
+            TiffImage(activity, uri, pageId)
         } else {
             uri
         }
@@ -162,28 +162,6 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             error("streamImage-video-exception", "failed to get image from uri=$uri", e.message)
         } finally {
             Glide.with(activity).clear(target)
-        }
-    }
-
-    private fun streamTiffImage(uri: Uri, page: Int?) {
-        val resolver = activity.contentResolver
-        try {
-            val fd = resolver.openFileDescriptor(uri, "r")?.detachFd()
-            if (fd == null) {
-                error("streamImage-tiff-fd", "failed to get file descriptor for uri=$uri", null)
-                return
-            }
-            val options = TiffBitmapFactory.Options().apply {
-                inDirectoryNumber = page ?: 0
-            }
-            val bitmap = TiffBitmapFactory.decodeFileDescriptor(fd, options)
-            if (bitmap != null) {
-                success(bitmap.getBytes(canHaveAlpha = true, recycle = true))
-            } else {
-                error("streamImage-tiff-null", "failed to get tiff image (dir=$page) from uri=$uri", null)
-            }
-        } catch (e: Exception) {
-            error("streamImage-tiff-exception", "failed to get image from uri=$uri", toErrorDetails(e))
         }
     }
 

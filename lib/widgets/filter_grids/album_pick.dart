@@ -1,4 +1,5 @@
 import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -19,11 +20,11 @@ class AlbumPickPage extends StatefulWidget {
   static const routeName = '/album_pick';
 
   final CollectionSource source;
-  final bool copy;
+  final MoveType moveType;
 
   const AlbumPickPage({
     @required this.source,
-    @required this.copy,
+    @required this.moveType,
   });
 
   @override
@@ -38,7 +39,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
   @override
   Widget build(BuildContext context) {
     Widget appBar = AlbumPickAppBar(
-      copy: widget.copy,
+      moveType: widget.moveType,
       actionDelegate: AlbumChipSetActionDelegate(source: source),
       queryNotifier: _queryNotifier,
     );
@@ -71,23 +72,36 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
 }
 
 class AlbumPickAppBar extends StatelessWidget {
-  final bool copy;
+  final MoveType moveType;
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
 
   static const preferredHeight = kToolbarHeight + AlbumFilterBar.preferredHeight;
 
   const AlbumPickAppBar({
-    @required this.copy,
+    @required this.moveType,
     @required this.actionDelegate,
     @required this.queryNotifier,
   });
 
   @override
   Widget build(BuildContext context) {
+    String title() {
+      switch (moveType) {
+        case MoveType.copy:
+          return 'Copy to Album';
+        case MoveType.export:
+          return 'Export to Album';
+        case MoveType.move:
+          return 'Move to Album';
+        default:
+          return null;
+      }
+    }
+
     return SliverAppBar(
       leading: BackButton(),
-      title: Text(copy ? 'Copy to Album' : 'Move to Album'),
+      title: Text(title()),
       bottom: AlbumFilterBar(
         filterNotifier: queryNotifier,
       ),

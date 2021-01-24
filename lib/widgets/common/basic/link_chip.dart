@@ -44,7 +44,7 @@ class LinkChip extends StatelessWidget {
               SizedBox(width: 8),
               Builder(
                 builder: (context) => Icon(
-                  AIcons.openInNew,
+                  AIcons.openOutside,
                   size: DefaultTextStyle.of(context).style.fontSize,
                   color: color,
                 ),
