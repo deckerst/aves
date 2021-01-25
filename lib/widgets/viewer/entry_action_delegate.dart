@@ -153,6 +153,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
   Future<void> _showExportDialog(BuildContext context, AvesEntry entry) async {
     final source = context.read<CollectionSource>();
+    if (!source.initialized) {
+      await source.init();
+      unawaited(source.refresh());
+    }
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(

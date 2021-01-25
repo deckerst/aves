@@ -2,10 +2,14 @@ import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/app_bar_subtitle.dart';
+import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
 import 'package:aves/widgets/dialogs/create_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -13,8 +17,10 @@ import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class AlbumPickPage extends StatefulWidget {
   static const routeName = '/album_pick';
@@ -39,32 +45,36 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
   @override
   Widget build(BuildContext context) {
     Widget appBar = AlbumPickAppBar(
+      source: source,
       moveType: widget.moveType,
       actionDelegate: AlbumChipSetActionDelegate(source: source),
       queryNotifier: _queryNotifier,
     );
 
-    return Selector<Settings, ChipSortFactor>(
-      selector: (context, s) => s.albumSortFactor,
-      builder: (context, sortFactor, child) {
-        return FilterGridPage<AlbumFilter>(
-          source: source,
-          appBar: appBar,
-          filterSections: AlbumListPage.getAlbumEntries(source),
-          showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-          applyQuery: (filters, query) {
-            if (query == null || query.isEmpty) return filters;
-            query = query.toUpperCase();
-            return filters.where((item) => item.filter.uniqueName.toUpperCase().contains(query)).toList();
-          },
-          queryNotifier: _queryNotifier,
-          emptyBuilder: () => EmptyContent(
-            icon: AIcons.album,
-            text: 'No albums',
+    return Selector<Settings, Tuple2<AlbumChipGroupFactor, ChipSortFactor>>(
+      selector: (context, s) => Tuple2(s.albumGroupFactor, s.albumSortFactor),
+      builder: (context, s, child) {
+        return StreamBuilder(
+          stream: source.eventBus.on<AlbumsChangedEvent>(),
+          builder: (context, snapshot) => FilterGridPage<AlbumFilter>(
+            source: source,
+            appBar: appBar,
+            filterSections: AlbumListPage.getAlbumEntries(source),
+            showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+            applyQuery: (filters, query) {
+              if (query == null || query.isEmpty) return filters;
+              query = query.toUpperCase();
+              return filters.where((item) => item.filter.uniqueName.toUpperCase().contains(query)).toList();
+            },
+            queryNotifier: _queryNotifier,
+            emptyBuilder: () => EmptyContent(
+              icon: AIcons.album,
+              text: 'No albums',
+            ),
+            settingsRouteKey: AlbumListPage.routeName,
+            appBarHeight: AlbumPickAppBar.preferredHeight,
+            onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           ),
-          settingsRouteKey: AlbumListPage.routeName,
-          appBarHeight: AlbumPickAppBar.preferredHeight,
-          onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
         );
       },
     );
@@ -72,6 +82,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
 }
 
 class AlbumPickAppBar extends StatelessWidget {
+  final CollectionSource source;
   final MoveType moveType;
   final AlbumChipSetActionDelegate actionDelegate;
   final ValueNotifier<String> queryNotifier;
@@ -79,6 +90,7 @@ class AlbumPickAppBar extends StatelessWidget {
   static const preferredHeight = kToolbarHeight + AlbumFilterBar.preferredHeight;
 
   const AlbumPickAppBar({
+    @required this.source,
     @required this.moveType,
     @required this.actionDelegate,
     @required this.queryNotifier,
@@ -101,7 +113,10 @@ class AlbumPickAppBar extends StatelessWidget {
 
     return SliverAppBar(
       leading: BackButton(),
-      title: Text(title()),
+      title: SourceStateAwareAppBarTitle(
+        title: Text(title()),
+        source: source,
+      ),
       bottom: AlbumFilterBar(
         filterNotifier: queryNotifier,
       ),
@@ -119,10 +134,23 @@ class AlbumPickAppBar extends StatelessWidget {
           },
           tooltip: 'Create album',
         ),
-        IconButton(
-          icon: Icon(AIcons.sort),
-          onPressed: () => actionDelegate.onActionSelected(context, ChipSetAction.sort),
-          tooltip: 'Sort…',
+        PopupMenuButton<ChipSetAction>(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                value: ChipSetAction.sort,
+                child: MenuRow(text: 'Sort…', icon: AIcons.sort),
+              ),
+              PopupMenuItem(
+                value: ChipSetAction.group,
+                child: MenuRow(text: 'Group…', icon: AIcons.group),
+              ),
+            ];
+          },
+          onSelected: (action) {
+            // wait for the popup menu to hide before proceeding with the action
+            Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, action));
+          },
         ),
       ],
       floating: true,
