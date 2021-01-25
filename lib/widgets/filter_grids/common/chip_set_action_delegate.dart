@@ -92,7 +92,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
       builder: (context) => AvesSelectionDialog<AlbumChipGroupFactor>(
         initialValue: settings.albumGroupFactor,
         options: {
-          AlbumChipGroupFactor.importance: 'By importance',
+          AlbumChipGroupFactor.importance: 'By tier',
           AlbumChipGroupFactor.volume: 'By storage volume',
           AlbumChipGroupFactor.none: 'Do not group',
         },

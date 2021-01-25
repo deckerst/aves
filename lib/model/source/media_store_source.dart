@@ -13,6 +13,11 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
+  bool _initialized = false;
+
+  @override
+  bool get initialized => _initialized;
+
   @override
   Future<void> init() async {
     final stopwatch = Stopwatch()..start();
@@ -29,6 +34,7 @@ class MediaStoreSource extends CollectionSource {
       settings.catalogTimeZone = currentTimeZone;
     }
     await loadDates(); // 100ms for 5400 entries
+    _initialized = true;
     debugPrint('$runtimeType init done, elapsed=${stopwatch.elapsed}');
   }
 
