@@ -227,8 +227,7 @@ class AvesEntry {
         MimeTypes.rw2,
         MimeTypes.srw,
       ].contains(mimeType) &&
-      !isAnimated &&
-      pageId == null;
+      !isAnimated;
 
   bool get supportTiling => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
 
