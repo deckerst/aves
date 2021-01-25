@@ -164,6 +164,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return _filterEntryCountMap.putIfAbsent(filter, () => _rawEntries.where((entry) => filter.filter(entry)).length);
   }
 
+  Future<void> init();
+
   Future<void> refresh();
 
   Future<void> refreshMetadata(Set<AvesEntry> entries);

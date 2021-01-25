@@ -1,9 +1,11 @@
-import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
@@ -45,25 +47,31 @@ class _InfoPageState extends State<InfoPage> {
             bottom: false,
             child: NotificationListener(
               onNotification: _handleTopScroll,
-              child: Selector<MediaQueryData, double>(
-                selector: (c, mq) => mq.size.width,
-                builder: (c, mqWidth, child) {
-                  return ValueListenableBuilder<AvesEntry>(
-                    valueListenable: widget.entryNotifier,
-                    builder: (context, entry, child) {
-                      return entry != null
-                          ? _InfoPageContent(
-                              collection: collection,
-                              entry: entry,
-                              visibleNotifier: widget.visibleNotifier,
-                              scrollController: _scrollController,
-                              split: mqWidth > 400,
-                              goToViewer: _goToViewer,
-                            )
-                          : SizedBox.shrink();
-                    },
-                  );
+              child: NotificationListener<OpenTempEntryNotification>(
+                onNotification: (notification) {
+                  _openTempEntry(notification.entry);
+                  return true;
                 },
+                child: Selector<MediaQueryData, double>(
+                  selector: (c, mq) => mq.size.width,
+                  builder: (c, mqWidth, child) {
+                    return ValueListenableBuilder<AvesEntry>(
+                      valueListenable: widget.entryNotifier,
+                      builder: (context, entry, child) {
+                        return entry != null
+                            ? _InfoPageContent(
+                                collection: collection,
+                                entry: entry,
+                                visibleNotifier: widget.visibleNotifier,
+                                scrollController: _scrollController,
+                                split: mqWidth > 400,
+                                goToViewer: _goToViewer,
+                              )
+                            : SizedBox.shrink();
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -101,6 +109,18 @@ class _InfoPageState extends State<InfoPage> {
       0,
       duration: Durations.viewerPageAnimation,
       curve: Curves.easeInOut,
+    );
+  }
+
+  void _openTempEntry(AvesEntry tempEntry) {
+    Navigator.push(
+      context,
+      TransparentMaterialPageRoute(
+        settings: RouteSettings(name: EntryViewerPage.routeName),
+        pageBuilder: (c, a, sa) => EntryViewerPage(
+          initialEntry: tempEntry,
+        ),
+      ),
     );
   }
 }

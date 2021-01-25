@@ -4,6 +4,7 @@ import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:provider/provider.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
@@ -150,19 +152,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _showExportDialog(BuildContext context, AvesEntry entry) async {
-    String destinationAlbum;
-    if (hasCollection) {
-      final source = collection.source;
-      destinationAlbum = await Navigator.push(
-        context,
-        MaterialPageRoute<String>(
-          settings: RouteSettings(name: AlbumPickPage.routeName),
-          builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
-        ),
-      );
-    } else {
-      destinationAlbum = entry.directory;
-    }
+    final source = context.read<CollectionSource>();
+    final destinationAlbum = await Navigator.push(
+      context,
+      MaterialPageRoute<String>(
+        settings: RouteSettings(name: AlbumPickPage.routeName),
+        builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
+      ),
+    );
 
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
@@ -198,9 +195,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         } else {
           showFeedback(context, 'Done!');
         }
-        if (hasCollection) {
-          collection.source.refresh();
-        }
+        source.refresh();
       },
     );
   }

@@ -5,7 +5,7 @@ import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/';
@@ -34,7 +35,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  MediaStoreSource _mediaStore;
   AvesEntry _viewerEntry;
   String _shortcutRouteName;
   List<String> _shortcutFilters;
@@ -100,9 +100,9 @@ class _HomePageState extends State<HomePage> {
     unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', AvesApp.mode.toString()));
 
     if (AvesApp.mode != AppMode.view) {
-      _mediaStore = MediaStoreSource();
-      await _mediaStore.init();
-      unawaited(_mediaStore.refresh());
+      final source = context.read<CollectionSource>();
+      await source.init();
+      unawaited(source.refresh());
     }
 
     unawaited(Navigator.pushReplacement(context, _getRedirectRoute()));
@@ -121,8 +121,10 @@ class _HomePageState extends State<HomePage> {
   Route _getRedirectRoute() {
     if (AvesApp.mode == AppMode.view) {
       return DirectMaterialPageRoute(
-        settings: RouteSettings(name: SingleEntryViewerPage.routeName),
-        builder: (_) => SingleEntryViewerPage(entry: _viewerEntry),
+        settings: RouteSettings(name: EntryViewerPage.routeName),
+        builder: (_) => EntryViewerPage(
+          initialEntry: _viewerEntry,
+        ),
       );
     }
 
@@ -134,15 +136,16 @@ class _HomePageState extends State<HomePage> {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;
       filters = (_shortcutFilters ?? []).map(CollectionFilter.fromJson);
     }
+    final source = context.read<CollectionSource>();
     switch (routeName) {
       case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
           settings: RouteSettings(name: AlbumListPage.routeName),
-          builder: (_) => AlbumListPage(source: _mediaStore),
+          builder: (_) => AlbumListPage(source: source),
         );
       case SearchPage.routeName:
         return SearchPageRoute(
-          delegate: CollectionSearchDelegate(source: _mediaStore),
+          delegate: CollectionSearchDelegate(source: source),
         );
       case CollectionPage.routeName:
       default:
@@ -150,7 +153,7 @@ class _HomePageState extends State<HomePage> {
           settings: RouteSettings(name: CollectionPage.routeName),
           builder: (_) => CollectionPage(
             CollectionLens(
-              source: _mediaStore,
+              source: source,
               filters: filters,
               groupFactor: settings.collectionGroupFactor,
               sortFactor: settings.collectionSortFactor,

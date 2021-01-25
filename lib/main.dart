@@ -2,10 +2,11 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/media_store_source.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
-import 'package:aves/widgets/common/providers/settings_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 
 void main() {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
@@ -137,25 +139,29 @@ class _AvesAppState extends State<AvesApp> {
   Widget build(BuildContext context) {
     // place the settings provider above `MaterialApp`
     // so it can be used during navigation transitions
-    return SettingsProvider(
-      child: OverlaySupport(
-        child: FutureBuilder<void>(
-          future: _appSetup,
-          builder: (context, snapshot) {
-            final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
-                ? getFirstPage()
-                : Scaffold(
-                    body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
-                  );
-            return MaterialApp(
-              navigatorKey: _navigatorKey,
-              home: home,
-              navigatorObservers: _navigatorObservers,
-              title: 'Aves',
-              darkTheme: darkTheme,
-              themeMode: ThemeMode.dark,
-            );
-          },
+    return ChangeNotifierProvider<Settings>.value(
+      value: settings,
+      child: Provider<CollectionSource>(
+        create: (context) => MediaStoreSource(),
+        child: OverlaySupport(
+          child: FutureBuilder<void>(
+            future: _appSetup,
+            builder: (context, snapshot) {
+              final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
+                  ? getFirstPage()
+                  : Scaffold(
+                      body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
+                    );
+              return MaterialApp(
+                navigatorKey: _navigatorKey,
+                home: home,
+                navigatorObservers: _navigatorObservers,
+                title: 'Aves',
+                darkTheme: darkTheme,
+                themeMode: ThemeMode.dark,
+              );
+            },
+          ),
         ),
       ),
     );
