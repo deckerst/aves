@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.calls
+package deckers.thibault.aves.channel.calls.fetchers
 
 import android.content.ContentUris
 import android.content.Context

@@ -1,15 +1,22 @@
-package deckers.thibault.aves.channel.calls
+package deckers.thibault.aves.channel.calls.fetchers
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
 import android.util.Size
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 import kotlin.math.roundToInt
 
 class RegionFetcher internal constructor(
@@ -17,21 +24,42 @@ class RegionFetcher internal constructor(
 ) {
     private var lastDecoderRef: LastDecoderRef? = null
 
+    private val pageTempUris = HashMap<Pair<Uri, Int>, Uri>()
+
+    private val multiTrackGlideOptions = RequestOptions()
+        .format(DecodeFormat.PREFER_ARGB_8888)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
+
     fun fetch(
         uri: Uri,
         mimeType: String,
+        pageId: Int?,
         sampleSize: Int,
         regionRect: Rect,
         imageSize: Size,
         result: MethodChannel.Result,
     ) {
+        if (MimeTypes.isHeifLike(mimeType) && pageId != null) {
+            val id = Pair(uri, pageId)
+            fetch(
+                uri = pageTempUris.getOrPut(id) { createJpegForPage(uri, pageId) },
+                mimeType = MimeTypes.JPEG,
+                pageId = null,
+                sampleSize = sampleSize,
+                regionRect = regionRect,
+                imageSize = imageSize,
+                result = result,
+            )
+            return
+        }
+
         val options = BitmapFactory.Options().apply {
             inSampleSize = sampleSize
         }
 
         var currentDecoderRef = lastDecoderRef
         if (currentDecoderRef != null && currentDecoderRef.uri != uri) {
-            currentDecoderRef.decoder.recycle()
             currentDecoderRef = null
         }
 
@@ -72,6 +100,31 @@ class RegionFetcher internal constructor(
             }
         } catch (e: Exception) {
             result.error("getRegion-read-exception", "failed to initialize region decoder for uri=$uri regionRect=$regionRect", e.message)
+        }
+    }
+
+    private fun createJpegForPage(sourceUri: Uri, pageId: Int): Uri {
+        val target = Glide.with(context)
+            .asBitmap()
+            .apply(multiTrackGlideOptions)
+            .load(MultiTrackImage(context, sourceUri, pageId))
+            .submit()
+        try {
+            val bitmap = target.get()
+//            if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
+//                bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+//            }
+            bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
+
+            val tempFile = File.createTempFile("aves", null, context.cacheDir).apply {
+                deleteOnExit()
+                outputStream().use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+            }
+            return Uri.fromFile(tempFile)
+        } finally {
+            Glide.with(context).clear(target)
         }
     }
 }

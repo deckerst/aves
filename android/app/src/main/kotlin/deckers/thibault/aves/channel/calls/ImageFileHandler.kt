@@ -5,6 +5,9 @@ import android.graphics.Rect
 import android.net.Uri
 import android.util.Size
 import com.bumptech.glide.Glide
+import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
+import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
+import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.provider.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
@@ -102,19 +105,20 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val regionRect = Rect(x, y, x + width, y + height)
         when (mimeType) {
             MimeTypes.TIFF -> TiffRegionFetcher(activity).fetch(
-                uri,
-                sampleSize,
-                regionRect,
+                uri = uri,
                 page = pageId ?: 0,
-                result,
+                sampleSize = sampleSize,
+                regionRect = regionRect,
+                result = result,
             )
             else -> regionFetcher.fetch(
-                uri,
-                mimeType,
-                sampleSize,
-                regionRect,
-                Size(imageWidth, imageHeight),
-                result,
+                uri = uri,
+                mimeType = mimeType,
+                pageId = pageId,
+                sampleSize = sampleSize,
+                regionRect = regionRect,
+                imageSize = Size(imageWidth, imageHeight),
+                result = result,
             )
         }
     }
