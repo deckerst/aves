@@ -13,6 +13,7 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
+  @override
   Future<void> init() async {
     final stopwatch = Stopwatch()..start();
     stateNotifier.value = SourceState.loading;

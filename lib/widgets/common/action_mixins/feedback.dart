@@ -82,7 +82,7 @@ mixin FeedbackMixin {
 
   Future<void> _hideOpReportOverlay() async {
     await Future.delayed(Durations.collectionOpOverlayAnimation * timeDilation);
-    _opReportOverlayEntry.remove();
+    _opReportOverlayEntry?.remove();
     _opReportOverlayEntry = null;
   }
 }

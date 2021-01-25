@@ -1,8 +1,11 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
+import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -109,10 +112,28 @@ class InfoSearchDelegate extends SearchDelegate {
             icon: AIcons.info,
             text: 'No matching keys',
           )
-        : ListView.builder(
-            padding: EdgeInsets.all(8),
-            itemBuilder: (context, index) => tiles[index],
-            itemCount: tiles.length,
+        : NotificationListener<OpenTempEntryNotification>(
+            onNotification: (notification) {
+              _openTempEntry(context, notification.entry);
+              return true;
+            },
+            child: ListView.builder(
+              padding: EdgeInsets.all(8),
+              itemBuilder: (context, index) => tiles[index],
+              itemCount: tiles.length,
+            ),
           );
+  }
+
+  void _openTempEntry(BuildContext context, AvesEntry tempEntry) {
+    Navigator.push(
+      context,
+      TransparentMaterialPageRoute(
+        settings: RouteSettings(name: EntryViewerPage.routeName),
+        pageBuilder: (c, a, sa) => EntryViewerPage(
+          initialEntry: tempEntry,
+        ),
+      ),
+    );
   }
 }

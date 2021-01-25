@@ -4,50 +4,33 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:flutter/material.dart';
 
-class MultiEntryViewerPage extends AnimatedWidget {
+class EntryViewerPage extends StatelessWidget {
   static const routeName = '/viewer';
 
   final CollectionLens collection;
   final AvesEntry initialEntry;
 
-  const MultiEntryViewerPage({
+  const EntryViewerPage({
     Key key,
     this.collection,
     this.initialEntry,
-  }) : super(key: key, listenable: collection);
-
-  @override
-  Widget build(BuildContext context) {
-    return MediaQueryDataProvider(
-      child: Scaffold(
-        body: EntryViewerStack(
-          collection: collection,
-          initialEntry: initialEntry,
-        ),
-        backgroundColor: Colors.transparent,
-        resizeToAvoidBottomInset: false,
-      ),
-    );
-  }
-}
-
-class SingleEntryViewerPage extends StatelessWidget {
-  static const routeName = '/viewer';
-
-  final AvesEntry entry;
-
-  const SingleEntryViewerPage({
-    Key key,
-    this.entry,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
-        body: EntryViewerStack(
-          initialEntry: entry,
-        ),
+        body: collection != null
+            ? AnimatedBuilder(
+                animation: collection,
+                builder: (context, child) => EntryViewerStack(
+                  collection: collection,
+                  initialEntry: initialEntry,
+                ),
+              )
+            : EntryViewerStack(
+                initialEntry: initialEntry,
+              ),
         backgroundColor: Navigator.canPop(context) ? Colors.transparent : Colors.black,
         resizeToAvoidBottomInset: false,
       ),

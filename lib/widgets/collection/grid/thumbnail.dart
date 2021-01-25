@@ -53,8 +53,8 @@ class InteractiveThumbnail extends StatelessWidget {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        settings: RouteSettings(name: MultiEntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) => MultiEntryViewerPage(
+        settings: RouteSettings(name: EntryViewerPage.routeName),
+        pageBuilder: (c, a, sa) => EntryViewerPage(
           collection: collection,
           initialEntry: entry,
         ),
