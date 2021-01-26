@@ -16,11 +16,11 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/debug_page.dart';
+import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
@@ -139,15 +139,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await entry.delete()) {
       showFeedback(context, 'Failed');
-    } else if (hasCollection) {
-      // update collection
-      collection.source.removeEntries([entry]);
-      if (collection.sortedEntries.isEmpty) {
-        Navigator.pop(context);
-      }
     } else {
-      // leave viewer
-      unawaited(SystemNavigator.pop());
+      if (hasCollection) {
+        collection.source.removeEntries([entry]);
+      }
+      EntryDeletedNotification(entry).dispatch(context);
     }
   }
 
@@ -199,7 +195,6 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         } else {
           showFeedback(context, 'Done!');
         }
-        source.refresh();
       },
     );
   }

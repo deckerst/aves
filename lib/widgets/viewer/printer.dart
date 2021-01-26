@@ -32,8 +32,9 @@ class EntryPrinter {
 
     void _addPdfPage(pdf.Widget pdfChild) {
       if (pdfChild == null) return;
+      final displaySize = entry.displaySize;
       pages.add(pdf.Page(
-        orientation: entry.isPortrait ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
+        orientation: displaySize.height > displaySize.width ? pdf.PageOrientation.portrait : pdf.PageOrientation.landscape,
         build: (context) => pdf.FullPage(
           ignoreMargins: true,
           child: pdf.Center(

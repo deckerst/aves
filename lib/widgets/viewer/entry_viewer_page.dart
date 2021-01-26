@@ -20,17 +20,10 @@ class EntryViewerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
-        body: collection != null
-            ? AnimatedBuilder(
-                animation: collection,
-                builder: (context, child) => EntryViewerStack(
-                  collection: collection,
-                  initialEntry: initialEntry,
-                ),
-              )
-            : EntryViewerStack(
-                initialEntry: initialEntry,
-              ),
+        body: EntryViewerStack(
+          collection: collection,
+          initialEntry: initialEntry,
+        ),
         backgroundColor: Navigator.canPop(context) ? Colors.transparent : Colors.black,
         resizeToAvoidBottomInset: false,
       ),

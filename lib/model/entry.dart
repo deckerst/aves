@@ -268,12 +268,13 @@ class AvesEntry {
     }
   }
 
-  // The additional comparison of width to height is a workaround for badly registered entries.
-  // e.g. a portrait FHD video should be registered as width=1920, height=1080, orientation=90,
-  // but is incorrectly registered in the Media Store as width=1080, height=1920, orientation=0
-  // Double-checking the width/height during loading or cataloguing is the proper solution,
-  // but it would take space and time, so a basic workaround will do.
-  bool get isPortrait => rotationDegrees % 180 == 90 && (catalogMetadata?.rotationDegrees == null || width > height);
+  // Media Store size/rotation is inaccurate, e.g. a portrait FHD video is rotated according to its metadata,
+  // so it should be registered as width=1920, height=1080, orientation=90,
+  // but is incorrectly registered as width=1080, height=1920, orientation=0.
+  // Double-checking the width/height during loading or cataloguing is the proper solution, but it would take space and time.
+  // Comparing width and height can help with the portrait FHD video example,
+  // but it fails for a portrait screenshot rotated, which is landscape with width=1080, height=1920, orientation=90
+  bool get isRotated => rotationDegrees % 180 == 90;
 
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
@@ -281,7 +282,7 @@ class AvesEntry {
   String get resolutionText {
     final ws = width ?? '?';
     final hs = height ?? '?';
-    return isPortrait ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
+    return isRotated ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
   }
 
   String get aspectRatioText {
@@ -289,7 +290,7 @@ class AvesEntry {
       final gcd = width.gcd(height);
       final w = width ~/ gcd;
       final h = height ~/ gcd;
-      return isPortrait ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
+      return isRotated ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
     } else {
       return '?$ratioSeparator?';
     }
@@ -297,13 +298,13 @@ class AvesEntry {
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
-    return isPortrait ? height / width : width / height;
+    return isRotated ? height / width : width / height;
   }
 
   Size get displaySize {
     final w = width.toDouble();
     final h = height.toDouble();
-    return isPortrait ? Size(h, w) : Size(w, h);
+    return isRotated ? Size(h, w) : Size(w, h);
   }
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
@@ -636,7 +637,10 @@ class AvesEntry {
   // 1) date descending
   // 2) name descending
   static int compareByDate(AvesEntry a, AvesEntry b) {
-    final c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
-    return c != 0 ? c : -compareByName(a, b);
+    var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
+    if (c != 0) return c;
+    c = (b.dateModifiedSecs ?? 0).compareTo(a.dateModifiedSecs ?? 0);
+    if (c != 0) return c;
+    return -compareByName(a, b);
   }
 }

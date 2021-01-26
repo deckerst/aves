@@ -111,11 +111,6 @@ class RegionFetcher internal constructor(
             .submit()
         try {
             val bitmap = target.get()
-//            if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
-//                bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
-//            }
-            bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
-
             val tempFile = File.createTempFile("aves", null, context.cacheDir).apply {
                 deleteOnExit()
                 outputStream().use { outputStream ->
