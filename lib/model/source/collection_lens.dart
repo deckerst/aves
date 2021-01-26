@@ -19,6 +19,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
+  bool listenToSource;
 
   List<AvesEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
@@ -30,13 +31,16 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     Iterable<CollectionFilter> filters,
     @required EntryGroupFactor groupFactor,
     @required EntrySortFactor sortFactor,
+    this.listenToSource = true,
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
         groupFactor = groupFactor ?? EntryGroupFactor.month,
         sortFactor = sortFactor ?? EntrySortFactor.date {
-    _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
-    _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
-    _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
-    _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+    if (listenToSource) {
+      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
+      _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+    }
     _refresh();
   }
 
@@ -47,15 +51,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       ..clear();
     _subscriptions = null;
     super.dispose();
-  }
-
-  CollectionLens derive(CollectionFilter filter) {
-    return CollectionLens(
-      source: source,
-      filters: filters,
-      groupFactor: groupFactor,
-      sortFactor: sortFactor,
-    )..addFilter(filter);
   }
 
   bool get isEmpty => _filteredEntries.isEmpty;
@@ -82,7 +77,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     return true;
   }
 
-  Object heroTag(AvesEntry entry) => '$hashCode${entry.uri}';
+  Object heroTag(AvesEntry entry) => entry.uri;
 
   void addFilter(CollectionFilter filter) {
     if (filter == null || filters.contains(filter)) return;

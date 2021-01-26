@@ -53,7 +53,7 @@ mixin AlbumMixin on SourceBase {
   Map<String, AvesEntry> getAlbumEntries() {
     final entries = sortedEntriesForFilterList;
     final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
-    for (var album in sortedAlbums) {
+    for (final album in sortedAlbums) {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.regular:
           regularAlbums.add(album);

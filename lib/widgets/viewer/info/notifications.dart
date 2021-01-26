@@ -11,6 +11,12 @@ class FilterNotification extends Notification {
   const FilterNotification(this.filter);
 }
 
+class EntryDeletedNotification extends Notification {
+  final AvesEntry entry;
+
+  const EntryDeletedNotification(this.entry);
+}
+
 class OpenTempEntryNotification extends Notification {
   final AvesEntry entry;
 

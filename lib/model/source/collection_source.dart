@@ -56,6 +56,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   void addAll(Iterable<AvesEntry> entries) {
+    if (entries.isEmpty) return;
     if (_rawEntries.isNotEmpty) {
       final newContentIds = entries.map((entry) => entry.contentId).toList();
       _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));

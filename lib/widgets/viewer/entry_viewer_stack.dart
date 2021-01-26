@@ -164,6 +164,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             _goToCollection(notification.filter);
           } else if (notification is ViewStateNotification) {
             _updateViewState(notification.uri, notification.viewState);
+          } else if (notification is EntryDeletedNotification) {
+            _onEntryDeleted(context, notification.entry);
           }
           return false;
         },
@@ -324,7 +326,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(collection.derive(filter)),
+        builder: (context) => CollectionPage(
+          CollectionLens(
+            source: collection.source,
+            filters: collection.filters,
+            groupFactor: collection.groupFactor,
+            sortFactor: collection.sortFactor,
+          )..addFilter(filter),
+        ),
       ),
       (route) => false,
     );
@@ -354,6 +363,21 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _onCollectionChange() {
     _updateEntry();
+  }
+
+  void _onEntryDeleted(BuildContext context, AvesEntry entry) {
+    if (hasCollection) {
+      final entries = collection.sortedEntries;
+      entries.remove(entry);
+      if (entries.isEmpty) {
+        Navigator.pop(context);
+      } else {
+        _onCollectionChange();
+      }
+    } else {
+      // leave viewer
+      SystemNavigator.pop();
+    }
   }
 
   void _updateEntry() {
