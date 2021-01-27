@@ -79,14 +79,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
 
     final copy = moveType == MoveType.copy;
+    final selectionCount = selection.length;
     showOpReport<MoveOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
+      itemCount: selectionCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           showFeedback(context, 'Failed to ${copy ? 'copy' : 'move'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
@@ -132,14 +132,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (!await checkStoragePermission(context, selection)) return;
 
+    final selectionCount = selection.length;
     showOpReport<ImageOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.delete(selection),
+      itemCount: selectionCount,
       onDone: (processed) {
         final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
         final deletedCount = deletedUris.length;
-        final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');

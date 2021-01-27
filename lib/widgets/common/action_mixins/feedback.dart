@@ -1,5 +1,3 @@
-import 'package:aves/model/entry.dart';
-import 'package:aves/services/image_op_events.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -27,22 +25,20 @@ mixin FeedbackMixin {
 
   // report overlay for multiple operations
 
-  OverlayEntry _opReportOverlayEntry;
-
-  void showOpReport<T extends ImageOpEvent>({
+  void showOpReport<T>({
     @required BuildContext context,
-    @required Set<AvesEntry> selection,
     @required Stream<T> opStream,
-    @required void Function(Set<T> processed) onDone,
+    @required int itemCount,
+    void Function(Set<T> processed) onDone,
   }) {
+    OverlayEntry _opReportOverlayEntry;
     _opReportOverlayEntry = OverlayEntry(
       builder: (context) => ReportOverlay<T>(
         opStream: opStream,
-        itemCount: selection.length,
+        itemCount: itemCount,
         onDone: (processed) {
-          _opReportOverlayEntry?.remove();
-          _opReportOverlayEntry = null;
-          onDone(processed);
+          _opReportOverlayEntry.remove();
+          onDone?.call(processed);
         },
       ),
     );
