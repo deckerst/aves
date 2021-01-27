@@ -264,7 +264,7 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     final targetLastIndexForPaint = targetEndScrollOffsetForPaint.isFinite ? getMaxChildIndexForScrollOffset(targetEndScrollOffsetForPaint) : null;
     geometry = SliverGeometry(
       scrollExtent: estimatedMaxScrollOffset,
-      paintExtent: paintExtent,
+      paintExtent: math.min(paintExtent, estimatedMaxScrollOffset),
       cacheExtent: cacheExtent,
       maxPaintExtent: estimatedMaxScrollOffset,
       // Conservative to avoid flickering away the clip during scroll.

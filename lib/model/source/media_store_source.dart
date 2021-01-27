@@ -106,8 +106,7 @@ class MediaStoreSource extends CollectionSource {
   }
 
   Future<void> refreshUris(List<String> changedUris) async {
-    assert(_initialized);
-    debugPrint('$runtimeType refreshUris uris=$changedUris');
+    if (!_initialized) return;
 
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       if (uri == null) return null;

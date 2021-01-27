@@ -57,7 +57,6 @@ class ImageFileService {
   }
 
   static Future<AvesEntry> getEntry(String uri, String mimeType) async {
-    debugPrint('getEntry for uri=$uri, mimeType=$mimeType');
     try {
       final result = await platform.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
