@@ -594,14 +594,16 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     val metadata = ImageMetadataReader.readMetadata(input)
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
                     try {
-                        fun getProp(propName: String): Int? = xmpDirs.map { it.xmpMeta.getPropertyInteger(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
+                        fun getIntProp(propName: String): Int? = xmpDirs.map { it.xmpMeta.getPropertyInteger(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
+                        fun getStringProp(propName: String): String? = xmpDirs.map { it.xmpMeta.getPropertyString(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
                         val fields: FieldMap = hashMapOf(
-                            "croppedAreaLeft" to getProp(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME),
-                            "croppedAreaTop" to getProp(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME),
-                            "croppedAreaWidth" to getProp(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME),
-                            "croppedAreaHeight" to getProp(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME),
-                            "fullPanoWidth" to getProp(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME),
-                            "fullPanoHeight" to getProp(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME),
+                            "croppedAreaLeft" to getIntProp(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME),
+                            "croppedAreaTop" to getIntProp(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME),
+                            "croppedAreaWidth" to getIntProp(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME),
+                            "croppedAreaHeight" to getIntProp(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME),
+                            "fullPanoWidth" to getIntProp(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME),
+                            "fullPanoHeight" to getIntProp(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME),
+                            "projectionType" to (getStringProp(XMP.GPANO_PROJECTION_TYPE_PROP_NAME) ?: XMP.GPANO_PROJECTION_TYPE_DEFAULT),
                         )
                         result.success(fields)
                         return
