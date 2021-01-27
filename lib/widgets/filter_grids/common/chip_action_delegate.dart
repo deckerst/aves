@@ -79,14 +79,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermission(context, selection)) return;
 
+    final selectionCount = selection.length;
     showOpReport<ImageOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.delete(selection),
+      itemCount: selectionCount,
       onDone: (processed) {
         final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
         final deletedCount = deletedUris.length;
-        final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
@@ -113,14 +113,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, MoveType.move)) return;
 
+    final selectionCount = selection.length;
     showOpReport<MoveOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.move(selection, copy: false, destinationAlbum: destinationAlbum),
+      itemCount: selectionCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');

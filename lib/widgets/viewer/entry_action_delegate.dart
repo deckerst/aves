@@ -54,7 +54,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _showRenameDialog(context, entry);
         break;
       case EntryAction.print:
-        EntryPrinter(entry).print();
+        EntryPrinter(entry).print(context);
         break;
       case EntryAction.rotateCCW:
         _rotate(context, entry, clockwise: false);
@@ -181,14 +181,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       selection.add(entry);
     }
 
+    final selectionCount = selection.length;
     showOpReport<ExportOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.export(selection, destinationAlbum: destinationAlbum),
+      itemCount: selectionCount,
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           showFeedback(context, 'Failed to export ${Intl.plural(count, one: '$count page', other: '$count pages')}');

@@ -111,7 +111,9 @@ class MediaStoreSource extends CollectionSource {
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       if (uri == null) return null;
       final idString = Uri.parse(uri).pathSegments.last;
-      return MapEntry(int.tryParse(idString), uri);
+      final contentId = int.tryParse(idString);
+      if (contentId == null) return null;
+      return MapEntry(contentId, uri);
     }).where((kv) => kv != null));
 
     // clean up obsolete entries
