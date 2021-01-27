@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/connectivity.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -141,8 +142,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      _pauseVideoControllers();
+    switch (state) {
+      case AppLifecycleState.paused:
+        _pauseVideoControllers();
+        break;
+      case AppLifecycleState.resumed:
+        connectivity.onResume();
+        break;
+      default:
+        break;
     }
   }
 

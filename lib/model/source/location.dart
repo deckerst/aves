@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/connectivity.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -27,6 +28,8 @@ mixin LocationMixin on SourceBase {
   }
 
   Future<void> locateEntries() async {
+    if (!(await connectivity.canGeolocate)) return;
+
 //    final stopwatch = Stopwatch()..start();
     final byLocated = groupBy<AvesEntry, bool>(rawEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
     final todo = byLocated[false] ?? [];

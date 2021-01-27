@@ -1,4 +1,5 @@
 import 'package:aves/main.dart';
+import 'package:aves/model/connectivity.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/home_page.dart';
@@ -111,9 +112,14 @@ class _HomePageState extends State<HomePage> {
   Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
     final entry = await ImageFileService.getEntry(uri, mimeType);
     if (entry != null) {
-      // cataloguing is essential for geolocation and video rotation
+      // cataloguing is essential for coordinates and video rotation
       await entry.catalog();
-      unawaited(entry.locate());
+      // locating is fine in the background
+      unawaited(connectivity.canGeolocate.then((connected) {
+        if (connected) {
+          entry.locate();
+        }
+      }));
     }
     return entry;
   }

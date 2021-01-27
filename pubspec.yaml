@@ -33,6 +33,7 @@ dependencies:
     sdk: flutter
   charts_flutter:
   collection:
+  connectivity:
   decorated_icon:
   event_bus:
   expansion_tile_card:

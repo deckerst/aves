@@ -1,5 +1,6 @@
-import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/connectivity.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -102,34 +103,40 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.showTitle) SectionRow(AIcons.location),
-          NotificationListener(
-            onNotification: (notification) {
-              if (notification is MapStyleChangedNotification) setState(() {});
-              return false;
+          FutureBuilder<bool>(
+            future: connectivity.isConnected,
+            builder: (context, snapshot) {
+              if (snapshot.data != true) return SizedBox();
+              return NotificationListener(
+                onNotification: (notification) {
+                  if (notification is MapStyleChangedNotification) setState(() {});
+                  return false;
+                },
+                child: AnimatedSize(
+                  alignment: Alignment.topCenter,
+                  curve: Curves.easeInOutCubic,
+                  duration: Durations.mapStyleSwitchAnimation,
+                  vsync: this,
+                  child: settings.infoMapStyle.isGoogleMaps
+                      ? EntryGoogleMap(
+                          // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
+                          latLng: Tuple2<double, double>(entry.latLng.latitude, entry.latLng.longitude),
+                          geoUri: entry.geoUri,
+                          initialZoom: settings.infoMapZoom,
+                          markerId: entry.uri ?? entry.path,
+                          markerBuilder: buildMarker,
+                        )
+                      : EntryLeafletMap(
+                          latLng: entry.latLng,
+                          geoUri: entry.geoUri,
+                          initialZoom: settings.infoMapZoom,
+                          style: settings.infoMapStyle,
+                          markerSize: Size(extent, extent + pointerSize.height),
+                          markerBuilder: buildMarker,
+                        ),
+                ),
+              );
             },
-            child: AnimatedSize(
-              alignment: Alignment.topCenter,
-              curve: Curves.easeInOutCubic,
-              duration: Durations.mapStyleSwitchAnimation,
-              vsync: this,
-              child: settings.infoMapStyle.isGoogleMaps
-                  ? EntryGoogleMap(
-                      // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
-                      latLng: Tuple2<double, double>(entry.latLng.latitude, entry.latLng.longitude),
-                      geoUri: entry.geoUri,
-                      initialZoom: settings.infoMapZoom,
-                      markerId: entry.uri ?? entry.path,
-                      markerBuilder: buildMarker,
-                    )
-                  : EntryLeafletMap(
-                      latLng: entry.latLng,
-                      geoUri: entry.geoUri,
-                      initialZoom: settings.infoMapZoom,
-                      style: settings.infoMapStyle,
-                      markerSize: Size(extent, extent + pointerSize.height),
-                      markerBuilder: buildMarker,
-                    ),
-            ),
           ),
           if (entry.hasGps) _AddressInfoGroup(entry: entry),
           if (filters.isNotEmpty)
@@ -174,7 +181,12 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
   @override
   void initState() {
     super.initState();
-    _addressLineLoader = entry.findAddressLine();
+    _addressLineLoader = connectivity.canGeolocate.then((connected) {
+      if (connected) {
+        return entry.findAddressLine();
+      }
+      return null;
+    });
   }
 
   @override
