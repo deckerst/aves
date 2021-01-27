@@ -54,18 +54,19 @@ object XMP {
     const val GPANO_CROPPED_AREA_TOP_PROP_NAME = "GPano:CroppedAreaTopPixels"
     const val GPANO_FULL_PANO_HEIGHT_PROP_NAME = "GPano:FullPanoHeightPixels"
     const val GPANO_FULL_PANO_WIDTH_PROP_NAME = "GPano:FullPanoWidthPixels"
-    private const val GPANO_PROJECTION_TYPE_PROP_NAME = "GPano:ProjectionType"
+    const val GPANO_PROJECTION_TYPE_PROP_NAME = "GPano:ProjectionType"
+    const val GPANO_PROJECTION_TYPE_DEFAULT = "equirectangular"
 
     private const val PMTM_IS_PANO360 = "pmtm:IsPano360"
 
+    // `GPano:ProjectionType` is required by spec but it is sometimes missing, assuming default
+    // `GPano:FullPanoHeightPixels` is required by spec but it is sometimes missing (e.g. Samsung Camera app panorama mode)
     private val gpanoRequiredProps = listOf(
         GPANO_CROPPED_AREA_HEIGHT_PROP_NAME,
         GPANO_CROPPED_AREA_WIDTH_PROP_NAME,
         GPANO_CROPPED_AREA_LEFT_PROP_NAME,
         GPANO_CROPPED_AREA_TOP_PROP_NAME,
-        GPANO_FULL_PANO_HEIGHT_PROP_NAME,
         GPANO_FULL_PANO_WIDTH_PROP_NAME,
-        GPANO_PROJECTION_TYPE_PROP_NAME,
     )
 
     // extensions
