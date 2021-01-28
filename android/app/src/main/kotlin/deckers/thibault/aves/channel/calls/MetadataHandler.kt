@@ -1,10 +1,15 @@
 package deckers.thibault.aves.channel.calls
 
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.adobe.internal.xmp.XMPException
@@ -75,6 +80,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getOverlayMetadata) }
             "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
+            "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
             "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEmbeddedPictures) }
             "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifThumbnails) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
@@ -620,6 +626,55 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.error("getPanoramaInfo-empty", "failed to read XMP from uri=$uri", null)
+    }
+
+    private fun getContentResolverProp(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val prop = call.argument<String>("prop")
+        if (mimeType == null || uri == null || prop == null) {
+            result.error("getContentResolverProp-args", "failed because of missing arguments", null)
+            return
+        }
+
+        var contentUri: Uri = uri
+        if (uri.scheme == ContentResolver.SCHEME_CONTENT && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)) {
+            try {
+                val id = ContentUris.parseId(uri)
+                contentUri = when {
+                    isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+                    isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+                    else -> uri
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentUri = MediaStore.setRequireOriginal(contentUri)
+                }
+            } catch (e: NumberFormatException) {
+                // ignore
+            }
+        }
+
+        val projection = arrayOf(prop)
+        val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            var value: Any? = null
+            try {
+                value = when (cursor.getType(0)) {
+                    Cursor.FIELD_TYPE_NULL -> null
+                    Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
+                    Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
+                    Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
+                    Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
+                    else -> null
+                }
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to get value for key=$prop", e)
+            }
+            cursor.close()
+            result.success(value?.toString())
+        } else {
+            result.error("getContentResolverProp-null", "failed to get cursor for contentUri=$contentUri", null)
+        }
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {

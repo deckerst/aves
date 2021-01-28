@@ -113,6 +113,19 @@ class MetadataService {
     return null;
   }
 
+  static Future<String> getContentResolverProp(AvesEntry entry, String prop) async {
+    try {
+      return await platform.invokeMethod('getContentResolverProp', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'prop': prop,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('getContentResolverProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return null;
+  }
+
   static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
     try {
       final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{

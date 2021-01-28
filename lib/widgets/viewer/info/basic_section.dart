@@ -1,11 +1,14 @@
+import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/metadata_service.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -55,6 +58,7 @@ class BasicSection extends StatelessWidget {
           'URI': uri,
           if (path != null) 'Path': path,
         }),
+        OwnerProp(entry: entry),
         _buildChips(),
       ],
     );
@@ -100,5 +104,68 @@ class BasicSection extends StatelessWidget {
     return {
       'Duration': entry.durationText,
     };
+  }
+}
+
+class OwnerProp extends StatefulWidget {
+  final AvesEntry entry;
+
+  const OwnerProp({
+    @required this.entry,
+  });
+
+  @override
+  _OwnerPropState createState() => _OwnerPropState();
+}
+
+class _OwnerPropState extends State<OwnerProp> {
+  Future<String> _loader;
+
+  static const iconSize = 20.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loader = MetadataService.getContentResolverProp(widget.entry, 'owner_package_name');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: _loader,
+      builder: (context, snapshot) {
+        final packageName = snapshot.data;
+        if (packageName == null) return SizedBox();
+        final appName = androidFileUtils.appNameMap.entries.firstWhere((kv) => kv.value == packageName, orElse: () => null)?.key ?? packageName;
+        return Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: 'Owned by',
+                style: InfoRowGroup.keyStyle,
+              ),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Image(
+                    image: AppIconImage(
+                      packageName: packageName,
+                      size: iconSize,
+                    ),
+                    width: iconSize,
+                    height: iconSize,
+                  ),
+                ),
+              ),
+              TextSpan(
+                text: appName,
+                style: InfoRowGroup.baseStyle,
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
