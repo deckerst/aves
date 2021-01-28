@@ -42,6 +42,12 @@ class InfoRowGroup extends StatefulWidget {
   final int maxValueLength;
   final Map<String, InfoLinkHandler> linkHandlers;
 
+  static const keyValuePadding = 16;
+  static const linkColor = Colors.blue;
+  static final baseStyle = TextStyle(fontFamily: 'Concourse');
+  static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 1.7);
+  static final linkStyle = baseStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
+
   const InfoRowGroup(
     this.keyValues, {
     this.maxValueLength = 0,
@@ -61,20 +67,14 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
   Map<String, InfoLinkHandler> get linkHandlers => widget.linkHandlers;
 
-  static const keyValuePadding = 16;
-  static const linkColor = Colors.blue;
-  static final baseStyle = TextStyle(fontFamily: 'Concourse');
-  static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 1.7);
-  static final linkStyle = baseStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
-
   @override
   Widget build(BuildContext context) {
     if (keyValues.isEmpty) return SizedBox.shrink();
 
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: '$key', style: keyStyle), textScaleFactor))));
-    final baseSpaceWidth = _getSpanWidth(TextSpan(text: '\u200A' * 100, style: baseStyle), textScaleFactor);
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: '$key', style: InfoRowGroup.keyStyle), textScaleFactor))));
+    final baseSpaceWidth = _getSpanWidth(TextSpan(text: '\u200A' * 100, style: InfoRowGroup.baseStyle), textScaleFactor);
 
     final lastKey = keyValues.keys.last;
     return LayoutBuilder(
@@ -100,7 +100,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                       value = handler.linkText;
                       // open link on tap
                       recognizer = TapGestureRecognizer()..onTap = () => handler.onTap(context);
-                      style = linkStyle;
+                      style = InfoRowGroup.linkStyle;
                     } else {
                       value = kv.value;
                       // long values are clipped, and made expandable by tapping them
@@ -118,18 +118,18 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
                     // as of Flutter v1.22.4, `SelectableText` cannot contain `WidgetSpan`
                     // so we add padding using multiple hair spaces instead
-                    final thisSpaceSize = max(0.0, (baseValueX - keySizes[key])) + keyValuePadding;
+                    final thisSpaceSize = max(0.0, (baseValueX - keySizes[key])) + InfoRowGroup.keyValuePadding;
                     final spaceCount = (100 * thisSpaceSize / baseSpaceWidth).round();
 
                     return [
-                      TextSpan(text: key, style: keyStyle),
+                      TextSpan(text: key, style: InfoRowGroup.keyStyle),
                       TextSpan(text: '\u200A' * spaceCount),
                       TextSpan(text: value, style: style, recognizer: recognizer),
                     ];
                   },
                 ).toList(),
               ),
-              style: baseStyle,
+              style: InfoRowGroup.baseStyle,
             ),
           ],
         );
