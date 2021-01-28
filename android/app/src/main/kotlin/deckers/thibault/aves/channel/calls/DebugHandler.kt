@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.drew.imaging.ImageMetadataReader
 import com.drew.metadata.file.FileTypeDirectory
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.Metadata
@@ -37,12 +38,12 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         when (call.method) {
             "getContextDirs" -> result.success(getContextDirs())
             "getEnv" -> result.success(System.getenv())
-            "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { getBitmapFactoryInfo(call, Coresult(result)) }
-            "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { getContentResolverMetadata(call, Coresult(result)) }
-            "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { getExifInterfaceMetadata(call, Coresult(result)) }
-            "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch(Dispatchers.IO) { getMediaMetadataRetrieverMetadata(call, Coresult(result)) }
-            "getMetadataExtractorSummary" -> GlobalScope.launch(Dispatchers.IO) { getMetadataExtractorSummary(call, Coresult(result)) }
-            "getTiffStructure" -> GlobalScope.launch(Dispatchers.IO) { getTiffStructure(call, Coresult(result)) }
+            "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getBitmapFactoryInfo) }
+            "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverMetadata) }
+            "getExifInterfaceMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifInterfaceMetadata) }
+            "getMediaMetadataRetrieverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMediaMetadataRetrieverMetadata) }
+            "getMetadataExtractorSummary" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMetadataExtractorSummary) }
+            "getTiffStructure" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getTiffStructure) }
             else -> result.notImplemented()
         }
     }
