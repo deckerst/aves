@@ -5,6 +5,8 @@ import android.graphics.Rect
 import android.net.Uri
 import android.util.Size
 import com.bumptech.glide.Glide
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
 import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
@@ -29,17 +31,14 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getObsoleteEntries" -> GlobalScope.launch(Dispatchers.IO) { getObsoleteEntries(call, Coresult(result)) }
-            "getEntry" -> GlobalScope.launch(Dispatchers.IO) { getEntry(call, Coresult(result)) }
-            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { getThumbnail(call, Coresult(result)) }
-            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { getRegion(call, Coresult(result)) }
-            "clearSizedThumbnailDiskCache" -> {
-                GlobalScope.launch(Dispatchers.IO) { Glide.get(activity).clearDiskCache() }
-                result.success(null)
-            }
-            "rename" -> GlobalScope.launch(Dispatchers.IO) { rename(call, Coresult(result)) }
-            "rotate" -> GlobalScope.launch(Dispatchers.IO) { rotate(call, Coresult(result)) }
-            "flip" -> GlobalScope.launch(Dispatchers.IO) { flip(call, Coresult(result)) }
+            "getObsoleteEntries" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getObsoleteEntries) }
+            "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getEntry) }
+            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getThumbnail) }
+            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRegion) }
+            "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
+            "rename" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::rename) }
+            "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
+            "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
             else -> result.notImplemented()
         }
     }
@@ -141,6 +140,11 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
         })
+    }
+
+    private fun clearSizedThumbnailDiskCache(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        Glide.get(activity).clearDiskCache()
+        result.success(null)
     }
 
     private suspend fun rename(call: MethodCall, result: MethodChannel.Result) {

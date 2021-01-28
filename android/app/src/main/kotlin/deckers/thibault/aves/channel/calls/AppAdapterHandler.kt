@@ -12,6 +12,7 @@ import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
@@ -28,8 +29,8 @@ import kotlin.math.roundToInt
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { getAppIcon(call, Coresult(result)) }
-            "getAppNames" -> GlobalScope.launch(Dispatchers.IO) { getAppNames(Coresult(result)) }
+            "getAppNames" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAppNames) }
+            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAppIcon) }
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -61,7 +62,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getAppNames(result: MethodChannel.Result) {
+    private fun getAppNames(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
         val nameMap = HashMap<String, String>()
         val intent = Intent(Intent.ACTION_MAIN, null)
             .addCategory(Intent.CATEGORY_LAUNCHER)

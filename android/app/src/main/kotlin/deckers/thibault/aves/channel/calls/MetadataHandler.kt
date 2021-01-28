@@ -20,6 +20,7 @@ import com.drew.metadata.iptc.IptcDirectory
 import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -69,14 +70,14 @@ import kotlin.math.roundToLong
 class MetadataHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { getAllMetadata(call, Coresult(result)) }
-            "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { getCatalogMetadata(call, Coresult(result)) }
-            "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { getOverlayMetadata(call, Coresult(result)) }
-            "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { getMultiPageInfo(call, Coresult(result)) }
-            "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { getPanoramaInfo(call, Coresult(result)) }
-            "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { getEmbeddedPictures(call, Coresult(result)) }
-            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { getExifThumbnails(call, Coresult(result)) }
-            "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { extractXmpDataProp(call, Coresult(result)) }
+            "getAllMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAllMetadata) }
+            "getCatalogMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getCatalogMetadata) }
+            "getOverlayMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getOverlayMetadata) }
+            "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
+            "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
+            "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEmbeddedPictures) }
+            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifThumbnails) }
+            "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
             else -> result.notImplemented()
         }
     }
