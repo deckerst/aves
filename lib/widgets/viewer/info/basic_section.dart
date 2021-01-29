@@ -136,7 +136,7 @@ class _OwnerPropState extends State<OwnerProp> {
       builder: (context, snapshot) {
         final packageName = snapshot.data;
         if (packageName == null) return SizedBox();
-        final appName = androidFileUtils.appNameMap.entries.firstWhere((kv) => kv.value == packageName, orElse: () => null)?.key ?? packageName;
+        final appName = androidFileUtils.getAppName(packageName) ?? packageName;
         return Text.rich(
           TextSpan(
             children: [

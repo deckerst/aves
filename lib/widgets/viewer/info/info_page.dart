@@ -64,7 +64,7 @@ class _InfoPageState extends State<InfoPage> {
                                 entry: entry,
                                 visibleNotifier: widget.visibleNotifier,
                                 scrollController: _scrollController,
-                                split: mqWidth > 400,
+                                split: mqWidth > 600,
                                 goToViewer: _goToViewer,
                               )
                             : SizedBox.shrink();

@@ -8,7 +8,7 @@ final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 class AndroidFileUtils {
   String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath;
   Set<StorageVolume> storageVolumes = {};
-  Map appNameMap = {};
+  Map _installedAppNameMap = {};
 
   AChangeNotifier appNameChangeNotifier = AChangeNotifier();
 
@@ -25,7 +25,7 @@ class AndroidFileUtils {
   }
 
   Future<void> initAppNames() async {
-    appNameMap = await AndroidAppService.getAppNames()
+    _installedAppNameMap = await AndroidAppService.getAppNames()
       ..addAll({'KakaoTalkDownload': 'com.kakao.talk'});
     appNameChangeNotifier.notifyListeners();
   }
@@ -50,15 +50,16 @@ class AndroidFileUtils {
       if (isScreenshotsPath(albumDirectory)) return AlbumType.screenshots;
 
       final parts = albumDirectory.split(separator);
-      if (albumDirectory.startsWith(primaryStorage) && appNameMap.keys.contains(parts.last)) return AlbumType.app;
+      if (albumDirectory.startsWith(primaryStorage) && _isInstalledAppName(parts.last)) return AlbumType.app;
     }
     return AlbumType.regular;
   }
 
-  String getAlbumAppPackageName(String albumDirectory) {
-    final parts = albumDirectory.split(separator);
-    return appNameMap[parts.last];
-  }
+  bool _isInstalledAppName(String name) => _installedAppNameMap.keys.contains(name);
+
+  String getAlbumAppPackageName(String albumDirectory) => _installedAppNameMap[albumDirectory.split(separator).last];
+
+  String getAppName(String packageName) => _installedAppNameMap.entries.firstWhere((kv) => kv.value == packageName, orElse: () => null)?.key;
 }
 
 enum AlbumType { regular, app, camera, download, screenRecordings, screenshots }
