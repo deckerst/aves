@@ -24,7 +24,7 @@ class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with Au
     super.build(context);
 
     return AvesExpansionTile(
-      title: 'Android Dir',
+      title: 'Android Dirs',
       children: [
         Padding(
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
