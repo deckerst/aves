@@ -156,14 +156,22 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   AvesEntry get entry => widget.entry;
 
+  ValueNotifier<bool> get visibleNotifier => widget.visibleNotifier;
+
   @override
   Widget build(BuildContext context) {
+    final basicSection = BasicSection(
+      entry: entry,
+      collection: collection,
+      visibleNotifier: visibleNotifier,
+      onFilter: _goToCollection,
+    );
     final locationAtTop = widget.split && entry.hasGps;
     final locationSection = LocationSection(
       collection: collection,
       entry: entry,
       showTitle: !locationAtTop,
-      visibleNotifier: widget.visibleNotifier,
+      visibleNotifier: visibleNotifier,
       onFilter: _goToCollection,
     );
     final basicAndLocationSliver = locationAtTop
@@ -171,7 +179,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
+                Expanded(child: basicSection),
                 SizedBox(width: 8),
                 Expanded(child: locationSection),
               ],
@@ -180,7 +188,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
         : SliverList(
             delegate: SliverChildListDelegate.fixed(
               [
-                BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
+                basicSection,
                 locationSection,
               ],
             ),
@@ -188,7 +196,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     final metadataSliver = MetadataSectionSliver(
       entry: entry,
       metadataNotifier: _metadataNotifier,
-      visibleNotifier: widget.visibleNotifier,
+      visibleNotifier: visibleNotifier,
     );
 
     return CustomScrollView(
