@@ -20,12 +20,14 @@ import 'package:intl/intl.dart';
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
   final CollectionLens collection;
+  final ValueNotifier<bool> visibleNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
     Key key,
     @required this.entry,
     this.collection,
+    @required this.visibleNotifier,
     @required this.onFilter,
   }) : super(key: key);
 
@@ -58,7 +60,10 @@ class BasicSection extends StatelessWidget {
           'URI': uri,
           if (path != null) 'Path': path,
         }),
-        OwnerProp(entry: entry),
+        OwnerProp(
+          entry: entry,
+          visibleNotifier: visibleNotifier,
+        ),
         _buildChips(),
       ],
     );
@@ -109,9 +114,11 @@ class BasicSection extends StatelessWidget {
 
 class OwnerProp extends StatefulWidget {
   final AvesEntry entry;
+  final ValueNotifier<bool> visibleNotifier;
 
   const OwnerProp({
     @required this.entry,
+    @required this.visibleNotifier,
   });
 
   @override
@@ -119,24 +126,53 @@ class OwnerProp extends StatefulWidget {
 }
 
 class _OwnerPropState extends State<OwnerProp> {
-  Future<String> _loader;
+  final ValueNotifier<String> _loadedUri = ValueNotifier(null);
+  String _ownerPackage;
+
+  AvesEntry get entry => widget.entry;
+
+  bool get isVisible => widget.visibleNotifier.value;
 
   static const iconSize = 20.0;
 
   @override
   void initState() {
     super.initState();
-    _loader = MetadataService.getContentResolverProp(widget.entry, 'owner_package_name');
+    _registerWidget(widget);
+    _getOwner();
+  }
+
+  @override
+  void didUpdateWidget(covariant OwnerProp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+    _getOwner();
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(OwnerProp widget) {
+    widget.visibleNotifier.addListener(_getOwner);
+  }
+
+  void _unregisterWidget(OwnerProp widget) {
+    widget.visibleNotifier.removeListener(_getOwner);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: _loader,
-      builder: (context, snapshot) {
-        final packageName = snapshot.data;
-        if (packageName == null) return SizedBox();
-        final appName = androidFileUtils.getCurrentAppName(packageName) ?? packageName;
+    return ValueListenableBuilder<String>(
+      valueListenable: _loadedUri,
+      builder: (context, uri, child) {
+        if (_ownerPackage == null) return SizedBox();
+        final appName = androidFileUtils.getCurrentAppName(_ownerPackage) ?? _ownerPackage;
+        // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
+        // so be use a basic `Text` instead
         return Text.rich(
           TextSpan(
             children: [
@@ -150,7 +186,7 @@ class _OwnerPropState extends State<OwnerProp> {
                   padding: EdgeInsets.symmetric(horizontal: 4),
                   child: Image(
                     image: AppIconImage(
-                      packageName: packageName,
+                      packageName: _ownerPackage,
                       size: iconSize,
                     ),
                     width: iconSize,
@@ -167,5 +203,17 @@ class _OwnerPropState extends State<OwnerProp> {
         );
       },
     );
+  }
+
+  Future<void> _getOwner() async {
+    if (entry == null) return;
+    if (_loadedUri.value == entry.uri) return;
+    if (isVisible) {
+      _ownerPackage = await MetadataService.getContentResolverProp(widget.entry, 'owner_package_name');
+      _loadedUri.value = entry.uri;
+    } else {
+      _ownerPackage = null;
+      _loadedUri.value = null;
+    }
   }
 }
