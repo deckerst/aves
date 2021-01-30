@@ -9,14 +9,14 @@ class AndroidFileService {
   static const platform = MethodChannel('deckers.thibault/aves/storage');
   static final StreamsChannel storageAccessChannel = StreamsChannel('deckers.thibault/aves/storageaccessstream');
 
-  static Future<List<Map>> getStorageVolumes() async {
+  static Future<Set<StorageVolume>> getStorageVolumes() async {
     try {
       final result = await platform.invokeMethod('getStorageVolumes');
-      return (result as List).cast<Map>();
+      return (result as List).cast<Map>().map((map) => StorageVolume.fromMap(map)).toSet();
     } on PlatformException catch (e) {
       debugPrint('getStorageVolumes failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
-    return [];
+    return {};
   }
 
   static Future<int> getFreeSpace(StorageVolume volume) async {

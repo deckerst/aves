@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.util.Log
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.model.AvesEntry
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes

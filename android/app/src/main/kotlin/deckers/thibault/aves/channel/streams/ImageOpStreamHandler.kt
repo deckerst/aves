@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import deckers.thibault.aves.model.AvesEntry
-import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.utils.LogUtils

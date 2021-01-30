@@ -18,6 +18,7 @@ import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
@@ -348,5 +349,3 @@ abstract class ImageProvider {
         private val LOG_TAG = LogUtils.createTag(ImageProvider::class.java)
     }
 }
-
-typealias FieldMap = MutableMap<String, Any?>

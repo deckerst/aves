@@ -25,7 +25,7 @@ import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
-import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory

@@ -16,7 +16,7 @@ import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper
 import deckers.thibault.aves.metadata.Metadata
-import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface

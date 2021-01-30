@@ -11,7 +11,7 @@ import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
 import deckers.thibault.aves.model.ExifOrientationOp
-import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider

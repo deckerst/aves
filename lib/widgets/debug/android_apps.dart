@@ -1,5 +1,6 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/services/android_app_service.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
@@ -11,14 +12,14 @@ class DebugAndroidAppSection extends StatefulWidget {
 }
 
 class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with AutomaticKeepAliveClientMixin {
-  Future<Map> _loader;
+  Future<Set<Package>> _loader;
 
   static const iconSize = 20.0;
 
   @override
   void initState() {
     super.initState();
-    _loader = AndroidAppService.getAppNames();
+    _loader = AndroidAppService.getPackages();
   }
 
   @override
@@ -30,17 +31,17 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
       children: [
         Padding(
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: FutureBuilder<Map>(
+          child: FutureBuilder<Set<Package>>(
             future: _loader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
               if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-              final entries = snapshot.data.entries.toList()..sort((kv1, kv2) => compareAsciiUpperCase(kv1.value, kv2.value));
+              final packages = snapshot.data.toList()..sort((a, b) => compareAsciiUpperCase(a.packageName, b.packageName));
+              final enabledTheme = IconTheme.of(context);
+              final disabledTheme = enabledTheme.merge(IconThemeData(opacity: .2));
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: entries.map((kv) {
-                  final appName = kv.key.toString();
-                  final packageName = kv.value.toString();
+                children: packages.map((package) {
                   return Text.rich(
                     TextSpan(
                       children: [
@@ -48,7 +49,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                           alignment: PlaceholderAlignment.middle,
                           child: Image(
                             image: AppIconImage(
-                              packageName: packageName,
+                              packageName: package.packageName,
                               size: iconSize,
                             ),
                             width: iconSize,
@@ -56,11 +57,31 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                           ),
                         ),
                         TextSpan(
-                          text: ' $packageName',
+                          text: ' ${package.packageName}\n',
                           style: InfoRowGroup.keyStyle,
                         ),
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: IconTheme(
+                            data: package.categoryLauncher ? enabledTheme : disabledTheme,
+                            child: Icon(
+                              Icons.launch_outlined,
+                              size: iconSize,
+                            ),
+                          ),
+                        ),
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: IconTheme(
+                            data: package.isSystem ? enabledTheme : disabledTheme,
+                            child: Icon(
+                              Icons.android,
+                              size: iconSize,
+                            ),
+                          ),
+                        ),
                         TextSpan(
-                          text: ' $appName',
+                          text: ' ${package.potentialDirs.join(', ')}\n',
                           style: InfoRowGroup.baseStyle,
                         ),
                       ],
