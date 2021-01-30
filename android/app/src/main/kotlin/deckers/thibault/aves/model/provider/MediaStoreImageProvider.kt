@@ -186,7 +186,7 @@ class MediaStoreImageProvider : ImageProvider() {
     override suspend fun delete(context: Context, uri: Uri, path: String?) {
         path ?: throw Exception("failed to delete file because path is null")
 
-        if (requireAccessPermission(context, path)) {
+        if (File(path).exists() && requireAccessPermission(context, path)) {
             // if the file is on SD card, calling the content resolver `delete()` removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
             val df = getDocumentFile(context, path, uri)

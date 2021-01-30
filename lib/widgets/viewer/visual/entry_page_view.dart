@@ -129,7 +129,10 @@ class _EntryPageViewState extends State<EntryPageView> {
     } else if (entry.canDecode) {
       child = _buildRasterView();
     }
-    child ??= ErrorView(onTap: () => onTap?.call(null));
+    child ??= ErrorView(
+      entry: entry,
+      onTap: () => onTap?.call(null),
+    );
 
     return widget.heroTag != null
         ? Hero(
@@ -146,7 +149,10 @@ class _EntryPageViewState extends State<EntryPageView> {
       child: RasterImageView(
         entry: entry,
         viewStateNotifier: _viewStateNotifier,
-        errorBuilder: (context, error, stackTrace) => ErrorView(onTap: () => onTap?.call(null)),
+        errorBuilder: (context, error, stackTrace) => ErrorView(
+          entry: entry,
+          onTap: () => onTap?.call(null),
+        ),
       ),
     );
   }
