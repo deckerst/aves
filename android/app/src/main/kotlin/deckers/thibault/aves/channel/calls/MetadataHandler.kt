@@ -46,7 +46,7 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.metadata.XMP.isPanorama
-import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.FileImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
 import deckers.thibault.aves.utils.BitmapUtils
