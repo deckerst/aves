@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.3.3] - 2021-01-31
 ### Added
 - Viewer: support for multi-track HEIF
 - Viewer: export image (including multipage TIFF/HEIF and images embedded in XMP)
