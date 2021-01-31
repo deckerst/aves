@@ -35,29 +35,32 @@ class Minimap extends StatelessWidget {
                   valueListenable: multiPageController.pageNotifier,
                   builder: (context, page, child) {
                     final pageEntry = mainEntry.getPageEntry(multiPageInfo?.getByIndex(page));
-                    return _buildForEntrySize(pageEntry.displaySize);
+                    return _buildForEntrySize(pageEntry);
                   },
                 );
               })
-          : _buildForEntrySize(mainEntry.displaySize),
+          : _buildForEntrySize(mainEntry),
     );
   }
 
-  Widget _buildForEntrySize(Size entrySize) {
+  Widget _buildForEntrySize(AvesEntry entry) {
     return ValueListenableBuilder<ViewState>(
         valueListenable: viewStateNotifier,
         builder: (context, viewState, child) {
           final viewportSize = viewState.viewportSize;
           if (viewportSize == null) return SizedBox.shrink();
-          return CustomPaint(
-            painter: MinimapPainter(
-              viewportSize: viewportSize,
-              entrySize: entrySize,
-              viewCenterOffset: viewState.position,
-              viewScale: viewState.scale,
-              minimapBorderColor: Colors.white30,
+          return AnimatedBuilder(
+            animation: entry.imageChangeNotifier,
+            builder: (context, child) => CustomPaint(
+              painter: MinimapPainter(
+                viewportSize: viewportSize,
+                entrySize: entry.displaySize,
+                viewCenterOffset: viewState.position,
+                viewScale: viewState.scale,
+                minimapBorderColor: Colors.white30,
+              ),
+              size: size,
             ),
-            size: size,
           );
         });
   }
