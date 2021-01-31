@@ -1,7 +1,6 @@
 package deckers.thibault.aves.model
 
 import android.content.ContentResolver
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
@@ -25,9 +24,9 @@ import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
-import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 
@@ -93,16 +92,7 @@ class SourceEntry {
     // ignore when the ID is not a number
     // e.g. content://com.sec.android.app.myfiles.FileProvider/device_storage/20200109_162621.jpg
     private val contentId: Long?
-        get() {
-            if (uri.scheme == ContentResolver.SCHEME_CONTENT) {
-                try {
-                    return ContentUris.parseId(uri)
-                } catch (e: Exception) {
-                    // ignore
-                }
-            }
-            return null
-        }
+        get() = if (uri.scheme == ContentResolver.SCHEME_CONTENT) uri.tryParseId() else null
 
     val isSized: Boolean
         get() = width ?: 0 > 0 && height ?: 0 > 0

@@ -25,6 +25,7 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils.copyFileToTemp
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -292,16 +293,18 @@ abstract class ImageProvider {
     protected suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
         suspendCoroutine { cont ->
             MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
-                var contentId: Long = 0
+                var contentId: Long? = null
                 var contentUri: Uri? = null
                 if (newUri != null) {
                     // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
                     // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                    contentId = ContentUris.parseId(newUri)
-                    if (MimeTypes.isImage(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
-                    } else if (MimeTypes.isVideo(mimeType)) {
-                        contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
+                    contentId = newUri.tryParseId()
+                    if (contentId != null) {
+                        if (MimeTypes.isImage(mimeType)) {
+                            contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
+                        } else if (MimeTypes.isVideo(mimeType)) {
+                            contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
+                        }
                     }
                 }
                 if (contentUri == null) {

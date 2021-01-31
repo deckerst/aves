@@ -23,6 +23,7 @@ import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -96,8 +97,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
         var contentUri: Uri = uri
         if (uri.scheme == ContentResolver.SCHEME_CONTENT && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)) {
-            try {
-                val id = ContentUris.parseId(uri)
+            uri.tryParseId()?.let { id ->
                 contentUri = when {
                     isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
@@ -106,8 +106,6 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     contentUri = MediaStore.setRequireOriginal(contentUri)
                 }
-            } catch (e: NumberFormatException) {
-                // ignore
             }
         }
 

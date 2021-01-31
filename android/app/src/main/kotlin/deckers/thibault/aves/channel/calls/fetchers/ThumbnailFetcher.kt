@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls.fetchers
 
-import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
@@ -23,6 +22,7 @@ import deckers.thibault.aves.utils.MimeTypes.isHeifLike
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodChannel
 
 class ThumbnailFetcher internal constructor(
@@ -94,7 +94,7 @@ class ThumbnailFetcher internal constructor(
     }
 
     private fun getByMediaStore(): Bitmap? {
-        val contentId = ContentUris.parseId(uri)
+        val contentId = uri.tryParseId() ?: return null
         val resolver = context.contentResolver
         return if (isVideo(mimeType)) {
             @Suppress("DEPRECATION")
