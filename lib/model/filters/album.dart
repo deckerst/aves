@@ -1,6 +1,6 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
@@ -33,7 +33,7 @@ class AlbumFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(ImageEntry entry) => entry.directory == album;
+  bool filter(AvesEntry entry) => entry.directory == album;
 
   @override
   String get label => uniqueName ?? album.split(separator).last;

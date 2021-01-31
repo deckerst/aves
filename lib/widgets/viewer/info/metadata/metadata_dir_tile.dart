@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/brand_colors.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/icons.dart';
@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MetadataDirTile extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final String title;
   final MetadataDirectory dir;
   final ValueNotifier<String> expandedDirectoryNotifier;
@@ -61,13 +61,7 @@ class MetadataDirTile extends StatelessWidget {
               );
           if (tags['Has Video'] == 'yes') prefixChildren.add(builder(AIcons.video));
           if (tags['Has Audio'] == 'yes') prefixChildren.add(builder(AIcons.audio));
-          if (tags['Has Image'] == 'yes') {
-            int count;
-            if (tags.containsKey('Image Count')) {
-              count = int.tryParse(tags['Image Count']);
-            }
-            prefixChildren.addAll(List.generate(count ?? 1, (i) => builder(AIcons.image)));
-          }
+          if (tags['Has Image'] == 'yes') prefixChildren.add(builder(AIcons.image));
           break;
       }
     }

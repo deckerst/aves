@@ -1,5 +1,5 @@
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:collection/collection.dart';
@@ -31,7 +31,7 @@ mixin TagMixin on SourceBase {
     setProgress(done: progressDone, total: progressTotal);
 
     final newMetadata = <CatalogMetadata>[];
-    await Future.forEach<ImageEntry>(todo, (entry) async {
+    await Future.forEach<AvesEntry>(todo, (entry) async {
       await entry.catalog(background: true);
       if (entry.isCatalogued) {
         newMetadata.add(entry.catalogMetadata);

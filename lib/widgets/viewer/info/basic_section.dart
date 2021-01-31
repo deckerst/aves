@@ -1,11 +1,14 @@
+import 'package:aves/image_providers/app_icon_image_provider.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/metadata_service.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -15,14 +18,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final CollectionLens collection;
+  final ValueNotifier<bool> visibleNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
     Key key,
     @required this.entry,
     this.collection,
+    @required this.visibleNotifier,
     @required this.onFilter,
   }) : super(key: key);
 
@@ -30,7 +35,7 @@ class BasicSection extends StatelessWidget {
 
   bool get showMegaPixels => entry.isPhoto && megaPixels != null && megaPixels > 0;
 
-  String get rasterResolutionText => '${entry.getResolutionText()}${showMegaPixels ? ' ($megaPixels MP)' : ''}';
+  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' ($megaPixels MP)' : ''}';
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +60,10 @@ class BasicSection extends StatelessWidget {
           'URI': uri,
           if (path != null) 'Path': path,
         }),
+        OwnerProp(
+          entry: entry,
+          visibleNotifier: visibleNotifier,
+        ),
         _buildChips(),
       ],
     );
@@ -100,5 +109,111 @@ class BasicSection extends StatelessWidget {
     return {
       'Duration': entry.durationText,
     };
+  }
+}
+
+class OwnerProp extends StatefulWidget {
+  final AvesEntry entry;
+  final ValueNotifier<bool> visibleNotifier;
+
+  const OwnerProp({
+    @required this.entry,
+    @required this.visibleNotifier,
+  });
+
+  @override
+  _OwnerPropState createState() => _OwnerPropState();
+}
+
+class _OwnerPropState extends State<OwnerProp> {
+  final ValueNotifier<String> _loadedUri = ValueNotifier(null);
+  String _ownerPackage;
+
+  AvesEntry get entry => widget.entry;
+
+  bool get isVisible => widget.visibleNotifier.value;
+
+  static const iconSize = 20.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _registerWidget(widget);
+    _getOwner();
+  }
+
+  @override
+  void didUpdateWidget(covariant OwnerProp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _unregisterWidget(oldWidget);
+    _registerWidget(widget);
+    _getOwner();
+  }
+
+  @override
+  void dispose() {
+    _unregisterWidget(widget);
+    super.dispose();
+  }
+
+  void _registerWidget(OwnerProp widget) {
+    widget.visibleNotifier.addListener(_getOwner);
+  }
+
+  void _unregisterWidget(OwnerProp widget) {
+    widget.visibleNotifier.removeListener(_getOwner);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String>(
+      valueListenable: _loadedUri,
+      builder: (context, uri, child) {
+        if (_ownerPackage == null) return SizedBox();
+        final appName = androidFileUtils.getCurrentAppName(_ownerPackage) ?? _ownerPackage;
+        // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
+        // so be use a basic `Text` instead
+        return Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: 'Owned by',
+                style: InfoRowGroup.keyStyle,
+              ),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Image(
+                    image: AppIconImage(
+                      packageName: _ownerPackage,
+                      size: iconSize,
+                    ),
+                    width: iconSize,
+                    height: iconSize,
+                  ),
+                ),
+              ),
+              TextSpan(
+                text: appName,
+                style: InfoRowGroup.baseStyle,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _getOwner() async {
+    if (entry == null) return;
+    if (_loadedUri.value == entry.uri) return;
+    if (isVisible) {
+      _ownerPackage = await MetadataService.getContentResolverProp(widget.entry, 'owner_package_name');
+      _loadedUri.value = entry.uri;
+    } else {
+      _ownerPackage = null;
+      _loadedUri.value = null;
+    }
   }
 }

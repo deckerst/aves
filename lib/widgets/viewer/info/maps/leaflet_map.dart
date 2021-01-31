@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/viewer/info/maps/common.dart';
 import 'package:aves/widgets/viewer/info/maps/scale_layer.dart';
@@ -6,8 +7,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:latlong/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../location_section.dart';
 
 class EntryLeafletMap extends StatefulWidget {
   final LatLng latLng;

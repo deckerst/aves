@@ -12,6 +12,8 @@ import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
@@ -28,8 +30,8 @@ import kotlin.math.roundToInt
 class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { getAppIcon(call, Coresult(result)) }
-            "getAppNames" -> GlobalScope.launch(Dispatchers.IO) { getAppNames(Coresult(result)) }
+            "getPackages" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPackages) }
+            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAppIcon) }
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -61,46 +63,51 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getAppNames(result: MethodChannel.Result) {
-        val nameMap = HashMap<String, String>()
-        val intent = Intent(Intent.ACTION_MAIN, null)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+    private fun getPackages(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        val packages = HashMap<String, FieldMap>()
 
-        // apps tend to use their name in English when creating folders
-        // so we get their names in English as well as the current locale
-        val englishConfig = Configuration().apply { setLocale(Locale.ENGLISH) }
+        fun addPackageDetails(intent: Intent) {
+            // apps tend to use their name in English when creating folders
+            // so we get their names in English as well as the current locale
+            val englishConfig = Configuration().apply { setLocale(Locale.ENGLISH) }
 
-        val pm = context.packageManager
-        for (resolveInfo in pm.queryIntentActivities(intent, 0)) {
-            val ai = resolveInfo.activityInfo.applicationInfo
-            val isSystemPackage = ai.flags and ApplicationInfo.FLAG_SYSTEM != 0
-            if (!isSystemPackage) {
-                val packageName = ai.packageName
-
-                val currentLabel = pm.getApplicationLabel(ai).toString()
-                nameMap[currentLabel] = packageName
-
-                val labelRes = ai.labelRes
-                if (labelRes != 0) {
-                    try {
-                        val resources = pm.getResourcesForApplication(ai)
-                        // `updateConfiguration` is deprecated but it seems to be the only way
-                        // to query resources from another app with a specific locale.
-                        // The following methods do not work:
-                        // - `resources.getConfiguration().setLocale(...)`
-                        // - getting a package manager from a custom context with `context.createConfigurationContext(config)`
-                        @Suppress("DEPRECATION")
-                        resources.updateConfiguration(englishConfig, resources.displayMetrics)
-                        val englishLabel = resources.getString(labelRes)
-                        nameMap[englishLabel] = packageName
-                    } catch (e: PackageManager.NameNotFoundException) {
-                        Log.w(LOG_TAG, "failed to get app label in English for packageName=$packageName", e)
+            val pm = context.packageManager
+            for (resolveInfo in pm.queryIntentActivities(intent, 0)) {
+                val appInfo = resolveInfo.activityInfo.applicationInfo
+                val packageName = appInfo.packageName
+                if (!packages.containsKey(packageName)) {
+                    val currentLabel = pm.getApplicationLabel(appInfo).toString()
+                    val englishLabel: String? = appInfo.labelRes.takeIf { it != 0 }?.let { labelRes ->
+                        var englishLabel: String? = null
+                        try {
+                            val resources = pm.getResourcesForApplication(appInfo)
+                            // `updateConfiguration` is deprecated but it seems to be the only way
+                            // to query resources from another app with a specific locale.
+                            // The following methods do not work:
+                            // - `resources.getConfiguration().setLocale(...)`
+                            // - getting a package manager from a custom context with `context.createConfigurationContext(config)`
+                            @Suppress("DEPRECATION")
+                            resources.updateConfiguration(englishConfig, resources.displayMetrics)
+                            englishLabel = resources.getString(labelRes)
+                        } catch (e: PackageManager.NameNotFoundException) {
+                            Log.w(LOG_TAG, "failed to get app label in English for packageName=$packageName", e)
+                        }
+                        englishLabel
                     }
+                    packages[packageName] = hashMapOf(
+                        "packageName" to packageName,
+                        "categoryLauncher" to intent.hasCategory(Intent.CATEGORY_LAUNCHER),
+                        "isSystem" to (appInfo.flags and ApplicationInfo.FLAG_SYSTEM != 0),
+                        "currentLabel" to currentLabel,
+                        "englishLabel" to englishLabel,
+                    )
                 }
             }
         }
-        result.success(nameMap)
+
+        addPackageDetails(Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER))
+        addPackageDetails(Intent(Intent.ACTION_MAIN))
+        result.success(ArrayList(packages.values))
     }
 
     private fun getAppIcon(call: MethodCall, result: MethodChannel.Result) {

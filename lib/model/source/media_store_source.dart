@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -13,6 +14,12 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
+  bool _initialized = false;
+
+  @override
+  bool get initialized => _initialized;
+
+  @override
   Future<void> init() async {
     final stopwatch = Stopwatch()..start();
     stateNotifier.value = SourceState.loading;
@@ -28,11 +35,13 @@ class MediaStoreSource extends CollectionSource {
       settings.catalogTimeZone = currentTimeZone;
     }
     await loadDates(); // 100ms for 5400 entries
+    _initialized = true;
     debugPrint('$runtimeType init done, elapsed=${stopwatch.elapsed}');
   }
 
   @override
   Future<void> refresh() async {
+    assert(_initialized);
     debugPrint('$runtimeType refresh start');
     final stopwatch = Stopwatch()..start();
     stateNotifier.value = SourceState.loading;
@@ -40,8 +49,8 @@ class MediaStoreSource extends CollectionSource {
 
     final oldEntries = await metadataDb.loadEntries(); // 400ms for 5500 entries
     final knownEntryMap = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
-    final obsoleteEntries = (await ImageFileService.getObsoleteEntries(knownEntryMap.keys.toList())).toSet();
-    oldEntries.removeWhere((entry) => obsoleteEntries.contains(entry.contentId));
+    final obsoleteContentIds = (await ImageFileService.getObsoleteEntries(knownEntryMap.keys.toList())).toSet();
+    oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
 
     // show known entries
     addAll(oldEntries);
@@ -50,19 +59,20 @@ class MediaStoreSource extends CollectionSource {
     debugPrint('$runtimeType refresh loaded ${oldEntries.length} known entries, elapsed=${stopwatch.elapsed}');
 
     // clean up obsolete entries
-    metadataDb.removeIds(obsoleteEntries, updateFavourites: true);
+    metadataDb.removeIds(obsoleteContentIds, updateFavourites: true);
 
     // fetch new entries
+    // refresh after the first 10 entries, then after 100 more, then every 1000 entries
     var refreshCount = 10;
     const refreshCountMax = 1000;
-    final allNewEntries = <ImageEntry>[], pendingNewEntries = <ImageEntry>[];
+    final allNewEntries = <AvesEntry>[], pendingNewEntries = <AvesEntry>[];
     void addPendingEntries() {
       allNewEntries.addAll(pendingNewEntries);
       addAll(pendingNewEntries);
       pendingNewEntries.clear();
     }
 
-    ImageFileService.getImageEntries(knownEntryMap).listen(
+    ImageFileService.getEntries(knownEntryMap).listen(
       (entry) {
         pendingNewEntries.add(entry);
         if (pendingNewEntries.length >= refreshCount) {
@@ -95,8 +105,48 @@ class MediaStoreSource extends CollectionSource {
     );
   }
 
+  Future<void> refreshUris(List<String> changedUris) async {
+    if (!_initialized) return;
+
+    final uriByContentId = Map.fromEntries(changedUris.map((uri) {
+      if (uri == null) return null;
+      final idString = Uri.parse(uri).pathSegments.last;
+      final contentId = int.tryParse(idString);
+      if (contentId == null) return null;
+      return MapEntry(contentId, uri);
+    }).where((kv) => kv != null));
+
+    // clean up obsolete entries
+    final obsoleteContentIds = (await ImageFileService.getObsoleteEntries(uriByContentId.keys.toList())).toSet();
+    uriByContentId.removeWhere((contentId, _) => obsoleteContentIds.contains(contentId));
+    metadataDb.removeIds(obsoleteContentIds, updateFavourites: true);
+
+    // add new entries
+    final newEntries = <AvesEntry>[];
+    for (final kv in uriByContentId.entries) {
+      final contentId = kv.key;
+      final uri = kv.value;
+      final sourceEntry = await ImageFileService.getEntry(uri, null);
+      final existingEntry = rawEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+      if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs) {
+        newEntries.add(sourceEntry);
+      }
+    }
+    addAll(newEntries);
+    await metadataDb.saveEntries(newEntries);
+    updateAlbums();
+
+    stateNotifier.value = SourceState.cataloguing;
+    await catalogEntries();
+
+    stateNotifier.value = SourceState.locating;
+    await locateEntries();
+
+    stateNotifier.value = SourceState.ready;
+  }
+
   @override
-  Future<void> refreshMetadata(Set<ImageEntry> entries) {
+  Future<void> refreshMetadata(Set<AvesEntry> entries) {
     final contentIds = entries.map((entry) => entry.contentId).toSet();
     metadataDb.removeIds(contentIds, updateFavourites: false);
     return refresh();

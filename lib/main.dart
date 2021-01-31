@@ -2,10 +2,13 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/media_store_source.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
-import 'package:aves/widgets/common/providers/settings_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -16,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 
 void main() {
 //  HttpClient.enableTimelineLogging = true; // enable network traffic logging
@@ -43,12 +47,16 @@ class AvesApp extends StatefulWidget {
 
 class _AvesAppState extends State<AvesApp> {
   Future<void> _appSetup;
+  final _mediaStoreSource = MediaStoreSource();
+  final Debouncer _contentChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
+  final List<String> changedUris = [];
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final EventChannel _contentChangeChannel = EventChannel('deckers.thibault/aves/contentchange');
+  final EventChannel _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
   static const accentColor = Colors.indigoAccent;
 
@@ -94,7 +102,55 @@ class _AvesAppState extends State<AvesApp> {
   void initState() {
     super.initState();
     _appSetup = _setup();
+    _contentChangeChannel.receiveBroadcastStream().listen((event) => _onContentChange(event as String));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // place the settings provider above `MaterialApp`
+    // so it can be used during navigation transitions
+    return ChangeNotifierProvider<Settings>.value(
+      value: settings,
+      child: Provider<CollectionSource>.value(
+        value: _mediaStoreSource,
+        child: OverlaySupport(
+          child: FutureBuilder<void>(
+            future: _appSetup,
+            builder: (context, snapshot) {
+              final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
+                  ? getFirstPage()
+                  : Scaffold(
+                      body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
+                    );
+              return MaterialApp(
+                navigatorKey: _navigatorKey,
+                home: home,
+                navigatorObservers: _navigatorObservers,
+                title: 'Aves',
+                darkTheme: darkTheme,
+                themeMode: ThemeMode.dark,
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(Object error) {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(AIcons.error),
+          SizedBox(height: 16),
+          Text(error.toString()),
+        ],
+      ),
+    );
   }
 
   Future<void> _setup() async {
@@ -133,46 +189,11 @@ class _AvesAppState extends State<AvesApp> {
     ));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // place the settings provider above `MaterialApp`
-    // so it can be used during navigation transitions
-    return SettingsProvider(
-      child: OverlaySupport(
-        child: FutureBuilder<void>(
-          future: _appSetup,
-          builder: (context, snapshot) {
-            final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
-                ? getFirstPage()
-                : Scaffold(
-                    body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
-                  );
-            return MaterialApp(
-              navigatorKey: _navigatorKey,
-              home: home,
-              navigatorObservers: _navigatorObservers,
-              title: 'Aves',
-              darkTheme: darkTheme,
-              themeMode: ThemeMode.dark,
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildError(Object error) {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(AIcons.error),
-          SizedBox(height: 16),
-          Text(error.toString()),
-        ],
-      ),
-    );
+  void _onContentChange(String uri) {
+    changedUris.add(uri);
+    _contentChangeDebouncer(() {
+      _mediaStoreSource.refreshUris(List.of(changedUris));
+      changedUris.clear();
+    });
   }
 }

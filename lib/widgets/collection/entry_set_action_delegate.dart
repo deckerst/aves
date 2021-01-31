@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -22,7 +24,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   CollectionSource get source => collection.source;
 
-  Set<ImageEntry> get selection => collection.selection;
+  Set<AvesEntry> get selection => collection.selection;
 
   EntrySetActionDelegate({
     @required this.collection,
@@ -46,10 +48,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   void onCollectionActionSelected(BuildContext context, CollectionAction action) {
     switch (action) {
       case CollectionAction.copy:
-        _moveSelection(context, copy: true);
+        _moveSelection(context, moveType: MoveType.copy);
         break;
       case CollectionAction.move:
-        _moveSelection(context, copy: false);
+        _moveSelection(context, moveType: MoveType.move);
         break;
       case CollectionAction.refreshMetadata:
         source.refreshMetadata(selection);
@@ -61,12 +63,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  Future<void> _moveSelection(BuildContext context, {@required bool copy}) async {
+  Future<void> _moveSelection(BuildContext context, {@required MoveType moveType}) async {
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
         settings: RouteSettings(name: AlbumPickPage.routeName),
-        builder: (context) => AlbumPickPage(source: source, copy: copy),
+        builder: (context) => AlbumPickPage(source: source, moveType: moveType),
       ),
     );
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
@@ -74,16 +76,17 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (!await checkStoragePermission(context, selection)) return;
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, copy)) return;
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
 
+    final copy = moveType == MoveType.copy;
+    final selectionCount = selection.length;
     showOpReport<MoveOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
+      itemCount: selectionCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           showFeedback(context, 'Failed to ${copy ? 'copy' : 'move'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
@@ -129,14 +132,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (!await checkStoragePermission(context, selection)) return;
 
+    final selectionCount = selection.length;
     showOpReport<ImageOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.delete(selection),
+      itemCount: selectionCount,
       onDone: (processed) {
         final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
         final deletedCount = deletedUris.length;
-        final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');

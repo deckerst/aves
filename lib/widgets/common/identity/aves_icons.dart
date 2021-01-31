@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:aves/image_providers/app_icon_image_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
@@ -9,7 +9,7 @@ import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 
 class VideoIcon extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double iconSize;
   final bool showDuration;
 

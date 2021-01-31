@@ -1,5 +1,5 @@
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/utils/change_notifier.dart';
 
@@ -18,25 +18,25 @@ class FavouriteRepo {
 
   int get count => _rows.length;
 
-  bool isFavourite(ImageEntry entry) => _rows.any((row) => row.contentId == entry.contentId);
+  bool isFavourite(AvesEntry entry) => _rows.any((row) => row.contentId == entry.contentId);
 
-  FavouriteRow _entryToRow(ImageEntry entry) => FavouriteRow(contentId: entry.contentId, path: entry.path);
+  FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(contentId: entry.contentId, path: entry.path);
 
-  Future<void> add(Iterable<ImageEntry> entries) async {
+  Future<void> add(Iterable<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow);
     await metadataDb.addFavourites(newRows);
     _rows.addAll(newRows);
     changeNotifier.notifyListeners();
   }
 
-  Future<void> remove(Iterable<ImageEntry> entries) async {
+  Future<void> remove(Iterable<AvesEntry> entries) async {
     final removedRows = entries.map(_entryToRow);
     await metadataDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
     changeNotifier.notifyListeners();
   }
 
-  Future<void> move(int oldContentId, ImageEntry entry) async {
+  Future<void> move(int oldContentId, AvesEntry entry) async {
     final oldRow = _rows.firstWhere((row) => row.contentId == oldContentId, orElse: () => null);
     if (oldRow != null) {
       _rows.remove(oldRow);

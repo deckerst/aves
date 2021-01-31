@@ -18,4 +18,8 @@ class IntentStreamHandler : EventChannel.StreamHandler {
     fun notifyNewIntent(intentData: MutableMap<String, Any?>?) {
         eventSink?.success(intentData)
     }
+
+    companion object {
+        const val CHANNEL = "deckers.thibault/aves/intent"
+    }
 }

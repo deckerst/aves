@@ -8,8 +8,9 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.model.AvesImageEntry
-import deckers.thibault.aves.model.SourceImageEntry
+import deckers.thibault.aves.model.AvesEntry
+import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.model.SourceEntry
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.MimeTypes.isImage
@@ -158,7 +159,7 @@ class MediaStoreImageProvider : ImageProvider() {
                                 // missing some attributes such as width, height, orientation.
                                 // Also, the reported size of raw images is inconsistent across devices
                                 // and Android versions (sometimes the raw size, sometimes the decoded size).
-                                val entry = SourceImageEntry(entryMap).fillPreCatalogMetadata(context)
+                                val entry = SourceEntry(entryMap).fillPreCatalogMetadata(context)
                                 entryMap = entry.toMap()
                             }
 
@@ -185,7 +186,7 @@ class MediaStoreImageProvider : ImageProvider() {
     override suspend fun delete(context: Context, uri: Uri, path: String?) {
         path ?: throw Exception("failed to delete file because path is null")
 
-        if (requireAccessPermission(context, path)) {
+        if (File(path).exists() && requireAccessPermission(context, path)) {
             // if the file is on SD card, calling the content resolver `delete()` removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
             val df = getDocumentFile(context, path, uri)
@@ -203,7 +204,7 @@ class MediaStoreImageProvider : ImageProvider() {
         context: Context,
         copy: Boolean,
         destinationDir: String,
-        entries: List<AvesImageEntry>,
+        entries: List<AvesEntry>,
         callback: ImageOpCallback,
     ) {
         val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)

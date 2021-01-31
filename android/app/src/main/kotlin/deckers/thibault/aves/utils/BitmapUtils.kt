@@ -26,7 +26,7 @@ object BitmapUtils {
         } catch (e: IllegalStateException) {
             Log.e(LOG_TAG, "failed to get bytes from bitmap", e)
         }
-        return null;
+        return null
     }
 
     fun applyExifOrientation(context: Context, bitmap: Bitmap?, rotationDegrees: Int?, isFlipped: Boolean?): Bitmap? {

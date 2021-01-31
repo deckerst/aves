@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:typed_data';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_debug_service.dart';
 import 'package:aves/utils/constants.dart';
@@ -10,7 +10,7 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class MetadataTab extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const MetadataTab({@required this.entry});
 
@@ -25,7 +25,7 @@ class _MetadataTabState extends State<MetadataTab> {
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
   static const millisecondTimestampKeys = ['datetaken', 'datetime'];
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   void initState() {

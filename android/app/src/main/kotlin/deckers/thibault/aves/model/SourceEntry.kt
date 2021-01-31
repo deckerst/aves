@@ -25,13 +25,13 @@ import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeLong
-import deckers.thibault.aves.model.provider.FieldMap
+import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.IOException
 
-class SourceImageEntry {
+class SourceEntry {
     val uri: Uri // content or file URI
     var path: String? = null // best effort to get local path
     private val sourceMimeType: String
@@ -119,7 +119,7 @@ class SourceImageEntry {
     // metadata retrieval
     // expects entry with: uri, mimeType
     // finds: width, height, orientation/rotation, date, title, duration
-    fun fillPreCatalogMetadata(context: Context): SourceImageEntry {
+    fun fillPreCatalogMetadata(context: Context): SourceEntry {
         if (isSvg) return this
         if (isVideo) {
             fillVideoByMediaMetadataRetriever(context)

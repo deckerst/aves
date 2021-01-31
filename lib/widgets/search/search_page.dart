@@ -71,9 +71,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onQueryChanged() {
-    _debouncer(() => setState(() {
-          // rebuild ourselves because query changed.
-        }));
+    _debouncer(() {
+      if (mounted) {
+        // rebuild ourselves because query changed.
+        setState(() {});
+      }
+    });
   }
 
   void _onSearchBodyChanged() {

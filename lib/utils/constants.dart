@@ -29,14 +29,14 @@ class Constants {
     Dependency(
       name: 'AndroidX Core-KTX',
       license: 'Apache 2.0',
-      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/LICENSE.txt',
-      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/core/core-ktx',
+      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt',
+      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/core/core-ktx',
     ),
     Dependency(
       name: 'AndroidX Exifinterface',
       license: 'Apache 2.0',
-      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/LICENSE.txt',
-      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/exifinterface/exifinterface',
+      licenseUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/LICENSE.txt',
+      sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/exifinterface/exifinterface',
     ),
     Dependency(
       name: 'Android-TiffBitmapFactory',
@@ -84,16 +84,16 @@ class Constants {
       sourceUrl: 'https://github.com/dart-lang/collection',
     ),
     Dependency(
+      name: 'Connectivity',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/connectivity/connectivity/LICENSE',
+      sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/connectivity/connectivity',
+    ),
+    Dependency(
       name: 'Decorated Icon',
       license: 'MIT',
       licenseUrl: 'https://github.com/benPesso/flutter_decorated_icon/blob/master/LICENSE',
       sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
-    ),
-    Dependency(
-      name: 'Draggable Scrollbar',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/fluttercommunity/flutter-draggable-scrollbar/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/fluttercommunity/flutter-draggable-scrollbar',
     ),
     Dependency(
       name: 'Event Bus',

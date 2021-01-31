@@ -2,18 +2,28 @@ package deckers.thibault.aves.model.provider
 
 import android.content.ContentUris
 import android.content.Context
+import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
-import deckers.thibault.aves.model.AvesImageEntry
+import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.TiffImage
+import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
+import deckers.thibault.aves.model.FieldMap
+import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isVideo
+import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils.copyFileToTemp
+import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import java.io.File
 import java.io.FileNotFoundException
@@ -32,8 +42,149 @@ abstract class ImageProvider {
         throw UnsupportedOperationException()
     }
 
-    open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesImageEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException())
+    }
+
+    suspend fun exportMultiple(
+        context: Context,
+        mimeType: String,
+        destinationDir: String,
+        entries: List<AvesEntry>,
+        callback: ImageOpCallback,
+    ) {
+        val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
+        if (destinationDirDocFile == null) {
+            callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
+            return
+        }
+
+        for (entry in entries) {
+            val sourceUri = entry.uri
+            val sourcePath = entry.path
+            val pageId = entry.pageId
+
+            val result = hashMapOf<String, Any?>(
+                "uri" to sourceUri.toString(),
+                "pageId" to pageId,
+                "success" to false,
+            )
+
+            try {
+                val newFields = exportSingleByTreeDocAndScan(
+                    context = context,
+                    sourceEntry = entry,
+                    destinationDir = destinationDir,
+                    destinationDirDocFile = destinationDirDocFile,
+                    exportMimeType = mimeType,
+                )
+                result["newFields"] = newFields
+                result["success"] = true
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to export to destinationDir=$destinationDir entry with sourcePath=$sourcePath pageId=$pageId", e)
+            }
+            callback.onSuccess(result)
+        }
+    }
+
+    private suspend fun exportSingleByTreeDocAndScan(
+        context: Context,
+        sourceEntry: AvesEntry,
+        destinationDir: String,
+        destinationDirDocFile: DocumentFileCompat,
+        exportMimeType: String,
+    ): FieldMap {
+        val sourceMimeType = sourceEntry.mimeType
+        val sourceUri = sourceEntry.uri
+        val pageId = sourceEntry.pageId
+
+        var desiredNameWithoutExtension = if (sourceEntry.path != null) {
+            val sourcePath = sourceEntry.path
+            val sourceFile = File(sourcePath)
+            val sourceFileName = sourceFile.name
+            sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
+        } else {
+            sourceUri.lastPathSegment!!
+        }
+        if (pageId != null) {
+            val page = if (sourceMimeType == MimeTypes.TIFF) pageId + 1 else pageId
+            desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
+        }
+        val desiredFileName = desiredNameWithoutExtension + when (exportMimeType) {
+            MimeTypes.JPEG -> ".jpg"
+            MimeTypes.PNG -> ".png"
+            MimeTypes.WEBP -> ".webp"
+            else -> throw Exception("unsupported export MIME type=$exportMimeType")
+        }
+
+        if (File(destinationDir, desiredFileName).exists()) {
+            throw Exception("file with name=$desiredFileName already exists in destination directory")
+        }
+
+        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+        // through a document URI, not a tree URI
+        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
+        @Suppress("BlockingMethodInNonBlockingContext")
+        val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, desiredNameWithoutExtension)
+        val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+
+        val model: Any = if (MimeTypes.isHeifLike(sourceMimeType) && pageId != null) {
+            MultiTrackImage(context, sourceUri, pageId)
+        } else if (sourceMimeType == MimeTypes.TIFF) {
+            TiffImage(context, sourceUri, pageId)
+        } else {
+            sourceUri
+        }
+
+        // request a fresh image with the highest quality format
+        val glideOptions = RequestOptions()
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .diskCacheStrategy(DiskCacheStrategy.NONE)
+            .skipMemoryCache(true)
+
+        val target = Glide.with(context)
+            .asBitmap()
+            .apply(glideOptions)
+            .load(model)
+            .submit()
+        try {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            var bitmap = target.get()
+            if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
+                bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+            }
+            bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
+
+            val quality = 100
+            val format = when (exportMimeType) {
+                MimeTypes.JPEG -> Bitmap.CompressFormat.JPEG
+                MimeTypes.PNG -> Bitmap.CompressFormat.PNG
+                MimeTypes.WEBP -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (quality == 100) {
+                        Bitmap.CompressFormat.WEBP_LOSSLESS
+                    } else {
+                        Bitmap.CompressFormat.WEBP_LOSSY
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    Bitmap.CompressFormat.WEBP
+                }
+                else -> throw Exception("unsupported export MIME type=$exportMimeType")
+            }
+
+            @Suppress("BlockingMethodInNonBlockingContext")
+            destinationDocFile.openOutputStream().use {
+                bitmap.compress(format, quality, it)
+            }
+        } finally {
+            Glide.with(context).clear(target)
+        }
+
+        val fileName = destinationDocFile.name
+        val destinationFullPath = destinationDir + fileName
+
+        return scanNewPath(context, destinationFullPath, exportMimeType)
     }
 
     suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {
@@ -147,9 +298,9 @@ abstract class ImageProvider {
                     // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
                     // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
                     contentId = ContentUris.parseId(newUri)
-                    if (isImage(mimeType)) {
+                    if (MimeTypes.isImage(mimeType)) {
                         contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
-                    } else if (isVideo(mimeType)) {
+                    } else if (MimeTypes.isVideo(mimeType)) {
                         contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
                     }
                 }
@@ -198,5 +349,3 @@ abstract class ImageProvider {
         private val LOG_TAG = LogUtils.createTag(ImageProvider::class.java)
     }
 }
-
-typealias FieldMap = MutableMap<String, Any?>

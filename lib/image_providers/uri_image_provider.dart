@@ -3,19 +3,19 @@ import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:pedantic/pedantic.dart';
 
 class UriImage extends ImageProvider<UriImage> {
   final String uri, mimeType;
-  final int page, rotationDegrees, expectedContentLength;
+  final int pageId, rotationDegrees, expectedContentLength;
   final bool isFlipped;
   final double scale;
 
   const UriImage({
     @required this.uri,
     @required this.mimeType,
-    this.page = 0,
+    @required this.pageId,
     @required this.rotationDegrees,
     @required this.isFlipped,
     this.expectedContentLength,
@@ -37,7 +37,7 @@ class UriImage extends ImageProvider<UriImage> {
       scale: key.scale,
       chunkEvents: chunkEvents.stream,
       informationCollector: () sync* {
-        yield ErrorDescription('uri=$uri, mimeType=$mimeType');
+        yield ErrorDescription('uri=$uri, pageId=$pageId, mimeType=$mimeType');
       },
     );
   }
@@ -51,7 +51,7 @@ class UriImage extends ImageProvider<UriImage> {
         mimeType,
         rotationDegrees,
         isFlipped,
-        page: page,
+        pageId: pageId,
         expectedContentLength: expectedContentLength,
         onBytesReceived: (cumulative, total) {
           chunkEvents.add(ImageChunkEvent(
@@ -66,7 +66,7 @@ class UriImage extends ImageProvider<UriImage> {
       return await decode(bytes);
     } catch (error) {
       debugPrint('$runtimeType _loadAsync failed with mimeType=$mimeType, uri=$uri, error=$error');
-      throw StateError('$mimeType decoding failed');
+      throw StateError('$mimeType decoding failed (page $pageId)');
     } finally {
       unawaited(chunkEvents.close());
     }
@@ -75,7 +75,7 @@ class UriImage extends ImageProvider<UriImage> {
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is UriImage && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.page == page && other.scale == scale;
+    return other is UriImage && other.uri == uri && other.mimeType == mimeType && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.pageId == pageId && other.scale == scale;
   }
 
   @override
@@ -84,10 +84,10 @@ class UriImage extends ImageProvider<UriImage> {
         mimeType,
         rotationDegrees,
         isFlipped,
-        page,
+        pageId,
         scale,
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, page=$page, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, pageId=$pageId, scale=$scale}';
 }

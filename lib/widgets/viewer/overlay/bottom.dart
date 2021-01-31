@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -20,7 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerBottomOverlay extends StatefulWidget {
-  final List<ImageEntry> entries;
+  final List<AvesEntry> entries;
   final int index;
   final bool showPosition;
   final EdgeInsets viewInsets, viewPadding;
@@ -42,10 +42,10 @@ class ViewerBottomOverlay extends StatefulWidget {
 
 class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   Future<OverlayMetadata> _detailLoader;
-  ImageEntry _lastEntry;
+  AvesEntry _lastEntry;
   OverlayMetadata _lastDetails;
 
-  ImageEntry get entry {
+  AvesEntry get entry {
     final entries = widget.entries;
     final index = widget.index;
     return index < entries.length ? entries[index] : null;
@@ -97,15 +97,31 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
                   _lastDetails = snapshot.data;
                   _lastEntry = entry;
                 }
-                return _lastEntry == null
-                    ? SizedBox.shrink()
-                    : _BottomOverlayContent(
-                        entry: _lastEntry,
-                        details: _lastDetails,
-                        position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
-                        availableWidth: availableWidth,
-                        multiPageController: multiPageController,
-                      );
+                if (_lastEntry == null) return SizedBox.shrink();
+
+                Widget _buildContent({MultiPageInfo multiPageInfo, int page}) => _BottomOverlayContent(
+                      mainEntry: _lastEntry,
+                      page: multiPageInfo?.getByIndex(page),
+                      details: _lastDetails,
+                      position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
+                      availableWidth: availableWidth,
+                      multiPageController: multiPageController,
+                    );
+
+                if (multiPageController == null) return _buildContent();
+
+                return FutureBuilder<MultiPageInfo>(
+                  future: multiPageController.info,
+                  builder: (context, snapshot) {
+                    final multiPageInfo = snapshot.data;
+                    return ValueListenableBuilder<int>(
+                      valueListenable: multiPageController.pageNotifier,
+                      builder: (context, page, child) {
+                        return _buildContent(multiPageInfo: multiPageInfo, page: page);
+                      },
+                    );
+                  },
+                );
               },
             ),
           );
@@ -121,7 +137,8 @@ const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
 class _BottomOverlayContent extends AnimatedWidget {
-  final ImageEntry entry;
+  final AvesEntry mainEntry, entry;
+  final SinglePageInfo page;
   final OverlayMetadata details;
   final String position;
   final double availableWidth;
@@ -131,12 +148,14 @@ class _BottomOverlayContent extends AnimatedWidget {
 
   _BottomOverlayContent({
     Key key,
-    this.entry,
+    this.mainEntry,
+    this.page,
     this.details,
     this.position,
     this.availableWidth,
     this.multiPageController,
-  }) : super(key: key, listenable: entry.metadataChangeNotifier);
+  })  : entry = mainEntry.getPageEntry(page),
+        super(key: key, listenable: mainEntry.metadataChangeNotifier);
 
   @override
   Widget build(BuildContext context) {
@@ -158,13 +177,13 @@ class _BottomOverlayContent extends AnimatedWidget {
               infoColumn = _buildInfoColumn(orientation);
             }
 
-            if (multiPageController != null) {
+            if (mainEntry.isMultipage && multiPageController != null) {
               infoColumn = Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MultiPageOverlay(
-                    entry: entry,
+                    mainEntry: mainEntry,
                     controller: multiPageController,
                     availableWidth: availableWidth,
                   ),
@@ -280,7 +299,7 @@ class _BottomOverlayContent extends AnimatedWidget {
 }
 
 class _LocationRow extends AnimatedWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   _LocationRow({
     Key key,
@@ -306,7 +325,7 @@ class _LocationRow extends AnimatedWidget {
 }
 
 class _PositionTitleRow extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final String collectionPosition;
   final MultiPageController multiPageController;
 
@@ -320,6 +339,8 @@ class _PositionTitleRow extends StatelessWidget {
 
   bool get isNotEmpty => collectionPosition != null || multiPageController != null || title != null;
 
+  static const separator = ' • ';
+
   @override
   Widget build(BuildContext context) {
     Text toText({String pagePosition}) => Text(
@@ -327,7 +348,7 @@ class _PositionTitleRow extends StatelessWidget {
           if (collectionPosition != null) collectionPosition,
           if (pagePosition != null) pagePosition,
           if (title != null) title,
-        ].join(' • '),
+        ].join(separator),
         strutStyle: Constants.overflowStrutStyle);
 
     if (multiPageController == null) return toText();
@@ -336,23 +357,24 @@ class _PositionTitleRow extends StatelessWidget {
       future: multiPageController.info,
       builder: (context, snapshot) {
         final multiPageInfo = snapshot.data;
-        final pageCount = multiPageInfo?.pageCount;
-        // page count may be 0 when we know an entry to have multiple pages
-        // but fail to get information about these pages
-        final missingInfo = pageCount == 0;
-        return ValueListenableBuilder<int>(
-          valueListenable: multiPageController.pageNotifier,
-          builder: (context, page, child) {
-            return toText(pagePosition: missingInfo ? null : '${page + 1}/${pageCount ?? '?'}');
-          },
-        );
+        String pagePosition;
+        if (multiPageInfo != null) {
+          // page count may be 0 when we know an entry to have multiple pages
+          // but fail to get information about these pages
+          final pageCount = multiPageInfo.pageCount;
+          if (pageCount > 0) {
+            final page = multiPageInfo.getById(entry.pageId) ?? multiPageInfo.defaultPage;
+            pagePosition = '${(page?.index ?? 0) + 1}/$pageCount';
+          }
+        }
+        return toText(pagePosition: pagePosition);
       },
     );
   }
 }
 
 class _DateRow extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final MultiPageController multiPageController;
 
   const _DateRow({
@@ -364,40 +386,14 @@ class _DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.overlayUnknown;
+    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.resolutionText;
 
-    Text toText({MultiPageInfo multiPageInfo, int page}) => Text(
-          entry.isSvg
-              ? entry.aspectRatioText
-              : entry.getResolutionText(
-                  multiPageInfo: multiPageInfo,
-                  page: page,
-                ),
-          strutStyle: Constants.overflowStrutStyle,
-        );
-
-    Widget resolutionText;
-    if (multiPageController != null) {
-      resolutionText = FutureBuilder<MultiPageInfo>(
-        future: multiPageController.info,
-        builder: (context, snapshot) {
-          final multiPageInfo = snapshot.data;
-          return ValueListenableBuilder<int>(
-            valueListenable: multiPageController.pageNotifier,
-            builder: (context, page, child) {
-              return toText(multiPageInfo: multiPageInfo, page: page);
-            },
-          );
-        },
-      );
-    } else {
-      resolutionText = toText();
-    }
     return Row(
       children: [
         DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
         SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
-        Expanded(flex: 2, child: resolutionText),
+        Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
   }

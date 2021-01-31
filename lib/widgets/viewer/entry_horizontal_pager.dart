@@ -1,4 +1,4 @@
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
@@ -7,6 +7,7 @@ import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class MultiEntryScroller extends StatefulWidget {
@@ -33,7 +34,7 @@ class MultiEntryScroller extends StatefulWidget {
 }
 
 class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticKeepAliveClientMixin {
-  List<ImageEntry> get entries => widget.collection.sortedEntries;
+  List<AvesEntry> get entries => widget.collection.sortedEntries;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
                   return ValueListenableBuilder<int>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
-                      return _buildViewer(entry, multiPageInfo: multiPageInfo, page: page);
+                      return _buildViewer(entry, page: multiPageInfo?.getByIndex(page));
                     },
                   );
                 },
@@ -79,20 +80,25 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  EntryPageView _buildViewer(ImageEntry entry, {MultiPageInfo multiPageInfo, int page = 0}) {
-    return EntryPageView(
-      key: Key('imageview'),
-      entry: entry,
-      multiPageInfo: multiPageInfo,
-      page: page,
-      heroTag: widget.collection.heroTag(entry),
-      onTap: (_) => widget.onTap?.call(),
-      videoControllers: widget.videoControllers,
-      onDisposed: () => widget.onViewDisposed?.call(entry.uri),
+  Widget _buildViewer(AvesEntry entry, {SinglePageInfo page}) {
+    return Selector<MediaQueryData, Size>(
+      selector: (c, mq) => mq.size,
+      builder: (c, mqSize, child) {
+        return EntryPageView(
+          key: Key('imageview'),
+          mainEntry: entry,
+          page: page,
+          viewportSize: mqSize,
+          heroTag: widget.collection.heroTag(entry),
+          onTap: (_) => widget.onTap?.call(),
+          videoControllers: widget.videoControllers,
+          onDisposed: () => widget.onViewDisposed?.call(entry.uri),
+        );
+      },
     );
   }
 
-  MultiPageController _getMultiPageController(ImageEntry entry) {
+  MultiPageController _getMultiPageController(AvesEntry entry) {
     return widget.multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
   }
 
@@ -101,7 +107,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 }
 
 class SingleEntryScroller extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final VoidCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
@@ -118,7 +124,7 @@ class SingleEntryScroller extends StatefulWidget {
 }
 
 class _SingleEntryScrollerState extends State<SingleEntryScroller> with AutomaticKeepAliveClientMixin {
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +141,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
             return ValueListenableBuilder<int>(
               valueListenable: multiPageController.pageNotifier,
               builder: (context, page, child) {
-                return _buildViewer(multiPageInfo: multiPageInfo, page: page);
+                return _buildViewer(page: multiPageInfo?.getByIndex(page));
               },
             );
           },
@@ -150,17 +156,22 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  EntryPageView _buildViewer({MultiPageInfo multiPageInfo, int page = 0}) {
-    return EntryPageView(
-      entry: entry,
-      multiPageInfo: multiPageInfo,
-      page: page,
-      onTap: (_) => widget.onTap?.call(),
-      videoControllers: widget.videoControllers,
+  Widget _buildViewer({SinglePageInfo page}) {
+    return Selector<MediaQueryData, Size>(
+      selector: (c, mq) => mq.size,
+      builder: (c, mqSize, child) {
+        return EntryPageView(
+          mainEntry: entry,
+          page: page,
+          viewportSize: mqSize,
+          onTap: (_) => widget.onTap?.call(),
+          videoControllers: widget.videoControllers,
+        );
+      },
     );
   }
 
-  MultiPageController _getMultiPageController(ImageEntry entry) {
+  MultiPageController _getMultiPageController(AvesEntry entry) {
     return widget.multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
   }
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/image_providers/uri_picture_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -23,81 +23,124 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
-  final ImageEntry entry;
-  final MultiPageInfo multiPageInfo;
-  final int page;
+  final AvesEntry entry;
+  final SinglePageInfo page;
+  final Size viewportSize;
   final Object heroTag;
   final MagnifierTapCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final VoidCallback onDisposed;
 
   static const decorationCheckSize = 20.0;
-  static const initialScale = ScaleLevel(ref: ScaleReference.contained);
-  static const minScale = ScaleLevel(ref: ScaleReference.contained);
-  static const maxScale = ScaleLevel(factor: 2.0);
 
-  const EntryPageView({
+  EntryPageView({
     Key key,
-    @required this.entry,
-    this.multiPageInfo,
-    this.page = 0,
+    AvesEntry mainEntry,
+    this.page,
+    this.viewportSize,
     this.heroTag,
     @required this.onTap,
     @required this.videoControllers,
     this.onDisposed,
-  }) : super(key: key);
+  })  : entry = mainEntry.getPageEntry(page) ?? mainEntry,
+        super(key: key);
 
   @override
   _EntryPageViewState createState() => _EntryPageViewState();
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
-  final MagnifierController _magnifierController = MagnifierController();
+  MagnifierController _magnifierController;
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
-  MultiPageInfo get multiPageInfo => widget.multiPageInfo;
-
-  int get page => widget.page;
+  Size get viewportSize => widget.viewportSize;
 
   MagnifierTapCallback get onTap => widget.onTap;
 
-  Size get pageDisplaySize => entry.getDisplaySize(multiPageInfo: multiPageInfo, page: page);
+  static const initialScale = ScaleLevel(ref: ScaleReference.contained);
+  static const minScale = ScaleLevel(ref: ScaleReference.contained);
+  static const maxScale = ScaleLevel(factor: 2.0);
 
   @override
   void initState() {
     super.initState();
-    _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
-    _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
+    _registerWidget();
+  }
+
+  @override
+  void didUpdateWidget(covariant EntryPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.entry.displaySize != entry.displaySize) {
+      // do not reset the magnifier view state unless page dimensions change,
+      // in effect locking the zoom & position when browsing entry pages of the same size
+      _unregisterWidget();
+      _registerWidget();
+    }
   }
 
   @override
   void dispose() {
-    _subscriptions
-      ..forEach((sub) => sub.cancel())
-      ..clear();
+    _unregisterWidget();
     widget.onDisposed?.call();
     super.dispose();
   }
 
+  void _registerWidget() {
+    // try to initialize the view state to match magnifier initial state
+    _viewStateNotifier.value = viewportSize != null
+        ? ViewState(
+            Offset.zero,
+            ScaleBoundaries(
+              minScale: minScale,
+              maxScale: maxScale,
+              initialScale: initialScale,
+              viewportSize: viewportSize,
+              childSize: entry.displaySize,
+            ).initialScale,
+            viewportSize,
+          )
+        : ViewState.zero;
+
+    _magnifierController = MagnifierController();
+    _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
+    _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
+  }
+
+  void _unregisterWidget() {
+    _magnifierController?.dispose();
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget child;
-    if (entry.isVideo) {
-      if (entry.width > 0 && entry.height > 0) {
-        child = _buildVideoView();
-      }
-    } else if (entry.isSvg) {
-      child = _buildSvgView();
-    } else if (entry.canDecode) {
-      child = _buildRasterView();
-    }
-    child ??= ErrorView(onTap: () => onTap?.call(null));
+    final child = AnimatedBuilder(
+      animation: entry.imageChangeNotifier,
+      builder: (context, child) {
+        Widget child;
+        if (entry.isVideo) {
+          if (!entry.displaySize.isEmpty) {
+            child = _buildVideoView();
+          }
+        } else if (entry.isSvg) {
+          child = _buildSvgView();
+        } else if (entry.canDecode) {
+          child = _buildRasterView();
+        }
+        child ??= ErrorView(
+          entry: entry,
+          onTap: () => onTap?.call(null),
+        );
+        return child;
+      },
+    );
 
-    // no hero for videos, as a typical video first frame is different from its thumbnail
-    return widget.heroTag != null && !entry.isVideo
+    return widget.heroTag != null
         ? Hero(
             tag: widget.heroTag,
             transitionOnUserGestures: true,
@@ -107,23 +150,16 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   Widget _buildRasterView() {
-    return Magnifier(
-      // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${page}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
-      child: TiledImageView(
-        entry: entry,
-        multiPageInfo: multiPageInfo,
-        page: page,
-        viewStateNotifier: _viewStateNotifier,
-        errorBuilder: (context, error, stackTrace) => ErrorView(onTap: () => onTap?.call(null)),
-      ),
-      childSize: pageDisplaySize,
-      controller: _magnifierController,
-      maxScale: EntryPageView.maxScale,
-      minScale: EntryPageView.minScale,
-      initialScale: EntryPageView.initialScale,
-      onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
+    return _buildMagnifier(
       applyScale: false,
+      child: RasterImageView(
+        entry: entry,
+        viewStateNotifier: _viewStateNotifier,
+        errorBuilder: (context, error, stackTrace) => ErrorView(
+          entry: entry,
+          onTap: () => onTap?.call(null),
+        ),
+      ),
     );
   }
 
@@ -131,7 +167,9 @@ class _EntryPageViewState extends State<EntryPageView> {
     final background = settings.vectorBackground;
     final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
 
-    Widget child = Magnifier(
+    var child = _buildMagnifier(
+      maxScale: ScaleLevel(factor: double.infinity),
+      scaleStateCycle: _vectorScaleStateCycle,
       child: SvgPicture(
         UriPicture(
           uri: entry.uri,
@@ -139,17 +177,11 @@ class _EntryPageViewState extends State<EntryPageView> {
           colorFilter: colorFilter,
         ),
       ),
-      childSize: pageDisplaySize,
-      controller: _magnifierController,
-      minScale: EntryPageView.minScale,
-      initialScale: EntryPageView.initialScale,
-      scaleStateCycle: _vectorScaleStateCycle,
-      onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
     );
 
     if (background == EntryBackground.checkered) {
       child = VectorViewCheckeredBackground(
-        displaySize: pageDisplaySize,
+        displaySize: entry.displaySize,
         viewStateNotifier: _viewStateNotifier,
         child: child,
       );
@@ -159,19 +191,33 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   Widget _buildVideoView() {
     final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+    if (videoController == null) return SizedBox();
+    return _buildMagnifier(
+      child: VideoView(
+        entry: entry,
+        controller: videoController,
+      ),
+    );
+  }
+
+  Widget _buildMagnifier({
+    ScaleLevel maxScale = maxScale,
+    ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
+    bool applyScale = true,
+    @required Widget child,
+  }) {
     return Magnifier(
-      child: videoController != null
-          ? AvesVideo(
-              entry: entry,
-              controller: videoController,
-            )
-          : SizedBox(),
-      childSize: pageDisplaySize,
+      // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
+      key: ValueKey('${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: _magnifierController,
-      maxScale: EntryPageView.maxScale,
-      minScale: EntryPageView.minScale,
-      initialScale: EntryPageView.initialScale,
+      childSize: entry.displaySize,
+      minScale: minScale,
+      maxScale: maxScale,
+      initialScale: initialScale,
+      scaleStateCycle: scaleStateCycle,
+      applyScale: applyScale,
       onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
+      child: child,
     );
   }
 

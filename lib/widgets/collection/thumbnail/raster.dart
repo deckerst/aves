@@ -1,17 +1,14 @@
-import 'dart:math';
-
 import 'package:aves/image_providers/thumbnail_provider.dart';
-import 'package:aves/image_providers/uri_image_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
 
 class RasterImageThumbnail extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
-  final int page;
   final ValueNotifier<bool> isScrollingNotifier;
   final Object heroTag;
 
@@ -19,7 +16,6 @@ class RasterImageThumbnail extends StatefulWidget {
     Key key,
     @required this.entry,
     @required this.extent,
-    this.page = 0,
     this.isScrollingNotifier,
     this.heroTag,
   }) : super(key: key);
@@ -31,18 +27,11 @@ class RasterImageThumbnail extends StatefulWidget {
 class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
 
-  ImageEntry get entry => widget.entry;
-
-  int get page => widget.page;
+  AvesEntry get entry => widget.entry;
 
   double get extent => widget.extent;
 
   Object get heroTag => widget.heroTag;
-
-  // we standardize the thumbnail loading dimension by taking the nearest larger power of 2
-  // so that there are less variants of the thumbnails to load and cache
-  // it increases the chance of cache hit when loading similarly sized columns (e.g. on orientation change)
-  double get requestExtent => pow(2, (log(extent) / log(2)).ceil()).toDouble();
 
   @override
   void initState() {
@@ -78,14 +67,8 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   void _initProvider() {
     if (!entry.canDecode) return;
 
-    _fastThumbnailProvider = ThumbnailProvider(
-      ThumbnailProviderKey.fromEntry(entry, page: page),
-    );
-    if (!entry.isVideo) {
-      _sizedThumbnailProvider = ThumbnailProvider(
-        ThumbnailProviderKey.fromEntry(entry, page: page, extent: requestExtent),
-      );
-    }
+    _fastThumbnailProvider = entry.getThumbnail();
+    _sizedThumbnailProvider = entry.getThumbnail(extent: extent);
   }
 
   void _pauseProvider() {
@@ -148,22 +131,8 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
         : Hero(
             tag: heroTag,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
-              ImageProvider heroImageProvider = _fastThumbnailProvider;
-              if (!entry.isVideo) {
-                final imageProvider = UriImage(
-                  uri: entry.uri,
-                  mimeType: entry.mimeType,
-                  page: page,
-                  rotationDegrees: entry.rotationDegrees,
-                  isFlipped: entry.isFlipped,
-                  expectedContentLength: entry.sizeBytes,
-                );
-                if (imageCache.statusForKey(imageProvider).keepAlive) {
-                  heroImageProvider = imageProvider;
-                }
-              }
               return TransitionImage(
-                image: heroImageProvider,
+                image: entry.getBestThumbnail(extent),
                 animation: animation,
               );
             },

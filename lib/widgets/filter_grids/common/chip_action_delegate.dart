@@ -1,9 +1,11 @@
 import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -77,14 +79,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermission(context, selection)) return;
 
+    final selectionCount = selection.length;
     showOpReport<ImageOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.delete(selection),
+      itemCount: selectionCount,
       onDone: (processed) {
         final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
         final deletedCount = deletedUris.length;
-        final selectionCount = selection.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
@@ -109,16 +111,16 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     final selection = source.rawEntries.where(filter.filter).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, false)) return;
+    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, MoveType.move)) return;
 
+    final selectionCount = selection.length;
     showOpReport<MoveOpEvent>(
       context: context,
-      selection: selection,
       opStream: ImageFileService.move(selection, copy: false, destinationAlbum: destinationAlbum),
+      itemCount: selectionCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final selectionCount = selection.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
           showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');

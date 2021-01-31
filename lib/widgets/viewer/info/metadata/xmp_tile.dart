@@ -1,15 +1,13 @@
 import 'dart:collection';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/xmp.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
@@ -17,12 +15,13 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
+import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 
 class XmpDirTile extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final SplayTreeMap<String, String> tags;
   final ValueNotifier<String> expandedNotifier;
   final bool initiallyExpanded;
@@ -39,7 +38,7 @@ class XmpDirTile extends StatefulWidget {
 }
 
 class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   Widget build(BuildContext context) {
@@ -123,13 +122,6 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
       return;
     }
 
-    final embedEntry = ImageEntry.fromMap(fields);
-    unawaited(Navigator.push(
-      context,
-      TransparentMaterialPageRoute(
-        settings: RouteSettings(name: SingleEntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) => SingleEntryViewerPage(entry: embedEntry),
-      ),
-    ));
+    OpenTempEntryNotification(entry: AvesEntry.fromMap(fields)).dispatch(context);
   }
 }

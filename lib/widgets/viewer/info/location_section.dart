@@ -1,6 +1,8 @@
+import 'package:aves/model/connectivity.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
@@ -16,7 +18,7 @@ import 'package:tuple/tuple.dart';
 
 class LocationSection extends StatefulWidget {
   final CollectionLens collection;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> visibleNotifier;
   final FilterCallback onFilter;
@@ -42,7 +44,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
 
   CollectionLens get collection => widget.collection;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   void initState() {
@@ -101,34 +103,40 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.showTitle) SectionRow(AIcons.location),
-          NotificationListener(
-            onNotification: (notification) {
-              if (notification is MapStyleChangedNotification) setState(() {});
-              return false;
+          FutureBuilder<bool>(
+            future: connectivity.isConnected,
+            builder: (context, snapshot) {
+              if (snapshot.data != true) return SizedBox();
+              return NotificationListener(
+                onNotification: (notification) {
+                  if (notification is MapStyleChangedNotification) setState(() {});
+                  return false;
+                },
+                child: AnimatedSize(
+                  alignment: Alignment.topCenter,
+                  curve: Curves.easeInOutCubic,
+                  duration: Durations.mapStyleSwitchAnimation,
+                  vsync: this,
+                  child: settings.infoMapStyle.isGoogleMaps
+                      ? EntryGoogleMap(
+                          // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
+                          latLng: Tuple2<double, double>(entry.latLng.latitude, entry.latLng.longitude),
+                          geoUri: entry.geoUri,
+                          initialZoom: settings.infoMapZoom,
+                          markerId: entry.uri ?? entry.path,
+                          markerBuilder: buildMarker,
+                        )
+                      : EntryLeafletMap(
+                          latLng: entry.latLng,
+                          geoUri: entry.geoUri,
+                          initialZoom: settings.infoMapZoom,
+                          style: settings.infoMapStyle,
+                          markerSize: Size(extent, extent + pointerSize.height),
+                          markerBuilder: buildMarker,
+                        ),
+                ),
+              );
             },
-            child: AnimatedSize(
-              alignment: Alignment.topCenter,
-              curve: Curves.easeInOutCubic,
-              duration: Durations.mapStyleSwitchAnimation,
-              vsync: this,
-              child: settings.infoMapStyle.isGoogleMaps
-                  ? EntryGoogleMap(
-                      // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
-                      latLng: Tuple2<double, double>(entry.latLng.latitude, entry.latLng.longitude),
-                      geoUri: entry.geoUri,
-                      initialZoom: settings.infoMapZoom,
-                      markerId: entry.uri ?? entry.path,
-                      markerBuilder: buildMarker,
-                    )
-                  : EntryLeafletMap(
-                      latLng: entry.latLng,
-                      geoUri: entry.geoUri,
-                      initialZoom: settings.infoMapZoom,
-                      style: settings.infoMapStyle,
-                      markerSize: Size(extent, extent + pointerSize.height),
-                      markerBuilder: buildMarker,
-                    ),
-            ),
           ),
           if (entry.hasGps) _AddressInfoGroup(entry: entry),
           if (filters.isNotEmpty)
@@ -157,7 +165,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
 }
 
 class _AddressInfoGroup extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const _AddressInfoGroup({@required this.entry});
 
@@ -168,12 +176,17 @@ class _AddressInfoGroup extends StatefulWidget {
 class _AddressInfoGroupState extends State<_AddressInfoGroup> {
   Future<String> _addressLineLoader;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   void initState() {
     super.initState();
-    _addressLineLoader = entry.findAddressLine();
+    _addressLineLoader = connectivity.canGeolocate.then((connected) {
+      if (connected) {
+        return entry.findAddressLine();
+      }
+      return null;
+    });
   }
 
   @override
@@ -188,40 +201,5 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
         });
       },
     );
-  }
-}
-
-// browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
-enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenToner, stamenWatercolor }
-
-extension ExtraEntryMapStyle on EntryMapStyle {
-  String get name {
-    switch (this) {
-      case EntryMapStyle.googleNormal:
-        return 'Google Maps';
-      case EntryMapStyle.googleHybrid:
-        return 'Google Maps (Hybrid)';
-      case EntryMapStyle.googleTerrain:
-        return 'Google Maps (Terrain)';
-      case EntryMapStyle.osmHot:
-        return 'Humanitarian OSM';
-      case EntryMapStyle.stamenToner:
-        return 'Stamen Toner';
-      case EntryMapStyle.stamenWatercolor:
-        return 'Stamen Watercolor';
-      default:
-        return toString();
-    }
-  }
-
-  bool get isGoogleMaps {
-    switch (this) {
-      case EntryMapStyle.googleNormal:
-      case EntryMapStyle.googleHybrid:
-      case EntryMapStyle.googleTerrain:
-        return true;
-      default:
-        return false;
-    }
   }
 }

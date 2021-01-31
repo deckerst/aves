@@ -15,7 +15,6 @@ class MagnifierCore extends StatefulWidget {
     Key key,
     @required this.child,
     @required this.onTap,
-    @required this.gestureDetectorBehavior,
     @required this.controller,
     @required this.scaleStateCycle,
     @required this.applyScale,
@@ -29,7 +28,6 @@ class MagnifierCore extends StatefulWidget {
 
   final MagnifierTapCallback onTap;
 
-  final HitTestBehavior gestureDetectorBehavior;
   final bool applyScale;
   final double panInertia;
 
