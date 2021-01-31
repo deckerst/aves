@@ -19,6 +19,7 @@ import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import kotlinx.coroutines.delay
 import java.io.File
 import java.util.*
@@ -34,19 +35,21 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     override suspend fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
-        val id = ContentUris.parseId(uri)
+        val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
             callback.onSuccess(entry)
         }
         val alwaysValid = { _: Int, _: Int -> true }
-        if (mimeType == null || isImage(mimeType)) {
-            val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
-            if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION) > 0) return
-        }
-        if (mimeType == null || isVideo(mimeType)) {
-            val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
-            if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
+        if (id != null) {
+            if (mimeType == null || isImage(mimeType)) {
+                val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
+                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION) > 0) return
+            }
+            if (mimeType == null || isVideo(mimeType)) {
+                val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
+                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
+            }
         }
         // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
         // without an equivalent image/video if it is shared from a file browser
