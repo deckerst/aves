@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class ImageMarker extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
   final Size pointerSize;
 
@@ -158,7 +158,7 @@ class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
         type: MaterialType.transparency,
         child: Stack(
           children: widget.markers.map((i) {
-            final key = GlobalKey();
+            final key = GlobalKey(debugLabel: 'map-marker-$i');
             _globalKeys.add(key);
             return RepaintBoundary(
               key: key,

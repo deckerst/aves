@@ -1,6 +1,6 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -13,7 +13,7 @@ class DebugAppDatabaseSection extends StatefulWidget {
 
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
   Future<int> _dbFileSizeLoader;
-  Future<List<ImageEntry>> _dbEntryLoader;
+  Future<List<AvesEntry>> _dbEntryLoader;
   Future<List<DateMetadata>> _dbDateLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -21,16 +21,18 @@ import 'package:path/path.dart' as ppath;
 
 import '../ref/mime_types.dart';
 
-class ImageEntry {
+class AvesEntry {
   String uri;
   String _path, _directory, _filename, _extension;
-  int contentId;
+  int pageId, contentId;
   final String sourceMimeType;
   int width;
   int height;
   int sourceRotationDegrees;
   final int sizeBytes;
   String sourceTitle;
+
+  // `dateModifiedSecs` can be missing in viewer mode
   int _dateModifiedSecs;
   final int sourceDateTakenMillis;
   final int durationMillis;
@@ -43,10 +45,11 @@ class ImageEntry {
   // TODO TLAD make it dynamic if it depends on OS/lib versions
   static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
 
-  ImageEntry({
+  AvesEntry({
     this.uri,
     String path,
     this.contentId,
+    this.pageId,
     this.sourceMimeType,
     @required this.width,
     @required this.height,
@@ -66,14 +69,14 @@ class ImageEntry {
 
   bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
-  ImageEntry copyWith({
+  AvesEntry copyWith({
     @required String uri,
     @required String path,
     @required int contentId,
     @required int dateModifiedSecs,
   }) {
     final copyContentId = contentId ?? this.contentId;
-    final copied = ImageEntry(
+    final copied = AvesEntry(
       uri: uri ?? uri,
       path: path ?? this.path,
       contentId: copyContentId,
@@ -93,9 +96,39 @@ class ImageEntry {
     return copied;
   }
 
+  AvesEntry getPageEntry(SinglePageInfo pageInfo, {bool eraseDefaultPageId = true}) {
+    if (pageInfo == null) return this;
+
+    // do not provide the page ID for the default page,
+    // so that we can treat this page like the main entry
+    // and retrieve cached images for it
+    final pageId = eraseDefaultPageId && pageInfo.isDefault ? null : pageInfo.pageId;
+
+    return AvesEntry(
+      uri: uri,
+      path: path,
+      contentId: contentId,
+      pageId: pageId,
+      sourceMimeType: pageInfo.mimeType ?? sourceMimeType,
+      width: pageInfo.width ?? width,
+      height: pageInfo.height ?? height,
+      sourceRotationDegrees: sourceRotationDegrees,
+      sizeBytes: sizeBytes,
+      sourceTitle: sourceTitle,
+      dateModifiedSecs: dateModifiedSecs,
+      sourceDateTakenMillis: sourceDateTakenMillis,
+      durationMillis: pageInfo.durationMillis ?? durationMillis,
+    )
+      ..catalogMetadata = _catalogMetadata?.copyWith(
+        mimeType: pageInfo.mimeType,
+        isMultipage: false,
+      )
+      ..addressDetails = _addressDetails?.copyWith();
+  }
+
   // from DB or platform source entry
-  factory ImageEntry.fromMap(Map map) {
-    return ImageEntry(
+  factory AvesEntry.fromMap(Map map) {
+    return AvesEntry(
       uri: map['uri'] as String,
       path: map['path'] as String,
       contentId: map['contentId'] as int,
@@ -136,7 +169,7 @@ class ImageEntry {
   }
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path, pageId=$pageId}';
 
   set path(String path) {
     _path = path;
@@ -196,7 +229,11 @@ class ImageEntry {
       ].contains(mimeType) &&
       !isAnimated;
 
-  bool get canTile => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
+  bool get supportTiling => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
+
+  // as of panorama v0.3.1, the `Panorama` widget throws on initialization when the image is already resolved
+  // so we use tiles for panoramas as a workaround to not collide with the `panorama` package resolution
+  bool get useTiles => supportTiling && (width > 4096 || height > 4096 || is360);
 
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
@@ -216,8 +253,6 @@ class ImageEntry {
 
   bool get canEdit => path != null;
 
-  bool get canPrint => !isVideo;
-
   bool get canRotateAndFlip => canEdit && canEditExif;
 
   // support for writing EXIF
@@ -233,29 +268,21 @@ class ImageEntry {
     }
   }
 
-  // The additional comparison of width to height is a workaround for badly registered entries.
-  // e.g. a portrait FHD video should be registered as width=1920, height=1080, orientation=90,
-  // but is incorrectly registered in the Media Store as width=1080, height=1920, orientation=0
-  // Double-checking the width/height during loading or cataloguing is the proper solution,
-  // but it would take space and time, so a basic workaround will do.
-  bool get isPortrait => rotationDegrees % 180 == 90 && (catalogMetadata?.rotationDegrees == null || width > height);
+  // Media Store size/rotation is inaccurate, e.g. a portrait FHD video is rotated according to its metadata,
+  // so it should be registered as width=1920, height=1080, orientation=90,
+  // but is incorrectly registered as width=1080, height=1920, orientation=0.
+  // Double-checking the width/height during loading or cataloguing is the proper solution, but it would take space and time.
+  // Comparing width and height can help with the portrait FHD video example,
+  // but it fails for a portrait screenshot rotated, which is landscape with width=1080, height=1920, orientation=90
+  bool get isRotated => rotationDegrees % 180 == 90;
 
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
 
-  String getResolutionText({MultiPageInfo multiPageInfo, int page}) {
-    int w;
-    int h;
-    if (multiPageInfo != null && page != null) {
-      final pageInfo = multiPageInfo.pages[page];
-      w = pageInfo?.width;
-      h = pageInfo?.height;
-    }
-    w ??= width;
-    h ??= height;
-    final ws = w ?? '?';
-    final hs = h ?? '?';
-    return isPortrait ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
+  String get resolutionText {
+    final ws = width ?? '?';
+    final hs = height ?? '?';
+    return isRotated ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
   }
 
   String get aspectRatioText {
@@ -263,7 +290,7 @@ class ImageEntry {
       final gcd = width.gcd(height);
       final w = width ~/ gcd;
       final h = height ~/ gcd;
-      return isPortrait ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
+      return isRotated ? '$h$ratioSeparator$w' : '$w$ratioSeparator$h';
     } else {
       return '?$ratioSeparator?';
     }
@@ -271,20 +298,13 @@ class ImageEntry {
 
   double get displayAspectRatio {
     if (width == 0 || height == 0) return 1;
-    return isPortrait ? height / width : width / height;
+    return isRotated ? height / width : width / height;
   }
 
-  Size getDisplaySize({MultiPageInfo multiPageInfo, int page}) {
-    int w;
-    int h;
-    if (multiPageInfo != null && page != null) {
-      final pageInfo = multiPageInfo.pages[page];
-      w = pageInfo?.width;
-      h = pageInfo?.height;
-    }
-    w ??= width;
-    h ??= height;
-    return isPortrait ? Size(h.toDouble(), w.toDouble()) : Size(w.toDouble(), h.toDouble());
+  Size get displaySize {
+    final w = width.toDouble();
+    final h = height.toDouble();
+    return isRotated ? Size(h, w) : Size(w, h);
   }
 
   int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
@@ -598,7 +618,7 @@ class ImageEntry {
   // compare by:
   // 1) title ascending
   // 2) extension ascending
-  static int compareByName(ImageEntry a, ImageEntry b) {
+  static int compareByName(AvesEntry a, AvesEntry b) {
     final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
     return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
   }
@@ -606,7 +626,7 @@ class ImageEntry {
   // compare by:
   // 1) size descending
   // 2) name ascending
-  static int compareBySize(ImageEntry a, ImageEntry b) {
+  static int compareBySize(AvesEntry a, AvesEntry b) {
     final c = b.sizeBytes.compareTo(a.sizeBytes);
     return c != 0 ? c : compareByName(a, b);
   }
@@ -615,9 +635,12 @@ class ImageEntry {
 
   // compare by:
   // 1) date descending
-  // 2) name ascending
-  static int compareByDate(ImageEntry a, ImageEntry b) {
-    final c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
-    return c != 0 ? c : compareByName(a, b);
+  // 2) name descending
+  static int compareByDate(AvesEntry a, AvesEntry b) {
+    var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
+    if (c != 0) return c;
+    c = (b.dateModifiedSecs ?? 0).compareTo(a.dateModifiedSecs ?? 0);
+    if (c != 0) return c;
+    return -compareByName(a, b);
   }
 }

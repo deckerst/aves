@@ -1,8 +1,9 @@
 import 'dart:math';
 
+import 'package:aves/model/connectivity.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:collection/collection.dart';
@@ -27,8 +28,10 @@ mixin LocationMixin on SourceBase {
   }
 
   Future<void> locateEntries() async {
+    if (!(await connectivity.canGeolocate)) return;
+
 //    final stopwatch = Stopwatch()..start();
-    final byLocated = groupBy<ImageEntry, bool>(rawEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
+    final byLocated = groupBy<AvesEntry, bool>(rawEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
     final todo = byLocated[false] ?? [];
     if (todo.isEmpty) return;
 
@@ -42,7 +45,7 @@ mixin LocationMixin on SourceBase {
     // -  652 calls (22%) when approximating to 2 decimal places (~1km - town or village)
     // cf https://en.wikipedia.org/wiki/Decimal_degrees#Precision
     final latLngFactor = pow(10, 2);
-    Tuple2 approximateLatLng(ImageEntry entry) {
+    Tuple2 approximateLatLng(AvesEntry entry) {
       final lat = entry.catalogMetadata?.latitude;
       final lng = entry.catalogMetadata?.longitude;
       if (lat == null || lng == null) return null;
@@ -57,7 +60,7 @@ mixin LocationMixin on SourceBase {
     setProgress(done: progressDone, total: progressTotal);
 
     final newAddresses = <AddressDetails>[];
-    await Future.forEach<ImageEntry>(todo, (entry) async {
+    await Future.forEach<AvesEntry>(todo, (entry) async {
       final latLng = approximateLatLng(entry);
       if (knownLocations.containsKey(latLng)) {
         entry.addressDetails = knownLocations[latLng]?.copyWith(contentId: entry.contentId);

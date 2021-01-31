@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:aves/theme/durations.dart';
@@ -153,7 +152,11 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
     final appBarHeight = widget.appBarHeightNotifier.value;
     final scrollOffset = tileRect.top + (tileRect.height - scrollableHeight) / 2 + appBarHeight;
 
-    PrimaryScrollController.of(context)?.jumpTo(max(.0, scrollOffset));
+    final controller = PrimaryScrollController.of(context);
+    if (controller != null) {
+      final maxScrollExtent = controller.position.maxScrollExtent;
+      controller.jumpTo(scrollOffset.clamp(.0, maxScrollExtent));
+    }
   }
 }
 

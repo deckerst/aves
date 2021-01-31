@@ -1,9 +1,11 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/common/gesture_area_protector.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
@@ -11,11 +13,10 @@ import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class InfoPage extends StatefulWidget {
   final CollectionLens collection;
-  final ValueNotifier<ImageEntry> entryNotifier;
+  final ValueNotifier<AvesEntry> entryNotifier;
   final ValueNotifier<bool> visibleNotifier;
 
   const InfoPage({
@@ -35,7 +36,7 @@ class _InfoPageState extends State<InfoPage> {
 
   CollectionLens get collection => widget.collection;
 
-  ImageEntry get entry => widget.entryNotifier.value;
+  AvesEntry get entry => widget.entryNotifier.value;
 
   @override
   Widget build(BuildContext context) {
@@ -43,30 +44,34 @@ class _InfoPageState extends State<InfoPage> {
       child: Scaffold(
         body: GestureAreaProtectorStack(
           child: SafeArea(
+            bottom: false,
             child: NotificationListener(
               onNotification: _handleTopScroll,
-              child: Selector<MediaQueryData, Tuple2<double, double>>(
-                selector: (c, mq) => Tuple2(mq.size.width, mq.viewInsets.bottom),
-                builder: (c, mq, child) {
-                  final mqWidth = mq.item1;
-                  final mqViewInsetsBottom = mq.item2;
-                  return ValueListenableBuilder<ImageEntry>(
-                    valueListenable: widget.entryNotifier,
-                    builder: (context, entry, child) {
-                      return entry != null
-                          ? _InfoPageContent(
-                              collection: collection,
-                              entry: entry,
-                              visibleNotifier: widget.visibleNotifier,
-                              scrollController: _scrollController,
-                              split: mqWidth > 400,
-                              mqViewInsetsBottom: mqViewInsetsBottom,
-                              goToViewer: _goToViewer,
-                            )
-                          : SizedBox.shrink();
-                    },
-                  );
+              child: NotificationListener<OpenTempEntryNotification>(
+                onNotification: (notification) {
+                  _openTempEntry(notification.entry);
+                  return true;
                 },
+                child: Selector<MediaQueryData, double>(
+                  selector: (c, mq) => mq.size.width,
+                  builder: (c, mqWidth, child) {
+                    return ValueListenableBuilder<AvesEntry>(
+                      valueListenable: widget.entryNotifier,
+                      builder: (context, entry, child) {
+                        return entry != null
+                            ? _InfoPageContent(
+                                collection: collection,
+                                entry: entry,
+                                visibleNotifier: widget.visibleNotifier,
+                                scrollController: _scrollController,
+                                split: mqWidth > 600,
+                                goToViewer: _goToViewer,
+                              )
+                            : SizedBox.shrink();
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
@@ -106,15 +111,26 @@ class _InfoPageState extends State<InfoPage> {
       curve: Curves.easeInOut,
     );
   }
+
+  void _openTempEntry(AvesEntry tempEntry) {
+    Navigator.push(
+      context,
+      TransparentMaterialPageRoute(
+        settings: RouteSettings(name: EntryViewerPage.routeName),
+        pageBuilder: (c, a, sa) => EntryViewerPage(
+          initialEntry: tempEntry,
+        ),
+      ),
+    );
+  }
 }
 
 class _InfoPageContent extends StatefulWidget {
   final CollectionLens collection;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final ValueNotifier<bool> visibleNotifier;
   final ScrollController scrollController;
   final bool split;
-  final double mqViewInsetsBottom;
   final VoidCallback goToViewer;
 
   const _InfoPageContent({
@@ -124,7 +140,6 @@ class _InfoPageContent extends StatefulWidget {
     @required this.visibleNotifier,
     @required this.scrollController,
     @required this.split,
-    @required this.mqViewInsetsBottom,
     @required this.goToViewer,
   }) : super(key: key);
 
@@ -139,16 +154,24 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   CollectionLens get collection => widget.collection;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
+
+  ValueNotifier<bool> get visibleNotifier => widget.visibleNotifier;
 
   @override
   Widget build(BuildContext context) {
+    final basicSection = BasicSection(
+      entry: entry,
+      collection: collection,
+      visibleNotifier: visibleNotifier,
+      onFilter: _goToCollection,
+    );
     final locationAtTop = widget.split && entry.hasGps;
     final locationSection = LocationSection(
       collection: collection,
       entry: entry,
       showTitle: !locationAtTop,
-      visibleNotifier: widget.visibleNotifier,
+      visibleNotifier: visibleNotifier,
       onFilter: _goToCollection,
     );
     final basicAndLocationSliver = locationAtTop
@@ -156,7 +179,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(child: BasicSection(entry: entry, collection: collection, onFilter: _goToCollection)),
+                Expanded(child: basicSection),
                 SizedBox(width: 8),
                 Expanded(child: locationSection),
               ],
@@ -165,7 +188,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
         : SliverList(
             delegate: SliverChildListDelegate.fixed(
               [
-                BasicSection(entry: entry, collection: collection, onFilter: _goToCollection),
+                basicSection,
                 locationSection,
               ],
             ),
@@ -173,7 +196,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     final metadataSliver = MetadataSectionSliver(
       entry: entry,
       metadataNotifier: _metadataNotifier,
-      visibleNotifier: widget.visibleNotifier,
+      visibleNotifier: visibleNotifier,
     );
 
     return CustomScrollView(
@@ -189,9 +212,10 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           sliver: basicAndLocationSliver,
         ),
         SliverPadding(
-          padding: horizontalPadding + EdgeInsets.only(bottom: 8 + widget.mqViewInsetsBottom),
+          padding: horizontalPadding + EdgeInsets.only(bottom: 8),
           sliver: metadataSliver,
         ),
+        BottomPaddingSliver(),
       ],
     );
   }

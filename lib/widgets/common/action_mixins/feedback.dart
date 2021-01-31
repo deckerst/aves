@@ -1,5 +1,3 @@
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/services/image_file_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -27,19 +25,66 @@ mixin FeedbackMixin {
 
   // report overlay for multiple operations
 
-  OverlayEntry _opReportOverlayEntry;
-
-  void showOpReport<T extends ImageOpEvent>({
+  void showOpReport<T>({
     @required BuildContext context,
-    @required Set<ImageEntry> selection,
     @required Stream<T> opStream,
-    @required void Function(Set<T> processed) onDone,
+    @required int itemCount,
+    void Function(Set<T> processed) onDone,
   }) {
-    final processed = <T>{};
+    OverlayEntry _opReportOverlayEntry;
+    _opReportOverlayEntry = OverlayEntry(
+      builder: (context) => ReportOverlay<T>(
+        opStream: opStream,
+        itemCount: itemCount,
+        onDone: (processed) {
+          _opReportOverlayEntry.remove();
+          onDone?.call(processed);
+        },
+      ),
+    );
+    Overlay.of(context).insert(_opReportOverlayEntry);
+  }
+}
+
+class ReportOverlay<T> extends StatefulWidget {
+  final Stream<T> opStream;
+  final int itemCount;
+  final void Function(Set<T> processed) onDone;
+
+  const ReportOverlay({
+    @required this.opStream,
+    @required this.itemCount,
+    @required this.onDone,
+  });
+
+  @override
+  _ReportOverlayState createState() => _ReportOverlayState<T>();
+}
+
+class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerProviderStateMixin {
+  final processed = <T>{};
+  AnimationController _animationController;
+  Animation<double> _animation;
+
+  Stream<T> get opStream => widget.opStream;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      duration: Durations.collectionOpOverlayAnimation,
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutQuad,
+    );
+    _animationController.forward();
 
     // do not handle completion inside `StreamBuilder`
     // as it could be called multiple times
-    Future<void> onComplete() => _hideOpReportOverlay().then((_) => onDone(processed));
+    Future<void> onComplete() => _animationController.reverse().then((_) => widget.onDone(processed));
     opStream.listen(
       processed.add,
       onError: (error) {
@@ -48,17 +93,34 @@ mixin FeedbackMixin {
       },
       onDone: onComplete,
     );
+  }
 
-    _opReportOverlayEntry = OverlayEntry(
-      builder: (context) {
-        return AbsorbPointer(
-          child: StreamBuilder<T>(
-              stream: opStream,
-              builder: (context, snapshot) {
-                Widget child = SizedBox.shrink();
-                if (!snapshot.hasError) {
-                  final percent = processed.length.toDouble() / selection.length;
-                  child = CircularPercentIndicator(
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AbsorbPointer(
+      child: StreamBuilder<T>(
+          stream: opStream,
+          builder: (context, snapshot) {
+            final percent = processed.length.toDouble() / widget.itemCount;
+            return FadeTransition(
+              opacity: _animation,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    colors: [
+                      Colors.black,
+                      Colors.black54,
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: CircularPercentIndicator(
                     percent: percent,
                     lineWidth: 16,
                     radius: 160,
@@ -67,22 +129,11 @@ mixin FeedbackMixin {
                     animation: true,
                     center: Text(NumberFormat.percentPattern().format(percent)),
                     animateFromLastPercent: true,
-                  );
-                }
-                return AnimatedSwitcher(
-                  duration: Durations.collectionOpOverlayAnimation,
-                  child: child,
-                );
-              }),
-        );
-      },
+                  ),
+                ),
+              ),
+            );
+          }),
     );
-    Overlay.of(context).insert(_opReportOverlayEntry);
-  }
-
-  Future<void> _hideOpReportOverlay() async {
-    await Future.delayed(Durations.collectionOpOverlayAnimation * timeDilation);
-    _opReportOverlayEntry.remove();
-    _opReportOverlayEntry = null;
   }
 }

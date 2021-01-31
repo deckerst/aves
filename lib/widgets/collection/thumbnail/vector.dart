@@ -1,5 +1,5 @@
 import 'package:aves/image_providers/uri_picture_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class VectorImageThumbnail extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final double extent;
   final Object heroTag;
 
@@ -29,10 +29,10 @@ class VectorImageThumbnail extends StatelessWidget {
           return LayoutBuilder(
             builder: (context, constraints) {
               final availableSize = constraints.biggest;
-              final fitSize = applyBoxFit(fit, entry.getDisplaySize(), availableSize).destination;
+              final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
               final offset = fitSize / 2 - availableSize / 2;
-              final child = DecoratedBox(
-                decoration: CheckeredDecoration(checkSize: extent / 8, offset: offset),
+              final child = CustomPaint(
+                painter: CheckeredPainter(checkSize: extent / 8, offset: offset),
                 child: SvgPicture(
                   UriPicture(
                     uri: entry.uri,

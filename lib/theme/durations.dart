@@ -48,4 +48,11 @@ class Durations {
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
+
+  // Content change monitoring delay should be large enough,
+  // so that querying the Media Store yields final entries.
+  // For example, when taking a picture with a Galaxy S10e default camera app,
+  // querying the Media Store just 1 second after sometimes yields an entry with
+  // its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
+  static const contentChangeDebounceDelay = Duration(milliseconds: 1500);
 }

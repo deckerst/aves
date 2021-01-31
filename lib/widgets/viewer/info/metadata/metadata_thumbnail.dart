@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +9,7 @@ enum MetadataThumbnailSource { embedded, exif }
 
 class MetadataThumbnails extends StatefulWidget {
   final MetadataThumbnailSource source;
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const MetadataThumbnails({
     Key key,
@@ -24,7 +24,7 @@ class MetadataThumbnails extends StatefulWidget {
 class _MetadataThumbnailsState extends State<MetadataThumbnails> {
   Future<List<Uint8List>> _loader;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   String get uri => entry.uri;
 

@@ -1,8 +1,8 @@
-import 'package:aves/image_providers/uri_image_provider.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/gesture_area_protector.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
@@ -15,13 +15,11 @@ import 'package:provider/provider.dart';
 class PanoramaPage extends StatefulWidget {
   static const routeName = '/viewer/panorama';
 
-  final ImageEntry entry;
-  final int page;
+  final AvesEntry entry;
   final PanoramaInfo info;
 
   const PanoramaPage({
     @required this.entry,
-    this.page = 0,
     @required this.info,
   });
 
@@ -33,7 +31,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
   final ValueNotifier<SensorControl> _sensorControl = ValueNotifier(SensorControl.None);
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   PanoramaInfo get info => widget.info;
 
@@ -74,14 +72,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   );
                 },
                 child: Image(
-                  image: UriImage(
-                    uri: entry.uri,
-                    mimeType: entry.mimeType,
-                    page: widget.page,
-                    rotationDegrees: entry.rotationDegrees,
-                    isFlipped: entry.isFlipped,
-                    expectedContentLength: entry.sizeBytes,
-                  ),
+                  image: entry.uriImage,
                 ),
               ),
               Positioned(
@@ -97,10 +88,10 @@ class _PanoramaPageState extends State<PanoramaPage> {
                       return Visibility(
                         visible: overlayVisible,
                         child: Selector<MediaQueryData, EdgeInsets>(
-                          selector: (c, mq) => mq.padding + mq.viewInsets,
-                          builder: (c, mqViewInsets, child) {
+                          selector: (c, mq) => mq.viewPadding + mq.viewInsets,
+                          builder: (c, mqPadding, child) {
                             return Padding(
-                              padding: EdgeInsets.all(8) + EdgeInsets.only(right: mqViewInsets.right, bottom: mqViewInsets.bottom),
+                              padding: EdgeInsets.all(8) + EdgeInsets.only(right: mqPadding.right, bottom: mqPadding.bottom),
                               child: OverlayButton(
                                 scale: kAlwaysCompleteAnimation,
                                 child: ValueListenableBuilder<SensorControl>(

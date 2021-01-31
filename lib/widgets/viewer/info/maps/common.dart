@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/theme/durations.dart';
@@ -6,7 +7,6 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
-import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -63,7 +63,7 @@ class MapButtonPanel extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 MapOverlayButton(
-                  icon: AIcons.openInNew,
+                  icon: AIcons.openOutside,
                   onPressed: () => AndroidAppService.openMap(geoUri).then((success) {
                     if (!success) showNoMatchingAppDialog(context);
                   }),

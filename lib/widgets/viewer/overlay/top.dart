@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -19,7 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerTopOverlay extends StatelessWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
   final Function(EntryAction value) onActionSelected;
@@ -86,7 +86,7 @@ class ViewerTopOverlay extends StatelessWidget {
                       FadeTransition(
                         opacity: scale,
                         child: Minimap(
-                          entry: entry,
+                          mainEntry: entry,
                           viewStateNotifier: viewStateNotifier,
                           multiPageController: multiPageController,
                         ),
@@ -111,8 +111,9 @@ class ViewerTopOverlay extends StatelessWidget {
       case EntryAction.rotateCW:
       case EntryAction.flip:
         return entry.canRotateAndFlip;
+      case EntryAction.export:
       case EntryAction.print:
-        return entry.canPrint;
+        return !entry.isVideo;
       case EntryAction.openMap:
         return entry.hasGps;
       case EntryAction.viewSource:
@@ -135,7 +136,7 @@ class _TopOverlayRow extends StatelessWidget {
   final List<EntryAction> inAppActions;
   final List<EntryAction> externalAppActions;
   final Animation<double> scale;
-  final ImageEntry entry;
+  final AvesEntry entry;
   final Function(EntryAction value) onActionSelected;
 
   const _TopOverlayRow({
@@ -194,14 +195,15 @@ class _TopOverlayRow extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
-      case EntryAction.info:
-      case EntryAction.share:
       case EntryAction.delete:
+      case EntryAction.export:
+      case EntryAction.flip:
+      case EntryAction.info:
+      case EntryAction.print:
       case EntryAction.rename:
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
-      case EntryAction.flip:
-      case EntryAction.print:
+      case EntryAction.share:
       case EntryAction.viewSource:
         child = IconButton(
           icon: Icon(action.getIcon()),
@@ -237,14 +239,15 @@ class _TopOverlayRow extends StatelessWidget {
           isMenuItem: true,
         );
         break;
-      case EntryAction.info:
-      case EntryAction.share:
       case EntryAction.delete:
+      case EntryAction.export:
+      case EntryAction.flip:
+      case EntryAction.info:
+      case EntryAction.print:
       case EntryAction.rename:
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
-      case EntryAction.flip:
-      case EntryAction.print:
+      case EntryAction.share:
       case EntryAction.viewSource:
       case EntryAction.debug:
         child = MenuRow(text: action.getText(), icon: action.getIcon());
@@ -299,7 +302,7 @@ class _TopOverlayRow extends StatelessWidget {
 }
 
 class _FavouriteToggler extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
   final bool isMenuItem;
   final VoidCallback onPressed;
 

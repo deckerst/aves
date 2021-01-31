@@ -1,4 +1,4 @@
-package deckers.thibault.aves.channel.calls
+package deckers.thibault.aves.channel.calls.fetchers
 
 import android.content.Context
 import android.graphics.Rect
@@ -13,9 +13,9 @@ class TiffRegionFetcher internal constructor(
 ) {
     fun fetch(
         uri: Uri,
+        page: Int,
         sampleSize: Int,
         regionRect: Rect,
-        page: Int = 0,
         result: MethodChannel.Result,
     ) {
         try {

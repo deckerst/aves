@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
@@ -116,16 +116,16 @@ class MetadataDb {
     debugPrint('$runtimeType clearEntries deleted $count entries');
   }
 
-  Future<List<ImageEntry>> loadEntries() async {
+  Future<List<AvesEntry>> loadEntries() async {
     final stopwatch = Stopwatch()..start();
     final db = await _database;
     final maps = await db.query(entryTable);
-    final entries = maps.map((map) => ImageEntry.fromMap(map)).toList();
+    final entries = maps.map((map) => AvesEntry.fromMap(map)).toList();
     debugPrint('$runtimeType loadEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
     return entries;
   }
 
-  Future<void> saveEntries(Iterable<ImageEntry> entries) async {
+  Future<void> saveEntries(Iterable<AvesEntry> entries) async {
     if (entries == null || entries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     final db = await _database;
@@ -135,7 +135,7 @@ class MetadataDb {
     debugPrint('$runtimeType saveEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
   }
 
-  Future<void> updateEntryId(int oldId, ImageEntry entry) async {
+  Future<void> updateEntryId(int oldId, AvesEntry entry) async {
     final db = await _database;
     final batch = db.batch();
     batch.delete(entryTable, where: 'contentId = ?', whereArgs: [oldId]);
@@ -143,7 +143,7 @@ class MetadataDb {
     await batch.commit(noResult: true);
   }
 
-  void _batchInsertEntry(Batch batch, ImageEntry entry) {
+  void _batchInsertEntry(Batch batch, AvesEntry entry) {
     if (entry == null) return;
     batch.insert(
       entryTable,

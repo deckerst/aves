@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -30,7 +30,7 @@ class StatsPage extends StatelessWidget {
   final CollectionLens parentCollection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
-  List<ImageEntry> get entries => parentCollection?.sortedEntries ?? source.rawEntries;
+  List<AvesEntry> get entries => parentCollection?.sortedEntries ?? source.rawEntries;
 
   static const mimeDonutMinWidth = 124.0;
 
@@ -66,7 +66,7 @@ class StatsPage extends StatelessWidget {
         text: 'No images',
       );
     } else {
-      final byMimeTypes = groupBy<ImageEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
+      final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
       final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
       final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
       final mimeDonuts = Wrap(

@@ -36,8 +36,8 @@ class VectorViewCheckeredBackground extends StatelessWidget {
             Positioned(
               width: decorationSize.width,
               height: decorationSize.height,
-              child: DecoratedBox(
-                decoration: CheckeredDecoration(
+              child: CustomPaint(
+                painter: CheckeredPainter(
                   checkSize: checkSize,
                   offset: offset,
                 ),

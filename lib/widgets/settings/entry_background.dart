@@ -50,8 +50,8 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
           break;
         case EntryBackground.checkered:
           child = ClipOval(
-            child: DecoratedBox(
-              decoration: CheckeredDecoration(
+            child: CustomPaint(
+              painter: CheckeredPainter(
                 checkSize: radius,
               ),
             ),

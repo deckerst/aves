@@ -1,7 +1,7 @@
-import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/main.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
@@ -13,7 +13,7 @@ import 'package:tuple/tuple.dart';
 class ViewerDebugPage extends StatelessWidget {
   static const routeName = '/viewer/debug';
 
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const ViewerDebugPage({@required this.entry});
 
@@ -77,10 +77,10 @@ class ViewerDebugPage extends StatelessWidget {
           'height': '${entry.height}',
           'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
           'rotationDegrees': '${entry.rotationDegrees}',
+          'isRotated': '${entry.isRotated}',
           'isFlipped': '${entry.isFlipped}',
-          'portrait': '${entry.isPortrait}',
           'displayAspectRatio': '${entry.displayAspectRatio}',
-          'displaySize': '${entry.getDisplaySize()}',
+          'displaySize': '${entry.displaySize}',
         }),
         Divider(),
         InfoRowGroup({
@@ -100,7 +100,6 @@ class ViewerDebugPage extends StatelessWidget {
           'is360': '${entry.is360}',
           'canEdit': '${entry.canEdit}',
           'canEditExif': '${entry.canEditExif}',
-          'canPrint': '${entry.canPrint}',
           'canRotateAndFlip': '${entry.canRotateAndFlip}',
           'xmpSubjects': '${entry.xmpSubjects}',
         }),
@@ -135,18 +134,14 @@ class ViewerDebugPage extends StatelessWidget {
           Text('Raster (fast)'),
           Center(
             child: Image(
-              image: ThumbnailProvider(
-                ThumbnailProviderKey.fromEntry(entry),
-              ),
+              image: entry.getThumbnail(),
             ),
           ),
           SizedBox(height: 16),
           Text('Raster ($extent)'),
           Center(
             child: Image(
-              image: ThumbnailProvider(
-                ThumbnailProviderKey.fromEntry(entry, extent: extent),
-              ),
+              image: entry.getThumbnail(extent: extent),
             ),
           ),
         ],

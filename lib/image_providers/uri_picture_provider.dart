@@ -1,6 +1,6 @@
 import 'package:aves/services/image_file_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pedantic/pedantic.dart';
 
@@ -30,7 +30,7 @@ class UriPicture extends PictureProvider<UriPicture> {
   Future<PictureInfo> _loadAsync(UriPicture key, {PictureErrorListener onError}) async {
     assert(key == this);
 
-    final data = await ImageFileService.getImage(uri, mimeType, 0, false);
+    final data = await ImageFileService.getSvg(uri, mimeType);
     if (data == null || data.isEmpty) {
       return null;
     }

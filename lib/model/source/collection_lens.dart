@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
@@ -19,24 +19,28 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
+  bool listenToSource;
 
-  List<ImageEntry> _filteredEntries;
+  List<AvesEntry> _filteredEntries;
   List<StreamSubscription> _subscriptions = [];
 
-  Map<SectionKey, List<ImageEntry>> sections = Map.unmodifiable({});
+  Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
 
   CollectionLens({
     @required this.source,
     Iterable<CollectionFilter> filters,
     @required EntryGroupFactor groupFactor,
     @required EntrySortFactor sortFactor,
+    this.listenToSource = true,
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
         groupFactor = groupFactor ?? EntryGroupFactor.month,
         sortFactor = sortFactor ?? EntrySortFactor.date {
-    _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
-    _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
-    _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
-    _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+    if (listenToSource) {
+      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
+      _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+    }
     _refresh();
   }
 
@@ -49,23 +53,14 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     super.dispose();
   }
 
-  CollectionLens derive(CollectionFilter filter) {
-    return CollectionLens(
-      source: source,
-      filters: filters,
-      groupFactor: groupFactor,
-      sortFactor: sortFactor,
-    )..addFilter(filter);
-  }
-
   bool get isEmpty => _filteredEntries.isEmpty;
 
   int get entryCount => _filteredEntries.length;
 
   // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
-  List<ImageEntry> _sortedEntries;
+  List<AvesEntry> _sortedEntries;
 
-  List<ImageEntry> get sortedEntries {
+  List<AvesEntry> get sortedEntries {
     _sortedEntries ??= List.of(sections.entries.expand((e) => e.value));
     return _sortedEntries;
   }
@@ -82,7 +77,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     return true;
   }
 
-  Object heroTag(ImageEntry entry) => '$hashCode${entry.uri}';
+  Object heroTag(AvesEntry entry) => entry.uri;
 
   void addFilter(CollectionFilter filter) {
     if (filter == null || filters.contains(filter)) return;
@@ -123,13 +118,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   void _applySort() {
     switch (sortFactor) {
       case EntrySortFactor.date:
-        _filteredEntries.sort(ImageEntry.compareByDate);
+        _filteredEntries.sort(AvesEntry.compareByDate);
         break;
       case EntrySortFactor.size:
-        _filteredEntries.sort(ImageEntry.compareBySize);
+        _filteredEntries.sort(AvesEntry.compareBySize);
         break;
       case EntrySortFactor.name:
-        _filteredEntries.sort(ImageEntry.compareByName);
+        _filteredEntries.sort(AvesEntry.compareByName);
         break;
     }
   }
@@ -139,13 +134,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       case EntrySortFactor.date:
         switch (groupFactor) {
           case EntryGroupFactor.album:
-            sections = groupBy<ImageEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+            sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             break;
           case EntryGroupFactor.month:
-            sections = groupBy<ImageEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
+            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
             break;
           case EntryGroupFactor.day:
-            sections = groupBy<ImageEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
+            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
@@ -160,8 +155,8 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         ]);
         break;
       case EntrySortFactor.name:
-        final byAlbum = groupBy<ImageEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<EntryAlbumSectionKey, List<ImageEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
+        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
         break;
     }
     sections = Map.unmodifiable(sections);
@@ -177,7 +172,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     _applyGroup();
   }
 
-  void onEntryRemoved(Iterable<ImageEntry> entries) {
+  void onEntryRemoved(Iterable<AvesEntry> entries) {
     // we should remove obsolete entries and sections
     // but do not apply sort/group
     // as section order change would surprise the user while browsing
@@ -207,18 +202,18 @@ mixin CollectionActivityMixin {
 mixin CollectionSelectionMixin on CollectionActivityMixin {
   final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
 
-  final Set<ImageEntry> _selection = {};
+  final Set<AvesEntry> _selection = {};
 
-  Set<ImageEntry> get selection => _selection;
+  Set<AvesEntry> get selection => _selection;
 
-  bool isSelected(Iterable<ImageEntry> entries) => entries.every(selection.contains);
+  bool isSelected(Iterable<AvesEntry> entries) => entries.every(selection.contains);
 
-  void addToSelection(Iterable<ImageEntry> entries) {
+  void addToSelection(Iterable<AvesEntry> entries) {
     _selection.addAll(entries);
     selectionChangeNotifier.notifyListeners();
   }
 
-  void removeFromSelection(Iterable<ImageEntry> entries) {
+  void removeFromSelection(Iterable<AvesEntry> entries) {
     _selection.removeAll(entries);
     selectionChangeNotifier.notifyListeners();
   }
@@ -228,7 +223,7 @@ mixin CollectionSelectionMixin on CollectionActivityMixin {
     selectionChangeNotifier.notifyListeners();
   }
 
-  void toggleSelection(ImageEntry entry) {
+  void toggleSelection(AvesEntry entry) {
     if (_selection.isEmpty) select();
     if (!_selection.remove(entry)) _selection.add(entry);
     selectionChangeNotifier.notifyListeners();

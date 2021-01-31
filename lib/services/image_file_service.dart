@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/service_policy.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:streams_channel/streams_channel.dart';
 
 class ImageFileService {
@@ -18,10 +18,11 @@ class ImageFileService {
   static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
   static const double thumbnailDefaultSize = 64.0;
 
-  static Map<String, dynamic> _toPlatformEntryMap(ImageEntry entry) {
+  static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
     return {
       'uri': entry.uri,
       'path': entry.path,
+      'pageId': entry.pageId,
       'mimeType': entry.mimeType,
       'width': entry.width,
       'height': entry.height,
@@ -32,13 +33,13 @@ class ImageFileService {
   }
 
   // knownEntries: map of contentId -> dateModifiedSecs
-  static Stream<ImageEntry> getImageEntries(Map<int, int> knownEntries) {
+  static Stream<AvesEntry> getEntries(Map<int, int> knownEntries) {
     try {
       return mediaStoreChannel.receiveBroadcastStream(<String, dynamic>{
         'knownEntries': knownEntries,
-      }).map((event) => ImageEntry.fromMap(event));
+      }).map((event) => AvesEntry.fromMap(event));
     } on PlatformException catch (e) {
-      debugPrint('getImageEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      debugPrint('getEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       return Stream.error(e);
     }
   }
@@ -55,26 +56,40 @@ class ImageFileService {
     return [];
   }
 
-  static Future<ImageEntry> getImageEntry(String uri, String mimeType) async {
-    debugPrint('getImageEntry for uri=$uri, mimeType=$mimeType');
+  static Future<AvesEntry> getEntry(String uri, String mimeType) async {
     try {
-      final result = await platform.invokeMethod('getImageEntry', <String, dynamic>{
+      final result = await platform.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       }) as Map;
-      return ImageEntry.fromMap(result);
+      return AvesEntry.fromMap(result);
     } on PlatformException catch (e) {
-      debugPrint('getImageEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      debugPrint('getEntry failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }
+
+  static Future<Uint8List> getSvg(
+    String uri,
+    String mimeType, {
+    int expectedContentLength,
+    BytesReceivedCallback onBytesReceived,
+  }) =>
+      getImage(
+        uri,
+        mimeType,
+        0,
+        false,
+        expectedContentLength: expectedContentLength,
+        onBytesReceived: onBytesReceived,
+      );
 
   static Future<Uint8List> getImage(
     String uri,
     String mimeType,
     int rotationDegrees,
     bool isFlipped, {
-    int page = 0,
+    int pageId,
     int expectedContentLength,
     BytesReceivedCallback onBytesReceived,
   }) {
@@ -87,7 +102,7 @@ class ImageFileService {
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
         'isFlipped': isFlipped ?? false,
-        'page': page ?? 0,
+        'pageId': pageId,
       }).listen(
         (data) {
           final chunk = data as Uint8List;
@@ -125,7 +140,7 @@ class ImageFileService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int page = 0,
+    int pageId,
     Object taskKey,
     int priority,
   }) {
@@ -135,7 +150,7 @@ class ImageFileService {
           final result = await platform.invokeMethod('getRegion', <String, dynamic>{
             'uri': uri,
             'mimeType': mimeType,
-            'page': page,
+            'pageId': pageId,
             'sampleSize': sampleSize,
             'regionX': regionRect.left,
             'regionY': regionRect.top,
@@ -155,15 +170,14 @@ class ImageFileService {
     );
   }
 
-  static Future<Uint8List> getThumbnail(
-    String uri,
-    String mimeType,
-    int dateModifiedSecs,
-    int rotationDegrees,
-    bool isFlipped,
-    double width,
-    double height, {
-    int page,
+  static Future<Uint8List> getThumbnail({
+    @required String uri,
+    @required String mimeType,
+    @required int rotationDegrees,
+    @required int pageId,
+    @required bool isFlipped,
+    @required int dateModifiedSecs,
+    @required double extent,
     Object taskKey,
     int priority,
   }) {
@@ -179,9 +193,9 @@ class ImageFileService {
             'dateModifiedSecs': dateModifiedSecs,
             'rotationDegrees': rotationDegrees,
             'isFlipped': isFlipped,
-            'widthDip': width,
-            'heightDip': height,
-            'page': page,
+            'widthDip': extent,
+            'heightDip': extent,
+            'pageId': pageId,
             'defaultSizeDip': thumbnailDefaultSize,
           });
           return result as Uint8List;
@@ -191,7 +205,7 @@ class ImageFileService {
         return null;
       },
 //      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
-      priority: priority ?? (width == 0 || height == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
+      priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
   }
@@ -210,7 +224,7 @@ class ImageFileService {
 
   static Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
-  static Stream<ImageOpEvent> delete(Iterable<ImageEntry> entries) {
+  static Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
@@ -222,7 +236,11 @@ class ImageFileService {
     }
   }
 
-  static Stream<MoveOpEvent> move(Iterable<ImageEntry> entries, {@required bool copy, @required String destinationAlbum}) {
+  static Stream<MoveOpEvent> move(
+    Iterable<AvesEntry> entries, {
+    @required bool copy,
+    @required String destinationAlbum,
+  }) {
     try {
       return opChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
@@ -236,7 +254,25 @@ class ImageFileService {
     }
   }
 
-  static Future<Map> rename(ImageEntry entry, String newName) async {
+  static Stream<ExportOpEvent> export(
+    Iterable<AvesEntry> entries, {
+    String mimeType = MimeTypes.jpeg,
+    @required String destinationAlbum,
+  }) {
+    try {
+      return opChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'export',
+        'entries': entries.map(_toPlatformEntryMap).toList(),
+        'mimeType': mimeType,
+        'destinationPath': destinationAlbum,
+      }).map((event) => ExportOpEvent.fromMap(event));
+    } on PlatformException catch (e) {
+      debugPrint('export failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      return Stream.error(e);
+    }
+  }
+
+  static Future<Map> rename(AvesEntry entry, String newName) async {
     try {
       // return map with: 'contentId' 'path' 'title' 'uri' (all optional)
       final result = await platform.invokeMethod('rename', <String, dynamic>{
@@ -250,7 +286,7 @@ class ImageFileService {
     return {};
   }
 
-  static Future<Map> rotate(ImageEntry entry, {@required bool clockwise}) async {
+  static Future<Map> rotate(AvesEntry entry, {@required bool clockwise}) async {
     try {
       // return map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
@@ -264,7 +300,7 @@ class ImageFileService {
     return {};
   }
 
-  static Future<Map> flip(ImageEntry entry) async {
+  static Future<Map> flip(AvesEntry entry) async {
     try {
       // return map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('flip', <String, dynamic>{
@@ -276,57 +312,6 @@ class ImageFileService {
     }
     return {};
   }
-}
-
-@immutable
-class ImageOpEvent {
-  final bool success;
-  final String uri;
-
-  const ImageOpEvent({
-    this.success,
-    this.uri,
-  });
-
-  factory ImageOpEvent.fromMap(Map map) {
-    return ImageOpEvent(
-      success: map['success'] ?? false,
-      uri: map['uri'],
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is ImageOpEvent && other.success == success && other.uri == uri;
-  }
-
-  @override
-  int get hashCode => hashValues(success, uri);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri}';
-}
-
-class MoveOpEvent extends ImageOpEvent {
-  final Map newFields;
-
-  const MoveOpEvent({bool success, String uri, this.newFields})
-      : super(
-          success: success,
-          uri: uri,
-        );
-
-  factory MoveOpEvent.fromMap(Map map) {
-    return MoveOpEvent(
-      success: map['success'] ?? false,
-      uri: map['uri'],
-      newFields: map['newFields'],
-    );
-  }
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{success=$success, uri=$uri, newFields=$newFields}';
 }
 
 // cf flutter/foundation `consolidateHttpClientResponseBytes`

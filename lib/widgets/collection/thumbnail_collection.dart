@@ -4,7 +4,7 @@ import 'package:aves/main.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/image_entry.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -16,15 +16,17 @@ import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
+import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_manager.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -34,7 +36,7 @@ class ThumbnailCollection extends StatelessWidget {
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
-  final GlobalKey _scrollableKey = GlobalKey();
+  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
 
   static const columnCountDefault = 4;
   static const extentMin = 46.0;
@@ -44,6 +46,7 @@ class ThumbnailCollection extends StatelessWidget {
   Widget build(BuildContext context) {
     return HighlightInfoProvider(
       child: SafeArea(
+        bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
             final viewportSize = constraints.biggest;
@@ -79,7 +82,7 @@ class ThumbnailCollection extends StatelessWidget {
                   ),
                 );
 
-                final scaler = GridScaleGestureDetector<ImageEntry>(
+                final scaler = GridScaleGestureDetector<AvesEntry>(
                   tileExtentManager: tileExtentManager,
                   scrollableKey: _scrollableKey,
                   appBarHeightNotifier: _appBarHeightNotifier,
@@ -103,7 +106,7 @@ class ThumbnailCollection extends StatelessWidget {
                     highlightable: false,
                   ),
                   getScaledItemTileRect: (context, entry) {
-                    final sectionedListLayout = context.read<SectionedListLayout<ImageEntry>>();
+                    final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
                     return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
                   },
                   onScaled: (entry) => Provider.of<HighlightInfo>(context, listen: false).add(entry),
@@ -192,10 +195,12 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   }
 
   void _registerWidget(CollectionScrollView widget) {
+    widget.collection.filterChangeNotifier.addListener(_onFilterChange);
     widget.scrollController.addListener(_onScrollChange);
   }
 
   void _unregisterWidget(CollectionScrollView widget) {
+    widget.collection.filterChangeNotifier.removeListener(_onFilterChange);
     widget.scrollController.removeListener(_onScrollChange);
   }
 
@@ -220,15 +225,8 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
                 child: _buildEmptyCollectionPlaceholder(collection),
                 hasScrollBody: false,
               )
-            : SectionedListSliver<ImageEntry>(),
-        SliverToBoxAdapter(
-          child: Selector<MediaQueryData, double>(
-            selector: (context, mq) => mq.viewInsets.bottom,
-            builder: (context, mqViewInsetsBottom, child) {
-              return SizedBox(height: mqViewInsetsBottom);
-            },
-          ),
-        ),
+            : SectionedListSliver<AvesEntry>(),
+        BottomPaddingSliver(),
       ],
     );
   }
@@ -237,10 +235,10 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
       builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
-        selector: (context, mq) => mq.viewInsets.bottom,
-        builder: (context, mqViewInsetsBottom, child) => DraggableScrollbar(
-          heightScrollThumb: avesScrollThumbHeight,
+        selector: (context, mq) => mq.effectiveBottomPadding,
+        builder: (context, mqPaddingBottom, child) => DraggableScrollbar(
           backgroundColor: Colors.white,
+          scrollThumbHeight: avesScrollThumbHeight,
           scrollThumbBuilder: avesScrollThumbBuilder(
             height: avesScrollThumbHeight,
             backgroundColor: Colors.white,
@@ -249,7 +247,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
           padding: EdgeInsets.only(
             // padding to keep scroll thumb between app bar above and nav bar below
             top: appBarHeight,
-            bottom: mqViewInsetsBottom,
+            bottom: mqPaddingBottom,
           ),
           child: scrollView,
         ),
@@ -284,6 +282,8 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       },
     );
   }
+
+  void _onFilterChange() => widget.scrollController.jumpTo(0);
 
   void _onScrollChange() {
     widget.isScrollingNotifier.value = true;

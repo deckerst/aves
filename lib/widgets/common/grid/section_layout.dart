@@ -167,7 +167,7 @@ class SectionedListLayout<T> {
     final sectionItemIndex = section.value.indexOf(item);
     final column = sectionItemIndex % columnCount;
     final row = (sectionItemIndex / columnCount).floor();
-    final listIndex = sectionLayout.firstIndex + (showHeaders ? 1 : 0) + row;
+    final listIndex = sectionLayout.firstIndex + 1 + row;
 
     final left = tileExtent * column + spacing * (column - 1);
     final top = sectionLayout.indexToLayoutOffset(listIndex);

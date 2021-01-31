@@ -1,11 +1,11 @@
-import 'package:aves/model/image_entry.dart';
-import 'package:aves/model/image_metadata.dart';
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class DbTab extends StatefulWidget {
-  final ImageEntry entry;
+  final AvesEntry entry;
 
   const DbTab({@required this.entry});
 
@@ -15,11 +15,11 @@ class DbTab extends StatefulWidget {
 
 class _DbTabState extends State<DbTab> {
   Future<DateMetadata> _dbDateLoader;
-  Future<ImageEntry> _dbEntryLoader;
+  Future<AvesEntry> _dbEntryLoader;
   Future<CatalogMetadata> _dbMetadataLoader;
   Future<AddressDetails> _dbAddressLoader;
 
-  ImageEntry get entry => widget.entry;
+  AvesEntry get entry => widget.entry;
 
   @override
   void initState() {
@@ -60,7 +60,7 @@ class _DbTabState extends State<DbTab> {
           },
         ),
         SizedBox(height: 16),
-        FutureBuilder<ImageEntry>(
+        FutureBuilder<AvesEntry>(
           future: _dbEntryLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());

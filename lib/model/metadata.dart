@@ -68,17 +68,19 @@ class CatalogMetadata {
   }
 
   CatalogMetadata copyWith({
-    @required int contentId,
+    int contentId,
+    String mimeType,
+    bool isMultipage,
   }) {
     return CatalogMetadata(
       contentId: contentId ?? this.contentId,
-      mimeType: mimeType,
+      mimeType: mimeType ?? this.mimeType,
       dateMillis: dateMillis,
       isAnimated: isAnimated,
       isFlipped: isFlipped,
       isGeotiff: isGeotiff,
       is360: is360,
-      isMultipage: isMultipage,
+      isMultipage: isMultipage ?? this.isMultipage,
       rotationDegrees: rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
@@ -169,7 +171,7 @@ class AddressDetails {
   });
 
   AddressDetails copyWith({
-    @required int contentId,
+    int contentId,
   }) {
     return AddressDetails(
       contentId: contentId ?? this.contentId,

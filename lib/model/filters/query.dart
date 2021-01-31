@@ -1,5 +1,5 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/image_entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class QueryFilter extends CollectionFilter {
 
   final String query;
   final bool colorful;
-  bool Function(ImageEntry) _filter;
+  bool Function(AvesEntry) _filter;
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
@@ -44,7 +44,7 @@ class QueryFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(ImageEntry entry) => _filter(entry);
+  bool filter(AvesEntry entry) => _filter(entry);
 
   @override
   bool get isUnique => false;
