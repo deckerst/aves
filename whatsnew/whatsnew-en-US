@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.3.2:
-- multi-page TIFF support
-- cropped panorama support
-- album grouping options
+v1.3.3:
+- multi-track HEIF support
+- image export (including embedded and multi-page images)
+- listen to Media Store changes
 Full changelog available on Github
