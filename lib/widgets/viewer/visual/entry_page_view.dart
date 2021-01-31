@@ -111,7 +111,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   void _unregisterWidget() {
-    _magnifierController.dispose();
+    _magnifierController?.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -119,19 +119,25 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget child;
-    if (entry.isVideo) {
-      if (!entry.displaySize.isEmpty) {
-        child = _buildVideoView();
-      }
-    } else if (entry.isSvg) {
-      child = _buildSvgView();
-    } else if (entry.canDecode) {
-      child = _buildRasterView();
-    }
-    child ??= ErrorView(
-      entry: entry,
-      onTap: () => onTap?.call(null),
+    final child = AnimatedBuilder(
+      animation: entry.imageChangeNotifier,
+      builder: (context, child) {
+        Widget child;
+        if (entry.isVideo) {
+          if (!entry.displaySize.isEmpty) {
+            child = _buildVideoView();
+          }
+        } else if (entry.isSvg) {
+          child = _buildSvgView();
+        } else if (entry.canDecode) {
+          child = _buildRasterView();
+        }
+        child ??= ErrorView(
+          entry: entry,
+          onTap: () => onTap?.call(null),
+        );
+        return child;
+      },
     );
 
     return widget.heroTag != null
@@ -201,8 +207,8 @@ class _EntryPageViewState extends State<EntryPageView> {
     @required Widget child,
   }) {
     return Magnifier(
-      // key includes size and orientation to refresh when the image is rotated
-      key: ValueKey('${entry.pageId}_${entry.rotationDegrees}_${entry.isFlipped}_${entry.width}_${entry.height}_${entry.path}'),
+      // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
+      key: ValueKey('${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: _magnifierController,
       childSize: entry.displaySize,
       minScale: minScale,
