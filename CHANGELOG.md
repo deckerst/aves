@@ -2,8 +2,20 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Viewer: support for multi-track HEIF
+- Viewer: export image (including multipage TIFF/HEIF and images embedded in XMP)
+- Info: show owner app (Android Q and up)
+- listen to Media Store changes
+
 ### Changed
-- Upgraded Flutter to stable v1.22.6
+- upgraded Flutter to stable v1.22.6
+- check connectivity before using features that need it
+
+### Fixed
+- checkerboard background performance
+- deleting files that no longer exist but are still registered in the Media Store
+- insets handling on Android 11
 
 ## [v1.3.2] - 2021-01-17
 ### Added

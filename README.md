@@ -12,7 +12,7 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 
 ## Features
 
-- support raster images: JPEG, GIF, PNG, HEIC (from Android Pie), WEBP, TIFF (including multi-page), BMP, WBMP, ICO
+- support raster images: JPEG, GIF, PNG, HEIC/HEIF (including multi-track, from Android Pie), WEBP, TIFF (including multi-page), BMP, WBMP, ICO
 - support animated images: GIF, WEBP
 - support raw images: ARW, CR2, DNG, NEF, NRW, ORF, PEF, RAF, RW2, SRW
 - support vector images: SVG
