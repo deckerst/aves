@@ -65,7 +65,7 @@ class VectorImageThumbnail extends StatelessWidget {
     );
     return canHero
         ? Hero(
-            tag: canHero,
+            tag: entry,
             transitionOnUserGestures: true,
             child: child,
           )
