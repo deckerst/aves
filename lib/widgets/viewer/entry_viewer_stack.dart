@@ -12,6 +12,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
+import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
@@ -57,7 +58,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
   final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
-  final ValueNotifier<VisualLeaveInfo> _visualLeaveInfoNotifier = ValueNotifier(null);
+  final ValueNotifier<HeroInfo> _heroInfoNotifier = ValueNotifier(null);
 
   CollectionLens get collection => widget.collection;
 
@@ -75,6 +76,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   void initState() {
     super.initState();
     final entry = widget.initialEntry;
+    // opening hero, with viewer as target
+    _heroInfoNotifier.value = HeroInfo(entry);
     _entryNotifier.value = entry;
     _currentHorizontalPage = max(0, entries.indexOf(entry));
     _currentVerticalPage = ValueNotifier(imagePage);
@@ -167,8 +170,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         }
         return SynchronousFuture(false);
       },
-      child: ValueListenableProvider<VisualLeaveInfo>.value(
-          value: _visualLeaveInfoNotifier,
+      child: ValueListenableProvider<HeroInfo>.value(
+          value: _heroInfoNotifier,
           builder: (context, snapshot) {
             return NotificationListener(
               onNotification: (notification) {
@@ -365,6 +368,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     if (page == transitionPage) {
       await _actionDelegate.dismissFeedback();
       _popVisual();
+    } else if (page == infoPage) {
+      // prevent hero when viewer is offscreen
+      _heroInfoNotifier.value = null;
     }
   }
 
@@ -409,12 +415,21 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _popVisual() {
     if (Navigator.canPop(context)) {
-      _visualLeaveInfoNotifier.value = VisualLeaveInfo(_entryNotifier.value);
-      // we post closing the viewer page so that hero animation source is ready
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      void pop() {
         _onLeave();
         Navigator.pop(context);
-      });
+      }
+
+      // closing hero, with viewer as source
+      final heroInfo = HeroInfo(_entryNotifier.value);
+      if (_heroInfoNotifier.value != heroInfo) {
+        _heroInfoNotifier.value = heroInfo;
+        // we post closing the viewer page so that hero animation source is ready
+        WidgetsBinding.instance.addPostFrameCallback((_) => pop());
+      } else {
+        // viewer already has correct hero info, no need to rebuild
+        pop();
+      }
     } else {
       // exit app when trying to pop a viewer page for a single entry
       SystemNavigator.pop();
@@ -517,19 +532,4 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
-}
-
-class VisualLeaveInfo {
-  final AvesEntry entry;
-
-  const VisualLeaveInfo(this.entry);
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is VisualLeaveInfo && other.entry == entry;
-  }
-
-  @override
-  int get hashCode => entry.hashCode;
 }
