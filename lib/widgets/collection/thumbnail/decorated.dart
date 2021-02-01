@@ -11,12 +11,11 @@ class DecoratedThumbnail extends StatelessWidget {
   final CollectionLens collection;
   final ValueNotifier<bool> isScrollingNotifier;
   final bool selectable, highlightable;
-  final Object heroTag;
 
   static final Color borderColor = Colors.grey.shade700;
   static const double borderWidth = .5;
 
-  DecoratedThumbnail({
+  const DecoratedThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
@@ -24,8 +23,7 @@ class DecoratedThumbnail extends StatelessWidget {
     this.isScrollingNotifier,
     this.selectable = true,
     this.highlightable = true,
-  })  : heroTag = collection?.heroTag(entry),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +31,13 @@ class DecoratedThumbnail extends StatelessWidget {
         ? VectorImageThumbnail(
             entry: entry,
             extent: extent,
-            heroTag: heroTag,
+            canHero: true,
           )
         : RasterImageThumbnail(
             entry: entry,
             extent: extent,
             isScrollingNotifier: isScrollingNotifier,
-            heroTag: heroTag,
+            canHero: true,
           );
 
     child = Stack(

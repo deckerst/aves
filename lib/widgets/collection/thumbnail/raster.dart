@@ -10,14 +10,14 @@ class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
   final ValueNotifier<bool> isScrollingNotifier;
-  final Object heroTag;
+  final bool canHero;
 
   const RasterImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
     this.isScrollingNotifier,
-    this.heroTag,
+    this.canHero = false,
   }) : super(key: key);
 
   @override
@@ -30,8 +30,6 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   AvesEntry get entry => widget.entry;
 
   double get extent => widget.extent;
-
-  Object get heroTag => widget.heroTag;
 
   @override
   void initState() {
@@ -126,18 +124,19 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
             height: extent,
             fit: BoxFit.cover,
           );
-    return heroTag == null
-        ? image
-        : Hero(
-            tag: heroTag,
+    return widget.canHero
+        ? Hero(
+            tag: entry,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
               return TransitionImage(
                 image: entry.getBestThumbnail(extent),
                 animation: animation,
               );
             },
+            transitionOnUserGestures: true,
             child: image,
-          );
+          )
+        : image;
   }
 
   Widget _buildError(BuildContext context, Object error, StackTrace stackTrace) => ErrorThumbnail(

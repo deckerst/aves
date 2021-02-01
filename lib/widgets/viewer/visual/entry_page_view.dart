@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/magnifier/magnifier.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -20,13 +21,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
+  final AvesEntry mainEntry;
   final AvesEntry entry;
   final SinglePageInfo page;
   final Size viewportSize;
-  final Object heroTag;
   final MagnifierTapCallback onTap;
   final List<Tuple2<String, IjkMediaController>> videoControllers;
   final VoidCallback onDisposed;
@@ -35,10 +37,9 @@ class EntryPageView extends StatefulWidget {
 
   EntryPageView({
     Key key,
-    AvesEntry mainEntry,
+    this.mainEntry,
     this.page,
     this.viewportSize,
-    this.heroTag,
     @required this.onTap,
     @required this.videoControllers,
     this.onDisposed,
@@ -53,6 +54,8 @@ class _EntryPageViewState extends State<EntryPageView> {
   MagnifierController _magnifierController;
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
+
+  AvesEntry get mainEntry => widget.mainEntry;
 
   AvesEntry get entry => widget.entry;
 
@@ -140,13 +143,14 @@ class _EntryPageViewState extends State<EntryPageView> {
       },
     );
 
-    return widget.heroTag != null
-        ? Hero(
-            tag: widget.heroTag,
-            transitionOnUserGestures: true,
-            child: child,
-          )
-        : child;
+    return Consumer<VisualLeaveInfo>(
+      builder: (context, info, child) => Hero(
+        tag: info?.entry == mainEntry ? mainEntry : hashCode,
+        transitionOnUserGestures: true,
+        child: child,
+      ),
+      child: child,
+    );
   }
 
   Widget _buildRasterView() {

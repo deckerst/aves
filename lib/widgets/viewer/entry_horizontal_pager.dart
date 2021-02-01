@@ -89,7 +89,6 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           mainEntry: entry,
           page: page,
           viewportSize: mqSize,
-          heroTag: widget.collection.heroTag(entry),
           onTap: (_) => widget.onTap?.call(),
           videoControllers: widget.videoControllers,
           onDisposed: () => widget.onViewDisposed?.call(entry.uri),

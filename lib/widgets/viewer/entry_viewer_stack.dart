@@ -57,6 +57,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
   final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
+  final ValueNotifier<VisualLeaveInfo> _visualLeaveInfoNotifier = ValueNotifier(null);
 
   CollectionLens get collection => widget.collection;
 
@@ -161,43 +162,47 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         if (_currentVerticalPage.value == infoPage) {
           // back from info to image
           _goToVerticalPage(imagePage);
-          return SynchronousFuture(false);
+        } else {
+          _popVisual();
         }
-        _onLeave();
-        return SynchronousFuture(true);
+        return SynchronousFuture(false);
       },
-      child: NotificationListener(
-        onNotification: (notification) {
-          if (notification is FilterNotification) {
-            _goToCollection(notification.filter);
-          } else if (notification is ViewStateNotification) {
-            _updateViewState(notification.uri, notification.viewState);
-          } else if (notification is EntryDeletedNotification) {
-            _onEntryDeleted(context, notification.entry);
-          }
-          return false;
-        },
-        child: Stack(
-          children: [
-            ViewerVerticalPageView(
-              collection: collection,
-              entryNotifier: _entryNotifier,
-              videoControllers: _videoControllers,
-              multiPageControllers: _multiPageControllers,
-              verticalPager: _verticalPager,
-              horizontalPager: _horizontalPager,
-              onVerticalPageChanged: _onVerticalPageChanged,
-              onHorizontalPageChanged: _onHorizontalPageChanged,
-              onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
-              onImagePageRequested: () => _goToVerticalPage(imagePage),
-              onViewDisposed: (uri) => _updateViewState(uri, null),
-            ),
-            _buildTopOverlay(),
-            _buildBottomOverlay(),
-            BottomGestureAreaProtector(),
-          ],
-        ),
-      ),
+      child: ValueListenableProvider<VisualLeaveInfo>.value(
+          value: _visualLeaveInfoNotifier,
+          builder: (context, snapshot) {
+            return NotificationListener(
+              onNotification: (notification) {
+                if (notification is FilterNotification) {
+                  _goToCollection(notification.filter);
+                } else if (notification is ViewStateNotification) {
+                  _updateViewState(notification.uri, notification.viewState);
+                } else if (notification is EntryDeletedNotification) {
+                  _onEntryDeleted(context, notification.entry);
+                }
+                return false;
+              },
+              child: Stack(
+                children: [
+                  ViewerVerticalPageView(
+                    collection: collection,
+                    entryNotifier: _entryNotifier,
+                    videoControllers: _videoControllers,
+                    multiPageControllers: _multiPageControllers,
+                    verticalPager: _verticalPager,
+                    horizontalPager: _horizontalPager,
+                    onVerticalPageChanged: _onVerticalPageChanged,
+                    onHorizontalPageChanged: _onHorizontalPageChanged,
+                    onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
+                    onImagePageRequested: () => _goToVerticalPage(imagePage),
+                    onViewDisposed: (uri) => _updateViewState(uri, null),
+                  ),
+                  _buildTopOverlay(),
+                  _buildBottomOverlay(),
+                  BottomGestureAreaProtector(),
+                ],
+              ),
+            );
+          }),
     );
   }
 
@@ -329,7 +334,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   void _goToCollection(CollectionFilter filter) {
-    _showSystemUI();
+    _onLeave();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -359,8 +364,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     _currentVerticalPage.value = page;
     if (page == transitionPage) {
       await _actionDelegate.dismissFeedback();
-      _onLeave();
-      Navigator.pop(context);
+      _popVisual();
     }
   }
 
@@ -403,15 +407,24 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     _initViewStateControllers();
   }
 
-  void _onLeave() {
+  void _popVisual() {
     if (Navigator.canPop(context)) {
-      _showSystemUI();
-      if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-        Screen.keepOn(false);
-      }
+      _visualLeaveInfoNotifier.value = VisualLeaveInfo(_entryNotifier.value);
+      // we post closing the viewer page so that hero animation source is ready
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onLeave();
+        Navigator.pop(context);
+      });
     } else {
       // exit app when trying to pop a viewer page for a single entry
       SystemNavigator.pop();
+    }
+  }
+
+  void _onLeave() {
+    _showSystemUI();
+    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
+      Screen.keepOn(false);
     }
   }
 
@@ -504,4 +517,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
+}
+
+class VisualLeaveInfo {
+  final AvesEntry entry;
+
+  const VisualLeaveInfo(this.entry);
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is VisualLeaveInfo && other.entry == entry;
+  }
+
+  @override
+  int get hashCode => entry.hashCode;
 }
