@@ -11,7 +11,7 @@ import 'package:aves/widgets/common/magnifier/magnifier.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
-import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
+import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -143,7 +143,7 @@ class _EntryPageViewState extends State<EntryPageView> {
       },
     );
 
-    return Consumer<VisualLeaveInfo>(
+    return Consumer<HeroInfo>(
       builder: (context, info, child) => Hero(
         tag: info?.entry == mainEntry ? mainEntry : hashCode,
         transitionOnUserGestures: true,
