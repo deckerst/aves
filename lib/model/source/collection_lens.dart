@@ -77,8 +77,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     return true;
   }
 
-  Object heroTag(AvesEntry entry) => entry.uri;
-
   void addFilter(CollectionFilter filter) {
     if (filter == null || filters.contains(filter)) return;
     if (filter.isUnique) {

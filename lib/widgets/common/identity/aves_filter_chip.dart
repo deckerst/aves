@@ -211,6 +211,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     if (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped) {
       chip = Hero(
         tag: filter,
+        transitionOnUserGestures: true,
         child: DefaultTextStyle(
           style: TextStyle(),
           child: chip,
