@@ -7,6 +7,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -105,8 +106,12 @@ class MediaStoreSource extends CollectionSource {
     );
   }
 
-  Future<void> refreshUris(List<String> changedUris) async {
-    if (!_initialized) return;
+  // returns URIs that are in the Media Store but still being processed by their owner in a temporary location
+  // For example, when taking a picture with a Galaxy S10e default camera app, querying the Media Store
+  // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
+  Future<List<String>> refreshUris(List<String> changedUris) async {
+    final tempUris = <String>[];
+    if (!_initialized) return tempUris;
 
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       if (uri == null) return null;
@@ -121,7 +126,7 @@ class MediaStoreSource extends CollectionSource {
     uriByContentId.removeWhere((contentId, _) => obsoleteContentIds.contains(contentId));
     metadataDb.removeIds(obsoleteContentIds, updateFavourites: true);
 
-    // add new entries
+    // fetch new entries
     final newEntries = <AvesEntry>[];
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
@@ -129,20 +134,31 @@ class MediaStoreSource extends CollectionSource {
       final sourceEntry = await ImageFileService.getEntry(uri, null);
       final existingEntry = rawEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
       if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs) {
-        newEntries.add(sourceEntry);
+        final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
+        if (volume != null) {
+          newEntries.add(sourceEntry);
+        } else {
+          debugPrint('$runtimeType refreshUris entry=$sourceEntry is not located on a known storage volume. Will retry soon...');
+          tempUris.add(uri);
+        }
       }
     }
-    addAll(newEntries);
-    await metadataDb.saveEntries(newEntries);
-    updateAlbums();
 
-    stateNotifier.value = SourceState.cataloguing;
-    await catalogEntries();
+    if (newEntries.isNotEmpty) {
+      addAll(newEntries);
+      await metadataDb.saveEntries(newEntries);
+      updateAlbums();
 
-    stateNotifier.value = SourceState.locating;
-    await locateEntries();
+      stateNotifier.value = SourceState.cataloguing;
+      await catalogEntries();
 
-    stateNotifier.value = SourceState.ready;
+      stateNotifier.value = SourceState.locating;
+      await locateEntries();
+
+      stateNotifier.value = SourceState.ready;
+    }
+
+    return tempUris;
   }
 
   @override
