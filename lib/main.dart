@@ -190,10 +190,17 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   void _onContentChange(String uri) {
-    changedUris.add(uri);
-    _contentChangeDebouncer(() {
-      _mediaStoreSource.refreshUris(List.of(changedUris));
-      changedUris.clear();
-    });
+    if (uri != null) changedUris.add(uri);
+    if (changedUris.isNotEmpty) {
+      _contentChangeDebouncer(() async {
+        final todo = List.of(changedUris);
+        changedUris.clear();
+        final tempUris = await _mediaStoreSource.refreshUris(todo);
+        if (tempUris.isNotEmpty) {
+          changedUris.addAll(tempUris);
+          _onContentChange(null);
+        }
+      });
+    }
   }
 }
