@@ -24,7 +24,8 @@ class DebugTaskQueueOverlay extends StatelessWidget {
                     final queuedEntries = <MapEntry<dynamic, int>>[];
                     if (snapshot.hasData) {
                       final state = snapshot.data;
-                      queuedEntries.add(MapEntry('run', state.runningQueue));
+                      queuedEntries.add(MapEntry('run', state.runningCount));
+                      queuedEntries.add(MapEntry('paused', state.pausedCount));
                       queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));
                     }
                     queuedEntries.sort((a, b) => a.key.compareTo(b.key));

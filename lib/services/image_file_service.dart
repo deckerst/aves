@@ -204,7 +204,6 @@ class ImageFileService {
         }
         return null;
       },
-//      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
       priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
