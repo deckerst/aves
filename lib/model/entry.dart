@@ -42,6 +42,10 @@ class AvesEntry {
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
+  // Local geocoding requires Google Play Services
+  // Google remote geocoding requires an API key and is not free
+  final Future<List<Address>> Function(Coordinates coordinates) _findAddresses = Geocoder.local.findAddressesFromCoordinates;
+
   // TODO TLAD make it dynamic if it depends on OS/lib versions
   static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
 
@@ -441,7 +445,7 @@ class AvesEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      Future<List<Address>> call() => Geocoder.local.findAddressesFromCoordinates(coordinates);
+      Future<List<Address>> call() => _findAddresses(coordinates);
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -475,7 +479,7 @@ class AvesEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      final addresses = await _findAddresses(coordinates);
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/connectivity.dart';
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -151,7 +151,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         _pauseVideoControllers();
         break;
       case AppLifecycleState.resumed:
-        connectivity.onResume();
+        availability.onResume();
         break;
       default:
         break;
