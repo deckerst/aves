@@ -376,7 +376,12 @@ class AvesEntry {
     return 'geo:$latitude,$longitude?q=$latitude,$longitude';
   }
 
-  List<String> get xmpSubjects => _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
+  List<String> _xmpSubjects;
+
+  List<String> get xmpSubjects {
+    _xmpSubjects ??= _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
+    return _xmpSubjects;
+  }
 
   String _bestTitle;
 
@@ -400,6 +405,7 @@ class AvesEntry {
     catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
+    _xmpSubjects = null;
     metadataChangeNotifier.notifyListeners();
 
     _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);

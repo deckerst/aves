@@ -1,4 +1,3 @@
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/foundation.dart';
@@ -12,11 +11,20 @@ class LocationFilter extends CollectionFilter {
   final LocationLevel level;
   String _location;
   String _countryCode;
+  EntryFilter _filter;
 
   LocationFilter(this.level, this._location) {
     final split = _location.split(locationSeparator);
     if (split.isNotEmpty) _location = split[0];
     if (split.length > 1) _countryCode = split[1];
+
+    if (_location.isEmpty) {
+      _filter = (entry) => !entry.isLocated;
+    } else if (level == LocationLevel.country) {
+      _filter = (entry) => entry.addressDetails?.countryCode == _countryCode;
+    } else if (level == LocationLevel.place) {
+      _filter = (entry) => entry.addressDetails?.place == _location;
+    }
   }
 
   LocationFilter.fromMap(Map<String, dynamic> json)
@@ -35,7 +43,7 @@ class LocationFilter extends CollectionFilter {
   String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
 
   @override
-  bool filter(AvesEntry entry) => _location.isEmpty ? !entry.isLocated : entry.isLocated && ((level == LocationLevel.country && entry.addressDetails.countryCode == _countryCode) || (level == LocationLevel.place && entry.addressDetails.place == _location));
+  EntryFilter get filter => _filter;
 
   @override
   String get label => _location.isEmpty ? emptyLabel : _location;
