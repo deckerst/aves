@@ -55,6 +55,7 @@ dependencies:
   flutter_staggered_animations:
   flutter_svg:
   geocoder:
+  google_api_availability:
   google_maps_flutter:
   intl:
   latlong: # for flutter_map
