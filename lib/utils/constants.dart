@@ -168,6 +168,12 @@ class Constants {
       sourceUrl: 'https://github.com/aloisdeniel/flutter_geocoder',
     ),
     Dependency(
+      name: 'Github',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/SpinlockLabs/github.dart/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/SpinlockLabs/github.dart',
+    ),
+    Dependency(
       name: 'Google Maps for Flutter',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/google_maps_flutter/google_maps_flutter/LICENSE',
@@ -286,6 +292,12 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher/LICENSE',
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/url_launcher/url_launcher',
+    ),
+    Dependency(
+      name: 'Version',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/dartninja/version/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/dartninja/version',
     ),
     Dependency(
       name: 'XML',

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -11,6 +12,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
+import 'package:aves/widgets/about/news_badge.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -35,7 +37,15 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
+  Future<bool> _newVersionLoader;
+
   CollectionSource get source => widget.source;
+
+  @override
+  void initState() {
+    super.initState();
+    _newVersionLoader = availability.isNewVersionAvailable;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,12 +221,19 @@ class _AppDrawerState extends State<AppDrawer> {
         pageBuilder: (_) => SettingsPage(),
       );
 
-  Widget get aboutTile => NavTile(
-        icon: AIcons.info,
-        title: 'About',
-        topLevel: false,
-        routeName: AboutPage.routeName,
-        pageBuilder: (_) => AboutPage(),
+  Widget get aboutTile => FutureBuilder<bool>(
+        future: _newVersionLoader,
+        builder: (context, snapshot) {
+          final newVersion = snapshot.data == true;
+          return NavTile(
+            icon: AIcons.info,
+            title: 'About',
+            trailing: newVersion ? AboutNewsBadge() : null,
+            topLevel: false,
+            routeName: AboutPage.routeName,
+            pageBuilder: (_) => AboutPage(),
+          );
+        },
       );
 
   Widget get debugTile => NavTile(

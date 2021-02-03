@@ -39,6 +39,7 @@ class DebugSettingsSection extends StatelessWidget {
                 'infoMapZoom': '${settings.infoMapZoom}',
                 'pinnedFilters': toMultiline(settings.pinnedFilters),
                 'searchHistory': toMultiline(settings.searchHistory),
+                'lastVersionCheckDate': '${settings.lastVersionCheckDate}',
               }),
             ),
           ],
