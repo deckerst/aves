@@ -10,13 +10,13 @@ import 'package:provider/provider.dart';
 class VectorImageThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double extent;
-  final bool canHero;
+  final Object heroTag;
 
   const VectorImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
-    this.canHero = false,
+    this.heroTag,
   }) : super(key: key);
 
   @override
@@ -63,9 +63,9 @@ class VectorImageThumbnail extends StatelessWidget {
         );
       },
     );
-    return canHero
+    return heroTag != null
         ? Hero(
-            tag: entry,
+            tag: heroTag,
             transitionOnUserGestures: true,
             child: child,
           )

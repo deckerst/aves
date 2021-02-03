@@ -145,7 +145,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
     return Consumer<HeroInfo>(
       builder: (context, info, child) => Hero(
-        tag: info?.entry == mainEntry ? mainEntry : hashCode,
+        tag: info?.entry == mainEntry ? hashValues(info.collectionId, mainEntry) : hashCode,
         transitionOnUserGestures: true,
         child: child,
       ),

@@ -77,7 +77,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     super.initState();
     final entry = widget.initialEntry;
     // opening hero, with viewer as target
-    _heroInfoNotifier.value = HeroInfo(entry);
+    _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;
     _currentHorizontalPage = max(0, entries.indexOf(entry));
     _currentVerticalPage = ValueNotifier(imagePage);
@@ -421,7 +421,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       }
 
       // closing hero, with viewer as source
-      final heroInfo = HeroInfo(_entryNotifier.value);
+      final heroInfo = HeroInfo(collection?.id, _entryNotifier.value);
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready
