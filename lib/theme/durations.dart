@@ -35,7 +35,7 @@ class Durations {
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
   static const viewerOverlayPageChooserAnimation = Duration(milliseconds: 200);
 
-  // info
+  // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
   static const xmpStructArrayCardTransition = Duration(milliseconds: 300);
 
@@ -49,4 +49,7 @@ class Durations {
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
   static const contentChangeDebounceDelay = Duration(milliseconds: 500);
+
+  // app life
+  static const lastVersionCheckInterval = Duration(days: 7);
 }

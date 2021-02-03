@@ -64,6 +64,9 @@ class Settings extends ChangeNotifier {
   static const saveSearchHistoryKey = 'save_search_history';
   static const searchHistoryKey = 'search_history';
 
+  // version
+  static const lastVersionCheckDateKey = 'last_version_check_date';
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -213,6 +216,12 @@ class Settings extends ChangeNotifier {
   List<CollectionFilter> get searchHistory => (_prefs.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
+
+  // version
+
+  DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs.getInt(lastVersionCheckDateKey) ?? 0);
+
+  set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
 
   // convenience methods
 

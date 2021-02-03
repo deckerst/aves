@@ -55,6 +55,7 @@ dependencies:
   flutter_staggered_animations:
   flutter_svg:
   geocoder:
+  github:
   google_api_availability:
   google_maps_flutter:
   intl:
@@ -76,6 +77,7 @@ dependencies:
   streams_channel:
   tuple:
   url_launcher:
+  version:
   xml:
 
 dev_dependencies:
