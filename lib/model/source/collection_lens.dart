@@ -4,7 +4,9 @@ import 'dart:collection';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -40,6 +42,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<AddressMetadataChangedEvent>().listen((e) {
+        if (filters.any((filter) => filter is LocationFilter)) {
+          _refresh();
+        }
+      }));
     }
     _refresh();
   }
