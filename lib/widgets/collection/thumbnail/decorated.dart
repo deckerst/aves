@@ -27,17 +27,21 @@ class DecoratedThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // hero tag should include a collection identifier, so that it animates
+    // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
+    // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
+    final heroTag = hashValues(collection?.id, entry);
     var child = entry.isSvg
         ? VectorImageThumbnail(
             entry: entry,
             extent: extent,
-            canHero: true,
+            heroTag: heroTag,
           )
         : RasterImageThumbnail(
             entry: entry,
             extent: extent,
             isScrollingNotifier: isScrollingNotifier,
-            canHero: true,
+            heroTag: heroTag,
           );
 
     child = Stack(

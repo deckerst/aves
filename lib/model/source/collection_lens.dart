@@ -21,6 +21,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier();
+  int id;
   bool listenToSource;
 
   List<AvesEntry> _filteredEntries;
@@ -33,10 +34,12 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     Iterable<CollectionFilter> filters,
     @required EntryGroupFactor groupFactor,
     @required EntrySortFactor sortFactor,
+    this.id,
     this.listenToSource = true,
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
         groupFactor = groupFactor ?? EntryGroupFactor.month,
         sortFactor = sortFactor ?? EntrySortFactor.date {
+    id ??= hashCode;
     if (listenToSource) {
       _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
