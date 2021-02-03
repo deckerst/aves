@@ -71,7 +71,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     eventBus.fire(EntryAddedEvent());
   }
 
-  void removeEntries(List<AvesEntry> entries) {
+  void removeEntries(Set<AvesEntry> entries) {
+    if (entries.isEmpty) return;
     entries.forEach((entry) => entry.removeFromFavourites());
     _rawEntries.removeWhere(entries.contains);
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());

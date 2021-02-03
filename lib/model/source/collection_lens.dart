@@ -46,7 +46,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<AddressMetadataChangedEvent>().listen((e) {
-        if (filters.any((filter) => filter is LocationFilter)) {
+        if (this.filters.any((filter) => filter is LocationFilter)) {
           _refresh();
         }
       }));

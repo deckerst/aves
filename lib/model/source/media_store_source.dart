@@ -123,8 +123,9 @@ class MediaStoreSource extends CollectionSource {
 
     // clean up obsolete entries
     final obsoleteContentIds = (await ImageFileService.getObsoleteEntries(uriByContentId.keys.toList())).toSet();
-    uriByContentId.removeWhere((contentId, _) => obsoleteContentIds.contains(contentId));
-    metadataDb.removeIds(obsoleteContentIds, updateFavourites: true);
+    obsoleteContentIds.forEach(uriByContentId.remove);
+    final obsoleteEntries = rawEntries.where((e) => obsoleteContentIds.contains(e.contentId)).toSet();
+    removeEntries(obsoleteEntries);
 
     // fetch new entries
     final newEntries = <AvesEntry>[];
@@ -132,14 +133,16 @@ class MediaStoreSource extends CollectionSource {
       final contentId = kv.key;
       final uri = kv.value;
       final sourceEntry = await ImageFileService.getEntry(uri, null);
-      final existingEntry = rawEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
-      if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs) {
-        final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
-        if (volume != null) {
-          newEntries.add(sourceEntry);
-        } else {
-          debugPrint('$runtimeType refreshUris entry=$sourceEntry is not located on a known storage volume. Will retry soon...');
-          tempUris.add(uri);
+      if (sourceEntry != null) {
+        final existingEntry = rawEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+        if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs) {
+          final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
+          if (volume != null) {
+            newEntries.add(sourceEntry);
+          } else {
+            debugPrint('$runtimeType refreshUris entry=$sourceEntry is not located on a known storage volume. Will retry soon...');
+            tempUris.add(uri);
+          }
         }
       }
     }

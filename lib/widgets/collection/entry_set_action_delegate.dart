@@ -145,7 +145,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         if (deletedCount > 0) {
-          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
+          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toSet());
         }
         collection.clearSelection();
         collection.browse();
