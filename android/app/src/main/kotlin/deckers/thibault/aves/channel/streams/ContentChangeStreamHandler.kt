@@ -12,6 +12,11 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 
 class ContentChangeStreamHandler(private val context: Context) : EventChannel.StreamHandler {
+    // cannot use `lateinit` because we cannot guarantee
+    // its initialization in `onListen` at the right time
+    private var eventSink: EventSink? = null
+    private var handler: Handler? = null
+
     private val contentObserver = object : ContentObserver(null) {
         override fun onChange(selfChange: Boolean) {
             this.onChange(selfChange, null)
@@ -23,8 +28,6 @@ class ContentChangeStreamHandler(private val context: Context) : EventChannel.St
             success(uri?.toString())
         }
     }
-    private lateinit var eventSink: EventSink
-    private lateinit var handler: Handler
 
     init {
         context.contentResolver.apply {
@@ -45,9 +48,9 @@ class ContentChangeStreamHandler(private val context: Context) : EventChannel.St
     }
 
     private fun success(uri: String?) {
-        handler.post {
+        handler?.post {
             try {
-                eventSink.success(uri)
+                eventSink?.success(uri)
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to use event sink", e)
             }
