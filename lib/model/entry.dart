@@ -173,6 +173,15 @@ class AvesEntry {
   }
 
   @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is AvesEntry && other.uri == uri && other.pageId == pageId && other._dateModifiedSecs == _dateModifiedSecs;
+  }
+
+  @override
+  int get hashCode => hashValues(uri, pageId, _dateModifiedSecs);
+
+  @override
   String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path, pageId=$pageId}';
 
   set path(String path) {

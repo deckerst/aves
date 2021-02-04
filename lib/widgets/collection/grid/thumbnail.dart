@@ -43,7 +43,10 @@ class InteractiveThumbnail extends StatelessWidget {
           entry: entry,
           extent: tileExtent,
           collection: collection,
-          isScrollingNotifier: isScrollingNotifier,
+          // when the user is scrolling faster than we can retrieve the thumbnails,
+          // the retrieval task queue can pile up for thumbnails that got disposed
+          // in this case we pause the image retrieval task to get it out of the queue
+          cancellableNotifier: isScrollingNotifier,
         ),
       ),
     );

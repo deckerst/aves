@@ -89,7 +89,7 @@ class MetadataService {
         'uri': entry.uri,
       });
       final pageMaps = (result as List).cast<Map>();
-      return MultiPageInfo.fromPageMaps(pageMaps);
+      return MultiPageInfo.fromPageMaps(entry.uri, pageMaps);
     } on PlatformException catch (e) {
       debugPrint('getMultiPageInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
