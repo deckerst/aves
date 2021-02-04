@@ -9,7 +9,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double extent;
   final CollectionLens collection;
-  final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<bool> cancellableNotifier;
   final bool selectable, highlightable;
 
   static final Color borderColor = Colors.grey.shade700;
@@ -20,7 +20,7 @@ class DecoratedThumbnail extends StatelessWidget {
     @required this.entry,
     @required this.extent,
     this.collection,
-    this.isScrollingNotifier,
+    this.cancellableNotifier,
     this.selectable = true,
     this.highlightable = true,
   }) : super(key: key);
@@ -40,7 +40,7 @@ class DecoratedThumbnail extends StatelessWidget {
         : RasterImageThumbnail(
             entry: entry,
             extent: extent,
-            isScrollingNotifier: isScrollingNotifier,
+            cancellableNotifier: cancellableNotifier,
             heroTag: heroTag,
           );
 

@@ -27,6 +27,7 @@ class MultiPageOverlay extends StatefulWidget {
 }
 
 class _MultiPageOverlayState extends State<MultiPageOverlay> {
+  final _cancellableNotifier = ValueNotifier(true);
   ScrollController _scrollController;
   bool _syncScroll = true;
 
@@ -90,7 +91,8 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
       future: controller.info,
       builder: (context, snapshot) {
         final multiPageInfo = snapshot.data;
-        if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox.shrink();
+        if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox();
+        if (multiPageInfo.uri != mainEntry.uri) return SizedBox();
         return Container(
           height: extent + separatorWidth * 2,
           child: Stack(
@@ -125,6 +127,10 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                       child: DecoratedThumbnail(
                         entry: pageEntry,
                         extent: extent,
+                        // the retrieval task queue can pile up for thumbnails of heavy pages
+                        // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
+                        // so we cancel these requests when possible
+                        cancellableNotifier: _cancellableNotifier,
                         selectable: false,
                         highlightable: false,
                       ),

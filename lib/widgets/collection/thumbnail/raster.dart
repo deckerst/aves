@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<bool> cancellableNotifier;
   final Object heroTag;
 
   const RasterImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
-    this.isScrollingNotifier,
+    this.cancellableNotifier,
     this.heroTag,
   }) : super(key: key);
 
@@ -70,11 +70,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   }
 
   void _pauseProvider() {
-    final isScrolling = widget.isScrollingNotifier?.value ?? false;
-    // when the user is scrolling faster than we can retrieve the thumbnails,
-    // the retrieval task queue can pile up for thumbnails that got disposed
-    // in this case we pause the image retrieval task to get it out of the queue
-    if (isScrolling) {
+    if (widget.cancellableNotifier?.value ?? false) {
       _fastThumbnailProvider?.pause();
       _sizedThumbnailProvider?.pause();
     }
