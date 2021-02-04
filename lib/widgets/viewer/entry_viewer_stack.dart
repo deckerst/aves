@@ -467,7 +467,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         _overlayAnimationController.value = _overlayAnimationController.upperBound;
       }
     } else {
-      final mediaQuery = Provider.of<MediaQueryData>(context, listen: false);
+      final mediaQuery = context.read<MediaQueryData>();
       setState(() {
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;

@@ -16,8 +16,6 @@ import '../source/enums.dart';
 
 final Settings settings = Settings._private();
 
-typedef SettingsCallback = void Function(String key, dynamic oldValue, dynamic newValue);
-
 class Settings extends ChangeNotifier {
   static SharedPreferences _prefs;
 
