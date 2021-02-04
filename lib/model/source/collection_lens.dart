@@ -20,7 +20,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   final Set<CollectionFilter> filters;
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
-  final AChangeNotifier filterChangeNotifier = AChangeNotifier();
+  final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortGroupChangeNotifier = AChangeNotifier();
   int id;
   bool listenToSource;
 
@@ -111,11 +111,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     this.sortFactor = sortFactor;
     _applySort();
     _applyGroup();
+    sortGroupChangeNotifier.notifyListeners();
   }
 
   void group(EntryGroupFactor groupFactor) {
     this.groupFactor = groupFactor;
     _applyGroup();
+    sortGroupChangeNotifier.notifyListeners();
   }
 
   void _applyFilters() {
