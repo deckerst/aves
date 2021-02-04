@@ -79,13 +79,6 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     final marginWidth = max(0, (availableWidth - extent) / 2 - separatorWidth);
     final horizontalMargin = SizedBox(width: marginWidth);
     final separator = SizedBox(width: separatorWidth);
-    final shade = IgnorePointer(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.black38,
-        ),
-      ),
-    );
 
     return FutureBuilder<MultiPageInfo>(
       future: controller.info,
@@ -93,80 +86,57 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
         final multiPageInfo = snapshot.data;
         if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox();
         if (multiPageInfo.uri != mainEntry.uri) return SizedBox();
-        return Container(
-          height: extent + separatorWidth * 2,
-          child: Stack(
-            children: [
-              Positioned(
-                top: separatorWidth,
-                width: availableWidth,
-                height: extent,
-                child: ListView.separated(
-                  key: ValueKey(mainEntry),
-                  scrollDirection: Axis.horizontal,
-                  controller: _scrollController,
-                  // default padding in scroll direction matches `MediaQuery.viewPadding`,
-                  // but we already accommodate for it, so make sure horizontal padding is 0
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) {
-                    if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
-                    final page = index - 1;
-                    final pageEntry = mainEntry.getPageEntry(multiPageInfo.getByIndex(page));
+        return SizedBox(
+          height: extent,
+          child: ListView.separated(
+            key: ValueKey(mainEntry),
+            scrollDirection: Axis.horizontal,
+            controller: _scrollController,
+            // default padding in scroll direction matches `MediaQuery.viewPadding`,
+            // but we already accommodate for it, so make sure horizontal padding is 0
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) {
+              if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
+              final page = index - 1;
+              final pageEntry = mainEntry.getPageEntry(multiPageInfo.getByIndex(page));
 
-                    return GestureDetector(
-                      onTap: () async {
-                        _syncScroll = false;
-                        controller.page = page;
-                        await _scrollController.animateTo(
-                          pageToScrollOffset(page),
-                          duration: Durations.viewerOverlayPageChooserAnimation,
-                          curve: Curves.easeOutCubic,
-                        );
-                        _syncScroll = true;
-                      },
-                      child: DecoratedThumbnail(
-                        entry: pageEntry,
-                        extent: extent,
-                        // the retrieval task queue can pile up for thumbnails of heavy pages
-                        // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
-                        // so we cancel these requests when possible
-                        cancellableNotifier: _cancellableNotifier,
-                        selectable: false,
-                        highlightable: false,
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => separator,
-                  itemCount: multiPageInfo.pageCount + 2,
-                ),
-              ),
-              Positioned(
-                left: 0,
-                top: separatorWidth,
-                width: marginWidth + separatorWidth,
-                height: extent,
-                child: shade,
-              ),
-              Positioned(
-                top: separatorWidth,
-                right: 0,
-                width: marginWidth + separatorWidth,
-                height: extent,
-                child: shade,
-              ),
-              Positioned(
-                top: 0,
-                width: availableWidth,
-                height: separatorWidth,
-                child: shade,
-              ),
-              Positioned(
-                bottom: 0,
-                width: availableWidth,
-                height: separatorWidth,
-                child: shade,
-              ),
-            ],
+              return Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      _syncScroll = false;
+                      controller.page = page;
+                      await _scrollController.animateTo(
+                        pageToScrollOffset(page),
+                        duration: Durations.viewerOverlayPageScrollAnimation,
+                        curve: Curves.easeOutCubic,
+                      );
+                      _syncScroll = true;
+                    },
+                    child: DecoratedThumbnail(
+                      entry: pageEntry,
+                      extent: extent,
+                      // the retrieval task queue can pile up for thumbnails of heavy pages
+                      // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
+                      // so we cancel these requests when possible
+                      cancellableNotifier: _cancellableNotifier,
+                      selectable: false,
+                      highlightable: false,
+                    ),
+                  ),
+                  IgnorePointer(
+                    child: AnimatedContainer(
+                      color: controller.page == page ? Colors.transparent : Colors.black45,
+                      width: extent,
+                      height: extent,
+                      duration: Durations.viewerOverlayPageShadeAnimation,
+                    ),
+                  )
+                ],
+              );
+            },
+            separatorBuilder: (context, index) => separator,
+            itemCount: multiPageInfo.pageCount + 2,
           ),
         );
       },

@@ -358,7 +358,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
-      duration: Durations.viewerPageAnimation,
+      duration: Durations.viewerVerticalPageScrollAnimation,
       curve: Curves.easeInOut,
     );
   }

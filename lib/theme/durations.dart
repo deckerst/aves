@@ -30,10 +30,11 @@ class Durations {
   static const filterRowExpandAnimation = Duration(milliseconds: 300);
 
   // viewer animations
-  static const viewerPageAnimation = Duration(milliseconds: 300);
+  static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 300);
   static const viewerOverlayAnimation = Duration(milliseconds: 200);
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
-  static const viewerOverlayPageChooserAnimation = Duration(milliseconds: 200);
+  static const viewerOverlayPageScrollAnimation = Duration(milliseconds: 200);
+  static const viewerOverlayPageShadeAnimation = Duration(milliseconds: 150);
 
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
