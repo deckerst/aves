@@ -78,24 +78,32 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
 
+    // do not directly use selection when moving and post-processing items
+    // as source monitoring may remove obsolete items from the original selection
+    final todoEntries = selection.toSet();
+
     final copy = moveType == MoveType.copy;
-    final selectionCount = selection.length;
+    final todoCount = todoEntries.length;
+    // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
+    // so we save favourites beforehand, and will mark the moved entries as such after the move
+    final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
-      itemCount: selectionCount,
+      opStream: ImageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
+      itemCount: todoCount,
       onDone: (processed) async {
-        final movedOps = processed.where((e) => e.success);
+        final movedOps = processed.where((e) => e.success).toSet();
         final movedCount = movedOps.length;
-        if (movedCount < selectionCount) {
-          final count = selectionCount - movedCount;
+        if (movedCount < todoCount) {
+          final count = todoCount - movedCount;
           showFeedback(context, 'Failed to ${copy ? 'copy' : 'move'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           final count = movedCount;
           showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         await source.updateAfterMove(
-          selection: selection,
+          todoEntries: todoEntries,
+          favouriteEntries: favouriteEntries,
           copy: copy,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,

@@ -91,12 +91,12 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     invalidateFilterEntryCounts();
   }
 
-  // `dateModifiedSecs` changes when moving entries to another directory,
-  // but it does not change when renaming the containing directory
-  Future<void> moveEntry(AvesEntry entry, Map newFields) async {
+  Future<void> _moveEntry(AvesEntry entry, Map newFields, bool isFavourite) async {
     final oldContentId = entry.contentId;
     final newContentId = newFields['contentId'] as int;
     final newDateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    // `dateModifiedSecs` changes when moving entries to another directory,
+    // but it does not change when renaming the containing directory
     if (newDateModifiedSecs != null) entry.dateModifiedSecs = newDateModifiedSecs;
     entry.path = newFields['path'] as String;
     entry.uri = newFields['uri'] as String;
@@ -107,14 +107,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     await metadataDb.updateEntryId(oldContentId, entry);
     await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
     await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
-    await favourites.move(oldContentId, entry);
+    if (isFavourite) {
+      await favourites.move(oldContentId, entry);
+    }
   }
 
   void updateAfterMove({
-    @required Set<AvesEntry> selection,
+    @required Set<AvesEntry> todoEntries,
+    @required Set<AvesEntry> favouriteEntries,
     @required bool copy,
     @required String destinationAlbum,
-    @required Iterable<MoveOpEvent> movedOps,
+    @required Set<MoveOpEvent> movedOps,
   }) async {
     if (movedOps.isEmpty) return;
 
@@ -124,7 +127,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       movedOps.forEach((movedOp) {
         final sourceUri = movedOp.uri;
         final newFields = movedOp.newFields;
-        final sourceEntry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+        final sourceEntry = todoEntries.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
         fromAlbums.add(sourceEntry.directory);
         movedEntries.add(sourceEntry?.copyWith(
           uri: newFields['uri'] as String,
@@ -141,11 +144,14 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         final newFields = movedOp.newFields;
         if (newFields.isNotEmpty) {
           final sourceUri = movedOp.uri;
-          final entry = selection.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+          final entry = todoEntries.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
           if (entry != null) {
             fromAlbums.add(entry.directory);
             movedEntries.add(entry);
-            await moveEntry(entry, newFields);
+            // do not rely on current favourite repo state to assess whether the moved entry is a favourite
+            // as source monitoring may already have removed the entry from the favourite repo
+            final isFavourite = favouriteEntries.contains(entry);
+            await _moveEntry(entry, newFields, isFavourite);
           }
         }
       });
