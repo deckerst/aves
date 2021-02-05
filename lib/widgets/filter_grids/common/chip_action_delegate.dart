@@ -108,28 +108,32 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final selection = source.rawEntries.where(filter.filter).toSet();
+    final todoEntries = source.rawEntries.where(filter.filter).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, MoveType.move)) return;
+    if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;
 
-    final selectionCount = selection.length;
+    final todoCount = todoEntries.length;
+    // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
+    // so we save favourites beforehand, and will mark the moved entries as such after the move
+    final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: ImageFileService.move(selection, copy: false, destinationAlbum: destinationAlbum),
-      itemCount: selectionCount,
+      opStream: ImageFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
+      itemCount: todoCount,
       onDone: (processed) async {
-        final movedOps = processed.where((e) => e.success);
+        final movedOps = processed.where((e) => e.success).toSet();
         final movedCount = movedOps.length;
-        if (movedCount < selectionCount) {
-          final count = selectionCount - movedCount;
+        if (movedCount < todoCount) {
+          final count = todoCount - movedCount;
           showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           showFeedback(context, 'Done!');
         }
         final pinned = settings.pinnedFilters.contains(filter);
         await source.updateAfterMove(
-          selection: selection,
+          todoEntries: todoEntries,
+          favouriteEntries: favouriteEntries,
           copy: false,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
