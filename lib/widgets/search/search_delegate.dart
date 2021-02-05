@@ -219,8 +219,6 @@ class CollectionSearchDelegate {
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],
-          groupFactor: settings.collectionGroupFactor,
-          sortFactor: settings.collectionSortFactor,
         )),
       ),
       (route) => false,

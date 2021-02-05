@@ -161,8 +161,6 @@ class _HomePageState extends State<HomePage> {
             CollectionLens(
               source: source,
               filters: filters,
-              groupFactor: settings.collectionGroupFactor,
-              sortFactor: settings.collectionSortFactor,
             ),
           ),
         );

@@ -1,11 +1,10 @@
 import 'dart:math';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
@@ -273,8 +272,6 @@ class StatsPage extends StatelessWidget {
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],
-          groupFactor: settings.collectionGroupFactor,
-          sortFactor: settings.collectionSortFactor,
         )),
       ),
       (route) => false,
