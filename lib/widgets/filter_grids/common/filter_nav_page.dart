@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:aves/main.dart';
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
@@ -78,8 +77,6 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
           builder: (context) => CollectionPage(CollectionLens(
             source: source,
             filters: [filter],
-            groupFactor: settings.collectionGroupFactor,
-            sortFactor: settings.collectionSortFactor,
           )),
         ),
       ),

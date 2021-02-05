@@ -5,6 +5,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/section_keys.dart';
@@ -32,13 +33,13 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   CollectionLens({
     @required this.source,
     Iterable<CollectionFilter> filters,
-    @required EntryGroupFactor groupFactor,
-    @required EntrySortFactor sortFactor,
+    EntryGroupFactor groupFactor,
+    EntrySortFactor sortFactor,
     this.id,
     this.listenToSource = true,
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
-        groupFactor = groupFactor ?? EntryGroupFactor.month,
-        sortFactor = sortFactor ?? EntrySortFactor.date {
+        groupFactor = groupFactor ?? settings.collectionGroupFactor,
+        sortFactor = sortFactor ?? settings.collectionSortFactor {
     id ??= hashCode;
     if (listenToSource) {
       _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
