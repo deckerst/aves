@@ -42,7 +42,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         sortFactor = sortFactor ?? settings.collectionSortFactor {
     id ??= hashCode;
     if (listenToSource) {
-      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
@@ -167,7 +167,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
         break;
       case EntrySortFactor.name:
         final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
+        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory, b.directory));
         break;
     }
     sections = Map.unmodifiable(sections);
@@ -183,7 +183,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     _applyGroup();
   }
 
-  void onEntryRemoved(Iterable<AvesEntry> entries) {
+  void onEntryAdded(Set<AvesEntry> entries) {
+    _refresh();
+  }
+
+  void onEntryRemoved(Set<AvesEntry> entries) {
     // we should remove obsolete entries and sections
     // but do not apply sort/group
     // as section order change would surprise the user while browsing

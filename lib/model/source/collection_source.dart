@@ -2,18 +2,18 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourite_repo.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/album.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
-
-import 'enums.dart';
 
 mixin SourceBase {
   final List<AvesEntry> _rawEntries = [];
@@ -24,11 +24,7 @@ mixin SourceBase {
 
   EventBus get eventBus => _eventBus;
 
-  List<AvesEntry> get sortedEntriesForFilterList;
-
-  final Map<CollectionFilter, int> _filterEntryCountMap = {};
-
-  void invalidateFilterEntryCounts() => _filterEntryCountMap.clear();
+  List<AvesEntry> get sortedEntriesByDate;
 
   final StreamController<ProgressEvent> _progressStreamController = StreamController.broadcast();
 
@@ -38,12 +34,13 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
+  List<AvesEntry> _sortedEntriesByDate;
+
   @override
-  List<AvesEntry> get sortedEntriesForFilterList => CollectionLens(
-        source: this,
-        groupFactor: EntryGroupFactor.none,
-        sortFactor: EntrySortFactor.date,
-      ).sortedEntries;
+  List<AvesEntry> get sortedEntriesByDate {
+    _sortedEntriesByDate ??= List.of(_rawEntries)..sort(AvesEntry.compareByDate);
+    return _sortedEntriesByDate;
+  }
 
   ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
@@ -55,7 +52,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
-  void addAll(Iterable<AvesEntry> entries) {
+  void addAll(Set<AvesEntry> entries) {
     if (entries.isEmpty) return;
     if (_rawEntries.isNotEmpty) {
       final newContentIds = entries.map((entry) => entry.contentId).toList();
@@ -66,9 +63,9 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       entry.catalogDateMillis = _savedDates.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null)?.dateMillis;
     });
     _rawEntries.addAll(entries);
-    addFolderPath(_rawEntries.map((entry) => entry.directory));
-    invalidateFilterEntryCounts();
-    eventBus.fire(EntryAddedEvent());
+    addDirectory(_rawEntries.map((entry) => entry.directory));
+    _invalidateFilterSummaries(entries);
+    eventBus.fire(EntryAddedEvent(entries));
   }
 
   void removeEntries(Set<AvesEntry> entries) {
@@ -78,17 +75,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
     updateLocations();
     updateTags();
-    invalidateFilterEntryCounts();
+    _invalidateFilterSummaries(entries);
     eventBus.fire(EntryRemovedEvent(entries));
   }
 
   void clearEntries() {
     _rawEntries.clear();
     cleanEmptyAlbums();
-    updateAlbums();
     updateLocations();
     updateTags();
-    invalidateFilterEntryCounts();
+    _invalidateFilterSummaries();
   }
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields, bool isFavourite) async {
@@ -122,7 +118,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     if (movedOps.isEmpty) return;
 
     final fromAlbums = <String>{};
-    final movedEntries = <AvesEntry>[];
+    final movedEntries = <AvesEntry>{};
     if (copy) {
       movedOps.forEach((movedOp) {
         final sourceUri = movedOp.uri;
@@ -161,15 +157,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       addAll(movedEntries);
     } else {
       cleanEmptyAlbums(fromAlbums);
-      addFolderPath({destinationAlbum});
+      addDirectory({destinationAlbum});
     }
-    updateAlbums();
-    invalidateFilterEntryCounts();
+    invalidateAlbumFilterSummary(directories: fromAlbums);
+    _invalidateFilterSummaries(movedEntries);
     eventBus.fire(EntryMovedEvent(movedEntries));
-  }
-
-  int count(CollectionFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter, () => _rawEntries.where((entry) => filter.filter(entry)).length);
   }
 
   bool get initialized => false;
@@ -179,18 +171,41 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   Future<void> refresh();
 
   Future<void> refreshMetadata(Set<AvesEntry> entries);
+
+  // filter summary
+
+  void _invalidateFilterSummaries([Set<AvesEntry> entries]) {
+    _sortedEntriesByDate = null;
+    invalidateAlbumFilterSummary(entries: entries);
+    invalidateCountryFilterSummary(entries);
+    invalidateTagFilterSummary(entries);
+  }
+
+  int count(CollectionFilter filter) {
+    if (filter is AlbumFilter) return albumEntryCount(filter);
+    if (filter is LocationFilter) return countryEntryCount(filter);
+    if (filter is TagFilter) return tagEntryCount(filter);
+    return 0;
+  }
+
+  AvesEntry recentEntry(CollectionFilter filter) {
+    if (filter is AlbumFilter) return albumRecentEntry(filter);
+    if (filter is LocationFilter) return countryRecentEntry(filter);
+    if (filter is TagFilter) return tagRecentEntry(filter);
+    return null;
+  }
 }
 
 enum SourceState { loading, cataloguing, locating, ready }
 
 class EntryAddedEvent {
-  final AvesEntry entry;
+  final Set<AvesEntry> entries;
 
-  const EntryAddedEvent([this.entry]);
+  const EntryAddedEvent([this.entries]);
 }
 
 class EntryRemovedEvent {
-  final Iterable<AvesEntry> entries;
+  final Set<AvesEntry> entries;
 
   const EntryRemovedEvent(this.entries);
 }

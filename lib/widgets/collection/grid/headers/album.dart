@@ -7,18 +7,18 @@ import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 
 class AlbumSectionHeader extends StatelessWidget {
-  final String folderPath, albumName;
+  final String directory, albumName;
 
   AlbumSectionHeader({
     Key key,
     @required CollectionSource source,
-    @required this.folderPath,
-  })  : albumName = source.getUniqueAlbumName(folderPath),
+    @required this.directory,
+  })  : albumName = source.getUniqueAlbumName(directory),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var albumIcon = IconUtils.getAlbumIcon(context: context, album: folderPath);
+    var albumIcon = IconUtils.getAlbumIcon(context: context, album: directory);
     if (albumIcon != null) {
       albumIcon = Material(
         type: MaterialType.circle,
@@ -29,10 +29,10 @@ class AlbumSectionHeader extends StatelessWidget {
       );
     }
     return SectionHeader(
-      sectionKey: EntryAlbumSectionKey(folderPath),
+      sectionKey: EntryAlbumSectionKey(directory),
       leading: albumIcon,
       title: albumName,
-      trailing: androidFileUtils.isOnRemovableStorage(folderPath)
+      trailing: androidFileUtils.isOnRemovableStorage(directory)
           ? Icon(
               AIcons.removableStorage,
               size: 16,
@@ -43,13 +43,13 @@ class AlbumSectionHeader extends StatelessWidget {
   }
 
   static double getPreferredHeight(BuildContext context, double maxWidth, CollectionSource source, EntryAlbumSectionKey sectionKey) {
-    final folderPath = sectionKey.folderPath;
+    final directory = sectionKey.directory;
     return SectionHeader.getPreferredHeight(
       context: context,
       maxWidth: maxWidth,
-      title: source.getUniqueAlbumName(folderPath),
-      hasLeading: androidFileUtils.getAlbumType(folderPath) != AlbumType.regular,
-      hasTrailing: androidFileUtils.isOnRemovableStorage(folderPath),
+      title: source.getUniqueAlbumName(directory),
+      hasLeading: androidFileUtils.getAlbumType(directory) != AlbumType.regular,
+      hasTrailing: androidFileUtils.isOnRemovableStorage(directory),
     );
   }
 }

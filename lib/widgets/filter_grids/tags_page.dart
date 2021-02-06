@@ -50,8 +50,7 @@ class TagListPage extends StatelessWidget {
   }
 
   Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _getTagEntries() {
-    // tags are initially sorted by name at the source level
-    final filters = source.sortedTags.map((tag) => TagFilter(tag));
+    final filters = source.sortedTags.map((tag) => TagFilter(tag)).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
     return _group(sorted);

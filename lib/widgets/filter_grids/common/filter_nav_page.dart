@@ -160,19 +160,22 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     return c != 0 ? c : a.key.compareTo(b.key);
   }
 
-  static Iterable<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Iterable<T> filters) {
+  static int compareFiltersByName(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
+    return a.filter.compareTo(b.filter);
+  }
+
+  static Iterable<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
     Iterable<FilterGridItem<T>> toGridItem(CollectionSource source, Iterable<T> filters) {
-      final entriesByDate = source.sortedEntriesForFilterList;
       return filters.map((filter) => FilterGridItem(
             filter,
-            entriesByDate.firstWhere(filter.filter, orElse: () => null),
+            source.recentEntry(filter),
           ));
     }
 
     Iterable<FilterGridItem<T>> allMapEntries;
     switch (sortFactor) {
       case ChipSortFactor.name:
-        allMapEntries = toGridItem(source, filters);
+        allMapEntries = toGridItem(source, filters).toList()..sort(compareFiltersByName);
         break;
       case ChipSortFactor.date:
         allMapEntries = toGridItem(source, filters).toList()..sort(compareFiltersByDate);
@@ -180,7 +183,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
       case ChipSortFactor.count:
         final filtersWithCount = List.of(filters.map((filter) => MapEntry(filter, source.count(filter))));
         filtersWithCount.sort(compareFiltersByEntryCount);
-        filters = filtersWithCount.map((kv) => kv.key).toList();
+        filters = filtersWithCount.map((kv) => kv.key).toSet();
         allMapEntries = toGridItem(source, filters);
         break;
     }

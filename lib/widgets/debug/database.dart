@@ -13,7 +13,7 @@ class DebugAppDatabaseSection extends StatefulWidget {
 
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
   Future<int> _dbFileSizeLoader;
-  Future<List<AvesEntry>> _dbEntryLoader;
+  Future<Set<AvesEntry>> _dbEntryLoader;
   Future<List<DateMetadata>> _dbDateLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
@@ -57,7 +57,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<List>(
+              FutureBuilder<Set<AvesEntry>>(
                 future: _dbEntryLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
