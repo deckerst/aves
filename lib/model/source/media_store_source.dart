@@ -66,7 +66,7 @@ class MediaStoreSource extends CollectionSource {
     // refresh after the first 10 entries, then after 100 more, then every 1000 entries
     var refreshCount = 10;
     const refreshCountMax = 1000;
-    final allNewEntries = <AvesEntry>[], pendingNewEntries = <AvesEntry>[];
+    final allNewEntries = <AvesEntry>{}, pendingNewEntries = <AvesEntry>{};
     void addPendingEntries() {
       allNewEntries.addAll(pendingNewEntries);
       addAll(pendingNewEntries);
@@ -86,10 +86,11 @@ class MediaStoreSource extends CollectionSource {
         debugPrint('$runtimeType refresh loaded ${allNewEntries.length} new entries, elapsed=${stopwatch.elapsed}');
 
         await metadataDb.saveEntries(allNewEntries); // 700ms for 5500 entries
-        updateAlbums();
+        invalidateAlbumFilterSummary(entries: allNewEntries);
+
         final analytics = FirebaseAnalytics();
         unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(rawEntries.length, 3)).toString()));
-        unawaited(analytics.setUserProperty(name: 'album_count', value: (ceilBy(sortedAlbums.length, 1)).toString()));
+        unawaited(analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString()));
 
         stateNotifier.value = SourceState.cataloguing;
         await catalogEntries();
@@ -128,7 +129,7 @@ class MediaStoreSource extends CollectionSource {
     removeEntries(obsoleteEntries);
 
     // fetch new entries
-    final newEntries = <AvesEntry>[];
+    final newEntries = <AvesEntry>{};
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
       final uri = kv.value;
@@ -150,7 +151,7 @@ class MediaStoreSource extends CollectionSource {
     if (newEntries.isNotEmpty) {
       addAll(newEntries);
       await metadataDb.saveEntries(newEntries);
-      updateAlbums();
+      invalidateAlbumFilterSummary(entries: newEntries);
 
       stateNotifier.value = SourceState.cataloguing;
       await catalogEntries();

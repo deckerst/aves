@@ -142,10 +142,11 @@ class _AppDrawerState extends State<AppDrawer> {
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
         builder: (context, snapshot) {
-          final specialAlbums = source.sortedAlbums.where((album) {
+          final specialAlbums = source.rawAlbums.where((album) {
             final type = androidFileUtils.getAlbumType(album);
             return [AlbumType.camera, AlbumType.screenshots].contains(type);
-          });
+          }).toList()
+            ..sort(source.compareAlbumsByName);
 
           if (specialAlbums.isEmpty) return SizedBox.shrink();
           return Column(
@@ -185,7 +186,7 @@ class _AppDrawerState extends State<AppDrawer> {
         title: 'Albums',
         trailing: StreamBuilder(
           stream: source.eventBus.on<AlbumsChangedEvent>(),
-          builder: (context, _) => Text('${source.sortedAlbums.length}'),
+          builder: (context, _) => Text('${source.rawAlbums.length}'),
         ),
         routeName: AlbumListPage.routeName,
         pageBuilder: (_) => AlbumListPage(source: source),

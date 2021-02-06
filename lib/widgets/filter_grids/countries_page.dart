@@ -50,8 +50,7 @@ class CountryListPage extends StatelessWidget {
   }
 
   Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _getCountryEntries() {
-    // countries are initially sorted by name at the source level
-    final filters = source.sortedCountries.map((location) => LocationFilter(LocationLevel.country, location));
+    final filters = source.sortedCountries.map((location) => LocationFilter(LocationLevel.country, location)).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.countrySortFactor, source, filters);
     return _group(sorted);

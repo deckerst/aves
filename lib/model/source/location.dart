@@ -100,8 +100,32 @@ mixin LocationMixin on SourceBase {
     final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
     sortedCountries = List<String>.unmodifiable(countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase));
 
-    invalidateFilterEntryCounts();
+    invalidateCountryFilterSummary();
     eventBus.fire(LocationsChangedEvent());
+  }
+
+  // filter summary
+
+  // by country code
+  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+
+  void invalidateCountryFilterSummary([Set<AvesEntry> entries]) {
+    if (entries == null) {
+      _filterEntryCountMap.clear();
+      _filterRecentEntryMap.clear();
+    } else {
+      final countryCodes = entries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails.countryCode).toSet();
+      countryCodes.forEach(_filterEntryCountMap.remove);
+    }
+  }
+
+  int countryEntryCount(LocationFilter filter) {
+    return _filterEntryCountMap.putIfAbsent(filter.countryCode, () => rawEntries.where((entry) => filter.filter(entry)).length);
+  }
+
+  AvesEntry countryRecentEntry(LocationFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.countryCode, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry)));
   }
 }
 

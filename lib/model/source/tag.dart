@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -56,8 +57,33 @@ mixin TagMixin on SourceBase {
   void updateTags() {
     final tags = rawEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(tags);
-    invalidateFilterEntryCounts();
+
+    invalidateTagFilterSummary();
     eventBus.fire(TagsChangedEvent());
+  }
+
+  // filter summary
+
+  // by tag
+  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+
+  void invalidateTagFilterSummary([Set<AvesEntry> entries]) {
+    if (entries == null) {
+      _filterEntryCountMap.clear();
+      _filterRecentEntryMap.clear();
+    } else {
+      final tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.xmpSubjects).toSet();
+      tags.forEach(_filterEntryCountMap.remove);
+    }
+  }
+
+  int tagEntryCount(TagFilter filter) {
+    return _filterEntryCountMap.putIfAbsent(filter.tag, () => rawEntries.where((entry) => filter.filter(entry)).length);
+  }
+
+  AvesEntry tagRecentEntry(TagFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry)));
   }
 }
 

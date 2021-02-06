@@ -42,6 +42,8 @@ class LocationFilter extends CollectionFilter {
 
   String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
 
+  String get countryCode => _countryCode;
+
   @override
   EntryFilter get filter => _filter;
 
