@@ -205,6 +205,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Future<void> refreshMetadata(Set<AvesEntry> entries);
 
+  // monitoring
+
+  bool _monitoring = true;
+
+  void pauseMonitoring() => _monitoring = false;
+
+  void resumeMonitoring() => _monitoring = true;
+
+  bool get isMonitoring => _monitoring;
+
   // filter summary
 
   int count(CollectionFilter filter) {

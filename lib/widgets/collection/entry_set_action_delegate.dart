@@ -55,7 +55,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case CollectionAction.refreshMetadata:
         source.refreshMetadata(selection);
-        collection.clearSelection();
         collection.browse();
         break;
       default:
@@ -87,6 +86,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
     // so we save favourites beforehand, and will mark the moved entries as such after the move
     final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
+    source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
       opStream: ImageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
@@ -108,8 +108,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
         );
-        collection.clearSelection();
         collection.browse();
+        source.resumeMonitoring();
       },
     );
   }
@@ -141,6 +141,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (!await checkStoragePermission(context, selection)) return;
 
     final selectionCount = selection.length;
+    source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: ImageFileService.delete(selection),
@@ -153,8 +154,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         source.removeEntries(deletedUris);
-        collection.clearSelection();
         collection.browse();
+        source.resumeMonitoring();
       },
     );
   }
