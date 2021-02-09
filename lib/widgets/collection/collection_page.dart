@@ -37,7 +37,6 @@ class _CollectionPageState extends State<CollectionPage> {
           body: WillPopScope(
             onWillPop: () {
               if (collection.isSelecting) {
-                collection.clearSelection();
                 collection.browse();
                 return SynchronousFuture(false);
               }

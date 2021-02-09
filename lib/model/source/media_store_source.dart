@@ -107,12 +107,13 @@ class MediaStoreSource extends CollectionSource {
     );
   }
 
-  // returns URIs that are in the Media Store but still being processed by their owner in a temporary location
+  // returns URIs to retry later. They could be URIs that are:
+  // 1) currently being processed during bulk move/deletion
+  // 2) registered in the Media Store but still being processed by their owner in a temporary location
   // For example, when taking a picture with a Galaxy S10e default camera app, querying the Media Store
   // sometimes yields an entry with its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
-  Future<List<String>> refreshUris(List<String> changedUris) async {
-    final tempUris = <String>[];
-    if (!_initialized) return tempUris;
+  Future<Set<String>> refreshUris(Set<String> changedUris) async {
+    if (!_initialized || !isMonitoring) return changedUris;
 
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       if (uri == null) return null;
@@ -129,6 +130,7 @@ class MediaStoreSource extends CollectionSource {
     obsoleteContentIds.forEach(uriByContentId.remove);
 
     // fetch new entries
+    final tempUris = <String>{};
     final newEntries = <AvesEntry>{};
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;

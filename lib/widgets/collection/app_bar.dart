@@ -124,10 +124,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       onPressed = Scaffold.of(context).openDrawer;
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
     } else if (collection.isSelecting) {
-      onPressed = () {
-        collection.clearSelection();
-        collection.browse();
-      };
+      onPressed = collection.browse;
       tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(

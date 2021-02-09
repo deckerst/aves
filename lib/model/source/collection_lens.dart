@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 
 import 'enums.dart';
 
-class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSelectionMixin {
+class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   EntryGroupFactor groupFactor;
@@ -209,12 +209,15 @@ mixin CollectionActivityMixin {
 
   bool get isSelecting => _activityNotifier.value == Activity.select;
 
-  void browse() => _activityNotifier.value = Activity.browse;
+  void browse() {
+    clearSelection();
+    _activityNotifier.value = Activity.browse;
+  }
 
   void select() => _activityNotifier.value = Activity.select;
-}
 
-mixin CollectionSelectionMixin on CollectionActivityMixin {
+  // selection
+
   final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
 
   final Set<AvesEntry> _selection = {};
