@@ -8,13 +8,13 @@ class TagFilter extends CollectionFilter {
   static const emptyLabel = 'untagged';
 
   final String tag;
-  EntryFilter _filter;
+  EntryFilter _test;
 
   TagFilter(this.tag) {
     if (tag.isEmpty) {
-      _filter = (entry) => entry.xmpSubjects.isEmpty;
+      _test = (entry) => entry.xmpSubjects.isEmpty;
     } else {
-      _filter = (entry) => entry.xmpSubjects.contains(tag);
+      _test = (entry) => entry.xmpSubjects.contains(tag);
     }
   }
 
@@ -30,7 +30,7 @@ class TagFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get filter => _filter;
+  EntryFilter get test => _test;
 
   @override
   bool get isUnique => false;

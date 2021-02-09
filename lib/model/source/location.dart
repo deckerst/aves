@@ -121,11 +121,11 @@ mixin LocationMixin on SourceBase {
   }
 
   int countryEntryCount(LocationFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.countryCode, () => visibleEntries.where((entry) => filter.filter(entry)).length);
+    return _filterEntryCountMap.putIfAbsent(filter.countryCode, () => visibleEntries.where(filter.test).length);
   }
 
   AvesEntry countryRecentEntry(LocationFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.countryCode, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry), orElse: () => null));
+    return _filterRecentEntryMap.putIfAbsent(filter.countryCode, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
   }
 }
 

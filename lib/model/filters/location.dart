@@ -11,7 +11,7 @@ class LocationFilter extends CollectionFilter {
   final LocationLevel level;
   String _location;
   String _countryCode;
-  EntryFilter _filter;
+  EntryFilter _test;
 
   LocationFilter(this.level, this._location) {
     final split = _location.split(locationSeparator);
@@ -19,11 +19,11 @@ class LocationFilter extends CollectionFilter {
     if (split.length > 1) _countryCode = split[1];
 
     if (_location.isEmpty) {
-      _filter = (entry) => !entry.isLocated;
+      _test = (entry) => !entry.isLocated;
     } else if (level == LocationLevel.country) {
-      _filter = (entry) => entry.addressDetails?.countryCode == _countryCode;
+      _test = (entry) => entry.addressDetails?.countryCode == _countryCode;
     } else if (level == LocationLevel.place) {
-      _filter = (entry) => entry.addressDetails?.place == _location;
+      _test = (entry) => entry.addressDetails?.place == _location;
     }
   }
 
@@ -45,7 +45,7 @@ class LocationFilter extends CollectionFilter {
   String get countryCode => _countryCode;
 
   @override
-  EntryFilter get filter => _filter;
+  EntryFilter get test => _test;
 
   @override
   String get label => _location.isEmpty ? emptyLabel : _location;

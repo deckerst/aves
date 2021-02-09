@@ -79,11 +79,11 @@ mixin TagMixin on SourceBase {
   }
 
   int tagEntryCount(TagFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.tag, () => visibleEntries.where((entry) => filter.filter(entry)).length);
+    return _filterEntryCountMap.putIfAbsent(filter.tag, () => visibleEntries.where(filter.test).length);
   }
 
   AvesEntry tagRecentEntry(TagFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry), orElse: () => null));
+    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
   }
 }
 

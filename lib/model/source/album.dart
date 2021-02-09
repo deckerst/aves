@@ -122,11 +122,11 @@ mixin AlbumMixin on SourceBase {
   }
 
   int albumEntryCount(AlbumFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where((entry) => filter.filter(entry)).length);
+    return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).length);
   }
 
   AvesEntry albumRecentEntry(AlbumFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry), orElse: () => null));
+    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
   }
 }
 
