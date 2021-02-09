@@ -37,6 +37,7 @@ class AIcons {
   static const IconData favouriteActive = Icons.favorite;
   static const IconData goUp = Icons.arrow_upward_outlined;
   static const IconData group = Icons.group_work_outlined;
+  static const IconData hide = Icons.visibility_off_outlined;
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;

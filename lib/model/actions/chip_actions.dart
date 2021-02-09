@@ -10,6 +10,7 @@ enum ChipSetAction {
 
 enum ChipAction {
   delete,
+  hide,
   pin,
   unpin,
   rename,
@@ -20,6 +21,8 @@ extension ExtraChipAction on ChipAction {
     switch (this) {
       case ChipAction.delete:
         return 'Delete';
+      case ChipAction.hide:
+        return 'Hide';
       case ChipAction.pin:
         return 'Pin to top';
       case ChipAction.unpin:
@@ -34,6 +37,8 @@ extension ExtraChipAction on ChipAction {
     switch (this) {
       case ChipAction.delete:
         return AIcons.delete;
+      case ChipAction.hide:
+        return AIcons.hide;
       case ChipAction.pin:
       case ChipAction.unpin:
         return AIcons.pin;

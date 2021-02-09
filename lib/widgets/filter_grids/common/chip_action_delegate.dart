@@ -16,6 +16,12 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 class ChipActionDelegate {
+  final CollectionSource source;
+
+  ChipActionDelegate({
+    @required this.source,
+  });
+
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     switch (action) {
       case ChipAction.pin:
@@ -24,6 +30,9 @@ class ChipActionDelegate {
       case ChipAction.unpin:
         settings.pinnedFilters = settings.pinnedFilters..remove(filter);
         break;
+      case ChipAction.hide:
+        source.changeFilterVisibility(filter, false);
+        break;
       default:
         break;
     }
@@ -31,11 +40,9 @@ class ChipActionDelegate {
 }
 
 class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  final CollectionSource source;
-
   AlbumChipActionDelegate({
-    @required this.source,
-  });
+    @required CollectionSource source,
+  }) : super(source: source);
 
   @override
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
@@ -53,7 +60,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
-    final selection = source.rawEntries.where(filter.filter).toSet();
+    final selection = source.visibleEntries.where(filter.filter).toSet();
     final count = selection.length;
 
     final confirmed = await showDialog<bool>(
@@ -85,15 +92,13 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       opStream: ImageFileService.delete(selection),
       itemCount: selectionCount,
       onDone: (processed) {
-        final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
+        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
-        if (deletedCount > 0) {
-          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toSet());
-        }
+        source.removeEntries(deletedUris);
       },
     );
   }
@@ -108,7 +113,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final todoEntries = source.rawEntries.where(filter.filter).toSet();
+    final todoEntries = source.visibleEntries.where(filter.filter).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
 
     if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;

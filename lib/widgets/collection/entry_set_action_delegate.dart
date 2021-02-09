@@ -146,15 +146,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       opStream: ImageFileService.delete(selection),
       itemCount: selectionCount,
       onDone: (processed) {
-        final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
+        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
-        if (deletedCount > 0) {
-          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toSet());
-        }
+        source.removeEntries(deletedUris);
         collection.clearSelection();
         collection.browse();
       },

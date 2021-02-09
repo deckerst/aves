@@ -151,7 +151,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   }
 
   static int compareFiltersByDate(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
-    final c = b.entry.bestDate?.compareTo(a.entry.bestDate) ?? -1;
+    final c = (b.entry?.bestDate ?? DateTime.fromMillisecondsSinceEpoch(0)).compareTo(a.entry?.bestDate ?? DateTime.fromMillisecondsSinceEpoch(0));
     return c != 0 ? c : a.filter.compareTo(b.filter);
   }
 

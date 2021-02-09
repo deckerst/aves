@@ -34,9 +34,10 @@ class CountryListPage extends StatelessWidget {
             source: source,
             title: 'Countries',
             chipSetActionDelegate: CountryChipSetActionDelegate(source: source),
-            chipActionDelegate: ChipActionDelegate(),
+            chipActionDelegate: ChipActionDelegate(source: source),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+              ChipAction.hide,
             ],
             filterSections: _getCountryEntries(),
             emptyBuilder: () => EmptyContent(

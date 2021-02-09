@@ -8,6 +8,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
@@ -16,13 +17,9 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
 mixin SourceBase {
-  final List<AvesEntry> _rawEntries = [];
+  EventBus get eventBus;
 
-  List<AvesEntry> get rawEntries => List.unmodifiable(_rawEntries);
-
-  final EventBus _eventBus = EventBus();
-
-  EventBus get eventBus => _eventBus;
+  Set<AvesEntry> get visibleEntries;
 
   List<AvesEntry> get sortedEntriesByDate;
 
@@ -34,11 +31,30 @@ mixin SourceBase {
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
+  final EventBus _eventBus = EventBus();
+
+  @override
+  EventBus get eventBus => _eventBus;
+
+  final Set<AvesEntry> _rawEntries = {};
+
+  // TODO TLAD use `Set.unmodifiable()` when possible
+  Set<AvesEntry> get allEntries => Set.of(_rawEntries);
+
+  Set<AvesEntry> _visibleEntries;
+
+  @override
+  Set<AvesEntry> get visibleEntries {
+    // TODO TLAD use `Set.unmodifiable()` when possible
+    _visibleEntries ??= Set.of(_applyHiddenFilters(_rawEntries));
+    return _visibleEntries;
+  }
+
   List<AvesEntry> _sortedEntriesByDate;
 
   @override
   List<AvesEntry> get sortedEntriesByDate {
-    _sortedEntriesByDate ??= List.of(_rawEntries)..sort(AvesEntry.compareByDate);
+    _sortedEntriesByDate ??= List.unmodifiable(visibleEntries.toList()..sort(AvesEntry.compareByDate));
     return _sortedEntriesByDate;
   }
 
@@ -52,10 +68,23 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     debugPrint('$runtimeType loadDates complete in ${stopwatch.elapsed.inMilliseconds}ms for ${_savedDates.length} entries');
   }
 
-  void addAll(Set<AvesEntry> entries) {
+  Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
+    final hiddenFilters = settings.hiddenFilters;
+    return hiddenFilters.isEmpty ? entries : entries.where((entry) => !hiddenFilters.any((filter) => filter.filter(entry)));
+  }
+
+  void _invalidate([Set<AvesEntry> entries]) {
+    _visibleEntries = null;
+    _sortedEntriesByDate = null;
+    invalidateAlbumFilterSummary(entries: entries);
+    invalidateCountryFilterSummary(entries);
+    invalidateTagFilterSummary(entries);
+  }
+
+  void addEntries(Set<AvesEntry> entries) {
     if (entries.isEmpty) return;
     if (_rawEntries.isNotEmpty) {
-      final newContentIds = entries.map((entry) => entry.contentId).toList();
+      final newContentIds = entries.map((entry) => entry.contentId).toSet();
       _rawEntries.removeWhere((entry) => newContentIds.contains(entry.contentId));
     }
     entries.forEach((entry) {
@@ -63,28 +92,32 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
       entry.catalogDateMillis = _savedDates.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null)?.dateMillis;
     });
     _rawEntries.addAll(entries);
-    addDirectory(_rawEntries.map((entry) => entry.directory));
-    _invalidateFilterSummaries(entries);
+    _invalidate(entries);
+
+    addDirectories(_applyHiddenFilters(entries).map((entry) => entry.directory).toSet());
     eventBus.fire(EntryAddedEvent(entries));
   }
 
-  void removeEntries(Set<AvesEntry> entries) {
-    if (entries.isEmpty) return;
+  void removeEntries(Set<String> uris) {
+    if (uris.isEmpty) return;
+    final entries = _rawEntries.where((entry) => uris.contains(entry.uri)).toSet();
     entries.forEach((entry) => entry.removeFromFavourites());
-    _rawEntries.removeWhere(entries.contains);
+    _rawEntries.removeAll(entries);
+    _invalidate(entries);
+
     cleanEmptyAlbums(entries.map((entry) => entry.directory).toSet());
     updateLocations();
     updateTags();
-    _invalidateFilterSummaries(entries);
     eventBus.fire(EntryRemovedEvent(entries));
   }
 
   void clearEntries() {
     _rawEntries.clear();
-    cleanEmptyAlbums();
+    _invalidate();
+
+    updateDirectories();
     updateLocations();
     updateTags();
-    _invalidateFilterSummaries();
   }
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields, bool isFavourite) async {
@@ -154,13 +187,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
 
     if (copy) {
-      addAll(movedEntries);
+      addEntries(movedEntries);
     } else {
       cleanEmptyAlbums(fromAlbums);
-      addDirectory({destinationAlbum});
+      addDirectories({destinationAlbum});
     }
     invalidateAlbumFilterSummary(directories: fromAlbums);
-    _invalidateFilterSummaries(movedEntries);
+    _invalidate(movedEntries);
     eventBus.fire(EntryMovedEvent(movedEntries));
   }
 
@@ -174,13 +207,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   // filter summary
 
-  void _invalidateFilterSummaries([Set<AvesEntry> entries]) {
-    _sortedEntriesByDate = null;
-    invalidateAlbumFilterSummary(entries: entries);
-    invalidateCountryFilterSummary(entries);
-    invalidateTagFilterSummary(entries);
-  }
-
   int count(CollectionFilter filter) {
     if (filter is AlbumFilter) return albumEntryCount(filter);
     if (filter is LocationFilter) return countryEntryCount(filter);
@@ -193,6 +219,24 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     if (filter is LocationFilter) return countryRecentEntry(filter);
     if (filter is TagFilter) return tagRecentEntry(filter);
     return null;
+  }
+
+  void changeFilterVisibility(CollectionFilter filter, bool visible) {
+    final hiddenFilters = settings.hiddenFilters;
+    if (visible) {
+      hiddenFilters.remove(filter);
+    } else {
+      hiddenFilters.add(filter);
+      settings.searchHistory = settings.searchHistory..remove(filter);
+    }
+    settings.hiddenFilters = hiddenFilters;
+
+    _invalidate();
+    // it is possible for entries hidden by a filter type, to have an impact on other types
+    // e.g. given a sole entry for country C and tag T, hiding T should make C disappear too
+    updateDirectories();
+    updateLocations();
+    updateTags();
   }
 }
 

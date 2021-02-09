@@ -54,7 +54,7 @@ class MediaStoreSource extends CollectionSource {
     oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
 
     // show known entries
-    addAll(oldEntries);
+    addEntries(oldEntries);
     await loadCatalogMetadata(); // 600ms for 5500 entries
     await loadAddresses(); // 200ms for 3000 entries
     debugPrint('$runtimeType refresh loaded ${oldEntries.length} known entries, elapsed=${stopwatch.elapsed}');
@@ -69,7 +69,7 @@ class MediaStoreSource extends CollectionSource {
     final allNewEntries = <AvesEntry>{}, pendingNewEntries = <AvesEntry>{};
     void addPendingEntries() {
       allNewEntries.addAll(pendingNewEntries);
-      addAll(pendingNewEntries);
+      addEntries(pendingNewEntries);
       pendingNewEntries.clear();
     }
 
@@ -89,7 +89,7 @@ class MediaStoreSource extends CollectionSource {
         invalidateAlbumFilterSummary(entries: allNewEntries);
 
         final analytics = FirebaseAnalytics();
-        unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(rawEntries.length, 3)).toString()));
+        unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString()));
         unawaited(analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString()));
 
         stateNotifier.value = SourceState.cataloguing;
@@ -124,9 +124,9 @@ class MediaStoreSource extends CollectionSource {
 
     // clean up obsolete entries
     final obsoleteContentIds = (await ImageFileService.getObsoleteEntries(uriByContentId.keys.toList())).toSet();
+    final obsoleteUris = obsoleteContentIds.map((contentId) => uriByContentId[contentId]).toSet();
+    removeEntries(obsoleteUris);
     obsoleteContentIds.forEach(uriByContentId.remove);
-    final obsoleteEntries = rawEntries.where((e) => obsoleteContentIds.contains(e.contentId)).toSet();
-    removeEntries(obsoleteEntries);
 
     // fetch new entries
     final newEntries = <AvesEntry>{};
@@ -135,7 +135,7 @@ class MediaStoreSource extends CollectionSource {
       final uri = kv.value;
       final sourceEntry = await ImageFileService.getEntry(uri, null);
       if (sourceEntry != null) {
-        final existingEntry = rawEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+        final existingEntry = allEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
         if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs) {
           final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
           if (volume != null) {
@@ -149,7 +149,7 @@ class MediaStoreSource extends CollectionSource {
     }
 
     if (newEntries.isNotEmpty) {
-      addAll(newEntries);
+      addEntries(newEntries);
       await metadataDb.saveEntries(newEntries);
       invalidateAlbumFilterSummary(entries: newEntries);
 

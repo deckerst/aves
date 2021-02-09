@@ -34,9 +34,10 @@ class TagListPage extends StatelessWidget {
             source: source,
             title: 'Tags',
             chipSetActionDelegate: TagChipSetActionDelegate(source: source),
-            chipActionDelegate: ChipActionDelegate(),
+            chipActionDelegate: ChipActionDelegate(source: source),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+              ChipAction.hide,
             ],
             filterSections: _getTagEntries(),
             emptyBuilder: () => EmptyContent(

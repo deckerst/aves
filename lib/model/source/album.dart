@@ -34,9 +34,18 @@ mixin AlbumMixin on SourceBase {
     final uniqueName = parts.skip(parts.length - partCount).join(separator);
 
     final volume = androidFileUtils.getStorageVolume(album);
-    final volumeRoot = volume?.path ?? '';
-    final albumRelativePath = album.substring(volumeRoot.length);
-    if (uniqueName.length < albumRelativePath.length || volume == null) {
+    if (volume == null) {
+      return uniqueName;
+    }
+
+    final volumeRootLength = volume.path.length;
+    if (album.length < volumeRootLength) {
+      // `album` is at the root, without trailing '/'
+      return uniqueName;
+    }
+
+    final albumRelativePath = album.substring(volumeRootLength);
+    if (uniqueName.length < albumRelativePath.length) {
       return uniqueName;
     } else if (volume.isPrimary) {
       return albumRelativePath;
@@ -67,9 +76,17 @@ mixin AlbumMixin on SourceBase {
         )));
   }
 
-  void addDirectory(Iterable<String> albums) {
-    _directories.addAll(albums);
-    _notifyAlbumChange();
+  void updateDirectories() {
+    final visibleDirectories = visibleEntries.map((entry) => entry.directory).toSet();
+    addDirectories(visibleDirectories);
+    cleanEmptyAlbums();
+  }
+
+  void addDirectories(Set<String> albums) {
+    if (!_directories.containsAll(albums)) {
+      _directories.addAll(albums);
+      _notifyAlbumChange();
+    }
   }
 
   void cleanEmptyAlbums([Set<String> albums]) {
@@ -85,7 +102,7 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  bool _isEmptyAlbum(String album) => !rawEntries.any((entry) => entry.directory == album);
+  bool _isEmptyAlbum(String album) => !visibleEntries.any((entry) => entry.directory == album);
 
   // filter summary
 
@@ -105,11 +122,11 @@ mixin AlbumMixin on SourceBase {
   }
 
   int albumEntryCount(AlbumFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.album, () => rawEntries.where((entry) => filter.filter(entry)).length);
+    return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where((entry) => filter.filter(entry)).length);
   }
 
   AvesEntry albumRecentEntry(AlbumFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry)));
+    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry), orElse: () => null));
   }
 }
 

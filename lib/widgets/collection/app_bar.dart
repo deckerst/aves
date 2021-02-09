@@ -194,6 +194,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           return PopupMenuButton<CollectionAction>(
             key: Key('appbar-menu-button'),
             itemBuilder: (context) {
+              final isNotEmpty = !collection.isEmpty;
               final hasSelection = collection.selection.isNotEmpty;
               return [
                 PopupMenuItem(
@@ -216,10 +217,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   if (AvesApp.mode == AppMode.main)
                     PopupMenuItem(
                       value: CollectionAction.select,
+                      enabled: isNotEmpty,
                       child: MenuRow(text: 'Select', icon: AIcons.select),
                     ),
                   PopupMenuItem(
                     value: CollectionAction.stats,
+                    enabled: isNotEmpty,
                     child: MenuRow(text: 'Stats', icon: AIcons.stats),
                   ),
                   if (AvesApp.mode == AppMode.main && canAddShortcuts)
@@ -248,6 +251,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.selectAll,
+                    enabled: collection.selection.length < collection.entryCount,
                     child: MenuRow(text: 'Select all'),
                   ),
                   PopupMenuItem(
