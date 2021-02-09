@@ -14,7 +14,7 @@ mixin TagMixin on SourceBase {
   Future<void> loadCatalogMetadata() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
-    rawEntries.forEach((entry) {
+    visibleEntries.forEach((entry) {
       final contentId = entry.contentId;
       entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
     });
@@ -24,7 +24,7 @@ mixin TagMixin on SourceBase {
 
   Future<void> catalogEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final todo = rawEntries.where((entry) => !entry.isCatalogued).toList();
+    final todo = visibleEntries.where((entry) => !entry.isCatalogued).toList();
     if (todo.isEmpty) return;
 
     var progressDone = 0;
@@ -55,7 +55,7 @@ mixin TagMixin on SourceBase {
   }
 
   void updateTags() {
-    final tags = rawEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
+    final tags = visibleEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(tags);
 
     invalidateTagFilterSummary();
@@ -79,11 +79,11 @@ mixin TagMixin on SourceBase {
   }
 
   int tagEntryCount(TagFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.tag, () => rawEntries.where((entry) => filter.filter(entry)).length);
+    return _filterEntryCountMap.putIfAbsent(filter.tag, () => visibleEntries.where((entry) => filter.filter(entry)).length);
   }
 
   AvesEntry tagRecentEntry(TagFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry)));
+    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere((entry) => filter.filter(entry), orElse: () => null));
   }
 }
 

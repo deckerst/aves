@@ -141,7 +141,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, 'Failed');
     } else {
       if (hasCollection) {
-        collection.source.removeEntries({entry});
+        collection.source.removeEntries({entry.uri});
       }
       EntryDeletedNotification(entry).dispatch(context);
     }

@@ -25,7 +25,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   int id;
   bool listenToSource;
 
-  List<AvesEntry> _filteredEntries;
+  List<AvesEntry> _filteredSortedEntries;
   List<StreamSubscription> _subscriptions = [];
 
   Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
@@ -64,9 +64,9 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     super.dispose();
   }
 
-  bool get isEmpty => _filteredEntries.isEmpty;
+  bool get isEmpty => _filteredSortedEntries.isEmpty;
 
-  int get entryCount => _filteredEntries.length;
+  int get entryCount => _filteredSortedEntries.length;
 
   // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
   List<AvesEntry> _sortedEntries;
@@ -122,20 +122,20 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   }
 
   void _applyFilters() {
-    final rawEntries = source.rawEntries;
-    _filteredEntries = List.of(filters.isEmpty ? rawEntries : rawEntries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
+    final entries = source.visibleEntries;
+    _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
   }
 
   void _applySort() {
     switch (sortFactor) {
       case EntrySortFactor.date:
-        _filteredEntries.sort(AvesEntry.compareByDate);
+        _filteredSortedEntries.sort(AvesEntry.compareByDate);
         break;
       case EntrySortFactor.size:
-        _filteredEntries.sort(AvesEntry.compareBySize);
+        _filteredSortedEntries.sort(AvesEntry.compareBySize);
         break;
       case EntrySortFactor.name:
-        _filteredEntries.sort(AvesEntry.compareByName);
+        _filteredSortedEntries.sort(AvesEntry.compareByName);
         break;
     }
   }
@@ -145,28 +145,28 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       case EntrySortFactor.date:
         switch (groupFactor) {
           case EntryGroupFactor.album:
-            sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+            sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             break;
           case EntryGroupFactor.month:
-            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
+            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
             break;
           case EntryGroupFactor.day:
-            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
+            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
-              MapEntry(null, _filteredEntries),
+              MapEntry(null, _filteredSortedEntries),
             ]);
             break;
         }
         break;
       case EntrySortFactor.size:
         sections = Map.fromEntries([
-          MapEntry(null, _filteredEntries),
+          MapEntry(null, _filteredSortedEntries),
         ]);
         break;
       case EntrySortFactor.name:
-        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
         sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory, b.directory));
         break;
     }
@@ -191,7 +191,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     // we should remove obsolete entries and sections
     // but do not apply sort/group
     // as section order change would surprise the user while browsing
-    _filteredEntries.removeWhere(entries.contains);
+    _filteredSortedEntries.removeWhere(entries.contains);
     _sortedEntries?.removeWhere(entries.contains);
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
     sections = Map.unmodifiable(Map.fromEntries(sections.entries.where((kv) => kv.value.isNotEmpty)));

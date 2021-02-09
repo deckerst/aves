@@ -29,7 +29,7 @@ class StatsPage extends StatelessWidget {
   final CollectionLens parentCollection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
-  List<AvesEntry> get entries => parentCollection?.sortedEntries ?? source.rawEntries;
+  Set<AvesEntry> get entries => parentCollection?.sortedEntries?.toSet() ?? source.visibleEntries;
 
   static const mimeDonutMinWidth = 124.0;
 

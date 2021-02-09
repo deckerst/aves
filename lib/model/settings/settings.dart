@@ -43,6 +43,7 @@ class Settings extends ChangeNotifier {
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
   static const pinnedFiltersKey = 'pinned_filters';
+  static const hiddenFiltersKey = 'hidden_filters';
 
   // viewer
   static const showOverlayMinimapKey = 'show_overlay_minimap';
@@ -166,6 +167,10 @@ class Settings extends ChangeNotifier {
   Set<CollectionFilter> get pinnedFilters => (_prefs.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+
+  Set<CollectionFilter> get hiddenFilters => (_prefs.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
+
+  set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
   // viewer
 

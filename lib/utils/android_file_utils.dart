@@ -42,7 +42,12 @@ class AndroidFileUtils {
 
   bool isDownloadPath(String path) => path == downloadPath;
 
-  StorageVolume getStorageVolume(String path) => storageVolumes.firstWhere((v) => path.startsWith(v.path), orElse: () => null);
+  StorageVolume getStorageVolume(String path) {
+    final volume = storageVolumes.firstWhere((v) => path.startsWith(v.path), orElse: () => null);
+    // storage volume path includes trailing '/', but argument path may or may not,
+    // which is an issue when the path is at the root
+    return volume != null || path.endsWith('/') ? volume : getStorageVolume('$path/');
+  }
 
   bool isOnRemovableStorage(String path) => getStorageVolume(path)?.isRemovable ?? false;
 
