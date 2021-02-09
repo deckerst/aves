@@ -123,7 +123,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
 
   void _applyFilters() {
     final entries = source.visibleEntries;
-    _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
+    _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
   }
 
   void _applySort() {

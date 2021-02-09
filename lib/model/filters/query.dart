@@ -12,7 +12,7 @@ class QueryFilter extends CollectionFilter {
 
   final String query;
   final bool colorful;
-  EntryFilter _filter;
+  EntryFilter _test;
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
@@ -29,7 +29,7 @@ class QueryFilter extends CollectionFilter {
       upQuery = matches.first.group(1);
     }
 
-    _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
+    _test = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
   }
 
   QueryFilter.fromMap(Map<String, dynamic> json)
@@ -44,7 +44,7 @@ class QueryFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get filter => _filter;
+  EntryFilter get test => _test;
 
   @override
   bool get isUnique => false;

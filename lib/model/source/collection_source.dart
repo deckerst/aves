@@ -70,7 +70,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   Iterable<AvesEntry> _applyHiddenFilters(Iterable<AvesEntry> entries) {
     final hiddenFilters = settings.hiddenFilters;
-    return hiddenFilters.isEmpty ? entries : entries.where((entry) => !hiddenFilters.any((filter) => filter.filter(entry)));
+    return hiddenFilters.isEmpty ? entries : entries.where((entry) => !hiddenFilters.any((filter) => filter.test(entry)));
   }
 
   void _invalidate([Set<AvesEntry> entries]) {
@@ -247,6 +247,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     updateDirectories();
     updateLocations();
     updateTags();
+
+    if (visible) {
+      refreshMetadata(visibleEntries.where(filter.test).toSet());
+    }
   }
 }
 

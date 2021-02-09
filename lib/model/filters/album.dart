@@ -32,7 +32,7 @@ class AlbumFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get filter => (entry) => entry.directory == album;
+  EntryFilter get test => (entry) => entry.directory == album;
 
   @override
   String get label => uniqueName ?? album.split(separator).last;

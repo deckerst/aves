@@ -12,7 +12,7 @@ class FavouriteFilter extends CollectionFilter {
       };
 
   @override
-  EntryFilter get filter => (entry) => entry.isFavourite;
+  EntryFilter get test => (entry) => entry.isFavourite;
 
   @override
   String get label => 'Favourite';
