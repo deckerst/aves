@@ -652,8 +652,6 @@ class AvesEntry {
   static int compareByDate(AvesEntry a, AvesEntry b) {
     var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     if (c != 0) return c;
-    c = (b.dateModifiedSecs ?? 0).compareTo(a.dateModifiedSecs ?? 0);
-    if (c != 0) return c;
-    return -compareByName(a, b);
+    return compareByName(b, a);
   }
 }

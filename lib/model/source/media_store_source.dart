@@ -67,6 +67,7 @@ class MediaStoreSource extends CollectionSource {
     final knownPathById = Map.fromEntries(allEntries.map((entry) => MapEntry(entry.contentId, entry.path)));
     final movedContentIds = (await MediaStoreService.checkObsoletePaths(knownPathById)).toSet();
     movedContentIds.forEach((contentId) {
+      // make obsolete by resetting its modified date
       knownDateById[contentId] = 0;
     });
 
@@ -94,7 +95,13 @@ class MediaStoreSource extends CollectionSource {
         debugPrint('$runtimeType refresh loaded ${allNewEntries.length} new entries, elapsed=${stopwatch.elapsed}');
 
         await metadataDb.saveEntries(allNewEntries); // 700ms for 5500 entries
-        invalidateAlbumFilterSummary(entries: allNewEntries);
+
+        if (allNewEntries.isNotEmpty) {
+          // new entries include existing entries with obsolete paths
+          // so directories may be added, but also removed or simply have their content summary changed
+          invalidateAlbumFilterSummary();
+          updateDirectories();
+        }
 
         final analytics = FirebaseAnalytics();
         unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString()));
@@ -140,6 +147,7 @@ class MediaStoreSource extends CollectionSource {
     // fetch new entries
     final tempUris = <String>{};
     final newEntries = <AvesEntry>{};
+    final existingDirectories = <String>{};
     for (final kv in uriByContentId.entries) {
       final contentId = kv.key;
       final uri = kv.value;
@@ -151,6 +159,9 @@ class MediaStoreSource extends CollectionSource {
           final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
           if (volume != null) {
             newEntries.add(sourceEntry);
+            if (existingEntry != null) {
+              existingDirectories.add(existingEntry.directory);
+            }
           } else {
             debugPrint('$runtimeType refreshUris entry=$sourceEntry is not located on a known storage volume. Will retry soon...');
             tempUris.add(uri);
@@ -160,9 +171,10 @@ class MediaStoreSource extends CollectionSource {
     }
 
     if (newEntries.isNotEmpty) {
+      invalidateAlbumFilterSummary(directories: existingDirectories);
       addEntries(newEntries);
       await metadataDb.saveEntries(newEntries);
-      invalidateAlbumFilterSummary(entries: newEntries);
+      cleanEmptyAlbums(existingDirectories);
 
       stateNotifier.value = SourceState.cataloguing;
       await catalogEntries();
