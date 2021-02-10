@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.storage.StorageManager
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
@@ -23,7 +22,6 @@ object PermissionManager {
 
     fun requestVolumeAccess(activity: Activity, path: String, onGranted: () -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to volume=$path")
-        pendingPermissionMap[VOLUME_ACCESS_REQUEST_CODE] = PendingPermissionHandler(path, onGranted, onDenied)
 
         var intent: Intent? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -36,7 +34,13 @@ object PermissionManager {
             intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         }
 
-        ActivityCompat.startActivityForResult(activity, intent, VOLUME_ACCESS_REQUEST_CODE, null)
+        if (intent.resolveActivity(activity.packageManager) != null) {
+            pendingPermissionMap[VOLUME_ACCESS_REQUEST_CODE] = PendingPermissionHandler(path, onGranted, onDenied)
+            activity.startActivityForResult(intent, VOLUME_ACCESS_REQUEST_CODE, null)
+        } else {
+            Log.e(LOG_TAG, "failed to resolve activity for intent=$intent")
+            onDenied()
+        }
     }
 
     fun onPermissionResult(requestCode: Int, treeUri: Uri?) {
@@ -95,7 +99,6 @@ object PermissionManager {
                 }
             }
         }
-        Log.d(LOG_TAG, "getInaccessibleDirectories dirPaths=$dirPaths -> inaccessibleDirs=$inaccessibleDirs")
         return inaccessibleDirs
     }
 
@@ -124,7 +127,6 @@ object PermissionManager {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             accessibleDirs.add(StorageUtils.getPrimaryVolumePath(context))
         }
-        Log.d(LOG_TAG, "getAccessibleDirs accessibleDirs=$accessibleDirs")
         return accessibleDirs
     }
 

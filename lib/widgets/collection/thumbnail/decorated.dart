@@ -9,26 +9,28 @@ class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double extent;
   final CollectionLens collection;
-  final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<bool> cancellableNotifier;
   final bool selectable, highlightable;
-  final Object heroTag;
 
   static final Color borderColor = Colors.grey.shade700;
   static const double borderWidth = .5;
 
-  DecoratedThumbnail({
+  const DecoratedThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
     this.collection,
-    this.isScrollingNotifier,
+    this.cancellableNotifier,
     this.selectable = true,
     this.highlightable = true,
-  })  : heroTag = collection?.heroTag(entry),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // hero tag should include a collection identifier, so that it animates
+    // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
+    // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
+    final heroTag = hashValues(collection?.id, entry);
     var child = entry.isSvg
         ? VectorImageThumbnail(
             entry: entry,
@@ -38,7 +40,7 @@ class DecoratedThumbnail extends StatelessWidget {
         : RasterImageThumbnail(
             entry: entry,
             extent: extent,
-            isScrollingNotifier: isScrollingNotifier,
+            cancellableNotifier: cancellableNotifier,
             heroTag: heroTag,
           );
 

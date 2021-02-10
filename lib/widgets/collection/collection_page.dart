@@ -8,12 +8,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CollectionPage extends StatelessWidget {
+class CollectionPage extends StatefulWidget {
   static const routeName = '/collection';
 
   final CollectionLens collection;
 
   const CollectionPage(this.collection);
+
+  @override
+  _CollectionPageState createState() => _CollectionPageState();
+}
+
+class _CollectionPageState extends State<CollectionPage> {
+  CollectionLens get collection => widget.collection;
+
+  @override
+  void dispose() {
+    collection.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +37,6 @@ class CollectionPage extends StatelessWidget {
           body: WillPopScope(
             onWillPop: () {
               if (collection.isSelecting) {
-                collection.clearSelection();
                 collection.browse();
                 return SynchronousFuture(false);
               }

@@ -3,9 +3,13 @@ package deckers.thibault.aves.metadata
 import com.drew.lang.Rational
 import com.drew.metadata.Directory
 import com.drew.metadata.exif.ExifIFD0Directory
+import java.text.SimpleDateFormat
 import java.util.*
 
 object MetadataExtractorHelper {
+    const val PNG_TIME_DIR_NAME = "PNG-tIME"
+    val PNG_LAST_MODIFICATION_TIME_FORMAT = SimpleDateFormat("yyyy:MM:dd hh:mm:ss", Locale.ROOT)
+
     // extensions
 
     fun Directory.getSafeDescription(tag: Int, save: (value: String) -> Unit) {

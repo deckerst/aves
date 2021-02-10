@@ -7,9 +7,9 @@ import 'package:collection/collection.dart';
 import 'package:path/path.dart';
 
 mixin AlbumMixin on SourceBase {
-  final Set<String> _folderPaths = {};
+  final Set<String> _directories = {};
 
-  List<String> sortedAlbums = List.unmodifiable([]);
+  List<String> get rawAlbums => List.unmodifiable(_directories);
 
   int compareAlbumsByName(String a, String b) {
     final ua = getUniqueAlbumName(a);
@@ -21,15 +21,10 @@ mixin AlbumMixin on SourceBase {
     return compareAsciiUpperCase(va, vb);
   }
 
-  void updateAlbums() {
-    final sorted = _folderPaths.toList()..sort(compareAlbumsByName);
-    sortedAlbums = List.unmodifiable(sorted);
-    invalidateFilterEntryCounts();
-    eventBus.fire(AlbumsChangedEvent());
-  }
+  void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
 
   String getUniqueAlbumName(String album) {
-    final otherAlbums = _folderPaths.where((item) => item != album);
+    final otherAlbums = _directories.where((item) => item != album);
     final parts = album.split(separator);
     var partCount = 0;
     String testName;
@@ -39,9 +34,18 @@ mixin AlbumMixin on SourceBase {
     final uniqueName = parts.skip(parts.length - partCount).join(separator);
 
     final volume = androidFileUtils.getStorageVolume(album);
-    final volumeRoot = volume?.path ?? '';
-    final albumRelativePath = album.substring(volumeRoot.length);
-    if (uniqueName.length < albumRelativePath.length || volume == null) {
+    if (volume == null) {
+      return uniqueName;
+    }
+
+    final volumeRootLength = volume.path.length;
+    if (album.length < volumeRootLength) {
+      // `album` is at the root, without trailing '/'
+      return uniqueName;
+    }
+
+    final albumRelativePath = album.substring(volumeRootLength);
+    if (uniqueName.length < albumRelativePath.length) {
       return uniqueName;
     } else if (volume.isPrimary) {
       return albumRelativePath;
@@ -51,9 +55,9 @@ mixin AlbumMixin on SourceBase {
   }
 
   Map<String, AvesEntry> getAlbumEntries() {
-    final entries = sortedEntriesForFilterList;
+    final entries = sortedEntriesByDate;
     final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
-    for (final album in sortedAlbums) {
+    for (final album in rawAlbums) {
       switch (androidFileUtils.getAlbumType(album)) {
         case AlbumType.regular:
           regularAlbums.add(album);
@@ -72,13 +76,25 @@ mixin AlbumMixin on SourceBase {
         )));
   }
 
-  void addFolderPath(Iterable<String> albums) => _folderPaths.addAll(albums);
+  void updateDirectories() {
+    final visibleDirectories = visibleEntries.map((entry) => entry.directory).toSet();
+    addDirectories(visibleDirectories);
+    cleanEmptyAlbums();
+  }
+
+  void addDirectories(Set<String> albums) {
+    if (!_directories.containsAll(albums)) {
+      _directories.addAll(albums);
+      _notifyAlbumChange();
+    }
+  }
 
   void cleanEmptyAlbums([Set<String> albums]) {
-    final emptyAlbums = (albums ?? _folderPaths).where(_isEmptyAlbum).toList();
+    final emptyAlbums = (albums ?? _directories).where(_isEmptyAlbum).toSet();
     if (emptyAlbums.isNotEmpty) {
-      _folderPaths.removeAll(emptyAlbums);
-      updateAlbums();
+      _directories.removeAll(emptyAlbums);
+      _notifyAlbumChange();
+      invalidateAlbumFilterSummary(directories: emptyAlbums);
 
       final pinnedFilters = settings.pinnedFilters;
       emptyAlbums.forEach((album) => pinnedFilters.remove(AlbumFilter(album, getUniqueAlbumName(album))));
@@ -86,7 +102,32 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  bool _isEmptyAlbum(String album) => !rawEntries.any((entry) => entry.directory == album);
+  bool _isEmptyAlbum(String album) => !visibleEntries.any((entry) => entry.directory == album);
+
+  // filter summary
+
+  // by directory
+  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+
+  void invalidateAlbumFilterSummary({Set<AvesEntry> entries, Set<String> directories}) {
+    if (entries == null && directories == null) {
+      _filterEntryCountMap.clear();
+      _filterRecentEntryMap.clear();
+    } else {
+      directories ??= entries.map((entry) => entry.directory).toSet();
+      directories.forEach(_filterEntryCountMap.remove);
+      directories.forEach(_filterRecentEntryMap.remove);
+    }
+  }
+
+  int albumEntryCount(AlbumFilter filter) {
+    return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).length);
+  }
+
+  AvesEntry albumRecentEntry(AlbumFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
+  }
 }
 
 class AlbumsChangedEvent {}

@@ -1,6 +1,6 @@
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,7 +12,7 @@ class QueryFilter extends CollectionFilter {
 
   final String query;
   final bool colorful;
-  bool Function(AvesEntry) _filter;
+  EntryFilter _test;
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
@@ -29,7 +29,7 @@ class QueryFilter extends CollectionFilter {
       upQuery = matches.first.group(1);
     }
 
-    _filter = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
+    _test = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);
   }
 
   QueryFilter.fromMap(Map<String, dynamic> json)
@@ -44,7 +44,7 @@ class QueryFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(AvesEntry entry) => _filter(entry);
+  EntryFilter get test => _test;
 
   @override
   bool get isUnique => false;
@@ -56,7 +56,7 @@ class QueryFilter extends CollectionFilter {
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.text, size: size);
 
   @override
-  Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(Colors.white);
+  Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(AvesFilterChip.defaultOutlineColor);
 
   @override
   String get typeKey => type;

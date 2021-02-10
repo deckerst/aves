@@ -4,7 +4,10 @@ import 'dart:collection';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/change_notifier.dart';
@@ -13,15 +16,16 @@ import 'package:flutter/foundation.dart';
 
 import 'enums.dart';
 
-class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSelectionMixin {
+class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
-  final AChangeNotifier filterChangeNotifier = AChangeNotifier();
+  final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortGroupChangeNotifier = AChangeNotifier();
+  int id;
   bool listenToSource;
 
-  List<AvesEntry> _filteredEntries;
+  List<AvesEntry> _filteredSortedEntries;
   List<StreamSubscription> _subscriptions = [];
 
   Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
@@ -29,17 +33,24 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
   CollectionLens({
     @required this.source,
     Iterable<CollectionFilter> filters,
-    @required EntryGroupFactor groupFactor,
-    @required EntrySortFactor sortFactor,
+    EntryGroupFactor groupFactor,
+    EntrySortFactor sortFactor,
+    this.id,
     this.listenToSource = true,
   })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
-        groupFactor = groupFactor ?? EntryGroupFactor.month,
-        sortFactor = sortFactor ?? EntrySortFactor.date {
+        groupFactor = groupFactor ?? settings.collectionGroupFactor,
+        sortFactor = sortFactor ?? settings.collectionSortFactor {
+    id ??= hashCode;
     if (listenToSource) {
-      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<AddressMetadataChangedEvent>().listen((e) {
+        if (this.filters.any((filter) => filter is LocationFilter)) {
+          _refresh();
+        }
+      }));
     }
     _refresh();
   }
@@ -53,9 +64,9 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     super.dispose();
   }
 
-  bool get isEmpty => _filteredEntries.isEmpty;
+  bool get isEmpty => _filteredSortedEntries.isEmpty;
 
-  int get entryCount => _filteredEntries.length;
+  int get entryCount => _filteredSortedEntries.length;
 
   // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
   List<AvesEntry> _sortedEntries;
@@ -76,8 +87,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
 
     return true;
   }
-
-  Object heroTag(AvesEntry entry) => entry.uri;
 
   void addFilter(CollectionFilter filter) {
     if (filter == null || filters.contains(filter)) return;
@@ -103,28 +112,30 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     this.sortFactor = sortFactor;
     _applySort();
     _applyGroup();
+    sortGroupChangeNotifier.notifyListeners();
   }
 
   void group(EntryGroupFactor groupFactor) {
     this.groupFactor = groupFactor;
     _applyGroup();
+    sortGroupChangeNotifier.notifyListeners();
   }
 
   void _applyFilters() {
-    final rawEntries = source.rawEntries;
-    _filteredEntries = List.of(filters.isEmpty ? rawEntries : rawEntries.where((entry) => filters.fold(true, (prev, filter) => prev && filter.filter(entry))));
+    final entries = source.visibleEntries;
+    _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
   }
 
   void _applySort() {
     switch (sortFactor) {
       case EntrySortFactor.date:
-        _filteredEntries.sort(AvesEntry.compareByDate);
+        _filteredSortedEntries.sort(AvesEntry.compareByDate);
         break;
       case EntrySortFactor.size:
-        _filteredEntries.sort(AvesEntry.compareBySize);
+        _filteredSortedEntries.sort(AvesEntry.compareBySize);
         break;
       case EntrySortFactor.name:
-        _filteredEntries.sort(AvesEntry.compareByName);
+        _filteredSortedEntries.sort(AvesEntry.compareByName);
         break;
     }
   }
@@ -134,29 +145,29 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
       case EntrySortFactor.date:
         switch (groupFactor) {
           case EntryGroupFactor.album:
-            sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+            sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             break;
           case EntryGroupFactor.month:
-            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
+            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.monthTaken));
             break;
           case EntryGroupFactor.day:
-            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
+            sections = groupBy<AvesEntry, EntryDateSectionKey>(_filteredSortedEntries, (entry) => EntryDateSectionKey(entry.dayTaken));
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
-              MapEntry(null, _filteredEntries),
+              MapEntry(null, _filteredSortedEntries),
             ]);
             break;
         }
         break;
       case EntrySortFactor.size:
         sections = Map.fromEntries([
-          MapEntry(null, _filteredEntries),
+          MapEntry(null, _filteredSortedEntries),
         ]);
         break;
       case EntrySortFactor.name:
-        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.folderPath, b.folderPath));
+        final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
+        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory, b.directory));
         break;
     }
     sections = Map.unmodifiable(sections);
@@ -172,11 +183,15 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin, CollectionSel
     _applyGroup();
   }
 
-  void onEntryRemoved(Iterable<AvesEntry> entries) {
+  void onEntryAdded(Set<AvesEntry> entries) {
+    _refresh();
+  }
+
+  void onEntryRemoved(Set<AvesEntry> entries) {
     // we should remove obsolete entries and sections
     // but do not apply sort/group
     // as section order change would surprise the user while browsing
-    _filteredEntries.removeWhere(entries.contains);
+    _filteredSortedEntries.removeWhere(entries.contains);
     _sortedEntries?.removeWhere(entries.contains);
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
     sections = Map.unmodifiable(Map.fromEntries(sections.entries.where((kv) => kv.value.isNotEmpty)));
@@ -194,12 +209,15 @@ mixin CollectionActivityMixin {
 
   bool get isSelecting => _activityNotifier.value == Activity.select;
 
-  void browse() => _activityNotifier.value = Activity.browse;
+  void browse() {
+    clearSelection();
+    _activityNotifier.value = Activity.browse;
+  }
 
   void select() => _activityNotifier.value = Activity.select;
-}
 
-mixin CollectionSelectionMixin on CollectionActivityMixin {
+  // selection
+
   final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
 
   final Set<AvesEntry> _selection = {};

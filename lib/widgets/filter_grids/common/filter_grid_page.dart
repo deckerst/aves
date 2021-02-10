@@ -138,7 +138,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                             final sectionedListLayout = context.read<SectionedListLayout<FilterGridItem<T>>>();
                             return sectionedListLayout.getTileRect(item) ?? Rect.zero;
                           },
-                          onScaled: (item) => Provider.of<HighlightInfo>(context, listen: false).add(item.filter),
+                          onScaled: (item) => context.read<HighlightInfo>().add(item.filter),
                           child: scrollView,
                         );
 

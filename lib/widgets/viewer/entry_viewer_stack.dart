@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/connectivity.dart';
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
@@ -12,6 +12,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
+import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
@@ -57,6 +58,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
   final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
+  final ValueNotifier<HeroInfo> _heroInfoNotifier = ValueNotifier(null);
 
   CollectionLens get collection => widget.collection;
 
@@ -74,6 +76,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   void initState() {
     super.initState();
     final entry = widget.initialEntry;
+    // opening hero, with viewer as target
+    _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;
     _currentHorizontalPage = max(0, entries.indexOf(entry));
     _currentVerticalPage = ValueNotifier(imagePage);
@@ -147,7 +151,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         _pauseVideoControllers();
         break;
       case AppLifecycleState.resumed:
-        connectivity.onResume();
+        availability.onResume();
         break;
       default:
         break;
@@ -161,43 +165,47 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         if (_currentVerticalPage.value == infoPage) {
           // back from info to image
           _goToVerticalPage(imagePage);
-          return SynchronousFuture(false);
+        } else {
+          _popVisual();
         }
-        _onLeave();
-        return SynchronousFuture(true);
+        return SynchronousFuture(false);
       },
-      child: NotificationListener(
-        onNotification: (notification) {
-          if (notification is FilterNotification) {
-            _goToCollection(notification.filter);
-          } else if (notification is ViewStateNotification) {
-            _updateViewState(notification.uri, notification.viewState);
-          } else if (notification is EntryDeletedNotification) {
-            _onEntryDeleted(context, notification.entry);
-          }
-          return false;
-        },
-        child: Stack(
-          children: [
-            ViewerVerticalPageView(
-              collection: collection,
-              entryNotifier: _entryNotifier,
-              videoControllers: _videoControllers,
-              multiPageControllers: _multiPageControllers,
-              verticalPager: _verticalPager,
-              horizontalPager: _horizontalPager,
-              onVerticalPageChanged: _onVerticalPageChanged,
-              onHorizontalPageChanged: _onHorizontalPageChanged,
-              onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
-              onImagePageRequested: () => _goToVerticalPage(imagePage),
-              onViewDisposed: (uri) => _updateViewState(uri, null),
-            ),
-            _buildTopOverlay(),
-            _buildBottomOverlay(),
-            BottomGestureAreaProtector(),
-          ],
-        ),
-      ),
+      child: ValueListenableProvider<HeroInfo>.value(
+          value: _heroInfoNotifier,
+          builder: (context, snapshot) {
+            return NotificationListener(
+              onNotification: (notification) {
+                if (notification is FilterNotification) {
+                  _goToCollection(notification.filter);
+                } else if (notification is ViewStateNotification) {
+                  _updateViewState(notification.uri, notification.viewState);
+                } else if (notification is EntryDeletedNotification) {
+                  _onEntryDeleted(context, notification.entry);
+                }
+                return false;
+              },
+              child: Stack(
+                children: [
+                  ViewerVerticalPageView(
+                    collection: collection,
+                    entryNotifier: _entryNotifier,
+                    videoControllers: _videoControllers,
+                    multiPageControllers: _multiPageControllers,
+                    verticalPager: _verticalPager,
+                    horizontalPager: _horizontalPager,
+                    onVerticalPageChanged: _onVerticalPageChanged,
+                    onHorizontalPageChanged: _onHorizontalPageChanged,
+                    onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
+                    onImagePageRequested: () => _goToVerticalPage(imagePage),
+                    onViewDisposed: (uri) => _updateViewState(uri, null),
+                  ),
+                  _buildTopOverlay(),
+                  _buildBottomOverlay(),
+                  BottomGestureAreaProtector(),
+                ],
+              ),
+            );
+          }),
     );
   }
 
@@ -329,7 +337,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   void _goToCollection(CollectionFilter filter) {
-    _showSystemUI();
+    _onLeave();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
@@ -350,7 +358,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Future<void> _goToVerticalPage(int page) {
     return _verticalPager.animateToPage(
       page,
-      duration: Durations.viewerPageAnimation,
+      duration: Durations.viewerVerticalPageScrollAnimation,
       curve: Curves.easeInOut,
     );
   }
@@ -359,8 +367,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     _currentVerticalPage.value = page;
     if (page == transitionPage) {
       await _actionDelegate.dismissFeedback();
-      _onLeave();
-      Navigator.pop(context);
+      _popVisual();
+    } else if (page == infoPage) {
+      // prevent hero when viewer is offscreen
+      _heroInfoNotifier.value = null;
     }
   }
 
@@ -403,15 +413,33 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     _initViewStateControllers();
   }
 
-  void _onLeave() {
+  void _popVisual() {
     if (Navigator.canPop(context)) {
-      _showSystemUI();
-      if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-        Screen.keepOn(false);
+      void pop() {
+        _onLeave();
+        Navigator.pop(context);
+      }
+
+      // closing hero, with viewer as source
+      final heroInfo = HeroInfo(collection?.id, _entryNotifier.value);
+      if (_heroInfoNotifier.value != heroInfo) {
+        _heroInfoNotifier.value = heroInfo;
+        // we post closing the viewer page so that hero animation source is ready
+        WidgetsBinding.instance.addPostFrameCallback((_) => pop());
+      } else {
+        // viewer already has correct hero info, no need to rebuild
+        pop();
       }
     } else {
       // exit app when trying to pop a viewer page for a single entry
       SystemNavigator.pop();
+    }
+  }
+
+  void _onLeave() {
+    _showSystemUI();
+    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
+      Screen.keepOn(false);
     }
   }
 
@@ -439,7 +467,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         _overlayAnimationController.value = _overlayAnimationController.upperBound;
       }
     } else {
-      final mediaQuery = Provider.of<MediaQueryData>(context, listen: false);
+      final mediaQuery = context.read<MediaQueryData>();
       setState(() {
         _frozenViewInsets = mediaQuery.viewInsets;
         _frozenViewPadding = mediaQuery.viewPadding;

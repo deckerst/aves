@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:aves/model/connectivity.dart';
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata.dart';
@@ -19,7 +19,7 @@ mixin LocationMixin on SourceBase {
   Future<void> loadAddresses() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadAddresses();
-    rawEntries.forEach((entry) {
+    visibleEntries.forEach((entry) {
       final contentId = entry.contentId;
       entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
     });
@@ -28,10 +28,10 @@ mixin LocationMixin on SourceBase {
   }
 
   Future<void> locateEntries() async {
-    if (!(await connectivity.canGeolocate)) return;
+    if (!(await availability.canGeolocate)) return;
 
 //    final stopwatch = Stopwatch()..start();
-    final byLocated = groupBy<AvesEntry, bool>(rawEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
+    final byLocated = groupBy<AvesEntry, bool>(visibleEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
     final todo = byLocated[false] ?? [];
     if (todo.isEmpty) return;
 
@@ -91,7 +91,7 @@ mixin LocationMixin on SourceBase {
   }
 
   void updateLocations() {
-    final locations = rawEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails).toList();
+    final locations = visibleEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails).toList();
     sortedPlaces = List<String>.unmodifiable(locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
 
     // the same country code could be found with different country names
@@ -100,8 +100,32 @@ mixin LocationMixin on SourceBase {
     final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
     sortedCountries = List<String>.unmodifiable(countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase));
 
-    invalidateFilterEntryCounts();
+    invalidateCountryFilterSummary();
     eventBus.fire(LocationsChangedEvent());
+  }
+
+  // filter summary
+
+  // by country code
+  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+
+  void invalidateCountryFilterSummary([Set<AvesEntry> entries]) {
+    if (entries == null) {
+      _filterEntryCountMap.clear();
+      _filterRecentEntryMap.clear();
+    } else {
+      final countryCodes = entries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails.countryCode).toSet();
+      countryCodes.forEach(_filterEntryCountMap.remove);
+    }
+  }
+
+  int countryEntryCount(LocationFilter filter) {
+    return _filterEntryCountMap.putIfAbsent(filter.countryCode, () => visibleEntries.where(filter.test).length);
+  }
+
+  AvesEntry countryRecentEntry(LocationFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.countryCode, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
   }
 }
 

@@ -86,7 +86,7 @@ class CollectionSearchDelegate {
                     MimeFilter(MimeFilter.sphericalVideo),
                     MimeFilter(MimeFilter.geotiff),
                     MimeFilter(MimeTypes.svg),
-                  ].where((f) => f != null && containQuery(f.label)),
+                  ].where((f) => f != null && containQuery(f.label)).toList(),
                   // usually perform hero animation only on tapped chips,
                   // but we also need to animate the query chip when it is selected by submitting the search query
                   heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
@@ -100,7 +100,8 @@ class CollectionSearchDelegate {
                 StreamBuilder(
                     stream: source.eventBus.on<AlbumsChangedEvent>(),
                     builder: (context, snapshot) {
-                      final filters = source.sortedAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName));
+                      // filter twice: full path, and then unique name
+                      final filters = source.rawAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName)).toList()..sort();
                       return _buildFilterRow(
                         context: context,
                         title: 'Albums',
@@ -110,7 +111,7 @@ class CollectionSearchDelegate {
                 StreamBuilder(
                     stream: source.eventBus.on<LocationsChangedEvent>(),
                     builder: (context, snapshot) {
-                      final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s));
+                      final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
                       return _buildFilterRow(
                         context: context,
                         title: 'Countries',
@@ -154,7 +155,7 @@ class CollectionSearchDelegate {
   Widget _buildFilterRow({
     @required BuildContext context,
     String title,
-    @required Iterable<CollectionFilter> filters,
+    @required List<CollectionFilter> filters,
     HeroType Function(CollectionFilter filter) heroTypeBuilder,
   }) {
     return ExpandableFilterRow(
@@ -219,8 +220,6 @@ class CollectionSearchDelegate {
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],
-          groupFactor: settings.collectionGroupFactor,
-          sortFactor: settings.collectionSortFactor,
         )),
       ),
       (route) => false,

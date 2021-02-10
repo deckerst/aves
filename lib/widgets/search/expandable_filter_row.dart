@@ -15,7 +15,7 @@ class ExpandableFilterRow extends StatelessWidget {
   const ExpandableFilterRow({
     this.title,
     @required this.filters,
-    this.expandedNotifier,
+    @required this.expandedNotifier,
     this.heroTypeBuilder,
     @required this.onTap,
   });
@@ -29,7 +29,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
     final hasTitle = title != null && title.isNotEmpty;
 
-    final isExpanded = hasTitle && expandedNotifier?.value == title;
+    final isExpanded = hasTitle && expandedNotifier.value == title;
 
     Widget titleRow;
     if (hasTitle) {
@@ -52,7 +52,7 @@ class ExpandableFilterRow extends StatelessWidget {
       );
     }
 
-    final filtersList = filters.toList();
+    final filterList = filters.toList();
     final wrap = Container(
       key: ValueKey('wrap$title'),
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -62,7 +62,7 @@ class ExpandableFilterRow extends StatelessWidget {
       child: Wrap(
         spacing: horizontalPadding,
         runSpacing: verticalPadding,
-        children: filtersList.map(_buildFilterChip).toList(),
+        children: filterList.map(_buildFilterChip).toList(),
       ),
     );
     final list = Container(
@@ -76,10 +76,10 @@ class ExpandableFilterRow extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
-          return index < filtersList.length ? _buildFilterChip(filtersList[index]) : null;
+          return index < filterList.length ? _buildFilterChip(filterList[index]) : null;
         },
         separatorBuilder: (context, index) => SizedBox(width: 8),
-        itemCount: filtersList.length,
+        itemCount: filterList.length,
       ),
     );
     final filterChips = isExpanded ? wrap : list;

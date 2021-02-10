@@ -49,7 +49,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String toJson() => jsonEncode(toMap());
 
-  bool filter(AvesEntry entry);
+  EntryFilter get test;
 
   bool get isUnique => true;
 
@@ -75,7 +75,6 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
   }
 }
 
-// TODO TLAD replace this by adding getters to CollectionFilter, with cached entry/count coming from Source
 class FilterGridItem<T extends CollectionFilter> {
   final T filter;
   final AvesEntry entry;
@@ -91,3 +90,5 @@ class FilterGridItem<T extends CollectionFilter> {
   @override
   int get hashCode => hashValues(filter, entry);
 }
+
+typedef EntryFilter = bool Function(AvesEntry);

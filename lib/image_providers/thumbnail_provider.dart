@@ -21,7 +21,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   ImageStreamCompleter load(ThumbnailProviderKey key, DecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
-      scale: key.scale,
+      scale: 1.0,
       informationCollector: () sync* {
         yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, extent=${key.extent}');
       },
@@ -69,7 +69,7 @@ class ThumbnailProviderKey {
   final int pageId, rotationDegrees;
   final bool isFlipped;
   final int dateModifiedSecs;
-  final double extent, scale;
+  final double extent;
 
   const ThumbnailProviderKey({
     @required this.uri,
@@ -79,33 +79,27 @@ class ThumbnailProviderKey {
     @required this.isFlipped,
     @required this.dateModifiedSecs,
     this.extent = 0,
-    this.scale = 1,
   })  : assert(uri != null),
         assert(mimeType != null),
         assert(rotationDegrees != null),
         assert(isFlipped != null),
         assert(dateModifiedSecs != null),
-        assert(extent != null),
-        assert(scale != null);
+        assert(extent != null);
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.uri == uri && other.mimeType == mimeType && other.pageId == pageId && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.dateModifiedSecs == dateModifiedSecs && other.extent == extent && other.scale == scale;
+    return other is ThumbnailProviderKey && other.uri == uri && other.pageId == pageId && other.dateModifiedSecs == dateModifiedSecs && other.extent == extent;
   }
 
   @override
   int get hashCode => hashValues(
         uri,
-        mimeType,
         pageId,
-        rotationDegrees,
-        isFlipped,
         dateModifiedSecs,
         extent,
-        scale,
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent}';
 }

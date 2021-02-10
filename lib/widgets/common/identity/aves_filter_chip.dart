@@ -20,6 +20,7 @@ class AvesFilterChip extends StatefulWidget {
   final OffsetFilterCallback onLongPress;
   final BorderRadius borderRadius;
 
+  static const Color defaultOutlineColor = Colors.white;
   static const double defaultRadius = 32;
   static const double outlineWidth = 2;
   static const double minChipHeight = kMinInteractiveDimension;
@@ -82,7 +83,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     // the existing widget FutureBuilder cycles again from the start, with a frame in `waiting` state and no data.
     // So we save the result of the Future to a local variable because of this specific case.
     _colorFuture = filter.color(context);
-    _outlineColor = Colors.transparent;
+    _outlineColor = AvesFilterChip.defaultOutlineColor;
   }
 
   @override
@@ -211,6 +212,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     if (widget.heroType == HeroType.always || widget.heroType == HeroType.onTap && _tapped) {
       chip = Hero(
         tag: filter,
+        transitionOnUserGestures: true,
         child: DefaultTextStyle(
           style: TextStyle(),
           child: chip,

@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -15,31 +14,31 @@ class MimeFilter extends CollectionFilter {
   static const geotiff = 'aves/geotiff'; // subset of `image/tiff`
 
   final String mime;
-  bool Function(AvesEntry) _filter;
+  EntryFilter _test;
   String _label;
   IconData _icon;
 
   MimeFilter(this.mime) {
     var lowMime = mime.toLowerCase();
     if (mime == animated) {
-      _filter = (entry) => entry.isAnimated;
+      _test = (entry) => entry.isAnimated;
       _label = 'Animated';
       _icon = AIcons.animated;
     } else if (mime == panorama) {
-      _filter = (entry) => entry.isImage && entry.is360;
+      _test = (entry) => entry.isImage && entry.is360;
       _label = 'Panorama';
       _icon = AIcons.threesixty;
     } else if (mime == sphericalVideo) {
-      _filter = (entry) => entry.isVideo && entry.is360;
+      _test = (entry) => entry.isVideo && entry.is360;
       _label = '360° Video';
       _icon = AIcons.threesixty;
     } else if (mime == geotiff) {
-      _filter = (entry) => entry.isGeotiff;
+      _test = (entry) => entry.isGeotiff;
       _label = 'GeoTIFF';
       _icon = AIcons.geo;
     } else if (lowMime.endsWith('/*')) {
       lowMime = lowMime.substring(0, lowMime.length - 2);
-      _filter = (entry) => entry.mimeType.startsWith(lowMime);
+      _test = (entry) => entry.mimeType.startsWith(lowMime);
       if (lowMime == 'video') {
         _label = 'Video';
         _icon = AIcons.video;
@@ -49,7 +48,7 @@ class MimeFilter extends CollectionFilter {
       }
       _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
-      _filter = (entry) => entry.mimeType == lowMime;
+      _test = (entry) => entry.mimeType == lowMime;
       _label = MimeUtils.displayType(lowMime);
     }
     _icon ??= AIcons.vector;
@@ -67,7 +66,7 @@ class MimeFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(AvesEntry entry) => _filter(entry);
+  EntryFilter get test => _test;
 
   @override
   String get label => _label;

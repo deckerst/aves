@@ -49,7 +49,7 @@ class _AvesAppState extends State<AvesApp> {
   Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
   final Debouncer _contentChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
-  final List<String> changedUris = [];
+  final Set<String> changedUris = {};
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
@@ -190,10 +190,17 @@ class _AvesAppState extends State<AvesApp> {
   }
 
   void _onContentChange(String uri) {
-    changedUris.add(uri);
-    _contentChangeDebouncer(() {
-      _mediaStoreSource.refreshUris(List.of(changedUris));
-      changedUris.clear();
-    });
+    if (uri != null) changedUris.add(uri);
+    if (changedUris.isNotEmpty) {
+      _contentChangeDebouncer(() async {
+        final todo = changedUris.toSet();
+        changedUris.clear();
+        final tempUris = await _mediaStoreSource.refreshUris(todo);
+        if (tempUris.isNotEmpty) {
+          changedUris.addAll(tempUris);
+          _onContentChange(null);
+        }
+      });
+    }
   }
 }

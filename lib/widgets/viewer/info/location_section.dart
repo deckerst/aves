@@ -1,4 +1,4 @@
-import 'package:aves/model/connectivity.dart';
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
@@ -104,7 +104,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
         children: [
           if (widget.showTitle) SectionRow(AIcons.location),
           FutureBuilder<bool>(
-            future: connectivity.isConnected,
+            future: availability.isConnected,
             builder: (context, snapshot) {
               if (snapshot.data != true) return SizedBox();
               return NotificationListener(
@@ -181,7 +181,7 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
   @override
   void initState() {
     super.initState();
-    _addressLineLoader = connectivity.canGeolocate.then((connected) {
+    _addressLineLoader = availability.canGeolocate.then((connected) {
       if (connected) {
         return entry.findAddressLine();
       }

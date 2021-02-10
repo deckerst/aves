@@ -1,4 +1,5 @@
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -13,7 +14,7 @@ mixin TagMixin on SourceBase {
   Future<void> loadCatalogMetadata() async {
     final stopwatch = Stopwatch()..start();
     final saved = await metadataDb.loadMetadataEntries();
-    rawEntries.forEach((entry) {
+    visibleEntries.forEach((entry) {
       final contentId = entry.contentId;
       entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
     });
@@ -23,7 +24,7 @@ mixin TagMixin on SourceBase {
 
   Future<void> catalogEntries() async {
 //    final stopwatch = Stopwatch()..start();
-    final todo = rawEntries.where((entry) => !entry.isCatalogued).toList();
+    final todo = visibleEntries.where((entry) => !entry.isCatalogued).toList();
     if (todo.isEmpty) return;
 
     var progressDone = 0;
@@ -54,10 +55,35 @@ mixin TagMixin on SourceBase {
   }
 
   void updateTags() {
-    final tags = rawEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
+    final tags = visibleEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
     sortedTags = List.unmodifiable(tags);
-    invalidateFilterEntryCounts();
+
+    invalidateTagFilterSummary();
     eventBus.fire(TagsChangedEvent());
+  }
+
+  // filter summary
+
+  // by tag
+  final Map<String, int> _filterEntryCountMap = {};
+  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+
+  void invalidateTagFilterSummary([Set<AvesEntry> entries]) {
+    if (entries == null) {
+      _filterEntryCountMap.clear();
+      _filterRecentEntryMap.clear();
+    } else {
+      final tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.xmpSubjects).toSet();
+      tags.forEach(_filterEntryCountMap.remove);
+    }
+  }
+
+  int tagEntryCount(TagFilter filter) {
+    return _filterEntryCountMap.putIfAbsent(filter.tag, () => visibleEntries.where(filter.test).length);
+  }
+
+  AvesEntry tagRecentEntry(TagFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
   }
 }
 

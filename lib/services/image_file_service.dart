@@ -13,9 +13,8 @@ import 'package:streams_channel/streams_channel.dart';
 
 class ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
-  static final StreamsChannel mediaStoreChannel = StreamsChannel('deckers.thibault/aves/mediastorestream');
-  static final StreamsChannel byteChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
-  static final StreamsChannel opChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
+  static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
+  static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
   static const double thumbnailDefaultSize = 64.0;
 
   static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
@@ -30,30 +29,6 @@ class ImageFileService {
       'isFlipped': entry.isFlipped,
       'dateModifiedSecs': entry.dateModifiedSecs,
     };
-  }
-
-  // knownEntries: map of contentId -> dateModifiedSecs
-  static Stream<AvesEntry> getEntries(Map<int, int> knownEntries) {
-    try {
-      return mediaStoreChannel.receiveBroadcastStream(<String, dynamic>{
-        'knownEntries': knownEntries,
-      }).map((event) => AvesEntry.fromMap(event));
-    } on PlatformException catch (e) {
-      debugPrint('getEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-      return Stream.error(e);
-    }
-  }
-
-  static Future<List<int>> getObsoleteEntries(List<int> knownContentIds) async {
-    try {
-      final result = await platform.invokeMethod('getObsoleteEntries', <String, dynamic>{
-        'knownContentIds': knownContentIds,
-      });
-      return (result as List).cast<int>();
-    } on PlatformException catch (e) {
-      debugPrint('getObsoleteEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return [];
   }
 
   static Future<AvesEntry> getEntry(String uri, String mimeType) async {
@@ -97,7 +72,7 @@ class ImageFileService {
       final completer = Completer<Uint8List>.sync();
       final sink = _OutputBuffer();
       var bytesReceived = 0;
-      byteChannel.receiveBroadcastStream(<String, dynamic>{
+      _byteStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
@@ -204,7 +179,6 @@ class ImageFileService {
         }
         return null;
       },
-//      debugLabel: 'getThumbnail width=$width, height=$height entry=${entry.filenameWithoutExtension}',
       priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
     );
@@ -226,7 +200,7 @@ class ImageFileService {
 
   static Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
     try {
-      return opChannel.receiveBroadcastStream(<String, dynamic>{
+      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
         'entries': entries.map(_toPlatformEntryMap).toList(),
       }).map((event) => ImageOpEvent.fromMap(event));
@@ -242,7 +216,7 @@ class ImageFileService {
     @required String destinationAlbum,
   }) {
     try {
-      return opChannel.receiveBroadcastStream(<String, dynamic>{
+      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'move',
         'entries': entries.map(_toPlatformEntryMap).toList(),
         'copy': copy,
@@ -260,7 +234,7 @@ class ImageFileService {
     @required String destinationAlbum,
   }) {
     try {
-      return opChannel.receiveBroadcastStream(<String, dynamic>{
+      return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'export',
         'entries': entries.map(_toPlatformEntryMap).toList(),
         'mimeType': mimeType,

@@ -1,3 +1,4 @@
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_app_service.dart';
@@ -73,13 +74,19 @@ class MapButtonPanel extends StatelessWidget {
                 MapOverlayButton(
                   icon: AIcons.layers,
                   onPressed: () async {
+                    final hasPlayServices = await availability.hasPlayServices;
+                    final availableStyles = EntryMapStyle.values.where((style) => !style.isGoogleMaps || hasPlayServices);
+                    final preferredStyle = settings.infoMapStyle;
+                    final initialStyle = availableStyles.contains(preferredStyle) ? preferredStyle : availableStyles.first;
                     final style = await showDialog<EntryMapStyle>(
                       context: context,
-                      builder: (context) => AvesSelectionDialog<EntryMapStyle>(
-                        initialValue: settings.infoMapStyle,
-                        options: Map.fromEntries(EntryMapStyle.values.map((v) => MapEntry(v, v.name))),
-                        title: 'Map Style',
-                      ),
+                      builder: (context) {
+                        return AvesSelectionDialog<EntryMapStyle>(
+                          initialValue: initialStyle,
+                          options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.name))),
+                          title: 'Map Style',
+                        );
+                      },
                     );
                     // wait for the dialog to hide because switching to Google Maps layer may block the UI
                     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);

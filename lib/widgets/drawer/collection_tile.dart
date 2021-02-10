@@ -1,5 +1,4 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -47,8 +46,6 @@ class CollectionNavTile extends StatelessWidget {
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],
-          groupFactor: settings.collectionGroupFactor,
-          sortFactor: settings.collectionSortFactor,
         )),
       ),
       (route) => false,

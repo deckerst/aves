@@ -30,12 +30,13 @@ class Durations {
   static const filterRowExpandAnimation = Duration(milliseconds: 300);
 
   // viewer animations
-  static const viewerPageAnimation = Duration(milliseconds: 300);
+  static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 300);
   static const viewerOverlayAnimation = Duration(milliseconds: 200);
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
-  static const viewerOverlayPageChooserAnimation = Duration(milliseconds: 200);
+  static const viewerOverlayPageScrollAnimation = Duration(milliseconds: 200);
+  static const viewerOverlayPageShadeAnimation = Duration(milliseconds: 150);
 
-  // info
+  // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
   static const xmpStructArrayCardTransition = Duration(milliseconds: 300);
 
@@ -48,11 +49,8 @@ class Durations {
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
+  static const contentChangeDebounceDelay = Duration(milliseconds: 500);
 
-  // Content change monitoring delay should be large enough,
-  // so that querying the Media Store yields final entries.
-  // For example, when taking a picture with a Galaxy S10e default camera app,
-  // querying the Media Store just 1 second after sometimes yields an entry with
-  // its temporary path: `/data/sec/camera/!@#$%^..._temp.jpg`
-  static const contentChangeDebounceDelay = Duration(milliseconds: 1500);
+  // app life
+  static const lastVersionCheckInterval = Duration(days: 7);
 }
