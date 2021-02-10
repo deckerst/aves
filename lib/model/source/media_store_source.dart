@@ -7,6 +7,7 @@ import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/media_store_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -49,8 +50,8 @@ class MediaStoreSource extends CollectionSource {
     clearEntries();
 
     final oldEntries = await metadataDb.loadEntries(); // 400ms for 5500 entries
-    final knownEntryMap = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
-    final obsoleteContentIds = (await ImageFileService.getObsoleteEntries(knownEntryMap.keys.toList())).toSet();
+    final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
+    final obsoleteContentIds = (await MediaStoreService.checkObsoleteContentIds(knownDateById.keys.toList())).toSet();
     oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
 
     // show known entries
@@ -61,6 +62,13 @@ class MediaStoreSource extends CollectionSource {
 
     // clean up obsolete entries
     metadataDb.removeIds(obsoleteContentIds, updateFavourites: true);
+
+    // verify paths because some apps move files without updating their `last modified date`
+    final knownPathById = Map.fromEntries(allEntries.map((entry) => MapEntry(entry.contentId, entry.path)));
+    final movedContentIds = (await MediaStoreService.checkObsoletePaths(knownPathById)).toSet();
+    movedContentIds.forEach((contentId) {
+      knownDateById[contentId] = 0;
+    });
 
     // fetch new entries
     // refresh after the first 10 entries, then after 100 more, then every 1000 entries
@@ -73,7 +81,7 @@ class MediaStoreSource extends CollectionSource {
       pendingNewEntries.clear();
     }
 
-    ImageFileService.getEntries(knownEntryMap).listen(
+    MediaStoreService.getEntries(knownDateById).listen(
       (entry) {
         pendingNewEntries.add(entry);
         if (pendingNewEntries.length >= refreshCount) {
@@ -124,7 +132,7 @@ class MediaStoreSource extends CollectionSource {
     }).where((kv) => kv != null));
 
     // clean up obsolete entries
-    final obsoleteContentIds = (await ImageFileService.getObsoleteEntries(uriByContentId.keys.toList())).toSet();
+    final obsoleteContentIds = (await MediaStoreService.checkObsoleteContentIds(uriByContentId.keys.toList())).toSet();
     final obsoleteUris = obsoleteContentIds.map((contentId) => uriByContentId[contentId]).toSet();
     removeEntries(obsoleteUris);
     obsoleteContentIds.forEach(uriByContentId.remove);
@@ -138,7 +146,8 @@ class MediaStoreSource extends CollectionSource {
       final sourceEntry = await ImageFileService.getEntry(uri, null);
       if (sourceEntry != null) {
         final existingEntry = allEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
-        if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs) {
+        // compare paths because some apps move files without updating their `last modified date`
+        if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs || sourceEntry.path != existingEntry.path) {
           final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
           if (volume != null) {
             newEntries.add(sourceEntry);
