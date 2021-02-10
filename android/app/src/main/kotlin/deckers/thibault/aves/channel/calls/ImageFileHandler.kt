@@ -14,7 +14,6 @@ import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ImageProvider.ImageOpCallback
 import deckers.thibault.aves.model.provider.ImageProviderFactory.getProvider
-import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.MimeTypes
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -31,25 +30,35 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getObsoleteEntries" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getObsoleteEntries) }
             "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getEntry) }
             "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getThumbnail) }
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRegion) }
-            "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             "rename" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::rename) }
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
+            "clearSizedThumbnailDiskCache" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::clearSizedThumbnailDiskCache) }
             else -> result.notImplemented()
         }
     }
 
-    private fun getObsoleteEntries(call: MethodCall, result: MethodChannel.Result) {
-        val known = call.argument<List<Int>>("knownContentIds")
-        if (known == null) {
-            result.error("getObsoleteEntries-args", "failed because of missing arguments", null)
+    private suspend fun getEntry(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType") // MIME type is optional
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("getEntry-args", "failed because of missing arguments", null)
             return
         }
-        result.success(MediaStoreImageProvider().getObsoleteContentIds(activity, known))
+
+        val provider = getProvider(uri)
+        if (provider == null) {
+            result.error("getEntry-provider", "failed to find provider for uri=$uri", null)
+            return
+        }
+
+        provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback {
+            override fun onSuccess(fields: FieldMap) = result.success(fields)
+            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
+        })
     }
 
     private fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
@@ -122,31 +131,6 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
-    private suspend fun getEntry(call: MethodCall, result: MethodChannel.Result) {
-        val mimeType = call.argument<String>("mimeType") // MIME type is optional
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        if (uri == null) {
-            result.error("getEntry-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val provider = getProvider(uri)
-        if (provider == null) {
-            result.error("getEntry-provider", "failed to find provider for uri=$uri", null)
-            return
-        }
-
-        provider.fetchSingle(activity, uri, mimeType, object : ImageOpCallback {
-            override fun onSuccess(fields: FieldMap) = result.success(fields)
-            override fun onFailure(throwable: Throwable) = result.error("getEntry-failure", "failed to get entry for uri=$uri", throwable.message)
-        })
-    }
-
-    private fun clearSizedThumbnailDiskCache(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
-        Glide.get(activity).clearDiskCache()
-        result.success(null)
-    }
-
     private suspend fun rename(call: MethodCall, result: MethodChannel.Result) {
         val entryMap = call.argument<FieldMap>("entry")
         val newName = call.argument<String>("newName")
@@ -215,6 +199,11 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", throwable.message)
         })
+    }
+
+    private fun clearSizedThumbnailDiskCache(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        Glide.get(activity).clearDiskCache()
+        result.success(null)
     }
 
     companion object {
