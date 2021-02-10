@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.3.4] - 2021-02-10
 ### Added
 - hide album / country / tag from collection
 - new version check
