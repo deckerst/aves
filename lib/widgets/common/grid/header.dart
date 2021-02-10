@@ -76,7 +76,7 @@ class SectionHeader extends StatelessWidget {
   }
 
   void _toggleSectionSelection(BuildContext context) {
-    final collection = Provider.of<CollectionLens>(context, listen: false);
+    final collection = context.read<CollectionLens>();
     final sectionEntries = collection.sections[sectionKey];
     final selected = collection.isSelected(sectionEntries);
     if (selected) {
@@ -140,7 +140,7 @@ class _SectionSelectableLeading extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!selectable) return _buildBrowsing(context);
 
-    final collection = Provider.of<CollectionLens>(context);
+    final collection = context.watch<CollectionLens>();
     return ValueListenableBuilder<Activity>(
       valueListenable: collection.activityNotifier,
       builder: (context, activity, child) {

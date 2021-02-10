@@ -16,6 +16,12 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 class ChipActionDelegate {
+  final CollectionSource source;
+
+  ChipActionDelegate({
+    @required this.source,
+  });
+
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     switch (action) {
       case ChipAction.pin:
@@ -24,6 +30,9 @@ class ChipActionDelegate {
       case ChipAction.unpin:
         settings.pinnedFilters = settings.pinnedFilters..remove(filter);
         break;
+      case ChipAction.hide:
+        source.changeFilterVisibility(filter, false);
+        break;
       default:
         break;
     }
@@ -31,11 +40,9 @@ class ChipActionDelegate {
 }
 
 class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  final CollectionSource source;
-
   AlbumChipActionDelegate({
-    @required this.source,
-  });
+    @required CollectionSource source,
+  }) : super(source: source);
 
   @override
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
@@ -53,7 +60,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
-    final selection = source.rawEntries.where(filter.filter).toSet();
+    final selection = source.visibleEntries.where(filter.test).toSet();
     final count = selection.length;
 
     final confirmed = await showDialog<bool>(
@@ -80,20 +87,20 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     if (!await checkStoragePermission(context, selection)) return;
 
     final selectionCount = selection.length;
+    source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: ImageFileService.delete(selection),
       itemCount: selectionCount,
       onDone: (processed) {
-        final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
+        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
-        if (deletedCount > 0) {
-          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
-        }
+        source.removeEntries(deletedUris);
+        source.resumeMonitoring();
       },
     );
   }
@@ -108,28 +115,33 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final selection = source.rawEntries.where(filter.filter).toSet();
+    final todoEntries = source.visibleEntries.where(filter.test).toSet();
     final destinationAlbum = path.join(path.dirname(album), newName);
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, MoveType.move)) return;
+    if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;
 
-    final selectionCount = selection.length;
+    final todoCount = todoEntries.length;
+    // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
+    // so we save favourites beforehand, and will mark the moved entries as such after the move
+    final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
+    source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: ImageFileService.move(selection, copy: false, destinationAlbum: destinationAlbum),
-      itemCount: selectionCount,
+      opStream: ImageFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
+      itemCount: todoCount,
       onDone: (processed) async {
-        final movedOps = processed.where((e) => e.success);
+        final movedOps = processed.where((e) => e.success).toSet();
         final movedCount = movedOps.length;
-        if (movedCount < selectionCount) {
-          final count = selectionCount - movedCount;
+        if (movedCount < todoCount) {
+          final count = todoCount - movedCount;
           showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           showFeedback(context, 'Done!');
         }
         final pinned = settings.pinnedFilters.contains(filter);
         await source.updateAfterMove(
-          selection: selection,
+          todoEntries: todoEntries,
+          favouriteEntries: favouriteEntries,
           copy: false,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
@@ -139,6 +151,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
           final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(destinationAlbum));
           settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
         }
+        source.resumeMonitoring();
       },
     );
   }

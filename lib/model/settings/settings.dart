@@ -16,8 +16,6 @@ import '../source/enums.dart';
 
 final Settings settings = Settings._private();
 
-typedef SettingsCallback = void Function(String key, dynamic oldValue, dynamic newValue);
-
 class Settings extends ChangeNotifier {
   static SharedPreferences _prefs;
 
@@ -45,6 +43,7 @@ class Settings extends ChangeNotifier {
   static const countrySortFactorKey = 'country_sort_factor';
   static const tagSortFactorKey = 'tag_sort_factor';
   static const pinnedFiltersKey = 'pinned_filters';
+  static const hiddenFiltersKey = 'hidden_filters';
 
   // viewer
   static const showOverlayMinimapKey = 'show_overlay_minimap';
@@ -63,6 +62,9 @@ class Settings extends ChangeNotifier {
   // search
   static const saveSearchHistoryKey = 'save_search_history';
   static const searchHistoryKey = 'search_history';
+
+  // version
+  static const lastVersionCheckDateKey = 'last_version_check_date';
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -166,6 +168,10 @@ class Settings extends ChangeNotifier {
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
+  Set<CollectionFilter> get hiddenFilters => (_prefs.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
+
+  set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
+
   // viewer
 
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
@@ -213,6 +219,12 @@ class Settings extends ChangeNotifier {
   List<CollectionFilter> get searchHistory => (_prefs.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
+
+  // version
+
+  DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs.getInt(lastVersionCheckDateKey) ?? 0);
+
+  set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
 
   // convenience methods
 

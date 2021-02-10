@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:aves/main.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -109,7 +109,7 @@ class ThumbnailCollection extends StatelessWidget {
                     final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
                     return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
                   },
-                  onScaled: (entry) => Provider.of<HighlightInfo>(context, listen: false).add(entry),
+                  onScaled: (entry) => context.read<HighlightInfo>().add(entry),
                   child: scrollView,
                 );
 
@@ -195,12 +195,14 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   }
 
   void _registerWidget(CollectionScrollView widget) {
-    widget.collection.filterChangeNotifier.addListener(_onFilterChange);
+    widget.collection.filterChangeNotifier.addListener(_scrollToTop);
+    widget.collection.sortGroupChangeNotifier.addListener(_scrollToTop);
     widget.scrollController.addListener(_onScrollChange);
   }
 
   void _unregisterWidget(CollectionScrollView widget) {
-    widget.collection.filterChangeNotifier.removeListener(_onFilterChange);
+    widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
+    widget.collection.sortGroupChangeNotifier.removeListener(_scrollToTop);
     widget.scrollController.removeListener(_onScrollChange);
   }
 
@@ -283,7 +285,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
     );
   }
 
-  void _onFilterChange() => widget.scrollController.jumpTo(0);
+  void _scrollToTop() => widget.scrollController.jumpTo(0);
 
   void _onScrollChange() {
     widget.isScrollingNotifier.value = true;

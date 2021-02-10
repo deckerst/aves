@@ -55,7 +55,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         break;
       case CollectionAction.refreshMetadata:
         source.refreshMetadata(selection);
-        collection.clearSelection();
         collection.browse();
         break;
       default:
@@ -78,30 +77,39 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
 
+    // do not directly use selection when moving and post-processing items
+    // as source monitoring may remove obsolete items from the original selection
+    final todoEntries = selection.toSet();
+
     final copy = moveType == MoveType.copy;
-    final selectionCount = selection.length;
+    final todoCount = todoEntries.length;
+    // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
+    // so we save favourites beforehand, and will mark the moved entries as such after the move
+    final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
+    source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: ImageFileService.move(selection, copy: copy, destinationAlbum: destinationAlbum),
-      itemCount: selectionCount,
+      opStream: ImageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
+      itemCount: todoCount,
       onDone: (processed) async {
-        final movedOps = processed.where((e) => e.success);
+        final movedOps = processed.where((e) => e.success).toSet();
         final movedCount = movedOps.length;
-        if (movedCount < selectionCount) {
-          final count = selectionCount - movedCount;
+        if (movedCount < todoCount) {
+          final count = todoCount - movedCount;
           showFeedback(context, 'Failed to ${copy ? 'copy' : 'move'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         } else {
           final count = movedCount;
           showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
         await source.updateAfterMove(
-          selection: selection,
+          todoEntries: todoEntries,
+          favouriteEntries: favouriteEntries,
           copy: copy,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
         );
-        collection.clearSelection();
         collection.browse();
+        source.resumeMonitoring();
       },
     );
   }
@@ -133,22 +141,21 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (!await checkStoragePermission(context, selection)) return;
 
     final selectionCount = selection.length;
+    source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: ImageFileService.delete(selection),
       itemCount: selectionCount,
       onDone: (processed) {
-        final deletedUris = processed.where((e) => e.success).map((e) => e.uri).toList();
+        final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
         }
-        if (deletedCount > 0) {
-          source.removeEntries(selection.where((e) => deletedUris.contains(e.uri)).toList());
-        }
-        collection.clearSelection();
+        source.removeEntries(deletedUris);
         collection.browse();
+        source.resumeMonitoring();
       },
     );
   }

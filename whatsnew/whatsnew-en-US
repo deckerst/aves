@@ -1,6 +1,5 @@
 Thanks for using Aves!
-v1.3.3:
-- multi-track HEIF support
-- image export (including embedded and multi-page images)
-- listen to Media Store changes
+v1.3.4:
+- hide album, country or tag from collection
+- new version check
 Full changelog available on Github

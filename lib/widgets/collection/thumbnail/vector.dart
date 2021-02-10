@@ -63,11 +63,12 @@ class VectorImageThumbnail extends StatelessWidget {
         );
       },
     );
-    return heroTag == null
-        ? child
-        : Hero(
+    return heroTag != null
+        ? Hero(
             tag: heroTag,
+            transitionOnUserGestures: true,
             child: child,
-          );
+          )
+        : child;
   }
 }

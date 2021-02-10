@@ -1,4 +1,3 @@
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:flutter/foundation.dart';
@@ -9,8 +8,15 @@ class TagFilter extends CollectionFilter {
   static const emptyLabel = 'untagged';
 
   final String tag;
+  EntryFilter _test;
 
-  const TagFilter(this.tag);
+  TagFilter(this.tag) {
+    if (tag.isEmpty) {
+      _test = (entry) => entry.xmpSubjects.isEmpty;
+    } else {
+      _test = (entry) => entry.xmpSubjects.contains(tag);
+    }
+  }
 
   TagFilter.fromMap(Map<String, dynamic> json)
       : this(
@@ -24,7 +30,7 @@ class TagFilter extends CollectionFilter {
       };
 
   @override
-  bool filter(AvesEntry entry) => tag.isEmpty ? entry.xmpSubjects.isEmpty : entry.xmpSubjects.contains(tag);
+  EntryFilter get test => _test;
 
   @override
   bool get isUnique => false;

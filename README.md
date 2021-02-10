@@ -36,8 +36,8 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 
 | Model       | Name                       | Android Version | API |
 | ----------- | -------------------------- | --------------- | ---:|
-| SM-G981N    | Samsung Galaxy S20 5G      | 11              | 30  |
-| SM-G970N    | Samsung Galaxy S10e        | 10 (Q)          | 29  |
+| SM-G981N    | Samsung Galaxy S20 5G      | 11 (R)          | 30  |
+| SM-G970N    | Samsung Galaxy S10e        | 11 (R)          | 30  |
 | SM-P580     | Samsung Galaxy Tab A 10.1  | 8.1.0 (Oreo)    | 27  |
 | SM-G930S    | Samsung Galaxy S7          | 8.0.0 (Oreo)    | 26  |
 

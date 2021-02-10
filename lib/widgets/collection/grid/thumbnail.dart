@@ -43,7 +43,10 @@ class InteractiveThumbnail extends StatelessWidget {
           entry: entry,
           extent: tileExtent,
           collection: collection,
-          isScrollingNotifier: isScrollingNotifier,
+          // when the user is scrolling faster than we can retrieve the thumbnails,
+          // the retrieval task queue can pile up for thumbnails that got disposed
+          // in this case we pause the image retrieval task to get it out of the queue
+          cancellableNotifier: isScrollingNotifier,
         ),
       ),
     );
@@ -54,16 +57,20 @@ class InteractiveThumbnail extends StatelessWidget {
       context,
       TransparentMaterialPageRoute(
         settings: RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) => EntryViewerPage(
-          collection: CollectionLens(
+        pageBuilder: (c, a, sa) {
+          final viewerCollection = CollectionLens(
             source: collection.source,
             filters: collection.filters,
             groupFactor: collection.groupFactor,
             sortFactor: collection.sortFactor,
+            id: collection.id,
             listenToSource: false,
-          ),
-          initialEntry: entry,
-        ),
+          );
+          return EntryViewerPage(
+            collection: viewerCollection,
+            initialEntry: entry,
+          );
+        },
       ),
     );
   }

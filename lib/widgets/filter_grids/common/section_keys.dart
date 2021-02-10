@@ -75,8 +75,8 @@ extension ExtraAlbumImportance on AlbumImportance {
 class StorageVolumeSectionKey extends ChipSectionKey {
   final StorageVolume volume;
 
-  StorageVolumeSectionKey(this.volume) : super(title: volume.description);
+  StorageVolumeSectionKey(this.volume) : super(title: volume?.description ?? 'Unknown');
 
   @override
-  Widget get leading => volume.isRemovable ? Icon(AIcons.removableStorage) : null;
+  Widget get leading => (volume?.isRemovable ?? false) ? Icon(AIcons.removableStorage) : null;
 }

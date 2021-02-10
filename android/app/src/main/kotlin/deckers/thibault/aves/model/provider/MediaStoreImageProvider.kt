@@ -19,9 +19,11 @@ import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import kotlinx.coroutines.delay
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MediaStoreImageProvider : ImageProvider() {
     suspend fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
@@ -34,19 +36,21 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     override suspend fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
-        val id = ContentUris.parseId(uri)
+        val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
             callback.onSuccess(entry)
         }
         val alwaysValid = { _: Int, _: Int -> true }
-        if (mimeType == null || isImage(mimeType)) {
-            val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
-            if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION) > 0) return
-        }
-        if (mimeType == null || isVideo(mimeType)) {
-            val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
-            if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
+        if (id != null) {
+            if (mimeType == null || isImage(mimeType)) {
+                val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
+                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION) > 0) return
+            }
+            if (mimeType == null || isVideo(mimeType)) {
+                val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
+                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
+            }
         }
         // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
         // without an equivalent image/video if it is shared from a file browser
@@ -56,30 +60,53 @@ class MediaStoreImageProvider : ImageProvider() {
         callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
     }
 
-    fun getObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
-        val current = arrayListOf<Int>().apply {
-            addAll(getContentIdList(context, IMAGE_CONTENT_URI))
-            addAll(getContentIdList(context, VIDEO_CONTENT_URI))
+    fun checkObsoleteContentIds(context: Context, knownContentIds: List<Int>): List<Int> {
+        val foundContentIds = ArrayList<Int>()
+        fun check(context: Context, contentUri: Uri) {
+            val projection = arrayOf(MediaStore.MediaColumns._ID)
+            try {
+                val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+                if (cursor != null) {
+                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+                    while (cursor.moveToNext()) {
+                        foundContentIds.add(cursor.getInt(idColumn))
+                    }
+                    cursor.close()
+                }
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
+            }
         }
-        return knownContentIds.filter { id: Int -> !current.contains(id) }.toList()
+        check(context, IMAGE_CONTENT_URI)
+        check(context, VIDEO_CONTENT_URI)
+        return knownContentIds.filter { id: Int -> !foundContentIds.contains(id) }.toList()
     }
 
-    private fun getContentIdList(context: Context, contentUri: Uri): List<Int> {
-        val foundContentIds = ArrayList<Int>()
-        val projection = arrayOf(MediaStore.MediaColumns._ID)
-        try {
-            val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
-            if (cursor != null) {
-                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
-                while (cursor.moveToNext()) {
-                    foundContentIds.add(cursor.getInt(idColumn))
+    fun checkObsoletePaths(context: Context, knownPathById: Map<Int, String>): List<Int> {
+        val obsoleteIds = ArrayList<Int>()
+        fun check(context: Context, contentUri: Uri) {
+            val projection = arrayOf(MediaStore.MediaColumns._ID, MediaColumns.PATH)
+            try {
+                val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+                if (cursor != null) {
+                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID)
+                    val pathColumn = cursor.getColumnIndexOrThrow(MediaColumns.PATH)
+                    while (cursor.moveToNext()) {
+                        val id = cursor.getInt(idColumn)
+                        val path = cursor.getString(pathColumn)
+                        if (knownPathById.containsKey(id) && knownPathById[id] != path) {
+                            obsoleteIds.add(id)
+                        }
+                    }
+                    cursor.close()
                 }
-                cursor.close()
+            } catch (e: Exception) {
+                Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
             }
-        } catch (e: Exception) {
-            Log.e(LOG_TAG, "failed to get content IDs for contentUri=$contentUri", e)
         }
-        return foundContentIds
+        check(context, IMAGE_CONTENT_URI)
+        check(context, VIDEO_CONTENT_URI)
+        return obsoleteIds
     }
 
     private suspend fun fetchFrom(

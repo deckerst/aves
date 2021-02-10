@@ -24,33 +24,37 @@ class FavouriteRepo {
 
   Future<void> add(Iterable<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow);
+
     await metadataDb.addFavourites(newRows);
     _rows.addAll(newRows);
+
     changeNotifier.notifyListeners();
   }
 
   Future<void> remove(Iterable<AvesEntry> entries) async {
     final removedRows = entries.map(_entryToRow);
+
     await metadataDb.removeFavourites(removedRows);
     removedRows.forEach(_rows.remove);
+
     changeNotifier.notifyListeners();
   }
 
   Future<void> move(int oldContentId, AvesEntry entry) async {
     final oldRow = _rows.firstWhere((row) => row.contentId == oldContentId, orElse: () => null);
-    if (oldRow != null) {
-      _rows.remove(oldRow);
+    final newRow = _entryToRow(entry);
 
-      final newRow = _entryToRow(entry);
-      await metadataDb.updateFavouriteId(oldContentId, newRow);
-      _rows.add(newRow);
-      changeNotifier.notifyListeners();
-    }
+    await metadataDb.updateFavouriteId(oldContentId, newRow);
+    _rows.remove(oldRow);
+    _rows.add(newRow);
+
+    changeNotifier.notifyListeners();
   }
 
   Future<void> clear() async {
     await metadataDb.clearFavourites();
     _rows.clear();
+
     changeNotifier.notifyListeners();
   }
 }

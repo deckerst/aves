@@ -23,6 +23,7 @@ import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
 import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
+import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
@@ -37,6 +38,8 @@ import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeDescri
 import deckers.thibault.aves.metadata.MediaMetadataRetrieverHelper.getSafeInt
 import deckers.thibault.aves.metadata.Metadata.getRotationDegreesForExifCode
 import deckers.thibault.aves.metadata.Metadata.isFlippedForExifCode
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_LAST_MODIFICATION_TIME_FORMAT
+import deckers.thibault.aves.metadata.MetadataExtractorHelper.PNG_TIME_DIR_NAME
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeBoolean
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeDateMillis
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeInt
@@ -61,6 +64,7 @@ import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.tiffExtensionPattern
 import deckers.thibault.aves.utils.StorageUtils
+import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -69,6 +73,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.File
+import java.text.ParseException
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -216,6 +221,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         return dirMap
     }
 
+    // legend: ME=MetadataExtractor, EI=ExifInterface, MMR=MediaMetadataRetriever
     // set `KEY_DATE_MILLIS` from these fields (by precedence):
     // - ME / Exif / DATETIME_ORIGINAL
     // - ME / Exif / DATETIME
@@ -223,6 +229,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     // - EI / Exif / DATETIME
     // - ME / XMP / xmp:CreateDate
     // - ME / XMP / photoshop:DateCreated
+    // - ME / PNG / TIME / LAST_MODIFICATION_TIME
     // - MMR / METADATA_KEY_DATE
     // set `KEY_XMP_TITLE_DESCRIPTION` from these fields (by precedence):
     // - ME / XMP / dc:title
@@ -347,12 +354,29 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
 
-                    // identification of animated GIF & WEBP, GeoTIFF
                     when (mimeType) {
+                        MimeTypes.PNG -> {
+                            // date fallback to PNG time chunk
+                            if (!metadataMap.containsKey(KEY_DATE_MILLIS)) {
+                                for (dir in metadata.getDirectoriesOfType(PngDirectory::class.java).filter { it.name == PNG_TIME_DIR_NAME }) {
+                                    dir.getSafeString(PngDirectory.TAG_LAST_MODIFICATION_TIME) {
+                                        try {
+                                            PNG_LAST_MODIFICATION_TIME_FORMAT.parse(it)?.let { date ->
+                                                metadataMap[KEY_DATE_MILLIS] = date.time
+                                            }
+                                        } catch (e: ParseException) {
+                                            Log.w(LOG_TAG, "failed to parse PNG date=$it for uri=$uri", e)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         MimeTypes.GIF -> {
+                            // identification of animated GIF
                             if (metadata.containsDirectoryOfType(GifAnimationDirectory::class.java)) flags = flags or MASK_IS_ANIMATED
                         }
                         MimeTypes.WEBP -> {
+                            // identification of animated WEBP
                             for (dir in metadata.getDirectoriesOfType(WebpDirectory::class.java)) {
                                 dir.getSafeBoolean(WebpDirectory.TAG_IS_ANIMATION) {
                                     if (it) flags = flags or MASK_IS_ANIMATED
@@ -360,6 +384,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
                         }
                         MimeTypes.TIFF -> {
+                            // identification of GeoTIFF
                             for (dir in metadata.getDirectoriesOfType(ExifIFD0Directory::class.java)) {
                                 if (dir.isGeoTiff()) flags = flags or MASK_IS_GEOTIFF
                             }
@@ -639,8 +664,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
         var contentUri: Uri = uri
         if (uri.scheme == ContentResolver.SCHEME_CONTENT && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)) {
-            try {
-                val id = ContentUris.parseId(uri)
+            uri.tryParseId()?.let { id ->
                 contentUri = when {
                     isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
@@ -649,8 +673,6 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     contentUri = MediaStore.setRequireOriginal(contentUri)
                 }
-            } catch (e: NumberFormatException) {
-                // ignore
             }
         }
 

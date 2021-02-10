@@ -36,7 +36,7 @@ class CollectionSectionHeader extends StatelessWidget {
     Widget _buildAlbumHeader() => AlbumSectionHeader(
           key: ValueKey(sectionKey),
           source: collection.source,
-          folderPath: (sectionKey as EntryAlbumSectionKey).folderPath,
+          directory: (sectionKey as EntryAlbumSectionKey).directory,
         );
 
     switch (collection.sortFactor) {

@@ -27,7 +27,9 @@ class AppDebugPage extends StatefulWidget {
 }
 
 class _AppDebugPageState extends State<AppDebugPage> {
-  List<AvesEntry> get entries => widget.source.rawEntries;
+  CollectionSource get source => widget.source;
+
+  Set<AvesEntry> get visibleEntries => source.visibleEntries;
 
   static OverlayEntry _taskQueueOverlayEntry;
 
@@ -59,7 +61,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
   }
 
   Widget _buildGeneralTabView() {
-    final catalogued = entries.where((entry) => entry.isCatalogued);
+    final catalogued = visibleEntries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
     final located = withGps.where((entry) => entry.isLocated);
     return AvesExpansionTile(
@@ -98,7 +100,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(
             {
-              'Entries': '${entries.length}',
+              'All entries': '${source.allEntries.length}',
+              'Visible entries': '${visibleEntries.length}',
               'Catalogued': '${catalogued.length}',
               'With GPS': '${withGps.length}',
               'With address': '${located.length}',

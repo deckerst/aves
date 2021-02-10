@@ -34,9 +34,10 @@ class TagListPage extends StatelessWidget {
             source: source,
             title: 'Tags',
             chipSetActionDelegate: TagChipSetActionDelegate(source: source),
-            chipActionDelegate: ChipActionDelegate(),
+            chipActionDelegate: ChipActionDelegate(source: source),
             chipActionsBuilder: (filter) => [
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+              ChipAction.hide,
             ],
             filterSections: _getTagEntries(),
             emptyBuilder: () => EmptyContent(
@@ -50,8 +51,7 @@ class TagListPage extends StatelessWidget {
   }
 
   Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _getTagEntries() {
-    // tags are initially sorted by name at the source level
-    final filters = source.sortedTags.map((tag) => TagFilter(tag));
+    final filters = source.sortedTags.map((tag) => TagFilter(tag)).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
     return _group(sorted);

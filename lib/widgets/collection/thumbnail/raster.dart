@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<bool> cancellableNotifier;
   final Object heroTag;
 
   const RasterImageThumbnail({
     Key key,
     @required this.entry,
     @required this.extent,
-    this.isScrollingNotifier,
+    this.cancellableNotifier,
     this.heroTag,
   }) : super(key: key);
 
@@ -30,8 +30,6 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   AvesEntry get entry => widget.entry;
 
   double get extent => widget.extent;
-
-  Object get heroTag => widget.heroTag;
 
   @override
   void initState() {
@@ -72,11 +70,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   }
 
   void _pauseProvider() {
-    final isScrolling = widget.isScrollingNotifier?.value ?? false;
-    // when the user is scrolling faster than we can retrieve the thumbnails,
-    // the retrieval task queue can pile up for thumbnails that got disposed
-    // in this case we pause the image retrieval task to get it out of the queue
-    if (isScrolling) {
+    if (widget.cancellableNotifier?.value ?? false) {
       _fastThumbnailProvider?.pause();
       _sizedThumbnailProvider?.pause();
     }
@@ -126,18 +120,19 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
             height: extent,
             fit: BoxFit.cover,
           );
-    return heroTag == null
-        ? image
-        : Hero(
-            tag: heroTag,
+    return widget.heroTag != null
+        ? Hero(
+            tag: widget.heroTag,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
               return TransitionImage(
                 image: entry.getBestThumbnail(extent),
                 animation: animation,
               );
             },
+            transitionOnUserGestures: true,
             child: image,
-          );
+          )
+        : image;
   }
 
   Widget _buildError(BuildContext context, Object error, StackTrace stackTrace) => ErrorThumbnail(

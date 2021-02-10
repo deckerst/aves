@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
+  final String uri;
   final List<SinglePageInfo> pages;
 
   int get pageCount => pages.length;
 
   MultiPageInfo({
+    @required this.uri,
     this.pages,
   }) {
     if (pages.isNotEmpty) {
@@ -18,8 +20,11 @@ class MultiPageInfo {
     }
   }
 
-  factory MultiPageInfo.fromPageMaps(List<Map> pageMaps) {
-    return MultiPageInfo(pages: pageMaps.map((page) => SinglePageInfo.fromMap(page)).toList());
+  factory MultiPageInfo.fromPageMaps(String uri, List<Map> pageMaps) {
+    return MultiPageInfo(
+      uri: uri,
+      pages: pageMaps.map((page) => SinglePageInfo.fromMap(page)).toList(),
+    );
   }
 
   SinglePageInfo get defaultPage => pages.firstWhere((page) => page.isDefault, orElse: () => null);
@@ -29,7 +34,7 @@ class MultiPageInfo {
   SinglePageInfo getById(int pageId) => pages.firstWhere((page) => page.pageId == pageId, orElse: () => null);
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{pages=$pages}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, pages=$pages}';
 }
 
 class SinglePageInfo implements Comparable<SinglePageInfo> {

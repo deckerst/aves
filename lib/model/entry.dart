@@ -42,6 +42,10 @@ class AvesEntry {
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
+  // Local geocoding requires Google Play Services
+  // Google remote geocoding requires an API key and is not free
+  final Future<List<Address>> Function(Coordinates coordinates) _findAddresses = Geocoder.local.findAddressesFromCoordinates;
+
   // TODO TLAD make it dynamic if it depends on OS/lib versions
   static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
 
@@ -167,6 +171,9 @@ class AvesEntry {
     metadataChangeNotifier.dispose();
     addressChangeNotifier.dispose();
   }
+
+  // do not implement [Object.==] and [Object.hashCode] using mutable attributes (e.g. `uri`)
+  // so that we can reliably use instances in a `Set`, which requires consistent hash codes over time
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path, pageId=$pageId}';
@@ -372,7 +379,12 @@ class AvesEntry {
     return 'geo:$latitude,$longitude?q=$latitude,$longitude';
   }
 
-  List<String> get xmpSubjects => _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
+  List<String> _xmpSubjects;
+
+  List<String> get xmpSubjects {
+    _xmpSubjects ??= _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
+    return _xmpSubjects;
+  }
 
   String _bestTitle;
 
@@ -396,6 +408,7 @@ class AvesEntry {
     catalogDateMillis = newMetadata?.dateMillis;
     _catalogMetadata = newMetadata;
     _bestTitle = null;
+    _xmpSubjects = null;
     metadataChangeNotifier.notifyListeners();
 
     _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
@@ -441,7 +454,7 @@ class AvesEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      Future<List<Address>> call() => Geocoder.local.findAddressesFromCoordinates(coordinates);
+      Future<List<Address>> call() => _findAddresses(coordinates);
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -475,7 +488,7 @@ class AvesEntry {
 
     final coordinates = Coordinates(latitude, longitude);
     try {
-      final addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      final addresses = await _findAddresses(coordinates);
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
@@ -639,8 +652,6 @@ class AvesEntry {
   static int compareByDate(AvesEntry a, AvesEntry b) {
     var c = (b.bestDate ?? _epoch).compareTo(a.bestDate ?? _epoch);
     if (c != 0) return c;
-    c = (b.dateModifiedSecs ?? 0).compareTo(a.dateModifiedSecs ?? 0);
-    if (c != 0) return c;
-    return -compareByName(a, b);
+    return compareByName(b, a);
   }
 }

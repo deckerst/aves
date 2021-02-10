@@ -17,7 +17,7 @@ class InfoSearchDelegate extends SearchDelegate {
 
   static const suggestions = {
     'Date & time': 'date or time or when -timer -uptime -exposure -timeline',
-    'Description': 'abstract or description or comment',
+    'Description': 'abstract or description or comment or textual',
     'Dimensions': 'width or height or dimension or framesize or imagelength',
     'Resolution': 'resolution',
     'Rights': 'rights or copyright or artist or creator or by-line or credit -tool',
