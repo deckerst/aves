@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- hide album / country / tag from collection
+- new version check
+
+### Changed
+- Viewer: improved multipage item overlay and thumbnail loading
+- deactivate geocoding and Google maps when Play Services are unavailable
+
+### Fixed
+- refreshing items externally added/moved/removed
+- loading items at the root of volumes
+- loading items when opening a shortcut with a location filter
+- various thumbnail hero animation fixes
 
 ## [v1.3.3] - 2021-01-31
 ### Added
@@ -34,7 +47,7 @@ upgraded libtiff to 4.2.0 for TIFF decoding
 
 ## [v1.3.1] - 2021-01-04
 ### Added
-- Collection: long press and move to select/deselect multiple entries
+- Collection: long press and move to select/deselect multiple items
 - Info: show Spherical Video V1 metadata
 - Info: metadata search
 
@@ -73,14 +86,14 @@ upgraded libtiff to 4.2.0 for TIFF decoding
 ### Added
 - Albums / Countries / Tags: pinch to change tile size
 - Album picker: added a field to filter by name
-- check free space before moving entries
+- check free space before moving items
 - SVG source viewer
 
 ### Changed
 - Navigation: changed page history handling
 - Info: improved layout, especially for XMP
 - About: improved layout
-- faster locating of new entries
+- faster locating of new items
 
 ## [v1.2.7] - 2020-11-15
 ### Added
@@ -92,15 +105,15 @@ upgraded libtiff to 4.2.0 for TIFF decoding
 - Viewer: use subsampling and tiling to display large images
 
 ### Fixed
-- Fixed finding dimensions of entries with incorrect EXIF
+- Fixed finding dimensions of items with incorrect EXIF
 
 ## [v1.2.6] - 2020-11-15 [YANKED]
 
 ## [v1.2.5] - 2020-11-01
 ### Added
 - Search: show recently used filters (optional)
-- Search: show filter for entries with no XMP tags
-- Search: show filter for entries with no location information
+- Search: show filter for items with no XMP tags
+- Search: show filter for items with no location information
 - Analytics: use Firebase Analytics (along Firebase Crashlytics)
 
 ### Changed
@@ -108,10 +121,10 @@ upgraded libtiff to 4.2.0 for TIFF decoding
 - Viewer overlay: showing shooting details is now optional
 
 ### Fixed
-- Viewer: leave when the loaded entry is deleted and it is the last one
+- Viewer: leave when the loaded item is deleted and it is the last one
 - Viewer: refresh the viewer overlay and info page when the loaded image is modified
 - Info: prevent reporting a "Media" section for images other than HEIC/HEIF
-- Fixed opening entries shared via a "file" media content URI
+- Fixed opening items shared via a "file" media content URI
 
 ### Removed
 - Dependencies: removed Guava as a direct dependency in Android
