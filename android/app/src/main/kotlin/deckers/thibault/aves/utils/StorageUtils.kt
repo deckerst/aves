@@ -177,41 +177,68 @@ object StorageUtils {
      * Volume tree URIs
      */
 
+    // e.g.
+    // /storage/emulated/0/         -> primary
+    // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
     private fun getVolumeUuidForTreeUri(context: Context, anyPath: String): String? {
-        val sm = context.getSystemService(StorageManager::class.java)
-        if (sm != null) {
-            val volume = sm.getStorageVolume(File(anyPath))
-            if (volume != null) {
-                if (volume.isPrimary) {
-                    return "primary"
-                }
-                val uuid = volume.uuid
-                if (uuid != null) {
-                    return uuid.toUpperCase(Locale.ROOT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.getSystemService(StorageManager::class.java)?.let { sm ->
+                sm.getStorageVolume(File(anyPath))?.let { volume ->
+                    if (volume.isPrimary) {
+                        return "primary"
+                    }
+                    volume.uuid?.let { uuid ->
+                        return uuid.toUpperCase(Locale.ROOT)
+                    }
                 }
             }
         }
+
+        // fallback for <N
+        getVolumePath(context, anyPath)?.let { volumePath ->
+            if (volumePath == getPrimaryVolumePath(context)) {
+                return "primary"
+            }
+            volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }?.let { uuid ->
+                return uuid.toUpperCase(Locale.ROOT)
+            }
+        }
+
         Log.e(LOG_TAG, "failed to find volume UUID for anyPath=$anyPath")
         return null
     }
 
+    // e.g.
+    // primary      -> /storage/emulated/0/
+    // 10F9-3F13    -> /storage/10F9-3F13/
     private fun getVolumePathFromTreeUriUuid(context: Context, uuid: String): String? {
         if (uuid == "primary") {
             return getPrimaryVolumePath(context)
         }
-        val sm = context.getSystemService(StorageManager::class.java)
-        if (sm != null) {
-            for (volumePath in getVolumePaths(context)) {
-                try {
-                    val volume = sm.getStorageVolume(File(volumePath))
-                    if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
-                        return volumePath
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.getSystemService(StorageManager::class.java)?.let { sm ->
+                for (volumePath in getVolumePaths(context)) {
+                    try {
+                        val volume = sm.getStorageVolume(File(volumePath))
+                        if (volume != null && uuid.equals(volume.uuid, ignoreCase = true)) {
+                            return volumePath
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        // ignore
                     }
-                } catch (e: IllegalArgumentException) {
-                    // ignore
                 }
             }
         }
+
+        // fallback for <N
+        for (volumePath in getVolumePaths(context)) {
+            val volumeUuid = volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }
+            if (uuid.equals(volumeUuid, ignoreCase = true)) {
+                return volumePath
+            }
+        }
+
         Log.e(LOG_TAG, "failed to find volume path for UUID=$uuid")
         return null
     }

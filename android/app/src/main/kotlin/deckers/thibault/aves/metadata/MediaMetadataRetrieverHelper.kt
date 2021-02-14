@@ -17,9 +17,6 @@ object MediaMetadataRetrieverHelper {
         MediaMetadataRetriever.METADATA_KEY_BITRATE to "Bitrate",
         MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE to "Capture Framerate",
         MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER to "CD Track Number",
-        MediaMetadataRetriever.METADATA_KEY_COLOR_RANGE to "Color Range",
-        MediaMetadataRetriever.METADATA_KEY_COLOR_STANDARD to "Color Standard",
-        MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER to "Color Transfer",
         MediaMetadataRetriever.METADATA_KEY_COMPILATION to "Compilation",
         MediaMetadataRetriever.METADATA_KEY_COMPOSER to "Composer",
         MediaMetadataRetriever.METADATA_KEY_DATE to "Date",
@@ -56,6 +53,15 @@ object MediaMetadataRetrieverHelper {
                 hashMapOf(
                     MediaMetadataRetriever.METADATA_KEY_EXIF_LENGTH to "Exif Length",
                     MediaMetadataRetriever.METADATA_KEY_EXIF_OFFSET to "Exif Offset",
+                )
+            )
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            putAll(
+                hashMapOf(
+                    MediaMetadataRetriever.METADATA_KEY_COLOR_RANGE to "Color Range",
+                    MediaMetadataRetriever.METADATA_KEY_COLOR_STANDARD to "Color Standard",
+                    MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER to "Color Transfer",
                 )
             )
         }

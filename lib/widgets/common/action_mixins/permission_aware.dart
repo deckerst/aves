@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/android_file_service.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -16,8 +17,10 @@ mixin PermissionAwareMixin {
 
       final dir = dirs.first;
       final volumePath = dir['volumePath'] as String;
-      final volumeDescription = dir['volumeDescription'] as String;
       final relativeDir = dir['relativeDir'] as String;
+
+      final volume = androidFileUtils.storageVolumes.firstWhere((volume) => volume.path == volumePath, orElse: () => null);
+      final volumeDescription = volume?.description ?? volumePath;
       final dirDisplayName = relativeDir.isEmpty ? 'root' : '“$relativeDir”';
 
       final confirmed = await showDialog<bool>(
