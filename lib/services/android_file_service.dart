@@ -53,7 +53,7 @@ class AndroidFileService {
   }
 
   // returns a list of directories,
-  // each directory is a map with "volumePath", "volumeDescription", "relativeDir"
+  // each directory is a map with "volumePath", "relativeDir"
   static Future<List<Map>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
       final result = await platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{

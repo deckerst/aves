@@ -119,7 +119,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         // optional parent to distinguish child directories of the same type
                         dir.parent?.name?.let { dirName = "$it/$dirName" }
 
-                        val dirMap = metadataMap.getOrDefault(dirName, HashMap())
+                        val dirMap = metadataMap[dirName] ?: HashMap()
                         metadataMap[dirName] = dirMap
 
                         // tags
@@ -594,7 +594,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             KEY_MIME_TYPE to trackMime,
                         )
                         format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { page[KEY_IS_DEFAULT] = it != 0 }
-                        format.getSafeInt(MediaFormat.KEY_TRACK_ID) { page[KEY_TRACK_ID] = it }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            format.getSafeInt(MediaFormat.KEY_TRACK_ID) { page[KEY_TRACK_ID] = it }
+                        }
                         format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
                         format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
                         if (isVideo(trackMime)) {
@@ -677,26 +679,35 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         }
 
         val projection = arrayOf(prop)
-        val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
-        if (cursor != null && cursor.moveToFirst()) {
-            var value: Any? = null
-            try {
-                value = when (cursor.getType(0)) {
-                    Cursor.FIELD_TYPE_NULL -> null
-                    Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
-                    Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
-                    Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
-                    Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
-                    else -> null
-                }
-            } catch (e: Exception) {
-                Log.w(LOG_TAG, "failed to get value for key=$prop", e)
-            }
-            cursor.close()
-            result.success(value?.toString())
-        } else {
-            result.error("getContentResolverProp-null", "failed to get cursor for contentUri=$contentUri", null)
+        val cursor: Cursor?
+        try {
+            cursor = context.contentResolver.query(contentUri, projection, null, null, null)
+        } catch (e: Exception) {
+            // throws SQLiteException when the requested prop is not a known column
+            result.error("getContentResolverProp-query", "failed to query for contentUri=$contentUri", e.message)
+            return
         }
+
+        if (cursor == null || !cursor.moveToFirst()) {
+            result.error("getContentResolverProp-cursor", "failed to get cursor for contentUri=$contentUri", null)
+            return
+        }
+
+        var value: Any? = null
+        try {
+            value = when (cursor.getType(0)) {
+                Cursor.FIELD_TYPE_NULL -> null
+                Cursor.FIELD_TYPE_INTEGER -> cursor.getLong(0)
+                Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(0)
+                Cursor.FIELD_TYPE_STRING -> cursor.getString(0)
+                Cursor.FIELD_TYPE_BLOB -> cursor.getBlob(0)
+                else -> null
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get value for key=$prop", e)
+        }
+        cursor.close()
+        result.success(value?.toString())
     }
 
     private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {

@@ -9,6 +9,7 @@ import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.load.ImageHeaderParser
 import com.bumptech.glide.load.resource.bitmap.ExifInterfaceImageHeaderParser
 import com.bumptech.glide.module.AppGlideModule
+import deckers.thibault.aves.utils.compatRemoveIf
 
 @GlideModule
 class AvesAppGlideModule : AppGlideModule() {
@@ -20,7 +21,7 @@ class AvesAppGlideModule : AppGlideModule() {
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         // prevent ExifInterface error logs
         // cf https://github.com/bumptech/glide/issues/3383
-        glide.registry.imageHeaderParsers.removeIf { parser: ImageHeaderParser? -> parser is ExifInterfaceImageHeaderParser }
+        glide.registry.imageHeaderParsers.compatRemoveIf { parser: ImageHeaderParser? -> parser is ExifInterfaceImageHeaderParser }
     }
 
     override fun isManifestParsingEnabled(): Boolean = false

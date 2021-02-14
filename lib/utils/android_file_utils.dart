@@ -114,11 +114,10 @@ class Package {
 
 class StorageVolume {
   final String description, path, state;
-  final bool isEmulated, isPrimary, isRemovable;
+  final bool isPrimary, isRemovable;
 
   const StorageVolume({
     this.description,
-    this.isEmulated,
     this.isPrimary,
     this.isRemovable,
     this.path,
@@ -126,10 +125,10 @@ class StorageVolume {
   });
 
   factory StorageVolume.fromMap(Map map) {
+    final isPrimary = map['isPrimary'] ?? false;
     return StorageVolume(
-      description: map['description'] ?? '',
-      isEmulated: map['isEmulated'] ?? false,
-      isPrimary: map['isPrimary'] ?? false,
+      description: map['description'] ?? (isPrimary ? 'Internal storage' : 'SD card'),
+      isPrimary: isPrimary,
       isRemovable: map['isRemovable'] ?? false,
       path: map['path'] ?? '',
       state: map['state'] ?? '',

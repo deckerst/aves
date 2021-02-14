@@ -53,8 +53,7 @@ android {
 
     defaultConfig {
         applicationId "deckers.thibault.aves"
-        // TODO TLAD try minSdkVersion 23
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 30 // same as compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

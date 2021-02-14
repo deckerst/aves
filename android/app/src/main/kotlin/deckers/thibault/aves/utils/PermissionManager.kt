@@ -63,7 +63,7 @@ object PermissionManager {
                 // inaccessible dirs
                 val segments = PathSegments(context, dirPath)
                 segments.volumePath?.let { volumePath ->
-                    val dirSet = dirsPerVolume.getOrDefault(volumePath, HashSet())
+                    val dirSet = dirsPerVolume[volumePath] ?: HashSet()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         // request primary directory on volume from Android R
                         segments.relativeDir?.apply {
@@ -80,26 +80,16 @@ object PermissionManager {
         }
 
         // format for easier handling on Flutter
-        val inaccessibleDirs = ArrayList<Map<String, String>>()
-        val sm = context.getSystemService(StorageManager::class.java)
-        if (sm != null) {
-            for ((volumePath, relativeDirs) in dirsPerVolume) {
-                var volumeDescription: String? = null
-                try {
-                    volumeDescription = sm.getStorageVolume(File(volumePath))?.getDescription(context)
-                } catch (e: IllegalArgumentException) {
-                    // ignore
+        return ArrayList<Map<String, String>>().apply {
+            addAll(dirsPerVolume.flatMap { (volumePath, relativeDirs) ->
+                relativeDirs.map { relativeDir ->
+                    hashMapOf(
+                        "volumePath" to volumePath,
+                        "relativeDir" to relativeDir,
+                    )
                 }
-                for (relativeDir in relativeDirs) {
-                    val dirMap = HashMap<String, String>()
-                    dirMap["volumePath"] = volumePath
-                    dirMap["volumeDescription"] = volumeDescription ?: ""
-                    dirMap["relativeDir"] = relativeDir
-                    inaccessibleDirs.add(dirMap)
-                }
-            }
+            })
         }
-        return inaccessibleDirs
     }
 
     fun revokeDirectoryAccess(context: Context, path: String): Boolean {

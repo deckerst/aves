@@ -40,7 +40,7 @@ object TiffTags {
     // Matteing
     // Tag = 32995 (80E3.H)
     // obsoleted by the 6.0 ExtraSamples (338)
-    val TAG_MATTEING = 0x80e3
+    const val TAG_MATTEING = 0x80e3
 
     /*
     GeoTIFF
@@ -80,7 +80,7 @@ object TiffTags {
     // Tag = 34737 (87B1.H)
     // Type = ASCII
     // Count = variable
-    val TAG_GEO_ASCII_PARAMS = 0x87b1
+    const val TAG_GEO_ASCII_PARAMS = 0x87b1
 
     /*
     Photoshop
@@ -91,7 +91,7 @@ object TiffTags {
     // ImageSourceData
     // Tag = 37724 (935C.H)
     // Type = UNDEFINED
-    val TAG_IMAGE_SOURCE_DATA = 0x935c
+    const val TAG_IMAGE_SOURCE_DATA = 0x935c
 
     /*
     DNG
@@ -102,13 +102,13 @@ object TiffTags {
     // Tag = 50735 (C62F.H)
     // Type = ASCII
     // Count = variable
-    val TAG_CAMERA_SERIAL_NUMBER = 0xc62f
+    const val TAG_CAMERA_SERIAL_NUMBER = 0xc62f
 
     // OriginalRawFileName (optional)
     // Tag = 50827 (C68B.H)
     // Type = ASCII or BYTE
     // Count = variable
-    val TAG_ORIGINAL_RAW_FILE_NAME = 0xc68b
+    const val TAG_ORIGINAL_RAW_FILE_NAME = 0xc68b
 
     private val tagNameMap = hashMapOf(
         TAG_X_POSITION to "X Position",
