@@ -21,7 +21,7 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 - search and filter by country, place, XMP tag, type (animated, raster, vector…)
 - favorites
 - statistics
-- support Android API 23 ~ 30 (Marshmallow ~ R)
+- support Android API 21 ~ 30 (Lollipop ~ R)
 - Android integration (app shortcuts, handle view/pick intents)
 
 ## Known Issues
