@@ -8,11 +8,11 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/media_store_service.dart';
+import 'package:aves/services/time_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
@@ -27,7 +27,7 @@ class MediaStoreSource extends CollectionSource {
     stateNotifier.value = SourceState.loading;
     await metadataDb.init();
     await favourites.init();
-    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    final currentTimeZone = await TimeService.getDefaultTimeZone();
     final catalogTimeZone = settings.catalogTimeZone;
     if (currentTimeZone != catalogTimeZone) {
       // clear catalog metadata to get correct date/times when moving to a different time zone

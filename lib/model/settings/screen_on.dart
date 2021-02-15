@@ -1,4 +1,4 @@
-import 'package:screen/screen.dart';
+import 'package:aves/services/window_service.dart';
 
 enum KeepScreenOn { never, viewerOnly, always }
 
@@ -17,6 +17,6 @@ extension ExtraKeepScreenOn on KeepScreenOn {
   }
 
   void apply() {
-    Screen.keepOn(this == KeepScreenOn.always);
+    WindowService.keepScreenOn(this == KeepScreenOn.always);
   }
 }

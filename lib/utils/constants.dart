@@ -144,12 +144,6 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/flutter_markdown',
     ),
     Dependency(
-      name: 'Flutter Native Timezone',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/pinkfish/flutter_native_timezone/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/pinkfish/flutter_native_timezone',
-    ),
-    Dependency(
       name: 'Flutter Staggered Animations',
       license: 'MIT',
       licenseUrl: 'https://github.com/mobiten/flutter_staggered_animations/blob/master/LICENSE',
@@ -256,12 +250,6 @@ class Constants {
       license: 'MIT',
       licenseUrl: 'https://github.com/rrousselGit/provider/blob/master/LICENSE',
       sourceUrl: 'https://github.com/rrousselGit/provider',
-    ),
-    Dependency(
-      name: 'Screen',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/clovisnicolas/flutter_screen/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/clovisnicolas/flutter_screen',
     ),
     Dependency(
       name: 'Shared Preferences',

@@ -51,7 +51,6 @@ dependencies:
       url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_map:
   flutter_markdown:
-  flutter_native_timezone:
   flutter_staggered_animations:
   flutter_svg:
   geocoder:
@@ -71,7 +70,6 @@ dependencies:
   permission_handler:
   printing:
   provider:
-  screen:
   shared_preferences:
   sqflite:
   streams_channel:
