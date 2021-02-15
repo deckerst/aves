@@ -12,6 +12,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
@@ -60,6 +61,8 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
             return XmpGImageNamespace();
           case XmpIptcCoreNamespace.ns:
             return XmpIptcCoreNamespace();
+          case XmpMgwRegionsNamespace.ns:
+            return XmpMgwRegionsNamespace();
           case XmpMMNamespace.ns:
             return XmpMMNamespace();
           case XmpNoteNamespace.ns:
