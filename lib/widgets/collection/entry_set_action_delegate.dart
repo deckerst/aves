@@ -7,8 +7,10 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
+import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -63,6 +65,20 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _moveSelection(BuildContext context, {@required MoveType moveType}) async {
+    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).toSet();
+    if (moveType == MoveType.move) {
+      // check whether moving is possible given OS restrictions,
+      // before asking to pick a destination album
+      final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
+      for (final selectionDir in selectionDirs) {
+        final dir = VolumeRelativeDirectory.fromPath(selectionDir);
+        if (restrictedDirs.contains(dir)) {
+          await showRestrictedDirectoryDialog(context, dir);
+          return;
+        }
+      }
+    }
+
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
@@ -73,7 +89,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
-    if (!await checkStoragePermission(context, selection)) return;
+    if (moveType == MoveType.move && !await checkStoragePermissionForAlbums(context, selectionDirs)) return;
 
     if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
 

@@ -10,26 +10,26 @@ mixin PermissionAwareMixin {
   }
 
   Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths) async {
+    final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
     while (true) {
       final dirs = await AndroidFileService.getInaccessibleDirectories(albumPaths);
       if (dirs == null) return false;
       if (dirs.isEmpty) return true;
 
+      final restrictedInaccessibleDir = dirs.firstWhere(restrictedDirs.contains, orElse: () => null);
+      if (restrictedInaccessibleDir != null) {
+        await showRestrictedDirectoryDialog(context, restrictedInaccessibleDir);
+        return false;
+      }
+
       final dir = dirs.first;
-      final volumePath = dir['volumePath'] as String;
-      final relativeDir = dir['relativeDir'] as String;
-
-      final volume = androidFileUtils.storageVolumes.firstWhere((volume) => volume.path == volumePath, orElse: () => null);
-      final volumeDescription = volume?.description ?? volumePath;
-      final dirDisplayName = relativeDir.isEmpty ? 'root' : '“$relativeDir”';
-
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) {
           return AvesDialog(
             context: context,
             title: 'Storage Volume Access',
-            content: Text('Please select the $dirDisplayName directory of “$volumeDescription” in the next screen, so that this app can access it and complete your request.'),
+            content: Text('Please select the ${dir.directoryDescription} directory of “${dir.volumeDescription}” in the next screen, so that this app can access it and complete your request.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -46,11 +46,30 @@ mixin PermissionAwareMixin {
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
 
-      final granted = await AndroidFileService.requestVolumeAccess(volumePath);
+      final granted = await AndroidFileService.requestVolumeAccess(dir.volumePath);
       if (!granted) {
         // abort if the user denies access from the native dialog
         return false;
       }
     }
+  }
+
+  Future<bool> showRestrictedDirectoryDialog(BuildContext context, VolumeRelativeDirectory dir) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          context: context,
+          title: 'Restricted Access',
+          content: Text('This app is not allowed to modify files in the ${dir.directoryDescription} directory of “${dir.volumeDescription}”.\n\nPlease use a pre-installed file manager or gallery app to move the items to another directory.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'.toUpperCase()),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

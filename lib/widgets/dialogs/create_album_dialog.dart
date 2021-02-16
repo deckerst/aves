@@ -74,7 +74,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                   focusNode: _nameFieldFocusNode,
                   decoration: InputDecoration(
                     labelText: 'Album name',
-                    helperText: exists ? 'Album already exists' : '',
+                    helperText: exists ? 'Directory already exists' : '',
                   ),
                   autofocus: _allVolumes.length == 1,
                   onChanged: (_) => _validate(),

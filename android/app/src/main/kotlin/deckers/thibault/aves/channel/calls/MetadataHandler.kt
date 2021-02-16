@@ -325,7 +325,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             if (xmpMeta.doesPropertyExist(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME)) {
                                 val count = xmpMeta.countArrayItems(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME)
                                 val values = (1 until count + 1).map { xmpMeta.getArrayItem(XMP.DC_SCHEMA_NS, XMP.SUBJECT_PROP_NAME, it).value }
-                                metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(separator = XMP_SUBJECTS_SEPARATOR)
+                                metadataMap[KEY_XMP_SUBJECTS] = values.joinToString(XMP_SUBJECTS_SEPARATOR)
                             }
                             xmpMeta.getSafeLocalizedText(XMP.DC_SCHEMA_NS, XMP.TITLE_PROP_NAME, acceptBlank = false) { metadataMap[KEY_XMP_TITLE_DESCRIPTION] = it }
                             if (!metadataMap.containsKey(KEY_XMP_TITLE_DESCRIPTION)) {
@@ -350,7 +350,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     // XMP fallback to IPTC
                     if (!metadataMap.containsKey(KEY_XMP_SUBJECTS)) {
                         for (dir in metadata.getDirectoriesOfType(IptcDirectory::class.java)) {
-                            dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(separator = XMP_SUBJECTS_SEPARATOR) }
+                            dir.keywords?.let { metadataMap[KEY_XMP_SUBJECTS] = it.joinToString(XMP_SUBJECTS_SEPARATOR) }
                         }
                     }
 

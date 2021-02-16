@@ -26,6 +26,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getFreeSpace" -> safe(call, result, ::getFreeSpace)
             "getGrantedDirectories" -> safe(call, result, ::getGrantedDirectories)
             "getInaccessibleDirectories" -> safe(call, result, ::getInaccessibleDirectories)
+            "getRestrictedDirectories" -> safe(call, result, ::getRestrictedDirectories)
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
@@ -104,8 +105,11 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val dirs = PermissionManager.getInaccessibleDirectories(context, dirPaths)
-        result.success(dirs)
+        result.success(PermissionManager.getInaccessibleDirectories(context, dirPaths))
+    }
+
+    private fun getRestrictedDirectories(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        result.success(PermissionManager.getRestrictedDirectories(context))
     }
 
     private fun revokeDirectoryAccess(call: MethodCall, result: MethodChannel.Result) {
