@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- support Android Lollipop & Marshmallow (API 21 ~ 23)
+- support Android KitKat, Lollipop & Marshmallow (API 19 ~ 23)
 
 ## [v1.3.4] - 2021-02-10
 ### Added

@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.webkit.MimeTypeMap
+import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
 import java.io.File
@@ -246,6 +247,7 @@ object StorageUtils {
     // e.g.
     // /storage/emulated/0/         -> content://com.android.externalstorage.documents/tree/primary%3A
     // /storage/10F9-3F13/Pictures/ -> content://com.android.externalstorage.documents/tree/10F9-3F13%3APictures
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun convertDirPathToTreeUri(context: Context, dirPath: String): Uri? {
         val uuid = getVolumeUuidForTreeUri(context, dirPath)
         if (uuid != null) {
@@ -287,7 +289,7 @@ object StorageUtils {
 
     fun getDocumentFile(context: Context, anyPath: String, mediaUri: Uri): DocumentFileCompat? {
         try {
-            if (requireAccessPermission(context, anyPath)) {
+            if (requireAccessPermission(context, anyPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
@@ -311,7 +313,7 @@ object StorageUtils {
     // returns null if directory does not exist and could not be created
     fun createDirectoryIfAbsent(context: Context, dirPath: String): DocumentFileCompat? {
         val cleanDirPath = ensureTrailingSeparator(dirPath)
-        return if (requireAccessPermission(context, cleanDirPath)) {
+        return if (requireAccessPermission(context, cleanDirPath) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             val grantedDir = getGrantedDirForPath(context, cleanDirPath) ?: return null
             val rootTreeUri = convertDirPathToTreeUri(context, grantedDir) ?: return null
             var parentFile: DocumentFileCompat? = DocumentFileCompat.fromTreeUri(context, rootTreeUri) ?: return null

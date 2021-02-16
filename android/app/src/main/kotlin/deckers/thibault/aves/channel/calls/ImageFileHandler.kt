@@ -125,7 +125,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
                 pageId = pageId,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
-                imageSize = Size(imageWidth, imageHeight),
+                imageWidth = imageWidth,
+                imageHeight = imageHeight,
                 result = result,
             )
         }
