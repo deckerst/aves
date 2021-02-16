@@ -14,10 +14,6 @@
     https://developer.android.com/preview/privacy/storage#media-file-access
     - raw path access:
     https://developer.android.com/preview/privacy/storage#media-files-raw-paths
-
-    Android R issues:
-    - users cannot grant directory access to the root Downloads directory,
-    - users cannot grant directory access to the root directory of each reliable SD card volume
     -->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

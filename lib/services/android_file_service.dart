@@ -52,16 +52,24 @@ class AndroidFileService {
     return;
   }
 
-  // returns a list of directories,
-  // each directory is a map with "volumePath", "relativeDir"
-  static Future<List<Map>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
+  static Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
       final result = await platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
         'dirPaths': dirPaths.toList(),
       });
-      return (result as List).cast<Map>();
+      return (result as List).cast<Map>().map((map) => VolumeRelativeDirectory.fromMap(map)).toSet();
     } on PlatformException catch (e) {
       debugPrint('getInaccessibleDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return null;
+  }
+
+  static Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories() async {
+    try {
+      final result = await platform.invokeMethod('getRestrictedDirectories');
+      return (result as List).cast<Map>().map((map) => VolumeRelativeDirectory.fromMap(map)).toSet();
+    } on PlatformException catch (e) {
+      debugPrint('getRestrictedDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return null;
   }

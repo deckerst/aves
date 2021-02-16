@@ -2,6 +2,7 @@ import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
@@ -112,6 +113,7 @@ class Package {
   String toString() => '$runtimeType#${shortHash(this)}{packageName=$packageName, categoryLauncher=$categoryLauncher, isSystem=$isSystem, currentLabel=$currentLabel, englishLabel=$englishLabel, ownedDirs=$ownedDirs}';
 }
 
+@immutable
 class StorageVolume {
   final String description, path, state;
   final bool isPrimary, isRemovable;
@@ -134,4 +136,50 @@ class StorageVolume {
       state: map['state'] ?? '',
     );
   }
+}
+
+@immutable
+class VolumeRelativeDirectory {
+  final String volumePath, relativeDir;
+
+  const VolumeRelativeDirectory({
+    this.volumePath,
+    this.relativeDir,
+  });
+
+  factory VolumeRelativeDirectory.fromMap(Map map) {
+    return VolumeRelativeDirectory(
+      volumePath: map['volumePath'],
+      relativeDir: map['relativeDir'] ?? '',
+    );
+  }
+
+  // prefer static method over a null returning factory constructor
+  static VolumeRelativeDirectory fromPath(String dirPath) {
+    final volume = androidFileUtils.getStorageVolume(dirPath);
+    if (volume == null) return null;
+
+    final root = volume.path;
+    final rootLength = root.length;
+    return VolumeRelativeDirectory(
+      volumePath: root,
+      relativeDir: dirPath.length < rootLength ? '' : dirPath.substring(rootLength),
+    );
+  }
+
+  String get directoryDescription => relativeDir.isEmpty ? 'root' : '“$relativeDir”';
+
+  String get volumeDescription {
+    final volume = androidFileUtils.storageVolumes.firstWhere((volume) => volume.path == volumePath, orElse: () => null);
+    return volume?.description ?? volumePath;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is VolumeRelativeDirectory && other.volumePath == volumePath && other.relativeDir == relativeDir;
+  }
+
+  @override
+  int get hashCode => hashValues(volumePath, relativeDir);
 }

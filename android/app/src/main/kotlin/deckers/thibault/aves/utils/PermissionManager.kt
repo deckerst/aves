@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.storage.StorageManager
 import android.util.Log
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 
 object PermissionManager {
     private val LOG_TAG = LogUtils.createTag(PermissionManager::class.java)
@@ -66,9 +68,20 @@ object PermissionManager {
                     val dirSet = dirsPerVolume[volumePath] ?: HashSet()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         // request primary directory on volume from Android R
-                        segments.relativeDir?.apply {
-                            val primaryDir = split(File.separator).firstOrNull { it.isNotEmpty() }
-                            primaryDir?.let { dirSet.add(it) }
+                        val relativeDir = segments.relativeDir
+                        if (relativeDir != null) {
+                            val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
+                            val primaryDir = dirSegments.firstOrNull()
+                            if (primaryDir == Environment.DIRECTORY_DOWNLOADS && dirSegments.size > 1) {
+                                // request secondary directory (if any) for restricted primary directory
+                                dirSet.add(dirSegments.take(2).joinToString(File.separator))
+                            } else {
+                                primaryDir?.let { dirSet.add(it) }
+                            }
+                        } else {
+                            // the requested path is the volume root itself
+                            // which cannot be granted, due to Android R restrictions
+                            dirSet.add("")
                         }
                     } else {
                         // request volume root until Android Q
@@ -89,6 +102,30 @@ object PermissionManager {
                     )
                 }
             })
+        }
+    }
+
+    fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
+            val volumePaths = StorageUtils.getVolumePaths(context)
+            ArrayList<Map<String, String>>().apply {
+                addAll(volumePaths.map {
+                    hashMapOf(
+                        "volumePath" to it,
+                        "relativeDir" to "",
+                    )
+                })
+                addAll(volumePaths.map {
+                    hashMapOf(
+                        "volumePath" to it,
+                        "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
+                    )
+                })
+            }
+        } else {
+            // TODO TLAD add KitKat restriction (no SD card root access) if min version goes to API 19-20
+            ArrayList()
         }
     }
 

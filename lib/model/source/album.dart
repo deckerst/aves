@@ -23,34 +23,36 @@ mixin AlbumMixin on SourceBase {
 
   void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
 
-  String getUniqueAlbumName(String album) {
-    final otherAlbums = _directories.where((item) => item != album);
-    final parts = album.split(separator);
-    var partCount = 0;
-    String testName;
-    do {
-      testName = separator + parts.skip(parts.length - ++partCount).join(separator);
-    } while (otherAlbums.any((item) => item.endsWith(testName)));
-    final uniqueName = parts.skip(parts.length - partCount).join(separator);
-
-    final volume = androidFileUtils.getStorageVolume(album);
-    if (volume == null) {
+  String getUniqueAlbumName(String dirPath) {
+    String unique(String dirPath, [bool Function(String) test]) {
+      final otherAlbums = _directories.where(test ?? (_) => true).where((item) => item != dirPath);
+      final parts = dirPath.split(separator);
+      var partCount = 0;
+      String testName;
+      do {
+        testName = separator + parts.skip(parts.length - ++partCount).join(separator);
+      } while (otherAlbums.any((item) => item.endsWith(testName)));
+      final uniqueName = parts.skip(parts.length - partCount).join(separator);
       return uniqueName;
     }
 
-    final volumeRootLength = volume.path.length;
-    if (album.length < volumeRootLength) {
-      // `album` is at the root, without trailing '/'
-      return uniqueName;
-    }
+    final dir = VolumeRelativeDirectory.fromPath(dirPath);
+    if (dir == null) return dirPath;
 
-    final albumRelativePath = album.substring(volumeRootLength);
-    if (uniqueName.length < albumRelativePath.length) {
-      return uniqueName;
-    } else if (volume.isPrimary) {
-      return albumRelativePath;
+    final uniqueNameInDevice = unique(dirPath);
+    final relativeDir = dir.relativeDir;
+    if (relativeDir.isEmpty) return uniqueNameInDevice;
+
+    if (uniqueNameInDevice.length < relativeDir.length) {
+      return uniqueNameInDevice;
     } else {
-      return '$albumRelativePath (${volume.description})';
+      final uniqueNameInVolume = unique(dirPath, (item) => item.startsWith(dir.volumePath));
+      final volume = androidFileUtils.getStorageVolume(dirPath);
+      if (volume.isPrimary) {
+        return uniqueNameInVolume;
+      } else {
+        return '$uniqueNameInVolume (${volume.description})';
+      }
     }
   }
 

@@ -47,7 +47,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
               controller: _nameController,
               decoration: InputDecoration(
                 labelText: 'New name',
-                helperText: exists ? 'Album already exists' : '',
+                helperText: exists ? 'Directory already exists' : '',
               ),
               autofocus: true,
               onChanged: (_) => _validate(),
