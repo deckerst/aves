@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
 import android.graphics.Rect
 import android.net.Uri
-import android.util.Size
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -37,7 +36,8 @@ class RegionFetcher internal constructor(
         pageId: Int?,
         sampleSize: Int,
         regionRect: Rect,
-        imageSize: Size,
+        imageWidth: Int,
+        imageHeight: Int,
         result: MethodChannel.Result,
     ) {
         if (MimeTypes.isHeifLike(mimeType) && pageId != null) {
@@ -48,7 +48,8 @@ class RegionFetcher internal constructor(
                 pageId = null,
                 sampleSize = sampleSize,
                 regionRect = regionRect,
-                imageSize = imageSize,
+                imageWidth = imageWidth,
+                imageHeight = imageHeight,
                 result = result,
             )
             return
@@ -79,9 +80,9 @@ class RegionFetcher internal constructor(
 
             // with raw images, the known image size may not match the decoded image size
             // so we scale the requested region accordingly
-            val effectiveRect = if (imageSize.width != decoder.width || imageSize.height != decoder.height) {
-                val xf = decoder.width.toDouble() / imageSize.width
-                val yf = decoder.height.toDouble() / imageSize.height
+            val effectiveRect = if (imageWidth != decoder.width || imageHeight != decoder.height) {
+                val xf = decoder.width.toDouble() / imageWidth
+                val yf = decoder.height.toDouble() / imageHeight
                 Rect(
                     (regionRect.left * xf).roundToInt(),
                     (regionRect.top * yf).roundToInt(),

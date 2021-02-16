@@ -51,13 +51,21 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
 
     private fun getContextDirs() = hashMapOf(
         "cacheDir" to context.cacheDir,
-        "codeCacheDir" to context.codeCacheDir,
         "filesDir" to context.filesDir,
-        "noBackupFilesDir" to context.noBackupFilesDir,
         "obbDir" to context.obbDir,
         "externalCacheDir" to context.externalCacheDir,
     ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) put("dataDir", context.dataDir)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            putAll(
+                hashMapOf(
+                    "codeCacheDir" to context.codeCacheDir,
+                    "noBackupFilesDir" to context.noBackupFilesDir,
+                )
+            )
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            put("dataDir", context.dataDir)
+        }
     }.mapValues { it.value?.path }
 
     private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {

@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
 import android.util.Log
+import androidx.annotation.RequiresApi
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
@@ -22,6 +23,7 @@ object PermissionManager {
     // permission request code to pending runnable
     private val pendingPermissionMap = ConcurrentHashMap<Int, PendingPermissionHandler>()
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun requestVolumeAccess(activity: Activity, path: String, onGranted: () -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to volume=$path")
 
@@ -106,29 +108,39 @@ object PermissionManager {
     }
 
     fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        val dirs = ArrayList<Map<String, String>>()
+        val sdkInt = Build.VERSION.SDK_INT
+
+        if (sdkInt >= Build.VERSION_CODES.R) {
             // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
             val volumePaths = StorageUtils.getVolumePaths(context)
-            ArrayList<Map<String, String>>().apply {
-                addAll(volumePaths.map {
-                    hashMapOf(
-                        "volumePath" to it,
-                        "relativeDir" to "",
-                    )
-                })
-                addAll(volumePaths.map {
-                    hashMapOf(
-                        "volumePath" to it,
-                        "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
-                    )
-                })
-            }
-        } else {
-            // TODO TLAD add KitKat restriction (no SD card root access) if min version goes to API 19-20
-            ArrayList()
+            dirs.addAll(volumePaths.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to "",
+                )
+            })
+            dirs.addAll(volumePaths.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
+                )
+            })
+        } else if (sdkInt == Build.VERSION_CODES.KITKAT || sdkInt == Build.VERSION_CODES.KITKAT_WATCH) {
+            // no SD card volume access on KitKat
+            val primaryVolume = StorageUtils.getPrimaryVolumePath(context)
+            val nonPrimaryVolumes = StorageUtils.getVolumePaths(context).filter { it != primaryVolume }
+            dirs.addAll(nonPrimaryVolumes.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to "",
+                )
+            })
         }
+        return dirs
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun revokeDirectoryAccess(context: Context, path: String): Boolean {
         return StorageUtils.convertDirPathToTreeUri(context, path)?.let {
             val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION

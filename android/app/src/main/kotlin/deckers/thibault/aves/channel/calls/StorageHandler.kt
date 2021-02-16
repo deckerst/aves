@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
+import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.PermissionManager
 import deckers.thibault.aves.utils.StorageUtils.getPrimaryVolumePath
@@ -61,12 +62,19 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             for (volumePath in getVolumePaths(context)) {
                 val volumeFile = File(volumePath)
                 try {
+                    val isPrimary = volumePath == primaryVolumePath
+                    val isRemovable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Environment.isExternalStorageRemovable(volumeFile)
+                    } else {
+                        // random guess
+                        !isPrimary
+                    }
                     volumes.add(
                         hashMapOf(
                             "path" to volumePath,
-                            "isPrimary" to (volumePath == primaryVolumePath),
-                            "isRemovable" to Environment.isExternalStorageRemovable(volumeFile),
-                            "state" to Environment.getExternalStorageState(volumeFile)
+                            "isPrimary" to isPrimary,
+                            "isRemovable" to isRemovable,
+                            "state" to EnvironmentCompat.getStorageState(volumeFile)
                         )
                     )
                 } catch (e: IllegalArgumentException) {
@@ -116,6 +124,11 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
         val path = call.argument<String>("path")
         if (path == null) {
             result.error("revokeDirectoryAccess-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            result.error("revokeDirectoryAccess-unsupported", "volume access is not allowed before Android Lollipop", null)
             return
         }
 

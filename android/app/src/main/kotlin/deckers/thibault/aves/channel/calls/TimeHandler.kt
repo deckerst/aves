@@ -5,7 +5,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import java.util.*
 
-class TimeHandler() : MethodCallHandler {
+class TimeHandler : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getDefaultTimeZone" -> result.success(TimeZone.getDefault().id)
