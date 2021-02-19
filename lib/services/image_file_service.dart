@@ -86,8 +86,8 @@ class ImageFileService {
             bytesReceived += chunk.length;
             try {
               onBytesReceived(bytesReceived, expectedContentLength);
-            } catch (error, stackTrace) {
-              completer.completeError(error, stackTrace);
+            } catch (error, stack) {
+              completer.completeError(error, stack);
               return;
             }
           }

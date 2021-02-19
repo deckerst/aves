@@ -18,8 +18,8 @@ class AChangeNotifier implements Listenable {
     for (final listener in localListeners) {
       try {
         if (_listeners.contains(listener)) listener();
-      } catch (exception, stack) {
-        debugPrint('$runtimeType failed to notify listeners with exception=$exception\n$stack');
+      } catch (error, stack) {
+        debugPrint('$runtimeType failed to notify listeners with error=$error\n$stack');
       }
     }
   }

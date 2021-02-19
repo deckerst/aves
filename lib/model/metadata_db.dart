@@ -195,8 +195,8 @@ class MetadataDb {
       metadataEntries.where((metadata) => metadata != null).forEach((metadata) => _batchInsertMetadata(batch, metadata));
       await batch.commit(noResult: true);
       debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
-    } catch (exception, stack) {
-      debugPrint('$runtimeType failed to save metadata with exception=$exception\n$stack');
+    } catch (error, stack) {
+      debugPrint('$runtimeType failed to save metadata with exception=$error\n$stack');
     }
   }
 

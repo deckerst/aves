@@ -38,8 +38,8 @@ class ServicePolicy {
         () async {
           try {
             completer.complete(await platformCall());
-          } catch (error, stackTrace) {
-            completer.completeError(error, stackTrace);
+          } catch (error, stack) {
+            completer.completeError(error, stack);
           }
           _runningQueue.remove(key);
           _pickNext();

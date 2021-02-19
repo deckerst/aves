@@ -63,7 +63,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
   Widget _buildGeneralTabView() {
     final catalogued = visibleEntries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
-    final located = withGps.where((entry) => entry.isLocated);
+    final withAddress = withGps.where((entry) => entry.hasAddress);
+    final withPlace = withGps.where((entry) => entry.hasPlace);
     return AvesExpansionTile(
       title: 'General',
       children: [
@@ -104,7 +105,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
               'Visible entries': '${visibleEntries.length}',
               'Catalogued': '${catalogued.length}',
               'With GPS': '${withGps.length}',
-              'With address': '${located.length}',
+              'With address': '${withAddress.length}',
+              'With place': '${withPlace.length}',
             },
           ),
         ),

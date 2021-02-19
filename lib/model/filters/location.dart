@@ -19,7 +19,7 @@ class LocationFilter extends CollectionFilter {
     if (split.length > 1) _countryCode = split[1];
 
     if (_location.isEmpty) {
-      _test = (entry) => !entry.isLocated;
+      _test = (entry) => !entry.hasGps;
     } else if (level == LocationLevel.country) {
       _test = (entry) => entry.addressDetails?.countryCode == _countryCode;
     } else if (level == LocationLevel.place) {

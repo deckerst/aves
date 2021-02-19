@@ -309,7 +309,7 @@ class _LocationRow extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     String location;
-    if (entry.isLocated) {
+    if (entry.hasAddress) {
       location = entry.shortAddress;
     } else if (entry.hasGps) {
       location = settings.coordinateFormat.format(entry.latLng);
