@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/geo/countries.dart';
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/metadata.dart';
@@ -13,6 +15,7 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
@@ -366,9 +369,11 @@ class AvesEntry {
     return _durationText;
   }
 
-  bool get hasGps => isCatalogued && _catalogMetadata.latitude != null;
+  bool get hasGps => _catalogMetadata?.latitude != null;
 
-  bool get isLocated => _addressDetails != null;
+  bool get hasAddress => _addressDetails != null;
+
+  bool get hasPlace => _addressDetails?.place?.isNotEmpty == true;
 
   LatLng get latLng => hasGps ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
@@ -389,7 +394,7 @@ class AvesEntry {
   String _bestTitle;
 
   String get bestTitle {
-    _bestTitle ??= (isCatalogued && _catalogMetadata.xmpTitleDescription?.isNotEmpty == true) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata.xmpTitleDescription : sourceTitle;
     return _bestTitle;
   }
 
@@ -444,8 +449,32 @@ class AvesEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate({bool background = false}) async {
-    if (isLocated) return;
+  Future<void> locate() async {
+    await _locateCountry();
+    if (await availability.canLocatePlaces) {
+      await locatePlace(background: false);
+    }
+  }
+
+  // quick reverse geolocation to find the country, using an offline asset
+  Future<void> _locateCountry() async {
+    if (hasAddress) return;
+    final countryCode = await countryTopology.countryCode(latLng);
+    setCountry(countryCode);
+  }
+
+  void setCountry(CountryCode countryCode) {
+    if (hasPlace || countryCode == null) return;
+    addressDetails = AddressDetails(
+      contentId: contentId,
+      countryCode: countryCode.alpha2,
+      countryName: countryCode.alpha3,
+    );
+  }
+
+  // full reverse geolocation, requiring Play Services and some connectivity
+  Future<void> locatePlace({@required bool background}) async {
+    if (hasPlace) return;
 
     await catalog(background: background);
     final latitude = _catalogMetadata?.latitude;
@@ -476,8 +505,8 @@ class AvesEntry {
           locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
         );
       }
-    } catch (error, stackTrace) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
+    } catch (error, stack) {
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stack');
     }
   }
 
@@ -493,21 +522,19 @@ class AvesEntry {
         final address = addresses.first;
         return address.addressLine;
       }
-    } catch (error, stackTrace) {
-      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
+    } catch (error, stack) {
+      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stack');
     }
     return null;
   }
 
   String get shortAddress {
-    if (!isLocated) return '';
-
     // `admin area` examples: Seoul, Geneva, null
     // `locality` examples: Mapo-gu, Geneva, Annecy
     return {
-      _addressDetails.countryName,
-      _addressDetails.adminArea,
-      _addressDetails.locality,
+      _addressDetails?.countryName,
+      _addressDetails?.adminArea,
+      _addressDetails?.locality,
     }.where((part) => part != null && part.isNotEmpty).join(', ');
   }
 

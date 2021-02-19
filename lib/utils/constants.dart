@@ -90,6 +90,12 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/connectivity/connectivity',
     ),
     Dependency(
+      name: 'Country Code',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/denixport/dart.country/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/denixport/dart.country',
+    ),
+    Dependency(
       name: 'Decorated Icon',
       license: 'MIT',
       licenseUrl: 'https://github.com/benPesso/flutter_decorated_icon/blob/master/LICENSE',

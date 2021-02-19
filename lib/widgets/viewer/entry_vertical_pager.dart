@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
@@ -152,11 +151,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      availability.canGeolocate.then((connected) {
-        if (connected) {
-          entry.locate();
-        }
-      });
+      entry.locate();
     } else {
       Navigator.pop(context);
     }
