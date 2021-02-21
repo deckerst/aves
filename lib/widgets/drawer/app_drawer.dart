@@ -109,7 +109,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     'Aves',
                     style: TextStyle(
                       fontSize: 44,
-                      fontFamily: 'Concourse Caps',
+                      fontWeight: FontWeight.w300,
+                      letterSpacing: 1.0,
+                      fontFeatures: [FontFeature.enable('smcp')],
                     ),
                   ),
                 ],

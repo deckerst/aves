@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/fx/highlight_decoration.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,8 @@ class HighlightTitle extends StatelessWidget {
         )
       ],
       fontSize: fontSize,
-      fontFamily: 'Concourse Caps',
+      letterSpacing: 1.0,
+      fontFeatures: [FontFeature.enable('smcp')],
     );
 
     return Align(

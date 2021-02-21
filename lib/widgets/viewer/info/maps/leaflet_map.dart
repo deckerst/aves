@@ -119,14 +119,15 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
   }
 
   Widget _buildAttributionMarkdown(String data) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.only(top: 4),
       child: MarkdownBody(
         data: data,
         selectable: true,
         styleSheet: MarkdownStyleSheet(
-          a: TextStyle(color: Theme.of(context).accentColor),
-          p: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Concourse'),
+          a: TextStyle(color: theme.accentColor),
+          p: TextStyle(color: Colors.white70, fontSize: theme.textTheme.caption.fontSize),
         ),
         onTapLink: (text, href, title) async {
           if (await canLaunch(href)) {

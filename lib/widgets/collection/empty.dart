@@ -32,7 +32,6 @@ class EmptyContent extends StatelessWidget {
             style: TextStyle(
               color: color,
               fontSize: 22,
-              fontFamily: 'Concourse',
             ),
           ),
         ],

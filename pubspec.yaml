@@ -97,11 +97,3 @@ flutter:
 
   assets:
     - assets/
-
-  fonts:
-    - family: Concourse
-      fonts:
-        - asset: fonts/ConcourseT3-Regular.ttf
-    - family: Concourse Caps
-      fonts:
-        - asset: fonts/ConcourseC3-Regular.ttf

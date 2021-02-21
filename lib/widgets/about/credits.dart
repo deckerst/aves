@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:flutter/material.dart';
 
@@ -13,25 +16,22 @@ class AboutCredits extends StatelessWidget {
             constraints: BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                'Credits',
-                style: Theme.of(context).textTheme.headline6.copyWith(fontFamily: 'Concourse Caps'),
-              ),
+              child: Text('Credits', style: Constants.titleTextStyle),
             ),
           ),
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: 'This app uses the font '),
+                TextSpan(text: 'This app uses a TopoJSON file from'),
                 WidgetSpan(
                   child: LinkChip(
-                    text: 'Concourse',
-                    url: 'https://mbtype.com/fonts/concourse/',
+                    text: 'World Atlas',
+                    url: 'https://github.com/topojson/world-atlas',
                     textStyle: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   alignment: PlaceholderAlignment.middle,
                 ),
-                TextSpan(text: ' for titles and the media information page.'),
+                TextSpan(text: ', under ISC License.'),
               ],
             ),
           ),
