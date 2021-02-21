@@ -33,7 +33,7 @@ mixin LocationMixin on SourceBase {
     await _locatePlaces();
   }
 
-  // quick reverse geolocation to find the countries, using an offline asset
+  // quick reverse geocoding to find the countries, using an offline asset
   Future<void> _locateCountries() async {
     final todo = visibleEntries.where((entry) => entry.hasGps && entry.addressDetails?.countryCode == null).toSet();
     if (todo.isEmpty) return;
@@ -56,7 +56,7 @@ mixin LocationMixin on SourceBase {
     // debugPrint('$runtimeType _locateCountries complete in ${stopwatch.elapsed.inSeconds}s');
   }
 
-  // full reverse geolocation, requiring Play Services and some connectivity
+  // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> _locatePlaces() async {
     if (!(await availability.canLocatePlaces)) return;
 
