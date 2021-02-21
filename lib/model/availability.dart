@@ -42,7 +42,7 @@ class AvesAvailability {
     return _hasPlayServices;
   }
 
-  // local geolocation with `geocoder` requires Play Services
+  // local geocoding with `geocoder` requires Play Services
   Future<bool> get canLocatePlaces => Future.wait<bool>([isConnected, hasPlayServices]).then((results) => results.every((result) => result));
 
   Future<bool> get isNewVersionAvailable async {

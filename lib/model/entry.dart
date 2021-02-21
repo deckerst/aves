@@ -456,7 +456,7 @@ class AvesEntry {
     }
   }
 
-  // quick reverse geolocation to find the country, using an offline asset
+  // quick reverse geocoding to find the country, using an offline asset
   Future<void> _locateCountry() async {
     if (hasAddress) return;
     final countryCode = await countryTopology.countryCode(latLng);
@@ -472,7 +472,7 @@ class AvesEntry {
     );
   }
 
-  // full reverse geolocation, requiring Play Services and some connectivity
+  // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> locatePlace({@required bool background}) async {
     if (hasPlace) return;
 
