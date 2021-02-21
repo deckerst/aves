@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:latlong/latlong.dart';
@@ -8,9 +10,9 @@ class Constants {
   static const overflowStrutStyle = StrutStyle(height: 1.3);
 
   static const titleTextStyle = TextStyle(
-    color: Color(0xFFEEEEEE),
     fontSize: 20,
-    fontFamily: 'Concourse Caps',
+    fontWeight: FontWeight.w300,
+    fontFeatures: [FontFeature.enable('smcp')],
   );
 
   static const embossShadow = Shadow(

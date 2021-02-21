@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - support Android KitKat, Lollipop & Marshmallow (API 19 ~ 23)
 
+### Removed
+- removed custom font used in titles and info page
+
 ## [v1.3.4] - 2021-02-10
 ### Added
 - hide album / country / tag from collection

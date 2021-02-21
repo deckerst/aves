@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/flutter_version.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -32,8 +34,12 @@ class _AppReferenceState extends State<AppReference> {
   }
 
   Widget _buildAvesLine() {
-    final textTheme = Theme.of(context).textTheme;
-    final style = textTheme.headline6.copyWith(fontWeight: FontWeight.bold);
+    final style = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
+      letterSpacing: 1.0,
+      fontFeatures: [FontFeature.enable('smcp')],
+    );
 
     return FutureBuilder<PackageInfo>(
       future: _packageInfoLoader,

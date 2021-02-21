@@ -74,8 +74,8 @@ class _AvesAppState extends State<AvesApp> {
       textTheme: TextTheme(
         headline6: TextStyle(
           fontSize: 20,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Concourse Caps',
+          fontWeight: FontWeight.normal,
+          fontFeatures: [FontFeature.enable('smcp')],
         ),
       ),
     ),
