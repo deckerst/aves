@@ -6,7 +6,7 @@ class ViewerService {
 
   static Future<Map> getIntentData() async {
     try {
-      // return nullable map with 'action' and possibly 'uri' 'mimeType'
+      // returns nullable map with 'action' and possibly 'uri' 'mimeType'
       return await platform.invokeMethod('getIntentData') as Map;
     } on PlatformException catch (e) {
       debugPrint('getIntentData failed with code=${e.code}, exception=${e.message}, details=${e.details}');

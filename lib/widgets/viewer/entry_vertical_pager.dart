@@ -151,7 +151,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      entry.locate();
+      entry.catalog(background: false).then((_) => entry.locate(background: false));
     } else {
       Navigator.pop(context);
     }

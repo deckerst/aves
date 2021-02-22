@@ -50,7 +50,7 @@ class AvesEntry {
   final Future<List<Address>> Function(Coordinates coordinates) _findAddresses = Geocoder.local.findAddressesFromCoordinates;
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
-  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
+  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.djvu, MimeTypes.psd];
 
   AvesEntry({
     this.uri,
@@ -289,6 +289,8 @@ class AvesEntry {
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
 
+  bool get isSized => (width ?? 0) > 0 && (height ?? 0) > 0;
+
   String get resolutionText {
     final ws = width ?? '?';
     final hs = height ?? '?';
@@ -369,11 +371,15 @@ class AvesEntry {
     return _durationText;
   }
 
-  bool get hasGps => _catalogMetadata?.latitude != null;
+  // returns whether this entry has GPS coordinates
+  // (0, 0) coordinates are considered invalid, as it is likely a default value
+  bool get hasGps => _catalogMetadata != null && _catalogMetadata.latitude != null && _catalogMetadata.longitude != null && (_catalogMetadata.latitude != 0 || _catalogMetadata.longitude != 0);
 
   bool get hasAddress => _addressDetails != null;
 
-  bool get hasPlace => _addressDetails?.place?.isNotEmpty == true;
+  // has a place, or at least the full country name
+  // derived from Google reverse geocoding addresses
+  bool get hasFineAddress => _addressDetails != null && (_addressDetails.place?.isNotEmpty == true || (_addressDetails.countryName?.length ?? 0) > 3);
 
   LatLng get latLng => hasGps ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
@@ -449,22 +455,23 @@ class AvesEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate() async {
+  Future<void> locate({@required bool background}) async {
+    if (!hasGps) return;
     await _locateCountry();
     if (await availability.canLocatePlaces) {
-      await locatePlace(background: false);
+      await locatePlace(background: background);
     }
   }
 
   // quick reverse geocoding to find the country, using an offline asset
   Future<void> _locateCountry() async {
-    if (hasAddress) return;
+    if (!hasGps || hasAddress) return;
     final countryCode = await countryTopology.countryCode(latLng);
     setCountry(countryCode);
   }
 
   void setCountry(CountryCode countryCode) {
-    if (hasPlace || countryCode == null) return;
+    if (hasFineAddress || countryCode == null) return;
     addressDetails = AddressDetails(
       contentId: contentId,
       countryCode: countryCode.alpha2,
@@ -474,16 +481,10 @@ class AvesEntry {
 
   // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> locatePlace({@required bool background}) async {
-    if (hasPlace) return;
-
-    await catalog(background: background);
-    final latitude = _catalogMetadata?.latitude;
-    final longitude = _catalogMetadata?.longitude;
-    if (latitude == null || longitude == null || (latitude == 0 && longitude == 0)) return;
-
-    final coordinates = Coordinates(latitude, longitude);
+    if (!hasGps || hasFineAddress) return;
+    final coordinates = latLng;
     try {
-      Future<List<Address>> call() => _findAddresses(coordinates);
+      Future<List<Address>> call() => _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -511,13 +512,11 @@ class AvesEntry {
   }
 
   Future<String> findAddressLine() async {
-    final latitude = _catalogMetadata?.latitude;
-    final longitude = _catalogMetadata?.longitude;
-    if (latitude == null || longitude == null || (latitude == 0 && longitude == 0)) return null;
+    if (!hasGps) return null;
 
-    final coordinates = Coordinates(latitude, longitude);
+    final coordinates = latLng;
     try {
-      final addresses = await _findAddresses(coordinates);
+      final addresses = await _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;

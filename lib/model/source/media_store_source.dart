@@ -13,7 +13,6 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
   bool _initialized = false;
@@ -103,23 +102,23 @@ class MediaStoreSource extends CollectionSource {
           updateDirectories();
         }
 
-        final analytics = FirebaseAnalytics();
-        unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString()));
-        unawaited(analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString()));
-
-        stateNotifier.value = SourceState.cataloguing;
         await catalogEntries();
-        unawaited(analytics.setUserProperty(name: 'tag_count', value: (ceilBy(sortedTags.length, 1)).toString()));
-
-        stateNotifier.value = SourceState.locating;
         await locateEntries();
-        unawaited(analytics.setUserProperty(name: 'country_count', value: (ceilBy(sortedCountries.length, 1)).toString()));
-
         stateNotifier.value = SourceState.ready;
+
+        _reportCollectionDimensions();
         debugPrint('$runtimeType refresh done, elapsed=${stopwatch.elapsed}');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
+  }
+
+  void _reportCollectionDimensions() {
+    final analytics = FirebaseAnalytics();
+    analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString());
+    analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString());
+    analytics.setUserProperty(name: 'tag_count', value: (ceilBy(sortedTags.length, 1)).toString());
+    analytics.setUserProperty(name: 'country_count', value: (ceilBy(sortedCountries.length, 1)).toString());
   }
 
   // returns URIs to retry later. They could be URIs that are:
@@ -178,13 +177,8 @@ class MediaStoreSource extends CollectionSource {
       addEntries(newEntries);
       await metadataDb.saveEntries(newEntries);
       cleanEmptyAlbums(existingDirectories);
-
-      stateNotifier.value = SourceState.cataloguing;
       await catalogEntries();
-
-      stateNotifier.value = SourceState.locating;
       await locateEntries();
-
       stateNotifier.value = SourceState.ready;
     }
 

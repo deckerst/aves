@@ -107,7 +107,7 @@ class ViewerDebugPage extends StatelessWidget {
         InfoRowGroup({
           'hasGps': '${entry.hasGps}',
           'hasAddress': '${entry.hasAddress}',
-          'hasPlace': '${entry.hasPlace}',
+          'hasFineAddress': '${entry.hasFineAddress}',
           'latLng': '${entry.latLng}',
           'geoUri': '${entry.geoUri}',
         }),

@@ -149,7 +149,7 @@ object StorageUtils {
         return paths.map { ensureTrailingSeparator(it) }.toTypedArray()
     }
 
-    // return physicalPaths based on phone model
+    // returns physicalPaths based on phone model
     @SuppressLint("SdCardPath")
     private val physicalPaths = arrayOf(
         "/storage/sdcard0",

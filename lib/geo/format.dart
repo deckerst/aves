@@ -21,7 +21,7 @@ String _decimal2sexagesimal(final double degDecimal) {
   return '$deg° $min′ ${roundToPrecision(sec, decimals: 2).toStringAsFixed(2)}″';
 }
 
-// return coordinates formatted as DMS, e.g. ['41° 24′ 12.2″ N', '2° 10′ 26.5″ E']
+// returns coordinates formatted as DMS, e.g. ['41° 24′ 12.2″ N', '2° 10′ 26.5″ E']
 List<String> toDMS(LatLng latLng) {
   if (latLng == null) return [];
   final lat = latLng.latitude;
