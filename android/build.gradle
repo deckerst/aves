@@ -3,6 +3,8 @@ buildscript {
     ext.kotlin_version = '1.4.30'
     repositories {
         google()
+        mavenCentral()
+        // TODO TLAD remove jcenter (migrating to mavenCentral) when this is fixed: https://youtrack.jetbrains.com/issue/IDEA-261387
         jcenter()
     }
     dependencies {
@@ -17,6 +19,8 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenCentral()
+        // TODO TLAD remove jcenter (migrating to mavenCentral) when this is fixed: https://youtrack.jetbrains.com/issue/IDEA-261387
         jcenter()
     }
 //    gradle.projectsEvaluated {
