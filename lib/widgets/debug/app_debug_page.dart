@@ -64,7 +64,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
     final catalogued = visibleEntries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
     final withAddress = withGps.where((entry) => entry.hasAddress);
-    final withPlace = withGps.where((entry) => entry.hasPlace);
+    final withFineAddress = withGps.where((entry) => entry.hasFineAddress);
     return AvesExpansionTile(
       title: 'General',
       children: [
@@ -106,7 +106,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
               'Catalogued': '${catalogued.length}',
               'With GPS': '${withGps.length}',
               'With address': '${withAddress.length}',
-              'With place': '${withPlace.length}',
+              'With fine address': '${withFineAddress.length}',
             },
           ),
         ),

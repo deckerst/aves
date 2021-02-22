@@ -27,6 +27,7 @@ mixin TagMixin on SourceBase {
     final todo = visibleEntries.where((entry) => !entry.isCatalogued).toList();
     if (todo.isEmpty) return;
 
+    stateNotifier.value = SourceState.cataloguing;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);

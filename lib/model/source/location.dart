@@ -35,8 +35,13 @@ mixin LocationMixin on SourceBase {
 
   // quick reverse geocoding to find the countries, using an offline asset
   Future<void> _locateCountries() async {
-    final todo = visibleEntries.where((entry) => entry.hasGps && entry.addressDetails?.countryCode == null).toSet();
+    final todo = visibleEntries.where((entry) => entry.hasGps && !entry.hasAddress).toSet();
     if (todo.isEmpty) return;
+
+    stateNotifier.value = SourceState.locating;
+    var progressDone = 0;
+    final progressTotal = todo.length;
+    setProgress(done: progressDone, total: progressTotal);
 
     // final stopwatch = Stopwatch()..start();
     final countryCodeMap = await countryTopology.countryCodeMap(todo.map((entry) => entry.latLng).toSet());
@@ -48,12 +53,13 @@ mixin LocationMixin on SourceBase {
       if (entry.hasAddress) {
         newAddresses.add(entry.addressDetails);
       }
+      setProgress(done: ++progressDone, total: progressTotal);
     });
     if (newAddresses.isNotEmpty) {
       await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
       onAddressMetadataChanged();
     }
-    // debugPrint('$runtimeType _locateCountries complete in ${stopwatch.elapsed.inSeconds}s');
+    // debugPrint('$runtimeType _locateCountries complete in ${stopwatch.elapsed.inMilliseconds}ms');
   }
 
   // full reverse geocoding, requiring Play Services and some connectivity
@@ -61,7 +67,7 @@ mixin LocationMixin on SourceBase {
     if (!(await availability.canLocatePlaces)) return;
 
     // final stopwatch = Stopwatch()..start();
-    final byLocated = groupBy<AvesEntry, bool>(visibleEntries.where((entry) => entry.hasGps), (entry) => entry.hasPlace);
+    final byLocated = groupBy<AvesEntry, bool>(visibleEntries.where((entry) => entry.hasGps), (entry) => entry.hasFineAddress);
     final todo = byLocated[false] ?? [];
     if (todo.isEmpty) return;
 
@@ -85,6 +91,7 @@ mixin LocationMixin on SourceBase {
     final knownLocations = <Tuple2, AddressDetails>{};
     byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails));
 
+    stateNotifier.value = SourceState.locating;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
@@ -100,7 +107,7 @@ mixin LocationMixin on SourceBase {
         // so that we skip geocoding of following entries with the same coordinates
         knownLocations[latLng] = entry.addressDetails;
       }
-      if (entry.hasPlace) {
+      if (entry.hasFineAddress) {
         newAddresses.add(entry.addressDetails);
         if (newAddresses.length >= _commitCountThreshold) {
           await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
@@ -147,7 +154,8 @@ mixin LocationMixin on SourceBase {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      final countryCodes = entries.where((entry) => entry.hasPlace).map((entry) => entry.addressDetails.countryCode).toSet();
+      final countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails.countryCode).toSet();
+      countryCodes.remove(null);
       countryCodes.forEach(_filterEntryCountMap.remove);
     }
   }

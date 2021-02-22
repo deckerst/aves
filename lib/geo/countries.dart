@@ -17,12 +17,12 @@ class CountryTopology {
 
   Future<Topology> getTopology() => _topology != null ? SynchronousFuture(_topology) : rootBundle.loadString(topoJsonAsset).then(TopoJson().parse);
 
-  // return the country containing given coordinates
+  // returns the country containing given coordinates
   Future<CountryCode> countryCode(LatLng position) async {
     return _countryOfNumeric(await numericCode(position));
   }
 
-  // return the ISO 3166-1 numeric code of the country containing given coordinates
+  // returns the ISO 3166-1 numeric code of the country containing given coordinates
   Future<int> numericCode(LatLng position) async {
     final topology = await getTopology();
     if (topology == null) return null;
@@ -31,7 +31,7 @@ class CountryTopology {
     return _getNumeric(topology, countries, position);
   }
 
-  // return a map of the given positions by country
+  // returns a map of the given positions by country
   Future<Map<CountryCode, Set<LatLng>>> countryCodeMap(Set<LatLng> positions) async {
     final numericMap = await numericCodeMap(positions);
     numericMap.remove(null);
@@ -43,7 +43,7 @@ class CountryTopology {
     return codeMap;
   }
 
-  // return a map of the given positions by the ISO 3166-1 numeric code of the country containing them
+  // returns a map of the given positions by the ISO 3166-1 numeric code of the country containing them
   Future<Map<int, Set<LatLng>>> numericCodeMap(Set<LatLng> positions) async {
     final topology = await getTopology();
     if (topology == null) return null;
@@ -68,10 +68,18 @@ class CountryTopology {
     return null;
   }
 
-  static int _getNumeric(Topology topology, List<Geometry> countries, LatLng position) {
+  static int _getNumeric(Topology topology, List<Geometry> mruCountries, LatLng position) {
     final point = [position.longitude, position.latitude];
-    final hit = countries.firstWhere((country) => country.containsPoint(topology, point), orElse: () => null);
-    final idString = (hit?.id as String);
+    final hit = mruCountries.firstWhere((country) => country.containsPoint(topology, point), orElse: () => null);
+    if (hit == null) return null;
+
+    // promote hit countries, assuming given positions are likely to come from the same countries
+    if (mruCountries.first != hit) {
+      mruCountries.remove(hit);
+      mruCountries.insert(0, hit);
+    }
+
+    final idString = (hit.id as String);
     final code = idString == null ? null : int.tryParse(idString);
     return code;
   }

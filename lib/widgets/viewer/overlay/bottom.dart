@@ -386,7 +386,7 @@ class _DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.overlayUnknown;
-    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.resolutionText;
+    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.isSized ? entry.resolutionText : '';
 
     return Row(
       children: [

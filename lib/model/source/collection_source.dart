@@ -23,6 +23,8 @@ mixin SourceBase {
 
   List<AvesEntry> get sortedEntriesByDate;
 
+  ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
+
   final StreamController<ProgressEvent> _progressStreamController = StreamController.broadcast();
 
   Stream<ProgressEvent> get progressStream => _progressStreamController.stream;
@@ -57,8 +59,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     _sortedEntriesByDate ??= List.unmodifiable(visibleEntries.toList()..sort(AvesEntry.compareByDate));
     return _sortedEntriesByDate;
   }
-
-  ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
   List<DateMetadata> _savedDates;
 

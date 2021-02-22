@@ -55,7 +55,7 @@ class BasicSection extends StatelessWidget {
           'Title': title,
           'Date': dateText,
           if (entry.isVideo) ..._buildVideoRows(),
-          if (!entry.isSvg) 'Resolution': rasterResolutionText,
+          if (!entry.isSvg && entry.isSized) 'Resolution': rasterResolutionText,
           'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.infoUnknown,
           'URI': uri,
           if (path != null) 'Path': path,

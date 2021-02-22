@@ -95,7 +95,7 @@ class AndroidFileService {
     return false;
   }
 
-  // return media URI
+  // returns media URI
   static Future<Uri> scanFile(String path, String mimeType) async {
     debugPrint('scanFile with path=$path, mimeType=$mimeType');
     try {

@@ -248,7 +248,7 @@ class ImageFileService {
 
   static Future<Map> rename(AvesEntry entry, String newName) async {
     try {
-      // return map with: 'contentId' 'path' 'title' 'uri' (all optional)
+      // returns map with: 'contentId' 'path' 'title' 'uri' (all optional)
       final result = await platform.invokeMethod('rename', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'newName': newName,
@@ -262,7 +262,7 @@ class ImageFileService {
 
   static Future<Map> rotate(AvesEntry entry, {@required bool clockwise}) async {
     try {
-      // return map with: 'rotationDegrees' 'isFlipped'
+      // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'clockwise': clockwise,
@@ -276,7 +276,7 @@ class ImageFileService {
 
   static Future<Map> flip(AvesEntry entry) async {
     try {
-      // return map with: 'rotationDegrees' 'isFlipped'
+      // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('flip', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
       }) as Map;
