@@ -4,9 +4,9 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CollectionNavTile extends StatelessWidget {
-  final CollectionSource source;
   final Widget leading;
   final String title;
   final Widget trailing;
@@ -14,7 +14,6 @@ class CollectionNavTile extends StatelessWidget {
   final CollectionFilter filter;
 
   const CollectionNavTile({
-    @required this.source,
     @required this.leading,
     @required this.title,
     this.trailing,
@@ -44,7 +43,7 @@ class CollectionNavTile extends StatelessWidget {
       MaterialPageRoute(
         settings: RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
-          source: source,
+          source: context.read<CollectionSource>(),
           filters: [filter],
         )),
       ),

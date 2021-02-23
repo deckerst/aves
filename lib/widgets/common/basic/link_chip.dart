@@ -40,7 +40,14 @@ class LinkChip extends StatelessWidget {
                 leading,
                 SizedBox(width: 8),
               ],
-              Text(text),
+              Flexible(
+                child: Text(
+                  text,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                ),
+              ),
               SizedBox(width: 8),
               Builder(
                 builder: (context) => Icon(

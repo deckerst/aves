@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
       case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
           settings: RouteSettings(name: AlbumListPage.routeName),
-          builder: (_) => AlbumListPage(source: source),
+          builder: (_) => AlbumListPage(),
         );
       case SearchPage.routeName:
         return SearchPageRoute(
