@@ -180,9 +180,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             ),
           ),
         ),
-        drawer: AppDrawer(
-          source: source,
-        ),
+        drawer: AppDrawer(),
         resizeToAvoidBottomInset: false,
       ),
     );

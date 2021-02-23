@@ -7,6 +7,7 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
   final AvesEntry entry;
@@ -172,10 +173,26 @@ class IconUtils {
   static Widget getAlbumIcon({
     @required BuildContext context,
     @required String album,
-    double size = 24,
+    double size,
     bool embossed = false,
   }) {
-    Widget buildIcon(IconData icon) => embossed ? DecoratedIcon(icon, shadows: [Constants.embossShadow], size: size) : Icon(icon, size: size);
+    size ??= IconTheme.of(context).size;
+    Widget buildIcon(IconData icon) => embossed
+        ? MediaQuery(
+            // `DecoratedIcon` internally uses `Text`,
+            // which size depends on the ambient `textScaleFactor`
+            // but we already accommodate for it upstream
+            data: context.read<MediaQueryData>().copyWith(textScaleFactor: 1.0),
+            child: DecoratedIcon(
+              icon,
+              shadows: [Constants.embossShadow],
+              size: size,
+            ),
+          )
+        : Icon(
+            icon,
+            size: size,
+          );
     switch (androidFileUtils.getAlbumType(album)) {
       case AlbumType.camera:
         return buildIcon(AIcons.cameraAlbum);

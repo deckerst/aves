@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:aves/model/availability.dart';
-import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/source/album.dart';
@@ -14,9 +13,9 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/about/news_badge.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
+import 'package:aves/widgets/drawer/album_tile.dart';
 import 'package:aves/widgets/drawer/collection_tile.dart';
 import 'package:aves/widgets/drawer/tile.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -28,10 +27,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
-  final CollectionSource source;
-
-  const AppDrawer({@required this.source});
-
   @override
   _AppDrawerState createState() => _AppDrawerState();
 }
@@ -39,7 +34,7 @@ class AppDrawer extends StatefulWidget {
 class _AppDrawerState extends State<AppDrawer> {
   Future<bool> _newVersionLoader;
 
-  CollectionSource get source => widget.source;
+  CollectionSource get source => context.read<CollectionSource>();
 
   @override
   void initState() {
@@ -72,6 +67,7 @@ class _AppDrawerState extends State<AppDrawer> {
       child: Selector<MediaQueryData, double>(
         selector: (c, mq) => mq.effectiveBottomPadding,
         builder: (c, mqPaddingBottom, child) {
+          final iconTheme = IconTheme.of(context);
           return SingleChildScrollView(
             padding: EdgeInsets.only(bottom: mqPaddingBottom),
             child: Theme(
@@ -79,8 +75,11 @@ class _AppDrawerState extends State<AppDrawer> {
                 // color used by `ExpansionTile` for leading icon
                 unselectedWidgetColor: Colors.white,
               ),
-              child: Column(
-                children: drawerItems,
+              child: IconTheme(
+                data: iconTheme.copyWith(size: iconTheme.size * MediaQuery.textScaleFactorOf(context)),
+                child: Column(
+                  children: drawerItems,
+                ),
               ),
             ),
           );
@@ -123,23 +122,6 @@ class _AppDrawerState extends State<AppDrawer> {
     );
   }
 
-  Widget _buildAlbumTile(String album) {
-    final uniqueName = source.getUniqueAlbumName(album);
-    return CollectionNavTile(
-      source: source,
-      leading: IconUtils.getAlbumIcon(context: context, album: album),
-      title: uniqueName,
-      trailing: androidFileUtils.isOnRemovableStorage(album)
-          ? Icon(
-              AIcons.removableStorage,
-              size: 16,
-              color: Colors.grey,
-            )
-          : null,
-      filter: AlbumFilter(album, uniqueName),
-    );
-  }
-
   Widget _buildSpecialAlbumSection() {
     return StreamBuilder(
         stream: source.eventBus.on<AlbumsChangedEvent>(),
@@ -154,7 +136,7 @@ class _AppDrawerState extends State<AppDrawer> {
           return Column(
             children: [
               Divider(),
-              ...specialAlbums.map(_buildAlbumTile),
+              ...specialAlbums.map((album) => AlbumTile(album)),
             ],
           );
         });
@@ -163,21 +145,18 @@ class _AppDrawerState extends State<AppDrawer> {
   // tiles
 
   Widget get allCollectionTile => CollectionNavTile(
-        source: source,
         leading: Icon(AIcons.allCollection),
         title: 'All collection',
         filter: null,
       );
 
   Widget get videoTile => CollectionNavTile(
-        source: source,
         leading: Icon(AIcons.video),
         title: 'Videos',
         filter: MimeFilter(MimeTypes.anyVideo),
       );
 
   Widget get favouriteTile => CollectionNavTile(
-        source: source,
         leading: Icon(AIcons.favourite),
         title: 'Favourites',
         filter: FavouriteFilter(),
@@ -191,7 +170,7 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, _) => Text('${source.rawAlbums.length}'),
         ),
         routeName: AlbumListPage.routeName,
-        pageBuilder: (_) => AlbumListPage(source: source),
+        pageBuilder: (_) => AlbumListPage(),
       );
 
   Widget get countryListTile => NavTile(
@@ -202,7 +181,7 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, _) => Text('${source.sortedCountries.length}'),
         ),
         routeName: CountryListPage.routeName,
-        pageBuilder: (_) => CountryListPage(source: source),
+        pageBuilder: (_) => CountryListPage(),
       );
 
   Widget get tagListTile => NavTile(
@@ -213,7 +192,7 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, _) => Text('${source.sortedTags.length}'),
         ),
         routeName: TagListPage.routeName,
-        pageBuilder: (_) => TagListPage(source: source),
+        pageBuilder: (_) => TagListPage(),
       );
 
   Widget get settingsTile => NavTile(
@@ -244,6 +223,6 @@ class _AppDrawerState extends State<AppDrawer> {
         title: 'Debug',
         topLevel: false,
         routeName: AppDebugPage.routeName,
-        pageBuilder: (_) => AppDebugPage(source: source),
+        pageBuilder: (_) => AppDebugPage(),
       );
 }

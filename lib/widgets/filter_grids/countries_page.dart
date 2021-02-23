@@ -19,12 +19,9 @@ import 'package:tuple/tuple.dart';
 class CountryListPage extends StatelessWidget {
   static const routeName = '/countries';
 
-  final CollectionSource source;
-
-  const CountryListPage({@required this.source});
-
   @override
   Widget build(BuildContext context) {
+    final source = context.read<CollectionSource>();
     return Selector<Settings, Tuple2<ChipSortFactor, Set<CollectionFilter>>>(
       selector: (context, s) => Tuple2(s.countrySortFactor, s.pinnedFilters),
       builder: (context, s, child) {
@@ -39,7 +36,7 @@ class CountryListPage extends StatelessWidget {
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
               ChipAction.hide,
             ],
-            filterSections: _getCountryEntries(),
+            filterSections: _getCountryEntries(source),
             emptyBuilder: () => EmptyContent(
               icon: AIcons.location,
               text: 'No countries',
@@ -50,7 +47,7 @@ class CountryListPage extends StatelessWidget {
     );
   }
 
-  Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _getCountryEntries() {
+  Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _getCountryEntries(CollectionSource source) {
     final filters = source.sortedCountries.map((location) => LocationFilter(LocationLevel.country, location)).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.countrySortFactor, source, filters);

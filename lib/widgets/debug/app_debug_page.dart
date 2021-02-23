@@ -14,20 +14,17 @@ import 'package:aves/widgets/debug/storage.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
-
-  final CollectionSource source;
-
-  const AppDebugPage({this.source});
 
   @override
   State<StatefulWidget> createState() => _AppDebugPageState();
 }
 
 class _AppDebugPageState extends State<AppDebugPage> {
-  CollectionSource get source => widget.source;
+  CollectionSource get source => context.read<CollectionSource>();
 
   Set<AvesEntry> get visibleEntries => source.visibleEntries;
 

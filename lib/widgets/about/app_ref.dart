@@ -46,7 +46,7 @@ class _AppReferenceState extends State<AppReference> {
       builder: (context, snapshot) {
         return LinkChip(
           leading: AvesLogo(
-            size: style.fontSize * 1.25,
+            size: style.fontSize * MediaQuery.textScaleFactorOf(context) * 1.25,
           ),
           text: 'Aves ${snapshot.data?.version}',
           url: 'https://github.com/deckerst/aves',

@@ -19,12 +19,9 @@ import 'package:tuple/tuple.dart';
 class TagListPage extends StatelessWidget {
   static const routeName = '/tags';
 
-  final CollectionSource source;
-
-  const TagListPage({@required this.source});
-
   @override
   Widget build(BuildContext context) {
+    final source = context.read<CollectionSource>();
     return Selector<Settings, Tuple2<ChipSortFactor, Set<CollectionFilter>>>(
       selector: (context, s) => Tuple2(s.tagSortFactor, s.pinnedFilters),
       builder: (context, s, child) {
@@ -39,7 +36,7 @@ class TagListPage extends StatelessWidget {
               settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
               ChipAction.hide,
             ],
-            filterSections: _getTagEntries(),
+            filterSections: _getTagEntries(source),
             emptyBuilder: () => EmptyContent(
               icon: AIcons.tag,
               text: 'No tags',
@@ -50,7 +47,7 @@ class TagListPage extends StatelessWidget {
     );
   }
 
-  Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _getTagEntries() {
+  Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _getTagEntries(CollectionSource source) {
     final filters = source.sortedTags.map((tag) => TagFilter(tag)).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.tagSortFactor, source, filters);

@@ -26,7 +26,6 @@ class AvesFilterChip extends StatefulWidget {
   static const double minChipHeight = kMinInteractiveDimension;
   static const double minChipWidth = 80;
   static const double maxChipWidth = 160;
-  static const double iconSize = 20;
 
   const AvesFilterChip({
     Key key,
@@ -88,7 +87,8 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   @override
   Widget build(BuildContext context) {
-    const iconSize = AvesFilterChip.iconSize;
+    final textScaleFactor = MediaQuery.textScaleFactorOf(context);
+    final iconSize = 20 * textScaleFactor;
 
     final hasBackground = widget.background != null;
     final leading = filter.iconBuilder(context, iconSize, showGenericIcon: widget.showGenericIcon, embossed: hasBackground);

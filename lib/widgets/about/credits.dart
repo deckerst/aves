@@ -31,7 +31,7 @@ class AboutCredits extends StatelessWidget {
                   ),
                   alignment: PlaceholderAlignment.middle,
                 ),
-                TextSpan(text: ', under ISC License.'),
+                TextSpan(text: 'under ISC License.'),
               ],
             ),
           ),
