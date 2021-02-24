@@ -44,7 +44,7 @@ class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {
       toggledNotifier: _highlightedNotifier,
       startAngle: pi * -3 / 4,
       centerSweep: false,
-      onSweepEnd: () => highlightInfo.remove(filter),
+      onSweepEnd: highlightInfo.clear,
     );
   }
 }

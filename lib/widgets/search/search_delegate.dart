@@ -5,6 +5,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -81,11 +82,11 @@ class CollectionSearchDelegate {
                     FavouriteFilter(),
                     MimeFilter(MimeTypes.anyImage),
                     MimeFilter(MimeTypes.anyVideo),
-                    MimeFilter(MimeFilter.animated),
-                    MimeFilter(MimeFilter.panorama),
-                    MimeFilter(MimeFilter.sphericalVideo),
-                    MimeFilter(MimeFilter.geotiff),
                     MimeFilter(MimeTypes.svg),
+                    TypeFilter(TypeFilter.animated),
+                    TypeFilter(TypeFilter.panorama),
+                    TypeFilter(TypeFilter.sphericalVideo),
+                    TypeFilter(TypeFilter.geotiff),
                   ].where((f) => f != null && containQuery(f.label)).toList(),
                   // usually perform hero animation only on tapped chips,
                   // but we also need to animate the query chip when it is selected by submitting the search query

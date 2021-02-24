@@ -47,7 +47,6 @@ class ThumbnailFetcher internal constructor(
 
     fun fetch() {
         var bitmap: Bitmap? = null
-        var recycle = true
         var exception: Exception? = null
 
         try {
@@ -66,14 +65,13 @@ class ThumbnailFetcher internal constructor(
         if (bitmap == null) {
             try {
                 bitmap = getByGlide()
-                recycle = false
             } catch (e: Exception) {
                 exception = e
             }
         }
 
         if (bitmap != null) {
-            result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = recycle))
+            result.success(bitmap.getBytes(MimeTypes.canHaveAlpha(mimeType), recycle = false))
         } else {
             var errorDetails: String? = exception?.message
             if (errorDetails?.isNotEmpty() == true) {

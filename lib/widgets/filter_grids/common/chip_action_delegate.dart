@@ -2,6 +2,7 @@ import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
@@ -11,17 +12,15 @@ import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
+import 'package:aves/widgets/filter_grids/albums_page.dart';
+import 'package:aves/widgets/filter_grids/countries_page.dart';
+import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
 
 class ChipActionDelegate {
-  final CollectionSource source;
-
-  ChipActionDelegate({
-    @required this.source,
-  });
-
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     switch (action) {
       case ChipAction.pin:
@@ -31,19 +30,67 @@ class ChipActionDelegate {
         settings.pinnedFilters = settings.pinnedFilters..remove(filter);
         break;
       case ChipAction.hide:
-        source.changeFilterVisibility(filter, false);
+        _hide(context, filter);
+        break;
+      case ChipAction.goToAlbumPage:
+        _goTo(context, filter, AlbumListPage.routeName, (context) => AlbumListPage());
+        break;
+      case ChipAction.goToCountryPage:
+        _goTo(context, filter, CountryListPage.routeName, (context) => CountryListPage());
+        break;
+      case ChipAction.goToTagPage:
+        _goTo(context, filter, TagListPage.routeName, (context) => TagListPage());
         break;
       default:
         break;
     }
   }
+
+  Future<void> _hide(BuildContext context, CollectionFilter filter) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AvesDialog(
+          context: context,
+          content: Text('Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure that you want to hide this?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'.toUpperCase()),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text('Hide'.toUpperCase()),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed == null || !confirmed) return;
+
+    final source = context.read<CollectionSource>();
+    source.changeFilterVisibility(filter, false);
+  }
+
+  void _goTo(
+    BuildContext context,
+    CollectionFilter filter,
+    String routeName,
+    WidgetBuilder pageBuilder,
+  ) {
+    context.read<HighlightInfo>().set(filter);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        settings: RouteSettings(name: routeName),
+        builder: pageBuilder,
+      ),
+      (route) => false,
+    );
+  }
 }
 
 class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  AlbumChipActionDelegate({
-    @required CollectionSource source,
-  }) : super(source: source);
-
   @override
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
     super.onActionSelected(context, filter, action);
@@ -60,6 +107,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
+    final source = context.read<CollectionSource>();
     final selection = source.visibleEntries.where(filter.test).toSet();
     final count = selection.length;
 
@@ -106,6 +154,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showRenameDialog(BuildContext context, AlbumFilter filter) async {
+    final source = context.read<CollectionSource>();
     final album = filter.album;
     final newName = await showDialog<String>(
       context: context,

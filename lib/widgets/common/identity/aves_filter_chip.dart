@@ -1,10 +1,19 @@
+import 'package:aves/main.dart';
+import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 typedef FilterCallback = void Function(CollectionFilter filter);
-typedef OffsetFilterCallback = void Function(CollectionFilter filter, Offset tapPosition);
+typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
 
 enum HeroType { always, onTap, never }
 
@@ -38,9 +47,42 @@ class AvesFilterChip extends StatefulWidget {
     this.padding = 6.0,
     this.heroType = HeroType.onTap,
     this.onTap,
-    this.onLongPress,
+    this.onLongPress = showDefaultLongPressMenu,
   })  : assert(filter != null),
         super(key: key);
+
+  static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
+    if (AvesApp.mode == AppMode.main) {
+      final actions = [
+        if (filter is AlbumFilter) ChipAction.goToAlbumPage,
+        if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
+        if (filter is TagFilter) ChipAction.goToTagPage,
+        ChipAction.hide,
+      ];
+
+      // remove focus, if any, to prevent the keyboard from showing up
+      // after the user is done with the popup menu
+      FocusManager.instance.primaryFocus?.unfocus();
+
+      final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+      final touchArea = Size(40, 40);
+      // TODO TLAD show menu within safe area
+      final selectedAction = await showMenu<ChipAction>(
+        context: context,
+        position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
+        items: actions
+            .map((action) => PopupMenuItem(
+                  value: action,
+                  child: MenuRow(text: action.getText(), icon: action.getIcon()),
+                ))
+            .toList(),
+      );
+      if (selectedAction != null) {
+        // wait for the popup menu to hide before proceeding with the action
+        Future.delayed(Durations.popupMenuAnimation * timeDilation, () => ChipActionDelegate().onActionSelected(context, filter, selectedAction));
+      }
+    }
+  }
 
   @override
   _AvesFilterChipState createState() => _AvesFilterChipState();
@@ -178,7 +220,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                         setState(() => _tapped = true);
                       }
                     : null,
-                onLongPress: widget.onLongPress != null ? () => widget.onLongPress(filter, _tapPosition) : null,
+                onLongPress: widget.onLongPress != null ? () => widget.onLongPress(context, filter, _tapPosition) : null,
                 borderRadius: borderRadius,
                 child: FutureBuilder<Color>(
                   future: _colorFuture,
