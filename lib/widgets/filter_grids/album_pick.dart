@@ -47,7 +47,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
     Widget appBar = AlbumPickAppBar(
       source: source,
       moveType: widget.moveType,
-      actionDelegate: AlbumChipSetActionDelegate(source: source),
+      actionDelegate: AlbumChipSetActionDelegate(),
       queryNotifier: _queryNotifier,
     );
 
@@ -57,7 +57,6 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
         return StreamBuilder(
           stream: source.eventBus.on<AlbumsChangedEvent>(),
           builder: (context, snapshot) => FilterGridPage<AlbumFilter>(
-            source: source,
             appBar: appBar,
             filterSections: AlbumListPage.getAlbumEntries(source),
             showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,

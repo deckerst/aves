@@ -3,22 +3,24 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 
 class HighlightInfo extends ChangeNotifier {
-  final Queue<Object> _items = Queue();
+  Object _item;
 
-  void add(Object item) {
-    if (_items.contains(item)) return;
-
-    _items.addFirst(item);
-    while (_items.length > 5) {
-      _items.removeLast();
-    }
+  void set(Object item) {
+    if (_item == item) return;
+    _item = item;
     notifyListeners();
   }
 
-  void remove(Object item) {
-    _items.removeWhere((element) => element == item);
+  Object clear() {
+    if (_item == null) return null;
+    final item = _item;
+    _item = null;
     notifyListeners();
+    return item;
   }
 
-  bool contains(Object item) => _items.contains(item);
+  bool contains(Object item) => _item == item;
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{item=$_item}';
 }

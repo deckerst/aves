@@ -48,7 +48,6 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilterGridPage<T>(
       key: ValueKey('filter-grid-page'),
-      source: source,
       appBar: SliverAppBar(
         title: TappableAppBarTitle(
           onTap: () => _goToSearch(context),
@@ -80,11 +79,11 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
           )),
         ),
       ),
-      onLongPress: AvesApp.mode == AppMode.main ? (filter, tapPosition) => _showMenu(context, filter, tapPosition) : null,
+      onLongPress: AvesApp.mode == AppMode.main ? _showMenu : null,
     );
   }
 
-  Future<void> _showMenu(BuildContext context, T filter, Offset tapPosition) async {
+  void _showMenu(BuildContext context, T filter, Offset tapPosition) async {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final touchArea = Size(40, 40);
     // TODO TLAD show menu within safe area

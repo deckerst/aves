@@ -35,8 +35,8 @@ class AlbumListPage extends StatelessWidget {
               title: 'Albums',
               groupable: true,
               showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-              chipSetActionDelegate: AlbumChipSetActionDelegate(source: source),
-              chipActionDelegate: AlbumChipActionDelegate(source: source),
+              chipSetActionDelegate: AlbumChipSetActionDelegate(),
+              chipActionDelegate: AlbumChipActionDelegate(),
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
                 ChipAction.rename,

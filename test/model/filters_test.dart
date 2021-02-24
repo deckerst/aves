@@ -5,6 +5,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/type.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:test/test.dart';
 
@@ -20,6 +21,9 @@ void main() {
 
     final location = LocationFilter(LocationLevel.country, 'France${LocationFilter.locationSeparator}FR');
     expect(location, jsonRoundTrip(location));
+
+    final type = TypeFilter(TypeFilter.sphericalVideo);
+    expect(type, jsonRoundTrip(type));
 
     final mime = MimeFilter(MimeTypes.anyVideo);
     expect(mime, jsonRoundTrip(mime));

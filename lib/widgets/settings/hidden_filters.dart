@@ -69,6 +69,7 @@ class HiddenFilterPage extends StatelessWidget {
                                 filter: filter,
                                 removable: true,
                                 onTap: (filter) => context.read<CollectionSource>().changeFilterVisibility(filter, true),
+                                onLongPress: null,
                               ))
                           .toList(),
                     );

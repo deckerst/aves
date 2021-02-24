@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -16,9 +16,9 @@ import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/overlay.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DecoratedFilterChip extends StatelessWidget {
-  final CollectionSource source;
   final CollectionFilter filter;
   final AvesEntry entry;
   final double extent;
@@ -28,7 +28,6 @@ class DecoratedFilterChip extends StatelessWidget {
 
   const DecoratedFilterChip({
     Key key,
-    @required this.source,
     @required this.filter,
     @required this.entry,
     @required this.extent,
@@ -116,11 +115,13 @@ class DecoratedFilterChip extends StatelessWidget {
               size: iconSize,
             ),
           ),
-        Text(
-          '${source.count(filter)}',
-          style: TextStyle(
-            color: FilterGridPage.detailColor,
-            fontSize: fontSize,
+        Consumer<CollectionSource>(
+          builder: (context, source, child) => Text(
+            '${source.count(filter)}',
+            style: TextStyle(
+              color: FilterGridPage.detailColor,
+              fontSize: fontSize,
+            ),
           ),
         ),
       ],
