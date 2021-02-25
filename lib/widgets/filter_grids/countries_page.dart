@@ -26,7 +26,7 @@ class CountryListPage extends StatelessWidget {
       selector: (context, s) => Tuple2(s.countrySortFactor, s.pinnedFilters),
       builder: (context, s, child) {
         return StreamBuilder(
-          stream: source.eventBus.on<LocationsChangedEvent>(),
+          stream: source.eventBus.on<CountriesChangedEvent>(),
           builder: (context, snapshot) => FilterNavigationPage<LocationFilter>(
             source: source,
             title: 'Countries',

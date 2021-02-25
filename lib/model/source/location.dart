@@ -131,16 +131,22 @@ mixin LocationMixin on SourceBase {
 
   void updateLocations() {
     final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).toList();
-    sortedPlaces = List<String>.unmodifiable(locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
+    final updatedPlaces = locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
+    if (!listEquals(updatedPlaces, sortedPlaces)) {
+      sortedPlaces = List.unmodifiable(updatedPlaces);
+      eventBus.fire(PlacesChangedEvent());
+    }
 
     // the same country code could be found with different country names
     // e.g. if the locale changed between geolocating calls
     // so we merge countries by code, keeping only one name for each code
     final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
-    sortedCountries = List<String>.unmodifiable(countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase));
-
-    invalidateCountryFilterSummary();
-    eventBus.fire(LocationsChangedEvent());
+    final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);
+    if (!listEquals(updatedCountries, sortedCountries)) {
+      sortedCountries = List.unmodifiable(updatedCountries);
+      invalidateCountryFilterSummary();
+      eventBus.fire(CountriesChangedEvent());
+    }
   }
 
   // filter summary
@@ -150,14 +156,16 @@ mixin LocationMixin on SourceBase {
   final Map<String, AvesEntry> _filterRecentEntryMap = {};
 
   void invalidateCountryFilterSummary([Set<AvesEntry> entries]) {
+    Set<String> countryCodes;
     if (entries == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      final countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails.countryCode).toSet();
+      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails.countryCode).toSet();
       countryCodes.remove(null);
       countryCodes.forEach(_filterEntryCountMap.remove);
     }
+    eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
   }
 
   int countryEntryCount(LocationFilter filter) {
@@ -171,4 +179,12 @@ mixin LocationMixin on SourceBase {
 
 class AddressMetadataChangedEvent {}
 
-class LocationsChangedEvent {}
+class PlacesChangedEvent {}
+
+class CountriesChangedEvent {}
+
+class CountrySummaryInvalidatedEvent {
+  final Set<String> countryCodes;
+
+  const CountrySummaryInvalidatedEvent(this.countryCodes);
+}
