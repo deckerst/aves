@@ -177,7 +177,7 @@ class _AppDrawerState extends State<AppDrawer> {
         icon: AIcons.location,
         title: 'Countries',
         trailing: StreamBuilder(
-          stream: source.eventBus.on<LocationsChangedEvent>(),
+          stream: source.eventBus.on<CountriesChangedEvent>(),
           builder: (context, _) => Text('${source.sortedCountries.length}'),
         ),
         routeName: CountryListPage.routeName,

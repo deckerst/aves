@@ -121,6 +121,7 @@ mixin AlbumMixin on SourceBase {
       directories.forEach(_filterEntryCountMap.remove);
       directories.forEach(_filterRecentEntryMap.remove);
     }
+    eventBus.fire(AlbumSummaryInvalidatedEvent(directories));
   }
 
   int albumEntryCount(AlbumFilter filter) {
@@ -133,3 +134,9 @@ mixin AlbumMixin on SourceBase {
 }
 
 class AlbumsChangedEvent {}
+
+class AlbumSummaryInvalidatedEvent {
+  final Set<String> directories;
+
+  const AlbumSummaryInvalidatedEvent(this.directories);
+}

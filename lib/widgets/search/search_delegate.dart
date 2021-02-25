@@ -110,7 +110,7 @@ class CollectionSearchDelegate {
                       );
                     }),
                 StreamBuilder(
-                    stream: source.eventBus.on<LocationsChangedEvent>(),
+                    stream: source.eventBus.on<CountriesChangedEvent>(),
                     builder: (context, snapshot) {
                       final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
                       return _buildFilterRow(
@@ -120,7 +120,7 @@ class CollectionSearchDelegate {
                       );
                     }),
                 StreamBuilder(
-                    stream: source.eventBus.on<LocationsChangedEvent>(),
+                    stream: source.eventBus.on<PlacesChangedEvent>(),
                     builder: (context, snapshot) {
                       final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
                       final noFilter = LocationFilter(LocationLevel.place, '');

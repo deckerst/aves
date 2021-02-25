@@ -117,7 +117,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                               child: DecoratedFilterChip(
                                 key: Key(filter.key),
                                 filter: filter,
-                                entry: entry,
                                 extent: _tileExtentNotifier.value,
                                 pinned: pinnedFilters.contains(filter),
                                 onTap: onTap,
@@ -252,7 +251,6 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
         final filter = item.filter;
         return DecoratedFilterChip(
           filter: filter,
-          entry: item.entry,
           extent: extent,
           pinned: pinnedFilters.contains(filter),
           highlightable: false,
