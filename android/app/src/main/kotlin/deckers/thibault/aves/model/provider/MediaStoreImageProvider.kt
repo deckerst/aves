@@ -20,13 +20,12 @@ import deckers.thibault.aves.utils.StorageUtils.ensureTrailingSeparator
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
 import deckers.thibault.aves.utils.UriUtils.tryParseId
-import kotlinx.coroutines.delay
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
 class MediaStoreImageProvider : ImageProvider() {
-    suspend fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
+    fun fetchAll(context: Context, knownEntries: Map<Int, Int?>, handleNewEntry: NewEntryHandler) {
         val isModified = fun(contentId: Int, dateModifiedSecs: Int): Boolean {
             val knownDate = knownEntries[contentId]
             return knownDate == null || knownDate < dateModifiedSecs
@@ -35,7 +34,7 @@ class MediaStoreImageProvider : ImageProvider() {
         fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
     }
 
-    override suspend fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
+    override fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
         val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
@@ -45,17 +44,17 @@ class MediaStoreImageProvider : ImageProvider() {
         if (id != null) {
             if (mimeType == null || isImage(mimeType)) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
-                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION) > 0) return
+                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)) return
             }
             if (mimeType == null || isVideo(mimeType)) {
                 val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
-                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION) > 0) return
+                if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)) return
             }
         }
         // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
         // without an equivalent image/video if it is shared from a file browser
         // but the file is not publicly visible
-        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = mimeType) > 0) return
+        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = mimeType)) return
 
         callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
     }
@@ -109,15 +108,15 @@ class MediaStoreImageProvider : ImageProvider() {
         return obsoleteIds
     }
 
-    private suspend fun fetchFrom(
+    private fun fetchFrom(
         context: Context,
         isValidEntry: NewEntryChecker,
         handleNewEntry: NewEntryHandler,
         contentUri: Uri,
         projection: Array<String>,
         fileMimeType: String? = null,
-    ): Int {
-        var newEntryCount = 0
+    ): Boolean {
+        var found = false
         val orderBy = "${MediaStore.MediaColumns.DATE_MODIFIED} DESC"
         try {
             val cursor = context.contentResolver.query(contentUri, projection, null, null, orderBy)
@@ -191,11 +190,7 @@ class MediaStoreImageProvider : ImageProvider() {
                             }
 
                             handleNewEntry(entryMap)
-                            // TODO TLAD is this necessary?
-                            if (newEntryCount % 30 == 0) {
-                                delay(10)
-                            }
-                            newEntryCount++
+                            found = true
                         }
                     }
                 }
@@ -204,7 +199,7 @@ class MediaStoreImageProvider : ImageProvider() {
         } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to get entries", e)
         }
-        return newEntryCount
+        return found
     }
 
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType

@@ -55,7 +55,7 @@ class MediaStoreStreamHandler(private val context: Context, arguments: Any?) : E
         }
     }
 
-    private suspend fun fetchAll() {
+    private fun fetchAll() {
         MediaStoreImageProvider().fetchAll(context, knownEntries ?: emptyMap()) { success(it) }
         endOfStream()
     }
