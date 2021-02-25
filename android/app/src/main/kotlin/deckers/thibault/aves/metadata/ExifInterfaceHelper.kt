@@ -9,6 +9,8 @@ import com.drew.metadata.exif.makernotes.OlympusCameraSettingsMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusImageProcessingMakernoteDirectory
 import com.drew.metadata.exif.makernotes.OlympusMakernoteDirectory
 import deckers.thibault.aves.utils.LogUtils
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.floor
@@ -16,6 +18,7 @@ import kotlin.math.roundToLong
 
 object ExifInterfaceHelper {
     private val LOG_TAG = LogUtils.createTag(ExifInterfaceHelper::class.java)
+    private val DATETIME_FORMAT = SimpleDateFormat("yyyy:MM:dd hh:mm:ss", Locale.ROOT)
 
     private const val precisionErrorTolerance = 1e-10
 
@@ -358,11 +361,15 @@ object ExifInterfaceHelper {
 
     fun ExifInterface.getSafeDateMillis(tag: String, save: (value: Long) -> Unit) {
         if (this.hasAttribute(tag)) {
-            // TODO TLAD parse date with "yyyy:MM:dd HH:mm:ss" or find the original long
-            val formattedDate = this.getAttribute(tag)
-            val value = formattedDate?.toLongOrNull()
-            if (value != null && value > 0) {
-                save(value)
+            val dateString = this.getAttribute(tag)
+            if (dateString != null) {
+                try {
+                    DATETIME_FORMAT.parse(dateString)?.let { date ->
+                        save(date.time)
+                    }
+                } catch (e: ParseException) {
+                    Log.w(LOG_TAG, "failed to parse date=$dateString", e)
+                }
             }
         }
     }
