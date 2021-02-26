@@ -52,7 +52,7 @@ class ChipActionDelegate {
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure that you want to hide this?'),
+          content: Text('Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

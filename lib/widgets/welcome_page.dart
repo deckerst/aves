@@ -25,9 +25,6 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
     _termsLoader = rootBundle.loadString('assets/terms.md');
-    if (!kReleaseMode) {
-      settings.isCrashlyticsEnabled = false;
-    }
   }
 
   @override

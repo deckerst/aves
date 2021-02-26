@@ -44,7 +44,8 @@ class InfoRowGroup extends StatefulWidget {
 
   static const keyValuePadding = 16;
   static const linkColor = Colors.blue;
-  static final baseStyle = TextStyle(fontSize: 13);
+  static const fontSize = 13.0;
+  static final baseStyle = TextStyle(fontSize: fontSize);
   static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 2.0);
   static final linkStyle = baseStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
 
