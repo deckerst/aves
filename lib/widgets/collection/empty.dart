@@ -6,7 +6,7 @@ class EmptyContent extends StatelessWidget {
   final AlignmentGeometry alignment;
 
   const EmptyContent({
-    @required this.icon,
+    this.icon,
     @required this.text,
     this.alignment = const FractionalOffset(.5, .35),
   });
@@ -19,18 +19,19 @@ class EmptyContent extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 64,
-            color: color,
-          ),
-          SizedBox(height: 16),
+          if (icon != null) ...[
+            Icon(
+              icon,
+              size: 64,
+              color: color,
+            ),
+            SizedBox(height: 16)
+          ],
           Text(
             text,
             style: TextStyle(
               color: color,
               fontSize: 22,
-              fontFamily: 'Concourse',
             ),
           ),
         ],

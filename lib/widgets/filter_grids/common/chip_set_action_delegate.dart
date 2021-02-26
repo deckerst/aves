@@ -5,15 +5,15 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 abstract class ChipSetActionDelegate {
-  CollectionSource get source;
-
   ChipSortFactor get sortFactor;
 
   set sortFactor(ChipSortFactor factor);
 
   void onActionSelected(BuildContext context, ChipSetAction action) {
+    final source = context.read<CollectionSource>();
     switch (action) {
       case ChipSetAction.sort:
         _showSortDialog(context);
@@ -48,6 +48,7 @@ abstract class ChipSetActionDelegate {
   }
 
   void _goToStats(BuildContext context) {
+    final source = context.read<CollectionSource>();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -61,13 +62,6 @@ abstract class ChipSetActionDelegate {
 }
 
 class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
-  @override
-  final CollectionSource source;
-
-  AlbumChipSetActionDelegate({
-    @required this.source,
-  });
-
   @override
   ChipSortFactor get sortFactor => settings.albumSortFactor;
 
@@ -107,13 +101,6 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
 
 class CountryChipSetActionDelegate extends ChipSetActionDelegate {
   @override
-  final CollectionSource source;
-
-  CountryChipSetActionDelegate({
-    @required this.source,
-  });
-
-  @override
   ChipSortFactor get sortFactor => settings.countrySortFactor;
 
   @override
@@ -121,13 +108,6 @@ class CountryChipSetActionDelegate extends ChipSetActionDelegate {
 }
 
 class TagChipSetActionDelegate extends ChipSetActionDelegate {
-  @override
-  final CollectionSource source;
-
-  TagChipSetActionDelegate({
-    @required this.source,
-  });
-
   @override
   ChipSortFactor get sortFactor => settings.tagSortFactor;
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -40,39 +41,29 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final volumeTiles = <Widget>[];
+    if (_allVolumes.length > 1) {
+      final byPrimary = groupBy<StorageVolume, bool>(_allVolumes, (volume) => volume.isPrimary);
+      int compare(StorageVolume a, StorageVolume b) => compareAsciiUpperCase(a.path, b.path);
+      final primaryVolumes = byPrimary[true]..sort(compare);
+      final otherVolumes = byPrimary[false]..sort(compare);
+      volumeTiles.addAll([
+        Padding(
+          padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(top: 20),
+          child: Text('Storage:'),
+        ),
+        ...primaryVolumes.map(_buildVolumeTile),
+        ...otherVolumes.map(_buildVolumeTile),
+        SizedBox(height: 8),
+      ]);
+    }
+
     return AvesDialog(
       context: context,
       title: 'New Album',
       scrollController: _scrollController,
       scrollableContent: [
-        if (_allVolumes.length > 1) ...[
-          Padding(
-            padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(top: 20),
-            child: Text('Storage:'),
-          ),
-          ..._allVolumes.map((volume) => RadioListTile<StorageVolume>(
-                value: volume,
-                groupValue: _selectedVolume,
-                onChanged: (volume) {
-                  _selectedVolume = volume;
-                  _validate();
-                  setState(() {});
-                },
-                title: Text(
-                  volume.description,
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                ),
-                subtitle: Text(
-                  volume.path,
-                  softWrap: false,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                ),
-              )),
-          SizedBox(height: 8),
-        ],
+        ...volumeTiles,
         Padding(
           padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(bottom: 8),
           child: ValueListenableBuilder<bool>(
@@ -83,7 +74,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                   focusNode: _nameFieldFocusNode,
                   decoration: InputDecoration(
                     labelText: 'Album name',
-                    helperText: exists ? 'Album already exists' : '',
+                    helperText: exists ? 'Directory already exists' : '',
                   ),
                   autofocus: _allVolumes.length == 1,
                   onChanged: (_) => _validate(),
@@ -109,6 +100,28 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       ],
     );
   }
+
+  Widget _buildVolumeTile(StorageVolume volume) => RadioListTile<StorageVolume>(
+        value: volume,
+        groupValue: _selectedVolume,
+        onChanged: (volume) {
+          _selectedVolume = volume;
+          _validate();
+          setState(() {});
+        },
+        title: Text(
+          volume.description,
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+        ),
+        subtitle: Text(
+          volume.path,
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+        ),
+      );
 
   void _onFocus() async {
     // when the field gets focus, we wait for the soft keyboard to appear

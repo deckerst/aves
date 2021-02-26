@@ -12,10 +12,6 @@ object MetadataExtractorHelper {
 
     // extensions
 
-    fun Directory.getSafeDescription(tag: Int, save: (value: String) -> Unit) {
-        if (this.containsTag(tag)) save(this.getDescription(tag))
-    }
-
     fun Directory.getSafeString(tag: Int, save: (value: String) -> Unit) {
         if (this.containsTag(tag)) save(this.getString(tag))
     }

@@ -40,7 +40,6 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: InfoRowGroup({
                 'description': '${v.description}',
-                'isEmulated': '${v.isEmulated}',
                 'isPrimary': '${v.isPrimary}',
                 'isRemovable': '${v.isRemovable}',
                 'state': '${v.state}',

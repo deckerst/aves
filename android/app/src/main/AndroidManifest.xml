@@ -14,10 +14,6 @@
     https://developer.android.com/preview/privacy/storage#media-file-access
     - raw path access:
     https://developer.android.com/preview/privacy/storage#media-files-raw-paths
-
-    Android R issues:
-    - users cannot grant directory access to the root Downloads directory,
-    - users cannot grant directory access to the root directory of each reliable SD card volume
     -->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -31,9 +27,7 @@
     <!-- to access media with unredacted metadata with scoped storage (Android Q+) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
-    <!-- TODO TLAD remove this permission once this issue is fixed:
-    https://github.com/flutter/flutter/issues/42451
-    -->
+    <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- from Android R, we should define <queries> to make other apps visible to this app -->
@@ -48,6 +42,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true">
+        <!-- TODO TLAD Android 12 https://developer.android.com/about/versions/12/behavior-changes-12#exported -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

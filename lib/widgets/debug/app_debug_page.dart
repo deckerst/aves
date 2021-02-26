@@ -14,20 +14,17 @@ import 'package:aves/widgets/debug/storage.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
-
-  final CollectionSource source;
-
-  const AppDebugPage({this.source});
 
   @override
   State<StatefulWidget> createState() => _AppDebugPageState();
 }
 
 class _AppDebugPageState extends State<AppDebugPage> {
-  CollectionSource get source => widget.source;
+  CollectionSource get source => context.read<CollectionSource>();
 
   Set<AvesEntry> get visibleEntries => source.visibleEntries;
 
@@ -63,7 +60,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
   Widget _buildGeneralTabView() {
     final catalogued = visibleEntries.where((entry) => entry.isCatalogued);
     final withGps = catalogued.where((entry) => entry.hasGps);
-    final located = withGps.where((entry) => entry.isLocated);
+    final withAddress = withGps.where((entry) => entry.hasAddress);
+    final withFineAddress = withGps.where((entry) => entry.hasFineAddress);
     return AvesExpansionTile(
       title: 'General',
       children: [
@@ -104,7 +102,8 @@ class _AppDebugPageState extends State<AppDebugPage> {
               'Visible entries': '${visibleEntries.length}',
               'Catalogued': '${catalogued.length}',
               'With GPS': '${withGps.length}',
-              'With address': '${located.length}',
+              'With address': '${withAddress.length}',
+              'With fine address': '${withFineAddress.length}',
             },
           ),
         ),

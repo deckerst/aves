@@ -48,9 +48,7 @@ class _CollectionPageState extends State<CollectionPage> {
               ),
             ),
           ),
-          drawer: AppDrawer(
-            source: collection.source,
-          ),
+          drawer: AppDrawer(),
           resizeToAvoidBottomInset: false,
         ),
       ),

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:aves/geo/countries.dart';
+import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/metadata.dart';
@@ -13,6 +15,7 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
@@ -47,7 +50,7 @@ class AvesEntry {
   final Future<List<Address>> Function(Coordinates coordinates) _findAddresses = Geocoder.local.findAddressesFromCoordinates;
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
-  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.psd];
+  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.djvu, MimeTypes.psd];
 
   AvesEntry({
     this.uri,
@@ -286,6 +289,8 @@ class AvesEntry {
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
 
+  bool get isSized => (width ?? 0) > 0 && (height ?? 0) > 0;
+
   String get resolutionText {
     final ws = width ?? '?';
     final hs = height ?? '?';
@@ -366,9 +371,15 @@ class AvesEntry {
     return _durationText;
   }
 
-  bool get hasGps => isCatalogued && _catalogMetadata.latitude != null;
+  // returns whether this entry has GPS coordinates
+  // (0, 0) coordinates are considered invalid, as it is likely a default value
+  bool get hasGps => _catalogMetadata != null && _catalogMetadata.latitude != null && _catalogMetadata.longitude != null && (_catalogMetadata.latitude != 0 || _catalogMetadata.longitude != 0);
 
-  bool get isLocated => _addressDetails != null;
+  bool get hasAddress => _addressDetails != null;
+
+  // has a place, or at least the full country name
+  // derived from Google reverse geocoding addresses
+  bool get hasFineAddress => _addressDetails != null && (_addressDetails.place?.isNotEmpty == true || (_addressDetails.countryName?.length ?? 0) > 3);
 
   LatLng get latLng => hasGps ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
 
@@ -389,7 +400,7 @@ class AvesEntry {
   String _bestTitle;
 
   String get bestTitle {
-    _bestTitle ??= (isCatalogued && _catalogMetadata.xmpTitleDescription?.isNotEmpty == true) ? _catalogMetadata.xmpTitleDescription : sourceTitle;
+    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata.xmpTitleDescription : sourceTitle;
     return _bestTitle;
   }
 
@@ -444,17 +455,36 @@ class AvesEntry {
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate({bool background = false}) async {
-    if (isLocated) return;
+  Future<void> locate({@required bool background}) async {
+    if (!hasGps) return;
+    await _locateCountry();
+    if (await availability.canLocatePlaces) {
+      await locatePlace(background: background);
+    }
+  }
 
-    await catalog(background: background);
-    final latitude = _catalogMetadata?.latitude;
-    final longitude = _catalogMetadata?.longitude;
-    if (latitude == null || longitude == null || (latitude == 0 && longitude == 0)) return;
+  // quick reverse geocoding to find the country, using an offline asset
+  Future<void> _locateCountry() async {
+    if (!hasGps || hasAddress) return;
+    final countryCode = await countryTopology.countryCode(latLng);
+    setCountry(countryCode);
+  }
 
-    final coordinates = Coordinates(latitude, longitude);
+  void setCountry(CountryCode countryCode) {
+    if (hasFineAddress || countryCode == null) return;
+    addressDetails = AddressDetails(
+      contentId: contentId,
+      countryCode: countryCode.alpha2,
+      countryName: countryCode.alpha3,
+    );
+  }
+
+  // full reverse geocoding, requiring Play Services and some connectivity
+  Future<void> locatePlace({@required bool background}) async {
+    if (!hasGps || hasFineAddress) return;
+    final coordinates = latLng;
     try {
-      Future<List<Address>> call() => _findAddresses(coordinates);
+      Future<List<Address>> call() => _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -476,38 +506,34 @@ class AvesEntry {
           locality: address.locality ?? (cc == null && cn == null && aa == null ? address.addressLine : null),
         );
       }
-    } catch (error, stackTrace) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
+    } catch (error, stack) {
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stack');
     }
   }
 
   Future<String> findAddressLine() async {
-    final latitude = _catalogMetadata?.latitude;
-    final longitude = _catalogMetadata?.longitude;
-    if (latitude == null || longitude == null || (latitude == 0 && longitude == 0)) return null;
+    if (!hasGps) return null;
 
-    final coordinates = Coordinates(latitude, longitude);
+    final coordinates = latLng;
     try {
-      final addresses = await _findAddresses(coordinates);
+      final addresses = await _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
       }
-    } catch (error, stackTrace) {
-      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stackTrace');
+    } catch (error, stack) {
+      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stack');
     }
     return null;
   }
 
   String get shortAddress {
-    if (!isLocated) return '';
-
     // `admin area` examples: Seoul, Geneva, null
     // `locality` examples: Mapo-gu, Geneva, Annecy
     return {
-      _addressDetails.countryName,
-      _addressDetails.adminArea,
-      _addressDetails.locality,
+      _addressDetails?.countryName,
+      _addressDetails?.adminArea,
+      _addressDetails?.locality,
     }.where((part) => part != null && part.isNotEmpty).join(', ');
   }
 

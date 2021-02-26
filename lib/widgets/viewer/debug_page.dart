@@ -1,7 +1,7 @@
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/main.dart';
-import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
@@ -106,7 +106,8 @@ class ViewerDebugPage extends StatelessWidget {
         Divider(),
         InfoRowGroup({
           'hasGps': '${entry.hasGps}',
-          'isLocated': '${entry.isLocated}',
+          'hasAddress': '${entry.hasAddress}',
+          'hasFineAddress': '${entry.hasFineAddress}',
           'latLng': '${entry.latLng}',
           'geoUri': '${entry.geoUri}',
         }),

@@ -87,10 +87,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
     Future<void> onComplete() => _animationController.reverse().then((_) => widget.onDone(processed));
     opStream.listen(
       processed.add,
-      onError: (error) {
-        debugPrint('_showOpReport error=$error');
-        onComplete();
-      },
+      onError: (error) => debugPrint('_showOpReport error=$error'),
       onDone: onComplete,
     );
   }

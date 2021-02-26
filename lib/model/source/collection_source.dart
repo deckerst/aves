@@ -23,6 +23,8 @@ mixin SourceBase {
 
   List<AvesEntry> get sortedEntriesByDate;
 
+  ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
+
   final StreamController<ProgressEvent> _progressStreamController = StreamController.broadcast();
 
   Stream<ProgressEvent> get progressStream => _progressStreamController.stream;
@@ -57,8 +59,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     _sortedEntriesByDate ??= List.unmodifiable(visibleEntries.toList()..sort(AvesEntry.compareByDate));
     return _sortedEntriesByDate;
   }
-
-  ValueNotifier<SourceState> stateNotifier = ValueNotifier(SourceState.ready);
 
   List<DateMetadata> _savedDates;
 
@@ -248,6 +248,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     updateLocations();
     updateTags();
 
+    eventBus.fire(FilterVisibilityChangedEvent(filter, visible));
+
     if (visible) {
       refreshMetadata(visibleEntries.where(filter.test).toSet());
     }
@@ -272,6 +274,13 @@ class EntryMovedEvent {
   final Iterable<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
+}
+
+class FilterVisibilityChangedEvent {
+  final CollectionFilter filter;
+  final bool visible;
+
+  const FilterVisibilityChangedEvent(this.filter, this.visible);
 }
 
 class ProgressEvent {

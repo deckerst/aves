@@ -17,6 +17,8 @@ class Durations {
 
   // filter grids animations
   static const chipDecorationAnimation = Duration(milliseconds: 200);
+  static const highlightScrollAnimationMinMillis = 400;
+  static const highlightScrollAnimationMaxMillis = 2000;
 
   // collection animations
   static const filterBarRemovalAnimation = Duration(milliseconds: 400);
@@ -44,6 +46,7 @@ class Durations {
   static const opToastDisplay = Duration(seconds: 2);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScalingCompleteNotificationDelay = Duration(milliseconds: 300);
+  static const highlightScrollInitDelay = Duration(milliseconds: 800);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);

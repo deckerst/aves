@@ -27,6 +27,7 @@ mixin TagMixin on SourceBase {
     final todo = visibleEntries.where((entry) => !entry.isCatalogued).toList();
     if (todo.isEmpty) return;
 
+    stateNotifier.value = SourceState.cataloguing;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
@@ -55,11 +56,12 @@ mixin TagMixin on SourceBase {
   }
 
   void updateTags() {
-    final tags = visibleEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
-    sortedTags = List.unmodifiable(tags);
-
-    invalidateTagFilterSummary();
-    eventBus.fire(TagsChangedEvent());
+    final updatedTags = visibleEntries.expand((entry) => entry.xmpSubjects).toSet().toList()..sort(compareAsciiUpperCase);
+    if (!listEquals(updatedTags, sortedTags)) {
+      sortedTags = List.unmodifiable(updatedTags);
+      invalidateTagFilterSummary();
+      eventBus.fire(TagsChangedEvent());
+    }
   }
 
   // filter summary
@@ -69,13 +71,15 @@ mixin TagMixin on SourceBase {
   final Map<String, AvesEntry> _filterRecentEntryMap = {};
 
   void invalidateTagFilterSummary([Set<AvesEntry> entries]) {
+    Set<String> tags;
     if (entries == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      final tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.xmpSubjects).toSet();
+      tags = entries.where((entry) => entry.isCatalogued).expand((entry) => entry.xmpSubjects).toSet();
       tags.forEach(_filterEntryCountMap.remove);
     }
+    eventBus.fire(TagSummaryInvalidatedEvent(tags));
   }
 
   int tagEntryCount(TagFilter filter) {
@@ -90,3 +94,9 @@ mixin TagMixin on SourceBase {
 class CatalogMetadataChangedEvent {}
 
 class TagsChangedEvent {}
+
+class TagSummaryInvalidatedEvent {
+  final Set<String> tags;
+
+  const TagSummaryInvalidatedEvent(this.tags);
+}

@@ -126,14 +126,14 @@ class _EntryPageViewState extends State<EntryPageView> {
       animation: entry.imageChangeNotifier,
       builder: (context, child) {
         Widget child;
-        if (entry.isVideo) {
-          if (!entry.displaySize.isEmpty) {
-            child = _buildVideoView();
-          }
-        } else if (entry.isSvg) {
+        if (entry.isSvg) {
           child = _buildSvgView();
-        } else if (entry.canDecode) {
-          child = _buildRasterView();
+        } else if (!entry.displaySize.isEmpty) {
+          if (entry.isVideo) {
+            child = _buildVideoView();
+          } else if (entry.canDecode) {
+            child = _buildRasterView();
+          }
         }
         child ??= ErrorView(
           entry: entry,

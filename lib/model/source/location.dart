@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/geo/countries.dart';
 import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
@@ -28,10 +29,45 @@ mixin LocationMixin on SourceBase {
   }
 
   Future<void> locateEntries() async {
-    if (!(await availability.canGeolocate)) return;
+    await _locateCountries();
+    await _locatePlaces();
+  }
 
-//    final stopwatch = Stopwatch()..start();
-    final byLocated = groupBy<AvesEntry, bool>(visibleEntries.where((entry) => entry.hasGps), (entry) => entry.isLocated);
+  // quick reverse geocoding to find the countries, using an offline asset
+  Future<void> _locateCountries() async {
+    final todo = visibleEntries.where((entry) => entry.hasGps && !entry.hasAddress).toSet();
+    if (todo.isEmpty) return;
+
+    stateNotifier.value = SourceState.locating;
+    var progressDone = 0;
+    final progressTotal = todo.length;
+    setProgress(done: progressDone, total: progressTotal);
+
+    // final stopwatch = Stopwatch()..start();
+    final countryCodeMap = await countryTopology.countryCodeMap(todo.map((entry) => entry.latLng).toSet());
+    final newAddresses = <AddressDetails>[];
+    todo.forEach((entry) {
+      final position = entry.latLng;
+      final countryCode = countryCodeMap.entries.firstWhere((kv) => kv.value.contains(position), orElse: () => null)?.key;
+      entry.setCountry(countryCode);
+      if (entry.hasAddress) {
+        newAddresses.add(entry.addressDetails);
+      }
+      setProgress(done: ++progressDone, total: progressTotal);
+    });
+    if (newAddresses.isNotEmpty) {
+      await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+      onAddressMetadataChanged();
+    }
+    // debugPrint('$runtimeType _locateCountries complete in ${stopwatch.elapsed.inMilliseconds}ms');
+  }
+
+  // full reverse geocoding, requiring Play Services and some connectivity
+  Future<void> _locatePlaces() async {
+    if (!(await availability.canLocatePlaces)) return;
+
+    // final stopwatch = Stopwatch()..start();
+    final byLocated = groupBy<AvesEntry, bool>(visibleEntries.where((entry) => entry.hasGps), (entry) => entry.hasFineAddress);
     final todo = byLocated[false] ?? [];
     if (todo.isEmpty) return;
 
@@ -55,6 +91,7 @@ mixin LocationMixin on SourceBase {
     final knownLocations = <Tuple2, AddressDetails>{};
     byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails));
 
+    stateNotifier.value = SourceState.locating;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
@@ -65,12 +102,12 @@ mixin LocationMixin on SourceBase {
       if (knownLocations.containsKey(latLng)) {
         entry.addressDetails = knownLocations[latLng]?.copyWith(contentId: entry.contentId);
       } else {
-        await entry.locate(background: true);
+        await entry.locatePlace(background: true);
         // it is intended to insert `null` if the geocoder failed,
         // so that we skip geocoding of following entries with the same coordinates
         knownLocations[latLng] = entry.addressDetails;
       }
-      if (entry.isLocated) {
+      if (entry.hasFineAddress) {
         newAddresses.add(entry.addressDetails);
         if (newAddresses.length >= _commitCountThreshold) {
           await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
@@ -80,9 +117,11 @@ mixin LocationMixin on SourceBase {
       }
       setProgress(done: ++progressDone, total: progressTotal);
     });
-    await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
-    onAddressMetadataChanged();
-//    debugPrint('$runtimeType locateEntries complete in ${stopwatch.elapsed.inSeconds}s');
+    if (newAddresses.isNotEmpty) {
+      await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+      onAddressMetadataChanged();
+    }
+    // debugPrint('$runtimeType _locatePlaces complete in ${stopwatch.elapsed.inSeconds}s');
   }
 
   void onAddressMetadataChanged() {
@@ -91,17 +130,23 @@ mixin LocationMixin on SourceBase {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails).toList();
-    sortedPlaces = List<String>.unmodifiable(locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase));
+    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).toList();
+    final updatedPlaces = locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
+    if (!listEquals(updatedPlaces, sortedPlaces)) {
+      sortedPlaces = List.unmodifiable(updatedPlaces);
+      eventBus.fire(PlacesChangedEvent());
+    }
 
     // the same country code could be found with different country names
     // e.g. if the locale changed between geolocating calls
     // so we merge countries by code, keeping only one name for each code
     final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
-    sortedCountries = List<String>.unmodifiable(countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase));
-
-    invalidateCountryFilterSummary();
-    eventBus.fire(LocationsChangedEvent());
+    final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);
+    if (!listEquals(updatedCountries, sortedCountries)) {
+      sortedCountries = List.unmodifiable(updatedCountries);
+      invalidateCountryFilterSummary();
+      eventBus.fire(CountriesChangedEvent());
+    }
   }
 
   // filter summary
@@ -111,13 +156,16 @@ mixin LocationMixin on SourceBase {
   final Map<String, AvesEntry> _filterRecentEntryMap = {};
 
   void invalidateCountryFilterSummary([Set<AvesEntry> entries]) {
+    Set<String> countryCodes;
     if (entries == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      final countryCodes = entries.where((entry) => entry.isLocated).map((entry) => entry.addressDetails.countryCode).toSet();
+      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails.countryCode).toSet();
+      countryCodes.remove(null);
       countryCodes.forEach(_filterEntryCountMap.remove);
     }
+    eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
   }
 
   int countryEntryCount(LocationFilter filter) {
@@ -131,4 +179,12 @@ mixin LocationMixin on SourceBase {
 
 class AddressMetadataChangedEvent {}
 
-class LocationsChangedEvent {}
+class PlacesChangedEvent {}
+
+class CountriesChangedEvent {}
+
+class CountrySummaryInvalidatedEvent {
+  final Set<String> countryCodes;
+
+  const CountrySummaryInvalidatedEvent(this.countryCodes);
+}

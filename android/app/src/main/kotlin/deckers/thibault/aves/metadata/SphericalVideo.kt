@@ -8,22 +8,22 @@ import java.io.ByteArrayInputStream
 
 // `xmlBytes`: bytes representing the XML embedded in a MP4 `uuid` box, according to Spherical Video V1 spec
 class GSpherical(xmlBytes: ByteArray) {
-    var spherical: Boolean = false
-    var stitched: Boolean = false
-    var stitchingSoftware: String = ""
-    var projectionType: String = ""
-    var stereoMode: String? = null
-    var sourceCount: Int? = null
-    var initialViewHeadingDegrees: Int? = null
-    var initialViewPitchDegrees: Int? = null
-    var initialViewRollDegrees: Int? = null
-    var timestamp: Int? = null
-    var fullPanoWidthPixels: Int? = null
-    var fullPanoHeightPixels: Int? = null
-    var croppedAreaImageWidthPixels: Int? = null
-    var croppedAreaImageHeightPixels: Int? = null
-    var croppedAreaLeftPixels: Int? = null
-    var croppedAreaTopPixels: Int? = null
+    private var spherical: Boolean = false
+    private var stitched: Boolean = false
+    private var stitchingSoftware: String = ""
+    private var projectionType: String = ""
+    private var stereoMode: String? = null
+    private var sourceCount: Int? = null
+    private var initialViewHeadingDegrees: Int? = null
+    private var initialViewPitchDegrees: Int? = null
+    private var initialViewRollDegrees: Int? = null
+    private var timestamp: Int? = null
+    private var fullPanoWidthPixels: Int? = null
+    private var fullPanoHeightPixels: Int? = null
+    private var croppedAreaImageWidthPixels: Int? = null
+    private var croppedAreaImageHeightPixels: Int? = null
+    private var croppedAreaLeftPixels: Int? = null
+    private var croppedAreaTopPixels: Int? = null
 
     init {
         try {

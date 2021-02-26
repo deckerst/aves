@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -76,8 +78,8 @@ class DialogTitle extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Concourse Caps',
+          fontWeight: FontWeight.normal,
+          fontFeatures: [FontFeature.enable('smcp')],
         ),
       ),
     );

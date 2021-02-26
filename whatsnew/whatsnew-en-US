@@ -1,5 +1,6 @@
 Thanks for using Aves!
-v1.3.4:
-- hide album, country or tag from collection
-- new version check
+v1.3.5:
+- support Android KitKat, Lollipop & Marshmallow
+- quick country reverse geocoding without Play Services
+- long press menu on any filter to hide, navigate
 Full changelog available on Github

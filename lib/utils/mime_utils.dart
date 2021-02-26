@@ -3,6 +3,8 @@ class MimeUtils {
     switch (mime) {
       case 'image/x-icon':
         return 'ICO';
+      case 'image/x-jg':
+        return 'ART';
       case 'image/vnd.adobe.photoshop':
       case 'image/x-photoshop':
         return 'PSD';

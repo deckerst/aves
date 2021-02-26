@@ -94,10 +94,7 @@ class _LicensesState extends State<Licenses> {
           child: Row(
             children: [
               Expanded(
-                child: Text(
-                  'Open-Source Licenses',
-                  style: Theme.of(context).textTheme.headline6.copyWith(fontFamily: 'Concourse Caps'),
-                ),
+                child: Text('Open-Source Licenses', style: Constants.titleTextStyle),
               ),
               PopupMenuButton<LicenseSort>(
                 itemBuilder: (context) => [

@@ -1,7 +1,6 @@
 package deckers.thibault.aves.model
 
 import android.net.Uri
-import deckers.thibault.aves.model.FieldMap
 
 class AvesEntry(map: FieldMap) {
     val uri: Uri = Uri.parse(map["uri"] as String) // content or file URI

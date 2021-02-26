@@ -3,8 +3,12 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/location.dart';
+import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/location.dart';
+import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -16,11 +20,10 @@ import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/overlay.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DecoratedFilterChip extends StatelessWidget {
-  final CollectionSource source;
   final CollectionFilter filter;
-  final AvesEntry entry;
   final double extent;
   final bool pinned, highlightable;
   final FilterCallback onTap;
@@ -28,9 +31,7 @@ class DecoratedFilterChip extends StatelessWidget {
 
   const DecoratedFilterChip({
     Key key,
-    @required this.source,
     @required this.filter,
-    @required this.entry,
     @required this.extent,
     this.pinned = false,
     this.highlightable = true,
@@ -40,6 +41,42 @@ class DecoratedFilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<CollectionSource>(
+      builder: (context, source, child) {
+        switch (filter.runtimeType) {
+          case AlbumFilter:
+            {
+              final album = (filter as AlbumFilter).album;
+              return StreamBuilder<AlbumSummaryInvalidatedEvent>(
+                stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories.contains(album)),
+                builder: (context, snapshot) => _buildChip(source),
+              );
+            }
+          case LocationFilter:
+            {
+              final countryCode = (filter as LocationFilter).countryCode;
+              return StreamBuilder<CountrySummaryInvalidatedEvent>(
+                stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes.contains(countryCode)),
+                builder: (context, snapshot) => _buildChip(source),
+              );
+            }
+          case TagFilter:
+            {
+              final tag = (filter as TagFilter).tag;
+              return StreamBuilder<TagSummaryInvalidatedEvent>(
+                stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags.contains(tag)),
+                builder: (context, snapshot) => _buildChip(source),
+              );
+            }
+          default:
+            return SizedBox();
+        }
+      },
+    );
+  }
+
+  Widget _buildChip(CollectionSource source) {
+    final entry = source.recentEntry(filter);
     final backgroundImage = entry == null
         ? Container(color: Colors.white)
         : entry.isSvg
@@ -58,7 +95,7 @@ class DecoratedFilterChip extends StatelessWidget {
       filter: filter,
       showGenericIcon: false,
       background: backgroundImage,
-      details: _buildDetails(filter),
+      details: _buildDetails(source, filter),
       borderRadius: borderRadius,
       padding: titlePadding,
       onTap: onTap,
@@ -87,7 +124,7 @@ class DecoratedFilterChip extends StatelessWidget {
     return child;
   }
 
-  Widget _buildDetails(CollectionFilter filter) {
+  Widget _buildDetails(CollectionSource source, CollectionFilter filter) {
     final padding = min<double>(8.0, extent / 16);
     final iconSize = min<double>(14.0, extent / 8);
     final fontSize = min<double>(14.0, extent / 6);

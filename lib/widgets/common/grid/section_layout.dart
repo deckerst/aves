@@ -26,7 +26,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProxyProvider0<SectionedListLayout<T>>(
-      update: (context, __) => _updateLayouts(context),
+      update: (context, _) => _updateLayouts(context),
       child: child,
     );
   }
