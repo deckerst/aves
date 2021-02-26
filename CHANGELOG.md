@@ -2,8 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.3.5] - 2021-02-26
 ### Added
 - support Android KitKat, Lollipop & Marshmallow (API 19 ~ 23)
+- quick country reverse geocoding without Play Services
+- menu option to hide any filter
+- menu option to navigate to the album / country / tag page from filter
+
+### Changed
+- analytics are opt-in
 
 ### Removed
 - removed custom font used in titles and info page
