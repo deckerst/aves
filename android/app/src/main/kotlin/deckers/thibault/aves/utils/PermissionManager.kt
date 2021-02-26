@@ -5,12 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.storage.StorageManager
 import android.util.Log
+import androidx.annotation.RequiresApi
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 
 object PermissionManager {
     private val LOG_TAG = LogUtils.createTag(PermissionManager::class.java)
@@ -20,6 +23,7 @@ object PermissionManager {
     // permission request code to pending runnable
     private val pendingPermissionMap = ConcurrentHashMap<Int, PendingPermissionHandler>()
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun requestVolumeAccess(activity: Activity, path: String, onGranted: () -> Unit, onDenied: () -> Unit) {
         Log.i(LOG_TAG, "request user to select and grant access permission to volume=$path")
 
@@ -63,12 +67,23 @@ object PermissionManager {
                 // inaccessible dirs
                 val segments = PathSegments(context, dirPath)
                 segments.volumePath?.let { volumePath ->
-                    val dirSet = dirsPerVolume.getOrDefault(volumePath, HashSet())
+                    val dirSet = dirsPerVolume[volumePath] ?: HashSet()
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         // request primary directory on volume from Android R
-                        segments.relativeDir?.apply {
-                            val primaryDir = split(File.separator).firstOrNull { it.isNotEmpty() }
-                            primaryDir?.let { dirSet.add(it) }
+                        val relativeDir = segments.relativeDir
+                        if (relativeDir != null) {
+                            val dirSegments = relativeDir.split(File.separator).takeWhile { it.isNotEmpty() }
+                            val primaryDir = dirSegments.firstOrNull()
+                            if (primaryDir == Environment.DIRECTORY_DOWNLOADS && dirSegments.size > 1) {
+                                // request secondary directory (if any) for restricted primary directory
+                                dirSet.add(dirSegments.take(2).joinToString(File.separator))
+                            } else {
+                                primaryDir?.let { dirSet.add(it) }
+                            }
+                        } else {
+                            // the requested path is the volume root itself
+                            // which cannot be granted, due to Android R restrictions
+                            dirSet.add("")
                         }
                     } else {
                         // request volume root until Android Q
@@ -80,28 +95,52 @@ object PermissionManager {
         }
 
         // format for easier handling on Flutter
-        val inaccessibleDirs = ArrayList<Map<String, String>>()
-        val sm = context.getSystemService(StorageManager::class.java)
-        if (sm != null) {
-            for ((volumePath, relativeDirs) in dirsPerVolume) {
-                var volumeDescription: String? = null
-                try {
-                    volumeDescription = sm.getStorageVolume(File(volumePath))?.getDescription(context)
-                } catch (e: IllegalArgumentException) {
-                    // ignore
+        return ArrayList<Map<String, String>>().apply {
+            addAll(dirsPerVolume.flatMap { (volumePath, relativeDirs) ->
+                relativeDirs.map { relativeDir ->
+                    hashMapOf(
+                        "volumePath" to volumePath,
+                        "relativeDir" to relativeDir,
+                    )
                 }
-                for (relativeDir in relativeDirs) {
-                    val dirMap = HashMap<String, String>()
-                    dirMap["volumePath"] = volumePath
-                    dirMap["volumeDescription"] = volumeDescription ?: ""
-                    dirMap["relativeDir"] = relativeDir
-                    inaccessibleDirs.add(dirMap)
-                }
-            }
+            })
         }
-        return inaccessibleDirs
     }
 
+    fun getRestrictedDirectories(context: Context): List<Map<String, String>> {
+        val dirs = ArrayList<Map<String, String>>()
+        val sdkInt = Build.VERSION.SDK_INT
+
+        if (sdkInt >= Build.VERSION_CODES.R) {
+            // cf https://developer.android.com/about/versions/11/privacy/storage#directory-access
+            val volumePaths = StorageUtils.getVolumePaths(context)
+            dirs.addAll(volumePaths.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to "",
+                )
+            })
+            dirs.addAll(volumePaths.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to Environment.DIRECTORY_DOWNLOADS,
+                )
+            })
+        } else if (sdkInt == Build.VERSION_CODES.KITKAT || sdkInt == Build.VERSION_CODES.KITKAT_WATCH) {
+            // no SD card volume access on KitKat
+            val primaryVolume = StorageUtils.getPrimaryVolumePath(context)
+            val nonPrimaryVolumes = StorageUtils.getVolumePaths(context).filter { it != primaryVolume }
+            dirs.addAll(nonPrimaryVolumes.map {
+                hashMapOf(
+                    "volumePath" to it,
+                    "relativeDir" to "",
+                )
+            })
+        }
+        return dirs
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun revokeDirectoryAccess(context: Context, path: String): Boolean {
         return StorageUtils.convertDirPathToTreeUri(context, path)?.let {
             val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION

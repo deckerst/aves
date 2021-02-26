@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:latlong/latlong.dart';
@@ -8,9 +10,9 @@ class Constants {
   static const overflowStrutStyle = StrutStyle(height: 1.3);
 
   static const titleTextStyle = TextStyle(
-    color: Color(0xFFEEEEEE),
     fontSize: 20,
-    fontFamily: 'Concourse Caps',
+    fontWeight: FontWeight.w300,
+    fontFeatures: [FontFeature.enable('smcp')],
   );
 
   static const embossShadow = Shadow(
@@ -90,6 +92,12 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/connectivity/connectivity',
     ),
     Dependency(
+      name: 'Country Code',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/denixport/dart.country/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/denixport/dart.country',
+    ),
+    Dependency(
       name: 'Decorated Icon',
       license: 'MIT',
       licenseUrl: 'https://github.com/benPesso/flutter_decorated_icon/blob/master/LICENSE',
@@ -142,12 +150,6 @@ class Constants {
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/flutter/flutter_markdown/blob/master/LICENSE',
       sourceUrl: 'https://github.com/flutter/flutter_markdown',
-    ),
-    Dependency(
-      name: 'Flutter Native Timezone',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/pinkfish/flutter_native_timezone/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/pinkfish/flutter_native_timezone',
     ),
     Dependency(
       name: 'Flutter Staggered Animations',
@@ -256,12 +258,6 @@ class Constants {
       license: 'MIT',
       licenseUrl: 'https://github.com/rrousselGit/provider/blob/master/LICENSE',
       sourceUrl: 'https://github.com/rrousselGit/provider',
-    ),
-    Dependency(
-      name: 'Screen',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/clovisnicolas/flutter_screen/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/clovisnicolas/flutter_screen',
     ),
     Dependency(
       name: 'Shared Preferences',

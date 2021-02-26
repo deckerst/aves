@@ -45,6 +45,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
       _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
       _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(source.eventBus.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
       _subscriptions.add(source.eventBus.on<AddressMetadataChangedEvent>().listen((e) {
         if (this.filters.any((filter) => filter is LocationFilter)) {

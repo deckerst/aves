@@ -7,6 +7,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/type.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +18,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
     QueryFilter.type,
     FavouriteFilter.type,
     MimeFilter.type,
+    TypeFilter.type,
     AlbumFilter.type,
     LocationFilter.type,
     TagFilter.type,
@@ -32,6 +34,8 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
         return FavouriteFilter();
       case LocationFilter.type:
         return LocationFilter.fromMap(jsonMap);
+      case TypeFilter.type:
+        return TypeFilter.fromMap(jsonMap);
       case MimeFilter.type:
         return MimeFilter.fromMap(jsonMap);
       case QueryFilter.type:

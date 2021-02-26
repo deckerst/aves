@@ -1,4 +1,5 @@
 import 'package:aves/model/availability.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/about/news_badge.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +46,7 @@ class _AboutNewVersionState extends State<AboutNewVersion> {
                               ),
                               alignment: PlaceholderAlignment.middle,
                             ),
-                            TextSpan(
-                              text: 'New Version Available',
-                              style: Theme.of(context).textTheme.headline6.copyWith(fontFamily: 'Concourse Caps'),
-                            ),
+                            TextSpan(text: 'New Version Available', style: Constants.titleTextStyle),
                           ],
                         ),
                       ),

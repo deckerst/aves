@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.streams
 
 import android.app.Activity
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -26,6 +27,16 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 
+        if (path == null) {
+            error("requestVolumeAccess-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            error("requestVolumeAccess-unsupported", "volume access is not allowed before Android Lollipop", null)
+            return
+        }
+
         requestVolumeAccess(activity, path!!, { success(true) }, { success(false) })
     }
 
@@ -40,6 +51,17 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             }
         }
         endOfStream()
+    }
+
+    @Suppress("SameParameterValue")
+    private fun error(errorCode: String, errorMessage: String, errorDetails: Any?) {
+        handler.post {
+            try {
+                eventSink.error(errorCode, errorMessage, errorDetails)
+            } catch (e: Exception) {
+                Log.w(LOG_TAG, "failed to use event sink", e)
+            }
+        }
     }
 
     private fun endOfStream() {

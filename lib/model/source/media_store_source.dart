@@ -8,12 +8,11 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/media_store_service.dart';
+import 'package:aves/services/time_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:pedantic/pedantic.dart';
 
 class MediaStoreSource extends CollectionSource {
   bool _initialized = false;
@@ -27,7 +26,7 @@ class MediaStoreSource extends CollectionSource {
     stateNotifier.value = SourceState.loading;
     await metadataDb.init();
     await favourites.init();
-    final currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+    final currentTimeZone = await TimeService.getDefaultTimeZone();
     final catalogTimeZone = settings.catalogTimeZone;
     if (currentTimeZone != catalogTimeZone) {
       // clear catalog metadata to get correct date/times when moving to a different time zone
@@ -103,23 +102,23 @@ class MediaStoreSource extends CollectionSource {
           updateDirectories();
         }
 
-        final analytics = FirebaseAnalytics();
-        unawaited(analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString()));
-        unawaited(analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString()));
-
-        stateNotifier.value = SourceState.cataloguing;
         await catalogEntries();
-        unawaited(analytics.setUserProperty(name: 'tag_count', value: (ceilBy(sortedTags.length, 1)).toString()));
-
-        stateNotifier.value = SourceState.locating;
         await locateEntries();
-        unawaited(analytics.setUserProperty(name: 'country_count', value: (ceilBy(sortedCountries.length, 1)).toString()));
-
         stateNotifier.value = SourceState.ready;
+
+        _reportCollectionDimensions();
         debugPrint('$runtimeType refresh done, elapsed=${stopwatch.elapsed}');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
+  }
+
+  void _reportCollectionDimensions() {
+    final analytics = FirebaseAnalytics();
+    analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString());
+    analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString());
+    analytics.setUserProperty(name: 'tag_count', value: (ceilBy(sortedTags.length, 1)).toString());
+    analytics.setUserProperty(name: 'country_count', value: (ceilBy(sortedCountries.length, 1)).toString());
   }
 
   // returns URIs to retry later. They could be URIs that are:
@@ -132,7 +131,10 @@ class MediaStoreSource extends CollectionSource {
 
     final uriByContentId = Map.fromEntries(changedUris.map((uri) {
       if (uri == null) return null;
-      final idString = Uri.parse(uri).pathSegments.last;
+      final pathSegments = Uri.parse(uri).pathSegments;
+      // e.g. URI `content://media/` has no path segment
+      if (pathSegments.isEmpty) return null;
+      final idString = pathSegments.last;
       final contentId = int.tryParse(idString);
       if (contentId == null) return null;
       return MapEntry(contentId, uri);
@@ -175,13 +177,8 @@ class MediaStoreSource extends CollectionSource {
       addEntries(newEntries);
       await metadataDb.saveEntries(newEntries);
       cleanEmptyAlbums(existingDirectories);
-
-      stateNotifier.value = SourceState.cataloguing;
       await catalogEntries();
-
-      stateNotifier.value = SourceState.locating;
       await locateEntries();
-
       stateNotifier.value = SourceState.ready;
     }
 

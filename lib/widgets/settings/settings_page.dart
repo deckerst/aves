@@ -242,11 +242,8 @@ class _SettingsPageState extends State<SettingsPage> {
           onChanged: (v) => settings.isCrashlyticsEnabled = v,
           title: Text('Allow anonymous analytics and crash reporting'),
         ),
-        HiddenFilters(),
-        Padding(
-          padding: EdgeInsets.only(top: 8, bottom: 16),
-          child: GrantedDirectories(),
-        ),
+        HiddenFilterTile(),
+        StorageAccessTile(),
       ],
     );
   }

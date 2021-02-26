@@ -156,13 +156,14 @@ class OverlayMetadata {
   String toString() => '$runtimeType#${shortHash(this)}{aperture=$aperture, exposureTime=$exposureTime, focalLength=$focalLength, iso=$iso}';
 }
 
+@immutable
 class AddressDetails {
   final int contentId;
   final String countryCode, countryName, adminArea, locality;
 
   String get place => locality != null && locality.isNotEmpty ? locality : adminArea;
 
-  AddressDetails({
+  const AddressDetails({
     this.contentId,
     this.countryCode,
     this.countryName,

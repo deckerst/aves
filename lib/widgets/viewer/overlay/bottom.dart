@@ -309,7 +309,7 @@ class _LocationRow extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     String location;
-    if (entry.isLocated) {
+    if (entry.hasAddress) {
       location = entry.shortAddress;
     } else if (entry.hasGps) {
       location = settings.coordinateFormat.format(entry.latLng);
@@ -386,7 +386,7 @@ class _DateRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final date = entry.bestDate;
     final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.overlayUnknown;
-    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.resolutionText;
+    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.isSized ? entry.resolutionText : '';
 
     return Row(
       children: [

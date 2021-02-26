@@ -83,7 +83,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
     if (showMap) {
       _loadedUri = entry.uri;
       final filters = <LocationFilter>[];
-      if (entry.isLocated) {
+      if (entry.hasAddress) {
         final address = entry.addressDetails;
         final country = address.countryName;
         if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
@@ -181,7 +181,7 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
   @override
   void initState() {
     super.initState();
-    _addressLineLoader = availability.canGeolocate.then((connected) {
+    _addressLineLoader = availability.canLocatePlaces.then((connected) {
       if (connected) {
         return entry.findAddressLine();
       }

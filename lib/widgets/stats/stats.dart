@@ -38,7 +38,7 @@ class StatsPage extends StatelessWidget {
     this.parentCollection,
   }) : assert(source != null) {
     entries.forEach((entry) {
-      if (entry.isLocated) {
+      if (entry.hasAddress) {
         final address = entry.addressDetails;
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {

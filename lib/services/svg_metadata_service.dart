@@ -42,8 +42,8 @@ class SvgMetadataService {
           }
         }
       }
-    } catch (exception, stack) {
-      debugPrint('failed to parse XML from SVG with exception=$exception\n$stack');
+    } catch (error, stack) {
+      debugPrint('failed to parse XML from SVG with error=$error\n$stack');
     }
     return null;
   }
@@ -78,8 +78,8 @@ class SvgMetadataService {
         if (docDir.isNotEmpty) docDirectory: docDir,
         if (metadataDir.isNotEmpty) metadataDirectory: metadataDir,
       };
-    } catch (exception, stack) {
-      debugPrint('failed to parse XML from SVG with exception=$exception\n$stack');
+    } catch (error, stack) {
+      debugPrint('failed to parse XML from SVG with error=$error\n$stack');
       return null;
     }
   }

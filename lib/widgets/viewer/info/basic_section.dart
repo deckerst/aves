@@ -5,6 +5,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
+import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/metadata_service.dart';
@@ -35,7 +36,7 @@ class BasicSection extends StatelessWidget {
 
   bool get showMegaPixels => entry.isPhoto && megaPixels != null && megaPixels > 0;
 
-  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' ($megaPixels MP)' : ''}';
+  String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class BasicSection extends StatelessWidget {
           'Title': title,
           'Date': dateText,
           if (entry.isVideo) ..._buildVideoRows(),
-          if (!entry.isSvg) 'Resolution': rasterResolutionText,
+          if (!entry.isSvg && entry.isSized) 'Resolution': rasterResolutionText,
           'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.infoUnknown,
           'URI': uri,
           if (path != null) 'Path': path,
@@ -72,14 +73,16 @@ class BasicSection extends StatelessWidget {
   Widget _buildChips() {
     final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
     final album = entry.directory;
-    final filters = [
-      if (entry.isAnimated) MimeFilter(MimeFilter.animated),
-      if (entry.isImage && entry.is360) MimeFilter(MimeFilter.panorama),
-      if (entry.isVideo) MimeFilter(entry.is360 ? MimeFilter.sphericalVideo : MimeTypes.anyVideo),
-      if (entry.isGeotiff) MimeFilter(MimeFilter.geotiff),
+    final filters = {
+      MimeFilter(entry.mimeType),
+      if (entry.isAnimated) TypeFilter(TypeFilter.animated),
+      if (entry.isGeotiff) TypeFilter(TypeFilter.geotiff),
+      if (entry.isImage && entry.is360) TypeFilter(TypeFilter.panorama),
+      if (entry.isVideo && entry.is360) TypeFilter(TypeFilter.sphericalVideo),
+      if (entry.isVideo && !entry.is360) MimeFilter(MimeTypes.anyVideo),
       if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
       ...tags.map((tag) => TagFilter(tag)),
-    ];
+    };
     return AnimatedBuilder(
       animation: favourites.changeNotifier,
       builder: (context, child) {

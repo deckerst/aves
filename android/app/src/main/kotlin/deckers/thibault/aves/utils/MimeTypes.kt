@@ -7,6 +7,7 @@ object MimeTypes {
 
     // generic raster
     private const val BMP = "image/bmp"
+    private const val DJVU = "image/vnd.djvu"
     const val GIF = "image/gif"
     const val HEIC = "image/heic"
     private const val HEIF = "image/heif"
@@ -35,6 +36,7 @@ object MimeTypes {
     private const val VIDEO = "video"
 
     private const val MP2T = "video/mp2t"
+    private const val MP2TS = "video/mp2ts"
     private const val WEBM = "video/webm"
 
     fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith(IMAGE)
@@ -68,7 +70,7 @@ object MimeTypes {
 
     // as of `metadata-extractor` v2.14.0
     fun isSupportedByMetadataExtractor(mimeType: String) = when (mimeType) {
-        WBMP, MP2T, WEBM -> false
+        DJVU, WBMP, MP2T, MP2TS, WEBM -> false
         else -> true
     }
 

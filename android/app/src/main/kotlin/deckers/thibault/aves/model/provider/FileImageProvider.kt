@@ -6,7 +6,7 @@ import deckers.thibault.aves.model.SourceEntry
 import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
-    override suspend fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
+    override fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
         if (mimeType == null) {
             callback.onFailure(Exception("MIME type is null for uri=$uri"))
             return

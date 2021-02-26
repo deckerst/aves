@@ -6,6 +6,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/window_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -26,7 +27,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:provider/provider.dart';
-import 'package:screen/screen.dart';
 import 'package:tuple/tuple.dart';
 
 class EntryViewerStack extends StatefulWidget {
@@ -111,7 +111,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      Screen.keepOn(true);
+      WindowService.keepScreenOn(true);
     }
   }
 
@@ -439,7 +439,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   void _onLeave() {
     _showSystemUI();
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      Screen.keepOn(false);
+      WindowService.keepScreenOn(false);
     }
   }
 

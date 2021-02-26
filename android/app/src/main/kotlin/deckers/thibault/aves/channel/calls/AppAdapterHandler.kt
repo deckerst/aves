@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
@@ -89,7 +88,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                             @Suppress("DEPRECATION")
                             resources.updateConfiguration(englishConfig, resources.displayMetrics)
                             englishLabel = resources.getString(labelRes)
-                        } catch (e: PackageManager.NameNotFoundException) {
+                        } catch (e: Exception) {
                             Log.w(LOG_TAG, "failed to get app label in English for packageName=$packageName", e)
                         }
                         englishLabel
@@ -145,7 +144,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
                 Log.w(LOG_TAG, "failed to decode app icon for packageName=$packageName", e)
             }
             Glide.with(context).clear(target)
-        } catch (e: PackageManager.NameNotFoundException) {
+        } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get app info for packageName=$packageName", e)
             return
         }

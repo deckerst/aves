@@ -9,6 +9,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -74,8 +75,8 @@ class _AvesAppState extends State<AvesApp> {
       textTheme: TextTheme(
         headline6: TextStyle(
           fontSize: 20,
-          fontWeight: FontWeight.bold,
-          fontFamily: 'Concourse Caps',
+          fontWeight: FontWeight.normal,
+          fontFeatures: [FontFeature.enable('smcp')],
         ),
       ),
     ),
@@ -114,24 +115,26 @@ class _AvesAppState extends State<AvesApp> {
       value: settings,
       child: Provider<CollectionSource>.value(
         value: _mediaStoreSource,
-        child: OverlaySupport(
-          child: FutureBuilder<void>(
-            future: _appSetup,
-            builder: (context, snapshot) {
-              final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
-                  ? getFirstPage()
-                  : Scaffold(
-                      body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
-                    );
-              return MaterialApp(
-                navigatorKey: _navigatorKey,
-                home: home,
-                navigatorObservers: _navigatorObservers,
-                title: 'Aves',
-                darkTheme: darkTheme,
-                themeMode: ThemeMode.dark,
-              );
-            },
+        child: HighlightInfoProvider(
+          child: OverlaySupport(
+            child: FutureBuilder<void>(
+              future: _appSetup,
+              builder: (context, snapshot) {
+                final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
+                    ? getFirstPage()
+                    : Scaffold(
+                        body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
+                      );
+                return MaterialApp(
+                  navigatorKey: _navigatorKey,
+                  home: home,
+                  navigatorObservers: _navigatorObservers,
+                  title: 'Aves',
+                  darkTheme: darkTheme,
+                  themeMode: ThemeMode.dark,
+                );
+              },
+            ),
           ),
         ),
       ),

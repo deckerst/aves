@@ -25,9 +25,6 @@ class _WelcomePageState extends State<WelcomePage> {
   void initState() {
     super.initState();
     _termsLoader = rootBundle.loadString('assets/terms.md');
-    if (!kReleaseMode) {
-      settings.isCrashlyticsEnabled = false;
-    }
   }
 
   @override
@@ -68,12 +65,9 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   List<Widget> _buildTop(BuildContext context) {
-    const message = Text(
+    final message = Text(
       'Welcome to Aves',
-      style: TextStyle(
-        fontSize: 22,
-        fontFamily: 'Concourse',
-      ),
+      style: Theme.of(context).textTheme.headline5,
     );
     return [
       ...(MediaQuery.of(context).orientation == Orientation.portrait

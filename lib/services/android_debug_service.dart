@@ -28,7 +28,7 @@ class AndroidDebugService {
 
   static Future<Map> getBitmapFactoryInfo(AvesEntry entry) async {
     try {
-      // return map with all data available when decoding image bounds with `BitmapFactory`
+      // returns map with all data available when decoding image bounds with `BitmapFactory`
       final result = await platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
         'uri': entry.uri,
       }) as Map;
@@ -41,7 +41,7 @@ class AndroidDebugService {
 
   static Future<Map> getContentResolverMetadata(AvesEntry entry) async {
     try {
-      // return map with all data available from the content resolver
+      // returns map with all data available from the content resolver
       final result = await platform.invokeMethod('getContentResolverMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
@@ -55,7 +55,7 @@ class AndroidDebugService {
 
   static Future<Map> getExifInterfaceMetadata(AvesEntry entry) async {
     try {
-      // return map with all data available from the `ExifInterface` library
+      // returns map with all data available from the `ExifInterface` library
       final result = await platform.invokeMethod('getExifInterfaceMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
@@ -70,7 +70,7 @@ class AndroidDebugService {
 
   static Future<Map> getMediaMetadataRetrieverMetadata(AvesEntry entry) async {
     try {
-      // return map with all data available from `MediaMetadataRetriever`
+      // returns map with all data available from `MediaMetadataRetriever`
       final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
         'uri': entry.uri,
       }) as Map;
@@ -83,7 +83,7 @@ class AndroidDebugService {
 
   static Future<Map> getMetadataExtractorSummary(AvesEntry entry) async {
     try {
-      // return map with the mime type and tag count for each directory found by `metadata-extractor`
+      // returns map with the mime type and tag count for each directory found by `metadata-extractor`
       final result = await platform.invokeMethod('getMetadataExtractorSummary', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,

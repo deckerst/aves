@@ -20,12 +20,9 @@ import 'package:tuple/tuple.dart';
 class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
 
-  final CollectionSource source;
-
-  const AlbumListPage({@required this.source});
-
   @override
   Widget build(BuildContext context) {
+    final source = context.read<CollectionSource>();
     return Selector<Settings, Tuple3<AlbumChipGroupFactor, ChipSortFactor, Set<CollectionFilter>>>(
       selector: (context, s) => Tuple3(s.albumGroupFactor, s.albumSortFactor, s.pinnedFilters),
       builder: (context, s, child) {
@@ -38,8 +35,8 @@ class AlbumListPage extends StatelessWidget {
               title: 'Albums',
               groupable: true,
               showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-              chipSetActionDelegate: AlbumChipSetActionDelegate(source: source),
-              chipActionDelegate: AlbumChipActionDelegate(source: source),
+              chipSetActionDelegate: AlbumChipSetActionDelegate(),
+              chipActionDelegate: AlbumChipActionDelegate(),
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
                 ChipAction.rename,

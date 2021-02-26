@@ -1,5 +1,4 @@
 import 'package:aves/main.dart';
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/home_page.dart';
@@ -114,12 +113,6 @@ class _HomePageState extends State<HomePage> {
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
       await entry.catalog();
-      // locating is fine in the background
-      unawaited(availability.canGeolocate.then((connected) {
-        if (connected) {
-          entry.locate();
-        }
-      }));
     }
     return entry;
   }
@@ -147,7 +140,7 @@ class _HomePageState extends State<HomePage> {
       case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
           settings: RouteSettings(name: AlbumListPage.routeName),
-          builder: (_) => AlbumListPage(source: source),
+          builder: (_) => AlbumListPage(),
         );
       case SearchPage.routeName:
         return SearchPageRoute(

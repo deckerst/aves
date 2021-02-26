@@ -95,7 +95,7 @@ object Metadata {
     // opening large TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
-    const val tiffSizeBytesMax = 100 * (1 shl 20) // MB
+    private const val tiffSizeBytesMax = 100 * (1 shl 20) // MB
 
     // we try and read metadata from large files by copying an arbitrary amount from its beginning
     // to a temporary file, and reusing that preview file for all metadata reading purposes

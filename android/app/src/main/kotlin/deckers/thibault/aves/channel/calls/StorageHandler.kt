@@ -4,9 +4,12 @@ import android.content.Context
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.os.storage.StorageManager
+import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.PermissionManager
+import deckers.thibault.aves.utils.StorageUtils.getPrimaryVolumePath
 import deckers.thibault.aves.utils.StorageUtils.getVolumePaths
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -24,6 +27,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getFreeSpace" -> safe(call, result, ::getFreeSpace)
             "getGrantedDirectories" -> safe(call, result, ::getGrantedDirectories)
             "getInaccessibleDirectories" -> safe(call, result, ::getInaccessibleDirectories)
+            "getRestrictedDirectories" -> safe(call, result, ::getRestrictedDirectories)
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
             "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
@@ -31,31 +35,52 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getStorageVolumes(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
-        val volumes: List<Map<String, Any>> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val volumes = ArrayList<Map<String, Any>>()
+        val volumes = ArrayList<Map<String, Any>>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val sm = context.getSystemService(StorageManager::class.java)
             if (sm != null) {
                 for (volumePath in getVolumePaths(context)) {
                     try {
                         sm.getStorageVolume(File(volumePath))?.let {
-                            val volumeMap = HashMap<String, Any>()
-                            volumeMap["path"] = volumePath
-                            volumeMap["description"] = it.getDescription(context)
-                            volumeMap["isPrimary"] = it.isPrimary
-                            volumeMap["isRemovable"] = it.isRemovable
-                            volumeMap["isEmulated"] = it.isEmulated
-                            volumeMap["state"] = it.state
-                            volumes.add(volumeMap)
+                            volumes.add(
+                                hashMapOf(
+                                    "path" to volumePath,
+                                    "description" to it.getDescription(context),
+                                    "isPrimary" to it.isPrimary,
+                                    "isRemovable" to it.isRemovable,
+                                    "state" to it.state,
+                                )
+                            )
                         }
                     } catch (e: IllegalArgumentException) {
                         // ignore
                     }
                 }
             }
-            volumes
         } else {
-            // TODO TLAD find alternative for Android <N
-            emptyList()
+            val primaryVolumePath = getPrimaryVolumePath(context)
+            for (volumePath in getVolumePaths(context)) {
+                val volumeFile = File(volumePath)
+                try {
+                    val isPrimary = volumePath == primaryVolumePath
+                    val isRemovable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Environment.isExternalStorageRemovable(volumeFile)
+                    } else {
+                        // random guess
+                        !isPrimary
+                    }
+                    volumes.add(
+                        hashMapOf(
+                            "path" to volumePath,
+                            "isPrimary" to isPrimary,
+                            "isRemovable" to isRemovable,
+                            "state" to EnvironmentCompat.getStorageState(volumeFile)
+                        )
+                    )
+                } catch (e: IllegalArgumentException) {
+                    // ignore
+                }
+            }
         }
         result.success(volumes)
     }
@@ -67,21 +92,9 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val sm = context.getSystemService(StorageManager::class.java)
-        if (sm == null) {
-            result.error("getFreeSpace-sm", "failed because of missing Storage Manager", null)
-            return
-        }
-
-        val file = File(path)
-        val volume = sm.getStorageVolume(file)
-        if (volume == null) {
-            result.error("getFreeSpace-volume", "failed because of missing volume for path=$path", null)
-            return
-        }
-
         // `StorageStatsManager` `getFreeBytes()` is only available from API 26,
         // and non-primary volume UUIDs cannot be used with it
+        val file = File(path)
         try {
             result.success(file.freeSpace)
         } catch (e: SecurityException) {
@@ -100,14 +113,22 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        val dirs = PermissionManager.getInaccessibleDirectories(context, dirPaths)
-        result.success(dirs)
+        result.success(PermissionManager.getInaccessibleDirectories(context, dirPaths))
+    }
+
+    private fun getRestrictedDirectories(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        result.success(PermissionManager.getRestrictedDirectories(context))
     }
 
     private fun revokeDirectoryAccess(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String>("path")
         if (path == null) {
             result.error("revokeDirectoryAccess-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            result.error("revokeDirectoryAccess-unsupported", "volume access is not allowed before Android Lollipop", null)
             return
         }
 

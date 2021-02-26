@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 class MetadataService {
   static const platform = MethodChannel('deckers.thibault/aves/metadata');
 
-  // return Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
+  // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   static Future<Map> getAllMetadata(AvesEntry entry) async {
     if (entry.isSvg) return null;
 
@@ -33,7 +33,7 @@ class MetadataService {
 
     Future<CatalogMetadata> call() async {
       try {
-        // return map with:
+        // returns map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
         // 'dateMillis': date taken in milliseconds since Epoch (long)
         // 'isAnimated': animated gif/webp (bool)
@@ -69,7 +69,7 @@ class MetadataService {
     if (entry.isSvg) return null;
 
     try {
-      // return map with values for: 'aperture' (double), 'exposureTime' (description), 'focalLength' (double), 'iso' (int)
+      // returns map with values for: 'aperture' (double), 'exposureTime' (description), 'focalLength' (double), 'iso' (int)
       final result = await platform.invokeMethod('getOverlayMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
@@ -98,7 +98,7 @@ class MetadataService {
 
   static Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry) async {
     try {
-      // return map with values for:
+      // returns map with values for:
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
       // 'fullPanoWidth' (int), 'fullPanoHeight' (int)
       final result = await platform.invokeMethod('getPanoramaInfo', <String, dynamic>{
