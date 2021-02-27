@@ -25,16 +25,18 @@ class PanoramaOverlay extends StatelessWidget {
           text: 'Open Panorama',
           onPressed: () async {
             final info = await MetadataService.getPanoramaInfo(entry);
-            unawaited(Navigator.push(
-              context,
-              MaterialPageRoute(
-                settings: RouteSettings(name: PanoramaPage.routeName),
-                builder: (context) => PanoramaPage(
-                  entry: entry,
-                  info: info,
+            if (info != null) {
+              unawaited(Navigator.push(
+                context,
+                MaterialPageRoute(
+                  settings: RouteSettings(name: PanoramaPage.routeName),
+                  builder: (context) => PanoramaPage(
+                    entry: entry,
+                    info: info,
+                  ),
                 ),
-              ),
-            ));
+              ));
+            }
           },
         )
       ],

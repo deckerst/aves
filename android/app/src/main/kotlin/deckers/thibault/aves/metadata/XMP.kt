@@ -97,6 +97,34 @@ object XMP {
         return false
     }
 
+    fun XMPMeta.getSafeInt(schema: String, propName: String, save: (value: Int) -> Unit) {
+        try {
+            if (doesPropertyExist(schema, propName)) {
+                val item = getPropertyInteger(schema, propName)
+                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                if (item != null) {
+                    save(item)
+                }
+            }
+        } catch (e: XMPException) {
+            Log.w(LOG_TAG, "failed to get int for XMP schema=$schema, propName=$propName", e)
+        }
+    }
+
+    fun XMPMeta.getSafeString(schema: String, propName: String, save: (value: String) -> Unit) {
+        try {
+            if (doesPropertyExist(schema, propName)) {
+                val item = getPropertyString(schema, propName)
+                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                if (item != null) {
+                    save(item)
+                }
+            }
+        } catch (e: XMPException) {
+            Log.w(LOG_TAG, "failed to get int for XMP schema=$schema, propName=$propName", e)
+        }
+    }
+
     fun XMPMeta.getSafeLocalizedText(schema: String, propName: String, acceptBlank: Boolean = true, save: (value: String) -> Unit) {
         try {
             if (doesPropertyExist(schema, propName)) {

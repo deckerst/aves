@@ -47,7 +47,9 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
+import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
+import deckers.thibault.aves.metadata.XMP.getSafeString
 import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.FileImageProvider
@@ -627,25 +629,21 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
-                    val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
-                    try {
-                        fun getIntProp(propName: String): Int? = xmpDirs.map { it.xmpMeta.getPropertyInteger(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
-                        fun getStringProp(propName: String): String? = xmpDirs.map { it.xmpMeta.getPropertyString(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
-                        val fields: FieldMap = hashMapOf(
-                            "croppedAreaLeft" to getIntProp(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME),
-                            "croppedAreaTop" to getIntProp(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME),
-                            "croppedAreaWidth" to getIntProp(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME),
-                            "croppedAreaHeight" to getIntProp(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME),
-                            "fullPanoWidth" to getIntProp(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME),
-                            "fullPanoHeight" to getIntProp(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME),
-                            "projectionType" to (getStringProp(XMP.GPANO_PROJECTION_TYPE_PROP_NAME) ?: XMP.GPANO_PROJECTION_TYPE_DEFAULT),
-                        )
-                        result.success(fields)
-                        return
-                    } catch (e: XMPException) {
-                        result.error("getPanoramaInfo-args", "failed to read XMP for uri=$uri", e.message)
-                        return
+                    val fields = hashMapOf<String, Any?>(
+                        "projectionType" to XMP.GPANO_PROJECTION_TYPE_DEFAULT,
+                    )
+                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+                        val xmpMeta = dir.xmpMeta
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
+                        xmpMeta.getSafeString(XMP.GPANO_SCHEMA_NS, XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
                     }
+                    result.success(fields)
+                    return
                 }
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to read XMP", e)
