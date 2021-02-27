@@ -71,7 +71,7 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
     final index = map['page'] as int;
     return SinglePageInfo(
       index: index,
-      pageId: map['trackId'] as int ?? index,
+      pageId: index,
       mimeType: map['mimeType'] as String,
       isDefault: map['isDefault'] as bool ?? false,
       width: map['width'] as int ?? 0,

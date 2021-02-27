@@ -593,10 +593,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             KEY_PAGE to i,
                             KEY_MIME_TYPE to trackMime,
                         )
+
+                        // do not use `MediaFormat.KEY_TRACK_ID` as it is actually not unique between tracks
+                        // e.g. there could be both a video track and an image track with KEY_TRACK_ID == 1
+
                         format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { page[KEY_IS_DEFAULT] = it != 0 }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            format.getSafeInt(MediaFormat.KEY_TRACK_ID) { page[KEY_TRACK_ID] = it }
-                        }
                         format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
                         format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
                         if (isVideo(trackMime)) {
@@ -875,7 +876,6 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_HEIGHT = "height"
         private const val KEY_WIDTH = "width"
         private const val KEY_PAGE = "page"
-        private const val KEY_TRACK_ID = "trackId"
         private const val KEY_IS_DEFAULT = "isDefault"
         private const val KEY_DURATION = "durationMillis"
 

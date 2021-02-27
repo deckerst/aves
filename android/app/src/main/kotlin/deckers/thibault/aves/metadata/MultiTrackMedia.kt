@@ -16,17 +16,17 @@ object MultiTrackMedia {
     private val LOG_TAG = LogUtils.createTag(MultiTrackMedia::class.java)
 
     @RequiresApi(Build.VERSION_CODES.P)
-    fun getImage(context: Context, uri: Uri, trackId: Int?): Bitmap? {
+    fun getImage(context: Context, uri: Uri, trackIndex: Int?): Bitmap? {
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return null
         try {
-            return if (trackId != null) {
-                val imageIndex = trackIdToImageIndex(context, uri, trackId) ?: return null
+            return if (trackIndex != null) {
+                val imageIndex = trackIndexToImageIndex(context, uri, trackIndex) ?: return null
                 retriever.getImageAtIndex(imageIndex)
             } else {
                 retriever.primaryImage
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to extract image from uri=$uri trackId=$trackId", e)
+            Log.w(LOG_TAG, "failed to extract image from uri=$uri trackIndex=$trackIndex", e)
         } finally {
             // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
             retriever.release()
@@ -34,7 +34,7 @@ object MultiTrackMedia {
         return null
     }
 
-    private fun trackIdToImageIndex(context: Context, uri: Uri, trackId: Int): Int? {
+    private fun trackIndexToImageIndex(context: Context, uri: Uri, trackIndex: Int): Int? {
         val extractor = MediaExtractor()
         try {
             extractor.setDataSource(context, uri, null)
@@ -42,7 +42,7 @@ object MultiTrackMedia {
             var imageIndex = 0
             for (i in 0 until trackCount) {
                 val trackFormat = extractor.getTrackFormat(i)
-                if (trackId == trackFormat.getInteger(MediaFormat.KEY_TRACK_ID)) {
+                if (trackIndex == i) {
                     return imageIndex
                 }
                 if (MimeTypes.isImage(trackFormat.getString(MediaFormat.KEY_MIME))) {
@@ -50,7 +50,7 @@ object MultiTrackMedia {
                 }
             }
         } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to get image index for uri=$uri, trackId=$trackId", e)
+            Log.w(LOG_TAG, "failed to get image index for uri=$uri, trackIndex=$trackIndex", e)
         } finally {
             extractor.release()
         }
