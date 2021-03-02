@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- various TIFF decoding fixes
 
 ## [v1.3.5] - 2021-02-26
 ### Added
