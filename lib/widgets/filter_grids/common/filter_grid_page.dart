@@ -292,6 +292,7 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
     Widget content;
     if (empty) {
       content = SliverFillRemaining(
+        hasScrollBody: false,
         child: Selector<MediaQueryData, double>(
           selector: (context, mq) => mq.effectiveBottomPadding,
           builder: (context, mqPaddingBottom, child) {
@@ -301,7 +302,6 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
             );
           },
         ),
-        hasScrollBody: false,
       );
     } else {
       content = SectionedListSliver<FilterGridItem<T>>();

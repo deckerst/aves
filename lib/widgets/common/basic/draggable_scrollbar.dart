@@ -88,8 +88,8 @@ class DraggableScrollbar extends StatefulWidget {
             children: [
               ScrollLabel(
                 animation: labelAnimation,
-                child: labelText,
                 backgroundColor: backgroundColor,
+                child: labelText,
               ),
               scrollThumb,
             ],

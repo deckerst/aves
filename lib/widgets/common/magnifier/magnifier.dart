@@ -71,11 +71,11 @@ class Magnifier extends StatelessWidget {
         ));
 
         return MagnifierCore(
-          child: child,
           controller: controller,
           scaleStateCycle: scaleStateCycle,
           onTap: onTap,
           applyScale: applyScale,
+          child: child,
         );
       },
     );

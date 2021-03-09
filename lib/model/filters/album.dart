@@ -76,6 +76,7 @@ class AlbumFilter extends CollectionFilter {
   @override
   String get category => type;
 
+  // key `album-{path}` is expected by test driver
   @override
   String get key => '$type-$album';
 

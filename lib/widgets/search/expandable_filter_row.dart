@@ -90,13 +90,13 @@ class ExpandableFilterRow extends StatelessWidget {
               titleRow,
               AnimatedSwitcher(
                 duration: Durations.filterRowExpandAnimation,
-                child: filterChips,
                 layoutBuilder: (currentChild, previousChildren) => Stack(
                   children: [
                     ...previousChildren,
                     if (currentChild != null) currentChild,
                   ],
                 ),
+                child: filterChips,
               ),
             ],
           )
@@ -105,7 +105,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
   Widget _buildFilterChip(CollectionFilter filter) {
     return AvesFilterChip(
-      // key `album-...` is expected by test driver
+      // key `album-{path}` is expected by test driver
       key: Key(filter.key),
       filter: filter,
       heroType: heroTypeBuilder?.call(filter) ?? HeroType.onTap,

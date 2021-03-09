@@ -86,9 +86,9 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
     );
 
     return RawGestureDetector(
-      child: widget.child,
       gestures: gestures,
       behavior: widget.behavior ?? HitTestBehavior.translucent,
+      child: widget.child,
     );
   }
 }

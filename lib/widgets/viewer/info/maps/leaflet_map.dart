@@ -72,6 +72,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
         zoom: widget.initialZoom,
         interactive: false,
       ),
+      mapController: _mapController,
       children: [
         _buildMapLayer(),
         ScaleLayerWidget(
@@ -91,7 +92,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
           ),
         ),
       ],
-      mapController: _mapController,
     );
   }
 

@@ -87,7 +87,6 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   void _showMenu(BuildContext context, T filter, Offset tapPosition) async {
     final RenderBox overlay = Overlay.of(context).context.findRenderObject();
     final touchArea = Size(40, 40);
-    // TODO TLAD check menu is within safe area, when this lands on stable: https://github.com/flutter/flutter/commit/cfc8ec23b633da1001359e384435e8333c9d3733
     final selectedAction = await showMenu<ChipAction>(
       context: context,
       position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
