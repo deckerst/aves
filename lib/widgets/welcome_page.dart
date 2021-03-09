@@ -1,6 +1,7 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/foundation.dart';
@@ -66,7 +67,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
   List<Widget> _buildTop(BuildContext context) {
     final message = Text(
-      'Welcome to Aves',
+      context.l10n.welcomeMessage,
       style: Theme.of(context).textTheme.headline5,
     );
     return [
@@ -97,20 +98,20 @@ class _WelcomePageState extends State<WelcomePage> {
         LabeledCheckbox(
           value: settings.isCrashlyticsEnabled,
           onChanged: (v) => setState(() => settings.isCrashlyticsEnabled = v),
-          text: 'Allow anonymous analytics and crash reporting',
+          text: context.l10n.welcomeAnalyticsToggle,
         ),
         LabeledCheckbox(
           key: Key('agree-checkbox'),
           value: _hasAcceptedTerms,
           onChanged: (v) => setState(() => _hasAcceptedTerms = v),
-          text: 'I agree to the terms and conditions',
+          text: context.l10n.welcomeTermsToggle,
         ),
       ],
     );
 
     final button = ElevatedButton(
       key: Key('continue-button'),
-      child: Text('Continue'),
+      child: Text(context.l10n.continueButtonLabel),
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;

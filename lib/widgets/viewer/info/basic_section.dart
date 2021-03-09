@@ -10,8 +10,8 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
@@ -40,37 +40,40 @@ class BasicSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final infoUnknown = l10n.viewerInfoUnknown;
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.infoUnknown;
+    final locale = l10n.localeName;
+    final dateText = date != null ? '${DateFormat.yMMMd(locale).format(date)} • ${DateFormat.Hm(locale).format(date)}' : infoUnknown;
 
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
     // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
-    final title = entry.bestTitle ?? Constants.infoUnknown;
-    final uri = entry.uri ?? Constants.infoUnknown;
+    final title = entry.bestTitle ?? infoUnknown;
+    final uri = entry.uri ?? infoUnknown;
     final path = entry.path;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InfoRowGroup({
-          'Title': title,
-          'Date': dateText,
-          if (entry.isVideo) ..._buildVideoRows(),
-          if (!entry.isSvg && entry.isSized) 'Resolution': rasterResolutionText,
-          'Size': entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : Constants.infoUnknown,
-          'URI': uri,
-          if (path != null) 'Path': path,
+          l10n.viewerInfoLabelTitle: title,
+          l10n.viewerInfoLabelDate: dateText,
+          if (entry.isVideo) ..._buildVideoRows(context),
+          if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
+          l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : infoUnknown,
+          l10n.viewerInfoLabelUri: uri,
+          if (path != null) l10n.viewerInfoLabelPath: path,
         }),
         OwnerProp(
           entry: entry,
           visibleNotifier: visibleNotifier,
         ),
-        _buildChips(),
+        _buildChips(context),
       ],
     );
   }
 
-  Widget _buildChips() {
+  Widget _buildChips(BuildContext context) {
     final tags = entry.xmpSubjects..sort(compareAsciiUpperCase);
     final album = entry.directory;
     final filters = {
@@ -80,7 +83,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isImage && entry.is360) TypeFilter(TypeFilter.panorama),
       if (entry.isVideo && entry.is360) TypeFilter(TypeFilter.sphericalVideo),
       if (entry.isVideo && !entry.is360) MimeFilter(MimeTypes.anyVideo),
-      if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(album)),
+      if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(context, album)),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(
@@ -108,9 +111,9 @@ class BasicSection extends StatelessWidget {
     );
   }
 
-  Map<String, String> _buildVideoRows() {
+  Map<String, String> _buildVideoRows(BuildContext context) {
     return {
-      'Duration': entry.durationText,
+      context.l10n.viewerInfoLabelDuration: entry.durationText,
     };
   }
 }
@@ -180,7 +183,7 @@ class _OwnerPropState extends State<OwnerProp> {
           TextSpan(
             children: [
               TextSpan(
-                text: 'Owned by',
+                text: context.l10n.viewerInfoLabelOwner,
                 style: InfoRowGroup.keyStyle,
               ),
               WidgetSpan(

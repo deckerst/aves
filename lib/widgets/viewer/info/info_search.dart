@@ -1,7 +1,8 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
@@ -15,19 +16,12 @@ class InfoSearchDelegate extends SearchDelegate {
 
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
-  static const suggestions = {
-    'Date & time': 'date or time or when -timer -uptime -exposure -timeline',
-    'Description': 'abstract or description or comment or textual',
-    'Dimensions': 'width or height or dimension or framesize or imagelength',
-    'Resolution': 'resolution',
-    'Rights': 'rights or copyright or artist or creator or by-line or credit -tool',
-  };
-
   InfoSearchDelegate({
+    @required String searchFieldLabel,
     @required this.entry,
     @required this.metadataNotifier,
   }) : super(
-          searchFieldLabel: 'Search metadata',
+          searchFieldLabel: searchFieldLabel,
         );
 
   @override
@@ -57,23 +51,33 @@ class InfoSearchDelegate extends SearchDelegate {
             query = '';
             showSuggestions(context);
           },
-          tooltip: 'Clear',
+          tooltip: context.l10n.clearTooltip,
         ),
     ];
   }
 
   @override
-  Widget buildSuggestions(BuildContext context) => ListView(
-        children: suggestions.entries
-            .map((kv) => ListTile(
-                  title: Text(kv.key),
-                  onTap: () {
-                    query = kv.value;
-                    showResults(context);
-                  },
-                ))
-            .toList(),
-      );
+  Widget buildSuggestions(BuildContext context) {
+    final l10n = context.l10n;
+    final suggestions = {
+      l10n.viewerInfoSearchSuggestionDate: 'date or time or when -timer -uptime -exposure -timeline',
+      l10n.viewerInfoSearchSuggestionDescription: 'abstract or description or comment or textual',
+      l10n.viewerInfoSearchSuggestionDimensions: 'width or height or dimension or framesize or imagelength',
+      l10n.viewerInfoSearchSuggestionResolution: 'resolution',
+      l10n.viewerInfoSearchSuggestionRights: 'rights or copyright or artist or creator or by-line or credit -tool',
+    };
+    return ListView(
+      children: suggestions.entries
+          .map((kv) => ListTile(
+                title: Text(kv.key),
+                onTap: () {
+                  query = kv.value;
+                  showResults(context);
+                },
+              ))
+          .toList(),
+    );
+  }
 
   @override
   Widget buildResults(BuildContext context) {
@@ -107,22 +111,24 @@ class InfoSearchDelegate extends SearchDelegate {
               showPrefixChildren: false,
             ))
         .toList();
-    return tiles.isEmpty
-        ? EmptyContent(
-            icon: AIcons.info,
-            text: 'No matching keys',
-          )
-        : NotificationListener<OpenTempEntryNotification>(
-            onNotification: (notification) {
-              _openTempEntry(context, notification.entry);
-              return true;
-            },
-            child: ListView.builder(
-              padding: EdgeInsets.all(8),
-              itemBuilder: (context, index) => tiles[index],
-              itemCount: tiles.length,
+    return SafeArea(
+      child: tiles.isEmpty
+          ? EmptyContent(
+              icon: AIcons.info,
+              text: context.l10n.viewerInfoSearchEmpty,
+            )
+          : NotificationListener<OpenTempEntryNotification>(
+              onNotification: (notification) {
+                _openTempEntry(context, notification.entry);
+                return true;
+              },
+              child: ListView.builder(
+                padding: EdgeInsets.all(8),
+                itemBuilder: (context, index) => tiles[index],
+                itemCount: tiles.length,
+              ),
             ),
-          );
+    );
   }
 
   void _openTempEntry(BuildContext context, AvesEntry tempEntry) {

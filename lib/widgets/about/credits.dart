@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class AboutCredits extends StatelessWidget {
@@ -16,13 +17,13 @@ class AboutCredits extends StatelessWidget {
             constraints: BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
-              child: Text('Credits', style: Constants.titleTextStyle),
+              child: Text(context.l10n.aboutCredits, style: Constants.titleTextStyle),
             ),
           ),
           Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: 'This app uses a TopoJSON file from'),
+                TextSpan(text: context.l10n.aboutCreditsWorldAtlas1),
                 WidgetSpan(
                   child: LinkChip(
                     text: 'World Atlas',
@@ -31,7 +32,7 @@ class AboutCredits extends StatelessWidget {
                   ),
                   alignment: PlaceholderAlignment.middle,
                 ),
-                TextSpan(text: 'under ISC License.'),
+                TextSpan(text: context.l10n.aboutCreditsWorldAtlas2),
               ],
             ),
           ),

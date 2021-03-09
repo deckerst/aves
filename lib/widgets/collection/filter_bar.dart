@@ -14,7 +14,7 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
     Key key,
     @required Set<CollectionFilter> filters,
     @required this.onPressed,
-  })  : filters = List.from(filters)..sort(),
+  })  : filters = List<CollectionFilter>.from(filters)..sort(),
         super(key: key);
 
   @override

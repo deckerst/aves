@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -92,12 +93,12 @@ void showNoMatchingAppDialog(BuildContext context) {
     builder: (context) {
       return AvesDialog(
         context: context,
-        title: 'No Matching App',
-        content: Text('There are no apps that can handle this.'),
+        title: context.l10n.noMatchingAppDialogTitle,
+        content: Text(context.l10n.noMatchingAppDialogMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('OK'.toUpperCase()),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
           ),
         ],
       );

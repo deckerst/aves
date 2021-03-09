@@ -92,7 +92,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   void addFilter(CollectionFilter filter) {
     if (filter == null || filters.contains(filter)) return;
     if (filter.isUnique) {
-      filters.removeWhere((old) => old.typeKey == filter.typeKey);
+      filters.removeWhere((old) => old.category == filter.category);
     }
     filters.add(filter);
     onFilterChanged();

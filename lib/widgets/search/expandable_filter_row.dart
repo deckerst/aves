@@ -45,7 +45,7 @@ class ExpandableFilterRow extends StatelessWidget {
             IconButton(
               icon: Icon(isExpanded ? AIcons.collapse : AIcons.expand),
               onPressed: () => expandedNotifier.value = isExpanded ? null : title,
-              tooltip: isExpanded ? 'Collapse' : 'Expand',
+              tooltip: isExpanded ? MaterialLocalizations.of(context).expandedIconTapHint : MaterialLocalizations.of(context).collapsedIconTapHint,
             ),
           ],
         ),

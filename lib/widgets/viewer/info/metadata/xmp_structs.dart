@@ -4,6 +4,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/multi_cross_fader.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
@@ -68,13 +69,13 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
                   visualDensity: VisualDensity.compact,
                   icon: Icon(AIcons.previous),
                   onPressed: _index > 0 ? () => setIndex(_index - 1) : null,
-                  tooltip: 'Previous',
+                  tooltip: context.l10n.previousTooltip,
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
                   icon: Icon(AIcons.next),
                   onPressed: _index < structs.length - 1 ? () => setIndex(_index + 1) : null,
-                  tooltip: 'Next',
+                  tooltip: context.l10n.nextTooltip,
                 ),
               ],
             ),

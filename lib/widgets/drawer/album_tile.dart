@@ -15,7 +15,7 @@ class AlbumTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    final uniqueName = source.getUniqueAlbumName(album);
+    final uniqueName = source.getUniqueAlbumName(context, album);
     return CollectionNavTile(
       leading: IconUtils.getAlbumIcon(
         context: context,

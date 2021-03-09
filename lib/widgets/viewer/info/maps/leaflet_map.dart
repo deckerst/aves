@@ -1,5 +1,6 @@
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/maps/common.dart';
 import 'package:aves/widgets/viewer/info/maps/scale_layer.dart';
@@ -110,10 +111,10 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
   Widget _buildAttribution() {
     switch (widget.style) {
       case EntryMapStyle.osmHot:
-        return _buildAttributionMarkdown('Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, tiles by [HOT](https://www.hotosm.org/) hosted by [OSM France](https://openstreetmap.fr/)');
+        return _buildAttributionMarkdown(context.l10n.mapAttributionOsmHot);
       case EntryMapStyle.stamenToner:
       case EntryMapStyle.stamenWatercolor:
-        return _buildAttributionMarkdown('Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)');
+        return _buildAttributionMarkdown(context.l10n.mapAttributionStamen);
       default:
         return SizedBox.shrink();
     }

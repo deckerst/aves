@@ -2,6 +2,7 @@ import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,9 @@ abstract class ChipSetActionDelegate {
   set sortFactor(ChipSortFactor factor);
 
   void onActionSelected(BuildContext context, ChipSetAction action) {
-    final source = context.read<CollectionSource>();
     switch (action) {
       case ChipSetAction.sort:
         _showSortDialog(context);
-        break;
-      case ChipSetAction.refresh:
-        source.refresh();
         break;
       case ChipSetAction.stats:
         _goToStats(context);
@@ -35,11 +32,11 @@ abstract class ChipSetActionDelegate {
       builder: (context) => AvesSelectionDialog<ChipSortFactor>(
         initialValue: sortFactor,
         options: {
-          ChipSortFactor.date: 'By date',
-          ChipSortFactor.name: 'By name',
-          ChipSortFactor.count: 'By item count',
+          ChipSortFactor.date: context.l10n.chipSortDate,
+          ChipSortFactor.name: context.l10n.chipSortName,
+          ChipSortFactor.count: context.l10n.chipSortCount,
         },
-        title: 'Sort',
+        title: context.l10n.chipSortTitle,
       ),
     );
     if (factor != null) {
@@ -86,11 +83,11 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
       builder: (context) => AvesSelectionDialog<AlbumChipGroupFactor>(
         initialValue: settings.albumGroupFactor,
         options: {
-          AlbumChipGroupFactor.importance: 'By tier',
-          AlbumChipGroupFactor.volume: 'By storage volume',
-          AlbumChipGroupFactor.none: 'Do not group',
+          AlbumChipGroupFactor.importance: context.l10n.albumGroupTier,
+          AlbumChipGroupFactor.volume: context.l10n.albumGroupVolume,
+          AlbumChipGroupFactor.none: context.l10n.albumGroupNone,
         },
-        title: 'Group',
+        title: context.l10n.albumGroupTitle,
       ),
     );
     if (factor != null) {

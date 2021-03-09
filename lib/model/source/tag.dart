@@ -3,6 +3,7 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 

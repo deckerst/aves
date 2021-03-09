@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
@@ -46,8 +47,8 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
             return TextField(
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: 'New name',
-                helperText: exists ? 'Directory already exists' : '',
+                labelText: context.l10n.renameAlbumDialogLabel,
+                helperText: exists ? context.l10n.renameAlbumDialogLabelAlreadyExistsHelper : '',
               ),
               autofocus: true,
               onChanged: (_) => _validate(),
@@ -57,14 +58,14 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.toUpperCase()),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
         ValueListenableBuilder<bool>(
           valueListenable: _isValidNotifier,
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text('Apply'.toUpperCase()),
+              child: Text(context.l10n.applyButtonLabel),
             );
           },
         )

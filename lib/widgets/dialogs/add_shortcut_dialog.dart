@@ -1,12 +1,14 @@
-import 'package:aves/model/filters/filters.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 import 'aves_dialog.dart';
 
 class AddShortcutDialog extends StatefulWidget {
-  final Set<CollectionFilter> filters;
+  final String defaultName;
 
-  const AddShortcutDialog(this.filters);
+  const AddShortcutDialog({
+    @required this.defaultName,
+  });
 
   @override
   _AddShortcutDialogState createState() => _AddShortcutDialogState();
@@ -19,12 +21,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
   @override
   void initState() {
     super.initState();
-    final filters = List.from(widget.filters)..sort();
-    if (filters.isEmpty) {
-      _nameController.text = 'Collection';
-    } else {
-      _nameController.text = filters.first.label;
-    }
+    _nameController.text = widget.defaultName;
     _validate();
   }
 
@@ -41,7 +38,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
       content: TextField(
         controller: _nameController,
         decoration: InputDecoration(
-          labelText: 'Shortcut label',
+          labelText: context.l10n.addShortcutDialogLabel,
         ),
         autofocus: true,
         maxLength: 25,
@@ -51,14 +48,14 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.toUpperCase()),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
         ValueListenableBuilder<bool>(
           valueListenable: _isValidNotifier,
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text('Add'.toUpperCase()),
+              child: Text(context.l10n.addShortcutButtonLabel),
             );
           },
         )

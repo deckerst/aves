@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
@@ -160,19 +161,19 @@ class _TopOverlayRow extends StatelessWidget {
           child: Navigator.canPop(context) ? BackButton() : CloseButton(),
         ),
         Spacer(),
-        ...quickActions.map(_buildOverlayButton),
+        ...quickActions.map((action) => _buildOverlayButton(context, action)),
         OverlayButton(
           scale: scale,
           child: PopupMenuButton<EntryAction>(
             key: Key('entry-menu-button'),
             itemBuilder: (context) => [
-              ...inAppActions.map(_buildPopupMenuItem),
-              if (entry.canRotateAndFlip) _buildRotateAndFlipMenuItems(),
+              ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
+              if (entry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
               PopupMenuDivider(),
-              ...externalAppActions.map(_buildPopupMenuItem),
+              ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
               if (kDebugMode) ...[
                 PopupMenuDivider(),
-                _buildPopupMenuItem(EntryAction.debug),
+                _buildPopupMenuItem(context, EntryAction.debug),
               ]
             ],
             onSelected: (action) {
@@ -185,7 +186,7 @@ class _TopOverlayRow extends StatelessWidget {
     );
   }
 
-  Widget _buildOverlayButton(EntryAction action) {
+  Widget _buildOverlayButton(BuildContext context, EntryAction action) {
     Widget child;
     void onPressed() => onActionSelected(action);
     switch (action) {
@@ -208,7 +209,7 @@ class _TopOverlayRow extends StatelessWidget {
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
-          tooltip: action.getText(),
+          tooltip: action.getText(context),
         );
         break;
       case EntryAction.openMap:
@@ -229,7 +230,7 @@ class _TopOverlayRow extends StatelessWidget {
         : SizedBox.shrink();
   }
 
-  PopupMenuEntry<EntryAction> _buildPopupMenuItem(EntryAction action) {
+  PopupMenuEntry<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action) {
     Widget child;
     switch (action) {
       // in app actions
@@ -250,14 +251,14 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.share:
       case EntryAction.viewSource:
       case EntryAction.debug:
-        child = MenuRow(text: action.getText(), icon: action.getIcon());
+        child = MenuRow(text: action.getText(context), icon: action.getIcon());
         break;
       // external app actions
       case EntryAction.edit:
       case EntryAction.open:
       case EntryAction.setAs:
       case EntryAction.openMap:
-        child = Text(action.getText());
+        child = Text(action.getText(context));
         break;
     }
     return PopupMenuItem(
@@ -266,7 +267,7 @@ class _TopOverlayRow extends StatelessWidget {
     );
   }
 
-  PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems() {
+  PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
     Widget buildDivider() => SizedBox(
           height: 16,
           child: VerticalDivider(
@@ -279,7 +280,7 @@ class _TopOverlayRow extends StatelessWidget {
           child: PopupMenuItem(
             value: action,
             child: Tooltip(
-              message: action.getText(),
+              message: action.getText(context),
               child: Center(child: Icon(action.getIcon())),
             ),
           ),
@@ -346,11 +347,11 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
         if (widget.isMenuItem) {
           return isFavourite
               ? MenuRow(
-                  text: 'Remove from favourites',
+                  text: context.l10n.entryActionRemoveFavourite,
                   icon: AIcons.favouriteActive,
                 )
               : MenuRow(
-                  text: 'Add to favourites',
+                  text: context.l10n.entryActionAddFavourite,
                   icon: AIcons.favourite,
                 );
         }
@@ -360,7 +361,7 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
             IconButton(
               icon: Icon(isFavourite ? AIcons.favouriteActive : AIcons.favourite),
               onPressed: widget.onPressed,
-              tooltip: isFavourite ? 'Remove from favourites' : 'Add to favourites',
+              tooltip: isFavourite ? context.l10n.entryActionRemoveFavourite : context.l10n.entryActionAddFavourite,
             ),
             Sweeper(
               key: ValueKey(widget.entry),

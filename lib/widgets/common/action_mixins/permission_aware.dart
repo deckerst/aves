@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -26,18 +27,20 @@ mixin PermissionAwareMixin {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) {
+          final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
+          final volume = dir.getVolumeDescription(context);
           return AvesDialog(
             context: context,
-            title: 'Storage Volume Access',
-            content: Text('Please select the ${dir.directoryDescription} directory of “${dir.volumeDescription}” in the next screen, so that this app can access it and complete your request.'),
+            title: context.l10n.storageAccessDialogTitle,
+            content: Text(context.l10n.storageVolumeAccessDialogMessage(directory, volume)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'.toUpperCase()),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: Text('OK'.toUpperCase()),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
               ),
             ],
           );
@@ -58,14 +61,16 @@ mixin PermissionAwareMixin {
     return showDialog<bool>(
       context: context,
       builder: (context) {
+        final directory = dir.relativeDir.isEmpty ? context.l10n.rootDirectoryDescription : context.l10n.otherDirectoryDescription(dir.relativeDir);
+        final volume = dir.getVolumeDescription(context);
         return AvesDialog(
           context: context,
-          title: 'Restricted Access',
-          content: Text('This app is not allowed to modify files in the ${dir.directoryDescription} directory of “${dir.volumeDescription}”.\n\nPlease use a pre-installed file manager or gallery app to move the items to another directory.'),
+          title: context.l10n.restrictedAccessDialogTitle,
+          content: Text(context.l10n.restrictedAccessDialogMessage(directory, volume)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('OK'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).okButtonLabel),
             ),
           ],
         );

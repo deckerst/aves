@@ -23,7 +23,7 @@ class CollectionSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final header = _buildHeader();
+    final header = _buildHeader(context);
     return header != null
         ? SizedBox(
             height: height,
@@ -32,18 +32,12 @@ class CollectionSectionHeader extends StatelessWidget {
         : SizedBox.shrink();
   }
 
-  Widget _buildHeader() {
-    Widget _buildAlbumHeader() => AlbumSectionHeader(
-          key: ValueKey(sectionKey),
-          source: collection.source,
-          directory: (sectionKey as EntryAlbumSectionKey).directory,
-        );
-
+  Widget _buildHeader(BuildContext context) {
     switch (collection.sortFactor) {
       case EntrySortFactor.date:
         switch (collection.groupFactor) {
           case EntryGroupFactor.album:
-            return _buildAlbumHeader();
+            return _buildAlbumHeader(context);
           case EntryGroupFactor.month:
             return MonthSectionHeader(key: ValueKey(sectionKey), date: (sectionKey as EntryDateSectionKey).date);
           case EntryGroupFactor.day:
@@ -53,11 +47,21 @@ class CollectionSectionHeader extends StatelessWidget {
         }
         break;
       case EntrySortFactor.name:
-        return _buildAlbumHeader();
+        return _buildAlbumHeader(context);
       case EntrySortFactor.size:
         break;
     }
     return null;
+  }
+
+  Widget _buildAlbumHeader(BuildContext context) {
+    final source = collection.source;
+    final directory = (sectionKey as EntryAlbumSectionKey).directory;
+    return AlbumSectionHeader(
+      key: ValueKey(sectionKey),
+      directory: directory,
+      albumName: source.getUniqueAlbumName(context, directory),
+    );
   }
 
   static double getPreferredHeight(BuildContext context, double maxWidth, CollectionSource source, SectionKey sectionKey) {

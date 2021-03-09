@@ -6,6 +6,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -43,14 +44,17 @@ mixin SizeAwareMixin {
       await showDialog(
         context: context,
         builder: (context) {
+          final neededSize = formatFilesize(needed);
+          final freeSize = formatFilesize(free);
+          final volume = destinationVolume.getDescription(context);
           return AvesDialog(
             context: context,
-            title: 'Not Enough Space',
-            content: Text('This operation needs ${formatFilesize(needed)} of free space on “${destinationVolume.description}” to complete, but there is only ${formatFilesize(free)} left.'),
+            title: context.l10n.notEnoughSpaceDialogTitle,
+            content: Text(context.l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK'.toUpperCase()),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
               ),
             ],
           );

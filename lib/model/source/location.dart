@@ -7,6 +7,7 @@ import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
@@ -138,7 +139,7 @@ mixin LocationMixin on SourceBase {
     }
 
     // the same country code could be found with different country names
-    // e.g. if the locale changed between geolocating calls
+    // e.g. if the locale changed between geocoding calls
     // so we merge countries by code, keeping only one name for each code
     final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
     final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);

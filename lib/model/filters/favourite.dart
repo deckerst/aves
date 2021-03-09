@@ -1,10 +1,14 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
+
+  const FavouriteFilter();
 
   @override
   Map<String, dynamic> toMap() => {
@@ -15,13 +19,22 @@ class FavouriteFilter extends CollectionFilter {
   EntryFilter get test => (entry) => entry.isFavourite;
 
   @override
-  String get label => 'Favourite';
+  String get universalLabel => type;
+
+  @override
+  String getLabel(BuildContext context) => context.l10n.filterFavouriteLabel;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.favourite, size: size);
 
   @override
-  String get typeKey => type;
+  Future<Color> color(BuildContext context) => SynchronousFuture(Colors.red);
+
+  @override
+  String get category => type;
+
+  @override
+  String get key => type;
 
   @override
   bool operator ==(Object other) {

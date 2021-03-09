@@ -9,6 +9,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
 import 'package:aves/widgets/common/behaviour/route_tracker.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
@@ -19,6 +20,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -120,19 +123,30 @@ class _AvesAppState extends State<AvesApp> {
             child: FutureBuilder<void>(
               future: _appSetup,
               builder: (context, snapshot) {
-                final home = (!snapshot.hasError && snapshot.connectionState == ConnectionState.done)
+                final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                final home = initialized
                     ? getFirstPage()
                     : Scaffold(
-                        body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox.shrink(),
+                        body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox(),
                       );
-                return MaterialApp(
-                  navigatorKey: _navigatorKey,
-                  home: home,
-                  navigatorObservers: _navigatorObservers,
-                  title: 'Aves',
-                  darkTheme: darkTheme,
-                  themeMode: ThemeMode.dark,
-                );
+                return Selector<Settings, Locale>(
+                    selector: (context, s) => s.locale,
+                    builder: (context, settingsLocale, child) {
+                      return MaterialApp(
+                        navigatorKey: _navigatorKey,
+                        home: home,
+                        navigatorObservers: _navigatorObservers,
+                        onGenerateTitle: (context) => context.l10n.appName,
+                        darkTheme: darkTheme,
+                        themeMode: ThemeMode.dark,
+                        locale: settingsLocale,
+                        localizationsDelegates: [
+                          ...AppLocalizations.localizationsDelegates,
+                          LocaleNamesLocalizationsDelegate(),
+                        ],
+                        supportedLocales: AppLocalizations.supportedLocales,
+                      );
+                    });
               },
             ),
           ),

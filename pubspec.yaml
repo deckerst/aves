@@ -1,9 +1,107 @@
 name: aves
-description: Aves is a gallery and metadata explorer app, built for Android.
-
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+description: A visual media gallery and metadata explorer app.
+repository: https://github.com/deckerst/aves
 version: 1.3.5+41
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  charts_flutter: # not null safe, as of 2021/03/09 - https://github.com/google/charts/issues/579
+  collection:
+  connectivity:
+  country_code: # not null safe, as of 2021/03/09 - unmaintained?
+  decorated_icon: # not null safe, as of 2021/03/09 - https://github.com/benPesso/flutter_decorated_icon/issues/2
+  event_bus:
+  # TODO TLAD merge null safe `expansion_tile_card` to fork
+  expansion_tile_card:
+#    path: ../expansion_tile_card
+    git:
+      url: git://github.com/deckerst/expansion_tile_card.git
+  firebase_core:
+  firebase_analytics:
+  firebase_crashlytics:
+  # TODO TLAD migrate to basic SnackBar or `another_flushbar`
+  flushbar: # not null safe, as of 2021/03/09 - discontinued
+  flutter_highlight:
+  flutter_ijkplayer: # not null safe, as of 2021/03/09 - unmaintained?
+#    path: ../flutter_ijkplayer
+    git:
+      url: git://github.com/deckerst/flutter_ijkplayer.git
+  flutter_localized_locales:
+  flutter_map: # not null safe, as of 2021/03/09 - https://github.com/fleaflet/flutter_map/issues/829
+  flutter_markdown:
+  flutter_staggered_animations:
+  flutter_svg:
+  # TODO TLAD migrate to `geocoding` (or reimplement) - https://github.com/Baseflow/flutter-geocoding/issues/37
+  geocoder: # not null safe, as of 2021/03/09 - unmaintained? - https://github.com/aloisdeniel/flutter_geocoder/issues/61
+  github:
+  google_api_availability:
+  google_maps_flutter:
+  intl:
+  latlong: # not null safe, as of 2021/03/09 - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
+  material_design_icons_flutter:
+  overlay_support:
+  package_info:
+  palette_generator: # not null safe, as of 2021/03/09 - https://github.com/flutter/packages/pull/287
+  panorama: # not null safe, as of 2021/03/09 - no issue/PR
+  pdf:
+  pedantic:
+  percent_indicator:
+  permission_handler:
+  printing:
+  provider:
+  shared_preferences:
+  sqflite:
+  streams_channel: # not null safe, as of 2021/03/09 - unmaintained? - no issue/PR
+  tuple:
+  url_launcher:
+  version:
+  xml:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test:
+
+flutter:
+  assets:
+    - assets/
+  generate: true
+  uses-material-design: true
+
+################################################################################
+# Localization
+
+# language files:
+# - /lib/l10n/app_{language}.arb
+# - /android/app/src/main/res/values-{language}/strings.xml
+# - /android/app/src/debug/res/values-{language}/strings.xml (optional)
+# - /android/app/src/profile/res/values-{language}/strings.xml (optional)
+
+# generate `AppLocalizations`
+# % flutter gen-l10n
+
+# list untranslated messages
+# % flutter gen-l10n --untranslated-messages-file untranslated.json
+
+################################################################################
+# Test driver
+
+# run (any device):
+# % flutter drive -t test_driver/app.dart
+
+# capture shaders in profile mode (real device only):
+# % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+
+################################################################################
+# Package study
 
 # brendan-duncan/image (as of v2.1.19):
 # - does not support TIFF with JPEG compression (issue #184)
@@ -24,76 +122,3 @@ version: 1.3.5+41
 # - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
 # - does not support AC3 (by default, but possible by custom build)
 # - can play if only the video or audio stream is supported
-
-environment:
-  sdk: ">=2.7.0 <3.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  charts_flutter:
-  collection:
-  connectivity:
-  country_code:
-  decorated_icon:
-  event_bus:
-  expansion_tile_card:
-#    path: ../expansion_tile_card
-    git:
-      url: git://github.com/deckerst/expansion_tile_card.git
-  firebase_core:
-  firebase_analytics:
-  firebase_crashlytics:
-  flushbar:
-  flutter_highlight:
-  flutter_ijkplayer:
-#    path: ../flutter_ijkplayer
-    git:
-      url: git://github.com/deckerst/flutter_ijkplayer.git
-  flutter_map:
-  flutter_markdown:
-  flutter_staggered_animations:
-  flutter_svg:
-  geocoder:
-  github:
-  google_api_availability:
-  google_maps_flutter:
-  intl:
-  latlong: # for flutter_map
-  material_design_icons_flutter:
-  overlay_support:
-  package_info:
-  palette_generator:
-  panorama:
-  pdf:
-  pedantic:
-  percent_indicator:
-  permission_handler:
-  printing:
-  provider:
-  shared_preferences:
-  sqflite:
-  streams_channel:
-  tuple:
-  url_launcher:
-  version:
-  xml:
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-  # run on any device:
-  # % flutter drive -t test_driver/app.dart
-  # capture shaders in profile mode (real device only):
-  # % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
-  flutter_driver:
-    sdk: flutter
-
-  test: any
-
-flutter:
-  uses-material-design: true
-
-  assets:
-    - assets/

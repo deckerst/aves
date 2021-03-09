@@ -7,6 +7,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/maps/common.dart';
@@ -195,9 +196,10 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
       future: _addressLineLoader,
       builder: (context, snapshot) {
         final address = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : null;
+        final l10n = context.l10n;
         return InfoRowGroup({
-          'Coordinates': settings.coordinateFormat.format(entry.latLng),
-          if (address?.isNotEmpty == true) 'Address': address,
+          l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(entry.latLng),
+          if (address?.isNotEmpty == true) l10n.viewerInfoLabelAddress: address,
         });
       },
     );

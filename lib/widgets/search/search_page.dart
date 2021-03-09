@@ -1,5 +1,6 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,8 @@ class SearchPage extends StatefulWidget {
   final Animation<double> animation;
 
   const SearchPage({
-    this.delegate,
-    this.animation,
+    @required this.delegate,
+    @required this.animation,
   });
 
   @override
@@ -118,7 +119,7 @@ class _SearchPageState extends State<SearchPage> {
           onSubmitted: (_) => widget.delegate.showResults(context),
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: 'Search collection',
+            hintText: context.l10n.searchCollectionFieldHint,
             hintStyle: theme.inputDecorationTheme.hintStyle,
           ),
         ),

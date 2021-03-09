@@ -10,6 +10,7 @@ import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/image_op_events.dart';
@@ -255,8 +256,6 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
   }
 }
-
-enum SourceState { loading, cataloguing, locating, ready }
 
 class EntryAddedEvent {
   final Set<AvesEntry> entries;

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+	<string name="app_name">아베스</string>
+	<string name="search_shortcut_short_label">검색</string>
+	<string name="videos_shortcut_short_label">동영상</string>
+</resources>

@@ -3,6 +3,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
 
@@ -79,7 +80,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   @override
   Widget build(BuildContext context) {
     if (!entry.canDecode) {
-      return _buildError(context, '${entry.mimeType} not supported', null);
+      return _buildError(context, context.l10n.errorUnsupportedMimeType(entry.mimeType), null);
     }
 
     final fastImage = Image(

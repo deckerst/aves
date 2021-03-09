@@ -1,73 +1,79 @@
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/grid/header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DaySectionHeader extends StatelessWidget {
   final DateTime date;
-  final String text;
 
-  DaySectionHeader({
+  const DaySectionHeader({
     Key key,
     @required this.date,
-  })  : text = _formatDate(date),
-        super(key: key);
+  }) : super(key: key);
 
   // Examples (en_US):
-  // `MMMMd`: `April 15`
-  // `yMMMMd`: `April 15, 2020`
-  // `MMMEd`: `Wed, Apr 15`
-  // `yMMMEd`: `Wed, Apr 15, 2020`
-  // `MMMMEEEEd`: `Wednesday, April 15`
-  // `yMMMMEEEEd`: `Wednesday, April 15, 2020`
-  // `MEd`: `Wed, 4/15`
-  // `yMEd`: `Wed, 4/15/2020`
-  static DateFormat md = DateFormat.MMMMd();
-  static DateFormat ymd = DateFormat.yMMMMd();
-  static DateFormat day = DateFormat.E();
+  // `MMMMd`:       `April 15`
+  // `yMMMMd`:      `April 15, 2020`
+  // `MMMEd`:       `Wed, Apr 15`
+  // `yMMMEd`:      `Wed, Apr 15, 2020`
+  // `MMMMEEEEd`:   `Wednesday, April 15`
+  // `yMMMMEEEEd`:  `Wednesday, April 15, 2020`
+  // `MEd`:         `Wed, 4/15`
+  // `yMEd`:        `Wed, 4/15/2020`
 
-  static String _formatDate(DateTime date) {
-    if (date.isToday) return 'Today';
-    if (date.isYesterday) return 'Yesterday';
-    if (date.isThisYear) return '${md.format(date)} (${day.format(date)})';
-    return '${ymd.format(date)} (${day.format(date)})';
+  // Examples (ko):
+  // `MMMMd`:       `1월 26일`
+  // `yMMMMd`:      `2021년 1월 26일`
+  // `MMMEd`:       `1월 26일 (화)`
+  // `yMMMEd`:      `2021년 1월 26일 (화)`
+  // `MMMMEEEEd`:   `1월 26일 화요일`
+  // `yMMMMEEEEd`:  `2021년 1월 26일 화요일`
+  // `MEd`:         `1. 26. (화)`
+  // `yMEd`:        `2021. 1. 26. (화)`
+
+  static String _formatDate(BuildContext context, DateTime date) {
+    final l10n = context.l10n;
+    if (date == null) return l10n.sectionUnknown;
+    if (date.isToday) return l10n.dateToday;
+    if (date.isYesterday) return l10n.dateYesterday;
+    final locale = l10n.localeName;
+    if (date.isThisYear) return '${DateFormat.MMMMd(locale).format(date)} (${DateFormat.E(locale).format(date)})';
+    return '${DateFormat.yMMMMd(locale).format(date)} (${DateFormat.E(locale).format(date)})';
   }
 
   @override
   Widget build(BuildContext context) {
     return SectionHeader(
       sectionKey: EntryDateSectionKey(date),
-      title: text,
+      title: _formatDate(context, date),
     );
   }
 }
 
 class MonthSectionHeader extends StatelessWidget {
   final DateTime date;
-  final String text;
 
-  MonthSectionHeader({
+  const MonthSectionHeader({
     Key key,
     @required this.date,
-  })  : text = _formatDate(date),
-        super(key: key);
+  }) : super(key: key);
 
-  static DateFormat m = DateFormat.MMMM();
-  static DateFormat ym = DateFormat.yMMMM();
-
-  static String _formatDate(DateTime date) {
-    if (date == null) return 'Unknown';
-    if (date.isThisMonth) return 'This month';
-    if (date.isThisYear) return m.format(date);
-    return ym.format(date);
+  static String _formatDate(BuildContext context, DateTime date) {
+    final l10n = context.l10n;
+    if (date == null) return l10n.sectionUnknown;
+    if (date.isThisMonth) return l10n.dateThisMonth;
+    final locale = l10n.localeName;
+    if (date.isThisYear) return DateFormat.MMMM(locale).format(date);
+    return DateFormat.yMMMM(locale).format(date);
   }
 
   @override
   Widget build(BuildContext context) {
     return SectionHeader(
       sectionKey: EntryDateSectionKey(date),
-      title: text,
+      title: _formatDate(context, date),
     );
   }
 }

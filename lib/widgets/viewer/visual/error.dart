@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +46,7 @@ class _ErrorViewState extends State<ErrorView> {
               final exists = snapshot.data;
               return EmptyContent(
                 icon: AIcons.error,
-                text: exists ? 'Oops!' : 'The file no longer exists.',
+                text: exists ? context.l10n.viewerErrorUnknown : context.l10n.viewerErrorDoesNotExist,
                 alignment: Alignment.center,
               );
             }),

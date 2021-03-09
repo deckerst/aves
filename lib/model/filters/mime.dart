@@ -1,6 +1,8 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/mime_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,14 +19,12 @@ class MimeFilter extends CollectionFilter {
     if (lowMime.endsWith('/*')) {
       lowMime = lowMime.substring(0, lowMime.length - 2);
       _test = (entry) => entry.mimeType.startsWith(lowMime);
-      if (lowMime == 'video') {
-        _label = 'Video';
-        _icon = AIcons.video;
-      } else if (lowMime == 'image') {
-        _label = 'Image';
+      _label = lowMime.toUpperCase();
+      if (mime == MimeTypes.anyImage) {
         _icon = AIcons.image;
+      } else if (mime == MimeTypes.anyVideo) {
+        _icon = AIcons.video;
       }
-      _label ??= lowMime.split('/')[0].toUpperCase();
     } else {
       _test = (entry) => entry.mimeType == lowMime;
       _label = MimeUtils.displayType(lowMime);
@@ -47,13 +47,28 @@ class MimeFilter extends CollectionFilter {
   EntryFilter get test => _test;
 
   @override
-  String get label => _label;
+  String get universalLabel => _label;
+
+  @override
+  String getLabel(BuildContext context) {
+    switch (mime) {
+      case MimeTypes.anyImage:
+        return context.l10n.filterMimeImageLabel;
+      case MimeTypes.anyVideo:
+        return context.l10n.filterMimeVideoLabel;
+      default:
+        return _label;
+    }
+  }
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(_icon, size: size);
 
   @override
-  String get typeKey => type;
+  String get category => type;
+
+  @override
+  String get key => '$type-$mime';
 
   @override
   bool operator ==(Object other) {

@@ -1,0 +1,659 @@
+{
+  "appName": "Aves",
+  "@appName": {},
+  "welcomeMessage": "Welcome to Aves",
+  "@welcomeMessage": {},
+  "welcomeAnalyticsToggle": "Allow anonymous analytics and crash reporting (optional)",
+  "@welcomeAnalyticsToggle": {},
+  "welcomeTermsToggle": "I agree to the terms and conditions",
+  "@welcomeTermsToggle": {},
+
+  "applyButtonLabel": "APPLY",
+  "@applyButtonLabel": {},
+  "deleteButtonLabel": "DELETE",
+  "@deleteButtonLabel": {},
+  "hideButtonLabel": "HIDE",
+  "@hideButtonLabel": {},
+  "continueButtonLabel": "CONTINUE",
+  "@continueButtonLabel": {},
+  "clearTooltip": "Clear",
+  "@clearTooltip": {},
+  "previousTooltip": "Previous",
+  "@previousTooltip": {},
+  "nextTooltip": "Next",
+  "@nextTooltip": {},
+
+  "doubleBackExitMessage": "Tap “back” again to exit.",
+  "@doubleBackExitMessage": {},
+
+  "sourceStateLoading": "Loading",
+  "@sourceStateLoading": {},
+  "sourceStateCataloguing": "Cataloguing",
+  "@sourceStateCataloguing": {},
+  "sourceStateLocating": "Locating",
+  "@sourceStateLocating": {},
+
+  "chipActionDelete": "Delete",
+  "@chipActionDelete": {},
+  "chipActionGoToAlbumPage": "Show in Albums",
+  "@chipActionGoToAlbumPage": {},
+  "chipActionGoToCountryPage": "Show in Countries",
+  "@chipActionGoToCountryPage": {},
+  "chipActionGoToTagPage": "Show in Tags",
+  "@chipActionGoToTagPage": {},
+  "chipActionHide": "Hide",
+  "@chipActionHide": {},
+  "chipActionPin": "Pin to top",
+  "@chipActionPin": {},
+  "chipActionUnpin": "Unpin from top",
+  "@chipActionUnpin": {},
+  "chipActionRename": "Rename",
+  "@chipActionRename": {},
+
+  "entryActionDelete": "Delete",
+  "@entryActionDelete": {},
+  "entryActionExport": "Export",
+  "@entryActionExport": {},
+  "entryActionInfo": "Info",
+  "@entryActionInfo": {},
+  "entryActionRename": "Rename",
+  "@entryActionRename": {},
+  "entryActionRotateCCW": "Rotate counterclockwise",
+  "@entryActionRotateCCW": {},
+  "entryActionRotateCW": "Rotate clockwise",
+  "@entryActionRotateCW": {},
+  "entryActionFlip": "Flip horizontally",
+  "@entryActionFlip": {},
+  "entryActionPrint": "Print",
+  "@entryActionPrint": {},
+  "entryActionShare": "Share",
+  "@entryActionShare": {},
+  "entryActionViewSource": "View source",
+  "@entryActionViewSource": {},
+  "entryActionEdit": "Edit with…",
+  "@entryActionEdit": {},
+  "entryActionOpen": "Open with…",
+  "@entryActionOpen": {},
+  "entryActionSetAs": "Set as…",
+  "@entryActionSetAs": {},
+  "entryActionOpenMap": "Show on map…",
+  "@entryActionOpenMap": {},
+  "entryActionAddFavourite": "Add to favourites",
+  "@entryActionAddFavourite": {},
+  "entryActionRemoveFavourite": "Remove from favourites",
+  "@entryActionRemoveFavourite": {},
+
+  "filterFavouriteLabel": "Favourite",
+  "@filterFavouriteLabel": {},
+  "filterLocationEmptyLabel": "Unlocated",
+  "@filterLocationEmptyLabel": {},
+  "filterTagEmptyLabel": "Untagged",
+  "@filterTagEmptyLabel": {},
+  "filterTypeAnimatedLabel": "Animated",
+  "@filterTypeAnimatedLabel": {},
+  "filterTypePanoramaLabel": "Panorama",
+  "@filterTypePanoramaLabel": {},
+  "filterTypeSphericalVideoLabel": "360° Video",
+  "@filterTypeSphericalVideoLabel": {},
+  "filterTypeGeotiffLabel": "GeoTIFF",
+  "@filterTypeGeotiffLabel": {},
+  "filterMimeImageLabel": "Image",
+  "@filterMimeImageLabel": {},
+  "filterMimeVideoLabel": "Video",
+  "@filterMimeVideoLabel": {},
+
+  "coordinateFormatDms": "DMS",
+  "@coordinateFormatDms": {},
+  "coordinateFormatDecimal": "Decimal degrees",
+  "@coordinateFormatDecimal": {},
+
+  "mapStyleGoogleNormal": "Google Maps",
+  "@mapStyleGoogleNormal": {},
+  "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
+  "@mapStyleGoogleHybrid": {},
+  "mapStyleGoogleTerrain": "Google Maps (Terrain)",
+  "@mapStyleGoogleTerrain": {},
+  "mapStyleOsmHot": "Humanitarian OSM",
+  "@mapStyleOsmHot": {},
+  "mapStyleStamenToner": "Stamen Toner",
+  "@mapStyleStamenToner": {},
+  "mapStyleStamenWatercolor": "Stamen Watercolor",
+  "@mapStyleStamenWatercolor": {},
+
+  "keepScreenOnNever": "Never",
+  "@keepScreenOnNever": {},
+  "keepScreenOnViewerOnly": "Viewer page only",
+  "@keepScreenOnViewerOnly": {},
+  "keepScreenOnAlways": "Always",
+  "@keepScreenOnAlways": {},
+
+  "albumTierPinned": "Pinned",
+  "@albumTierPinned": {},
+  "albumTierSpecial": "Common",
+  "@albumTierSpecial": {},
+  "albumTierApps": "Apps",
+  "@albumTierApps": {},
+  "albumTierRegular": "Others",
+  "@albumTierRegular": {},
+
+  "storageVolumeDescriptionFallbackPrimary": "Internal storage",
+  "@storageVolumeDescriptionFallbackPrimary": {},
+  "storageVolumeDescriptionFallbackNonPrimary": "SD card",
+  "@storageVolumeDescriptionFallbackNonPrimary": {},
+  "rootDirectoryDescription": "root directory",
+  "@rootDirectoryDescription": {},
+  "otherDirectoryDescription": "“{name}” directory",
+  "@otherDirectoryDescription": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "storageAccessDialogTitle": "Storage Access",
+  "@storageAccessDialogTitle": {},
+  "storageVolumeAccessDialogMessage": "Please select the {directory} of “{volume}” in the next screen to give this app access to it.",
+  "@storageVolumeAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String"
+      },
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "restrictedAccessDialogTitle": "Restricted Access",
+  "@restrictedAccessDialogTitle": {},
+  "restrictedAccessDialogMessage": "This app is not allowed to modify files in the {directory} of “{volume}”.\n\nPlease use a pre-installed file manager or gallery app to move the items to another directory.",
+  "@restrictedAccessDialogMessage": {
+    "placeholders": {
+      "directory": {
+        "type": "String"
+      },
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+  "notEnoughSpaceDialogTitle": "Not Enough Space",
+  "@notEnoughSpaceDialogTitle": {},
+  "notEnoughSpaceDialogMessage": "This operation needs {neededSize} of free space on “{volume}” to complete, but there is only {freeSize} left.",
+  "@notEnoughSpaceDialogMessage": {
+    "placeholders": {
+      "neededSize": {
+        "type": "String"
+      },
+      "freeSize": {
+        "type": "String"
+      },
+      "volume": {
+        "type": "String"
+      }
+    }
+  },
+
+  "addShortcutDialogLabel": "Shortcut label",
+  "@addShortcutDialogLabel": {},
+  "addShortcutButtonLabel": "ADD",
+  "@addShortcutButtonLabel": {},
+
+  "noMatchingAppDialogTitle": "No Matching App",
+  "@noMatchingAppDialogTitle": {},
+  "noMatchingAppDialogMessage": "There are no apps that can handle this.",
+  "@noMatchingAppDialogMessage": {},
+
+  "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this item?} other{Are you sure you want to delete these {count} items?}}",
+  "@deleteEntriesConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "hideFilterConfirmationDialogMessage": "Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?",
+  "@hideFilterConfirmationDialogMessage": {},
+
+  "newAlbumDialogTitle": "New Album",
+  "@newAlbumDialogTitle": {},
+  "newAlbumDialogNameLabel": "Album name",
+  "@newAlbumDialogNameLabel": {},
+  "newAlbumDialogNameLabelAlreadyExistsHelper": "Directory already exists",
+  "@newAlbumDialogNameLabelAlreadyExistsHelper": {},
+  "newAlbumDialogStorageLabel": "Storage:",
+  "@newAlbumDialogStorageLabel": {},
+
+  "renameAlbumDialogLabel": "New name",
+  "@renameAlbumDialogLabel": {},
+  "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
+  "@renameAlbumDialogLabelAlreadyExistsHelper": {},
+
+  "deleteAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this album and its item?} other{Are you sure you want to delete this album and its {count} items?}}",
+  "@deleteAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "renameEntryDialogLabel": "New name",
+  "@renameEntryDialogLabel": {},
+
+  "genericSuccessFeedback": "Done!",
+  "@genericSuccessFeedback": {},
+  "genericFailureFeedback": "Failed",
+  "@genericFailureFeedback": {},
+
+  "menuActionSort": "Sort",
+  "@menuActionSort": {},
+  "menuActionGroup": "Group",
+  "@menuActionGroup": {},
+  "menuActionStats": "Stats",
+  "@menuActionStats": {},
+
+  "aboutPageTitle": "About",
+  "@aboutPageTitle": {},
+  "aboutFlutter": "Flutter",
+  "@aboutFlutter": {},
+  "aboutUpdate": "New Version Available",
+  "@aboutUpdate": {},
+  "aboutUpdateLinks1": "A new version of Aves is available on",
+  "@aboutUpdateLinks1": {},
+  "aboutUpdateLinks2": "and",
+  "@aboutUpdateLinks2": {},
+  "aboutUpdateLinks3": ".",
+  "@aboutUpdateLinks3": {},
+  "aboutUpdateGithub": "Github",
+  "@aboutUpdateGithub": {},
+  "aboutUpdateGooglePlay": "Google Play",
+  "@aboutUpdateGooglePlay": {},
+  "aboutCredits": "Credits",
+  "@aboutCredits": {},
+  "aboutCreditsWorldAtlas1": "This app uses a TopoJSON file from",
+  "@aboutCreditsWorldAtlas1": {},
+  "aboutCreditsWorldAtlas2": "under ISC License.",
+  "@aboutCreditsWorldAtlas2": {},
+  "aboutLicenses": "Open-Source Licenses",
+  "@aboutLicenses": {},
+  "aboutLicensesBanner": "The following sets forth attribution notices for third-party software that may be contained in this application.",
+  "@aboutLicensesBanner": {},
+  "aboutLicensesSortTooltip": "Sort",
+  "@aboutLicensesSortTooltip": {},
+  "aboutLicensesSortByName": "Sort by name",
+  "@aboutLicensesSortByName": {},
+  "aboutLicensesSortByLicense": "Sort by license",
+  "@aboutLicensesSortByLicense": {},
+  "aboutLicensesAndroidLibraries": "Android Libraries",
+  "@aboutLicensesAndroidLibraries": {},
+  "aboutLicensesFlutterPlugins": "Flutter Plugins",
+  "@aboutLicensesFlutterPlugins": {},
+  "aboutLicensesFlutterPackages": "Flutter Packages",
+  "@aboutLicensesFlutterPackages": {},
+  "aboutLicensesDartPackages": "Dart Packages",
+  "@aboutLicensesDartPackages": {},
+  "aboutLicensesShowAllButtonLabel": "SHOW ALL LICENSES",
+  "@aboutLicensesShowAllButtonLabel": {},
+
+  "collectionPageTitle": "Collection",
+  "@collectionPageTitle": {},
+  "collectionPickPageTitle": "Pick",
+  "@collectionPickPageTitle": {},
+  "collectionSelectionPageTitle": "{count, plural, =0{Select items} =1{1 item} other{{count} items}}",
+  "@collectionSelectionPageTitle": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "collectionActionAddShortcut": "Add shortcut",
+  "@collectionActionAddShortcut": {},
+  "collectionActionSelect": "Select",
+  "@collectionActionSelect": {},
+  "collectionActionSelectAll": "Select all",
+  "@collectionActionSelectAll": {},
+  "collectionActionSelectNone": "Select none",
+  "@collectionActionSelectNone": {},
+  "collectionActionCopy": "Copy to album",
+  "@collectionActionCopy": {},
+  "collectionActionMove": "Move to album",
+  "@collectionActionMove": {},
+  "collectionActionRefreshMetadata": "Refresh metadata",
+  "@collectionActionRefreshMetadata": {},
+
+  "collectionSortTitle": "Sort",
+  "@collectionSortTitle": {},
+  "collectionSortDate": "By date",
+  "@collectionSortDate": {},
+  "collectionSortSize": "By size",
+  "@collectionSortSize": {},
+  "collectionSortName": "By album & file name",
+  "@collectionSortName": {},
+
+  "collectionGroupTitle": "Group",
+  "@collectionGroupTitle": {},
+  "collectionGroupAlbum": "By album",
+  "@collectionGroupAlbum": {},
+  "collectionGroupMonth": "By month",
+  "@collectionGroupMonth": {},
+  "collectionGroupDay": "By day",
+  "@collectionGroupDay": {},
+  "collectionGroupNone": "Do not group",
+  "@collectionGroupNone": {},
+
+  "sectionUnknown": "Unknown",
+  "@sectionUnknown": {},
+  "dateToday": "Today",
+  "@dateToday": {},
+  "dateYesterday": "Yesterday",
+  "@dateYesterday": {},
+  "dateThisMonth": "This month",
+  "@dateThisMonth": {},
+  "errorUnsupportedMimeType": "{mimeType} not supported",
+  "@errorUnsupportedMimeType": {
+    "placeholders": {
+      "mimeType": {
+        "type": "String"
+      }
+    }
+  },
+  "collectionDeleteFailureFeedback": "{count, plural, =1{Failed to delete 1 item} other{Failed to delete {count} items}}",
+  "@collectionDeleteFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionCopyFailureFeedback": "{count, plural, =1{Failed to copy 1 item} other{Failed to copy {count} items}}",
+  "@collectionCopyFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionMoveFailureFeedback": "{count, plural, =1{Failed to move 1 item} other{Failed to move {count} items}}",
+  "@collectionMoveFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionExportFailureFeedback": "{count, plural, =1{Failed to export 1 page} other{Failed to export {count} pages}}",
+  "@collectionExportFailureFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionCopySuccessFeedback": "{count, plural, =1{Copied 1 item} other{Copied {count} items}}",
+  "@collectionCopySuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "collectionMoveSuccessFeedback": "{count, plural, =1{Moved 1 item} other{Moved {count} items}}",
+  "@collectionMoveSuccessFeedback": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+
+  "collectionEmptyFavourites": "No favourites",
+  "@collectionEmptyFavourites": {},
+  "collectionEmptyVideos": "No videos",
+  "@collectionEmptyVideos": {},
+  "collectionEmptyImages": "No images",
+  "@collectionEmptyImages": {},
+
+  "collectionSelectSectionTooltip": "Select section",
+  "@collectionSelectSectionTooltip": {},
+  "collectionDeselectSectionTooltip": "Deselect section",
+  "@collectionDeselectSectionTooltip": {},
+
+  "drawerCollectionAll": "All collection",
+  "@drawerCollectionAll": {},
+  "drawerCollectionVideos": "Videos",
+  "@drawerCollectionVideos": {},
+  "drawerCollectionFavourites": "Favourites",
+  "@drawerCollectionFavourites": {},
+
+  "chipSortTitle": "Sort",
+  "@chipSortTitle": {},
+  "chipSortDate": "By date",
+  "@chipSortDate": {},
+  "chipSortName": "By name",
+  "@chipSortName": {},
+  "chipSortCount": "By item count",
+  "@chipSortCount": {},
+
+  "albumGroupTitle": "Group",
+  "@albumGroupTitle": {},
+  "albumGroupTier": "By tier",
+  "@albumGroupTier": {},
+  "albumGroupVolume": "By storage volume",
+  "@albumGroupVolume": {},
+  "albumGroupNone": "Do not group",
+  "@albumGroupNone": {},
+
+  "albumPickPageTitleCopy": "Copy to Album",
+  "@albumPickPageTitleCopy": {},
+  "albumPickPageTitleExport": "Export to Album",
+  "@albumPickPageTitleExport": {},
+  "albumPickPageTitleMove": "Move to Album",
+  "@albumPickPageTitleMove": {},
+
+  "albumPageTitle": "Albums",
+  "@albumPageTitle": {},
+  "albumEmpty": "No albums",
+  "@albumEmpty": {},
+  "createAlbumTooltip": "Create album",
+  "@createAlbumTooltip": {},
+  "createAlbumButtonLabel": "CREATE",
+  "@createAlbumButtonLabel": {},
+
+  "countryPageTitle": "Countries",
+  "@countryPageTitle": {},
+  "countryEmpty": "No countries",
+  "@countryEmpty": {},
+
+  "tagPageTitle": "Tags",
+  "@tagPageTitle": {},
+  "tagEmpty": "No tags",
+  "@tagEmpty": {},
+
+  "searchCollectionFieldHint": "Search collection",
+  "@searchCollectionFieldHint": {},
+  "searchSectionRecent": "Recent",
+  "@searchSectionRecent": {},
+  "searchSectionAlbums": "Albums",
+  "@searchSectionAlbums": {},
+  "searchSectionCountries": "Countries",
+  "@searchSectionCountries": {},
+  "searchSectionPlaces": "Places",
+  "@searchSectionPlaces": {},
+  "searchSectionTags": "Tags",
+  "@searchSectionTags": {},
+
+  "settingsPageTitle": "Settings",
+  "@settingsPageTitle": {},
+  "settingsSystemDefault": "System",
+  "@settingsSystemDefault": {},
+
+  "settingsSectionNavigation": "Navigation",
+  "@settingsSectionNavigation": {},
+  "settingsHome": "Home",
+  "@settingsHome": {},
+  "settingsDoubleBackExit": "Tap “back” twice to exit",
+  "@settingsDoubleBackExit": {},
+
+  "settingsSectionDisplay": "Display",
+  "@settingsSectionDisplay": {},
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {},
+  "settingsKeepScreenOnTile": "Keep screen on",
+  "@settingsKeepScreenOnTile": {},
+  "settingsKeepScreenOnTitle": "Keep Screen On",
+  "@settingsKeepScreenOnTitle": {},
+  "settingsRasterImageBackground": "Raster image background",
+  "@settingsRasterImageBackground": {},
+  "settingsVectorImageBackground": "Vector image background",
+  "@settingsVectorImageBackground": {},
+  "settingsCoordinateFormatTile": "Coordinate format",
+  "@settingsCoordinateFormatTile": {},
+  "settingsCoordinateFormatTitle": "Coordinate Format",
+  "@settingsCoordinateFormatTitle": {},
+
+  "settingsSectionThumbnails": "Thumbnails",
+  "@settingsSectionThumbnails": {},
+  "settingsThumbnailShowLocationIcon": "Show location icon",
+  "@settingsThumbnailShowLocationIcon": {},
+  "settingsThumbnailShowRawIcon": "Show raw icon",
+  "@settingsThumbnailShowRawIcon": {},
+  "settingsThumbnailShowVideoDuration": "Show video duration",
+  "@settingsThumbnailShowVideoDuration": {},
+
+  "settingsSectionViewer": "Viewer",
+  "@settingsSectionViewer": {},
+  "settingsViewerShowMinimap": "Show minimap",
+  "@settingsViewerShowMinimap": {},
+  "settingsViewerShowInformation": "Show information",
+  "@settingsViewerShowInformation": {},
+  "settingsViewerShowInformationSubtitle": "Show title, date, location, etc.",
+  "@settingsViewerShowInformationSubtitle": {},
+  "settingsViewerShowShootingDetails": "Show shooting details",
+  "@settingsViewerShowShootingDetails": {},
+
+  "settingsSectionSearch": "Search",
+  "@settingsSectionSearch": {},
+  "settingsSaveSearchHistory": "Save search history",
+  "@settingsSaveSearchHistory": {},
+
+  "settingsSectionPrivacy": "Privacy",
+  "@settingsSectionPrivacy": {},
+  "settingsEnableAnalytics": "Allow anonymous analytics and crash reporting",
+  "@settingsEnableAnalytics": {},
+
+  "settingsHiddenFiltersTile": "Hidden filters",
+  "@settingsHiddenFiltersTile": {},
+  "settingsHiddenFiltersTitle": "Hidden Filters",
+  "@settingsHiddenFiltersTitle": {},
+  "settingsHiddenFiltersBanner": "Photos and videos matching hidden filters will not appear in your collection.",
+  "@settingsHiddenFiltersBanner": {},
+  "settingsHiddenFiltersEmpty": "No hidden filters",
+  "@settingsHiddenFiltersEmpty": {},
+
+  "settingsStorageAccessTile": "Storage access",
+  "@settingsStorageAccessTile": {},
+  "settingsStorageAccessTitle": "Storage Access",
+  "@settingsStorageAccessTitle": {},
+  "settingsStorageAccessBanner": "Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.",
+  "@settingsStorageAccessBanner": {},
+  "settingsStorageAccessEmpty": "No access grants",
+  "@settingsStorageAccessEmpty": {},
+  "settingsStorageAccessRevokeTooltip": "Revoke",
+  "@settingsStorageAccessRevokeTooltip": {},
+
+  "statsPageTitle": "Stats",
+  "@statsPageTitle": {},
+  "statsImage": "{count, plural, =1{image} other{images}}",
+  "@statsImage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "statsVideo": "{count, plural, =1{video} other{videos}}",
+  "@statsVideo": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "statsWithGps": "{count, plural, =1{1 item with location} other{{count} items with location}}",
+  "@statsWithGps": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "statsTopCountries": "Top Countries",
+  "@statsTopCountries": {},
+  "statsTopPlaces": "Top Places",
+  "@statsTopPlaces": {},
+  "statsTopTags": "Top Tags",
+  "@statsTopTags": {},
+
+  "viewerOpenPanoramaButtonLabel": "OPEN PANORAMA",
+  "@viewerOpenPanoramaButtonLabel": {},
+  "viewerOpenTooltip": "Open",
+  "@viewerOpenTooltip": {},
+  "viewerPauseTooltip": "Pause",
+  "@viewerPauseTooltip": {},
+  "viewerPlayTooltip": "Play",
+  "@viewerPlayTooltip": {},
+  "viewerErrorUnknown": "Oops!",
+  "@viewerErrorUnknown": {},
+  "viewerErrorDoesNotExist": "The file no longer exists.",
+  "@viewerErrorDoesNotExist": {},
+
+  "viewerInfoPageTitle": "Info",
+  "@viewerInfoPageTitle": {},
+  "viewerInfoBackToViewerTooltip": "Back to viewer",
+  "@viewerInfoBackToViewerTooltip": {},
+
+  "viewerInfoUnknown": "unknown",
+  "@viewerInfoUnknown": {},
+  "viewerInfoLabelTitle": "Title",
+  "@viewerInfoLabelTitle": {},
+  "viewerInfoLabelDate": "Date",
+  "@viewerInfoLabelDate": {},
+  "viewerInfoLabelResolution": "Resolution",
+  "@viewerInfoLabelResolution": {},
+  "viewerInfoLabelSize": "Size",
+  "@viewerInfoLabelSize": {},
+  "viewerInfoLabelUri": "URI",
+  "@viewerInfoLabelUri": {},
+  "viewerInfoLabelPath": "Path",
+  "@viewerInfoLabelPath": {},
+  "viewerInfoLabelDuration": "Duration",
+  "@viewerInfoLabelDuration": {},
+  "viewerInfoLabelOwner": "Owned by",
+  "@viewerInfoLabelOwner": {},
+  "viewerInfoLabelCoordinates": "Coordinates",
+  "@viewerInfoLabelCoordinates": {},
+  "viewerInfoLabelAddress": "Address",
+  "@viewerInfoLabelAddress": {},
+
+  "viewerInfoMapStyleTitle": "Map Style",
+  "@viewerInfoMapStyleTitle": {},
+  "viewerInfoMapStyleTooltip": "Select map style",
+  "@viewerInfoMapStyleTooltip": {},
+  "viewerInfoMapZoomInTooltip": "Zoom in",
+  "@viewerInfoMapZoomInTooltip": {},
+  "viewerInfoMapZoomOutTooltip": "Zoom out",
+  "@viewerInfoMapZoomOutTooltip": {},
+  "mapAttributionOsmHot": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [HOT](https://www.hotosm.org/) • Hosted by [OSM France](https://openstreetmap.fr/)",
+  "@mapAttributionOsmHot": {},
+  "mapAttributionStamen": "Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors • Tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)",
+  "@mapAttributionStamen": {},
+
+  "viewerInfoOpenEmbeddedFailureFeedback": "Failed to extract embedded data",
+  "@viewerInfoOpenEmbeddedFailureFeedback": {},
+  "viewerInfoOpenLinkText": "Open",
+  "@viewerInfoOpenLinkText": {},
+  "viewerInfoViewXmlLinkText": "View XML",
+  "@viewerInfoViewXmlLinkText": {},
+
+  "viewerInfoSearchFieldLabel": "Search metadata",
+  "@viewerInfoSearchFieldLabel": {},
+  "viewerInfoSearchEmpty": "No matching keys",
+  "@viewerInfoSearchEmpty": {},
+  "viewerInfoSearchSuggestionDate": "Date & time",
+  "@viewerInfoSearchSuggestionDate": {},
+  "viewerInfoSearchSuggestionDescription": "Description",
+  "@viewerInfoSearchSuggestionDescription": {},
+  "viewerInfoSearchSuggestionDimensions": "Dimensions",
+  "@viewerInfoSearchSuggestionDimensions": {},
+  "viewerInfoSearchSuggestionResolution": "Resolution",
+  "@viewerInfoSearchSuggestionResolution": {},
+  "viewerInfoSearchSuggestionRights": "Rights",
+  "@viewerInfoSearchSuggestionRights": {},
+
+  "panoramaEnableSensorControl": "Enable sensor control",
+  "@panoramaEnableSensorControl": {},
+  "panoramaDisableSensorControl": "Disable sensor control",
+  "@panoramaDisableSensorControl": {},
+
+  "sourceViewerPageTitle": "Source",
+  "@sourceViewerPageTitle": {}
+}

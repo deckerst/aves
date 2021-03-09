@@ -6,6 +6,7 @@ import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/media_store_service.dart';
 import 'package:aves/services/time_service.dart';

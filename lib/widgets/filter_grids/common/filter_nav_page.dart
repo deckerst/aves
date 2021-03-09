@@ -12,6 +12,7 @@ import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
@@ -49,7 +50,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     return FilterGridPage<T>(
       key: ValueKey('filter-grid-page'),
       appBar: SliverAppBar(
-        title: TappableAppBarTitle(
+        title: InteractiveAppBarTitle(
           onTap: () => _goToSearch(context),
           child: SourceStateAwareAppBarTitle(
             title: Text(title),
@@ -93,7 +94,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
       items: chipActionsBuilder(filter)
           .map((action) => PopupMenuItem(
                 value: action,
-                child: MenuRow(text: action.getText(), icon: action.getIcon()),
+                child: MenuRow(text: action.getText(context), icon: action.getIcon()),
               ))
           .toList(),
     );
@@ -113,21 +114,16 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
             PopupMenuItem(
               key: Key('menu-sort'),
               value: ChipSetAction.sort,
-              child: MenuRow(text: 'Sort…', icon: AIcons.sort),
+              child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
             ),
             if (groupable)
               PopupMenuItem(
                 value: ChipSetAction.group,
-                child: MenuRow(text: 'Group…', icon: AIcons.group),
-              ),
-            if (kDebugMode)
-              PopupMenuItem(
-                value: ChipSetAction.refresh,
-                child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
+                child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
               ),
             PopupMenuItem(
               value: ChipSetAction.stats,
-              child: MenuRow(text: 'Stats', icon: AIcons.stats),
+              child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
             ),
           ];
         },

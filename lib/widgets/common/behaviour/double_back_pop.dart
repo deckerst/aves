@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -37,7 +38,7 @@ class _DoubleBackPopScopeState extends State<DoubleBackPopScope> with FeedbackMi
           _stopBackTimer();
           _backTimer = Timer(Durations.doubleBackTimerDelay, () => _backOnce = false);
           toast(
-            'Tap “back” again to exit.',
+            context.l10n.doubleBackExitMessage,
             duration: Durations.doubleBackTimerDelay,
           );
           return SynchronousFuture(false);

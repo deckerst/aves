@@ -1,0 +1,8 @@
+# cf guide: http://flutter.dev/go/i18n-user-guide
+
+# use defaults to:
+# - parse ARB files from `lib/l10n`
+# - generate class `AppLocalizations` in `app_localizations.dart`
+
+preferred-supported-locales:
+  - en
