@@ -140,7 +140,7 @@ void searchAlbum() {
     await driver.tap(find.byValueKey('search-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    final albumPath = targetPicturesDirEmulated;
+    const albumPath = targetPicturesDirEmulated;
     final albumUniqueName = path.split(albumPath).last;
     await driver.tap(find.byType('TextField'));
     await driver.enterText(albumUniqueName);
