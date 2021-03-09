@@ -171,41 +171,40 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         return SynchronousFuture(false);
       },
       child: ValueListenableProvider<HeroInfo>.value(
-          value: _heroInfoNotifier,
-          builder: (context, snapshot) {
-            return NotificationListener(
-              onNotification: (notification) {
-                if (notification is FilterNotification) {
-                  _goToCollection(notification.filter);
-                } else if (notification is ViewStateNotification) {
-                  _updateViewState(notification.uri, notification.viewState);
-                } else if (notification is EntryDeletedNotification) {
-                  _onEntryDeleted(context, notification.entry);
-                }
-                return false;
-              },
-              child: Stack(
-                children: [
-                  ViewerVerticalPageView(
-                    collection: collection,
-                    entryNotifier: _entryNotifier,
-                    videoControllers: _videoControllers,
-                    multiPageControllers: _multiPageControllers,
-                    verticalPager: _verticalPager,
-                    horizontalPager: _horizontalPager,
-                    onVerticalPageChanged: _onVerticalPageChanged,
-                    onHorizontalPageChanged: _onHorizontalPageChanged,
-                    onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
-                    onImagePageRequested: () => _goToVerticalPage(imagePage),
-                    onViewDisposed: (uri) => _updateViewState(uri, null),
-                  ),
-                  _buildTopOverlay(),
-                  _buildBottomOverlay(),
-                  BottomGestureAreaProtector(),
-                ],
+        value: _heroInfoNotifier,
+        child: NotificationListener(
+          onNotification: (notification) {
+            if (notification is FilterNotification) {
+              _goToCollection(notification.filter);
+            } else if (notification is ViewStateNotification) {
+              _updateViewState(notification.uri, notification.viewState);
+            } else if (notification is EntryDeletedNotification) {
+              _onEntryDeleted(context, notification.entry);
+            }
+            return false;
+          },
+          child: Stack(
+            children: [
+              ViewerVerticalPageView(
+                collection: collection,
+                entryNotifier: _entryNotifier,
+                videoControllers: _videoControllers,
+                multiPageControllers: _multiPageControllers,
+                verticalPager: _verticalPager,
+                horizontalPager: _horizontalPager,
+                onVerticalPageChanged: _onVerticalPageChanged,
+                onHorizontalPageChanged: _onHorizontalPageChanged,
+                onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
+                onImagePageRequested: () => _goToVerticalPage(imagePage),
+                onViewDisposed: (uri) => _updateViewState(uri, null),
               ),
-            );
-          }),
+              _buildTopOverlay(),
+              _buildBottomOverlay(),
+              BottomGestureAreaProtector(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -315,9 +314,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
-            // TODO TLAD replace when using Flutter version adapted for null safety
-            // bottom: (_verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
-            bottom: (_verticalPager.offset ?? 0) - mqHeight,
+            bottom: (_verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
             child: child,
           ),
           child: child,
@@ -462,7 +459,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     if (_overlayVisible.value) {
       _showSystemUI();
       if (animate) {
-        _overlayAnimationController.forward();
+        await _overlayAnimationController.forward();
       } else {
         _overlayAnimationController.value = _overlayAnimationController.upperBound;
       }

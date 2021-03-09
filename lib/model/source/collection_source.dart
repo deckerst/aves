@@ -142,7 +142,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
   }
 
-  void updateAfterMove({
+  Future<void> updateAfterMove({
     @required Set<AvesEntry> todoEntries,
     @required Set<AvesEntry> favouriteEntries,
     @required bool copy,

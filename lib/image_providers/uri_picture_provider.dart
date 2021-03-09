@@ -8,12 +8,11 @@ class UriPicture extends PictureProvider<UriPicture> {
   const UriPicture({
     @required this.uri,
     @required this.mimeType,
-    this.colorFilter,
-  }) : assert(uri != null);
+    ColorFilter colorFilter,
+  })  : assert(uri != null),
+        super(colorFilter);
 
   final String uri, mimeType;
-
-  final ColorFilter colorFilter;
 
   @override
   Future<UriPicture> obtainKey(PictureConfiguration configuration) {

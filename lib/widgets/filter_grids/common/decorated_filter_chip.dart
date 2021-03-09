@@ -134,13 +134,13 @@ class DecoratedFilterChip extends StatelessWidget {
         if (pinned)
           AnimatedPadding(
             padding: EdgeInsets.only(right: padding),
+            duration: Durations.chipDecorationAnimation,
             child: DecoratedIcon(
               AIcons.pin,
               color: FilterGridPage.detailColor,
               shadows: [Constants.embossShadow],
               size: iconSize,
             ),
-            duration: Durations.chipDecorationAnimation,
           ),
         if (filter is AlbumFilter && androidFileUtils.isOnRemovableStorage(filter.album))
           AnimatedPadding(

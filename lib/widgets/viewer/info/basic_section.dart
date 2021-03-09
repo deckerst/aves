@@ -186,7 +186,9 @@ class _OwnerPropState extends State<OwnerProp> {
                 text: context.l10n.viewerInfoLabelOwner,
                 style: InfoRowGroup.keyStyle,
               ),
-              WidgetSpan(
+              // `com.android.shell` is the package reported
+              // for images copied to the device by ADB for Test Driver
+              if (_ownerPackage != 'com.android.shell') WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4),

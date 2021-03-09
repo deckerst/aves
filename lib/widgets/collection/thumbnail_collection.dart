@@ -221,8 +221,8 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
         appBar,
         collection.isEmpty
             ? SliverFillRemaining(
-                child: _buildEmptyCollectionPlaceholder(collection),
                 hasScrollBody: false,
+                child: _buildEmptyCollectionPlaceholder(collection),
               )
             : SectionedListSliver<AvesEntry>(),
         BottomPaddingSliver(),

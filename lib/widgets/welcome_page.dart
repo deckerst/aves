@@ -111,7 +111,6 @@ class _WelcomePageState extends State<WelcomePage> {
 
     final button = ElevatedButton(
       key: Key('continue-button'),
-      child: Text(context.l10n.continueButtonLabel),
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;
@@ -124,6 +123,7 @@ class _WelcomePageState extends State<WelcomePage> {
               );
             }
           : null,
+      child: Text(context.l10n.continueButtonLabel),
     );
 
     return MediaQuery.of(context).orientation == Orientation.portrait

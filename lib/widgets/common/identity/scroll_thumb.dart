@@ -18,6 +18,7 @@ ScrollThumbBuilder avesScrollThumbBuilder({
     margin: EdgeInsets.only(right: .5),
     padding: EdgeInsets.all(2),
     child: ClipPath(
+      clipper: ArrowClipper(),
       child: Container(
         width: 20.0,
         decoration: BoxDecoration(
@@ -25,7 +26,6 @@ ScrollThumbBuilder avesScrollThumbBuilder({
           borderRadius: BorderRadius.circular(12.0),
         ),
       ),
-      clipper: ArrowClipper(),
     ),
   );
   return (backgroundColor, thumbAnimation, labelAnimation, height, {labelText}) {

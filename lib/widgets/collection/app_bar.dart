@@ -141,10 +141,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
-      Widget title = Text(
-        AvesApp.mode == AppMode.pick ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle,
-        key: Key('appbar-title'),
-      );
+      Widget title = Text(AvesApp.mode == AppMode.pick ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
       if (AvesApp.mode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,

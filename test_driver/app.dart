@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:aves/main.dart' as app;
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -22,6 +24,7 @@ Future<void> configureAndLaunch() async {
   await settings.init();
   settings.keepScreenOn = KeepScreenOn.always;
   settings.hasAcceptedTerms = false;
+  settings.locale = Locale('en');
 
   app.main();
 }
