@@ -2,25 +2,47 @@ name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
 version: 1.3.5+41
+publish_to: none
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
+
+# TODO TLAD merge null safe `expansion_tile_card` to fork
+# TODO TLAD migrate from `flushbar` to basic SnackBar or `another_flushbar`
+# TODO TLAD migrate from `geocoder` to `geocoding` (or reimplement) - https://github.com/Baseflow/flutter-geocoding/issues/37
+# TODO TLAD remove explicit `overlay_support` version when 1.2.0 is stable (1.0.5 uses deprecated `ancestorWidgetOfExactType`)
+# TODO TLAD upgrade printing to >=5 when `flutter_driver` dependency upgrade get on the right channel
+#   https://github.com/flutter/flutter/pull/75370
+#   https://github.com/flutter/flutter/blob/master/packages/flutter_driver/pubspec.yaml
+#   otherwise, we get this conundrum:
+#     every version of flutter_driver from sdk depends on crypto 2.1.5
+#     pdf >=3.0.1 depends on crypto ^3.0.0
+#     printing >=5.0.1 depends on pdf ^3.0.1
+
+# not null safe, as of 2021/03/09
+# `charts_flutter` - https://github.com/google/charts/issues/579
+# `country_code` - unmaintained?
+# `decorated_icon` - https://github.com/benPesso/flutter_decorated_icon/issues/2
+# `flushbar` - discontinued
+# `flutter_ijkplayer` - unmaintained?
+# `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
+# `geocoder` - unmaintained? - https://github.com/aloisdeniel/flutter_geocoder/issues/61
+# `latlong` - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
+# `palette_generator` - https://github.com/flutter/packages/pull/287
+# `panorama` - no issue/PR
+# `streams_channel` - unmaintained? - no issue/PR
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  # `charts_flutter` not null safe, as of 2021/03/09 - https://github.com/google/charts/issues/579
   charts_flutter:
   collection:
   connectivity:
-  # `country_code` not null safe, as of 2021/03/09 - unmaintained?
   country_code:
-  # `decorated_icon` not null safe, as of 2021/03/09 - https://github.com/benPesso/flutter_decorated_icon/issues/2
   decorated_icon:
   event_bus:
-  # TODO TLAD merge null safe `expansion_tile_card` to fork
   expansion_tile_card:
 #    path: ../expansion_tile_card
     git:
@@ -28,54 +50,36 @@ dependencies:
   firebase_core:
   firebase_analytics:
   firebase_crashlytics:
-  # TODO TLAD migrate to basic SnackBar or `another_flushbar`
-  # `flushbar` not null safe, as of 2021/03/09 - discontinued
   flushbar:
   flutter_highlight:
-  # `flutter_ijkplayer` not null safe, as of 2021/03/09 - unmaintained?
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer
     git:
       url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_localized_locales:
-  # `flutter_map` not null safe, as of 2021/03/09 - https://github.com/fleaflet/flutter_map/issues/829
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:
   flutter_svg:
-  # TODO TLAD migrate to `geocoding` (or reimplement) - https://github.com/Baseflow/flutter-geocoding/issues/37
-  # `geocoder` not null safe, as of 2021/03/09 - unmaintained? - https://github.com/aloisdeniel/flutter_geocoder/issues/61
   geocoder:
   github:
   google_api_availability:
   google_maps_flutter:
   intl:
-  # `latlong` not null safe, as of 2021/03/09 - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
   latlong:
   material_design_icons_flutter:
-  # as of 2021/03/09, stable version 1.0.5 uses deprecated `ancestorWidgetOfExactType`
   overlay_support: 1.2.0-nullsafety.0
   package_info:
-  # `palette_generator` not null safe, as of 2021/03/09 - https://github.com/flutter/packages/pull/287
   palette_generator:
-  # `panorama` not null safe, as of 2021/03/09 - no issue/PR
   panorama:
   pdf:
   pedantic:
   percent_indicator:
   permission_handler:
-  # TODO TLAD upgrade printing to >=5 when `flutter_driver` dependency upgrade get on the right channel
-  # https://github.com/flutter/flutter/pull/75370
-  # https://github.com/flutter/flutter/blob/master/packages/flutter_driver/pubspec.yaml
-  # otherwise, we get this conundrum:
-  # every version of flutter_driver from sdk depends on crypto 2.1.5
-  # pdf >=3.0.1 depends on crypto ^3.0.0
-  # printing >=5.0.1 depends on pdf ^3.0.1
   printing: 4.1.0
   provider:
   shared_preferences:
   sqflite:
-  # `streams_channel` not null safe, as of 2021/03/09 - unmaintained? - no issue/PR
   streams_channel:
   tuple:
   url_launcher:
