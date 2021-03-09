@@ -10,13 +10,13 @@ import 'package:aves/services/image_op_events.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 
@@ -52,15 +52,15 @@ class ChipActionDelegate {
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?'),
+          content: Text(context.l10n.hideFilterConfirmationDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Hide'.toUpperCase()),
+              child: Text(context.l10n.hideButtonLabel),
             ),
           ],
         );
@@ -116,15 +116,15 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Are you sure you want to delete this album and its ${Intl.plural(count, one: 'item', other: '$count items')}?'),
+          content: Text(context.l10n.deleteAlbumConfirmationDialogMessage(count)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Delete'.toUpperCase()),
+              child: Text(context.l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -145,7 +145,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
-          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
         source.removeEntries(deletedUris);
         source.resumeMonitoring();
@@ -183,9 +183,9 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         final movedCount = movedOps.length;
         if (movedCount < todoCount) {
           final count = todoCount - movedCount;
-          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, context.l10n.collectionMoveFailureFeedback(count));
         } else {
-          showFeedback(context, 'Done!');
+          showFeedback(context, context.l10n.genericSuccessFeedback);
         }
         final pinned = settings.pinnedFilters.contains(filter);
         await source.updateAfterMove(
@@ -197,7 +197,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         );
         // repin new album after obsolete album got removed and unpinned
         if (pinned) {
-          final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(destinationAlbum));
+          final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(context, destinationAlbum));
           settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
         }
         source.resumeMonitoring();

@@ -1,6 +1,7 @@
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/debouncer.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -34,7 +35,7 @@ class _QueryBarState extends State<QueryBar> {
         _controller.clear();
         filterNotifier.value = '';
       },
-      tooltip: 'Clear',
+      tooltip: context.l10n.clearTooltip,
     );
 
     return Row(

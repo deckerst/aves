@@ -73,7 +73,7 @@ class AvesFilterChip extends StatefulWidget {
         items: actions
             .map((action) => PopupMenuItem(
                   value: action,
-                  child: MenuRow(text: action.getText(), icon: action.getIcon()),
+                  child: MenuRow(text: action.getText(context), icon: action.getIcon()),
                 ))
             .toList(),
       );
@@ -103,8 +103,13 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   @override
   void initState() {
     super.initState();
-    _initColorLoader();
     _tapped = false;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initColorLoader();
   }
 
   @override
@@ -146,7 +151,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         ],
         Flexible(
           child: Text(
-            filter.label,
+            filter.getLabel(context),
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,
@@ -203,7 +208,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               child: widget.background,
             ),
           Tooltip(
-            message: filter.tooltip,
+            message: filter.getTooltip(context),
             preferBelow: false,
             child: Material(
               color: hasBackground ? Colors.transparent : Theme.of(context).scaffoldBackgroundColor,

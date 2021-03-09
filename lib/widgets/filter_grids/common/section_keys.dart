@@ -1,6 +1,7 @@
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -29,12 +30,15 @@ class ChipSectionKey extends SectionKey {
 class AlbumImportanceSectionKey extends ChipSectionKey {
   final AlbumImportance importance;
 
-  AlbumImportanceSectionKey._private(this.importance) : super(title: importance.getText());
+  AlbumImportanceSectionKey._private(BuildContext context, this.importance) : super(title: importance.getText(context));
 
-  static AlbumImportanceSectionKey pinned = AlbumImportanceSectionKey._private(AlbumImportance.pinned);
-  static AlbumImportanceSectionKey special = AlbumImportanceSectionKey._private(AlbumImportance.special);
-  static AlbumImportanceSectionKey apps = AlbumImportanceSectionKey._private(AlbumImportance.apps);
-  static AlbumImportanceSectionKey regular = AlbumImportanceSectionKey._private(AlbumImportance.regular);
+  factory AlbumImportanceSectionKey.pinned(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.pinned);
+
+  factory AlbumImportanceSectionKey.special(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.special);
+
+  factory AlbumImportanceSectionKey.apps(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.apps);
+
+  factory AlbumImportanceSectionKey.regular(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.regular);
 
   @override
   Widget get leading => Icon(importance.getIcon());
@@ -43,16 +47,16 @@ class AlbumImportanceSectionKey extends ChipSectionKey {
 enum AlbumImportance { pinned, special, apps, regular }
 
 extension ExtraAlbumImportance on AlbumImportance {
-  String getText() {
+  String getText(BuildContext context) {
     switch (this) {
       case AlbumImportance.pinned:
-        return 'Pinned';
+        return context.l10n.albumTierPinned;
       case AlbumImportance.special:
-        return 'Common';
+        return context.l10n.albumTierSpecial;
       case AlbumImportance.apps:
-        return 'Apps';
+        return context.l10n.albumTierApps;
       case AlbumImportance.regular:
-        return 'Others';
+        return context.l10n.albumTierRegular;
     }
     return null;
   }
@@ -75,7 +79,7 @@ extension ExtraAlbumImportance on AlbumImportance {
 class StorageVolumeSectionKey extends ChipSectionKey {
   final StorageVolume volume;
 
-  StorageVolumeSectionKey(this.volume) : super(title: volume?.description ?? 'Unknown');
+  StorageVolumeSectionKey(BuildContext context, this.volume) : super(title: volume?.getDescription(context) ?? context.l10n.sectionUnknown);
 
   @override
   Widget get leading => (volume?.isRemovable ?? false) ? Icon(AIcons.removableStorage) : null;

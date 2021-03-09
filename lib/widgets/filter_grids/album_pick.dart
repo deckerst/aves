@@ -7,10 +7,11 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/basic/query_bar.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/dialogs/create_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
@@ -58,7 +59,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
           stream: source.eventBus.on<AlbumsChangedEvent>(),
           builder: (context, snapshot) => FilterGridPage<AlbumFilter>(
             appBar: appBar,
-            filterSections: AlbumListPage.getAlbumEntries(source),
+            filterSections: AlbumListPage.getAlbumEntries(context, source),
             showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
             applyQuery: (filters, query) {
               if (query == null || query.isEmpty) return filters;
@@ -68,7 +69,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
             queryNotifier: _queryNotifier,
             emptyBuilder: () => EmptyContent(
               icon: AIcons.album,
-              text: 'No albums',
+              text: context.l10n.albumEmpty,
             ),
             settingsRouteKey: AlbumListPage.routeName,
             appBarHeight: AlbumPickAppBar.preferredHeight,
@@ -100,11 +101,11 @@ class AlbumPickAppBar extends StatelessWidget {
     String title() {
       switch (moveType) {
         case MoveType.copy:
-          return 'Copy to Album';
+          return context.l10n.albumPickPageTitleCopy;
         case MoveType.export:
-          return 'Export to Album';
+          return context.l10n.albumPickPageTitleExport;
         case MoveType.move:
-          return 'Move to Album';
+          return context.l10n.albumPickPageTitleMove;
         default:
           return null;
       }
@@ -131,22 +132,26 @@ class AlbumPickAppBar extends StatelessWidget {
               Navigator.pop<String>(context, newAlbum);
             }
           },
-          tooltip: 'Create album',
+          tooltip: context.l10n.createAlbumTooltip,
         ),
         PopupMenuButton<ChipSetAction>(
           itemBuilder: (context) {
             return [
               PopupMenuItem(
                 value: ChipSetAction.sort,
-                child: MenuRow(text: 'Sort…', icon: AIcons.sort),
+                child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
               ),
               PopupMenuItem(
                 value: ChipSetAction.group,
-                child: MenuRow(text: 'Group…', icon: AIcons.group),
+                child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
               ),
             ];
           },
           onSelected: (action) {
+            // remove focus, if any, to prevent the keyboard from showing up
+            // after the user is done with the popup menu
+            FocusManager.instance.primaryFocus?.unfocus();
+
             // wait for the popup menu to hide before proceeding with the action
             Future.delayed(Durations.popupMenuAnimation * timeDilation, () => actionDelegate.onActionSelected(context, action));
           },

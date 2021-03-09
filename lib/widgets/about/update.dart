@@ -2,29 +2,30 @@ import 'package:aves/model/availability.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/about/news_badge.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
-class AboutNewVersion extends StatefulWidget {
+class AboutUpdate extends StatefulWidget {
   @override
-  _AboutNewVersionState createState() => _AboutNewVersionState();
+  _AboutUpdateState createState() => _AboutUpdateState();
 }
 
-class _AboutNewVersionState extends State<AboutNewVersion> {
-  Future<bool> _newVersionLoader;
+class _AboutUpdateState extends State<AboutUpdate> {
+  Future<bool> _updateChecker;
 
   @override
   void initState() {
     super.initState();
-    _newVersionLoader = availability.isNewVersionAvailable;
+    _updateChecker = availability.isNewVersionAvailable;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _newVersionLoader,
+      future: _updateChecker,
       builder: (context, snapshot) {
-        final newVersion = snapshot.data == true;
-        if (!newVersion) return SizedBox();
+        final newVersionAvailable = snapshot.data == true;
+        if (!newVersionAvailable) return SizedBox();
         return Column(
           children: [
             Padding(
@@ -46,7 +47,7 @@ class _AboutNewVersionState extends State<AboutNewVersion> {
                               ),
                               alignment: PlaceholderAlignment.middle,
                             ),
-                            TextSpan(text: 'New Version Available', style: Constants.titleTextStyle),
+                            TextSpan(text: context.l10n.aboutUpdate, style: Constants.titleTextStyle),
                           ],
                         ),
                       ),
@@ -55,25 +56,25 @@ class _AboutNewVersionState extends State<AboutNewVersion> {
                   Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(text: 'A new version of Aves is available on '),
+                        TextSpan(text: context.l10n.aboutUpdateLinks1),
                         WidgetSpan(
                           child: LinkChip(
-                            text: 'Github',
+                            text: context.l10n.aboutUpdateGithub,
                             url: 'https://github.com/deckerst/aves/releases',
                             textStyle: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           alignment: PlaceholderAlignment.middle,
                         ),
-                        TextSpan(text: ' and '),
+                        TextSpan(text: context.l10n.aboutUpdateLinks2),
                         WidgetSpan(
                           child: LinkChip(
-                            text: 'Google Play',
+                            text: context.l10n.aboutUpdateGooglePlay,
                             url: 'https://play.google.com/store/apps/details?id=deckers.thibault.aves',
                             textStyle: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           alignment: PlaceholderAlignment.middle,
                         ),
-                        TextSpan(text: '.'),
+                        TextSpan(text: context.l10n.aboutUpdateLinks3),
                       ],
                     ),
                   ),

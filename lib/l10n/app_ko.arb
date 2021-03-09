@@ -1,0 +1,8 @@
+{
+  "appName": "아베스",
+
+  "collectionSelectionPageTitle": "{count, plural, =0{항목 선택} other{{count}개}}",
+
+  "settingsLanguage": "언어",
+  "settingsSystemDefault": "시스템"
+}

@@ -7,6 +7,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_thumbnail.dart';
@@ -89,7 +90,7 @@ class MetadataDirTile extends StatelessWidget {
   static Map<String, InfoLinkHandler> getSvgLinkHandlers(SplayTreeMap<String, String> tags) {
     return {
       'Metadata': InfoLinkHandler(
-        linkText: 'View XML',
+        linkText: (context) => context.l10n.viewerInfoViewXmlLinkText,
         onTap: (context) {
           Navigator.push(
             context,

@@ -1,9 +1,11 @@
 import 'package:aves/model/availability.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -68,7 +70,7 @@ class MapButtonPanel extends StatelessWidget {
                   onPressed: () => AndroidAppService.openMap(geoUri).then((success) {
                     if (!success) showNoMatchingAppDialog(context);
                   }),
-                  tooltip: 'Show on map…',
+                  tooltip: context.l10n.entryActionOpenMap,
                 ),
                 SizedBox(height: padding),
                 MapOverlayButton(
@@ -83,8 +85,8 @@ class MapButtonPanel extends StatelessWidget {
                       builder: (context) {
                         return AvesSelectionDialog<EntryMapStyle>(
                           initialValue: initialStyle,
-                          options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.name))),
-                          title: 'Map Style',
+                          options: Map.fromEntries(availableStyles.map((v) => MapEntry(v, v.getName(context)))),
+                          title: context.l10n.viewerInfoMapStyleTitle,
                         );
                       },
                     );
@@ -95,19 +97,19 @@ class MapButtonPanel extends StatelessWidget {
                       MapStyleChangedNotification().dispatch(context);
                     }
                   },
-                  tooltip: 'Style map…',
+                  tooltip: context.l10n.viewerInfoMapStyleTooltip,
                 ),
                 Spacer(),
                 MapOverlayButton(
                   icon: AIcons.zoomIn,
                   onPressed: () => zoomBy(1),
-                  tooltip: 'Zoom in',
+                  tooltip: context.l10n.viewerInfoMapZoomInTooltip,
                 ),
                 SizedBox(height: padding),
                 MapOverlayButton(
                   icon: AIcons.zoomOut,
                   onPressed: () => zoomBy(-1),
-                  tooltip: 'Zoom out',
+                  tooltip: context.l10n.viewerInfoMapZoomOutTooltip,
                 ),
               ],
             ),

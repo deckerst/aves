@@ -9,12 +9,11 @@ import 'package:flutter/material.dart';
 class AlbumSectionHeader extends StatelessWidget {
   final String directory, albumName;
 
-  AlbumSectionHeader({
+  const AlbumSectionHeader({
     Key key,
-    @required CollectionSource source,
     @required this.directory,
-  })  : albumName = source.getUniqueAlbumName(directory),
-        super(key: key);
+    @required this.albumName,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,7 @@ class AlbumSectionHeader extends StatelessWidget {
     return SectionHeader.getPreferredHeight(
       context: context,
       maxWidth: maxWidth,
-      title: source.getUniqueAlbumName(directory),
+      title: source.getUniqueAlbumName(context, directory),
       hasLeading: androidFileUtils.getAlbumType(directory) != AlbumType.regular,
       hasTrailing: androidFileUtils.isOnRemovableStorage(directory),
     );

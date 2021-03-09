@@ -41,7 +41,6 @@ class AndroidAppService {
   static Future<bool> edit(String uri, String mimeType) async {
     try {
       return await platform.invokeMethod('edit', <String, dynamic>{
-        'title': 'Edit with:',
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -54,7 +53,6 @@ class AndroidAppService {
   static Future<bool> open(String uri, String mimeType) async {
     try {
       return await platform.invokeMethod('open', <String, dynamic>{
-        'title': 'Open with:',
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -78,7 +76,6 @@ class AndroidAppService {
   static Future<bool> setAs(String uri, String mimeType) async {
     try {
       return await platform.invokeMethod('setAs', <String, dynamic>{
-        'title': 'Set as:',
         'uri': uri,
         'mimeType': mimeType,
       });
@@ -94,7 +91,6 @@ class AndroidAppService {
     final urisByMimeType = groupBy<AvesEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
     try {
       return await platform.invokeMethod('share', <String, dynamic>{
-        'title': 'Share via:',
         'urisByMimeType': urisByMimeType,
       });
     } on PlatformException catch (e) {
@@ -106,7 +102,6 @@ class AndroidAppService {
   static Future<bool> shareSingle(String uri, String mimeType) async {
     try {
       return await platform.invokeMethod('share', <String, dynamic>{
-        'title': 'Share via:',
         'urisByMimeType': {
           mimeType: [uri]
         },

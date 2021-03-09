@@ -43,7 +43,6 @@ class AIcons {
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData print = Icons.print_outlined;
-  static const IconData refresh = Icons.refresh_outlined;
   static const IconData rename = Icons.title_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;

@@ -12,6 +12,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
@@ -21,7 +22,6 @@ import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
@@ -103,14 +103,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.flip();
-    if (!success) showFeedback(context, 'Failed');
+    if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {@required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.rotate(clockwise: clockwise);
-    if (!success) showFeedback(context, 'Failed');
+    if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AvesEntry entry) async {
@@ -119,15 +119,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Are you sure?'),
+          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Delete'.toUpperCase()),
+              child: Text(context.l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -138,7 +138,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {entry})) return;
 
     if (!await entry.delete()) {
-      showFeedback(context, 'Failed');
+      showFeedback(context, context.l10n.genericFailureFeedback);
     } else {
       if (hasCollection) {
         collection.source.removeEntries({entry.uri});
@@ -191,9 +191,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         final movedCount = movedOps.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          showFeedback(context, 'Failed to export ${Intl.plural(count, one: '$count page', other: '$count pages')}');
+          showFeedback(context, context.l10n.collectionExportFailureFeedback(count));
         } else {
-          showFeedback(context, 'Done!');
+          showFeedback(context, context.l10n.genericSuccessFeedback);
         }
       },
     );
@@ -208,7 +208,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
+    if (await entry.rename(newName)) {
+      showFeedback(context, context.l10n.genericSuccessFeedback);
+    } else {
+      showFeedback(context, context.l10n.genericFailureFeedback);
+    }
   }
 
   void _goToSourceViewer(BuildContext context, AvesEntry entry) {

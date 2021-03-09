@@ -1,5 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,26 +14,26 @@ class TypeFilter extends CollectionFilter {
 
   final String itemType;
   EntryFilter _test;
-  String _label;
   IconData _icon;
 
   TypeFilter(this.itemType) {
-    if (itemType == animated) {
-      _test = (entry) => entry.isAnimated;
-      _label = 'Animated';
-      _icon = AIcons.animated;
-    } else if (itemType == panorama) {
-      _test = (entry) => entry.isImage && entry.is360;
-      _label = 'Panorama';
-      _icon = AIcons.threesixty;
-    } else if (itemType == sphericalVideo) {
-      _test = (entry) => entry.isVideo && entry.is360;
-      _label = '360° Video';
-      _icon = AIcons.threesixty;
-    } else if (itemType == geotiff) {
-      _test = (entry) => entry.isGeotiff;
-      _label = 'GeoTIFF';
-      _icon = AIcons.geo;
+    switch (itemType) {
+      case animated:
+        _test = (entry) => entry.isAnimated;
+        _icon = AIcons.animated;
+        break;
+      case panorama:
+        _test = (entry) => entry.isImage && entry.is360;
+        _icon = AIcons.threesixty;
+        break;
+      case sphericalVideo:
+        _test = (entry) => entry.isVideo && entry.is360;
+        _icon = AIcons.threesixty;
+        break;
+      case geotiff:
+        _test = (entry) => entry.isGeotiff;
+        _icon = AIcons.geo;
+        break;
     }
   }
 
@@ -51,13 +52,32 @@ class TypeFilter extends CollectionFilter {
   EntryFilter get test => _test;
 
   @override
-  String get label => _label;
+  String get universalLabel => itemType;
+
+  @override
+  String getLabel(BuildContext context) {
+    switch (itemType) {
+      case animated:
+        return context.l10n.filterTypeAnimatedLabel;
+      case panorama:
+        return context.l10n.filterTypePanoramaLabel;
+      case sphericalVideo:
+        return context.l10n.filterTypeSphericalVideoLabel;
+      case geotiff:
+        return context.l10n.filterTypeGeotiffLabel;
+      default:
+        return itemType;
+    }
+  }
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(_icon, size: size);
 
   @override
-  String get typeKey => type;
+  String get category => type;
+
+  @override
+  String get key => '$type-$itemType';
 
   @override
   bool operator ==(Object other) {

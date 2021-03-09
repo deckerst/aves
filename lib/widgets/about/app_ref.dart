@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:aves/flutter_version.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
@@ -48,7 +49,7 @@ class _AppReferenceState extends State<AppReference> {
           leading: AvesLogo(
             size: style.fontSize * MediaQuery.textScaleFactorOf(context) * 1.25,
           ),
-          text: 'Aves ${snapshot.data?.version}',
+          text: '${context.l10n.appName} ${snapshot.data?.version}',
           url: 'https://github.com/deckerst/aves',
           textStyle: style,
         );
@@ -71,7 +72,7 @@ class _AppReferenceState extends State<AppReference> {
               ),
             ),
           ),
-          TextSpan(text: 'Flutter ${version['frameworkVersion']}'),
+          TextSpan(text: '${context.l10n.aboutFlutter} ${version['frameworkVersion']}'),
         ],
       ),
       style: TextStyle(color: subColor),

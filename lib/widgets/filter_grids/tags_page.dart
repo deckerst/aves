@@ -6,7 +6,8 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
@@ -29,7 +30,7 @@ class TagListPage extends StatelessWidget {
           stream: source.eventBus.on<TagsChangedEvent>(),
           builder: (context, snapshot) => FilterNavigationPage<TagFilter>(
             source: source,
-            title: 'Tags',
+            title: context.l10n.tagPageTitle,
             chipSetActionDelegate: TagChipSetActionDelegate(),
             chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [
@@ -39,7 +40,7 @@ class TagListPage extends StatelessWidget {
             filterSections: _getTagEntries(source),
             emptyBuilder: () => EmptyContent(
               icon: AIcons.tag,
-              text: 'No tags',
+              text: context.l10n.tagEmpty,
             ),
           ),
         );

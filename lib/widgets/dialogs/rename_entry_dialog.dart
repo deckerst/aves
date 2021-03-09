@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 
@@ -41,7 +42,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
       content: TextField(
         controller: _nameController,
         decoration: InputDecoration(
-          labelText: 'New name',
+          labelText: context.l10n.renameEntryDialogLabel,
           suffixText: entry.extension,
         ),
         autofocus: true,
@@ -51,14 +52,14 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.toUpperCase()),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
         ValueListenableBuilder<bool>(
           valueListenable: _isValidNotifier,
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text('Apply'.toUpperCase()),
+              child: Text(context.l10n.applyButtonLabel),
             );
           },
         )

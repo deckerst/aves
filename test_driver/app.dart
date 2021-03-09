@@ -1,5 +1,5 @@
 import 'package:aves/main.dart' as app;
-import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:flutter_driver/driver_extension.dart';

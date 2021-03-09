@@ -14,12 +14,12 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   final CollectionLens collection;
@@ -112,10 +112,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final movedCount = movedOps.length;
         if (movedCount < todoCount) {
           final count = todoCount - movedCount;
-          showFeedback(context, 'Failed to ${copy ? 'copy' : 'move'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, copy ? context.l10n.collectionCopyFailureFeedback(count) : context.l10n.collectionMoveFailureFeedback(count));
         } else {
           final count = movedCount;
-          showFeedback(context, '${copy ? 'Copied' : 'Moved'} ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, copy ? context.l10n.collectionCopySuccessFeedback(count) : context.l10n.collectionMoveSuccessFeedback(count));
         }
         await source.updateAfterMove(
           todoEntries: todoEntries,
@@ -138,15 +138,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Are you sure you want to delete ${Intl.plural(count, one: 'this item', other: 'these $count items')}?'),
+          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(count)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Delete'.toUpperCase()),
+              child: Text(context.l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -167,7 +167,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
-          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
         source.removeEntries(deletedUris);
         collection.browse();

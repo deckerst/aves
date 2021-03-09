@@ -6,7 +6,8 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
@@ -29,7 +30,7 @@ class CountryListPage extends StatelessWidget {
           stream: source.eventBus.on<CountriesChangedEvent>(),
           builder: (context, snapshot) => FilterNavigationPage<LocationFilter>(
             source: source,
-            title: 'Countries',
+            title: context.l10n.countryPageTitle,
             chipSetActionDelegate: CountryChipSetActionDelegate(),
             chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [
@@ -39,7 +40,7 @@ class CountryListPage extends StatelessWidget {
             filterSections: _getCountryEntries(source),
             emptyBuilder: () => EmptyContent(
               icon: AIcons.location,
-              text: 'No countries',
+              text: context.l10n.countryEmpty,
             ),
           ),
         );

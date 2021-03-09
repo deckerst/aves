@@ -1,4 +1,5 @@
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
@@ -31,7 +32,7 @@ class XmpBasicNamespace extends XmpNamespace {
               return {
                 if (struct.containsKey(thumbnailDataDisplayKey))
                   thumbnailDataDisplayKey: InfoLinkHandler(
-                    linkText: 'Open',
+                    linkText: (context) => context.l10n.viewerInfoOpenLinkText,
                     onTap: (context) => OpenEmbeddedDataNotification(
                       propPath: 'xmp:Thumbnails[$index]/xmpGImg:image',
                       mimeType: MimeTypes.jpeg,

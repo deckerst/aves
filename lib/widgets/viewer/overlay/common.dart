@@ -38,13 +38,13 @@ class OverlayButton extends StatelessWidget {
 
 class OverlayTextButton extends StatelessWidget {
   final Animation<double> scale;
-  final String text;
+  final String buttonLabel;
   final VoidCallback onPressed;
 
   const OverlayTextButton({
     Key key,
     @required this.scale,
-    @required this.text,
+    @required this.buttonLabel,
     this.onPressed,
   })  : assert(scale != null),
         super(key: key);
@@ -71,7 +71,7 @@ class OverlayTextButton extends StatelessWidget {
             )),
             // shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
           ),
-          child: Text(text.toUpperCase()),
+          child: Text(buttonLabel),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 enum EntryAction {
@@ -46,41 +47,41 @@ class EntryActions {
 }
 
 extension ExtraEntryAction on EntryAction {
-  String getText() {
+  String getText(BuildContext context) {
     switch (this) {
       // in app actions
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
         return null;
       case EntryAction.delete:
-        return 'Delete';
+        return context.l10n.entryActionDelete;
       case EntryAction.export:
-        return 'Export';
+        return context.l10n.entryActionExport;
       case EntryAction.info:
-        return 'Info';
+        return context.l10n.entryActionInfo;
       case EntryAction.rename:
-        return 'Rename';
+        return context.l10n.entryActionRename;
       case EntryAction.rotateCCW:
-        return 'Rotate counterclockwise';
+        return context.l10n.entryActionRotateCCW;
       case EntryAction.rotateCW:
-        return 'Rotate clockwise';
+        return context.l10n.entryActionRotateCW;
       case EntryAction.flip:
-        return 'Flip horizontally';
+        return context.l10n.entryActionFlip;
       case EntryAction.print:
-        return 'Print';
+        return context.l10n.entryActionPrint;
       case EntryAction.share:
-        return 'Share';
+        return context.l10n.entryActionShare;
       case EntryAction.viewSource:
-        return 'View source';
+        return context.l10n.entryActionViewSource;
       // external app actions
       case EntryAction.edit:
-        return 'Edit with…';
+        return context.l10n.entryActionEdit;
       case EntryAction.open:
-        return 'Open with…';
+        return context.l10n.entryActionOpen;
       case EntryAction.setAs:
-        return 'Set as…';
+        return context.l10n.entryActionSetAs;
       case EntryAction.openMap:
-        return 'Show on map…';
+        return context.l10n.entryActionOpenMap;
       case EntryAction.debug:
         return 'Debug';
     }

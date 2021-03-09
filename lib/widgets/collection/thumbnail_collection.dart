@@ -6,12 +6,11 @@ import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
-import 'package:aves/widgets/collection/empty.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
@@ -23,6 +22,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_manager.dart';
@@ -265,18 +265,18 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
         if (collection.filters.any((filter) => filter is FavouriteFilter)) {
           return EmptyContent(
             icon: AIcons.favourite,
-            text: 'No favourites',
+            text: context.l10n.collectionEmptyFavourites,
           );
         }
         if (collection.filters.any((filter) => filter is MimeFilter && filter.mime == MimeTypes.anyVideo)) {
           return EmptyContent(
             icon: AIcons.video,
-            text: 'No videos',
+            text: context.l10n.collectionEmptyVideos,
           );
         }
         return EmptyContent(
           icon: AIcons.image,
-          text: 'No images',
+          text: context.l10n.collectionEmptyImages,
         );
       },
     );

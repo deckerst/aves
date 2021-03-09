@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/main.dart';
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -15,6 +16,7 @@ import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/add_shortcut_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/search/search_button.dart';
@@ -23,7 +25,6 @@ import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
 
 class CollectionAppBar extends StatefulWidget {
@@ -141,7 +142,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
       Widget title = Text(
-        AvesApp.mode == AppMode.pick ? 'Pick' : 'Collection',
+        AvesApp.mode == AppMode.pick ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle,
         key: Key('appbar-title'),
       );
       if (AvesApp.mode == AppMode.main) {
@@ -150,7 +151,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           source: source,
         );
       }
-      return TappableAppBarTitle(
+      return InteractiveAppBarTitle(
         onTap: _goToSearch,
         child: title,
       );
@@ -159,7 +160,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         animation: collection.selectionChangeNotifier,
         builder: (context, child) {
           final count = collection.selection.length;
-          return Text(Intl.plural(count, zero: 'Select items', one: '$count item', other: '$count items'));
+          return Text(context.l10n.collectionSelectionPageTitle(count));
         },
       );
     }
@@ -180,7 +181,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 return IconButton(
                   icon: Icon(action.getIcon()),
                   onPressed: collection.selection.isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
-                  tooltip: action.getText(),
+                  tooltip: action.getText(context),
                 );
               },
             )),
@@ -197,35 +198,30 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                 PopupMenuItem(
                   key: Key('menu-sort'),
                   value: CollectionAction.sort,
-                  child: MenuRow(text: 'Sort…', icon: AIcons.sort),
+                  child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
                 ),
                 if (collection.sortFactor == EntrySortFactor.date)
                   PopupMenuItem(
                     key: Key('menu-group'),
                     value: CollectionAction.group,
-                    child: MenuRow(text: 'Group…', icon: AIcons.group),
+                    child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
                 if (collection.isBrowsing) ...[
-                  if (kDebugMode)
-                    PopupMenuItem(
-                      value: CollectionAction.refresh,
-                      child: MenuRow(text: 'Refresh', icon: AIcons.refresh),
-                    ),
                   if (AvesApp.mode == AppMode.main)
                     PopupMenuItem(
                       value: CollectionAction.select,
                       enabled: isNotEmpty,
-                      child: MenuRow(text: 'Select', icon: AIcons.select),
+                      child: MenuRow(text: context.l10n.collectionActionSelect, icon: AIcons.select),
                     ),
                   PopupMenuItem(
                     value: CollectionAction.stats,
                     enabled: isNotEmpty,
-                    child: MenuRow(text: 'Stats', icon: AIcons.stats),
+                    child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
                   ),
                   if (AvesApp.mode == AppMode.main && canAddShortcuts)
                     PopupMenuItem(
                       value: CollectionAction.addShortcut,
-                      child: MenuRow(text: 'Add shortcut…', icon: AIcons.addShortcut),
+                      child: MenuRow(text: context.l10n.collectionActionAddShortcut, icon: AIcons.addShortcut),
                     ),
                 ],
                 if (collection.isSelecting) ...[
@@ -233,28 +229,28 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   PopupMenuItem(
                     value: CollectionAction.copy,
                     enabled: hasSelection,
-                    child: MenuRow(text: 'Copy to album'),
+                    child: MenuRow(text: context.l10n.collectionActionCopy),
                   ),
                   PopupMenuItem(
                     value: CollectionAction.move,
                     enabled: hasSelection,
-                    child: MenuRow(text: 'Move to album'),
+                    child: MenuRow(text: context.l10n.collectionActionMove),
                   ),
                   PopupMenuItem(
                     value: CollectionAction.refreshMetadata,
                     enabled: hasSelection,
-                    child: MenuRow(text: 'Refresh metadata'),
+                    child: MenuRow(text: context.l10n.collectionActionRefreshMetadata),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.selectAll,
                     enabled: collection.selection.length < collection.entryCount,
-                    child: MenuRow(text: 'Select all'),
+                    child: MenuRow(text: context.l10n.collectionActionSelectAll),
                   ),
                   PopupMenuItem(
                     value: CollectionAction.selectNone,
                     enabled: hasSelection,
-                    child: MenuRow(text: 'Select none'),
+                    child: MenuRow(text: context.l10n.collectionActionSelectNone),
                   ),
                 ]
               ];
@@ -289,9 +285,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       case CollectionAction.refreshMetadata:
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
-      case CollectionAction.refresh:
-        unawaited(source.refresh());
-        break;
       case CollectionAction.select:
         collection.select();
         break;
@@ -313,12 +306,12 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
             initialValue: settings.collectionGroupFactor,
             options: {
-              EntryGroupFactor.album: 'By album',
-              EntryGroupFactor.month: 'By month',
-              EntryGroupFactor.day: 'By day',
-              EntryGroupFactor.none: 'Do not group',
+              EntryGroupFactor.album: context.l10n.collectionGroupAlbum,
+              EntryGroupFactor.month: context.l10n.collectionGroupMonth,
+              EntryGroupFactor.day: context.l10n.collectionGroupDay,
+              EntryGroupFactor.none: context.l10n.collectionGroupNone,
             },
-            title: 'Group',
+            title: context.l10n.collectionGroupTitle,
           ),
         );
         if (value != null) {
@@ -332,11 +325,11 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           builder: (context) => AvesSelectionDialog<EntrySortFactor>(
             initialValue: settings.collectionSortFactor,
             options: {
-              EntrySortFactor.date: 'By date',
-              EntrySortFactor.size: 'By size',
-              EntrySortFactor.name: 'By album & file name',
+              EntrySortFactor.date: context.l10n.collectionSortDate,
+              EntrySortFactor.size: context.l10n.collectionSortSize,
+              EntrySortFactor.name: context.l10n.collectionSortName,
             },
-            title: 'Sort',
+            title: context.l10n.collectionSortTitle,
           ),
         );
         if (value != null) {
@@ -348,14 +341,24 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Future<void> _showShortcutDialog(BuildContext context) async {
+    final filters = collection.filters;
+    var defaultName;
+    if (filters.isEmpty) {
+      defaultName = context.l10n.collectionPageTitle;
+    } else {
+      final sortedFilters = List<CollectionFilter>.from(filters)..sort();
+      defaultName = sortedFilters.first.getLabel(context);
+    }
     final name = await showDialog<String>(
       context: context,
-      builder: (context) => AddShortcutDialog(collection.filters),
+      builder: (context) {
+        return AddShortcutDialog(defaultName: defaultName);
+      },
     );
     if (name == null || name.isEmpty) return;
 
     final iconEntry = collection.sortedEntries.isNotEmpty ? collection.sortedEntries.first : null;
-    unawaited(AppShortcutService.pin(name, iconEntry, collection.filters));
+    unawaited(AppShortcutService.pin(name, iconEntry, filters));
   }
 
   void _goToSearch() {

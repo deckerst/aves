@@ -43,7 +43,7 @@ class FilterTable extends StatelessWidget {
           return Table(
             children: sortedEntries.take(5).map((kv) {
               final filter = filterBuilder(kv.key);
-              final label = filter.label;
+              final label = filter.getLabel(context);
               final count = kv.value;
               final percent = count / totalEntryCount;
               return TableRow(

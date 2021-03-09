@@ -1,5 +1,7 @@
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class SourceStateAwareAppBarTitle extends StatelessWidget {
@@ -54,13 +56,13 @@ class SourceStateSubtitle extends StatelessWidget {
     String subtitle;
     switch (source.stateNotifier.value) {
       case SourceState.loading:
-        subtitle = 'Loading';
+        subtitle = context.l10n.sourceStateLoading;
         break;
       case SourceState.cataloguing:
-        subtitle = 'Cataloguing';
+        subtitle = context.l10n.sourceStateCataloguing;
         break;
       case SourceState.locating:
-        subtitle = 'Locating';
+        subtitle = context.l10n.sourceStateLocating;
         break;
       case SourceState.ready:
       default:
