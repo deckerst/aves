@@ -7,6 +7,7 @@ import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/multipage.dart';
+import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -18,7 +19,6 @@ import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart' as ppath;
 
@@ -44,10 +44,6 @@ class AvesEntry {
   AddressDetails _addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
-
-  // Local geocoding requires Google Play Services
-  // Google remote geocoding requires an API key and is not free
-  final Future<List<Address>> Function(Coordinates coordinates) _findAddresses = Geocoder.local.findAddressesFromCoordinates;
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
   static const List<String> undecodable = [MimeTypes.crw, MimeTypes.djvu, MimeTypes.psd];
@@ -482,9 +478,8 @@ class AvesEntry {
   // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> locatePlace({@required bool background}) async {
     if (!hasGps || hasFineAddress) return;
-    final coordinates = latLng;
     try {
-      Future<List<Address>> call() => _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
+      Future<List<Address>> call() => GeocodingService.getAddress(latLng);
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -507,22 +502,21 @@ class AvesEntry {
         );
       }
     } catch (error, stack) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stack');
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$latLng error=$error\n$stack');
     }
   }
 
   Future<String> findAddressLine() async {
     if (!hasGps) return null;
 
-    final coordinates = latLng;
     try {
-      final addresses = await _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
+      final addresses = await GeocodingService.getAddress(latLng);
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
       }
     } catch (error, stack) {
-      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stack');
+      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$latLng error=$error\n$stack');
     }
     return null;
   }

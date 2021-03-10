@@ -1,6 +1,6 @@
+import 'package:aves/services/geocoding_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoder/model.dart';
 import 'package:intl/intl.dart';
 
 class DateMetadata {

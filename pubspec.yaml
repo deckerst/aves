@@ -9,15 +9,13 @@ environment:
 
 # TODO TLAD merge null safe `expansion_tile_card` to fork
 # TODO TLAD migrate from `flushbar` to basic SnackBar or `another_flushbar`
-# TODO TLAD migrate from `geocoder` to `geocoding` (or reimplement) - https://github.com/Baseflow/flutter-geocoding/issues/37
 # TODO TLAD remove explicit `overlay_support` version when 1.2.0 is stable (1.0.5 uses deprecated `ancestorWidgetOfExactType`)
-# TODO TLAD upgrade printing to >=5 when `flutter_driver` dependency upgrade get on the right channel
-#   https://github.com/flutter/flutter/pull/75370
-#   https://github.com/flutter/flutter/blob/master/packages/flutter_driver/pubspec.yaml
-#   otherwise, we get this conundrum:
-#     every version of flutter_driver from sdk depends on crypto 2.1.5
-#     pdf >=3.0.1 depends on crypto ^3.0.0
-#     printing >=5.0.1 depends on pdf ^3.0.1
+
+# TODO TLAD switch to Flutter dev/beta when possible, currently on master because of the following mess:
+# printing >=5.0.1 depends on pdf ^3.0.1, pdf >=3.0.1 depends on crypto ^3.0.0 and archive ^3.1.0
+# but `flutter_driver` (shipped with Flutter) dependencies are too old in stable v2.0.1
+# bump `crypto` and others - 2021/02/05 https://github.com/flutter/flutter/commit/bc1cf4945841ba5874f5262b8146d52750e7c11f
+# bump `archive` from 3.0.0 to 3.1.2 - 2021/03/04 https://github.com/flutter/flutter/commit/ddcb8d7d6d3fcedc906b2f1bf26b73c018d3dc28
 
 # not null safe, as of 2021/03/09
 # `charts_flutter` - https://github.com/google/charts/issues/579
@@ -26,7 +24,6 @@ environment:
 # `flushbar` - discontinued
 # `flutter_ijkplayer` - unmaintained?
 # `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
-# `geocoder` - unmaintained? - https://github.com/aloisdeniel/flutter_geocoder/issues/61
 # `latlong` - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
 # `palette_generator` - https://github.com/flutter/packages/pull/287
 # `panorama` - no issue/PR
@@ -61,7 +58,6 @@ dependencies:
   flutter_markdown:
   flutter_staggered_animations:
   flutter_svg:
-  geocoder:
   github:
   google_api_availability:
   google_maps_flutter:
@@ -76,7 +72,7 @@ dependencies:
   pedantic:
   percent_indicator:
   permission_handler:
-  printing: 4.1.0
+  printing:
   provider:
   shared_preferences:
   sqflite:
@@ -85,10 +81,6 @@ dependencies:
   url_launcher:
   version:
   xml:
-
-dependency_overrides:
-  # because of `charts_flutter`
-  intl: '>=0.17.0'
 
 dev_dependencies:
   flutter_test:
