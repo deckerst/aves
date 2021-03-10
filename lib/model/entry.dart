@@ -7,6 +7,7 @@ import 'package:aves/model/favourite_repo.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/multipage.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/metadata_service.dart';
@@ -475,11 +476,18 @@ class AvesEntry {
     );
   }
 
+  String _geocoderLocale;
+
+  String get geocoderLocale {
+    _geocoderLocale ??= (settings.locale ?? WidgetsBinding.instance.window.locale).toString();
+    return _geocoderLocale;
+  }
+
   // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> locatePlace({@required bool background}) async {
     if (!hasGps || hasFineAddress) return;
     try {
-      Future<List<Address>> call() => GeocodingService.getAddress(latLng);
+      Future<List<Address>> call() => GeocodingService.getAddress(latLng, geocoderLocale);
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -510,7 +518,7 @@ class AvesEntry {
     if (!hasGps) return null;
 
     try {
-      final addresses = await GeocodingService.getAddress(latLng);
+      final addresses = await GeocodingService.getAddress(latLng, geocoderLocale);
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
