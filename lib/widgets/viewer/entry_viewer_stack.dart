@@ -360,10 +360,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     );
   }
 
-  Future<void> _onVerticalPageChanged(int page) async {
+  void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
     if (page == transitionPage) {
-      await _actionDelegate.dismissFeedback();
+      _actionDelegate.dismissFeedback(context);
       _popVisual();
     } else if (page == infoPage) {
       // prevent hero when viewer is offscreen

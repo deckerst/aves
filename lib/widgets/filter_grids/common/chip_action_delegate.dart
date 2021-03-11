@@ -142,13 +142,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       itemCount: selectionCount,
       onDone: (processed) {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
+        source.removeEntries(deletedUris);
+        source.resumeMonitoring();
+
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
-        source.removeEntries(deletedUris);
-        source.resumeMonitoring();
       },
     );
   }
@@ -180,13 +181,6 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
-        final movedCount = movedOps.length;
-        if (movedCount < todoCount) {
-          final count = todoCount - movedCount;
-          showFeedback(context, context.l10n.collectionMoveFailureFeedback(count));
-        } else {
-          showFeedback(context, context.l10n.genericSuccessFeedback);
-        }
         final pinned = settings.pinnedFilters.contains(filter);
         await source.updateAfterMove(
           todoEntries: todoEntries,
@@ -201,6 +195,14 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
           settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
         }
         source.resumeMonitoring();
+
+        final movedCount = movedOps.length;
+        if (movedCount < todoCount) {
+          final count = todoCount - movedCount;
+          showFeedback(context, context.l10n.collectionMoveFailureFeedback(count));
+        } else {
+          showFeedback(context, context.l10n.genericSuccessFeedback);
+        }
       },
     );
   }

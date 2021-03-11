@@ -109,14 +109,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
-        final movedCount = movedOps.length;
-        if (movedCount < todoCount) {
-          final count = todoCount - movedCount;
-          showFeedback(context, copy ? context.l10n.collectionCopyFailureFeedback(count) : context.l10n.collectionMoveFailureFeedback(count));
-        } else {
-          final count = movedCount;
-          showFeedback(context, copy ? context.l10n.collectionCopySuccessFeedback(count) : context.l10n.collectionMoveSuccessFeedback(count));
-        }
         await source.updateAfterMove(
           todoEntries: todoEntries,
           favouriteEntries: favouriteEntries,
@@ -126,6 +118,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         );
         collection.browse();
         source.resumeMonitoring();
+
+        final movedCount = movedOps.length;
+        if (movedCount < todoCount) {
+          final count = todoCount - movedCount;
+          showFeedback(context, copy ? context.l10n.collectionCopyFailureFeedback(count) : context.l10n.collectionMoveFailureFeedback(count));
+        } else {
+          final count = movedCount;
+          showFeedback(context, copy ? context.l10n.collectionCopySuccessFeedback(count) : context.l10n.collectionMoveSuccessFeedback(count));
+        }
       },
     );
   }
@@ -164,14 +165,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       itemCount: selectionCount,
       onDone: (processed) {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
+        source.removeEntries(deletedUris);
+        collection.browse();
+        source.resumeMonitoring();
+
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
           showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
-        source.removeEntries(deletedUris);
-        collection.browse();
-        source.resumeMonitoring();
       },
     );
   }

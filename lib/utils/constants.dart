@@ -235,12 +235,6 @@ class Constants {
       sourceUrl: 'https://github.com/Skylled/expansion_tile_card',
     ),
     Dependency(
-      name: 'Flushbar',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/AndreHaueisen/flushbar/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/AndreHaueisen/flushbar',
-    ),
-    Dependency(
       name: 'Flutter Highlight',
       license: 'MIT',
       licenseUrl: 'https://github.com/git-touch/highlight/blob/master/LICENSE',
