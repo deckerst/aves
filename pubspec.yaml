@@ -22,7 +22,6 @@ environment:
 # `flutter_ijkplayer` - unmaintained?
 # `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
 # `latlong` - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
-# `palette_generator` - https://github.com/flutter/packages/pull/287
 # `panorama` - no issue/PR
 # `streams_channel` - unmaintained? - no issue/PR
 
