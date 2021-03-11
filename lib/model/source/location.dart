@@ -82,14 +82,14 @@ mixin LocationMixin on SourceBase {
     // -  652 calls (22%) when approximating to 2 decimal places (~1km - town or village)
     // cf https://en.wikipedia.org/wiki/Decimal_degrees#Precision
     final latLngFactor = pow(10, 2);
-    Tuple2 approximateLatLng(AvesEntry entry) {
+    Tuple2<int, int> approximateLatLng(AvesEntry entry) {
       final lat = entry.catalogMetadata?.latitude;
       final lng = entry.catalogMetadata?.longitude;
       if (lat == null || lng == null) return null;
-      return Tuple2((lat * latLngFactor).round(), (lng * latLngFactor).round());
+      return Tuple2<int, int>((lat * latLngFactor).round(), (lng * latLngFactor).round());
     }
 
-    final knownLocations = <Tuple2, AddressDetails>{};
+    final knownLocations = <Tuple2<int, int>, AddressDetails>{};
     byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails));
 
     stateNotifier.value = SourceState.locating;

@@ -15,6 +15,9 @@ class GeocodingService {
         'latitude': coordinates.latitude,
         'longitude': coordinates.longitude,
         'locale': locale,
+        // we only really need one address, but sometimes the native geocoder
+        // returns nothing with `maxResults` of 1, but succeeds with `maxResults` of 2+
+        'maxResults': 2,
       });
       return (result as List).cast<Map>().map((map) => Address.fromMap(map)).toList();
     } on PlatformException catch (e) {
