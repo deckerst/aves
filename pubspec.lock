@@ -181,10 +181,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "51fe2b12588356fade82ce65daef5482beed54e7"
+      resolved-ref: b80a0b322622f28bd783cccef3663aa7aa806e01
       url: "git://github.com/deckerst/expansion_tile_card.git"
     source: git
-    version: "1.0.3"
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -269,13 +269,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  flushbar:
-    dependency: "direct main"
-    description:
-      name: flushbar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.10.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -1106,4 +1099,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.24.0-10"
+  flutter: ">=1.26.0-0"

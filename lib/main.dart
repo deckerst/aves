@@ -83,6 +83,13 @@ class _AvesAppState extends State<AvesApp> {
         ),
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.grey[800],
+      contentTextStyle: TextStyle(
+        color: Colors.white,
+      ),
+      behavior: SnackBarBehavior.floating,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         primary: accentColor,
