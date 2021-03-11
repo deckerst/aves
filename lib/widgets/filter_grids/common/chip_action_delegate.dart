@@ -5,8 +5,10 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -155,8 +157,18 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showRenameDialog(BuildContext context, AlbumFilter filter) async {
-    final source = context.read<CollectionSource>();
     final album = filter.album;
+
+    // check whether renaming is possible given OS restrictions,
+    // before asking to input a new name
+    final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
+    final dir = VolumeRelativeDirectory.fromPath(album);
+    if (restrictedDirs.contains(dir)) {
+      await showRestrictedDirectoryDialog(context, dir);
+      return;
+    }
+
+    final source = context.read<CollectionSource>();
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameAlbumDialog(album),
