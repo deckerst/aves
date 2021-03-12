@@ -24,123 +24,139 @@ import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
+import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/scaling.dart';
-import 'package:aves/widgets/common/tile_extent_manager.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class ThumbnailCollection extends StatelessWidget {
-  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
   final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
-  final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
-  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
-
-  static const columnCountDefault = 4;
-  static const extentMin = 46.0;
-  static const spacing = 0.0;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final viewportSize = constraints.biggest;
-          assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
-          if (viewportSize.isEmpty) return SizedBox.shrink();
-
-          final tileExtentManager = TileExtentManager(
-            settingsRouteKey: context.currentRouteName,
-            extentNotifier: _tileExtentNotifier,
-            columnCountDefault: columnCountDefault,
-            extentMin: extentMin,
-            spacing: spacing,
-          )..applyTileExtent(viewportSize: viewportSize);
-          final cacheExtent = tileExtentManager.getEffectiveExtentMax(viewportSize) * 2;
-          final scrollController = PrimaryScrollController.of(context);
-
-          // do not replace by Provider.of<CollectionLens>
-          // so that view updates on collection filter changes
-          return Consumer<CollectionLens>(
-            builder: (context, collection, child) {
-              final scrollView = AnimationLimiter(
-                child: CollectionScrollView(
-                  scrollableKey: _scrollableKey,
-                  collection: collection,
-                  appBar: CollectionAppBar(
-                    appBarHeightNotifier: _appBarHeightNotifier,
-                    collection: collection,
-                  ),
-                  appBarHeightNotifier: _appBarHeightNotifier,
-                  isScrollingNotifier: _isScrollingNotifier,
-                  scrollController: scrollController,
-                  cacheExtent: cacheExtent,
-                ),
-              );
-
-              final scaler = GridScaleGestureDetector<AvesEntry>(
-                tileExtentManager: tileExtentManager,
-                scrollableKey: _scrollableKey,
-                appBarHeightNotifier: _appBarHeightNotifier,
-                viewportSize: viewportSize,
-                gridBuilder: (center, extent, child) => CustomPaint(
-                  // painting the thumbnail half-border on top of the grid yields artifacts,
-                  // so we use a `foregroundPainter` to cover them instead
-                  foregroundPainter: GridPainter(
-                    center: center,
-                    extent: extent,
-                    spacing: tileExtentManager.spacing,
-                    strokeWidth: DecoratedThumbnail.borderWidth * 2,
-                    color: DecoratedThumbnail.borderColor,
-                  ),
-                  child: child,
-                ),
-                scaledBuilder: (entry, extent) => DecoratedThumbnail(
-                  entry: entry,
-                  extent: extent,
-                  selectable: false,
-                  highlightable: false,
-                ),
-                getScaledItemTileRect: (context, entry) {
-                  final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
-                  return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
-                },
-                onScaled: (entry) => context.read<HighlightInfo>().set(entry),
-                child: scrollView,
-              );
-
-              final selector = GridSelectionGestureDetector(
-                selectable: AvesApp.mode == AppMode.main,
-                collection: collection,
-                scrollController: scrollController,
-                appBarHeightNotifier: _appBarHeightNotifier,
-                child: scaler,
-              );
-
-              final sectionedListLayoutProvider = ValueListenableBuilder<double>(
-                valueListenable: _tileExtentNotifier,
-                builder: (context, tileExtent, child) => SectionedEntryListLayoutProvider(
-                  collection: collection,
-                  scrollableWidth: viewportSize.width,
-                  tileExtent: tileExtent,
-                  columnCount: tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent),
-                  tileBuilder: (entry) => InteractiveThumbnail(
-                    key: ValueKey(entry.contentId),
-                    collection: collection,
-                    entry: entry,
-                    tileExtent: tileExtent,
-                    isScrollingNotifier: _isScrollingNotifier,
-                  ),
-                  child: selector,
-                ),
-              );
-              return sectionedListLayoutProvider;
-            },
-          );
-        },
+      child: TileExtentControllerProvider(
+        controller: TileExtentController(
+          settingsRouteKey: context.currentRouteName,
+          extentNotifier: _tileExtentNotifier,
+          columnCountDefault: 4,
+          extentMin: 46,
+          spacing: 0,
+        ),
+        child: _ThumbnailCollectionContent(),
       ),
+    );
+  }
+}
+
+class _ThumbnailCollectionContent extends StatelessWidget {
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+  final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
+  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollController = PrimaryScrollController.of(context);
+    return Consumer<CollectionLens>(
+      builder: (context, collection, child) {
+        final scrollView = AnimationLimiter(
+          child: CollectionScrollView(
+            scrollableKey: _scrollableKey,
+            collection: collection,
+            appBar: CollectionAppBar(
+              appBarHeightNotifier: _appBarHeightNotifier,
+              collection: collection,
+            ),
+            appBarHeightNotifier: _appBarHeightNotifier,
+            isScrollingNotifier: _isScrollingNotifier,
+            scrollController: scrollController,
+          ),
+        );
+
+        final scaler = _ThumbnailGridScaleGestureDetector(
+          scrollableKey: _scrollableKey,
+          appBarHeightNotifier: _appBarHeightNotifier,
+          child: scrollView,
+        );
+
+        final selector = GridSelectionGestureDetector(
+          selectable: AvesApp.mode == AppMode.main,
+          collection: collection,
+          scrollController: scrollController,
+          appBarHeightNotifier: _appBarHeightNotifier,
+          child: scaler,
+        );
+
+        final sectionedListLayoutProvider = ValueListenableBuilder<double>(
+          valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
+          builder: (context, tileExtent, child) {
+            return SectionedEntryListLayoutProvider(
+              collection: collection,
+              scrollableWidth: context.select<TileExtentController, double>((controller) => controller.viewportSize.width),
+              tileExtent: tileExtent,
+              columnCount: context.select<TileExtentController, int>((controller) => controller.getEffectiveColumnCountForExtent(tileExtent)),
+              tileBuilder: (entry) => InteractiveThumbnail(
+                key: ValueKey(entry.contentId),
+                collection: collection,
+                entry: entry,
+                tileExtent: tileExtent,
+                isScrollingNotifier: _isScrollingNotifier,
+              ),
+              child: selector,
+            );
+          },
+        );
+        return sectionedListLayoutProvider;
+      },
+    );
+  }
+}
+
+class _ThumbnailGridScaleGestureDetector extends StatelessWidget {
+  final GlobalKey scrollableKey;
+  final ValueNotifier<double> appBarHeightNotifier;
+  final Widget child;
+
+  const _ThumbnailGridScaleGestureDetector({
+    @required this.scrollableKey,
+    @required this.appBarHeightNotifier,
+    @required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
+    return GridScaleGestureDetector<AvesEntry>(
+      scrollableKey: scrollableKey,
+      appBarHeightNotifier: appBarHeightNotifier,
+      gridBuilder: (center, extent, child) => CustomPaint(
+        // painting the thumbnail half-border on top of the grid yields artifacts,
+        // so we use a `foregroundPainter` to cover them instead
+        foregroundPainter: GridPainter(
+          center: center,
+          extent: extent,
+          spacing: tileSpacing,
+          strokeWidth: DecoratedThumbnail.borderWidth * 2,
+          color: DecoratedThumbnail.borderColor,
+        ),
+        child: child,
+      ),
+      scaledBuilder: (entry, extent) => DecoratedThumbnail(
+        entry: entry,
+        extent: extent,
+        selectable: false,
+        highlightable: false,
+      ),
+      getScaledItemTileRect: (context, entry) {
+        final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
+        return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
+      },
+      onScaled: (entry) => context.read<HighlightInfo>().set(entry),
+      child: child,
     );
   }
 }
@@ -152,7 +168,6 @@ class CollectionScrollView extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
   final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
-  final double cacheExtent;
 
   const CollectionScrollView({
     @required this.scrollableKey,
@@ -161,7 +176,6 @@ class CollectionScrollView extends StatefulWidget {
     @required this.appBarHeightNotifier,
     @required this.isScrollingNotifier,
     @required this.scrollController,
-    @required this.cacheExtent,
   });
 
   @override
@@ -216,7 +230,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
       physics: collection.isEmpty ? NeverScrollableScrollPhysics() : SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      cacheExtent: widget.cacheExtent,
+      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax * 2),
       slivers: [
         appBar,
         collection.isEmpty

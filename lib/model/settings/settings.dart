@@ -145,7 +145,7 @@ class Settings extends ChangeNotifier {
 
   double getTileExtent(String routeName) => _prefs.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
-  // do not notify, as tile extents are only used internally by `TileExtentManager`
+  // do not notify, as tile extents are only used internally by `TileExtentController`
   // and should not trigger rebuilding by change notification
   void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue, notify: false);
 

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum MetadataThumbnailSource { embedded, exif }
 
@@ -47,7 +48,6 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
         future: _loader,
         builder: (context, snapshot) {
           if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done && snapshot.data.isNotEmpty) {
-            final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
             return Container(
               alignment: AlignmentDirectional.topStart,
               padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 4),
@@ -55,7 +55,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
                 children: snapshot.data.map((bytes) {
                   return Image.memory(
                     bytes,
-                    scale: devicePixelRatio,
+                    scale: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio),
                   );
                 }).toList(),
               ),
