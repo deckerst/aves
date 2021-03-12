@@ -27,6 +27,11 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProxyProvider0<SectionedListLayout<T>>(
       update: (context, _) => _updateLayouts(context),
+      updateShouldNotify: (previous, current) {
+        final previousLayouts = previous.sectionLayouts;
+        final currentLayouts = current.sectionLayouts;
+        return previousLayouts.length != currentLayouts.length || !previousLayouts.every(currentLayouts.contains);
+      },
       child: child,
     );
   }
@@ -138,6 +143,16 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   double getHeaderExtent(BuildContext context, SectionKey sectionKey);
 
   Widget buildHeader(BuildContext context, SectionKey sectionKey, double headerExtent);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('scrollableWidth', scrollableWidth));
+    properties.add(IntProperty('columnCount', columnCount));
+    properties.add(DoubleProperty('spacing', spacing));
+    properties.add(DoubleProperty('tileExtent', tileExtent));
+    properties.add(DiagnosticsProperty<bool>('showHeaders', showHeaders));
+  }
 }
 
 class SectionedListLayout<T> {
@@ -236,6 +251,12 @@ class SectionLayout {
     if (scrollOffset < 0) return firstIndex;
     return bodyFirstIndex + (scrollOffset / mainAxisStride).ceil() - 1;
   }
+
+  @override
+  bool operator ==(Object other) => identical(this, other) || other is SectionLayout && runtimeType == other.runtimeType && sectionKey == other.sectionKey && firstIndex == other.firstIndex && lastIndex == other.lastIndex && minOffset == other.minOffset && maxOffset == other.maxOffset && headerExtent == other.headerExtent && tileExtent == other.tileExtent && spacing == other.spacing;
+
+  @override
+  int get hashCode => hashValues(sectionKey, firstIndex, lastIndex, minOffset, maxOffset, headerExtent, tileExtent, spacing);
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{sectionKey=$sectionKey, firstIndex=$firstIndex, lastIndex=$lastIndex, minOffset=$minOffset, maxOffset=$maxOffset, headerExtent=$headerExtent, tileExtent=$tileExtent, spacing=$spacing}';

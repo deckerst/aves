@@ -1,3 +1,4 @@
+import 'package:provider/provider.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -170,7 +171,7 @@ class OSMHotLayer extends StatelessWidget {
       options: TileLayerOptions(
         urlTemplate: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
         subdomains: ['a', 'b', 'c'],
-        retinaMode: MediaQuery.of(context).devicePixelRatio > 1,
+        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
       ),
     );
   }
@@ -183,7 +184,7 @@ class StamenTonerLayer extends StatelessWidget {
       options: TileLayerOptions(
         urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
         subdomains: ['a', 'b', 'c', 'd'],
-        retinaMode: MediaQuery.of(context).devicePixelRatio > 1,
+        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
       ),
     );
   }
@@ -196,7 +197,7 @@ class StamenWatercolorLayer extends StatelessWidget {
       options: TileLayerOptions(
         urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
         subdomains: ['a', 'b', 'c', 'd'],
-        retinaMode: MediaQuery.of(context).devicePixelRatio > 1,
+        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
       ),
     );
   }
