@@ -102,9 +102,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         final tileExtentController = context.read<TileExtentController>();
         final oldExtent = tileExtentController.extentNotifier.value;
         // sanitize and update grid layout if necessary
-        final newExtent = tileExtentController.applyTileExtent(
-          userPreferredExtent: _scaledExtentNotifier.value,
-        );
+        final newExtent = tileExtentController.setUserPreferredExtent(_scaledExtentNotifier.value);
         _scaledExtentNotifier = null;
         if (newExtent == oldExtent) {
           _applyingScale = false;

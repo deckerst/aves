@@ -15,16 +15,11 @@ class TileExtentControllerProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return MultiProvider(
-          providers: [
-            ProxyProvider0(
-              update: (_, __) => constraints.biggest,
-            ),
-            ProxyProvider<Size, TileExtentController>(
-              update: (_, viewportSize, __) => controller..applyTileExtent(viewportSize: viewportSize),
-            ),
-          ],
-          child: child,
+        return LayoutBuilder(
+          builder: (context, constraints) => ProxyProvider0<TileExtentController>(
+            update: (_, __) => controller..setViewportSize(constraints.biggest),
+            child: child,
+          ),
         );
       },
     );

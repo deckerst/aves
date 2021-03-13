@@ -31,26 +31,26 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: ChangeNotifierProvider<CollectionLens>.value(
-        value: collection,
-        child: Scaffold(
-          body: WillPopScope(
-            onWillPop: () {
-              if (collection.isSelecting) {
-                collection.browse();
-                return SynchronousFuture(false);
-              }
-              return SynchronousFuture(true);
-            },
-            child: DoubleBackPopScope(
-              child: GestureAreaProtectorStack(
+      child: Scaffold(
+        body: WillPopScope(
+          onWillPop: () {
+            if (collection.isSelecting) {
+              collection.browse();
+              return SynchronousFuture(false);
+            }
+            return SynchronousFuture(true);
+          },
+          child: DoubleBackPopScope(
+            child: GestureAreaProtectorStack(
+              child: ChangeNotifierProvider<CollectionLens>.value(
+                value: collection,
                 child: ThumbnailCollection(),
               ),
             ),
           ),
-          drawer: AppDrawer(),
-          resizeToAvoidBottomInset: false,
         ),
+        drawer: AppDrawer(),
+        resizeToAvoidBottomInset: false,
       ),
     );
   }
