@@ -32,21 +32,26 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailCollection extends StatelessWidget {
-  final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
+class ThumbnailCollection extends StatefulWidget {
+  @override
+  _ThumbnailCollectionState createState() => _ThumbnailCollectionState();
+}
+
+class _ThumbnailCollectionState extends State<ThumbnailCollection> {
+  TileExtentController _tileExtentController;
 
   @override
   Widget build(BuildContext context) {
+    _tileExtentController ??= TileExtentController(
+      settingsRouteKey: context.currentRouteName,
+      columnCountDefault: 4,
+      extentMin: 46,
+      spacing: 0,
+    );
     return SafeArea(
       bottom: false,
       child: TileExtentControllerProvider(
-        controller: TileExtentController(
-          settingsRouteKey: context.currentRouteName,
-          extentNotifier: _tileExtentNotifier,
-          columnCountDefault: 4,
-          extentMin: 46,
-          spacing: 0,
-        ),
+        controller: _tileExtentController,
         child: _ThumbnailCollectionContent(),
       ),
     );

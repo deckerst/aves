@@ -40,9 +40,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
-  final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
-
-  FilterGridPage({
+  const FilterGridPage({
     Key key,
     @required this.appBar,
     @required this.filterSections,
@@ -69,7 +67,6 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
               child: TileExtentControllerProvider(
                 controller: TileExtentController(
                   settingsRouteKey: settingsRouteKey ?? context.currentRouteName,
-                  extentNotifier: _tileExtentNotifier,
                   columnCountDefault: 2,
                   extentMin: 60,
                   spacing: 8,

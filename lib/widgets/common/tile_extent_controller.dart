@@ -7,7 +7,7 @@ class TileExtentController {
   final String settingsRouteKey;
   final int columnCountMin, columnCountDefault;
   final double spacing, extentMin, extentMax;
-  final ValueNotifier<double> extentNotifier;
+  final ValueNotifier<double> extentNotifier = ValueNotifier(0);
 
   Size _viewportSize;
 
@@ -15,7 +15,6 @@ class TileExtentController {
 
   TileExtentController({
     @required this.settingsRouteKey,
-    @required this.extentNotifier,
     this.columnCountMin = 2,
     @required this.columnCountDefault,
     @required this.extentMin,
@@ -23,16 +22,21 @@ class TileExtentController {
     @required this.spacing,
   });
 
-  double applyTileExtent({
-    Size viewportSize,
-    double userPreferredExtent = 0,
-  }) {
-    if (viewportSize != null) {
-      // sanitize screen size (useful when reloading while screen is off, reporting a 0,0 size)
-      final viewportSizeMin = Size.square(extentMin * columnCountMin);
-      _viewportSize = Size(max(viewportSize.width, viewportSizeMin.width), max(viewportSize.height, viewportSizeMin.height));
+  void setViewportSize(Size viewportSize) {
+    // sanitize screen size (useful when reloading while screen is off, reporting a 0,0 size)
+    final viewportSizeMin = Size.square(extentMin * columnCountMin);
+    // dimensions are rounded to prevent updates on minor changes
+    // e.g. available space on S10e is `Size(360.0, 721.0)` when status bar is visible, `Size(360.0, 721.3)` when it is not
+    final newViewportSize = Size(max(viewportSize.width, viewportSizeMin.width).roundToDouble(), max(viewportSize.height, viewportSizeMin.height).roundToDouble());
+    if (_viewportSize != newViewportSize) {
+      _viewportSize = newViewportSize;
+      _update();
     }
+  }
 
+  double setUserPreferredExtent(double userPreferredExtent) => _update(userPreferredExtent: userPreferredExtent);
+
+  double _update({double userPreferredExtent = 0}) {
     final oldUserPreferredExtent = settings.getTileExtent(settingsRouteKey);
     final currentExtent = extentNotifier.value;
     final targetExtent = userPreferredExtent > 0
