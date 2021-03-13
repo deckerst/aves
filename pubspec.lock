@@ -280,7 +280,7 @@ packages:
       name: flutter_cube
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.6"
+    version: "0.1.1"
   flutter_driver:
     dependency: "direct dev"
     description: flutter
@@ -538,7 +538,7 @@ packages:
       name: motion_sensors
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.5"
+    version: "0.1.0"
   nested:
     dependency: transitive
     description:
@@ -587,7 +587,7 @@ packages:
       name: panorama
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.4.0"
   path:
     dependency: transitive
     description:
