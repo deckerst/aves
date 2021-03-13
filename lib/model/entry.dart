@@ -238,9 +238,7 @@ class AvesEntry {
 
   bool get supportTiling => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
 
-  // as of panorama v0.3.1, the `Panorama` widget throws on initialization when the image is already resolved
-  // so we use tiles for panoramas as a workaround to not collide with the `panorama` package resolution
-  bool get useTiles => supportTiling && (width > 4096 || height > 4096 || is360);
+  bool get useTiles => supportTiling && (width > 4096 || height > 4096);
 
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 

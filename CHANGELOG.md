@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - Korean translation
 
 ### Changed
-- Upgraded Flutter to stable v2.0.1
+- Upgraded Flutter to dev v2.1.0-12.1.pre
 
 ### Fixed
 - various TIFF decoding fixes

@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: subosito/flutter-action@v1
         with:
-          channel: stable
-          flutter-version: '2.0.1'
+          channel: dev
+          flutter-version: '2.1.0-12.1.pre'
 
       - name: Clone the repository.
         uses: actions/checkout@v2
@@ -27,9 +27,8 @@ jobs:
         working-directory: ${{ github.workspace }}/scripts
         run: ./update_flutter_version.sh
 
-# TODO TLAD uncomment when no longer on master channel
-#      - name: Static analysis.
-#        run: flutter analyze
-#
-#      - name: Unit tests.
-#        run: flutter test
+      - name: Static analysis.
+        run: flutter analyze
+
+      - name: Unit tests.
+        run: flutter test

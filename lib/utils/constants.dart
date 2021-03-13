@@ -85,12 +85,6 @@ class Constants {
       sourceUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer',
     ),
     Dependency(
-      name: 'Geocoder',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/aloisdeniel/flutter_geocoder/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/aloisdeniel/flutter_geocoder',
-    ),
-    Dependency(
       name: 'Google API Availability',
       license: 'MIT',
       licenseUrl: 'https://github.com/Baseflow/flutter-google-api-availability/blob/master/LICENSE',
