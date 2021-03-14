@@ -32,12 +32,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailCollection extends StatefulWidget {
+class CollectionGrid extends StatefulWidget {
   @override
-  _ThumbnailCollectionState createState() => _ThumbnailCollectionState();
+  _CollectionGridState createState() => _CollectionGridState();
 }
 
-class _ThumbnailCollectionState extends State<ThumbnailCollection> {
+class _CollectionGridState extends State<CollectionGrid> {
   TileExtentController _tileExtentController;
 
   @override
@@ -48,54 +48,20 @@ class _ThumbnailCollectionState extends State<ThumbnailCollection> {
       extentMin: 46,
       spacing: 0,
     );
-    return SafeArea(
-      bottom: false,
-      child: TileExtentControllerProvider(
-        controller: _tileExtentController,
-        child: _ThumbnailCollectionContent(),
-      ),
+    return TileExtentControllerProvider(
+      controller: _tileExtentController,
+      child: _CollectionGridContent(),
     );
   }
 }
 
-class _ThumbnailCollectionContent extends StatelessWidget {
-  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+class _CollectionGridContent extends StatelessWidget {
   final ValueNotifier<bool> _isScrollingNotifier = ValueNotifier(false);
-  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = PrimaryScrollController.of(context);
     return Consumer<CollectionLens>(
       builder: (context, collection, child) {
-        final scrollView = AnimationLimiter(
-          child: CollectionScrollView(
-            scrollableKey: _scrollableKey,
-            collection: collection,
-            appBar: CollectionAppBar(
-              appBarHeightNotifier: _appBarHeightNotifier,
-              collection: collection,
-            ),
-            appBarHeightNotifier: _appBarHeightNotifier,
-            isScrollingNotifier: _isScrollingNotifier,
-            scrollController: scrollController,
-          ),
-        );
-
-        final scaler = _ThumbnailGridScaleGestureDetector(
-          scrollableKey: _scrollableKey,
-          appBarHeightNotifier: _appBarHeightNotifier,
-          child: scrollView,
-        );
-
-        final selector = GridSelectionGestureDetector(
-          selectable: AvesApp.mode == AppMode.main,
-          collection: collection,
-          scrollController: scrollController,
-          appBarHeightNotifier: _appBarHeightNotifier,
-          child: scaler,
-        );
-
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, tileExtent, child) {
@@ -111,7 +77,11 @@ class _ThumbnailCollectionContent extends StatelessWidget {
                 tileExtent: tileExtent,
                 isScrollingNotifier: _isScrollingNotifier,
               ),
-              child: selector,
+              child: _CollectionSectionedContent(
+                collection: collection,
+                isScrollingNotifier: _isScrollingNotifier,
+                scrollController: PrimaryScrollController.of(context),
+              ),
             );
           },
         );
@@ -121,12 +91,69 @@ class _ThumbnailCollectionContent extends StatelessWidget {
   }
 }
 
-class _ThumbnailGridScaleGestureDetector extends StatelessWidget {
+class _CollectionSectionedContent extends StatefulWidget {
+  final CollectionLens collection;
+  final ValueNotifier<bool> isScrollingNotifier;
+  final ScrollController scrollController;
+
+  const _CollectionSectionedContent({
+    @required this.collection,
+    @required this.isScrollingNotifier,
+    @required this.scrollController,
+  });
+
+  @override
+  _CollectionSectionedContentState createState() => _CollectionSectionedContentState();
+}
+
+class _CollectionSectionedContentState extends State<_CollectionSectionedContent> {
+  CollectionLens get collection => widget.collection;
+
+  ScrollController get scrollController => widget.scrollController;
+
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollView = AnimationLimiter(
+      child: _CollectionScrollView(
+        scrollableKey: _scrollableKey,
+        collection: collection,
+        appBar: CollectionAppBar(
+          appBarHeightNotifier: _appBarHeightNotifier,
+          collection: collection,
+        ),
+        appBarHeightNotifier: _appBarHeightNotifier,
+        isScrollingNotifier: widget.isScrollingNotifier,
+        scrollController: scrollController,
+      ),
+    );
+
+    final scaler = _CollectionScaler(
+      scrollableKey: _scrollableKey,
+      appBarHeightNotifier: _appBarHeightNotifier,
+      child: scrollView,
+    );
+
+    final selector = GridSelectionGestureDetector(
+      selectable: AvesApp.mode == AppMode.main,
+      collection: collection,
+      scrollController: scrollController,
+      appBarHeightNotifier: _appBarHeightNotifier,
+      child: scaler,
+    );
+
+    return selector;
+  }
+}
+
+class _CollectionScaler extends StatelessWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
   final Widget child;
 
-  const _ThumbnailGridScaleGestureDetector({
+  const _CollectionScaler({
     @required this.scrollableKey,
     @required this.appBarHeightNotifier,
     @required this.child,
@@ -166,7 +193,7 @@ class _ThumbnailGridScaleGestureDetector extends StatelessWidget {
   }
 }
 
-class CollectionScrollView extends StatefulWidget {
+class _CollectionScrollView extends StatefulWidget {
   final GlobalKey scrollableKey;
   final CollectionLens collection;
   final Widget appBar;
@@ -174,7 +201,7 @@ class CollectionScrollView extends StatefulWidget {
   final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
 
-  const CollectionScrollView({
+  const _CollectionScrollView({
     @required this.scrollableKey,
     @required this.collection,
     @required this.appBar,
@@ -187,7 +214,7 @@ class CollectionScrollView extends StatefulWidget {
   _CollectionScrollViewState createState() => _CollectionScrollViewState();
 }
 
-class _CollectionScrollViewState extends State<CollectionScrollView> {
+class _CollectionScrollViewState extends State<_CollectionScrollView> {
   Timer _scrollMonitoringTimer;
 
   @override
@@ -197,7 +224,7 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   }
 
   @override
-  void didUpdateWidget(covariant CollectionScrollView oldWidget) {
+  void didUpdateWidget(covariant _CollectionScrollView oldWidget) {
     super.didUpdateWidget(oldWidget);
     _unregisterWidget(oldWidget);
     _registerWidget(widget);
@@ -210,13 +237,13 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
     super.dispose();
   }
 
-  void _registerWidget(CollectionScrollView widget) {
+  void _registerWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.addListener(_scrollToTop);
     widget.collection.sortGroupChangeNotifier.addListener(_scrollToTop);
     widget.scrollController.addListener(_onScrollChange);
   }
 
-  void _unregisterWidget(CollectionScrollView widget) {
+  void _unregisterWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
     widget.collection.sortGroupChangeNotifier.removeListener(_scrollToTop);
     widget.scrollController.removeListener(_onScrollChange);
@@ -226,27 +253,6 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
   Widget build(BuildContext context) {
     final scrollView = _buildScrollView(widget.appBar, widget.collection);
     return _buildDraggableScrollView(scrollView);
-  }
-
-  ScrollView _buildScrollView(Widget appBar, CollectionLens collection) {
-    return CustomScrollView(
-      key: widget.scrollableKey,
-      primary: true,
-      // workaround to prevent scrolling the app bar away
-      // when there is no content and we use `SliverFillRemaining`
-      physics: collection.isEmpty ? NeverScrollableScrollPhysics() : SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax * 2),
-      slivers: [
-        appBar,
-        collection.isEmpty
-            ? SliverFillRemaining(
-                hasScrollBody: false,
-                child: _buildEmptyCollectionPlaceholder(collection),
-              )
-            : SectionedListSliver<AvesEntry>(),
-        BottomPaddingSliver(),
-      ],
-    );
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {
@@ -271,6 +277,27 @@ class _CollectionScrollViewState extends State<CollectionScrollView> {
         ),
         child: child,
       ),
+    );
+  }
+
+  ScrollView _buildScrollView(Widget appBar, CollectionLens collection) {
+    return CustomScrollView(
+      key: widget.scrollableKey,
+      primary: true,
+      // workaround to prevent scrolling the app bar away
+      // when there is no content and we use `SliverFillRemaining`
+      physics: collection.isEmpty ? NeverScrollableScrollPhysics() : SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax * 2),
+      slivers: [
+        appBar,
+        collection.isEmpty
+            ? SliverFillRemaining(
+                hasScrollBody: false,
+                child: _buildEmptyCollectionPlaceholder(collection),
+              )
+            : SectionedListSliver<AvesEntry>(),
+        BottomPaddingSliver(),
+      ],
     );
   }
 

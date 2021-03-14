@@ -1,5 +1,5 @@
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/collection/thumbnail_collection.dart';
+import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -42,9 +42,12 @@ class _CollectionPageState extends State<CollectionPage> {
           },
           child: DoubleBackPopScope(
             child: GestureAreaProtectorStack(
-              child: ChangeNotifierProvider<CollectionLens>.value(
-                value: collection,
-                child: ThumbnailCollection(),
+              child: SafeArea(
+                bottom: false,
+                child: ChangeNotifierProvider<CollectionLens>.value(
+                  value: collection,
+                  child: CollectionGrid(),
+                ),
               ),
             ),
           ),

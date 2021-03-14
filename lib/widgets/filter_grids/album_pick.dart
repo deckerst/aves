@@ -58,21 +58,21 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
         return StreamBuilder(
           stream: source.eventBus.on<AlbumsChangedEvent>(),
           builder: (context, snapshot) => FilterGridPage<AlbumFilter>(
+            settingsRouteKey: AlbumListPage.routeName,
             appBar: appBar,
+            appBarHeight: AlbumPickAppBar.preferredHeight,
             filterSections: AlbumListPage.getAlbumEntries(context, source),
             showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+            queryNotifier: _queryNotifier,
             applyQuery: (filters, query) {
               if (query == null || query.isEmpty) return filters;
               query = query.toUpperCase();
               return filters.where((item) => item.filter.uniqueName.toUpperCase().contains(query)).toList();
             },
-            queryNotifier: _queryNotifier,
             emptyBuilder: () => EmptyContent(
               icon: AIcons.album,
               text: context.l10n.albumEmpty,
             ),
-            settingsRouteKey: AlbumListPage.routeName,
-            appBarHeight: AlbumPickAppBar.preferredHeight,
             onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
           ),
         );
