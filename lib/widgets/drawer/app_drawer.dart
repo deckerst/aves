@@ -65,26 +65,25 @@ class _AppDrawerState extends State<AppDrawer> {
     ];
 
     return Drawer(
-      child: Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.effectiveBottomPadding,
-        builder: (c, mqPaddingBottom, child) {
-          final iconTheme = IconTheme.of(context);
-          return SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: mqPaddingBottom),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                // color used by `ExpansionTile` for leading icon
-                unselectedWidgetColor: Colors.white,
-              ),
+      child: ListTileTheme.merge(
+        selectedColor: Theme.of(context).accentColor,
+        child: Selector<MediaQueryData, double>(
+          selector: (c, mq) => mq.effectiveBottomPadding,
+          builder: (c, mqPaddingBottom, child) {
+            final iconTheme = IconTheme.of(context);
+            return SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
-                data: iconTheme.copyWith(size: iconTheme.size * MediaQuery.textScaleFactorOf(context)),
+                data: iconTheme.copyWith(
+                  size: iconTheme.size * MediaQuery.textScaleFactorOf(context),
+                ),
                 child: Column(
                   children: drawerItems,
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
