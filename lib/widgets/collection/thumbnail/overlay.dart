@@ -2,16 +2,15 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/collection/thumbnail/theme.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ThumbnailEntryOverlay extends StatelessWidget {
   final AvesEntry entry;
@@ -25,44 +24,36 @@ class ThumbnailEntryOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = min(14.0, (extent / 8)).roundToDouble();
-    final iconSize = fontSize * 2;
-    return Selector<Settings, Tuple3<bool, bool, bool>>(
-        selector: (context, s) => Tuple3(s.showThumbnailLocation, s.showThumbnailRaw, s.showThumbnailVideoDuration),
-        builder: (context, s, child) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (entry.hasGps && settings.showThumbnailLocation) GpsIcon(iconSize: iconSize),
-              if (entry.isRaw && settings.showThumbnailRaw) RawIcon(iconSize: iconSize),
-              if (entry.isMultipage) MultipageIcon(iconSize: iconSize),
-              if (entry.isGeotiff) GeotiffIcon(iconSize: iconSize),
-              if (entry.isAnimated)
-                AnimatedImageIcon(iconSize: iconSize)
-              else if (entry.isVideo)
-                DefaultTextStyle(
-                  style: TextStyle(
-                    color: Colors.grey[200],
-                    fontSize: fontSize,
-                  ),
-                  child: VideoIcon(
-                    entry: entry,
-                    iconSize: iconSize,
-                    showDuration: settings.showThumbnailVideoDuration,
-                  ),
-                )
-              else if (entry.is360)
-                SphericalImageIcon(iconSize: iconSize),
-            ],
-          );
-        });
+    final children = [
+      if (entry.hasGps && context.select<ThumbnailThemeData, bool>((t) => t.showLocation)) GpsIcon(),
+      if (entry.isVideo)
+        VideoIcon(
+          entry: entry,
+        )
+      else if (entry.isAnimated)
+        AnimatedImageIcon()
+      else ...[
+        if (entry.isRaw && context.select<ThumbnailThemeData, bool>((t) => t.showRaw)) RawIcon(),
+        if (entry.isMultipage) MultipageIcon(),
+        if (entry.isGeotiff) GeotiffIcon(),
+        if (entry.is360) SphericalImageIcon(),
+      ]
+    ];
+    if (children.isEmpty) return SizedBox.shrink();
+    if (children.length == 1) return children.first;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
   }
 }
 
 class ThumbnailSelectionOverlay extends StatelessWidget {
   final AvesEntry entry;
   final double extent;
+
+  static const duration = Durations.thumbnailOverlayAnimation;
 
   const ThumbnailSelectionOverlay({
     Key key,
@@ -72,9 +63,6 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const duration = Durations.thumbnailOverlayAnimation;
-    final fontSize = min(14.0, (extent / 8)).roundToDouble();
-    final iconSize = fontSize * 2;
     final collection = context.watch<CollectionLens>();
     return ValueListenableBuilder<Activity>(
       valueListenable: collection.activityNotifier,
@@ -88,7 +76,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                       ? OverlayIcon(
                           key: ValueKey(selected),
                           icon: selected ? AIcons.selected : AIcons.unselected,
-                          size: iconSize,
+                          size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
                         )
                       : SizedBox.shrink();
                   child = AnimatedSwitcher(
@@ -139,6 +127,8 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
 
   AvesEntry get entry => widget.entry;
 
+  static const startAngle = pi * -3 / 4;
+
   @override
   Widget build(BuildContext context) {
     final highlightInfo = context.watch<HighlightInfo>();
@@ -153,7 +143,7 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
         ),
       ),
       toggledNotifier: _highlightedNotifier,
-      startAngle: pi * -3 / 4,
+      startAngle: startAngle,
       centerSweep: false,
       onSweepEnd: highlightInfo.clear,
     );

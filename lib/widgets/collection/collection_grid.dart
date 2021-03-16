@@ -15,6 +15,7 @@ import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
+import 'package:aves/widgets/collection/thumbnail/theme.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
@@ -65,22 +66,25 @@ class _CollectionGridContent extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, tileExtent, child) {
-            return SectionedEntryListLayoutProvider(
-              collection: collection,
-              scrollableWidth: context.select<TileExtentController, double>((controller) => controller.viewportSize.width),
-              tileExtent: tileExtent,
-              columnCount: context.select<TileExtentController, int>((controller) => controller.getEffectiveColumnCountForExtent(tileExtent)),
-              tileBuilder: (entry) => InteractiveThumbnail(
-                key: ValueKey(entry.contentId),
+            return ThumbnailTheme(
+              extent: tileExtent,
+              child: SectionedEntryListLayoutProvider(
                 collection: collection,
-                entry: entry,
+                scrollableWidth: context.select<TileExtentController, double>((controller) => controller.viewportSize.width),
                 tileExtent: tileExtent,
-                isScrollingNotifier: _isScrollingNotifier,
-              ),
-              child: _CollectionSectionedContent(
-                collection: collection,
-                isScrollingNotifier: _isScrollingNotifier,
-                scrollController: PrimaryScrollController.of(context),
+                columnCount: context.select<TileExtentController, int>((controller) => controller.getEffectiveColumnCountForExtent(tileExtent)),
+                tileBuilder: (entry) => InteractiveThumbnail(
+                  key: ValueKey(entry.contentId),
+                  collection: collection,
+                  entry: entry,
+                  tileExtent: tileExtent,
+                  isScrollingNotifier: _isScrollingNotifier,
+                ),
+                child: _CollectionSectionedContent(
+                  collection: collection,
+                  isScrollingNotifier: _isScrollingNotifier,
+                  scrollController: PrimaryScrollController.of(context),
+                ),
               ),
             );
           },
@@ -136,8 +140,9 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       child: scrollView,
     );
 
+    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector(
-      selectable: AvesApp.mode == AppMode.main,
+      selectable: isMainMode,
       collection: collection,
       scrollController: scrollController,
       appBarHeightNotifier: _appBarHeightNotifier,
@@ -177,11 +182,14 @@ class _CollectionScaler extends StatelessWidget {
         ),
         child: child,
       ),
-      scaledBuilder: (entry, extent) => DecoratedThumbnail(
-        entry: entry,
+      scaledBuilder: (entry, extent) => ThumbnailTheme(
         extent: extent,
-        selectable: false,
-        highlightable: false,
+        child: DecoratedThumbnail(
+          entry: entry,
+          extent: extent,
+          selectable: false,
+          highlightable: false,
+        ),
       ),
       getScaledItemTileRect: (context, entry) {
         final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();

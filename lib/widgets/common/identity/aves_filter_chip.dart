@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 typedef FilterCallback = void Function(CollectionFilter filter);
 typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
@@ -52,7 +53,7 @@ class AvesFilterChip extends StatefulWidget {
         super(key: key);
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
-    if (AvesApp.mode == AppMode.main) {
+    if (context.read<ValueNotifier<AppMode>>().value == AppMode.main) {
       final actions = [
         if (filter is AlbumFilter) ChipAction.goToAlbumPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,

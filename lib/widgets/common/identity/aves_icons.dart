@@ -5,114 +5,111 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/collection/thumbnail/theme.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class VideoIcon extends StatelessWidget {
   final AvesEntry entry;
-  final double iconSize;
-  final bool showDuration;
 
   const VideoIcon({
     Key key,
     this.entry,
-    this.iconSize,
-    this.showDuration,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return OverlayIcon(
+    final thumbnailTheme = context.watch<ThumbnailThemeData>();
+    final showDuration = thumbnailTheme.showVideoDuration;
+    Widget child = OverlayIcon(
       icon: entry.is360 ? AIcons.threesixty : AIcons.play,
-      size: iconSize,
+      size: thumbnailTheme.iconSize,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
     );
+    if (showDuration) {
+      child = DefaultTextStyle(
+        style: TextStyle(
+          color: Colors.grey[200],
+          fontSize: thumbnailTheme.fontSize,
+        ),
+        child: child,
+      );
+    }
+    return child;
   }
 }
 
 class AnimatedImageIcon extends StatelessWidget {
-  final double iconSize;
-
-  const AnimatedImageIcon({Key key, this.iconSize}) : super(key: key);
+  const AnimatedImageIcon({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.animated,
-      size: iconSize,
+      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
       iconScale: .8,
     );
   }
 }
 
 class GeotiffIcon extends StatelessWidget {
-  final double iconSize;
-
-  const GeotiffIcon({Key key, this.iconSize}) : super(key: key);
+  const GeotiffIcon({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.geo,
-      size: iconSize,
+      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
     );
   }
 }
 
 class SphericalImageIcon extends StatelessWidget {
-  final double iconSize;
-
-  const SphericalImageIcon({Key key, this.iconSize}) : super(key: key);
+  const SphericalImageIcon({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.threesixty,
-      size: iconSize,
+      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
     );
   }
 }
 
 class GpsIcon extends StatelessWidget {
-  final double iconSize;
-
-  const GpsIcon({Key key, this.iconSize}) : super(key: key);
+  const GpsIcon({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.location,
-      size: iconSize,
+      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
     );
   }
 }
 
 class RawIcon extends StatelessWidget {
-  final double iconSize;
-
-  const RawIcon({Key key, this.iconSize}) : super(key: key);
+  const RawIcon({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.raw,
-      size: iconSize,
+      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
     );
   }
 }
 
 class MultipageIcon extends StatelessWidget {
-  final double iconSize;
-
-  const MultipageIcon({Key key, this.iconSize}) : super(key: key);
+  const MultipageIcon({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.multipage,
-      size: iconSize,
+      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
       iconScale: .8,
     );
   }

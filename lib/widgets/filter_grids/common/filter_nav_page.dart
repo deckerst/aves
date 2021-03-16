@@ -22,6 +22,7 @@ import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
@@ -47,6 +48,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     return FilterGridPage<T>(
       key: ValueKey('filter-grid-page'),
       appBar: SliverAppBar(
@@ -80,7 +82,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
           )),
         ),
       ),
-      onLongPress: AvesApp.mode == AppMode.main ? _showMenu : null,
+      onLongPress: isMainMode ? _showMenu : null,
     );
   }
 

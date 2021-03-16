@@ -31,7 +31,8 @@ class DecoratedThumbnail extends StatelessWidget {
     // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
     // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
     final heroTag = hashValues(collection?.id, entry);
-    var child = entry.isSvg
+    final isSvg = entry.isSvg;
+    var child = isSvg
         ? VectorImageThumbnail(
             entry: entry,
             extent: extent,
@@ -45,17 +46,14 @@ class DecoratedThumbnail extends StatelessWidget {
           );
 
     child = Stack(
-      alignment: Alignment.center,
+      alignment: isSvg ? Alignment.center : AlignmentDirectional.bottomStart,
       children: [
         child,
-        Positioned(
-          bottom: 0,
-          left: 0,
-          child: ThumbnailEntryOverlay(
+        if (!isSvg)
+          ThumbnailEntryOverlay(
             entry: entry,
             extent: extent,
           ),
-        ),
         if (selectable)
           ThumbnailSelectionOverlay(
             entry: entry,
