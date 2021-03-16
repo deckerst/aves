@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class InteractiveThumbnail extends StatelessWidget {
   final CollectionLens collection;
@@ -27,13 +28,14 @@ class InteractiveThumbnail extends StatelessWidget {
     return GestureDetector(
       key: ValueKey(entry.uri),
       onTap: () {
-        if (AvesApp.mode == AppMode.main) {
+        final appMode = context.read<ValueNotifier<AppMode>>().value;
+        if (appMode == AppMode.main) {
           if (collection.isBrowsing) {
             _goToViewer(context);
           } else if (collection.isSelecting) {
             collection.toggleSelection(entry);
           }
-        } else if (AvesApp.mode == AppMode.pick) {
+        } else if (appMode == AppMode.pick) {
           ViewerService.pick(entry.uri);
         }
       },

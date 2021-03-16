@@ -7,8 +7,6 @@ publish_to: none
 environment:
   sdk: '>=2.10.0 <3.0.0'
 
-# TODO TLAD remove explicit `overlay_support` version when 1.2.0 is stable (1.0.5 uses deprecated `ancestorWidgetOfExactType`)
-
 # TODO TLAD switch to Flutter stable when possible, currently on dev/beta because of the following mess:
 # printing >=5.0.1 depends on pdf ^3.0.1, pdf >=3.0.1 depends on crypto ^3.0.0 and archive ^3.1.0
 # but `flutter_driver` (shipped with Flutter) dependencies are too old in stable v2.0.1
@@ -57,7 +55,7 @@ dependencies:
   intl:
   latlong:
   material_design_icons_flutter:
-  overlay_support: 1.2.0-nullsafety.0
+  overlay_support:
   package_info:
   palette_generator:
   panorama:
@@ -99,9 +97,6 @@ flutter:
 
 # generate `AppLocalizations`
 # % flutter gen-l10n
-
-# list untranslated messages
-# % flutter gen-l10n --untranslated-messages-file untranslated.json
 
 ################################################################################
 # Test driver

@@ -26,6 +26,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:provider/provider.dart';
 
 class CollectionAppBar extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
@@ -141,8 +142,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
-      Widget title = Text(AvesApp.mode == AppMode.pick ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
-      if (AvesApp.mode == AppMode.main) {
+      final appMode = context.watch<ValueNotifier<AppMode>>().value;
+      Widget title = Text(appMode == AppMode.pick ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
+      if (appMode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
           source: source,
@@ -191,6 +193,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             itemBuilder: (context) {
               final isNotEmpty = !collection.isEmpty;
               final hasSelection = collection.selection.isNotEmpty;
+              final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
               return [
                 PopupMenuItem(
                   key: Key('menu-sort'),
@@ -204,7 +207,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
                 if (collection.isBrowsing) ...[
-                  if (AvesApp.mode == AppMode.main)
+                  if (isMainMode)
                     PopupMenuItem(
                       value: CollectionAction.select,
                       enabled: isNotEmpty,
@@ -215,7 +218,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     enabled: isNotEmpty,
                     child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
                   ),
-                  if (AvesApp.mode == AppMode.main && canAddShortcuts)
+                  if (isMainMode && canAddShortcuts)
                     PopupMenuItem(
                       value: CollectionAction.addShortcut,
                       child: MenuRow(text: context.l10n.collectionActionAddShortcut, icon: AIcons.addShortcut),

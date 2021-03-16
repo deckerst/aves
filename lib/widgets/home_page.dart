@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     await androidFileUtils.init();
     unawaited(androidFileUtils.initAppNames());
 
-    AvesApp.mode = AppMode.main;
+    var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
     if (intentData?.isNotEmpty == true) {
       final action = intentData['action'];
@@ -77,11 +77,11 @@ class _HomePageState extends State<HomePage> {
             mimeType: intentData['mimeType'],
           );
           if (_viewerEntry != null) {
-            AvesApp.mode = AppMode.view;
+            appMode = AppMode.view;
           }
           break;
         case 'pick':
-          AvesApp.mode = AppMode.pick;
+          appMode = AppMode.pick;
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String pickMimeTypes = intentData['mimeType'];
@@ -97,15 +97,16 @@ class _HomePageState extends State<HomePage> {
           _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
       }
     }
-    unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', AvesApp.mode.toString()));
+    context.read<ValueNotifier<AppMode>>().value = appMode;
+    unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', appMode.toString()));
 
-    if (AvesApp.mode != AppMode.view) {
+    if (appMode != AppMode.view) {
       final source = context.read<CollectionSource>();
       await source.init();
       unawaited(source.refresh());
     }
 
-    unawaited(Navigator.pushReplacement(context, _getRedirectRoute()));
+    unawaited(Navigator.pushReplacement(context, _getRedirectRoute(appMode)));
   }
 
   Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
@@ -117,8 +118,8 @@ class _HomePageState extends State<HomePage> {
     return entry;
   }
 
-  Route _getRedirectRoute() {
-    if (AvesApp.mode == AppMode.view) {
+  Route _getRedirectRoute(AppMode appMode) {
+    if (appMode == AppMode.view) {
       return DirectMaterialPageRoute(
         settings: RouteSettings(name: EntryViewerPage.routeName),
         builder: (_) => EntryViewerPage(
@@ -129,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
     String routeName;
     Iterable<CollectionFilter> filters;
-    if (AvesApp.mode == AppMode.pick) {
+    if (appMode == AppMode.pick) {
       routeName = CollectionPage.routeName;
     } else {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;

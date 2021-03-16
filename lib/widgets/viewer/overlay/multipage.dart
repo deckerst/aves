@@ -4,6 +4,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
+import 'package:aves/widgets/collection/thumbnail/theme.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -80,66 +81,69 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     final horizontalMargin = SizedBox(width: marginWidth);
     final separator = SizedBox(width: separatorWidth);
 
-    return FutureBuilder<MultiPageInfo>(
-      future: controller.info,
-      builder: (context, snapshot) {
-        final multiPageInfo = snapshot.data;
-        if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox();
-        if (multiPageInfo.uri != mainEntry.uri) return SizedBox();
-        return SizedBox(
-          height: extent,
-          child: ListView.separated(
-            key: ValueKey(mainEntry),
-            scrollDirection: Axis.horizontal,
-            controller: _scrollController,
-            // default padding in scroll direction matches `MediaQuery.viewPadding`,
-            // but we already accommodate for it, so make sure horizontal padding is 0
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
-              final page = index - 1;
-              final pageEntry = mainEntry.getPageEntry(multiPageInfo.getByIndex(page));
+    return ThumbnailTheme(
+      extent: extent,
+      child: FutureBuilder<MultiPageInfo>(
+        future: controller.info,
+        builder: (context, snapshot) {
+          final multiPageInfo = snapshot.data;
+          if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox();
+          if (multiPageInfo.uri != mainEntry.uri) return SizedBox();
+          return SizedBox(
+            height: extent,
+            child: ListView.separated(
+              key: ValueKey(mainEntry),
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              // default padding in scroll direction matches `MediaQuery.viewPadding`,
+              // but we already accommodate for it, so make sure horizontal padding is 0
+              padding: EdgeInsets.zero,
+              itemBuilder: (context, index) {
+                if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
+                final page = index - 1;
+                final pageEntry = mainEntry.getPageEntry(multiPageInfo.getByIndex(page));
 
-              return Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      _syncScroll = false;
-                      controller.page = page;
-                      await _scrollController.animateTo(
-                        pageToScrollOffset(page),
-                        duration: Durations.viewerOverlayPageScrollAnimation,
-                        curve: Curves.easeOutCubic,
-                      );
-                      _syncScroll = true;
-                    },
-                    child: DecoratedThumbnail(
-                      entry: pageEntry,
-                      extent: extent,
-                      // the retrieval task queue can pile up for thumbnails of heavy pages
-                      // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
-                      // so we cancel these requests when possible
-                      cancellableNotifier: _cancellableNotifier,
-                      selectable: false,
-                      highlightable: false,
+                return Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        _syncScroll = false;
+                        controller.page = page;
+                        await _scrollController.animateTo(
+                          pageToScrollOffset(page),
+                          duration: Durations.viewerOverlayPageScrollAnimation,
+                          curve: Curves.easeOutCubic,
+                        );
+                        _syncScroll = true;
+                      },
+                      child: DecoratedThumbnail(
+                        entry: pageEntry,
+                        extent: extent,
+                        // the retrieval task queue can pile up for thumbnails of heavy pages
+                        // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
+                        // so we cancel these requests when possible
+                        cancellableNotifier: _cancellableNotifier,
+                        selectable: false,
+                        highlightable: false,
+                      ),
                     ),
-                  ),
-                  IgnorePointer(
-                    child: AnimatedContainer(
-                      color: controller.page == page ? Colors.transparent : Colors.black45,
-                      width: extent,
-                      height: extent,
-                      duration: Durations.viewerOverlayPageShadeAnimation,
-                    ),
-                  )
-                ],
-              );
-            },
-            separatorBuilder: (context, index) => separator,
-            itemCount: multiPageInfo.pageCount + 2,
-          ),
-        );
-      },
+                    IgnorePointer(
+                      child: AnimatedContainer(
+                        color: controller.page == page ? Colors.transparent : Colors.black45,
+                        width: extent,
+                        height: extent,
+                        duration: Durations.viewerOverlayPageShadeAnimation,
+                      ),
+                    )
+                  ],
+                );
+              },
+              separatorBuilder: (context, index) => separator,
+              itemCount: multiPageInfo.pageCount + 2,
+            ),
+          );
+        },
+      ),
     );
   }
 

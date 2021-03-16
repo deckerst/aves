@@ -43,13 +43,12 @@ void main() {
 enum AppMode { main, pick, view }
 
 class AvesApp extends StatefulWidget {
-  static AppMode mode;
-
   @override
   _AvesAppState createState() => _AvesAppState();
 }
 
 class _AvesAppState extends State<AvesApp> {
+  final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
   final Debouncer _contentChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
@@ -123,38 +122,41 @@ class _AvesAppState extends State<AvesApp> {
     // so it can be used during navigation transitions
     return ChangeNotifierProvider<Settings>.value(
       value: settings,
-      child: Provider<CollectionSource>.value(
-        value: _mediaStoreSource,
-        child: HighlightInfoProvider(
-          child: OverlaySupport(
-            child: FutureBuilder<void>(
-              future: _appSetup,
-              builder: (context, snapshot) {
-                final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
-                final home = initialized
-                    ? getFirstPage()
-                    : Scaffold(
-                        body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox(),
-                      );
-                return Selector<Settings, Locale>(
-                    selector: (context, s) => s.locale,
-                    builder: (context, settingsLocale, child) {
-                      return MaterialApp(
-                        navigatorKey: _navigatorKey,
-                        home: home,
-                        navigatorObservers: _navigatorObservers,
-                        onGenerateTitle: (context) => context.l10n.appName,
-                        darkTheme: darkTheme,
-                        themeMode: ThemeMode.dark,
-                        locale: settingsLocale,
-                        localizationsDelegates: [
-                          ...AppLocalizations.localizationsDelegates,
-                          LocaleNamesLocalizationsDelegate(),
-                        ],
-                        supportedLocales: AppLocalizations.supportedLocales,
-                      );
-                    });
-              },
+      child: ListenableProvider<ValueNotifier<AppMode>>.value(
+        value: appModeNotifier,
+        child: Provider<CollectionSource>.value(
+          value: _mediaStoreSource,
+          child: HighlightInfoProvider(
+            child: OverlaySupport(
+              child: FutureBuilder<void>(
+                future: _appSetup,
+                builder: (context, snapshot) {
+                  final initialized = !snapshot.hasError && snapshot.connectionState == ConnectionState.done;
+                  final home = initialized
+                      ? getFirstPage()
+                      : Scaffold(
+                          body: snapshot.hasError ? _buildError(snapshot.error) : SizedBox(),
+                        );
+                  return Selector<Settings, Locale>(
+                      selector: (context, s) => s.locale,
+                      builder: (context, settingsLocale, child) {
+                        return MaterialApp(
+                          navigatorKey: _navigatorKey,
+                          home: home,
+                          navigatorObservers: _navigatorObservers,
+                          onGenerateTitle: (context) => context.l10n.appName,
+                          darkTheme: darkTheme,
+                          themeMode: ThemeMode.dark,
+                          locale: settingsLocale,
+                          localizationsDelegates: [
+                            ...AppLocalizations.localizationsDelegates,
+                            LocaleNamesLocalizationsDelegate(),
+                          ],
+                          supportedLocales: AppLocalizations.supportedLocales,
+                        );
+                      });
+                },
+              ),
             ),
           ),
         ),
@@ -204,7 +206,7 @@ class _AvesAppState extends State<AvesApp> {
     debugPrint('$runtimeType onNewIntent with intentData=$intentData');
 
     // do not reset when relaunching the app
-    if (AvesApp.mode == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
+    if (appModeNotifier.value == AppMode.main && (intentData == null || intentData.isEmpty == true)) return;
 
     FirebaseCrashlytics.instance.log('New intent');
     _navigatorKey.currentState.pushReplacement(DirectMaterialPageRoute(
