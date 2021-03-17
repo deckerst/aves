@@ -79,8 +79,11 @@
   "rootDirectoryDescription": "루트 폴더",
   "otherDirectoryDescription": "“{name}” 폴더",
   "storageAccessDialogTitle": "저장공간 접근",
+  "storageAccessDialogMessage": "파일에 접근하도록 다음 화면에서 “{volume}”의 {directory}를 선택하세요.",
   "restrictedAccessDialogTitle": "접근 제한",
+  "restrictedAccessDialogMessage": "“{volume}”의 {directory}에 있는 파일의 접근이 제한됩니다.\n\n기본으로 설치된 갤러리나 파일 관리 앱을 사용해서 다른 폴더로 파일을 이동하세요.",
   "notEnoughSpaceDialogTitle": "저장공간 부족",
+  "notEnoughSpaceDialogMessage": "“{volume}”에 필요 공간은 {neededSize}인데 사용 가능한 용량은 {freeSize}만 남아있습니다.",
 
   "addShortcutDialogLabel": "바로가기 라벨",
   "addShortcutButtonLabel": "추가",
@@ -93,6 +96,8 @@
   "setCoverDialogTitle": "대표 이미지 변경",
   "setCoverDialogLatest": "최근 항목",
   "setCoverDialogCustom": "직접 설정",
+
+  "hideFilterConfirmationDialogMessage": "이 필터에 맞는 사진과 동영상이 보이지 않을 것입니다. “개인정보 보호” 설정을 수정하면 다시 보일 수 있습니다.\n\n이 필터를 숨기시겠습니까?",
 
   "newAlbumDialogTitle": "새 앨범 만들기",
   "newAlbumDialogNameLabel": "앨범 이름",
@@ -122,7 +127,10 @@
   "aboutUpdateGithub": "깃허브",
   "aboutUpdateGooglePlay": "구글 플레이",
   "aboutCredits": "크레딧",
+  "aboutCreditsWorldAtlas1": "이 앱은",
+  "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
   "aboutLicenses": "오픈 소스 라이선스",
+  "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
   "aboutLicensesSortTooltip": "정렬",
   "aboutLicensesSortByName": "이름순 정렬",
   "aboutLicensesSortByLicense": "라이선스순 정렬",
@@ -245,10 +253,12 @@
 
   "settingsHiddenFiltersTile": "숨겨진 필터",
   "settingsHiddenFiltersTitle": "숨겨진 필터",
+  "settingsHiddenFiltersBanner": "이 필터에 맞는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
   "settingsHiddenFiltersEmpty": "숨겨진 필터가 없습니다",
 
   "settingsStorageAccessTile": "저장공간 접근",
   "settingsStorageAccessTitle": "저장공간 접근",
+  "settingsStorageAccessBanner": "어떤 폴더는 사용자의 허용을 받아야만 앱이 파일에 접근이 가능합니다. 이 화면에 허용을 받은 폴더를 확인할 수 있으며 원하지 않으면 취소할 수 있습니다.",
   "settingsStorageAccessEmpty": "접근 허용이 없습니다",
   "settingsStorageAccessRevokeTooltip": "취소",
 

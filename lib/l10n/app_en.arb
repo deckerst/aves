@@ -154,8 +154,8 @@
   },
   "storageAccessDialogTitle": "Storage Access",
   "@storageAccessDialogTitle": {},
-  "storageVolumeAccessDialogMessage": "Please select the {directory} of “{volume}” in the next screen to give this app access to it.",
-  "@storageVolumeAccessDialogMessage": {
+  "storageAccessDialogMessage": "Please select the {directory} of “{volume}” in the next screen to give this app access to it.",
+  "@storageAccessDialogMessage": {
     "placeholders": {
       "directory": {
         "type": "String"
@@ -282,7 +282,7 @@
   "@aboutCreditsWorldAtlas2": {},
   "aboutLicenses": "Open-Source Licenses",
   "@aboutLicenses": {},
-  "aboutLicensesBanner": "The following sets forth attribution notices for third-party software that may be contained in this application.",
+  "aboutLicensesBanner": "This app uses the following open-source packages and libraries.",
   "@aboutLicensesBanner": {},
   "aboutLicensesSortTooltip": "Sort",
   "@aboutLicensesSortTooltip": {},
