@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';

@@ -8,8 +8,8 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
-import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -99,19 +99,15 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     final copy = moveType == MoveType.copy;
     final todoCount = todoEntries.length;
-    // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
-    // so we save favourites beforehand, and will mark the moved entries as such after the move
-    final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: ImageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
+      opStream: imageFileService.move(todoEntries, copy: copy, destinationAlbum: destinationAlbum),
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
         await source.updateAfterMove(
           todoEntries: todoEntries,
-          favouriteEntries: favouriteEntries,
           copy: copy,
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
@@ -119,13 +115,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         collection.browse();
         source.resumeMonitoring();
 
+        final l10n = context.l10n;
         final movedCount = movedOps.length;
         if (movedCount < todoCount) {
           final count = todoCount - movedCount;
-          showFeedback(context, copy ? context.l10n.collectionCopyFailureFeedback(count) : context.l10n.collectionMoveFailureFeedback(count));
+          showFeedback(context, copy ? l10n.collectionCopyFailureFeedback(count) : l10n.collectionMoveFailureFeedback(count));
         } else {
           final count = movedCount;
-          showFeedback(context, copy ? context.l10n.collectionCopySuccessFeedback(count) : context.l10n.collectionMoveSuccessFeedback(count));
+          showFeedback(context, copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count));
         }
       },
     );
@@ -161,11 +158,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: ImageFileService.delete(selection),
+      opStream: imageFileService.delete(selection),
       itemCount: selectionCount,
-      onDone: (processed) {
+      onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
-        source.removeEntries(deletedUris);
+        await source.removeEntries(deletedUris);
         collection.browse();
         source.resumeMonitoring();
 

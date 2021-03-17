@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -64,17 +65,20 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
           child: GestureAreaProtectorStack(
             child: SafeArea(
               bottom: false,
-              child: FilterGrid<T>(
-                settingsRouteKey: settingsRouteKey,
-                appBar: appBar,
-                appBarHeight: appBarHeight,
-                filterSections: filterSections,
-                showHeaders: showHeaders,
-                queryNotifier: queryNotifier,
-                applyQuery: applyQuery,
-                emptyBuilder: emptyBuilder,
-                onTap: onTap,
-                onLongPress: onLongPress,
+              child: AnimatedBuilder(
+                animation: covers,
+                builder: (context, child) => FilterGrid<T>(
+                  settingsRouteKey: settingsRouteKey,
+                  appBar: appBar,
+                  appBarHeight: appBarHeight,
+                  filterSections: filterSections,
+                  showHeaders: showHeaders,
+                  queryNotifier: queryNotifier,
+                  applyQuery: applyQuery,
+                  emptyBuilder: emptyBuilder,
+                  onTap: onTap,
+                  onLongPress: onLongPress,
+                ),
               ),
             ),
           ),

@@ -1,4 +1,4 @@
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/home_page.dart';
@@ -6,7 +6,7 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
           }
           break;
         case 'pick':
-          appMode = AppMode.pick;
+          appMode = AppMode.pickExternal;
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String pickMimeTypes = intentData['mimeType'];
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
-    final entry = await ImageFileService.getEntry(uri, mimeType);
+    final entry = await imageFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
       await entry.catalog();
@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
     String routeName;
     Iterable<CollectionFilter> filters;
-    if (appMode == AppMode.pick) {
+    if (appMode == AppMode.pickExternal) {
       routeName = CollectionPage.routeName;
     } else {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;

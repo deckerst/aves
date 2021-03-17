@@ -40,6 +40,7 @@ class AlbumListPage extends StatelessWidget {
               chipActionDelegate: AlbumChipActionDelegate(),
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+                ChipAction.setCover,
                 ChipAction.rename,
                 ChipAction.delete,
                 ChipAction.hide,

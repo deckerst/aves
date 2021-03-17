@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ class SvgMetadataService {
 
   static Future<Size> getSize(AvesEntry entry) async {
     try {
-      final data = await ImageFileService.getSvg(entry.uri, entry.mimeType);
+      final data = await imageFileService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;
@@ -59,7 +59,7 @@ class SvgMetadataService {
     }
 
     try {
-      final data = await ImageFileService.getSvg(entry.uri, entry.mimeType);
+      final data = await imageFileService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;

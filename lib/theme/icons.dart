@@ -48,6 +48,7 @@ class AIcons {
   static const IconData rotateRight = Icons.rotate_right_outlined;
   static const IconData search = Icons.search_outlined;
   static const IconData select = Icons.select_all_outlined;
+  static const IconData setCover = MdiIcons.imageEditOutline;
   static const IconData share = Icons.share_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData stats = Icons.pie_chart_outlined;

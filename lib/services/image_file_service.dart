@@ -11,7 +11,82 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:streams_channel/streams_channel.dart';
 
-class ImageFileService {
+abstract class ImageFileService {
+  Future<AvesEntry> getEntry(String uri, String mimeType);
+
+  Future<Uint8List> getSvg(
+    String uri,
+    String mimeType, {
+    int expectedContentLength,
+    BytesReceivedCallback onBytesReceived,
+  });
+
+  Future<Uint8List> getImage(
+    String uri,
+    String mimeType,
+    int rotationDegrees,
+    bool isFlipped, {
+    int pageId,
+    int expectedContentLength,
+    BytesReceivedCallback onBytesReceived,
+  });
+
+  // `rect`: region to decode, with coordinates in reference to `imageSize`
+  Future<Uint8List> getRegion(
+    String uri,
+    String mimeType,
+    int rotationDegrees,
+    bool isFlipped,
+    int sampleSize,
+    Rectangle<int> regionRect,
+    Size imageSize, {
+    int pageId,
+    Object taskKey,
+    int priority,
+  });
+
+  Future<Uint8List> getThumbnail({
+    @required String uri,
+    @required String mimeType,
+    @required int rotationDegrees,
+    @required int pageId,
+    @required bool isFlipped,
+    @required int dateModifiedSecs,
+    @required double extent,
+    Object taskKey,
+    int priority,
+  });
+
+  Future<void> clearSizedThumbnailDiskCache();
+
+  bool cancelRegion(Object taskKey);
+
+  bool cancelThumbnail(Object taskKey);
+
+  Future<T> resumeLoading<T>(Object taskKey);
+
+  Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries);
+
+  Stream<MoveOpEvent> move(
+    Iterable<AvesEntry> entries, {
+    @required bool copy,
+    @required String destinationAlbum,
+  });
+
+  Stream<ExportOpEvent> export(
+    Iterable<AvesEntry> entries, {
+    String mimeType = MimeTypes.jpeg,
+    @required String destinationAlbum,
+  });
+
+  Future<Map> rename(AvesEntry entry, String newName);
+
+  Future<Map> rotate(AvesEntry entry, {@required bool clockwise});
+
+  Future<Map> flip(AvesEntry entry);
+}
+
+class PlatformImageFileService implements ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
   static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
   static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
@@ -31,7 +106,8 @@ class ImageFileService {
     };
   }
 
-  static Future<AvesEntry> getEntry(String uri, String mimeType) async {
+  @override
+  Future<AvesEntry> getEntry(String uri, String mimeType) async {
     try {
       final result = await platform.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
@@ -44,7 +120,8 @@ class ImageFileService {
     return null;
   }
 
-  static Future<Uint8List> getSvg(
+  @override
+  Future<Uint8List> getSvg(
     String uri,
     String mimeType, {
     int expectedContentLength,
@@ -59,7 +136,8 @@ class ImageFileService {
         onBytesReceived: onBytesReceived,
       );
 
-  static Future<Uint8List> getImage(
+  @override
+  Future<Uint8List> getImage(
     String uri,
     String mimeType,
     int rotationDegrees,
@@ -106,8 +184,8 @@ class ImageFileService {
     return Future.sync(() => null);
   }
 
-  // `rect`: region to decode, with coordinates in reference to `imageSize`
-  static Future<Uint8List> getRegion(
+  @override
+  Future<Uint8List> getRegion(
     String uri,
     String mimeType,
     int rotationDegrees,
@@ -145,7 +223,8 @@ class ImageFileService {
     );
   }
 
-  static Future<Uint8List> getThumbnail({
+  @override
+  Future<Uint8List> getThumbnail({
     @required String uri,
     @required String mimeType,
     @required int rotationDegrees,
@@ -184,7 +263,8 @@ class ImageFileService {
     );
   }
 
-  static Future<void> clearSizedThumbnailDiskCache() async {
+  @override
+  Future<void> clearSizedThumbnailDiskCache() async {
     try {
       return platform.invokeMethod('clearSizedThumbnailDiskCache');
     } on PlatformException catch (e) {
@@ -192,13 +272,17 @@ class ImageFileService {
     }
   }
 
-  static bool cancelRegion(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
+  @override
+  bool cancelRegion(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getRegion]);
 
-  static bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
+  @override
+  bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
 
-  static Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+  @override
+  Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
-  static Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
+  @override
+  Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'delete',
@@ -210,7 +294,8 @@ class ImageFileService {
     }
   }
 
-  static Stream<MoveOpEvent> move(
+  @override
+  Stream<MoveOpEvent> move(
     Iterable<AvesEntry> entries, {
     @required bool copy,
     @required String destinationAlbum,
@@ -228,7 +313,8 @@ class ImageFileService {
     }
   }
 
-  static Stream<ExportOpEvent> export(
+  @override
+  Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
     String mimeType = MimeTypes.jpeg,
     @required String destinationAlbum,
@@ -246,7 +332,8 @@ class ImageFileService {
     }
   }
 
-  static Future<Map> rename(AvesEntry entry, String newName) async {
+  @override
+  Future<Map> rename(AvesEntry entry, String newName) async {
     try {
       // returns map with: 'contentId' 'path' 'title' 'uri' (all optional)
       final result = await platform.invokeMethod('rename', <String, dynamic>{
@@ -260,7 +347,8 @@ class ImageFileService {
     return {};
   }
 
-  static Future<Map> rotate(AvesEntry entry, {@required bool clockwise}) async {
+  @override
+  Future<Map> rotate(AvesEntry entry, {@required bool clockwise}) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
@@ -274,7 +362,8 @@ class ImageFileService {
     return {};
   }
 
-  static Future<Map> flip(AvesEntry entry) async {
+  @override
+  Future<Map> flip(AvesEntry entry) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('flip', <String, dynamic>{

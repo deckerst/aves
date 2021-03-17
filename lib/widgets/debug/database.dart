@@ -1,7 +1,8 @@
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/favourite_repo.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
-import 'package:aves/model/metadata_db.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,8 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
   Future<List<DateMetadata>> _dbDateLoader;
   Future<List<CatalogMetadata>> _dbMetadataLoader;
   Future<List<AddressDetails>> _dbAddressLoader;
-  Future<List<FavouriteRow>> _dbFavouritesLoader;
+  Future<Set<FavouriteRow>> _dbFavouritesLoader;
+  Future<Set<CoverRow>> _dbCoversLoader;
 
   @override
   void initState() {
@@ -141,7 +143,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
-              FutureBuilder<List>(
+              FutureBuilder<Set>(
                 future: _dbFavouritesLoader,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -162,6 +164,27 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   );
                 },
               ),
+              FutureBuilder<Set>(
+                future: _dbCoversLoader,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) return Text(snapshot.error.toString());
+
+                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Text('cover rows: ${snapshot.data.length} (${covers.count} in memory)'),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () => covers.clear().then((_) => _startDbReport()),
+                        child: Text('Clear'),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -176,6 +199,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
     _dbMetadataLoader = metadataDb.loadMetadataEntries();
     _dbAddressLoader = metadataDb.loadAddresses();
     _dbFavouritesLoader = metadataDb.loadFavourites();
+    _dbCoversLoader = metadataDb.loadCovers();
     setState(() {});
   }
 

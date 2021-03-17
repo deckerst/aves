@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/favourite_repo.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -323,7 +323,7 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
   @override
   void initState() {
     super.initState();
-    favourites.changeNotifier.addListener(_onChanged);
+    favourites.addListener(_onChanged);
     _onChanged();
   }
 
@@ -335,7 +335,7 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
 
   @override
   void dispose() {
-    favourites.changeNotifier.removeListener(_onChanged);
+    favourites.removeListener(_onChanged);
     super.dispose();
   }
 

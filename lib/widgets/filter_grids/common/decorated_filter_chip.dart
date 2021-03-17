@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
@@ -25,6 +26,7 @@ import 'package:provider/provider.dart';
 class DecoratedFilterChip extends StatelessWidget {
   final CollectionFilter filter;
   final double extent;
+  final AvesEntry coverEntry;
   final bool pinned, highlightable;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
@@ -33,6 +35,7 @@ class DecoratedFilterChip extends StatelessWidget {
     Key key,
     @required this.filter,
     @required this.extent,
+    this.coverEntry,
     this.pinned = false,
     this.highlightable = true,
     this.onTap,
@@ -76,7 +79,7 @@ class DecoratedFilterChip extends StatelessWidget {
   }
 
   Widget _buildChip(CollectionSource source) {
-    final entry = source.recentEntry(filter);
+    final entry = coverEntry ?? source.coverEntry(filter);
     final backgroundImage = entry == null
         ? Container(color: Colors.white)
         : entry.isSvg
@@ -89,7 +92,7 @@ class DecoratedFilterChip extends StatelessWidget {
                 extent: extent,
               );
     final radius = min<double>(AvesFilterChip.defaultRadius, extent / 4);
-    final titlePadding = min<double>(6.0, extent / 16);
+    final titlePadding = min<double>(4.0, extent / 32);
     final borderRadius = BorderRadius.all(Radius.circular(radius));
     Widget child = AvesFilterChip(
       filter: filter,

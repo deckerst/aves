@@ -1,5 +1,5 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/uri_picture_provider.dart';
-import 'package:aves/main.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/theme/icons.dart';

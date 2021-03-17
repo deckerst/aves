@@ -26,6 +26,7 @@
   "chipActionPin": "고정",
   "chipActionUnpin": "고정 해제",
   "chipActionRename": "이름 변경",
+  "chipActionSetCover": "대표 이미지 변경",
 
   "entryActionDelete": "삭제",
   "entryActionExport": "내보내기",
@@ -88,6 +89,10 @@
   "noMatchingAppDialogMessage": "이 작업을 처리할 수 있는 앱이 없습니다.",
 
   "deleteEntriesConfirmationDialogMessage": "{count, plural, =1{이 항목을 삭제하시겠습니까?} other{항목 {count}개를 삭제하시겠습니까?}}",
+
+  "setCoverDialogTitle": "대표 이미지 변경",
+  "setCoverDialogLatest": "최근 항목",
+  "setCoverDialogCustom": "직접 설정",
 
   "newAlbumDialogTitle": "새 앨범 만들기",
   "newAlbumDialogNameLabel": "앨범 이름",

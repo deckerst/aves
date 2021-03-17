@@ -1,4 +1,4 @@
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -24,11 +24,11 @@ class AvesFilterChip extends StatefulWidget {
   final bool showGenericIcon;
   final Widget background;
   final Widget details;
+  final BorderRadius borderRadius;
   final double padding;
   final HeroType heroType;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
-  final BorderRadius borderRadius;
 
   static const Color defaultOutlineColor = Colors.white;
   static const double defaultRadius = 32;
@@ -99,6 +99,10 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   BorderRadius get borderRadius => widget.borderRadius;
 
   double get padding => widget.padding;
+
+  FilterCallback get onTap => widget.onTap;
+
+  OffsetFilterCallback get onLongPress => widget.onLongPress;
 
   @override
   void initState() {
@@ -218,14 +222,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               child: InkWell(
                 // as of Flutter v1.22.5, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
                 // so we get the long press details from the tap instead
-                onTapDown: (details) => _tapPosition = details.globalPosition,
-                onTap: widget.onTap != null
+                onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
+                onTap: onTap != null
                     ? () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) => widget.onTap(filter));
+                        WidgetsBinding.instance.addPostFrameCallback((_) => onTap(filter));
                         setState(() => _tapped = true);
                       }
                     : null,
-                onLongPress: widget.onLongPress != null ? () => widget.onLongPress(context, filter, _tapPosition) : null,
+                onLongPress: onLongPress != null ? () => onLongPress(context, filter, _tapPosition) : null,
                 borderRadius: borderRadius,
                 child: FutureBuilder<Color>(
                   future: _colorFuture,

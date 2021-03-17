@@ -1,19 +1,20 @@
 import 'dart:async';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/favourite_repo.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/metadata.dart';
-import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/image_op_events.dart';
+import 'package:aves/services/services.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
@@ -99,10 +100,11 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     eventBus.fire(EntryAddedEvent(entries));
   }
 
-  void removeEntries(Set<String> uris) {
+  Future<void> removeEntries(Set<String> uris) async {
     if (uris.isEmpty) return;
     final entries = _rawEntries.where((entry) => uris.contains(entry.uri)).toSet();
-    entries.forEach((entry) => entry.removeFromFavourites());
+    await favourites.remove(entries);
+    await covers.removeEntries(entries);
     _rawEntries.removeAll(entries);
     _invalidate(entries);
 
@@ -121,30 +123,61 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     updateTags();
   }
 
-  Future<void> _moveEntry(AvesEntry entry, Map newFields, bool isFavourite) async {
+  Future<void> _moveEntry(AvesEntry entry, Map newFields) async {
     final oldContentId = entry.contentId;
     final newContentId = newFields['contentId'] as int;
-    final newDateModifiedSecs = newFields['dateModifiedSecs'] as int;
+
+    entry.contentId = newContentId;
     // `dateModifiedSecs` changes when moving entries to another directory,
     // but it does not change when renaming the containing directory
-    if (newDateModifiedSecs != null) entry.dateModifiedSecs = newDateModifiedSecs;
-    entry.path = newFields['path'] as String;
-    entry.uri = newFields['uri'] as String;
-    entry.contentId = newContentId;
+    if (newFields.containsKey('dateModifiedSecs')) entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int;
+    if (newFields.containsKey('path')) entry.path = newFields['path'] as String;
+    if (newFields.containsKey('uri')) entry.uri = newFields['uri'] as String;
+    if (newFields.containsKey('title') != null) entry.sourceTitle = newFields['title'] as String;
+
     entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
     entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
 
     await metadataDb.updateEntryId(oldContentId, entry);
     await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
     await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
-    if (isFavourite) {
-      await favourites.move(oldContentId, entry);
+    await favourites.moveEntry(oldContentId, entry);
+    await covers.moveEntry(oldContentId, entry);
+  }
+
+  Future<bool> renameEntry(AvesEntry entry, String newName) async {
+    if (newName == entry.filenameWithoutExtension) return true;
+    final newFields = await imageFileService.rename(entry, '$newName${entry.extension}');
+    if (newFields.isEmpty) return false;
+
+    await _moveEntry(entry, newFields);
+    entry.metadataChangeNotifier.notifyListeners();
+    return true;
+  }
+
+  Future<void> renameAlbum(String sourceAlbum, String destinationAlbum, Set<AvesEntry> todoEntries, Set<MoveOpEvent> movedOps) async {
+    final oldFilter = AlbumFilter(sourceAlbum, null);
+    final pinned = settings.pinnedFilters.contains(oldFilter);
+    final oldCoverContentId = covers.coverContentId(oldFilter);
+    final coverEntry = oldCoverContentId != null ? todoEntries.firstWhere((entry) => entry.contentId == oldCoverContentId, orElse: () => null) : null;
+    await updateAfterMove(
+      todoEntries: todoEntries,
+      copy: false,
+      destinationAlbum: destinationAlbum,
+      movedOps: movedOps,
+    );
+    // restore pin and cover, as the obsolete album got removed and its associated state cleaned
+    final newFilter = AlbumFilter(destinationAlbum, null);
+    if (pinned) {
+      settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
+    }
+    if (coverEntry != null) {
+      await covers.set(newFilter, coverEntry.contentId);
     }
   }
 
   Future<void> updateAfterMove({
     @required Set<AvesEntry> todoEntries,
-    @required Set<AvesEntry> favouriteEntries,
     @required bool copy,
     @required String destinationAlbum,
     @required Set<MoveOpEvent> movedOps,
@@ -178,10 +211,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
           if (entry != null) {
             fromAlbums.add(entry.directory);
             movedEntries.add(entry);
-            // do not rely on current favourite repo state to assess whether the moved entry is a favourite
-            // as source monitoring may already have removed the entry from the favourite repo
-            final isFavourite = favouriteEntries.contains(entry);
-            await _moveEntry(entry, newFields, isFavourite);
+            await _moveEntry(entry, newFields);
           }
         }
       });
@@ -230,6 +260,15 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     if (filter is LocationFilter) return countryRecentEntry(filter);
     if (filter is TagFilter) return tagRecentEntry(filter);
     return null;
+  }
+
+  AvesEntry coverEntry(CollectionFilter filter) {
+    final contentId = covers.coverContentId(filter);
+    if (contentId != null) {
+      final entry = visibleEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+      if (entry != null) return entry;
+    }
+    return recentEntry(filter);
   }
 
   void changeFilterVisibility(CollectionFilter filter, bool visible) {

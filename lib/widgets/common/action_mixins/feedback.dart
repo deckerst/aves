@@ -7,7 +7,12 @@ mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
   void showFeedback(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    showFeedbackWithMessenger(ScaffoldMessenger.of(context), message);
+  }
+
+  // provide the messenger if feedback happens as the widget is disposed
+  void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message) {
+    messenger.showSnackBar(SnackBar(
       content: Text(message),
       duration: Durations.opToastDisplay,
     ));

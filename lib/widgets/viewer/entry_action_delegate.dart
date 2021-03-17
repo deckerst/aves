@@ -6,9 +6,8 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -141,7 +140,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, context.l10n.genericFailureFeedback);
     } else {
       if (hasCollection) {
-        collection.source.removeEntries({entry.uri});
+        await collection.source.removeEntries({entry.uri});
       }
       EntryDeletedNotification(entry).dispatch(context);
     }
@@ -170,7 +169,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final selection = <AvesEntry>{};
     if (entry.isMultipage) {
-      final multiPageInfo = await MetadataService.getMultiPageInfo(entry);
+      final multiPageInfo = await metadataService.getMultiPageInfo(entry);
       if (multiPageInfo.pageCount > 1) {
         for (final page in multiPageInfo.pages) {
           final pageEntry = entry.getPageEntry(page, eraseDefaultPageId: false);
@@ -184,7 +183,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final selectionCount = selection.length;
     showOpReport<ExportOpEvent>(
       context: context,
-      opStream: ImageFileService.export(selection, destinationAlbum: destinationAlbum),
+      opStream: imageFileService.export(selection, destinationAlbum: destinationAlbum),
       itemCount: selectionCount,
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
@@ -208,7 +207,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    if (await entry.rename(newName)) {
+    final success = await context.read<CollectionSource>().renameEntry(entry, newName);
+
+    if (success) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
     } else {
       showFeedback(context, context.l10n.genericFailureFeedback);
@@ -221,7 +222,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
-          loader: () => ImageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
+          loader: () => imageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
       ),
     );

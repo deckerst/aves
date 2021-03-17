@@ -14,6 +14,7 @@ enum ChipAction {
   pin,
   unpin,
   rename,
+  setCover,
   goToAlbumPage,
   goToCountryPage,
   goToTagPage,
@@ -38,6 +39,8 @@ extension ExtraChipAction on ChipAction {
         return context.l10n.chipActionUnpin;
       case ChipAction.rename:
         return context.l10n.chipActionRename;
+      case ChipAction.setCover:
+        return context.l10n.chipActionSetCover;
     }
     return null;
   }
@@ -59,6 +62,8 @@ extension ExtraChipAction on ChipAction {
         return AIcons.pin;
       case ChipAction.rename:
         return AIcons.rename;
+      case ChipAction.setCover:
+        return AIcons.setCover;
     }
     return null;
   }
