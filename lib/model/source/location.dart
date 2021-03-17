@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:aves/geo/countries.dart';
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata.dart';

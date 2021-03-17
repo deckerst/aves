@@ -32,7 +32,7 @@ mixin PermissionAwareMixin {
           return AvesDialog(
             context: context,
             title: context.l10n.storageAccessDialogTitle,
-            content: Text(context.l10n.storageVolumeAccessDialogMessage(directory, volume)),
+            content: Text(context.l10n.storageAccessDialogMessage(directory, volume)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),

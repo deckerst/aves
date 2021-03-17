@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aves/geo/countries.dart';
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
