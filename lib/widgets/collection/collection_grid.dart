@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
@@ -34,6 +34,12 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 class CollectionGrid extends StatefulWidget {
+  final String settingsRouteKey;
+
+  const CollectionGrid({
+    this.settingsRouteKey,
+  });
+
   @override
   _CollectionGridState createState() => _CollectionGridState();
 }
@@ -44,7 +50,7 @@ class _CollectionGridState extends State<CollectionGrid> {
   @override
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
-      settingsRouteKey: context.currentRouteName,
+      settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName,
       columnCountDefault: 4,
       extentMin: 46,
       spacing: 0,

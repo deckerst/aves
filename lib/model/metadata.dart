@@ -204,38 +204,3 @@ class AddressDetails {
   @override
   String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, countryCode=$countryCode, countryName=$countryName, adminArea=$adminArea, locality=$locality}';
 }
-
-@immutable
-class FavouriteRow {
-  final int contentId;
-  final String path;
-
-  const FavouriteRow({
-    this.contentId,
-    this.path,
-  });
-
-  factory FavouriteRow.fromMap(Map map) {
-    return FavouriteRow(
-      contentId: map['contentId'],
-      path: map['path'] ?? '',
-    );
-  }
-
-  Map<String, dynamic> toMap() => {
-        'contentId': contentId,
-        'path': path,
-      };
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is FavouriteRow && other.contentId == contentId && other.path == path;
-  }
-
-  @override
-  int get hashCode => hashValues(contentId, path);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, path=$path}';
-}

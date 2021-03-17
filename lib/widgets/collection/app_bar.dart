@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -96,24 +96,29 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     return ValueListenableBuilder<Activity>(
       valueListenable: collection.activityNotifier,
       builder: (context, activity, child) {
         return AnimatedBuilder(
           animation: collection.filterChangeNotifier,
-          builder: (context, child) => SliverAppBar(
-            leading: _buildAppBarLeading(),
-            title: _buildAppBarTitle(),
-            actions: _buildActions(),
-            bottom: hasFilters
-                ? FilterBar(
-                    filters: collection.filters,
-                    onPressed: collection.removeFilter,
-                  )
-                : null,
-            titleSpacing: 0,
-            floating: true,
-          ),
+          builder: (context, child) {
+            final removableFilters = appMode != AppMode.pickInternal;
+            return SliverAppBar(
+              leading: appMode.hasDrawer ? _buildAppBarLeading() : null,
+              title: _buildAppBarTitle(),
+              actions: _buildActions(),
+              bottom: hasFilters
+                  ? FilterBar(
+                      filters: collection.filters,
+                      removable: removableFilters,
+                      onTap: removableFilters ? collection.removeFilter : null,
+                    )
+                  : null,
+              titleSpacing: 0,
+              floating: true,
+            );
+          },
         );
       },
     );
@@ -143,7 +148,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Widget _buildAppBarTitle() {
     if (collection.isBrowsing) {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
-      Widget title = Text(appMode == AppMode.pick ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
+      Widget title = Text(appMode.isPicking ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
       if (appMode == AppMode.main) {
         title = SourceStateAwareAppBarTitle(
           title: title,
@@ -151,7 +156,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         );
       }
       return InteractiveAppBarTitle(
-        onTap: _goToSearch,
+        onTap: appMode.canSearch ? _goToSearch : null,
         child: title,
       );
     } else if (collection.isSelecting) {
@@ -167,8 +172,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   List<Widget> _buildActions() {
+    final appMode = context.watch<ValueNotifier<AppMode>>().value;
     return [
-      if (collection.isBrowsing)
+      if (collection.isBrowsing && appMode.canSearch)
         CollectionSearchButton(
           source,
           parentCollection: collection,
@@ -193,7 +199,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             itemBuilder: (context) {
               final isNotEmpty = !collection.isEmpty;
               final hasSelection = collection.selection.isNotEmpty;
-              final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
               return [
                 PopupMenuItem(
                   key: Key('menu-sort'),
@@ -206,19 +211,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     value: CollectionAction.group,
                     child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
-                if (collection.isBrowsing) ...[
-                  if (isMainMode)
-                    PopupMenuItem(
-                      value: CollectionAction.select,
-                      enabled: isNotEmpty,
-                      child: MenuRow(text: context.l10n.collectionActionSelect, icon: AIcons.select),
-                    ),
+                if (collection.isBrowsing && appMode == AppMode.main) ...[
+                  PopupMenuItem(
+                    value: CollectionAction.select,
+                    enabled: isNotEmpty,
+                    child: MenuRow(text: context.l10n.collectionActionSelect, icon: AIcons.select),
+                  ),
                   PopupMenuItem(
                     value: CollectionAction.stats,
                     enabled: isNotEmpty,
                     child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
                   ),
-                  if (isMainMode && canAddShortcuts)
+                  if (canAddShortcuts)
                     PopupMenuItem(
                       value: CollectionAction.addShortcut,
                       child: MenuRow(text: context.l10n.collectionActionAddShortcut, icon: AIcons.addShortcut),

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -30,7 +30,7 @@ class AppShortcutService {
     Uint8List iconBytes;
     if (entry != null) {
       final size = entry.isVideo ? 0.0 : 256.0;
-      iconBytes = await ImageFileService.getThumbnail(
+      iconBytes = await imageFileService.getThumbnail(
         uri: entry.uri,
         mimeType: entry.mimeType,
         pageId: entry.pageId,

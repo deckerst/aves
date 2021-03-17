@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pedantic/pedantic.dart';
@@ -46,7 +46,7 @@ class UriImage extends ImageProvider<UriImage> {
     assert(key == this);
 
     try {
-      final bytes = await ImageFileService.getImage(
+      final bytes = await imageFileService.getImage(
         uri,
         mimeType,
         rotationDegrees,

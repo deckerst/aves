@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,10 +34,10 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
     super.initState();
     switch (widget.source) {
       case MetadataThumbnailSource.embedded:
-        _loader = MetadataService.getEmbeddedPictures(uri);
+        _loader = metadataService.getEmbeddedPictures(uri);
         break;
       case MetadataThumbnailSource.exif:
-        _loader = MetadataService.getExifThumbnails(entry);
+        _loader = metadataService.getExifThumbnails(entry);
         break;
     }
   }

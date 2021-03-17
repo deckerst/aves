@@ -1,4 +1,4 @@
-import 'package:aves/model/availability.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/about/news_badge.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';

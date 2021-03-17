@@ -3,8 +3,7 @@ import 'dart:convert';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/services/image_file_service.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
@@ -49,7 +48,7 @@ class EntryPrinter with FeedbackMixin {
     }
 
     if (entry.isMultipage) {
-      final multiPageInfo = await MetadataService.getMultiPageInfo(entry);
+      final multiPageInfo = await metadataService.getMultiPageInfo(entry);
       if (multiPageInfo.pageCount > 1) {
         final streamController = StreamController<AvesEntry>.broadcast();
         showOpReport<AvesEntry>(
@@ -73,7 +72,7 @@ class EntryPrinter with FeedbackMixin {
 
   Future<pdf.Widget> _buildPageImage(AvesEntry entry) async {
     if (entry.isSvg) {
-      final bytes = await ImageFileService.getSvg(entry.uri, entry.mimeType);
+      final bytes = await imageFileService.getSvg(entry.uri, entry.mimeType);
       if (bytes != null && bytes.isNotEmpty) {
         return pdf.SvgImage(svg: utf8.decode(bytes));
       }

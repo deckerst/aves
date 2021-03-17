@@ -160,6 +160,12 @@ class Constants {
       sourceUrl: 'https://github.com/marcojakob/dart-event-bus',
     ),
     Dependency(
+      name: 'Get It',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/fluttercommunity/get_it/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/fluttercommunity/get_it',
+    ),
+    Dependency(
       name: 'Github',
       license: 'MIT',
       licenseUrl: 'https://github.com/SpinlockLabs/github.dart/blob/master/LICENSE',

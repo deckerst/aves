@@ -5,7 +5,7 @@ import 'package:aves/model/metadata.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
@@ -69,7 +69,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   }
 
   void _initDetailLoader() {
-    _detailLoader = MetadataService.getOverlayMetadata(entry);
+    _detailLoader = metadataService.getOverlayMetadata(entry);
   }
 
   @override

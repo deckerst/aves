@@ -8,17 +8,29 @@ import 'package:google_api_availability/google_api_availability.dart';
 import 'package:package_info/package_info.dart';
 import 'package:version/version.dart';
 
-final AvesAvailability availability = AvesAvailability._private();
+abstract class AvesAvailability {
+  void onResume();
 
-class AvesAvailability {
+  Future<bool> get isConnected;
+
+  Future<bool> get hasPlayServices;
+
+  Future<bool> get canLocatePlaces;
+
+  Future<bool> get isNewVersionAvailable;
+}
+
+class LiveAvesAvailability implements AvesAvailability {
   bool _isConnected, _hasPlayServices, _isNewVersionAvailable;
 
-  AvesAvailability._private() {
+  LiveAvesAvailability() {
     Connectivity().onConnectivityChanged.listen(_updateConnectivityFromResult);
   }
 
+  @override
   void onResume() => _isConnected = null;
 
+  @override
   Future<bool> get isConnected async {
     if (_isConnected != null) return SynchronousFuture(_isConnected);
     final result = await (Connectivity().checkConnectivity());
@@ -34,6 +46,7 @@ class AvesAvailability {
     }
   }
 
+  @override
   Future<bool> get hasPlayServices async {
     if (_hasPlayServices != null) return SynchronousFuture(_hasPlayServices);
     final result = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
@@ -43,8 +56,10 @@ class AvesAvailability {
   }
 
   // local geocoding with `geocoder` requires Play Services
+  @override
   Future<bool> get canLocatePlaces => Future.wait<bool>([isConnected, hasPlayServices]).then((results) => results.every((result) => result));
 
+  @override
   Future<bool> get isNewVersionAvailable async {
     if (_isNewVersionAvailable != null) return SynchronousFuture(_isNewVersionAvailable);
 

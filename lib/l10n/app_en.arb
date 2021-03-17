@@ -49,6 +49,8 @@
   "@chipActionUnpin": {},
   "chipActionRename": "Rename",
   "@chipActionRename": {},
+  "chipActionSetCover": "Set cover",
+  "@chipActionSetCover": {},
 
   "entryActionDelete": "Delete",
   "@entryActionDelete": {},
@@ -209,6 +211,13 @@
       "count": {}
     }
   },
+
+  "setCoverDialogTitle": "Set Cover",
+  "@setCoverDialogTitle": {},
+  "setCoverDialogLatest": "Latest item",
+  "@setCoverDialogLatest": {},
+  "setCoverDialogCustom": "Custom",
+  "@setCoverDialogCustom": {},
 
   "hideFilterConfirmationDialogMessage": "Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?",
   "@hideFilterConfirmationDialogMessage": {},

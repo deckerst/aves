@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/services/window_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';

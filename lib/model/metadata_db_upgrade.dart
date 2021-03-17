@@ -3,8 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MetadataDbUpgrader {
-  static const entryTable = MetadataDb.entryTable;
-  static const metadataTable = MetadataDb.metadataTable;
+  static const entryTable = SqfliteMetadataDb.entryTable;
+  static const metadataTable = SqfliteMetadataDb.metadataTable;
+  static const coverTable = SqfliteMetadataDb.coverTable;
 
   // warning: "ALTER TABLE ... RENAME COLUMN ..." is not supported
   // on SQLite <3.25.0, bundled on older Android devices
@@ -16,6 +17,9 @@ class MetadataDbUpgrader {
           break;
         case 2:
           await _upgradeFrom2(db);
+          break;
+        case 3:
+          await _upgradeFrom3(db);
           break;
       }
       oldVersion++;
@@ -96,5 +100,13 @@ class MetadataDbUpgrader {
       await db.execute('DROP TABLE $metadataTable;');
       await db.execute('ALTER TABLE $newMetadataTable RENAME TO $metadataTable;');
     });
+  }
+
+  static Future<void> _upgradeFrom3(Database db) async {
+    debugPrint('upgrading DB from v3');
+    await db.execute('CREATE TABLE $coverTable('
+        'filter TEXT PRIMARY KEY'
+        ', contentId INTEGER'
+        ')');
   }
 }

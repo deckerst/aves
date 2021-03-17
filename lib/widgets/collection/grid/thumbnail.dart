@@ -1,4 +1,4 @@
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
@@ -29,14 +29,22 @@ class InteractiveThumbnail extends StatelessWidget {
       key: ValueKey(entry.uri),
       onTap: () {
         final appMode = context.read<ValueNotifier<AppMode>>().value;
-        if (appMode == AppMode.main) {
-          if (collection.isBrowsing) {
-            _goToViewer(context);
-          } else if (collection.isSelecting) {
-            collection.toggleSelection(entry);
-          }
-        } else if (appMode == AppMode.pick) {
-          ViewerService.pick(entry.uri);
+        switch (appMode) {
+          case AppMode.main:
+            if (collection.isBrowsing) {
+              _goToViewer(context);
+            } else if (collection.isSelecting) {
+              collection.toggleSelection(entry);
+            }
+            break;
+          case AppMode.pickExternal:
+            ViewerService.pick(entry.uri);
+            break;
+          case AppMode.pickInternal:
+            Navigator.pop(context, entry);
+            break;
+          case AppMode.view:
+            break;
         }
       },
       child: MetaData(

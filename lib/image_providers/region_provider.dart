@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -32,7 +32,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await ImageFileService.getRegion(
+      final bytes = await imageFileService.getRegion(
         uri,
         mimeType,
         key.rotationDegrees,
@@ -55,11 +55,11 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, RegionProviderKey key, ImageErrorListener handleError) {
-    ImageFileService.resumeLoading(key);
+    imageFileService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => ImageFileService.cancelRegion(key);
+  void pause() => imageFileService.cancelRegion(key);
 }
 
 class RegionProviderKey {
