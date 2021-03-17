@@ -27,13 +27,14 @@ class CoverSelectionDialog extends StatefulWidget {
 
 class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
   bool _isCustom;
-  AvesEntry _customEntry;
+  AvesEntry _customEntry, _recentEntry;
 
   CollectionFilter get filter => widget.filter;
 
   @override
   void initState() {
     super.initState();
+    _recentEntry = context.read<CollectionSource>().recentEntry(filter);
     _customEntry = widget.customEntry;
     _isCustom = _customEntry != null;
   }
@@ -89,7 +90,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                 child: DecoratedFilterChip(
                   filter: filter,
                   extent: extent,
-                  coverEntry: _isCustom ? _customEntry : null,
+                  coverEntry: _isCustom ? _customEntry : _recentEntry,
                   onTap: (filter) => _pickEntry(),
                 ),
               ),
