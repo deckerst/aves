@@ -264,13 +264,13 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
           );
 
           return MagnifierGestureDetector(
-            child: child,
             onDoubleTap: onDoubleTap,
             onScaleStart: onScaleStart,
             onScaleUpdate: onScaleUpdate,
             onScaleEnd: onScaleEnd,
             hitDetector: this,
             onTapUp: widget.onTap == null ? null : onTap,
+            child: child,
           );
         });
   }

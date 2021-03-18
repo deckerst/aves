@@ -1,5 +1,7 @@
-import 'package:aves/model/settings/map_style.dart';
+import 'package:provider/provider.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/maps/common.dart';
 import 'package:aves/widgets/viewer/info/maps/scale_layer.dart';
@@ -71,6 +73,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
         zoom: widget.initialZoom,
         interactive: false,
       ),
+      mapController: _mapController,
       children: [
         _buildMapLayer(),
         ScaleLayerWidget(
@@ -90,7 +93,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
           ),
         ),
       ],
-      mapController: _mapController,
     );
   }
 
@@ -110,10 +112,10 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
   Widget _buildAttribution() {
     switch (widget.style) {
       case EntryMapStyle.osmHot:
-        return _buildAttributionMarkdown('Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, tiles by [HOT](https://www.hotosm.org/) hosted by [OSM France](https://openstreetmap.fr/)');
+        return _buildAttributionMarkdown(context.l10n.mapAttributionOsmHot);
       case EntryMapStyle.stamenToner:
       case EntryMapStyle.stamenWatercolor:
-        return _buildAttributionMarkdown('Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, tiles by [Stamen Design](http://stamen.com), [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)');
+        return _buildAttributionMarkdown(context.l10n.mapAttributionStamen);
       default:
         return SizedBox.shrink();
     }
@@ -169,7 +171,7 @@ class OSMHotLayer extends StatelessWidget {
       options: TileLayerOptions(
         urlTemplate: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
         subdomains: ['a', 'b', 'c'],
-        retinaMode: MediaQuery.of(context).devicePixelRatio > 1,
+        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
       ),
     );
   }
@@ -182,7 +184,7 @@ class StamenTonerLayer extends StatelessWidget {
       options: TileLayerOptions(
         urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png',
         subdomains: ['a', 'b', 'c', 'd'],
-        retinaMode: MediaQuery.of(context).devicePixelRatio > 1,
+        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
       ),
     );
   }
@@ -195,7 +197,7 @@ class StamenWatercolorLayer extends StatelessWidget {
       options: TileLayerOptions(
         urlTemplate: 'https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg',
         subdomains: ['a', 'b', 'c', 'd'],
-        retinaMode: MediaQuery.of(context).devicePixelRatio > 1,
+        retinaMode: context.select<MediaQueryData, double>((mq) => mq.devicePixelRatio) > 1,
       ),
     );
   }

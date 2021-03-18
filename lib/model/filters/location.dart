@@ -1,11 +1,11 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter {
   static const type = 'location';
-  static const emptyLabel = 'unlocated';
   static const locationSeparator = ';';
 
   final LocationLevel level;
@@ -48,7 +48,10 @@ class LocationFilter extends CollectionFilter {
   EntryFilter get test => _test;
 
   @override
-  String get label => _location.isEmpty ? emptyLabel : _location;
+  String get universalLabel => _location;
+
+  @override
+  String getLabel(BuildContext context) => _location.isEmpty ? context.l10n.filterLocationEmptyLabel : _location;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
@@ -66,7 +69,10 @@ class LocationFilter extends CollectionFilter {
   }
 
   @override
-  String get typeKey => type;
+  String get category => type;
+
+  @override
+  String get key => '$type-$level-$_location';
 
   @override
   bool operator ==(Object other) {

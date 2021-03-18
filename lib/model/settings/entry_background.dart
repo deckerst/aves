@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum EntryBackground { black, white, transparent, checkered }
+import 'enums.dart';
 
 extension ExtraEntryBackground on EntryBackground {
   bool get isColor {

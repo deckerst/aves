@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -138,7 +138,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     if (entry == null) return;
     if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
-      final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : MetadataService.getAllMetadata(entry)) ?? {};
+      final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataService.getAllMetadata(entry)) ?? {};
       final directories = rawMetadata.entries.map((dirKV) {
         var directoryName = dirKV.key as String ?? '';
 

@@ -1,8 +1,9 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +11,7 @@ class HiddenFilterTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Hidden filters'),
+      title: Text(context.l10n.settingsHiddenFiltersTile),
       onTap: () {
         Navigator.push(
           context,
@@ -31,7 +32,7 @@ class HiddenFilterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hidden Filters'),
+        title: Text(context.l10n.settingsHiddenFiltersTitle),
       ),
       body: SafeArea(
         child: Column(
@@ -43,7 +44,7 @@ class HiddenFilterPage extends StatelessWidget {
                 children: [
                   Icon(AIcons.info),
                   SizedBox(width: 16),
-                  Expanded(child: Text('Photos and videos matching hidden filters will not appear in your collection.')),
+                  Expanded(child: Text(context.l10n.settingsHiddenFiltersBanner)),
                 ],
               ),
             ),
@@ -58,7 +59,7 @@ class HiddenFilterPage extends StatelessWidget {
                     if (hiddenFilters.isEmpty) {
                       return EmptyContent(
                         icon: AIcons.hide,
-                        text: 'No hidden filters',
+                        text: context.l10n.settingsHiddenFiltersEmpty,
                       );
                     }
                     return Wrap(

@@ -6,12 +6,12 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
@@ -21,7 +21,6 @@ import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:intl/intl.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
@@ -103,14 +102,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.flip();
-    if (!success) showFeedback(context, 'Failed');
+    if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {@required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.rotate(clockwise: clockwise);
-    if (!success) showFeedback(context, 'Failed');
+    if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AvesEntry entry) async {
@@ -119,15 +118,15 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Are you sure?'),
+          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(1)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Delete'.toUpperCase()),
+              child: Text(context.l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -138,10 +137,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkStoragePermission(context, {entry})) return;
 
     if (!await entry.delete()) {
-      showFeedback(context, 'Failed');
+      showFeedback(context, context.l10n.genericFailureFeedback);
     } else {
       if (hasCollection) {
-        collection.source.removeEntries({entry.uri});
+        await collection.source.removeEntries({entry.uri});
       }
       EntryDeletedNotification(entry).dispatch(context);
     }
@@ -170,7 +169,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final selection = <AvesEntry>{};
     if (entry.isMultipage) {
-      final multiPageInfo = await MetadataService.getMultiPageInfo(entry);
+      final multiPageInfo = await metadataService.getMultiPageInfo(entry);
       if (multiPageInfo.pageCount > 1) {
         for (final page in multiPageInfo.pages) {
           final pageEntry = entry.getPageEntry(page, eraseDefaultPageId: false);
@@ -184,16 +183,16 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final selectionCount = selection.length;
     showOpReport<ExportOpEvent>(
       context: context,
-      opStream: ImageFileService.export(selection, destinationAlbum: destinationAlbum),
+      opStream: imageFileService.export(selection, destinationAlbum: destinationAlbum),
       itemCount: selectionCount,
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          showFeedback(context, 'Failed to export ${Intl.plural(count, one: '$count page', other: '$count pages')}');
+          showFeedback(context, context.l10n.collectionExportFailureFeedback(count));
         } else {
-          showFeedback(context, 'Done!');
+          showFeedback(context, context.l10n.genericSuccessFeedback);
         }
       },
     );
@@ -208,7 +207,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    showFeedback(context, await entry.rename(newName) ? 'Done!' : 'Failed');
+    final success = await context.read<CollectionSource>().renameEntry(entry, newName);
+
+    if (success) {
+      showFeedback(context, context.l10n.genericSuccessFeedback);
+    } else {
+      showFeedback(context, context.l10n.genericFailureFeedback);
+    }
   }
 
   void _goToSourceViewer(BuildContext context, AvesEntry entry) {
@@ -217,7 +222,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       MaterialPageRoute(
         settings: RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
-          loader: () => ImageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
+          loader: () => imageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
       ),
     );

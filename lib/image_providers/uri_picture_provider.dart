@@ -1,4 +1,4 @@
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,12 +8,11 @@ class UriPicture extends PictureProvider<UriPicture> {
   const UriPicture({
     @required this.uri,
     @required this.mimeType,
-    this.colorFilter,
-  }) : assert(uri != null);
+    ColorFilter colorFilter,
+  })  : assert(uri != null),
+        super(colorFilter);
 
   final String uri, mimeType;
-
-  final ColorFilter colorFilter;
 
   @override
   Future<UriPicture> obtainKey(PictureConfiguration configuration) {
@@ -30,7 +29,7 @@ class UriPicture extends PictureProvider<UriPicture> {
   Future<PictureInfo> _loadAsync(UriPicture key, {PictureErrorListener onError}) async {
     assert(key == this);
 
-    final data = await ImageFileService.getSvg(uri, mimeType);
+    final data = await imageFileService.getSvg(uri, mimeType);
     if (data == null || data.isEmpty) {
       return null;
     }

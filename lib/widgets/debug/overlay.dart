@@ -1,5 +1,4 @@
 import 'package:aves/services/service_policy.dart';
-import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:flutter/material.dart';
 
 class DebugTaskQueueOverlay extends StatelessWidget {
@@ -13,9 +12,6 @@ class DebugTaskQueueOverlay extends StatelessWidget {
           child: SafeArea(
             child: Container(
               color: Colors.indigo[900].withAlpha(0xCC),
-              margin: EdgeInsets.only(
-                bottom: MediaQuery.of(context).effectiveBottomPadding,
-              ),
               padding: EdgeInsets.all(8),
               child: StreamBuilder<QueueState>(
                   stream: servicePolicy.queueStream,

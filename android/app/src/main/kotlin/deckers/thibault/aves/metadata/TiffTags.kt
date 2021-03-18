@@ -110,6 +110,15 @@ object TiffTags {
     // Count = variable
     const val TAG_ORIGINAL_RAW_FILE_NAME = 0xc68b
 
+    private val geotiffTags = listOf(
+        TAG_GEO_ASCII_PARAMS,
+        TAG_GEO_DOUBLE_PARAMS,
+        TAG_GEO_KEY_DIRECTORY,
+        TAG_MODEL_PIXEL_SCALE,
+        TAG_MODEL_TIEPOINT,
+        TAG_MODEL_TRANSFORMATION,
+    )
+
     private val tagNameMap = hashMapOf(
         TAG_X_POSITION to "X Position",
         TAG_Y_POSITION to "Y Position",
@@ -131,6 +140,8 @@ object TiffTags {
         TAG_CAMERA_SERIAL_NUMBER to "Camera Serial Number",
         TAG_ORIGINAL_RAW_FILE_NAME to "Original Raw File Name",
     )
+
+    fun isGeoTiffTag(tag: Int) = geotiffTags.contains(tag)
 
     fun getTagName(tag: Int): String? {
         return tagNameMap[tag]

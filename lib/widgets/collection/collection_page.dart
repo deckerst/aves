@@ -1,5 +1,5 @@
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/collection/thumbnail_collection.dart';
+import 'package:aves/widgets/collection/collection_grid.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
@@ -31,26 +31,29 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: ChangeNotifierProvider<CollectionLens>.value(
-        value: collection,
-        child: Scaffold(
-          body: WillPopScope(
-            onWillPop: () {
-              if (collection.isSelecting) {
-                collection.browse();
-                return SynchronousFuture(false);
-              }
-              return SynchronousFuture(true);
-            },
-            child: DoubleBackPopScope(
-              child: GestureAreaProtectorStack(
-                child: ThumbnailCollection(),
+      child: Scaffold(
+        body: WillPopScope(
+          onWillPop: () {
+            if (collection.isSelecting) {
+              collection.browse();
+              return SynchronousFuture(false);
+            }
+            return SynchronousFuture(true);
+          },
+          child: DoubleBackPopScope(
+            child: GestureAreaProtectorStack(
+              child: SafeArea(
+                bottom: false,
+                child: ChangeNotifierProvider<CollectionLens>.value(
+                  value: collection,
+                  child: CollectionGrid(),
+                ),
               ),
             ),
           ),
-          drawer: AppDrawer(),
-          resizeToAvoidBottomInset: false,
         ),
+        drawer: AppDrawer(),
+        resizeToAvoidBottomInset: false,
       ),
     );
   }

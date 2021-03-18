@@ -58,7 +58,8 @@ void agreeToTerms() {
     await driver.tap(find.byValueKey('continue-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    expect(await driver.getText(find.byValueKey('appbar-title')), 'Collection');
+    // wait for collection loading
+    await driver.waitForCondition(NoPendingPlatformMessages());
   });
 }
 
@@ -71,6 +72,7 @@ void visitAbout() {
     await driver.waitUntilNoTransientCallbacks();
 
     await pressDeviceBackButton();
+    await driver.waitUntilNoTransientCallbacks();
   });
 }
 
@@ -83,6 +85,7 @@ void visitSettings() {
     await driver.waitUntilNoTransientCallbacks();
 
     await pressDeviceBackButton();
+    await driver.waitUntilNoTransientCallbacks();
   });
 }
 
@@ -95,6 +98,7 @@ void sortCollection() {
     await driver.waitUntilNoTransientCallbacks();
 
     await driver.tap(find.byValueKey(EntrySortFactor.date.toString()));
+    await driver.waitUntilNoTransientCallbacks();
   });
 }
 
@@ -107,6 +111,7 @@ void groupCollection() {
     await driver.waitUntilNoTransientCallbacks();
 
     await driver.tap(find.byValueKey(EntryGroupFactor.album.toString()));
+    await driver.waitUntilNoTransientCallbacks();
   });
 }
 
@@ -135,13 +140,15 @@ void searchAlbum() {
     await driver.tap(find.byValueKey('search-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    final album = path.split(targetPicturesDir).last;
+    const albumPath = targetPicturesDirEmulated;
+    final albumUniqueName = path.split(albumPath).last;
     await driver.tap(find.byType('TextField'));
-    await driver.enterText(album);
+    await driver.enterText(albumUniqueName);
 
-    final albumChip = find.byValueKey('album-$album');
+    final albumChip = find.byValueKey('album-$albumPath');
     await driver.waitFor(albumChip);
     await driver.tap(albumChip);
+    await driver.waitUntilNoTransientCallbacks();
   });
 }
 
@@ -210,6 +217,7 @@ void showInfoMetadata() {
 
     print('* back to image');
     await driver.tap(find.byValueKey('back-button'));
+    await driver.waitUntilNoTransientCallbacks();
   });
 }
 

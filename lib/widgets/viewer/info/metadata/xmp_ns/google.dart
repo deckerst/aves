@@ -1,3 +1,4 @@
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:tuple/tuple.dart';
@@ -18,7 +19,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
           ? MapEntry(
               dataProp.displayKey,
               InfoLinkHandler(
-                linkText: 'Open',
+                linkText: (context) => context.l10n.viewerInfoOpenLinkText,
                 onTap: (context) => OpenEmbeddedDataNotification(
                   propPath: dataProp.path,
                   mimeType: mimeProp.value,

@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:aves/geo/countries.dart';
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry_cache.dart';
-import 'package:aves/model/favourite_repo.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
-import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/services/image_file_service.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/service_policy.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/math_utils.dart';
@@ -18,7 +17,6 @@ import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart' as ppath;
 
@@ -33,7 +31,7 @@ class AvesEntry {
   int height;
   int sourceRotationDegrees;
   final int sizeBytes;
-  String sourceTitle;
+  String _sourceTitle;
 
   // `dateModifiedSecs` can be missing in viewer mode
   int _dateModifiedSecs;
@@ -44,10 +42,6 @@ class AvesEntry {
   AddressDetails _addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
-
-  // Local geocoding requires Google Play Services
-  // Google remote geocoding requires an API key and is not free
-  final Future<List<Address>> Function(Coordinates coordinates) _findAddresses = Geocoder.local.findAddressesFromCoordinates;
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
   static const List<String> undecodable = [MimeTypes.crw, MimeTypes.djvu, MimeTypes.psd];
@@ -62,13 +56,14 @@ class AvesEntry {
     @required this.height,
     this.sourceRotationDegrees,
     this.sizeBytes,
-    this.sourceTitle,
+    String sourceTitle,
     int dateModifiedSecs,
     this.sourceDateTakenMillis,
     this.durationMillis,
   })  : assert(width != null),
         assert(height != null) {
     this.path = path;
+    this.sourceTitle = sourceTitle;
     this.dateModifiedSecs = dateModifiedSecs;
   }
 
@@ -77,14 +72,14 @@ class AvesEntry {
   bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
   AvesEntry copyWith({
-    @required String uri,
-    @required String path,
-    @required int contentId,
-    @required int dateModifiedSecs,
+    String uri,
+    String path,
+    int contentId,
+    int dateModifiedSecs,
   }) {
     final copyContentId = contentId ?? this.contentId;
     final copied = AvesEntry(
-      uri: uri ?? uri,
+      uri: uri ?? this.uri,
       path: path ?? this.path,
       contentId: copyContentId,
       sourceMimeType: sourceMimeType,
@@ -93,7 +88,7 @@ class AvesEntry {
       sourceRotationDegrees: sourceRotationDegrees,
       sizeBytes: sizeBytes,
       sourceTitle: sourceTitle,
-      dateModifiedSecs: dateModifiedSecs,
+      dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
     )
@@ -241,9 +236,7 @@ class AvesEntry {
 
   bool get supportTiling => _supportedByBitmapRegionDecoder || mimeType == MimeTypes.tiff;
 
-  // as of panorama v0.3.1, the `Panorama` widget throws on initialization when the image is already resolved
-  // so we use tiles for panoramas as a workaround to not collide with the `panorama` package resolution
-  bool get useTiles => supportTiling && (width > 4096 || height > 4096 || is360);
+  bool get useTiles => supportTiling && (width > 4096 || height > 4096);
 
   bool get isRaw => MimeTypes.rawImages.contains(mimeType);
 
@@ -347,6 +340,13 @@ class AvesEntry {
 
   set isFlipped(bool isFlipped) => _catalogMetadata?.isFlipped = isFlipped;
 
+  String get sourceTitle => _sourceTitle;
+
+  set sourceTitle(String sourceTitle) {
+    _sourceTitle = sourceTitle;
+    _bestTitle = null;
+  }
+
   int get dateModifiedSecs => _dateModifiedSecs;
 
   set dateModifiedSecs(int dateModifiedSecs) {
@@ -444,7 +444,7 @@ class AvesEntry {
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
-      catalogMetadata = await MetadataService.getCatalogMetadata(this, background: background);
+      catalogMetadata = await metadataService.getCatalogMetadata(this, background: background);
     }
   }
 
@@ -479,12 +479,18 @@ class AvesEntry {
     );
   }
 
+  String _geocoderLocale;
+
+  String get geocoderLocale {
+    _geocoderLocale ??= (settings.locale ?? WidgetsBinding.instance.window.locale).toString();
+    return _geocoderLocale;
+  }
+
   // full reverse geocoding, requiring Play Services and some connectivity
   Future<void> locatePlace({@required bool background}) async {
     if (!hasGps || hasFineAddress) return;
-    final coordinates = latLng;
     try {
-      Future<List<Address>> call() => _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
+      Future<List<Address>> call() => GeocodingService.getAddress(latLng, geocoderLocale);
       final addresses = await (background
           ? servicePolicy.call(
               call,
@@ -507,22 +513,21 @@ class AvesEntry {
         );
       }
     } catch (error, stack) {
-      debugPrint('$runtimeType locate failed with path=$path coordinates=$coordinates error=$error\n$stack');
+      debugPrint('$runtimeType locate failed with path=$path coordinates=$latLng error=$error\n$stack');
     }
   }
 
   Future<String> findAddressLine() async {
     if (!hasGps) return null;
 
-    final coordinates = latLng;
     try {
-      final addresses = await _findAddresses(Coordinates(coordinates.latitude, coordinates.longitude));
+      final addresses = await GeocodingService.getAddress(latLng, geocoderLocale);
       if (addresses != null && addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
       }
     } catch (error, stack) {
-      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$coordinates error=$error\n$stack');
+      debugPrint('$runtimeType findAddressLine failed with path=$path coordinates=$latLng error=$error\n$stack');
     }
     return null;
   }
@@ -553,10 +558,7 @@ class AvesEntry {
     final contentId = newFields['contentId'];
     if (contentId is int) this.contentId = contentId;
     final sourceTitle = newFields['title'];
-    if (sourceTitle is String) {
-      this.sourceTitle = sourceTitle;
-      _bestTitle = null;
-    }
+    if (sourceTitle is String) this.sourceTitle = sourceTitle;
 
     final width = newFields['width'];
     if (width is int) this.width = width;
@@ -576,18 +578,8 @@ class AvesEntry {
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<bool> rename(String newName) async {
-    if (newName == filenameWithoutExtension) return true;
-
-    final newFields = await ImageFileService.rename(this, '$newName$extension');
-    if (newFields.isEmpty) return false;
-
-    await _applyNewFields(newFields);
-    return true;
-  }
-
   Future<bool> rotate({@required bool clockwise}) async {
-    final newFields = await ImageFileService.rotate(this, clockwise: clockwise);
+    final newFields = await imageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
@@ -599,7 +591,7 @@ class AvesEntry {
   }
 
   Future<bool> flip() async {
-    final newFields = await ImageFileService.flip(this);
+    final newFields = await imageFileService.flip(this);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
@@ -612,7 +604,7 @@ class AvesEntry {
 
   Future<bool> delete() {
     Completer completer = Completer<bool>();
-    ImageFileService.delete([this]).listen(
+    imageFileService.delete([this]).listen(
       (event) => completer.complete(event.success),
       onError: completer.completeError,
       onDone: () {
@@ -625,7 +617,7 @@ class AvesEntry {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  void _onImageChanged(int oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+  Future<void> _onImageChanged(int oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
     if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notifyListeners();
@@ -634,23 +626,23 @@ class AvesEntry {
 
   // favourites
 
-  void toggleFavourite() {
+  Future<void> toggleFavourite() async {
     if (isFavourite) {
-      removeFromFavourites();
+      await removeFromFavourites();
     } else {
-      addToFavourites();
+      await addToFavourites();
     }
   }
 
-  void addToFavourites() {
+  Future<void> addToFavourites() async {
     if (!isFavourite) {
-      favourites.add([this]);
+      await favourites.add([this]);
     }
   }
 
-  void removeFromFavourites() {
+  Future<void> removeFromFavourites() async {
     if (isFavourite) {
-      favourites.remove([this]);
+      await favourites.remove([this]);
     }
   }
 

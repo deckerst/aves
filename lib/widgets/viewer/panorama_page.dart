@@ -1,8 +1,9 @@
-import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/panorama.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
@@ -100,7 +101,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                                       return IconButton(
                                         icon: Icon(sensorControl == SensorControl.None ? AIcons.sensorControl : AIcons.sensorControlOff),
                                         onPressed: _toggleSensor,
-                                        tooltip: sensorControl == SensorControl.None ? 'Enable sensor control' : 'Disable sensor control',
+                                        tooltip: sensorControl == SensorControl.None ? context.l10n.panoramaEnableSensorControl : context.l10n.panoramaDisableSensorControl,
                                       );
                                     }),
                               ),

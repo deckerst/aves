@@ -1,35 +1,30 @@
 name: aves
-description: Aves is a gallery and metadata explorer app, built for Android.
-
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-version: 1.3.5+41
-
-# brendan-duncan/image (as of v2.1.19):
-# - does not support TIFF with JPEG compression (issue #184)
-# - TIFF tile decoding is not public (issue #258)
-
-# video_player (as of v0.10.8+2, backed by ExoPlayer):
-# - does not support content URIs (by default, but trivial by fork)
-# - does not support AVI/XVID, AC3
-# - cannot play if only the video or audio stream is supported
-
-# fijkplayer (as of v0.7.1, backed by IJKPlayer & ffmpeg):
-# - support content URIs
-# - does not support XVID, AC3 (by default, but possible by custom build)
-# - can play if only the video or audio stream is supported
-# - crash when calling `seekTo` for some files (e.g. TED talk videos)
-
-# flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
-# - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
-# - does not support AC3 (by default, but possible by custom build)
-# - can play if only the video or audio stream is supported
+description: A visual media gallery and metadata explorer app.
+repository: https://github.com/deckerst/aves
+version: 1.3.6+42
+publish_to: none
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.10.0 <3.0.0'
+
+# TODO TLAD switch to Flutter stable when possible, currently on dev/beta because of the following mess:
+# printing >=5.0.1 depends on pdf ^3.0.1, pdf >=3.0.1 depends on crypto ^3.0.0 and archive ^3.1.0
+# but `flutter_driver` (shipped with Flutter) dependencies are too old in stable v2.0.1
+# bump `crypto` and others - 2021/02/05 https://github.com/flutter/flutter/commit/bc1cf4945841ba5874f5262b8146d52750e7c11f
+# bump `archive` from 3.0.0 to 3.1.2 - 2021/03/04 https://github.com/flutter/flutter/commit/ddcb8d7d6d3fcedc906b2f1bf26b73c018d3dc28
+
+# not null safe, as of 2021/03/13
+# `charts_flutter` - https://github.com/google/charts/issues/579
+# `decorated_icon` - https://github.com/benPesso/flutter_decorated_icon/issues/2
+# `flutter_ijkplayer` - unmaintained?
+# `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
+# `latlong` - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
+# `streams_channel` - unmaintained? - no issue/PR
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   charts_flutter:
   collection:
@@ -44,22 +39,22 @@ dependencies:
   firebase_core:
   firebase_analytics:
   firebase_crashlytics:
-  flushbar:
   flutter_highlight:
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer
     git:
       url: git://github.com/deckerst/flutter_ijkplayer.git
+  flutter_localized_locales:
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:
   flutter_svg:
-  geocoder:
+  get_it:
   github:
   google_api_availability:
   google_maps_flutter:
   intl:
-  latlong: # for flutter_map
+  latlong:
   material_design_icons_flutter:
   overlay_support:
   package_info:
@@ -82,18 +77,56 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # run on any device:
-  # % flutter drive -t test_driver/app.dart
-  # capture shaders in profile mode (real device only):
-  # % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
   flutter_driver:
     sdk: flutter
-
-  test: any
+  test:
 
 flutter:
-  uses-material-design: true
-
   assets:
     - assets/
+  generate: true
+  uses-material-design: true
+
+################################################################################
+# Localization
+
+# language files:
+# - /lib/l10n/app_{language}.arb
+# - /android/app/src/main/res/values-{language}/strings.xml
+# - /android/app/src/debug/res/values-{language}/strings.xml (optional)
+# - /android/app/src/profile/res/values-{language}/strings.xml (optional)
+
+# generate `AppLocalizations`
+# % flutter gen-l10n
+
+################################################################################
+# Test driver
+
+# run (any device):
+# % flutter drive -t test_driver/app.dart
+
+# capture shaders in profile mode (real device only):
+# % flutter drive -t test_driver/app.dart --profile --cache-sksl --write-sksl-on-exit shaders.sksl.json
+
+################################################################################
+# Package study
+
+# brendan-duncan/image (as of v2.1.19):
+# - does not support TIFF with JPEG compression (issue #184)
+# - TIFF tile decoding is not public (issue #258)
+
+# video_player (as of v0.10.8+2, backed by ExoPlayer):
+# - does not support content URIs (by default, but trivial by fork)
+# - does not support AVI/XVID, AC3
+# - cannot play if only the video or audio stream is supported
+
+# fijkplayer (as of v0.7.1, backed by IJKPlayer & ffmpeg):
+# - support content URIs
+# - does not support XVID, AC3 (by default, but possible by custom build)
+# - can play if only the video or audio stream is supported
+# - crash when calling `seekTo` for some files (e.g. TED talk videos)
+
+# flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
+# - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
+# - does not support AC3 (by default, but possible by custom build)
+# - can play if only the video or audio stream is supported

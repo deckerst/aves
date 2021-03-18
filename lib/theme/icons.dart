@@ -43,12 +43,12 @@ class AIcons {
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData print = Icons.print_outlined;
-  static const IconData refresh = Icons.refresh_outlined;
   static const IconData rename = Icons.title_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
   static const IconData search = Icons.search_outlined;
   static const IconData select = Icons.select_all_outlined;
+  static const IconData setCover = MdiIcons.imageEditOutline;
   static const IconData share = Icons.share_outlined;
   static const IconData sort = Icons.sort_outlined;
   static const IconData stats = Icons.pie_chart_outlined;

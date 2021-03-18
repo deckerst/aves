@@ -4,6 +4,7 @@ import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';

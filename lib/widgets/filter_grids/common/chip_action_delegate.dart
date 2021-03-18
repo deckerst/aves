@@ -1,24 +1,30 @@
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/covers.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
+import 'package:aves/services/services.dart';
+import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
+import 'package:aves/widgets/dialogs/cover_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class ChipActionDelegate {
   void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
@@ -31,6 +37,9 @@ class ChipActionDelegate {
         break;
       case ChipAction.hide:
         _hide(context, filter);
+        break;
+      case ChipAction.setCover:
+        _showCoverSelectionDialog(context, filter);
         break;
       case ChipAction.goToAlbumPage:
         _goTo(context, filter, AlbumListPage.routeName, (context) => AlbumListPage());
@@ -52,15 +61,15 @@ class ChipActionDelegate {
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Matching photos and videos will be hidden from your collection. You can show them again from the “Privacy” settings.\n\nAre you sure you want to hide them?'),
+          content: Text(context.l10n.hideFilterConfirmationDialogMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Hide'.toUpperCase()),
+              child: Text(context.l10n.hideButtonLabel),
             ),
           ],
         );
@@ -70,6 +79,22 @@ class ChipActionDelegate {
 
     final source = context.read<CollectionSource>();
     source.changeFilterVisibility(filter, false);
+  }
+
+  void _showCoverSelectionDialog(BuildContext context, CollectionFilter filter) async {
+    final contentId = covers.coverContentId(filter);
+    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+    final coverSelection = await showDialog<Tuple2<bool, AvesEntry>>(
+      context: context,
+      builder: (context) => CoverSelectionDialog(
+        filter: filter,
+        customEntry: customEntry,
+      ),
+    );
+    if (coverSelection == null) return;
+
+    final isCustom = coverSelection.item1;
+    await covers.set(filter, isCustom ? coverSelection.item2?.contentId : null);
   }
 
   void _goTo(
@@ -116,15 +141,15 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text('Are you sure you want to delete this album and its ${Intl.plural(count, one: 'item', other: '$count items')}?'),
+          content: Text(context.l10n.deleteAlbumConfirmationDialogMessage(count)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'.toUpperCase()),
+              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text('Delete'.toUpperCase()),
+              child: Text(context.l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -138,24 +163,35 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: ImageFileService.delete(selection),
+      opStream: imageFileService.delete(selection),
       itemCount: selectionCount,
-      onDone: (processed) {
+      onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
+        await source.removeEntries(deletedUris);
+        source.resumeMonitoring();
+
         final deletedCount = deletedUris.length;
         if (deletedCount < selectionCount) {
           final count = selectionCount - deletedCount;
-          showFeedback(context, 'Failed to delete ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
-        source.removeEntries(deletedUris);
-        source.resumeMonitoring();
       },
     );
   }
 
   Future<void> _showRenameDialog(BuildContext context, AlbumFilter filter) async {
-    final source = context.read<CollectionSource>();
     final album = filter.album;
+
+    // check whether renaming is possible given OS restrictions,
+    // before asking to input a new name
+    final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
+    final dir = VolumeRelativeDirectory.fromPath(album);
+    if (restrictedDirs.contains(dir)) {
+      await showRestrictedDirectoryDialog(context, dir);
+      return;
+    }
+
+    final source = context.read<CollectionSource>();
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameAlbumDialog(album),
@@ -169,38 +205,27 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;
 
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+
     final todoCount = todoEntries.length;
-    // while the move is ongoing, source monitoring may remove entries from itself and the favourites repo
-    // so we save favourites beforehand, and will mark the moved entries as such after the move
-    final favouriteEntries = todoEntries.where((entry) => entry.isFavourite).toSet();
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
-      opStream: ImageFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
+      opStream: imageFileService.move(todoEntries, copy: false, destinationAlbum: destinationAlbum),
       itemCount: todoCount,
       onDone: (processed) async {
         final movedOps = processed.where((e) => e.success).toSet();
+        await source.renameAlbum(album, destinationAlbum, todoEntries, movedOps);
+        source.resumeMonitoring();
+
         final movedCount = movedOps.length;
         if (movedCount < todoCount) {
           final count = todoCount - movedCount;
-          showFeedback(context, 'Failed to move ${Intl.plural(count, one: '$count item', other: '$count items')}');
+          showFeedbackWithMessenger(messenger, l10n.collectionMoveFailureFeedback(count));
         } else {
-          showFeedback(context, 'Done!');
+          showFeedbackWithMessenger(messenger, l10n.genericSuccessFeedback);
         }
-        final pinned = settings.pinnedFilters.contains(filter);
-        await source.updateAfterMove(
-          todoEntries: todoEntries,
-          favouriteEntries: favouriteEntries,
-          copy: false,
-          destinationAlbum: destinationAlbum,
-          movedOps: movedOps,
-        );
-        // repin new album after obsolete album got removed and unpinned
-        if (pinned) {
-          final newFilter = AlbumFilter(destinationAlbum, source.getUniqueAlbumName(destinationAlbum));
-          settings.pinnedFilters = settings.pinnedFilters..add(newFilter);
-        }
-        source.resumeMonitoring();
       },
     );
   }

@@ -4,8 +4,9 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/ref/xmp.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
@@ -104,9 +105,9 @@ class _XmpDirTileState extends State<XmpDirTile> with FeedbackMixin {
   }
 
   Future<void> _openEmbeddedData(String propPath, String propMimeType) async {
-    final fields = await MetadataService.extractXmpDataProp(entry, propPath, propMimeType);
+    final fields = await metadataService.extractXmpDataProp(entry, propPath, propMimeType);
     if (fields == null || !fields.containsKey('mimeType') || !fields.containsKey('uri')) {
-      showFeedback(context, 'Failed');
+      showFeedback(context, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);
       return;
     }
 

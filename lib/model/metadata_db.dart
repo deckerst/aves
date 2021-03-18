@@ -1,15 +1,85 @@
 import 'dart:io';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-final MetadataDb metadataDb = MetadataDb._private();
+abstract class MetadataDb {
+  Future<void> init();
 
-class MetadataDb {
+  Future<int> dbFileSize();
+
+  Future<void> reset();
+
+  Future<void> removeIds(Set<int> contentIds, {@required bool metadataOnly});
+
+  // entries
+
+  Future<void> clearEntries();
+
+  Future<Set<AvesEntry>> loadEntries();
+
+  Future<void> saveEntries(Iterable<AvesEntry> entries);
+
+  Future<void> updateEntryId(int oldId, AvesEntry entry);
+
+  // date taken
+
+  Future<void> clearDates();
+
+  Future<List<DateMetadata>> loadDates();
+
+  // catalog metadata
+
+  Future<void> clearMetadataEntries();
+
+  Future<List<CatalogMetadata>> loadMetadataEntries();
+
+  Future<void> saveMetadata(Iterable<CatalogMetadata> metadataEntries);
+
+  Future<void> updateMetadataId(int oldId, CatalogMetadata metadata);
+
+  // address
+
+  Future<void> clearAddresses();
+
+  Future<List<AddressDetails>> loadAddresses();
+
+  Future<void> saveAddresses(Iterable<AddressDetails> addresses);
+
+  Future<void> updateAddressId(int oldId, AddressDetails address);
+
+  // favourites
+
+  Future<void> clearFavourites();
+
+  Future<Set<FavouriteRow>> loadFavourites();
+
+  Future<void> addFavourites(Iterable<FavouriteRow> rows);
+
+  Future<void> updateFavouriteId(int oldId, FavouriteRow row);
+
+  Future<void> removeFavourites(Iterable<FavouriteRow> rows);
+
+  // covers
+
+  Future<void> clearCovers();
+
+  Future<Set<CoverRow>> loadCovers();
+
+  Future<void> addCovers(Iterable<CoverRow> rows);
+
+  Future<void> updateCoverEntryId(int oldId, CoverRow row);
+
+  Future<void> removeCovers(Iterable<CoverRow> rows);
+}
+
+class SqfliteMetadataDb implements MetadataDb {
   Future<Database> _database;
 
   Future<String> get path async => join(await getDatabasesPath(), 'metadata.db');
@@ -19,9 +89,9 @@ class MetadataDb {
   static const metadataTable = 'metadata';
   static const addressTable = 'address';
   static const favouriteTable = 'favourites';
+  static const coverTable = 'covers';
 
-  MetadataDb._private();
-
+  @override
   Future<void> init() async {
     debugPrint('$runtimeType init');
     _database = openDatabase(
@@ -68,17 +138,23 @@ class MetadataDb {
             'contentId INTEGER PRIMARY KEY'
             ', path TEXT'
             ')');
+        await db.execute('CREATE TABLE $coverTable('
+            'filter TEXT PRIMARY KEY'
+            ', contentId INTEGER'
+            ')');
       },
       onUpgrade: MetadataDbUpgrader.upgradeDb,
-      version: 3,
+      version: 4,
     );
   }
 
+  @override
   Future<int> dbFileSize() async {
     final file = File((await path));
     return await file.exists() ? file.length() : 0;
   }
 
+  @override
   Future<void> reset() async {
     debugPrint('$runtimeType reset');
     await (await _database).close();
@@ -86,7 +162,8 @@ class MetadataDb {
     await init();
   }
 
-  void removeIds(Set<int> contentIds, {@required bool updateFavourites}) async {
+  @override
+  Future<void> removeIds(Set<int> contentIds, {@required bool metadataOnly}) async {
     if (contentIds == null || contentIds.isEmpty) return;
 
     final stopwatch = Stopwatch()..start();
@@ -100,8 +177,9 @@ class MetadataDb {
       batch.delete(dateTakenTable, where: where, whereArgs: whereArgs);
       batch.delete(metadataTable, where: where, whereArgs: whereArgs);
       batch.delete(addressTable, where: where, whereArgs: whereArgs);
-      if (updateFavourites) {
+      if (!metadataOnly) {
         batch.delete(favouriteTable, where: where, whereArgs: whereArgs);
+        batch.delete(coverTable, where: where, whereArgs: whereArgs);
       }
     });
     await batch.commit(noResult: true);
@@ -110,12 +188,14 @@ class MetadataDb {
 
   // entries
 
+  @override
   Future<void> clearEntries() async {
     final db = await _database;
     final count = await db.delete(entryTable, where: '1');
     debugPrint('$runtimeType clearEntries deleted $count entries');
   }
 
+  @override
   Future<Set<AvesEntry>> loadEntries() async {
     final stopwatch = Stopwatch()..start();
     final db = await _database;
@@ -125,6 +205,7 @@ class MetadataDb {
     return entries;
   }
 
+  @override
   Future<void> saveEntries(Iterable<AvesEntry> entries) async {
     if (entries == null || entries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
@@ -135,6 +216,7 @@ class MetadataDb {
     debugPrint('$runtimeType saveEntries complete in ${stopwatch.elapsed.inMilliseconds}ms for ${entries.length} entries');
   }
 
+  @override
   Future<void> updateEntryId(int oldId, AvesEntry entry) async {
     final db = await _database;
     final batch = db.batch();
@@ -154,12 +236,14 @@ class MetadataDb {
 
   // date taken
 
+  @override
   Future<void> clearDates() async {
     final db = await _database;
     final count = await db.delete(dateTakenTable, where: '1');
     debugPrint('$runtimeType clearDates deleted $count entries');
   }
 
+  @override
   Future<List<DateMetadata>> loadDates() async {
 //    final stopwatch = Stopwatch()..start();
     final db = await _database;
@@ -171,12 +255,14 @@ class MetadataDb {
 
   // catalog metadata
 
+  @override
   Future<void> clearMetadataEntries() async {
     final db = await _database;
     final count = await db.delete(metadataTable, where: '1');
     debugPrint('$runtimeType clearMetadataEntries deleted $count entries');
   }
 
+  @override
   Future<List<CatalogMetadata>> loadMetadataEntries() async {
 //    final stopwatch = Stopwatch()..start();
     final db = await _database;
@@ -186,6 +272,7 @@ class MetadataDb {
     return metadataEntries;
   }
 
+  @override
   Future<void> saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
     if (metadataEntries == null || metadataEntries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
@@ -200,6 +287,7 @@ class MetadataDb {
     }
   }
 
+  @override
   Future<void> updateMetadataId(int oldId, CatalogMetadata metadata) async {
     final db = await _database;
     final batch = db.batch();
@@ -227,12 +315,14 @@ class MetadataDb {
 
   // address
 
+  @override
   Future<void> clearAddresses() async {
     final db = await _database;
     final count = await db.delete(addressTable, where: '1');
     debugPrint('$runtimeType clearAddresses deleted $count entries');
   }
 
+  @override
   Future<List<AddressDetails>> loadAddresses() async {
 //    final stopwatch = Stopwatch()..start();
     final db = await _database;
@@ -242,6 +332,7 @@ class MetadataDb {
     return addresses;
   }
 
+  @override
   Future<void> saveAddresses(Iterable<AddressDetails> addresses) async {
     if (addresses == null || addresses.isEmpty) return;
     final stopwatch = Stopwatch()..start();
@@ -252,6 +343,7 @@ class MetadataDb {
     debugPrint('$runtimeType saveAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${addresses.length} entries');
   }
 
+  @override
   Future<void> updateAddressId(int oldId, AddressDetails address) async {
     final db = await _database;
     final batch = db.batch();
@@ -271,31 +363,31 @@ class MetadataDb {
 
   // favourites
 
+  @override
   Future<void> clearFavourites() async {
     final db = await _database;
     final count = await db.delete(favouriteTable, where: '1');
     debugPrint('$runtimeType clearFavourites deleted $count entries');
   }
 
-  Future<List<FavouriteRow>> loadFavourites() async {
-//    final stopwatch = Stopwatch()..start();
+  @override
+  Future<Set<FavouriteRow>> loadFavourites() async {
     final db = await _database;
     final maps = await db.query(favouriteTable);
-    final favouriteRows = maps.map((map) => FavouriteRow.fromMap(map)).toList();
-//    debugPrint('$runtimeType loadFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
-    return favouriteRows;
+    final rows = maps.map((map) => FavouriteRow.fromMap(map)).toSet();
+    return rows;
   }
 
-  Future<void> addFavourites(Iterable<FavouriteRow> favouriteRows) async {
-    if (favouriteRows == null || favouriteRows.isEmpty) return;
-//    final stopwatch = Stopwatch()..start();
+  @override
+  Future<void> addFavourites(Iterable<FavouriteRow> rows) async {
+    if (rows == null || rows.isEmpty) return;
     final db = await _database;
     final batch = db.batch();
-    favouriteRows.where((row) => row != null).forEach((row) => _batchInsertFavourite(batch, row));
+    rows.where((row) => row != null).forEach((row) => _batchInsertFavourite(batch, row));
     await batch.commit(noResult: true);
-//    debugPrint('$runtimeType addFavourites complete in ${stopwatch.elapsed.inMilliseconds}ms for ${favouriteRows.length} entries');
   }
 
+  @override
   Future<void> updateFavouriteId(int oldId, FavouriteRow row) async {
     final db = await _database;
     final batch = db.batch();
@@ -313,15 +405,73 @@ class MetadataDb {
     );
   }
 
-  Future<void> removeFavourites(Iterable<FavouriteRow> favouriteRows) async {
-    if (favouriteRows == null || favouriteRows.isEmpty) return;
-    final ids = favouriteRows.where((row) => row != null).map((row) => row.contentId);
+  @override
+  Future<void> removeFavourites(Iterable<FavouriteRow> rows) async {
+    if (rows == null || rows.isEmpty) return;
+    final ids = rows.where((row) => row != null).map((row) => row.contentId);
     if (ids.isEmpty) return;
 
     final db = await _database;
     // using array in `whereArgs` and using it with `where contentId IN ?` is a pain, so we prefer `batch` instead
     final batch = db.batch();
     ids.forEach((id) => batch.delete(favouriteTable, where: 'contentId = ?', whereArgs: [id]));
+    await batch.commit(noResult: true);
+  }
+
+  // covers
+
+  @override
+  Future<void> clearCovers() async {
+    final db = await _database;
+    final count = await db.delete(coverTable, where: '1');
+    debugPrint('$runtimeType clearCovers deleted $count entries');
+  }
+
+  @override
+  Future<Set<CoverRow>> loadCovers() async {
+    final db = await _database;
+    final maps = await db.query(coverTable);
+    final rows = maps.map((map) => CoverRow.fromMap(map)).toSet();
+    return rows;
+  }
+
+  @override
+  Future<void> addCovers(Iterable<CoverRow> rows) async {
+    if (rows == null || rows.isEmpty) return;
+    final db = await _database;
+    final batch = db.batch();
+    rows.where((row) => row != null).forEach((row) => _batchInsertCover(batch, row));
+    await batch.commit(noResult: true);
+  }
+
+  @override
+  Future<void> updateCoverEntryId(int oldId, CoverRow row) async {
+    final db = await _database;
+    final batch = db.batch();
+    batch.delete(coverTable, where: 'contentId = ?', whereArgs: [oldId]);
+    _batchInsertCover(batch, row);
+    await batch.commit(noResult: true);
+  }
+
+  void _batchInsertCover(Batch batch, CoverRow row) {
+    if (row == null) return;
+    batch.insert(
+      coverTable,
+      row.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  Future<void> removeCovers(Iterable<CoverRow> rows) async {
+    if (rows == null || rows.isEmpty) return;
+    final filters = rows.where((row) => row != null).map((row) => row.filter);
+    if (filters.isEmpty) return;
+
+    final db = await _database;
+    // using array in `whereArgs` and using it with `where filter IN ?` is a pain, so we prefer `batch` instead
+    final batch = db.batch();
+    filters.forEach((filter) => batch.delete(coverTable, where: 'filter = ?', whereArgs: [filter.toJson()]));
     await batch.commit(noResult: true);
   }
 }

@@ -8,11 +8,32 @@ import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-class MetadataService {
+abstract class MetadataService {
+  // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
+  Future<Map> getAllMetadata(AvesEntry entry);
+
+  Future<CatalogMetadata> getCatalogMetadata(AvesEntry entry, {bool background = false});
+
+  Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry);
+
+  Future<MultiPageInfo> getMultiPageInfo(AvesEntry entry);
+
+  Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry);
+
+  Future<String> getContentResolverProp(AvesEntry entry, String prop);
+
+  Future<List<Uint8List>> getEmbeddedPictures(String uri);
+
+  Future<List<Uint8List>> getExifThumbnails(AvesEntry entry);
+
+  Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType);
+}
+
+class PlatformMetadataService implements MetadataService {
   static const platform = MethodChannel('deckers.thibault/aves/metadata');
 
-  // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
-  static Future<Map> getAllMetadata(AvesEntry entry) async {
+  @override
+  Future<Map> getAllMetadata(AvesEntry entry) async {
     if (entry.isSvg) return null;
 
     try {
@@ -28,7 +49,8 @@ class MetadataService {
     return {};
   }
 
-  static Future<CatalogMetadata> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
+  @override
+  Future<CatalogMetadata> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
     Future<CatalogMetadata> call() async {
@@ -65,7 +87,8 @@ class MetadataService {
         : call();
   }
 
-  static Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry) async {
+  @override
+  Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry) async {
     if (entry.isSvg) return null;
 
     try {
@@ -82,7 +105,8 @@ class MetadataService {
     return null;
   }
 
-  static Future<MultiPageInfo> getMultiPageInfo(AvesEntry entry) async {
+  @override
+  Future<MultiPageInfo> getMultiPageInfo(AvesEntry entry) async {
     try {
       final result = await platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
@@ -96,7 +120,8 @@ class MetadataService {
     return null;
   }
 
-  static Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry) async {
+  @override
+  Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry) async {
     try {
       // returns map with values for:
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
@@ -113,7 +138,8 @@ class MetadataService {
     return null;
   }
 
-  static Future<String> getContentResolverProp(AvesEntry entry, String prop) async {
+  @override
+  Future<String> getContentResolverProp(AvesEntry entry, String prop) async {
     try {
       return await platform.invokeMethod('getContentResolverProp', <String, dynamic>{
         'mimeType': entry.mimeType,
@@ -126,7 +152,8 @@ class MetadataService {
     return null;
   }
 
-  static Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
+  @override
+  Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
     try {
       final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
         'uri': uri,
@@ -138,7 +165,8 @@ class MetadataService {
     return [];
   }
 
-  static Future<List<Uint8List>> getExifThumbnails(AvesEntry entry) async {
+  @override
+  Future<List<Uint8List>> getExifThumbnails(AvesEntry entry) async {
     try {
       final result = await platform.invokeMethod('getExifThumbnails', <String, dynamic>{
         'mimeType': entry.mimeType,
@@ -152,7 +180,8 @@ class MetadataService {
     return [];
   }
 
-  static Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType) async {
+  @override
+  Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType) async {
     try {
       final result = await platform.invokeMethod('extractXmpDataProp', <String, dynamic>{
         'mimeType': entry.mimeType,

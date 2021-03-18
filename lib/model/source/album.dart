@@ -4,6 +4,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 
 mixin AlbumMixin on SourceBase {
@@ -12,8 +13,8 @@ mixin AlbumMixin on SourceBase {
   List<String> get rawAlbums => List.unmodifiable(_directories);
 
   int compareAlbumsByName(String a, String b) {
-    final ua = getUniqueAlbumName(a);
-    final ub = getUniqueAlbumName(b);
+    final ua = getUniqueAlbumName(null, a);
+    final ub = getUniqueAlbumName(null, b);
     final c = compareAsciiUpperCase(ua, ub);
     if (c != 0) return c;
     final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
@@ -23,7 +24,7 @@ mixin AlbumMixin on SourceBase {
 
   void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
 
-  String getUniqueAlbumName(String dirPath) {
+  String getUniqueAlbumName(BuildContext context, String dirPath) {
     String unique(String dirPath, [bool Function(String) test]) {
       final otherAlbums = _directories.where(test ?? (_) => true).where((item) => item != dirPath);
       final parts = dirPath.split(separator);
@@ -51,7 +52,7 @@ mixin AlbumMixin on SourceBase {
       if (volume.isPrimary) {
         return uniqueNameInVolume;
       } else {
-        return '$uniqueNameInVolume (${volume.description})';
+        return '$uniqueNameInVolume (${volume.getDescription(context)})';
       }
     }
   }
@@ -99,7 +100,7 @@ mixin AlbumMixin on SourceBase {
       invalidateAlbumFilterSummary(directories: emptyAlbums);
 
       final pinnedFilters = settings.pinnedFilters;
-      emptyAlbums.forEach((album) => pinnedFilters.remove(AlbumFilter(album, getUniqueAlbumName(album))));
+      emptyAlbums.forEach((album) => pinnedFilters.removeWhere((filter) => filter is AlbumFilter && filter.album == album));
       settings.pinnedFilters = pinnedFilters;
     }
   }

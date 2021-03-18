@@ -2,9 +2,10 @@ import 'dart:ui' as ui;
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/common/tile_extent_manager.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 // metadata to identify entry from RenderObject hit test during collection scaling
 class ScalerMetadata<T> {
@@ -14,10 +15,8 @@ class ScalerMetadata<T> {
 }
 
 class GridScaleGestureDetector<T> extends StatefulWidget {
-  final TileExtentManager tileExtentManager;
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
-  final Size viewportSize;
   final Widget Function(Offset center, double extent, Widget child) gridBuilder;
   final Widget Function(T item, double extent) scaledBuilder;
   final Rect Function(BuildContext context, T item) getScaledItemTileRect;
@@ -25,10 +24,8 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final Widget child;
 
   const GridScaleGestureDetector({
-    @required this.tileExtentManager,
     @required this.scrollableKey,
     @required this.appBarHeightNotifier,
-    @required this.viewportSize,
     this.gridBuilder,
     @required this.scaledBuilder,
     @required this.getScaledItemTileRect,
@@ -46,10 +43,6 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
   ValueNotifier<double> _scaledExtentNotifier;
   OverlayEntry _overlayEntry;
   ScalerMetadata<T> _metadata;
-
-  TileExtentManager get tileExtentManager => widget.tileExtentManager;
-
-  Size get viewportSize => widget.viewportSize;
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +69,9 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
 
-        _extentMin = tileExtentManager.getEffectiveExtentMin(viewportSize);
-        _extentMax = tileExtentManager.getEffectiveExtentMax(viewportSize);
+        final tileExtentController = context.read<TileExtentController>();
+        _extentMin = tileExtentController.effectiveExtentMin;
+        _extentMax = tileExtentController.effectiveExtentMax;
 
         final halfExtent = _startExtent / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
@@ -105,12 +99,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         }
 
         _applyingScale = true;
-        final oldExtent = tileExtentManager.extentNotifier.value;
+        final tileExtentController = context.read<TileExtentController>();
+        final oldExtent = tileExtentController.extentNotifier.value;
         // sanitize and update grid layout if necessary
-        final newExtent = tileExtentManager.applyTileExtent(
-          viewportSize: widget.viewportSize,
-          userPreferredExtent: _scaledExtentNotifier.value,
-        );
+        final newExtent = tileExtentController.setUserPreferredExtent(_scaledExtentNotifier.value);
         _scaledExtentNotifier = null;
         if (newExtent == oldExtent) {
           _applyingScale = false;
@@ -195,59 +187,61 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
-      child: IgnorePointer(
-        child: AnimatedContainer(
-          decoration: _init
-              ? BoxDecoration(
-                  gradient: RadialGradient(
-                    center: FractionalOffset.fromOffsetAndSize(center, MediaQuery.of(context).size),
-                    radius: 1,
-                    colors: [
-                      Colors.black,
-                      Colors.black54,
-                    ],
-                  ),
-                )
-              : BoxDecoration(
-                  // provide dummy gradient to lerp to the other one during animation
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.transparent,
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-          duration: Durations.collectionScalingBackgroundAnimation,
-          child: ValueListenableBuilder<double>(
-            valueListenable: widget.scaledExtentNotifier,
-            builder: (context, extent, child) {
-              // keep scaled thumbnail within the screen
-              final xMin = MediaQuery.of(context).padding.left;
-              final xMax = xMin + gridWidth;
-              var dx = .0;
-              if (center.dx - extent / 2 < xMin) {
-                dx = xMin - (center.dx - extent / 2);
-              } else if (center.dx + extent / 2 > xMax) {
-                dx = xMax - (center.dx + extent / 2);
-              }
-              final clampedCenter = center.translate(dx, 0);
-
-              var child = widget.builder(extent);
-              child = Stack(
-                children: [
-                  Positioned(
-                    left: clampedCenter.dx - extent / 2,
-                    top: clampedCenter.dy - extent / 2,
-                    child: DefaultTextStyle(
-                      style: TextStyle(),
-                      child: child,
+      child: Builder(
+        builder: (context) => IgnorePointer(
+          child: AnimatedContainer(
+            decoration: _init
+                ? BoxDecoration(
+                    gradient: RadialGradient(
+                      center: FractionalOffset.fromOffsetAndSize(center, context.select<MediaQueryData, Size>((mq) => mq.size)),
+                      radius: 1,
+                      colors: [
+                        Colors.black,
+                        Colors.black54,
+                      ],
+                    ),
+                  )
+                : BoxDecoration(
+                    // provide dummy gradient to lerp to the other one during animation
+                    gradient: RadialGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.transparent,
+                      ],
                     ),
                   ),
-                ],
-              );
-              child = widget.gridBuilder?.call(clampedCenter, extent, child) ?? child;
-              return child;
-            },
+            duration: Durations.collectionScalingBackgroundAnimation,
+            child: ValueListenableBuilder<double>(
+              valueListenable: widget.scaledExtentNotifier,
+              builder: (context, extent, child) {
+                // keep scaled thumbnail within the screen
+                final xMin = context.select<MediaQueryData, double>((mq) => mq.padding.left);
+                final xMax = xMin + gridWidth;
+                var dx = .0;
+                if (center.dx - extent / 2 < xMin) {
+                  dx = xMin - (center.dx - extent / 2);
+                } else if (center.dx + extent / 2 > xMax) {
+                  dx = xMax - (center.dx + extent / 2);
+                }
+                final clampedCenter = center.translate(dx, 0);
+
+                var child = widget.builder(extent);
+                child = Stack(
+                  children: [
+                    Positioned(
+                      left: clampedCenter.dx - extent / 2,
+                      top: clampedCenter.dy - extent / 2,
+                      child: DefaultTextStyle(
+                        style: TextStyle(),
+                        child: child,
+                      ),
+                    ),
+                  ],
+                );
+                child = widget.gridBuilder?.call(clampedCenter, extent, child) ?? child;
+                return child;
+              },
+            ),
           ),
         ),
       ),

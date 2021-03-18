@@ -5,6 +5,7 @@ import 'package:aves/services/android_app_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
@@ -112,7 +113,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         child: IconButton(
                           icon: Icon(AIcons.openOutside),
                           onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
-                          tooltip: 'Open',
+                          tooltip: context.l10n.viewerOpenTooltip,
                         ),
                       ),
                     ]
@@ -129,7 +130,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                             progress: _playPauseAnimation,
                           ),
                           onPressed: _playPause,
-                          tooltip: isPlaying ? 'Pause' : 'Play',
+                          tooltip: isPlaying ? context.l10n.viewerPauseTooltip : context.l10n.viewerPlayTooltip,
                         ),
                       ),
                     ],

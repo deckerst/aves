@@ -1,4 +1,4 @@
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
@@ -7,6 +7,7 @@ import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class InteractiveThumbnail extends StatelessWidget {
   final CollectionLens collection;
@@ -27,14 +28,23 @@ class InteractiveThumbnail extends StatelessWidget {
     return GestureDetector(
       key: ValueKey(entry.uri),
       onTap: () {
-        if (AvesApp.mode == AppMode.main) {
-          if (collection.isBrowsing) {
-            _goToViewer(context);
-          } else if (collection.isSelecting) {
-            collection.toggleSelection(entry);
-          }
-        } else if (AvesApp.mode == AppMode.pick) {
-          ViewerService.pick(entry.uri);
+        final appMode = context.read<ValueNotifier<AppMode>>().value;
+        switch (appMode) {
+          case AppMode.main:
+            if (collection.isBrowsing) {
+              _goToViewer(context);
+            } else if (collection.isSelecting) {
+              collection.toggleSelection(entry);
+            }
+            break;
+          case AppMode.pickExternal:
+            ViewerService.pick(entry.uri);
+            break;
+          case AppMode.pickInternal:
+            Navigator.pop(context, entry);
+            break;
+          case AppMode.view:
+            break;
         }
       },
       child: MetaData(

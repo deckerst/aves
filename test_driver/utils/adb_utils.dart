@@ -19,7 +19,7 @@ String get adb {
 const List<String> adbDeviceParam = []; // '[]', '[-d]', '[-e]', or '[-s, <serial_number>]'
 
 Future<void> runAdb(List<String> args) async {
-  await Process.runSync(adb, [...adbDeviceParam, ...args]);
+  await Process.run(adb, [...adbDeviceParam, ...args]);
 }
 
 Future<void> createDirectory(String dir) async {

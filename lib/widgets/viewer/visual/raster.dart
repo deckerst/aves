@@ -4,6 +4,7 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/entry_background.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';

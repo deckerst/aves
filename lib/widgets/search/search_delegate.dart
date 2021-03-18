@@ -15,11 +15,13 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/search/expandable_filter_row.dart';
 import 'package:aves/widgets/search/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class CollectionSearchDelegate {
   final CollectionSource source;
@@ -27,6 +29,16 @@ class CollectionSearchDelegate {
   final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
 
   static const searchHistoryCount = 10;
+  static final typeFilters = [
+    FavouriteFilter(),
+    MimeFilter(MimeTypes.anyImage),
+    MimeFilter(MimeTypes.anyVideo),
+    MimeFilter(MimeTypes.svg),
+    TypeFilter(TypeFilter.animated),
+    TypeFilter(TypeFilter.panorama),
+    TypeFilter(TypeFilter.sphericalVideo),
+    TypeFilter(TypeFilter.geotiff),
+  ];
 
   CollectionSearchDelegate({@required this.source, this.parentCollection});
 
@@ -58,7 +70,7 @@ class CollectionSearchDelegate {
             query = '';
             showSuggestions(context);
           },
-          tooltip: 'Clear',
+          tooltip: context.l10n.clearTooltip,
         ),
     ];
   }
@@ -71,84 +83,82 @@ class CollectionSearchDelegate {
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             final queryFilter = _buildQueryFilter(false);
-            final history = settings.searchHistory;
-            return ListView(
-              padding: EdgeInsets.only(top: 8),
-              children: [
-                _buildFilterRow(
-                  context: context,
-                  filters: [
-                    queryFilter,
-                    FavouriteFilter(),
-                    MimeFilter(MimeTypes.anyImage),
-                    MimeFilter(MimeTypes.anyVideo),
-                    MimeFilter(MimeTypes.svg),
-                    TypeFilter(TypeFilter.animated),
-                    TypeFilter(TypeFilter.panorama),
-                    TypeFilter(TypeFilter.sphericalVideo),
-                    TypeFilter(TypeFilter.geotiff),
-                  ].where((f) => f != null && containQuery(f.label)).toList(),
-                  // usually perform hero animation only on tapped chips,
-                  // but we also need to animate the query chip when it is selected by submitting the search query
-                  heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
-                ),
-                if (upQuery.isEmpty && history.isNotEmpty)
-                  _buildFilterRow(
-                    context: context,
-                    title: 'Recent',
-                    filters: history,
-                  ),
-                StreamBuilder(
-                    stream: source.eventBus.on<AlbumsChangedEvent>(),
-                    builder: (context, snapshot) {
-                      // filter twice: full path, and then unique name
-                      final filters = source.rawAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(s))).where((f) => containQuery(f.uniqueName)).toList()..sort();
-                      return _buildFilterRow(
+            return Selector<Settings, Set<CollectionFilter>>(
+                selector: (context, s) => s.hiddenFilters,
+                builder: (context, hiddenFilters, child) {
+                  bool notHidden(CollectionFilter filter) => !hiddenFilters.contains(filter);
+                  final history = settings.searchHistory.where(notHidden).toList();
+                  return ListView(
+                    padding: EdgeInsets.only(top: 8),
+                    children: [
+                      _buildFilterRow(
                         context: context,
-                        title: 'Albums',
-                        filters: filters,
-                      );
-                    }),
-                StreamBuilder(
-                    stream: source.eventBus.on<CountriesChangedEvent>(),
-                    builder: (context, snapshot) {
-                      final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
-                      return _buildFilterRow(
-                        context: context,
-                        title: 'Countries',
-                        filters: filters,
-                      );
-                    }),
-                StreamBuilder(
-                    stream: source.eventBus.on<PlacesChangedEvent>(),
-                    builder: (context, snapshot) {
-                      final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
-                      final noFilter = LocationFilter(LocationLevel.place, '');
-                      return _buildFilterRow(
-                        context: context,
-                        title: 'Places',
                         filters: [
-                          if (containQuery(LocationFilter.emptyLabel)) noFilter,
-                          ...filters,
-                        ],
-                      );
-                    }),
-                StreamBuilder(
-                    stream: source.eventBus.on<TagsChangedEvent>(),
-                    builder: (context, snapshot) {
-                      final filters = source.sortedTags.where(containQuery).map((s) => TagFilter(s));
-                      final noFilter = TagFilter('');
-                      return _buildFilterRow(
-                        context: context,
-                        title: 'Tags',
-                        filters: [
-                          if (containQuery(TagFilter.emptyLabel)) noFilter,
-                          ...filters,
-                        ],
-                      );
-                    }),
-              ],
-            );
+                          queryFilter,
+                          ...typeFilters.where(notHidden),
+                        ].where((f) => f != null && containQuery(f.getLabel(context))).toList(),
+                        // usually perform hero animation only on tapped chips,
+                        // but we also need to animate the query chip when it is selected by submitting the search query
+                        heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
+                      ),
+                      if (upQuery.isEmpty && history.isNotEmpty)
+                        _buildFilterRow(
+                          context: context,
+                          title: context.l10n.searchSectionRecent,
+                          filters: history,
+                        ),
+                      StreamBuilder(
+                          stream: source.eventBus.on<AlbumsChangedEvent>(),
+                          builder: (context, snapshot) {
+                            // filter twice: full path, and then unique name
+                            final filters = source.rawAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(context, s))).where((f) => containQuery(f.uniqueName)).toList()..sort();
+                            return _buildFilterRow(
+                              context: context,
+                              title: context.l10n.searchSectionAlbums,
+                              filters: filters,
+                            );
+                          }),
+                      StreamBuilder(
+                          stream: source.eventBus.on<CountriesChangedEvent>(),
+                          builder: (context, snapshot) {
+                            final filters = source.sortedCountries.where(containQuery).map((s) => LocationFilter(LocationLevel.country, s)).toList();
+                            return _buildFilterRow(
+                              context: context,
+                              title: context.l10n.searchSectionCountries,
+                              filters: filters,
+                            );
+                          }),
+                      StreamBuilder(
+                          stream: source.eventBus.on<PlacesChangedEvent>(),
+                          builder: (context, snapshot) {
+                            final filters = source.sortedPlaces.where(containQuery).map((s) => LocationFilter(LocationLevel.place, s));
+                            final noFilter = LocationFilter(LocationLevel.place, '');
+                            return _buildFilterRow(
+                              context: context,
+                              title: context.l10n.searchSectionPlaces,
+                              filters: [
+                                if (containQuery(noFilter.getLabel(context))) noFilter,
+                                ...filters,
+                              ],
+                            );
+                          }),
+                      StreamBuilder(
+                          stream: source.eventBus.on<TagsChangedEvent>(),
+                          builder: (context, snapshot) {
+                            final filters = source.sortedTags.where(containQuery).map((s) => TagFilter(s));
+                            final noFilter = TagFilter('');
+                            return _buildFilterRow(
+                              context: context,
+                              title: context.l10n.searchSectionTags,
+                              filters: [
+                                if (containQuery(noFilter.getLabel(context))) noFilter,
+                                ...filters,
+                              ],
+                            );
+                          }),
+                    ],
+                  );
+                });
           }),
     );
   }

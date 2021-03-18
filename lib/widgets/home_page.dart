@@ -1,4 +1,4 @@
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/home_page.dart';
@@ -6,7 +6,7 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     await androidFileUtils.init();
     unawaited(androidFileUtils.initAppNames());
 
-    AvesApp.mode = AppMode.main;
+    var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
     if (intentData?.isNotEmpty == true) {
       final action = intentData['action'];
@@ -77,11 +77,11 @@ class _HomePageState extends State<HomePage> {
             mimeType: intentData['mimeType'],
           );
           if (_viewerEntry != null) {
-            AvesApp.mode = AppMode.view;
+            appMode = AppMode.view;
           }
           break;
         case 'pick':
-          AvesApp.mode = AppMode.pick;
+          appMode = AppMode.pickExternal;
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String pickMimeTypes = intentData['mimeType'];
@@ -97,19 +97,20 @@ class _HomePageState extends State<HomePage> {
           _shortcutFilters = extraFilters != null ? (extraFilters as List).cast<String>() : null;
       }
     }
-    unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', AvesApp.mode.toString()));
+    context.read<ValueNotifier<AppMode>>().value = appMode;
+    unawaited(FirebaseCrashlytics.instance.setCustomKey('app_mode', appMode.toString()));
 
-    if (AvesApp.mode != AppMode.view) {
+    if (appMode != AppMode.view) {
       final source = context.read<CollectionSource>();
       await source.init();
       unawaited(source.refresh());
     }
 
-    unawaited(Navigator.pushReplacement(context, _getRedirectRoute()));
+    unawaited(Navigator.pushReplacement(context, _getRedirectRoute(appMode)));
   }
 
   Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
-    final entry = await ImageFileService.getEntry(uri, mimeType);
+    final entry = await imageFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
       await entry.catalog();
@@ -117,8 +118,8 @@ class _HomePageState extends State<HomePage> {
     return entry;
   }
 
-  Route _getRedirectRoute() {
-    if (AvesApp.mode == AppMode.view) {
+  Route _getRedirectRoute(AppMode appMode) {
+    if (appMode == AppMode.view) {
       return DirectMaterialPageRoute(
         settings: RouteSettings(name: EntryViewerPage.routeName),
         builder: (_) => EntryViewerPage(
@@ -129,7 +130,7 @@ class _HomePageState extends State<HomePage> {
 
     String routeName;
     Iterable<CollectionFilter> filters;
-    if (AvesApp.mode == AppMode.pick) {
+    if (appMode == AppMode.pickExternal) {
       routeName = CollectionPage.routeName;
     } else {
       routeName = _shortcutRouteName ?? settings.homePage.routeName;

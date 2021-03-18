@@ -1,4 +1,5 @@
 import 'package:aves/widgets/common/aves_highlight.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/darcula.dart';
 
@@ -28,7 +29,7 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Source'),
+        title: Text(context.l10n.sourceViewerPageTitle),
       ),
       body: SafeArea(
         child: FutureBuilder<String>(

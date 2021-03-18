@@ -1,6 +1,6 @@
 import 'dart:ui' as ui show Codec;
 
-import 'package:aves/services/image_file_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -33,7 +33,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     final mimeType = key.mimeType;
     final pageId = key.pageId;
     try {
-      final bytes = await ImageFileService.getThumbnail(
+      final bytes = await imageFileService.getThumbnail(
         uri: uri,
         mimeType: mimeType,
         pageId: pageId,
@@ -55,11 +55,11 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
 
   @override
   void resolveStreamForKey(ImageConfiguration configuration, ImageStream stream, ThumbnailProviderKey key, ImageErrorListener handleError) {
-    ImageFileService.resumeLoading(key);
+    imageFileService.resumeLoading(key);
     super.resolveStreamForKey(configuration, stream, key, handleError);
   }
 
-  void pause() => ImageFileService.cancelThumbnail(key);
+  void pause() => imageFileService.cancelThumbnail(key);
 }
 
 class ThumbnailProviderKey {

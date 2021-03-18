@@ -1,5 +1,7 @@
+import 'dart:ui';
+
 import 'package:aves/main.dart' as app;
-import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:flutter_driver/driver_extension.dart';
@@ -22,6 +24,7 @@ Future<void> configureAndLaunch() async {
   await settings.init();
   settings.keepScreenOn = KeepScreenOn.always;
   settings.hasAcceptedTerms = false;
+  settings.locale = Locale('en');
 
   app.main();
 }

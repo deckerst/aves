@@ -50,7 +50,7 @@ class QueryFilter extends CollectionFilter {
   bool get isUnique => false;
 
   @override
-  String get label => '$query';
+  String get universalLabel => query;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => Icon(AIcons.text, size: size);
@@ -59,7 +59,10 @@ class QueryFilter extends CollectionFilter {
   Future<Color> color(BuildContext context) => colorful ? super.color(context) : SynchronousFuture(AvesFilterChip.defaultOutlineColor);
 
   @override
-  String get typeKey => type;
+  String get category => type;
+
+  @override
+  String get key => '$type-$query';
 
   @override
   bool operator ==(Object other) {
