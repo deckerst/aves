@@ -18,6 +18,7 @@ import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.Rational
+import com.drew.metadata.Tag
 import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
@@ -125,17 +126,29 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[dirName] = dirMap
 
                         // tags
+                        val tags = dir.tags
                         if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
-                            dirMap.putAll(dir.tags.map {
+                            fun tagMapper(it: Tag): Pair<String, String> {
                                 val name = if (it.hasTagName()) {
                                     it.tagName
                                 } else {
                                     TiffTags.getTagName(it.tagType) ?: it.tagName
                                 }
-                                Pair(name, it.description)
-                            })
+                                return Pair(name, it.description)
+                            }
+
+                            if (dir is ExifIFD0Directory && dir.isGeoTiff()) {
+                                // split GeoTIFF tags in their own directory
+                                val byGeoTiff = tags.groupBy { TiffTags.isGeoTiffTag(it.tagType) }
+                                metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
+                                    byGeoTiff[true]?.map { tagMapper(it) }?.let { putAll(it) }
+                                }
+                                byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
+                            } else {
+                                dirMap.putAll(tags.map { tagMapper(it) })
+                            }
                         } else {
-                            dirMap.putAll(dir.tags.map { Pair(it.tagName, it.description) })
+                            dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
                         }
                         if (dir is XmpDirectory) {
                             try {
