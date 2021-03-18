@@ -5,7 +5,11 @@ buildscript {
         google()
         mavenCentral()
         // TODO TLAD remove jcenter (migrating to mavenCentral) when this is fixed: https://youtrack.jetbrains.com/issue/IDEA-261387
-        jcenter()
+        jcenter {
+            content {
+                includeModule("org.jetbrains.trove4j", "trove4j")
+            }
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
@@ -20,7 +24,11 @@ allprojects {
         google()
         mavenCentral()
         // TODO TLAD remove jcenter (migrating to mavenCentral) when this is fixed: https://youtrack.jetbrains.com/issue/IDEA-261387
-        jcenter()
+        jcenter {
+            content {
+                includeModule("org.jetbrains.trove4j", "trove4j")
+            }
+        }
     }
 //    gradle.projectsEvaluated {
 //        tasks.withType(JavaCompile) {
