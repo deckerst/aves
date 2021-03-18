@@ -1,21 +1,23 @@
-// browse providers at https://leaflet-extras.github.io/leaflet-providers/preview/
-enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenToner, stamenWatercolor }
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:flutter/widgets.dart';
+
+import 'enums.dart';
 
 extension ExtraEntryMapStyle on EntryMapStyle {
-  String get name {
+  String getName(BuildContext context) {
     switch (this) {
       case EntryMapStyle.googleNormal:
-        return 'Google Maps';
+        return context.l10n.mapStyleGoogleNormal;
       case EntryMapStyle.googleHybrid:
-        return 'Google Maps (Hybrid)';
+        return context.l10n.mapStyleGoogleHybrid;
       case EntryMapStyle.googleTerrain:
-        return 'Google Maps (Terrain)';
+        return context.l10n.mapStyleGoogleTerrain;
       case EntryMapStyle.osmHot:
-        return 'Humanitarian OSM';
+        return context.l10n.mapStyleOsmHot;
       case EntryMapStyle.stamenToner:
-        return 'Stamen Toner';
+        return context.l10n.mapStyleStamenToner;
       case EntryMapStyle.stamenWatercolor:
-        return 'Stamen Watercolor';
+        return context.l10n.mapStyleStamenWatercolor;
       default:
         return toString();
     }

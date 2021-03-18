@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.3.5:
-- support Android KitKat, Lollipop & Marshmallow
-- quick country reverse geocoding without Play Services
-- long press menu on any filter to hide, navigate
+v1.3.6:
+- Korean translation
+- cover selection for albums, countries & tags
+- TIFF decoding fixes
 Full changelog available on Github

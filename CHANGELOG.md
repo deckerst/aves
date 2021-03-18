@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.3.6] - 2021-03-18
+### Added
+- Korean translation
+- cover selection for albums / countries / tags
+
+### Changed
+- Upgraded Flutter to dev v2.1.0-12.1.pre
+
+### Fixed
+- various TIFF decoding fixes
+
 ## [v1.3.5] - 2021-02-26
 ### Added
 - support Android KitKat, Lollipop & Marshmallow (API 19 ~ 23)

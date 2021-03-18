@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: subosito/flutter-action@v1
         with:
-          channel: stable
-          flutter-version: '1.22.6'
+          channel: dev
+          flutter-version: '2.1.0-12.1.pre'
 
       - name: Clone the repository.
         uses: actions/checkout@v2

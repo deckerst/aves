@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:aves/geo/countries.dart';
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/metadata.dart';
-import 'package:aves/model/metadata_db.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/services.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
@@ -81,14 +81,14 @@ mixin LocationMixin on SourceBase {
     // -  652 calls (22%) when approximating to 2 decimal places (~1km - town or village)
     // cf https://en.wikipedia.org/wiki/Decimal_degrees#Precision
     final latLngFactor = pow(10, 2);
-    Tuple2 approximateLatLng(AvesEntry entry) {
+    Tuple2<int, int> approximateLatLng(AvesEntry entry) {
       final lat = entry.catalogMetadata?.latitude;
       final lng = entry.catalogMetadata?.longitude;
       if (lat == null || lng == null) return null;
-      return Tuple2((lat * latLngFactor).round(), (lng * latLngFactor).round());
+      return Tuple2<int, int>((lat * latLngFactor).round(), (lng * latLngFactor).round());
     }
 
-    final knownLocations = <Tuple2, AddressDetails>{};
+    final knownLocations = <Tuple2<int, int>, AddressDetails>{};
     byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails));
 
     stateNotifier.value = SourceState.locating;
@@ -138,7 +138,7 @@ mixin LocationMixin on SourceBase {
     }
 
     // the same country code could be found with different country names
-    // e.g. if the locale changed between geolocating calls
+    // e.g. if the locale changed between geocoding calls
     // so we merge countries by code, keeping only one name for each code
     final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
     final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);

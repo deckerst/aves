@@ -6,6 +6,7 @@ import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 
 class ImageMarker extends StatelessWidget {
   final AvesEntry entry;
@@ -153,7 +154,7 @@ class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
   @override
   Widget build(BuildContext context) {
     return Transform.translate(
-      offset: Offset(MediaQuery.of(context).size.width, 0),
+      offset: Offset(context.select<MediaQueryData, double>((mq) => mq.size.width), 0),
       child: Material(
         type: MaterialType.transparency,
         child: Stack(
@@ -171,7 +172,7 @@ class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
   }
 
   Future<List<Uint8List>> _getBitmaps(BuildContext context) async {
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    final pixelRatio = context.read<MediaQueryData>().devicePixelRatio;
     return Future.wait(_globalKeys.map((key) async {
       RenderRepaintBoundary boundary = key.currentContext.findRenderObject();
       final image = await boundary.toImage(pixelRatio: pixelRatio);

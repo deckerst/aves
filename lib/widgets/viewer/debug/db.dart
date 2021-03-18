@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata.dart';
-import 'package:aves/model/metadata_db.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 

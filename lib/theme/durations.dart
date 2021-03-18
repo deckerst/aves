@@ -3,7 +3,6 @@ import 'package:flutter/scheduler.dart';
 class Durations {
   // common animations
   static const iconAnimation = Duration(milliseconds: 300);
-  static const opToastAnimation = Duration(milliseconds: 600);
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
   static const popupMenuAnimation = Duration(milliseconds: 300); // ref _PopupMenuRoute._kMenuDuration
@@ -43,7 +42,7 @@ class Durations {
   static const xmpStructArrayCardTransition = Duration(milliseconds: 300);
 
   // delays & refresh intervals
-  static const opToastDisplay = Duration(seconds: 2);
+  static const opToastDisplay = Duration(seconds: 3);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScalingCompleteNotificationDelay = Duration(milliseconds: 300);
   static const highlightScrollInitDelay = Duration(milliseconds: 800);

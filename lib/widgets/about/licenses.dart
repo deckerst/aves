@@ -3,6 +3,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +16,15 @@ class Licenses extends StatefulWidget {
 class _LicensesState extends State<Licenses> {
   final ValueNotifier<String> _expandedNotifier = ValueNotifier(null);
   LicenseSort _sort = LicenseSort.name;
-  List<Dependency> _platform, _flutter;
+  List<Dependency> _platform, _flutterPlugins, _flutterPackages, _dartPackages;
 
   @override
   void initState() {
     super.initState();
-    _platform = List.from(Constants.androidDependencies);
-    _flutter = List.from(Constants.flutterPackages);
+    _platform = List<Dependency>.from(Constants.androidDependencies);
+    _flutterPlugins = List<Dependency>.from(Constants.flutterPlugins);
+    _flutterPackages = List<Dependency>.from(Constants.flutterPackages);
+    _dartPackages = List<Dependency>.from(Constants.dartPackages);
     _sortPackages();
   }
 
@@ -38,7 +41,9 @@ class _LicensesState extends State<Licenses> {
     }
 
     _platform.sort(compare);
-    _flutter.sort(compare);
+    _flutterPlugins.sort(compare);
+    _flutterPackages.sort(compare);
+    _dartPackages.sort(compare);
   }
 
   @override
@@ -51,16 +56,28 @@ class _LicensesState extends State<Licenses> {
             _buildHeader(),
             SizedBox(height: 16),
             AvesExpansionTile(
-              title: 'Android Libraries',
+              title: context.l10n.aboutLicensesAndroidLibraries,
               color: BrandColors.android,
               expandedNotifier: _expandedNotifier,
               children: _platform.map((package) => LicenseRow(package)).toList(),
             ),
             AvesExpansionTile(
-              title: 'Flutter Packages',
+              title: context.l10n.aboutLicensesFlutterPlugins,
               color: BrandColors.flutter,
               expandedNotifier: _expandedNotifier,
-              children: _flutter.map((package) => LicenseRow(package)).toList(),
+              children: _flutterPlugins.map((package) => LicenseRow(package)).toList(),
+            ),
+            AvesExpansionTile(
+              title: context.l10n.aboutLicensesFlutterPackages,
+              color: BrandColors.flutter,
+              expandedNotifier: _expandedNotifier,
+              children: _flutterPackages.map((package) => LicenseRow(package)).toList(),
+            ),
+            AvesExpansionTile(
+              title: context.l10n.aboutLicensesDartPackages,
+              color: BrandColors.flutter,
+              expandedNotifier: _expandedNotifier,
+              children: _dartPackages.map((package) => LicenseRow(package)).toList(),
             ),
             Center(
               child: TextButton(
@@ -76,7 +93,7 @@ class _LicensesState extends State<Licenses> {
                     ),
                   ),
                 ),
-                child: Text('Show All Licenses'.toUpperCase()),
+                child: Text(context.l10n.aboutLicensesShowAllButtonLabel),
               ),
             ),
           ],
@@ -94,17 +111,17 @@ class _LicensesState extends State<Licenses> {
           child: Row(
             children: [
               Expanded(
-                child: Text('Open-Source Licenses', style: Constants.titleTextStyle),
+                child: Text(context.l10n.aboutLicenses, style: Constants.titleTextStyle),
               ),
               PopupMenuButton<LicenseSort>(
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: LicenseSort.name,
-                    child: MenuRow(text: 'Sort by name', checked: _sort == LicenseSort.name),
+                    child: MenuRow(text: context.l10n.aboutLicensesSortByName, checked: _sort == LicenseSort.name),
                   ),
                   PopupMenuItem(
                     value: LicenseSort.license,
-                    child: MenuRow(text: 'Sort by license', checked: _sort == LicenseSort.license),
+                    child: MenuRow(text: context.l10n.aboutLicensesSortByLicense, checked: _sort == LicenseSort.license),
                   ),
                 ],
                 onSelected: (newSort) {
@@ -112,7 +129,7 @@ class _LicensesState extends State<Licenses> {
                   _sortPackages();
                   setState(() {});
                 },
-                tooltip: 'Sort',
+                tooltip: context.l10n.aboutLicensesSortTooltip,
                 icon: Icon(AIcons.sort),
               ),
             ],
@@ -121,7 +138,7 @@ class _LicensesState extends State<Licenses> {
         SizedBox(height: 8),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Text('The following sets forth attribution notices for third party software that may be contained in this application.'),
+          child: Text(context.l10n.aboutLicensesBanner),
         ),
       ],
     );

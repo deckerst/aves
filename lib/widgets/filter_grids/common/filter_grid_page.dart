@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -14,8 +15,9 @@ import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/common/providers/tile_extent_controller_provider.dart';
 import 'package:aves/widgets/common/scaling.dart';
-import 'package:aves/widgets/common/tile_extent_manager.dart';
+import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
@@ -25,39 +27,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
+typedef QueryTest<T extends CollectionFilter> = Iterable<FilterGridItem<T>> Function(Iterable<FilterGridItem<T>> filters, String query);
+
 class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
+  final String settingsRouteKey;
   final Widget appBar;
+  final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
+  final QueryTest<T> applyQuery;
   final Widget Function() emptyBuilder;
-  final String settingsRouteKey;
-  final Iterable<FilterGridItem<T>> Function(Iterable<FilterGridItem<T>> filters, String query) applyQuery;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
 
-  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final ValueNotifier<double> _tileExtentNotifier = ValueNotifier(0);
-
-  static const columnCountDefault = 2;
-  static const extentMin = 60.0;
-  static const spacing = 8.0;
-
-  FilterGridPage({
+  const FilterGridPage({
     Key key,
+    this.settingsRouteKey,
     @required this.appBar,
+    this.appBarHeight = kToolbarHeight,
     @required this.filterSections,
-    this.showHeaders = false,
+    @required this.showHeaders,
     @required this.queryNotifier,
     this.applyQuery,
     @required this.emptyBuilder,
-    this.settingsRouteKey,
-    double appBarHeight = kToolbarHeight,
     @required this.onTap,
     this.onLongPress,
-  }) : super(key: key) {
-    _appBarHeightNotifier.value = appBarHeight;
-  }
+  }) : super(key: key);
 
   static const Color detailColor = Color(0xFFE0E0E0);
 
@@ -69,76 +65,20 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
           child: GestureAreaProtectorStack(
             child: SafeArea(
               bottom: false,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final viewportSize = constraints.biggest;
-                  assert(viewportSize.isFinite, 'Cannot layout collection with unbounded constraints.');
-                  if (viewportSize.isEmpty) return SizedBox.shrink();
-
-                  final tileExtentManager = TileExtentManager(
-                    settingsRouteKey: settingsRouteKey ?? context.currentRouteName,
-                    extentNotifier: _tileExtentNotifier,
-                    columnCountDefault: columnCountDefault,
-                    extentMin: extentMin,
-                    spacing: spacing,
-                  )..applyTileExtent(viewportSize: viewportSize);
-
-                  return ValueListenableBuilder<String>(
-                    valueListenable: queryNotifier,
-                    builder: (context, query, child) {
-                      Map<ChipSectionKey, List<FilterGridItem<T>>> visibleFilterSections;
-                      if (applyQuery == null) {
-                        visibleFilterSections = filterSections;
-                      } else {
-                        visibleFilterSections = {};
-                        filterSections.forEach((sectionKey, sectionFilters) {
-                          final visibleFilters = applyQuery(sectionFilters, query);
-                          if (visibleFilters.isNotEmpty) {
-                            visibleFilterSections[sectionKey] = visibleFilters.toList();
-                          }
-                        });
-                      }
-
-                      final pinnedFilters = settings.pinnedFilters;
-                      final sectionedListLayoutProvider = ValueListenableBuilder<double>(
-                        valueListenable: _tileExtentNotifier,
-                        builder: (context, tileExtent, child) => SectionedFilterListLayoutProvider<T>(
-                          sections: visibleFilterSections,
-                          showHeaders: showHeaders,
-                          scrollableWidth: viewportSize.width,
-                          tileExtent: tileExtent,
-                          columnCount: tileExtentManager.getEffectiveColumnCountForExtent(viewportSize, tileExtent),
-                          spacing: spacing,
-                          tileBuilder: (gridItem) {
-                            final filter = gridItem.filter;
-                            final entry = gridItem.entry;
-                            return MetaData(
-                              metaData: ScalerMetadata(FilterGridItem<T>(filter, entry)),
-                              child: DecoratedFilterChip(
-                                key: Key(filter.key),
-                                filter: filter,
-                                extent: _tileExtentNotifier.value,
-                                pinned: pinnedFilters.contains(filter),
-                                onTap: onTap,
-                                onLongPress: onLongPress,
-                              ),
-                            );
-                          },
-                          child: _SectionedContent<T>(
-                            appBar: appBar,
-                            appBarHeightNotifier: _appBarHeightNotifier,
-                            visibleFilterSections: visibleFilterSections,
-                            emptyBuilder: emptyBuilder,
-                            viewportSize: viewportSize,
-                            tileExtentManager: tileExtentManager,
-                            scrollController: PrimaryScrollController.of(context),
-                          ),
-                        ),
-                      );
-                      return sectionedListLayoutProvider;
-                    },
-                  );
-                },
+              child: AnimatedBuilder(
+                animation: covers,
+                builder: (context, child) => FilterGrid<T>(
+                  settingsRouteKey: settingsRouteKey,
+                  appBar: appBar,
+                  appBarHeight: appBarHeight,
+                  filterSections: filterSections,
+                  showHeaders: showHeaders,
+                  queryNotifier: queryNotifier,
+                  applyQuery: applyQuery,
+                  emptyBuilder: emptyBuilder,
+                  onTap: onTap,
+                  onLongPress: onLongPress,
+                ),
               ),
             ),
           ),
@@ -150,30 +90,173 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   }
 }
 
-class _SectionedContent<T extends CollectionFilter> extends StatefulWidget {
+class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
+  final String settingsRouteKey;
+  final Widget appBar;
+  final double appBarHeight;
+  final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final bool showHeaders;
+  final ValueNotifier<String> queryNotifier;
+  final QueryTest<T> applyQuery;
+  final Widget Function() emptyBuilder;
+  final FilterCallback onTap;
+  final OffsetFilterCallback onLongPress;
+
+  const FilterGrid({
+    Key key,
+    @required this.settingsRouteKey,
+    @required this.appBar,
+    @required this.appBarHeight,
+    @required this.filterSections,
+    @required this.showHeaders,
+    @required this.queryNotifier,
+    @required this.applyQuery,
+    @required this.emptyBuilder,
+    @required this.onTap,
+    @required this.onLongPress,
+  }) : super(key: key);
+
+  @override
+  _FilterGridState createState() => _FilterGridState<T>();
+}
+
+class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> {
+  TileExtentController _tileExtentController;
+
+  @override
+  Widget build(BuildContext context) {
+    _tileExtentController ??= TileExtentController(
+      settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName,
+      columnCountDefault: 2,
+      extentMin: 60,
+      spacing: 8,
+    );
+    return TileExtentControllerProvider(
+      controller: _tileExtentController,
+      child: _FilterGridContent<T>(
+        appBar: widget.appBar,
+        appBarHeight: widget.appBarHeight,
+        filterSections: widget.filterSections,
+        showHeaders: widget.showHeaders,
+        queryNotifier: widget.queryNotifier,
+        applyQuery: widget.applyQuery,
+        emptyBuilder: widget.emptyBuilder,
+        onTap: widget.onTap,
+        onLongPress: widget.onLongPress,
+      ),
+    );
+  }
+}
+
+class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
+  final Widget appBar;
+  final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final bool showHeaders;
+  final ValueNotifier<String> queryNotifier;
+  final Widget Function() emptyBuilder;
+  final QueryTest<T> applyQuery;
+  final FilterCallback onTap;
+  final OffsetFilterCallback onLongPress;
+
+  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
+
+  _FilterGridContent({
+    Key key,
+    @required this.appBar,
+    @required double appBarHeight,
+    @required this.filterSections,
+    @required this.showHeaders,
+    @required this.queryNotifier,
+    @required this.applyQuery,
+    @required this.emptyBuilder,
+    @required this.onTap,
+    @required this.onLongPress,
+  }) : super(key: key) {
+    _appBarHeightNotifier.value = appBarHeight;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String>(
+      valueListenable: queryNotifier,
+      builder: (context, query, child) {
+        Map<ChipSectionKey, List<FilterGridItem<T>>> visibleFilterSections;
+        if (applyQuery == null) {
+          visibleFilterSections = filterSections;
+        } else {
+          visibleFilterSections = {};
+          filterSections.forEach((sectionKey, sectionFilters) {
+            final visibleFilters = applyQuery(sectionFilters, query);
+            if (visibleFilters.isNotEmpty) {
+              visibleFilterSections[sectionKey] = visibleFilters.toList();
+            }
+          });
+        }
+
+        final pinnedFilters = settings.pinnedFilters;
+        final sectionedListLayoutProvider = ValueListenableBuilder<double>(
+          valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
+          builder: (context, tileExtent, child) {
+            final columnCount = context.select<TileExtentController, int>((controller) => controller.getEffectiveColumnCountForExtent(tileExtent));
+            final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
+            return SectionedFilterListLayoutProvider<T>(
+              sections: visibleFilterSections,
+              showHeaders: showHeaders,
+              scrollableWidth: context.select<TileExtentController, double>((controller) => controller.viewportSize.width),
+              tileExtent: tileExtent,
+              columnCount: columnCount,
+              spacing: tileSpacing,
+              tileBuilder: (gridItem) {
+                final filter = gridItem.filter;
+                final entry = gridItem.entry;
+                return MetaData(
+                  metaData: ScalerMetadata(FilterGridItem<T>(filter, entry)),
+                  child: DecoratedFilterChip(
+                    key: Key(filter.key),
+                    filter: filter,
+                    extent: tileExtent,
+                    pinned: pinnedFilters.contains(filter),
+                    onTap: onTap,
+                    onLongPress: onLongPress,
+                  ),
+                );
+              },
+              child: _FilterSectionedContent<T>(
+                appBar: appBar,
+                appBarHeightNotifier: _appBarHeightNotifier,
+                visibleFilterSections: visibleFilterSections,
+                emptyBuilder: emptyBuilder,
+                scrollController: PrimaryScrollController.of(context),
+              ),
+            );
+          },
+        );
+        return sectionedListLayoutProvider;
+      },
+    );
+  }
+}
+
+class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> visibleFilterSections;
   final Widget Function() emptyBuilder;
-  final Size viewportSize;
-  final TileExtentManager tileExtentManager;
   final ScrollController scrollController;
 
-  const _SectionedContent({
+  const _FilterSectionedContent({
     @required this.appBar,
     @required this.appBarHeightNotifier,
     @required this.visibleFilterSections,
     @required this.emptyBuilder,
-    @required this.viewportSize,
-    @required this.tileExtentManager,
     @required this.scrollController,
   });
 
   @override
-  _SectionedContentState createState() => _SectionedContentState<T>();
+  _FilterSectionedContentState createState() => _FilterSectionedContentState<T>();
 }
 
-class _SectionedContentState<T extends CollectionFilter> extends State<_SectionedContent<T>> {
+class _FilterSectionedContentState<T extends CollectionFilter> extends State<_FilterSectionedContent<T>> {
   Widget get appBar => widget.appBar;
 
   ValueNotifier<double> get appBarHeightNotifier => widget.appBarHeightNotifier;
@@ -181,10 +264,6 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
   Map<ChipSectionKey, List<FilterGridItem<T>>> get visibleFilterSections => widget.visibleFilterSections;
 
   Widget Function() get emptyBuilder => widget.emptyBuilder;
-
-  Size get viewportSize => widget.viewportSize;
-
-  TileExtentManager get tileExtentManager => widget.tileExtentManager;
 
   ScrollController get scrollController => widget.scrollController;
 
@@ -194,6 +273,27 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollView = AnimationLimiter(
+      child: _FilterScrollView<T>(
+        scrollableKey: _scrollableKey,
+        appBar: appBar,
+        appBarHeightNotifier: appBarHeightNotifier,
+        emptyBuilder: emptyBuilder,
+        scrollController: scrollController,
+      ),
+    );
+
+    final scaler = _FilterScaler<T>(
+      scrollableKey: _scrollableKey,
+      appBarHeightNotifier: appBarHeightNotifier,
+      child: scrollView,
+    );
+
+    return scaler;
   }
 
   Future<void> _checkInitHighlight() async {
@@ -228,21 +328,31 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
       );
     }
   }
+}
+
+class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
+  final GlobalKey scrollableKey;
+  final ValueNotifier<double> appBarHeightNotifier;
+  final Widget child;
+
+  const _FilterScaler({
+    @required this.scrollableKey,
+    @required this.appBarHeightNotifier,
+    @required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
     final pinnedFilters = settings.pinnedFilters;
-
+    final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
     return GridScaleGestureDetector<FilterGridItem<T>>(
-      tileExtentManager: tileExtentManager,
-      scrollableKey: _scrollableKey,
+      scrollableKey: scrollableKey,
       appBarHeightNotifier: appBarHeightNotifier,
-      viewportSize: viewportSize,
       gridBuilder: (center, extent, child) => CustomPaint(
         painter: GridPainter(
           center: center,
           extent: extent,
-          spacing: tileExtentManager.spacing,
+          spacing: tileSpacing,
           color: Colors.grey.shade700,
         ),
         child: child,
@@ -261,10 +371,30 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
         return sectionedListLayout.getTileRect(item) ?? Rect.zero;
       },
       onScaled: (item) => context.read<HighlightInfo>().set(item.filter),
-      child: AnimationLimiter(
-        child: _buildDraggableScrollView(_buildScrollView(context, visibleFilterSections.isEmpty)),
-      ),
+      child: child,
     );
+  }
+}
+
+class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
+  final GlobalKey scrollableKey;
+  final Widget appBar;
+  final ValueNotifier<double> appBarHeightNotifier;
+  final Widget Function() emptyBuilder;
+  final ScrollController scrollController;
+
+  const _FilterScrollView({
+    @required this.scrollableKey,
+    @required this.appBar,
+    @required this.appBarHeightNotifier,
+    @required this.emptyBuilder,
+    @required this.scrollController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollView = _buildScrollView(context);
+    return _buildDraggableScrollView(scrollView);
   }
 
   Widget _buildDraggableScrollView(ScrollView scrollView) {
@@ -288,31 +418,30 @@ class _SectionedContentState<T extends CollectionFilter> extends State<_Sectione
     );
   }
 
-  ScrollView _buildScrollView(BuildContext context, bool empty) {
-    Widget content;
-    if (empty) {
-      content = SliverFillRemaining(
-        child: Selector<MediaQueryData, double>(
-          selector: (context, mq) => mq.effectiveBottomPadding,
-          builder: (context, mqPaddingBottom, child) {
-            return Padding(
-              padding: EdgeInsets.only(bottom: mqPaddingBottom),
-              child: emptyBuilder(),
-            );
-          },
-        ),
-        hasScrollBody: false,
-      );
-    } else {
-      content = SectionedListSliver<FilterGridItem<T>>();
-    }
-
+  ScrollView _buildScrollView(BuildContext context) {
     return CustomScrollView(
-      key: _scrollableKey,
+      key: scrollableKey,
       controller: scrollController,
       slivers: [
         appBar,
-        content,
+        Selector<SectionedListLayout<FilterGridItem<T>>, bool>(
+            selector: (context, layout) => layout.sections.isEmpty,
+            builder: (context, empty, child) {
+              return empty
+                  ? SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Selector<MediaQueryData, double>(
+                        selector: (context, mq) => mq.effectiveBottomPadding,
+                        builder: (context, mqPaddingBottom, child) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: mqPaddingBottom),
+                            child: emptyBuilder(),
+                          );
+                        },
+                      ),
+                    )
+                  : SectionedListSliver<FilterGridItem<T>>();
+            }),
         BottomPaddingSliver(),
       ],
     );

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:aves/model/settings/map_style.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/viewer/info/maps/common.dart';
 import 'package:aves/widgets/viewer/info/maps/marker.dart';

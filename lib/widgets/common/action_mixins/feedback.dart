@@ -1,26 +1,21 @@
 import 'package:aves/theme/durations.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 mixin FeedbackMixin {
-  Flushbar _flushbar;
-
-  Future<void> dismissFeedback() => _flushbar?.dismiss();
+  void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
   void showFeedback(BuildContext context, String message) {
-    _flushbar = Flushbar(
-      message: message,
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      borderColor: Colors.white30,
-      borderWidth: 0.5,
-      duration: Durations.opToastDisplay * timeDilation,
-      flushbarPosition: FlushbarPosition.TOP,
-      animationDuration: Durations.opToastAnimation,
-    )..show(context);
+    showFeedbackWithMessenger(ScaffoldMessenger.of(context), message);
+  }
+
+  // provide the messenger if feedback happens as the widget is disposed
+  void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message) {
+    messenger.showSnackBar(SnackBar(
+      content: Text(message),
+      duration: Durations.opToastDisplay,
+    ));
   }
 
   // report overlay for multiple operations

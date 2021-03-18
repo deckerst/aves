@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 abstract class CollectionFilter implements Comparable<CollectionFilter> {
-  static const List<String> collectionFilterOrder = [
+  static const List<String> categoryOrder = [
     QueryFilter.type,
     FavouriteFilter.type,
     MimeFilter.type,
@@ -57,25 +57,28 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   bool get isUnique => true;
 
-  String get label;
+  String get universalLabel;
 
-  String get tooltip => label;
+  String getLabel(BuildContext context) => universalLabel;
+
+  String getTooltip(BuildContext context) => getLabel(context);
 
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false});
 
-  Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(label));
+  Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(getLabel(context)));
 
-  String get typeKey;
-
-  int get displayPriority => collectionFilterOrder.indexOf(typeKey);
+  String get category;
 
   // to be used as widget key
-  String get key => '$typeKey-$label';
+  String get key;
+
+  int get displayPriority => categoryOrder.indexOf(category);
 
   @override
   int compareTo(CollectionFilter other) {
     final c = displayPriority.compareTo(other.displayPriority);
-    return c != 0 ? c : compareAsciiUpperCase(label, other.label);
+    // assume we compare context-independent labels
+    return c != 0 ? c : compareAsciiUpperCase(universalLabel, other.universalLabel);
   }
 }
 

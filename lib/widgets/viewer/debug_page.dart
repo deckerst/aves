@@ -1,5 +1,5 @@
+import 'package:aves/app_mode.dart';
 import 'package:aves/image_providers/uri_picture_provider.dart';
-import 'package:aves/main.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/theme/icons.dart';
@@ -8,6 +8,7 @@ import 'package:aves/widgets/viewer/debug/metadata.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerDebugPage extends StatelessWidget {
@@ -21,7 +22,7 @@ class ViewerDebugPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabs = <Tuple2<Tab, Widget>>[
       Tuple2(Tab(text: 'Entry'), _buildEntryTabView()),
-      if (AvesApp.mode != AppMode.view) Tuple2(Tab(text: 'DB'), DbTab(entry: entry)),
+      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) Tuple2(Tab(text: 'DB'), DbTab(entry: entry)),
       Tuple2(Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
       Tuple2(Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
     ];

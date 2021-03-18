@@ -26,15 +26,15 @@ class XmpMgwRegionsNamespace extends XmpNamespace {
 
   @override
   List<Widget> buildFromExtractedData() => [
-    if (dimensions.isNotEmpty)
-      XmpStructCard(
-        title: 'Applied To Dimensions',
-        struct: dimensions,
-      ),
-    if (regionList.isNotEmpty)
-      XmpStructArrayCard(
-        title: 'Region',
-        structByIndex: regionList,
-      ),
-  ];
+        if (dimensions.isNotEmpty)
+          XmpStructCard(
+            title: 'Applied To Dimensions',
+            struct: dimensions,
+          ),
+        if (regionList.isNotEmpty)
+          XmpStructArrayCard(
+            title: 'Region',
+            structByIndex: regionList,
+          ),
+      ];
 }

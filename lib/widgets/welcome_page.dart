@@ -1,13 +1,16 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/labeled_checkbox.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -29,12 +32,13 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.all(16.0),
-          child: FutureBuilder<String>(
+    return MediaQueryDataProvider(
+      child: Scaffold(
+        body: SafeArea(
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(16.0),
+            child: FutureBuilder<String>(
               future: _termsLoader,
               builder: (context, snapshot) {
                 if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
@@ -58,7 +62,9 @@ class _WelcomePageState extends State<WelcomePage> {
                     ],
                   ),
                 );
-              }),
+              },
+            ),
+          ),
         ),
       ),
     );
@@ -66,11 +72,11 @@ class _WelcomePageState extends State<WelcomePage> {
 
   List<Widget> _buildTop(BuildContext context) {
     final message = Text(
-      'Welcome to Aves',
+      context.l10n.welcomeMessage,
       style: Theme.of(context).textTheme.headline5,
     );
     return [
-      ...(MediaQuery.of(context).orientation == Orientation.portrait
+      ...(context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait
           ? [
               AvesLogo(size: 64),
               SizedBox(height: 16),
@@ -97,20 +103,19 @@ class _WelcomePageState extends State<WelcomePage> {
         LabeledCheckbox(
           value: settings.isCrashlyticsEnabled,
           onChanged: (v) => setState(() => settings.isCrashlyticsEnabled = v),
-          text: 'Allow anonymous analytics and crash reporting',
+          text: context.l10n.welcomeAnalyticsToggle,
         ),
         LabeledCheckbox(
           key: Key('agree-checkbox'),
           value: _hasAcceptedTerms,
           onChanged: (v) => setState(() => _hasAcceptedTerms = v),
-          text: 'I agree to the terms and conditions',
+          text: context.l10n.welcomeTermsToggle,
         ),
       ],
     );
 
     final button = ElevatedButton(
       key: Key('continue-button'),
-      child: Text('Continue'),
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;
@@ -123,9 +128,10 @@ class _WelcomePageState extends State<WelcomePage> {
               );
             }
           : null,
+      child: Text(context.l10n.continueButtonLabel),
     );
 
-    return MediaQuery.of(context).orientation == Orientation.portrait
+    return context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait
         ? [
             checkboxes,
             button,

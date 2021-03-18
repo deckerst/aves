@@ -1,18 +1,14 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/settings/coordinate_format.dart';
-import 'package:aves/model/settings/entry_background.dart';
-import 'package:aves/model/settings/home_page.dart';
-import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../source/enums.dart';
+import 'enums.dart';
 
 final Settings settings = Settings._private();
 
@@ -24,6 +20,7 @@ class Settings extends ChangeNotifier {
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
   static const isCrashlyticsEnabledKey = 'is_crashlytics_enabled';
+  static const localeKey = 'locale';
   static const mustBackTwiceToExitKey = 'must_back_twice_to_exit';
   static const keepScreenOnKey = 'keep_screen_on';
   static const homePageKey = 'home_page';
@@ -99,6 +96,34 @@ class Settings extends ChangeNotifier {
     unawaited(initFirebase());
   }
 
+  static const localeSeparator = '-';
+
+  Locale get locale {
+    // exceptionally allow getting locale before settings are initialized
+    final tag = _prefs?.getString(localeKey);
+    if (tag != null) {
+      final codes = tag.split(localeSeparator);
+      return Locale.fromSubtags(
+        languageCode: codes[0],
+        scriptCode: codes[1] == '' ? null : codes[1],
+        countryCode: codes[2] == '' ? null : codes[2],
+      );
+    }
+    return null;
+  }
+
+  set locale(Locale newValue) {
+    String tag;
+    if (newValue != null) {
+      tag = [
+        newValue.languageCode ?? '',
+        newValue.scriptCode ?? '',
+        newValue.countryCode ?? '',
+      ].join(localeSeparator);
+    }
+    setAndNotify(localeKey, tag);
+  }
+
   bool get mustBackTwiceToExit => getBoolOrDefault(mustBackTwiceToExitKey, true);
 
   set mustBackTwiceToExit(bool newValue) => setAndNotify(mustBackTwiceToExitKey, newValue);
@@ -120,7 +145,7 @@ class Settings extends ChangeNotifier {
 
   double getTileExtent(String routeName) => _prefs.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
-  // do not notify, as tile extents are only used internally by `TileExtentManager`
+  // do not notify, as tile extents are only used internally by `TileExtentController`
   // and should not trigger rebuilding by change notification
   void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue, notify: false);
 
@@ -182,7 +207,7 @@ class Settings extends ChangeNotifier {
 
   set showOverlayInfo(bool newValue) => setAndNotify(showOverlayInfoKey, newValue);
 
-  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, true);
+  bool get showOverlayShootingDetails => getBoolOrDefault(showOverlayShootingDetailsKey, false);
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 

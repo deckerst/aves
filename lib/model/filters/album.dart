@@ -35,10 +35,10 @@ class AlbumFilter extends CollectionFilter {
   EntryFilter get test => (entry) => entry.directory == album;
 
   @override
-  String get label => uniqueName ?? album.split(separator).last;
+  String get universalLabel => uniqueName ?? album.split(separator).last;
 
   @override
-  String get tooltip => album;
+  String getTooltip(BuildContext context) => album;
 
   @override
   Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
@@ -74,7 +74,11 @@ class AlbumFilter extends CollectionFilter {
   }
 
   @override
-  String get typeKey => type;
+  String get category => type;
+
+  // key `album-{path}` is expected by test driver
+  @override
+  String get key => '$type-$album';
 
   @override
   bool operator ==(Object other) {

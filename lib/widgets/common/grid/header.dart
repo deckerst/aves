@@ -4,6 +4,7 @@ import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -161,7 +162,7 @@ class _SectionSelectableLeading extends StatelessWidget {
                       alignment: AlignmentDirectional.topStart,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
                       onPressed: onPressed,
-                      tooltip: selected ? 'Deselect section' : 'Select section',
+                      tooltip: selected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
                       constraints: BoxConstraints(
                         minHeight: leadingDimension,
                         minWidth: leadingDimension,

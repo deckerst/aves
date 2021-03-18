@@ -1,4 +1,4 @@
-import 'package:aves/main.dart';
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 typedef FilterCallback = void Function(CollectionFilter filter);
 typedef OffsetFilterCallback = void Function(BuildContext context, CollectionFilter filter, Offset tapPosition);
@@ -23,11 +24,11 @@ class AvesFilterChip extends StatefulWidget {
   final bool showGenericIcon;
   final Widget background;
   final Widget details;
+  final BorderRadius borderRadius;
   final double padding;
   final HeroType heroType;
   final FilterCallback onTap;
   final OffsetFilterCallback onLongPress;
-  final BorderRadius borderRadius;
 
   static const Color defaultOutlineColor = Colors.white;
   static const double defaultRadius = 32;
@@ -52,7 +53,7 @@ class AvesFilterChip extends StatefulWidget {
         super(key: key);
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
-    if (AvesApp.mode == AppMode.main) {
+    if (context.read<ValueNotifier<AppMode>>().value == AppMode.main) {
       final actions = [
         if (filter is AlbumFilter) ChipAction.goToAlbumPage,
         if ((filter is LocationFilter && filter.level == LocationLevel.country)) ChipAction.goToCountryPage,
@@ -66,14 +67,13 @@ class AvesFilterChip extends StatefulWidget {
 
       final RenderBox overlay = Overlay.of(context).context.findRenderObject();
       final touchArea = Size(40, 40);
-      // TODO TLAD check menu is within safe area, when this lands on stable: https://github.com/flutter/flutter/commit/cfc8ec23b633da1001359e384435e8333c9d3733
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
         items: actions
             .map((action) => PopupMenuItem(
                   value: action,
-                  child: MenuRow(text: action.getText(), icon: action.getIcon()),
+                  child: MenuRow(text: action.getText(context), icon: action.getIcon()),
                 ))
             .toList(),
       );
@@ -100,11 +100,20 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
 
   double get padding => widget.padding;
 
+  FilterCallback get onTap => widget.onTap;
+
+  OffsetFilterCallback get onLongPress => widget.onLongPress;
+
   @override
   void initState() {
     super.initState();
-    _initColorLoader();
     _tapped = false;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _initColorLoader();
   }
 
   @override
@@ -146,7 +155,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         ],
         Flexible(
           child: Text(
-            filter.label,
+            filter.getLabel(context),
             softWrap: false,
             overflow: TextOverflow.fade,
             maxLines: 1,
@@ -203,7 +212,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               child: widget.background,
             ),
           Tooltip(
-            message: filter.tooltip,
+            message: filter.getTooltip(context),
             preferBelow: false,
             child: Material(
               color: hasBackground ? Colors.transparent : Theme.of(context).scaffoldBackgroundColor,
@@ -213,14 +222,14 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               child: InkWell(
                 // as of Flutter v1.22.5, `InkWell` does not have `onLongPressStart` like `GestureDetector`,
                 // so we get the long press details from the tap instead
-                onTapDown: (details) => _tapPosition = details.globalPosition,
-                onTap: widget.onTap != null
+                onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
+                onTap: onTap != null
                     ? () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) => widget.onTap(filter));
+                        WidgetsBinding.instance.addPostFrameCallback((_) => onTap(filter));
                         setState(() => _tapped = true);
                       }
                     : null,
-                onLongPress: widget.onLongPress != null ? () => widget.onLongPress(context, filter, _tapPosition) : null,
+                onLongPress: onLongPress != null ? () => onLongPress(context, filter, _tapPosition) : null,
                 borderRadius: borderRadius,
                 child: FutureBuilder<Color>(
                   future: _colorFuture,

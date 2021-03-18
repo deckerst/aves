@@ -8,13 +8,15 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
   static const double preferredHeight = AvesFilterChip.minChipHeight + verticalPadding;
 
   final List<CollectionFilter> filters;
-  final FilterCallback onPressed;
+  final bool removable;
+  final FilterCallback onTap;
 
   FilterBar({
     Key key,
     @required Set<CollectionFilter> filters,
-    @required this.onPressed,
-  })  : filters = List.from(filters)..sort(),
+    @required this.removable,
+    this.onTap,
+  })  : filters = List<CollectionFilter>.from(filters)..sort(),
         super(key: key);
 
   @override
@@ -26,7 +28,9 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _FilterBarState extends State<FilterBar> {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'filter-bar-animated-list');
-  CollectionFilter _userRemovedFilter;
+  CollectionFilter _userTappedFilter;
+
+  FilterCallback get onTap => widget.onTap;
 
   @override
   void didUpdateWidget(covariant FilterBar oldWidget) {
@@ -41,7 +45,7 @@ class _FilterBarState extends State<FilterBar> {
       existing.removeAt(index);
       // only animate item removal when triggered by a user interaction with the chip,
       // not from automatic chip replacement following chip selection
-      final animate = _userRemovedFilter == filter;
+      final animate = _userTappedFilter == filter;
       listState.removeItem(
         index,
         animate
@@ -70,7 +74,7 @@ class _FilterBarState extends State<FilterBar> {
         duration: Duration.zero,
       );
     });
-    _userRemovedFilter = null;
+    _userTappedFilter = null;
   }
 
   @override
@@ -106,12 +110,14 @@ class _FilterBarState extends State<FilterBar> {
         child: AvesFilterChip(
           key: ValueKey(filter),
           filter: filter,
-          removable: true,
+          removable: widget.removable,
           heroType: HeroType.always,
-          onTap: (filter) {
-            _userRemovedFilter = filter;
-            widget.onPressed(filter);
-          },
+          onTap: onTap != null
+              ? (filter) {
+                  _userTappedFilter = filter;
+                  onTap(filter);
+                }
+              : null,
         ),
       ),
     );

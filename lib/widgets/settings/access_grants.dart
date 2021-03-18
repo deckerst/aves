@@ -1,13 +1,14 @@
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:flutter/material.dart';
 
 class StorageAccessTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Storage Access'),
+      title: Text(context.l10n.settingsStorageAccessTile),
       onTap: () {
         Navigator.push(
           context,
@@ -44,7 +45,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Storage Access'),
+        title: Text(context.l10n.settingsStorageAccessTitle),
       ),
       body: SafeArea(
         child: Column(
@@ -56,7 +57,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                 children: [
                   Icon(AIcons.info),
                   SizedBox(width: 16),
-                  Expanded(child: Text('Some directories require an explicit access grant to modify files in them. You can review here directories to which you previously gave access.')),
+                  Expanded(child: Text(context.l10n.settingsStorageAccessBanner)),
                 ],
               ),
             ),
@@ -74,7 +75,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                   _lastPaths = snapshot.data..sort();
                   if (_lastPaths.isEmpty) {
                     return EmptyContent(
-                      text: 'No access grants',
+                      text: context.l10n.settingsStorageAccessEmpty,
                     );
                   }
                   return Column(
@@ -90,7 +91,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                                   _load();
                                   setState(() {});
                                 },
-                                tooltip: 'Revoke',
+                                tooltip: context.l10n.settingsStorageAccessRevokeTooltip,
                               ),
                             ))
                         .toList(),

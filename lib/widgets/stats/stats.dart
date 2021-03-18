@@ -12,7 +12,8 @@ import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -62,24 +63,25 @@ class StatsPage extends StatelessWidget {
     if (entries.isEmpty) {
       child = EmptyContent(
         icon: AIcons.image,
-        text: 'No images',
+        text: context.l10n.collectionEmptyImages,
       );
     } else {
       final byMimeTypes = groupBy<AvesEntry, String>(entries, (entry) => entry.mimeType).map<String, int>((k, v) => MapEntry(k, v.length));
-      final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image/')));
-      final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video/')));
+      final imagesByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('image')));
+      final videoByMimeTypes = Map.fromEntries(byMimeTypes.entries.where((kv) => kv.key.startsWith('video')));
       final mimeDonuts = Wrap(
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'image', other: 'images'), imagesByMimeTypes),
-          _buildMimeDonut(context, (sum) => Intl.plural(sum, one: 'video', other: 'videos'), videoByMimeTypes),
+          _buildMimeDonut(context, (sum) => context.l10n.statsImage(sum), imagesByMimeTypes),
+          _buildMimeDonut(context, (sum) => context.l10n.statsVideo(sum), videoByMimeTypes),
         ],
       );
 
       final catalogued = entries.where((entry) => entry.isCatalogued);
       final withGps = catalogued.where((entry) => entry.hasGps);
-      final withGpsPercent = withGps.length / entries.length;
+      final withGpsCount = withGps.length;
+      final withGpsPercent = withGpsCount / entries.length;
       final textScaleFactor = MediaQuery.textScaleFactorOf(context);
       final lineHeight = 16 * textScaleFactor;
       final locationIndicator = Padding(
@@ -101,7 +103,7 @@ class StatsPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 8),
-            Text('${withGps.length} ${Intl.plural(withGps.length, one: 'item', other: 'items')} with location'),
+            Text(context.l10n.statsWithGps(withGpsCount)),
           ],
         ),
       );
@@ -109,16 +111,16 @@ class StatsPage extends StatelessWidget {
         children: [
           mimeDonuts,
           locationIndicator,
-          ..._buildTopFilters(context, 'Top Countries', entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
-          ..._buildTopFilters(context, 'Top Places', entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
-          ..._buildTopFilters(context, 'Top Tags', entryCountPerTag, (s) => TagFilter(s)),
+          ..._buildTopFilters(context, context.l10n.statsTopCountries, entryCountPerCountry, (s) => LocationFilter(LocationLevel.country, s)),
+          ..._buildTopFilters(context, context.l10n.statsTopPlaces, entryCountPerPlace, (s) => LocationFilter(LocationLevel.place, s)),
+          ..._buildTopFilters(context, context.l10n.statsTopTags, entryCountPerTag, (s) => TagFilter(s)),
         ],
       );
     }
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Stats'),
+          title: Text(context.l10n.statsPageTitle),
         ),
         body: SafeArea(
           child: child,

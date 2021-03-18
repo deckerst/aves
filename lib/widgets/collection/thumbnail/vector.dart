@@ -1,6 +1,7 @@
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/entry_background.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:flutter/material.dart';

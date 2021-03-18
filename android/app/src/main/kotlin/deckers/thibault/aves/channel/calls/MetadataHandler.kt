@@ -18,6 +18,7 @@ import com.adobe.internal.xmp.properties.XMPPropertyInfo
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.Rational
+import com.drew.metadata.Tag
 import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
@@ -47,7 +48,9 @@ import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeRational
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.isGeoTiff
 import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
+import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
+import deckers.thibault.aves.metadata.XMP.getSafeString
 import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.FileImageProvider
@@ -123,17 +126,29 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         metadataMap[dirName] = dirMap
 
                         // tags
+                        val tags = dir.tags
                         if (mimeType == MimeTypes.TIFF && (dir is ExifIFD0Directory || dir is ExifThumbnailDirectory)) {
-                            dirMap.putAll(dir.tags.map {
+                            fun tagMapper(it: Tag): Pair<String, String> {
                                 val name = if (it.hasTagName()) {
                                     it.tagName
                                 } else {
                                     TiffTags.getTagName(it.tagType) ?: it.tagName
                                 }
-                                Pair(name, it.description)
-                            })
+                                return Pair(name, it.description)
+                            }
+
+                            if (dir is ExifIFD0Directory && dir.isGeoTiff()) {
+                                // split GeoTIFF tags in their own directory
+                                val byGeoTiff = tags.groupBy { TiffTags.isGeoTiffTag(it.tagType) }
+                                metadataMap["GeoTIFF"] = HashMap<String, String>().apply {
+                                    byGeoTiff[true]?.map { tagMapper(it) }?.let { putAll(it) }
+                                }
+                                byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
+                            } else {
+                                dirMap.putAll(tags.map { tagMapper(it) })
+                            }
                         } else {
-                            dirMap.putAll(dir.tags.map { Pair(it.tagName, it.description) })
+                            dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
                         }
                         if (dir is XmpDirectory) {
                             try {
@@ -593,10 +608,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             KEY_PAGE to i,
                             KEY_MIME_TYPE to trackMime,
                         )
+
+                        // do not use `MediaFormat.KEY_TRACK_ID` as it is actually not unique between tracks
+                        // e.g. there could be both a video track and an image track with KEY_TRACK_ID == 1
+
                         format.getSafeInt(MediaFormat.KEY_IS_DEFAULT) { page[KEY_IS_DEFAULT] = it != 0 }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            format.getSafeInt(MediaFormat.KEY_TRACK_ID) { page[KEY_TRACK_ID] = it }
-                        }
                         format.getSafeInt(MediaFormat.KEY_WIDTH) { page[KEY_WIDTH] = it }
                         format.getSafeInt(MediaFormat.KEY_HEIGHT) { page[KEY_HEIGHT] = it }
                         if (isVideo(trackMime)) {
@@ -626,25 +642,21 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
                     val metadata = ImageMetadataReader.readMetadata(input)
-                    val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
-                    try {
-                        fun getIntProp(propName: String): Int? = xmpDirs.map { it.xmpMeta.getPropertyInteger(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
-                        fun getStringProp(propName: String): String? = xmpDirs.map { it.xmpMeta.getPropertyString(XMP.GPANO_SCHEMA_NS, propName) }.firstOrNull { it != null }
-                        val fields: FieldMap = hashMapOf(
-                            "croppedAreaLeft" to getIntProp(XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME),
-                            "croppedAreaTop" to getIntProp(XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME),
-                            "croppedAreaWidth" to getIntProp(XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME),
-                            "croppedAreaHeight" to getIntProp(XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME),
-                            "fullPanoWidth" to getIntProp(XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME),
-                            "fullPanoHeight" to getIntProp(XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME),
-                            "projectionType" to (getStringProp(XMP.GPANO_PROJECTION_TYPE_PROP_NAME) ?: XMP.GPANO_PROJECTION_TYPE_DEFAULT),
-                        )
-                        result.success(fields)
-                        return
-                    } catch (e: XMPException) {
-                        result.error("getPanoramaInfo-args", "failed to read XMP for uri=$uri", e.message)
-                        return
+                    val fields = hashMapOf<String, Any?>(
+                        "projectionType" to XMP.GPANO_PROJECTION_TYPE_DEFAULT,
+                    )
+                    for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+                        val xmpMeta = dir.xmpMeta
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_LEFT_PROP_NAME) { fields["croppedAreaLeft"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_TOP_PROP_NAME) { fields["croppedAreaTop"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_WIDTH_PROP_NAME) { fields["croppedAreaWidth"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_CROPPED_AREA_HEIGHT_PROP_NAME) { fields["croppedAreaHeight"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_WIDTH_PROP_NAME) { fields["fullPanoWidth"] = it }
+                        xmpMeta.getSafeInt(XMP.GPANO_SCHEMA_NS, XMP.GPANO_FULL_PANO_HEIGHT_PROP_NAME) { fields["fullPanoHeight"] = it }
+                        xmpMeta.getSafeString(XMP.GPANO_SCHEMA_NS, XMP.GPANO_PROJECTION_TYPE_PROP_NAME) { fields["projectionType"] = it }
                     }
+                    result.success(fields)
+                    return
                 }
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to read XMP", e)
@@ -875,7 +887,6 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_HEIGHT = "height"
         private const val KEY_WIDTH = "width"
         private const val KEY_PAGE = "page"
-        private const val KEY_TRACK_ID = "trackId"
         private const val KEY_IS_DEFAULT = "isDefault"
         private const val KEY_DURATION = "durationMillis"
 

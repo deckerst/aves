@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -50,17 +51,17 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       volumeTiles.addAll([
         Padding(
           padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(top: 20),
-          child: Text('Storage:'),
+          child: Text(context.l10n.newAlbumDialogStorageLabel),
         ),
-        ...primaryVolumes.map(_buildVolumeTile),
-        ...otherVolumes.map(_buildVolumeTile),
+        ...primaryVolumes.map((volume) => _buildVolumeTile(context, volume)),
+        ...otherVolumes.map((volume) => _buildVolumeTile(context, volume)),
         SizedBox(height: 8),
       ]);
     }
 
     return AvesDialog(
       context: context,
-      title: 'New Album',
+      title: context.l10n.newAlbumDialogTitle,
       scrollController: _scrollController,
       scrollableContent: [
         ...volumeTiles,
@@ -73,8 +74,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
                   controller: _nameController,
                   focusNode: _nameFieldFocusNode,
                   decoration: InputDecoration(
-                    labelText: 'Album name',
-                    helperText: exists ? 'Directory already exists' : '',
+                    labelText: context.l10n.newAlbumDialogNameLabel,
+                    helperText: exists ? context.l10n.newAlbumDialogNameLabelAlreadyExistsHelper : '',
                   ),
                   autofocus: _allVolumes.length == 1,
                   onChanged: (_) => _validate(),
@@ -86,14 +87,14 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.toUpperCase()),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
         ValueListenableBuilder<bool>(
           valueListenable: _isValidNotifier,
           builder: (context, isValid, child) {
             return TextButton(
               onPressed: isValid ? () => _submit(context) : null,
-              child: Text('Create'.toUpperCase()),
+              child: Text(context.l10n.createAlbumButtonLabel),
             );
           },
         ),
@@ -101,7 +102,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     );
   }
 
-  Widget _buildVolumeTile(StorageVolume volume) => RadioListTile<StorageVolume>(
+  Widget _buildVolumeTile(BuildContext context, StorageVolume volume) => RadioListTile<StorageVolume>(
         value: volume,
         groupValue: _selectedVolume,
         onChanged: (volume) {
@@ -110,7 +111,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
           setState(() {});
         },
         title: Text(
-          volume.description,
+          volume.getDescription(context),
           softWrap: false,
           overflow: TextOverflow.fade,
           maxLines: 1,

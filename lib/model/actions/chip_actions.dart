@@ -1,10 +1,10 @@
 import 'package:aves/theme/icons.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 enum ChipSetAction {
   group,
   sort,
-  refresh,
   stats,
 }
 
@@ -14,30 +14,33 @@ enum ChipAction {
   pin,
   unpin,
   rename,
+  setCover,
   goToAlbumPage,
   goToCountryPage,
   goToTagPage,
 }
 
 extension ExtraChipAction on ChipAction {
-  String getText() {
+  String getText(BuildContext context) {
     switch (this) {
       case ChipAction.delete:
-        return 'Delete';
+        return context.l10n.chipActionDelete;
       case ChipAction.goToAlbumPage:
-        return 'Show in Albums';
+        return context.l10n.chipActionGoToAlbumPage;
       case ChipAction.goToCountryPage:
-        return 'Show in Countries';
+        return context.l10n.chipActionGoToCountryPage;
       case ChipAction.goToTagPage:
-        return 'Show in Tags';
+        return context.l10n.chipActionGoToTagPage;
       case ChipAction.hide:
-        return 'Hide';
+        return context.l10n.chipActionHide;
       case ChipAction.pin:
-        return 'Pin to top';
+        return context.l10n.chipActionPin;
       case ChipAction.unpin:
-        return 'Unpin from top';
+        return context.l10n.chipActionUnpin;
       case ChipAction.rename:
-        return 'Rename';
+        return context.l10n.chipActionRename;
+      case ChipAction.setCover:
+        return context.l10n.chipActionSetCover;
     }
     return null;
   }
@@ -59,6 +62,8 @@ extension ExtraChipAction on ChipAction {
         return AIcons.pin;
       case ChipAction.rename:
         return AIcons.rename;
+      case ChipAction.setCover:
+        return AIcons.setCover;
     }
     return null;
   }

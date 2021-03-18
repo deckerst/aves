@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:aves/model/availability.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/source/album.dart';
@@ -8,10 +7,12 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/ref/mime_types.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
 import 'package:aves/widgets/about/news_badge.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
 import 'package:aves/widgets/debug/app_debug_page.dart';
@@ -64,26 +65,25 @@ class _AppDrawerState extends State<AppDrawer> {
     ];
 
     return Drawer(
-      child: Selector<MediaQueryData, double>(
-        selector: (c, mq) => mq.effectiveBottomPadding,
-        builder: (c, mqPaddingBottom, child) {
-          final iconTheme = IconTheme.of(context);
-          return SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: mqPaddingBottom),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                // color used by `ExpansionTile` for leading icon
-                unselectedWidgetColor: Colors.white,
-              ),
+      child: ListTileTheme.merge(
+        selectedColor: Theme.of(context).accentColor,
+        child: Selector<MediaQueryData, double>(
+          selector: (c, mq) => mq.effectiveBottomPadding,
+          builder: (c, mqPaddingBottom, child) {
+            final iconTheme = IconTheme.of(context);
+            return SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
-                data: iconTheme.copyWith(size: iconTheme.size * MediaQuery.textScaleFactorOf(context)),
+                data: iconTheme.copyWith(
+                  size: iconTheme.size * MediaQuery.textScaleFactorOf(context),
+                ),
                 child: Column(
                   children: drawerItems,
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -105,7 +105,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 children: [
                   AvesLogo(size: 64),
                   Text(
-                    'Aves',
+                    context.l10n.appName,
                     style: TextStyle(
                       fontSize: 44,
                       fontWeight: FontWeight.w300,
@@ -146,25 +146,25 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget get allCollectionTile => CollectionNavTile(
         leading: Icon(AIcons.allCollection),
-        title: 'All collection',
+        title: context.l10n.drawerCollectionAll,
         filter: null,
       );
 
   Widget get videoTile => CollectionNavTile(
         leading: Icon(AIcons.video),
-        title: 'Videos',
+        title: context.l10n.drawerCollectionVideos,
         filter: MimeFilter(MimeTypes.anyVideo),
       );
 
   Widget get favouriteTile => CollectionNavTile(
         leading: Icon(AIcons.favourite),
-        title: 'Favourites',
+        title: context.l10n.drawerCollectionFavourites,
         filter: FavouriteFilter(),
       );
 
   Widget get albumListTile => NavTile(
         icon: AIcons.album,
-        title: 'Albums',
+        title: context.l10n.albumPageTitle,
         trailing: StreamBuilder(
           stream: source.eventBus.on<AlbumsChangedEvent>(),
           builder: (context, _) => Text('${source.rawAlbums.length}'),
@@ -175,7 +175,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget get countryListTile => NavTile(
         icon: AIcons.location,
-        title: 'Countries',
+        title: context.l10n.countryPageTitle,
         trailing: StreamBuilder(
           stream: source.eventBus.on<CountriesChangedEvent>(),
           builder: (context, _) => Text('${source.sortedCountries.length}'),
@@ -186,7 +186,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget get tagListTile => NavTile(
         icon: AIcons.tag,
-        title: 'Tags',
+        title: context.l10n.tagPageTitle,
         trailing: StreamBuilder(
           stream: source.eventBus.on<TagsChangedEvent>(),
           builder: (context, _) => Text('${source.sortedTags.length}'),
@@ -197,7 +197,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget get settingsTile => NavTile(
         icon: AIcons.settings,
-        title: 'Settings',
+        title: context.l10n.settingsPageTitle,
         topLevel: false,
         routeName: SettingsPage.routeName,
         pageBuilder: (_) => SettingsPage(),
@@ -209,7 +209,7 @@ class _AppDrawerState extends State<AppDrawer> {
           final newVersion = snapshot.data == true;
           return NavTile(
             icon: AIcons.info,
-            title: 'About',
+            title: context.l10n.aboutPageTitle,
             trailing: newVersion ? AboutNewsBadge() : null,
             topLevel: false,
             routeName: AboutPage.routeName,

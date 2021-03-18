@@ -7,7 +7,8 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/collection/empty.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
@@ -32,21 +33,22 @@ class AlbumListPage extends StatelessWidget {
             stream: source.eventBus.on<AlbumsChangedEvent>(),
             builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
               source: source,
-              title: 'Albums',
+              title: context.l10n.albumPageTitle,
               groupable: true,
               showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
               chipSetActionDelegate: AlbumChipSetActionDelegate(),
               chipActionDelegate: AlbumChipActionDelegate(),
               chipActionsBuilder: (filter) => [
                 settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+                ChipAction.setCover,
                 ChipAction.rename,
                 ChipAction.delete,
                 ChipAction.hide,
               ],
-              filterSections: getAlbumEntries(source),
+              filterSections: getAlbumEntries(context, source),
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.album,
-                text: 'No albums',
+                text: context.l10n.albumEmpty,
               ),
             ),
           ),
@@ -57,14 +59,14 @@ class AlbumListPage extends StatelessWidget {
 
   // common with album selection page to move/copy entries
 
-  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> getAlbumEntries(CollectionSource source) {
-    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getUniqueAlbumName(album))).toSet();
+  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> getAlbumEntries(BuildContext context, CollectionSource source) {
+    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getUniqueAlbumName(context, album))).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
-    return _group(sorted);
+    return _group(context, sorted);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> _group(Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> _group(BuildContext context, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<AlbumFilter>();
     final byPin = groupBy<FilterGridItem<AlbumFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
     final pinnedMapEntries = (byPin[true] ?? []);
@@ -73,25 +75,28 @@ class AlbumListPage extends StatelessWidget {
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumFilter>>>{};
     switch (settings.albumGroupFactor) {
       case AlbumChipGroupFactor.importance:
+        final specialKey = AlbumImportanceSectionKey.special(context);
+        final appsKey = AlbumImportanceSectionKey.apps(context);
+        final regularKey = AlbumImportanceSectionKey.regular(context);
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
           switch (androidFileUtils.getAlbumType(kv.filter.album)) {
             case AlbumType.regular:
-              return AlbumImportanceSectionKey.regular;
+              return regularKey;
             case AlbumType.app:
-              return AlbumImportanceSectionKey.apps;
+              return appsKey;
             default:
-              return AlbumImportanceSectionKey.special;
+              return specialKey;
           }
         });
         sections = {
-          AlbumImportanceSectionKey.special: sections[AlbumImportanceSectionKey.special],
-          AlbumImportanceSectionKey.apps: sections[AlbumImportanceSectionKey.apps],
-          AlbumImportanceSectionKey.regular: sections[AlbumImportanceSectionKey.regular],
+          specialKey: sections[specialKey],
+          appsKey: sections[appsKey],
+          regularKey: sections[regularKey],
         }..removeWhere((key, value) => value == null);
         break;
       case AlbumChipGroupFactor.volume:
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
-          return StorageVolumeSectionKey(androidFileUtils.getStorageVolume(kv.filter.album));
+          return StorageVolumeSectionKey(context, androidFileUtils.getStorageVolume(kv.filter.album));
         });
         break;
       case AlbumChipGroupFactor.none:
@@ -106,7 +111,7 @@ class AlbumListPage extends StatelessWidget {
 
     if (pinnedMapEntries.isNotEmpty) {
       sections = Map.fromEntries([
-        MapEntry(AlbumImportanceSectionKey.pinned, pinnedMapEntries),
+        MapEntry(AlbumImportanceSectionKey.pinned(context), pinnedMapEntries),
         ...sections.entries,
       ]);
     }

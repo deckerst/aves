@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:pedantic/pedantic.dart';
 
 class Sweeper extends StatefulWidget {
   final WidgetBuilder builder;
@@ -89,11 +90,11 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
             valueListenable: _angleAnimationController,
             builder: (context, value, child) {
               return ClipPath(
-                child: widget.builder(context),
                 clipper: _SweepClipPath(
                   startAngle: _angle.value,
                   sweepAngle: widget.sweepAngle,
                 ),
+                child: widget.builder(context),
               );
             }),
       ),
@@ -115,7 +116,7 @@ class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
       _isAppearing = false;
       if (mounted) {
         _angleAnimationController.reset();
-        _angleAnimationController.forward();
+        unawaited(_angleAnimationController.forward());
       }
     }
     if (mounted) {

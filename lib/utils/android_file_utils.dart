@@ -1,6 +1,7 @@
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/android_file_service.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -115,21 +116,30 @@ class Package {
 
 @immutable
 class StorageVolume {
-  final String description, path, state;
+  final String _description, path, state;
   final bool isPrimary, isRemovable;
 
   const StorageVolume({
-    this.description,
+    String description,
     this.isPrimary,
     this.isRemovable,
     this.path,
     this.state,
-  });
+  }) : _description = description;
+
+  String getDescription(BuildContext context) {
+    if (_description != null) return _description;
+    // ideally, the context should always be provided, but in some cases (e.g. album comparison),
+    // this would require numerous additional methods to have the context as argument
+    // for such a minor benefit: fallback volume description on Android < N
+    if (isPrimary) return context?.l10n?.storageVolumeDescriptionFallbackPrimary ?? 'Internal Storage';
+    return context?.l10n?.storageVolumeDescriptionFallbackNonPrimary ?? 'SD card';
+  }
 
   factory StorageVolume.fromMap(Map map) {
     final isPrimary = map['isPrimary'] ?? false;
     return StorageVolume(
-      description: map['description'] ?? (isPrimary ? 'Internal storage' : 'SD card'),
+      description: map['description'],
       isPrimary: isPrimary,
       isRemovable: map['isRemovable'] ?? false,
       path: map['path'] ?? '',
@@ -167,11 +177,9 @@ class VolumeRelativeDirectory {
     );
   }
 
-  String get directoryDescription => relativeDir.isEmpty ? 'root' : '“$relativeDir”';
-
-  String get volumeDescription {
+  String getVolumeDescription(BuildContext context) {
     final volume = androidFileUtils.storageVolumes.firstWhere((volume) => volume.path == volumePath, orElse: () => null);
-    return volume?.description ?? volumePath;
+    return volume?.getDescription(context) ?? volumePath;
   }
 
   @override

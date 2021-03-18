@@ -5,10 +5,11 @@ import 'package:aves/model/metadata.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/settings.dart';
-import 'package:aves/services/metadata_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
@@ -68,7 +69,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   }
 
   void _initDetailLoader() {
-    _detailLoader = MetadataService.getOverlayMetadata(entry);
+    _detailLoader = metadataService.getOverlayMetadata(entry);
   }
 
   @override
@@ -384,9 +385,14 @@ class _DateRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.l10n.localeName;
     final date = entry.bestDate;
-    final dateText = date != null ? '${DateFormat.yMMMd().format(date)} • ${DateFormat.Hm().format(date)}' : Constants.overlayUnknown;
-    final resolutionText = entry.isSvg ? entry.aspectRatioText : entry.isSized ? entry.resolutionText : '';
+    final dateText = date != null ? '${DateFormat.yMMMd(locale).format(date)} • ${DateFormat.Hm(locale).format(date)}' : Constants.overlayUnknown;
+    final resolutionText = entry.isSvg
+        ? entry.aspectRatioText
+        : entry.isSized
+            ? entry.resolutionText
+            : '';
 
     return Row(
       children: [

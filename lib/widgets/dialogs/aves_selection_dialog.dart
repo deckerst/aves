@@ -23,7 +23,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   _AvesSelectionDialogState<T> createState() => _AvesSelectionDialogState<T>();
 }
 
-class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
+class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
   T _selectedValue;
 
   @override
@@ -41,13 +41,14 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.toUpperCase()),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
       ],
     );
   }
 
   Widget _buildRadioListTile(T value, String title) {
+    final subtitle = widget.optionSubtitleBuilder?.call(value);
     return ReselectableRadioListTile<T>(
       key: Key(value.toString()),
       value: value,
@@ -64,9 +65,9 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog> {
         overflow: TextOverflow.fade,
         maxLines: 1,
       ),
-      subtitle: widget.optionSubtitleBuilder != null
+      subtitle: subtitle != null
           ? Text(
-              widget.optionSubtitleBuilder(value),
+              subtitle,
               softWrap: false,
               overflow: TextOverflow.fade,
               maxLines: 1,

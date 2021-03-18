@@ -1,15 +1,18 @@
 import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/access_grants.dart';
 import 'package:aves/widgets/settings/entry_background.dart';
 import 'package:aves/widgets/settings/hidden_filters.dart';
+import 'package:aves/widgets/settings/language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Settings'),
+          title: Text(context.l10n.settingsPageTitle),
         ),
         body: Theme(
           data: theme.copyWith(
@@ -73,19 +76,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildNavigationSection(BuildContext context) {
     return AvesExpansionTile(
-      title: 'Navigation',
+      title: context.l10n.settingsSectionNavigation,
       expandedNotifier: _expandedNotifier,
       children: [
         ListTile(
-          title: Text('Home'),
-          subtitle: Text(settings.homePage.name),
+          title: Text(context.l10n.settingsHome),
+          subtitle: Text(settings.homePage.getName(context)),
           onTap: () async {
             final value = await showDialog<HomePageSetting>(
               context: context,
               builder: (context) => AvesSelectionDialog<HomePageSetting>(
                 initialValue: settings.homePage,
-                options: Map.fromEntries(HomePageSetting.values.map((v) => MapEntry(v, v.name))),
-                title: 'Home',
+                options: Map.fromEntries(HomePageSetting.values.map((v) => MapEntry(v, v.getName(context)))),
+                title: context.l10n.settingsHome,
               ),
             );
             if (value != null) {
@@ -96,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
         SwitchListTile(
           value: settings.mustBackTwiceToExit,
           onChanged: (v) => settings.mustBackTwiceToExit = v,
-          title: Text('Tap “back” twice to exit'),
+          title: Text(context.l10n.settingsDoubleBackExit),
         ),
       ],
     );
@@ -104,19 +107,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildDisplaySection(BuildContext context) {
     return AvesExpansionTile(
-      title: 'Display',
+      title: context.l10n.settingsSectionDisplay,
       expandedNotifier: _expandedNotifier,
       children: [
+        LanguageTile(),
         ListTile(
-          title: Text('Keep screen on'),
-          subtitle: Text(settings.keepScreenOn.name),
+          title: Text(context.l10n.settingsKeepScreenOnTile),
+          subtitle: Text(settings.keepScreenOn.getName(context)),
           onTap: () async {
             final value = await showDialog<KeepScreenOn>(
               context: context,
               builder: (context) => AvesSelectionDialog<KeepScreenOn>(
                 initialValue: settings.keepScreenOn,
-                options: Map.fromEntries(KeepScreenOn.values.map((v) => MapEntry(v, v.name))),
-                title: 'Keep Screen On',
+                options: Map.fromEntries(KeepScreenOn.values.map((v) => MapEntry(v, v.getName(context)))),
+                title: context.l10n.settingsKeepScreenOnTitle,
               ),
             );
             if (value != null) {
@@ -125,34 +129,30 @@ class _SettingsPageState extends State<SettingsPage> {
           },
         ),
         ListTile(
-          title: Text('Raster image background'),
+          title: Text(context.l10n.settingsRasterImageBackground),
           trailing: EntryBackgroundSelector(
             getter: () => settings.rasterBackground,
             setter: (value) => settings.rasterBackground = value,
           ),
         ),
         ListTile(
-          title: Text('Vector image background'),
+          title: Text(context.l10n.settingsVectorImageBackground),
           trailing: EntryBackgroundSelector(
             getter: () => settings.vectorBackground,
             setter: (value) => settings.vectorBackground = value,
           ),
         ),
         ListTile(
-          title: Text('Coordinate format'),
-          subtitle: Text(settings.coordinateFormat.name),
+          title: Text(context.l10n.settingsCoordinateFormatTile),
+          subtitle: Text(settings.coordinateFormat.getName(context)),
           onTap: () async {
             final value = await showDialog<CoordinateFormat>(
               context: context,
               builder: (context) => AvesSelectionDialog<CoordinateFormat>(
                 initialValue: settings.coordinateFormat,
-                options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.name))),
-                optionSubtitleBuilder: (dynamic value) {
-                  // dynamic declaration followed by cast, as workaround for generics limitation
-                  final formatter = (value as CoordinateFormat);
-                  return formatter.format(Constants.pointNemo);
-                },
-                title: 'Coordinate Format',
+                options: Map.fromEntries(CoordinateFormat.values.map((v) => MapEntry(v, v.getName(context)))),
+                optionSubtitleBuilder: (value) => value.format(Constants.pointNemo),
+                title: context.l10n.settingsCoordinateFormatTitle,
               ),
             );
             if (value != null) {
@@ -166,23 +166,23 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildThumbnailsSection(BuildContext context) {
     return AvesExpansionTile(
-      title: 'Thumbnails',
+      title: context.l10n.settingsSectionThumbnails,
       expandedNotifier: _expandedNotifier,
       children: [
         SwitchListTile(
           value: settings.showThumbnailLocation,
           onChanged: (v) => settings.showThumbnailLocation = v,
-          title: Text('Show location icon'),
+          title: Text(context.l10n.settingsThumbnailShowLocationIcon),
         ),
         SwitchListTile(
           value: settings.showThumbnailRaw,
           onChanged: (v) => settings.showThumbnailRaw = v,
-          title: Text('Show raw icon'),
+          title: Text(context.l10n.settingsThumbnailShowRawIcon),
         ),
         SwitchListTile(
           value: settings.showThumbnailVideoDuration,
           onChanged: (v) => settings.showThumbnailVideoDuration = v,
-          title: Text('Show video duration'),
+          title: Text(context.l10n.settingsThumbnailShowVideoDuration),
         ),
       ],
     );
@@ -190,24 +190,24 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildViewerSection(BuildContext context) {
     return AvesExpansionTile(
-      title: 'Viewer',
+      title: context.l10n.settingsSectionViewer,
       expandedNotifier: _expandedNotifier,
       children: [
         SwitchListTile(
           value: settings.showOverlayMinimap,
           onChanged: (v) => settings.showOverlayMinimap = v,
-          title: Text('Show minimap'),
+          title: Text(context.l10n.settingsViewerShowMinimap),
         ),
         SwitchListTile(
           value: settings.showOverlayInfo,
           onChanged: (v) => settings.showOverlayInfo = v,
-          title: Text('Show information'),
-          subtitle: Text('Show title, date, location, etc.'),
+          title: Text(context.l10n.settingsViewerShowInformation),
+          subtitle: Text(context.l10n.settingsViewerShowInformationSubtitle),
         ),
         SwitchListTile(
           value: settings.showOverlayShootingDetails,
           onChanged: settings.showOverlayInfo ? (v) => settings.showOverlayShootingDetails = v : null,
-          title: Text('Show shooting details'),
+          title: Text(context.l10n.settingsViewerShowShootingDetails),
         ),
       ],
     );
@@ -215,7 +215,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildSearchSection(BuildContext context) {
     return AvesExpansionTile(
-      title: 'Search',
+      title: context.l10n.settingsSectionSearch,
       expandedNotifier: _expandedNotifier,
       children: [
         SwitchListTile(
@@ -226,7 +226,7 @@ class _SettingsPageState extends State<SettingsPage> {
               settings.searchHistory = [];
             }
           },
-          title: Text('Save search history'),
+          title: Text(context.l10n.settingsSaveSearchHistory),
         ),
       ],
     );
@@ -234,13 +234,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildPrivacySection(BuildContext context) {
     return AvesExpansionTile(
-      title: 'Privacy',
+      title: context.l10n.settingsSectionPrivacy,
       expandedNotifier: _expandedNotifier,
       children: [
         SwitchListTile(
           value: settings.isCrashlyticsEnabled,
           onChanged: (v) => settings.isCrashlyticsEnabled = v,
-          title: Text('Allow anonymous analytics and crash reporting'),
+          title: Text(context.l10n.settingsEnableAnalytics),
         ),
         HiddenFilterTile(),
         StorageAccessTile(),
