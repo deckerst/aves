@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+- opening media shared by other apps as file media content
 
 ## [v1.3.6] - 2021-03-18
 ### Added

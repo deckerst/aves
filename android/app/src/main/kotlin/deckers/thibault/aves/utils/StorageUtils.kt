@@ -293,9 +293,13 @@ object StorageUtils {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
-                    val docUri = MediaStore.getDocumentUri(context, mediaUri)
-                    if (docUri != null) {
-                        return DocumentFileCompat.fromSingleUri(context, docUri)
+                    try {
+                        val docUri = MediaStore.getDocumentUri(context, mediaUri)
+                        if (docUri != null) {
+                            return DocumentFileCompat.fromSingleUri(context, docUri)
+                        }
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to get document URI for mediaUri=$mediaUri", e)
                     }
                 }
                 // fallback for older APIs
@@ -401,13 +405,21 @@ object StorageUtils {
         return ContentResolver.SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
-    fun openInputStream(context: Context, uri: Uri): InputStream? {
-        var effectiveUri = uri
+    fun getOriginalUri(uri: Uri): Uri {
         // we get a permission denial if we require original from a provider other than the media store
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            effectiveUri = MediaStore.setRequireOriginal(uri)
+            val path = uri.path
+            path ?: return uri
+            // from Android R, accessing the original URI for a file media content yields a `SecurityException`
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
+                return MediaStore.setRequireOriginal(uri)
+            }
         }
+        return uri
+    }
 
+    fun openInputStream(context: Context, uri: Uri): InputStream? {
+        val effectiveUri = getOriginalUri(uri)
         return try {
             context.contentResolver.openInputStream(effectiveUri)
         } catch (e: FileNotFoundException) {
@@ -420,12 +432,7 @@ object StorageUtils {
     }
 
     fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
-        var effectiveUri = uri
-        // we get a permission denial if we require original from a provider other than the media store
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
-            effectiveUri = MediaStore.setRequireOriginal(uri)
-        }
-
+        val effectiveUri = getOriginalUri(uri)
         return try {
             MediaMetadataRetriever().apply {
                 setDataSource(context, effectiveUri)

@@ -8,7 +8,6 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
@@ -684,9 +683,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                     else -> uri
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    contentUri = MediaStore.setRequireOriginal(contentUri)
-                }
+                contentUri = StorageUtils.getOriginalUri(contentUri)
             }
         }
 
