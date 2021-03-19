@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Upgraded Flutter to beta v2.1.0-12.2.pre
+
 ### Fixed
 - opening media shared by other apps as file media content
 
