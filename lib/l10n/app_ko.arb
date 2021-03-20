@@ -245,6 +245,9 @@
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
 
+  "settingsSectionVideo": "동영상",
+  "settingsVideoShowVideos": "미디어에 동영상 표시",
+
   "settingsSectionSearch": "검색",
   "settingsSaveSearchHistory": "검색기록",
 

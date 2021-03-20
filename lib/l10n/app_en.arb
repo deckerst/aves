@@ -525,6 +525,11 @@
   "settingsViewerShowShootingDetails": "Show shooting details",
   "@settingsViewerShowShootingDetails": {},
 
+  "settingsSectionVideo": "Video",
+  "@settingsSectionVideo": {},
+  "settingsVideoShowVideos": "Show videos",
+  "@settingsVideoShowVideos": {},
+
   "settingsSectionSearch": "Search",
   "@settingsSectionSearch": {},
   "settingsSaveSearchHistory": "Save search history",

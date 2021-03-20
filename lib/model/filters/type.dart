@@ -7,30 +7,35 @@ import 'package:flutter/widgets.dart';
 class TypeFilter extends CollectionFilter {
   static const type = 'type';
 
-  static const animated = 'animated'; // subset of `image/gif` and `image/webp`
-  static const geotiff = 'geotiff'; // subset of `image/tiff`
-  static const panorama = 'panorama'; // subset of images
-  static const sphericalVideo = 'spherical_video'; // subset of videos
+  static const _animated = 'animated'; // subset of `image/gif` and `image/webp`
+  static const _geotiff = 'geotiff'; // subset of `image/tiff`
+  static const _panorama = 'panorama'; // subset of images
+  static const _sphericalVideo = 'spherical_video'; // subset of videos
 
   final String itemType;
   EntryFilter _test;
   IconData _icon;
 
-  TypeFilter(this.itemType) {
+  static final animated = TypeFilter._private(_animated);
+  static final geotiff = TypeFilter._private(_geotiff);
+  static final panorama = TypeFilter._private(_panorama);
+  static final sphericalVideo = TypeFilter._private(_sphericalVideo);
+
+  TypeFilter._private(this.itemType) {
     switch (itemType) {
-      case animated:
+      case _animated:
         _test = (entry) => entry.isAnimated;
         _icon = AIcons.animated;
         break;
-      case panorama:
+      case _panorama:
         _test = (entry) => entry.isImage && entry.is360;
         _icon = AIcons.threesixty;
         break;
-      case sphericalVideo:
+      case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
         _icon = AIcons.threesixty;
         break;
-      case geotiff:
+      case _geotiff:
         _test = (entry) => entry.isGeotiff;
         _icon = AIcons.geo;
         break;
@@ -38,7 +43,7 @@ class TypeFilter extends CollectionFilter {
   }
 
   TypeFilter.fromMap(Map<String, dynamic> json)
-      : this(
+      : this._private(
           json['itemType'],
         );
 
@@ -57,13 +62,13 @@ class TypeFilter extends CollectionFilter {
   @override
   String getLabel(BuildContext context) {
     switch (itemType) {
-      case animated:
+      case _animated:
         return context.l10n.filterTypeAnimatedLabel;
-      case panorama:
+      case _panorama:
         return context.l10n.filterTypePanoramaLabel;
-      case sphericalVideo:
+      case _sphericalVideo:
         return context.l10n.filterTypeSphericalVideoLabel;
-      case geotiff:
+      case _geotiff:
         return context.l10n.filterTypeGeotiffLabel;
       default:
         return itemType;

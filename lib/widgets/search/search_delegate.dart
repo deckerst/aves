@@ -31,13 +31,13 @@ class CollectionSearchDelegate {
   static const searchHistoryCount = 10;
   static final typeFilters = [
     FavouriteFilter(),
-    MimeFilter(MimeTypes.anyImage),
-    MimeFilter(MimeTypes.anyVideo),
+    MimeFilter.image,
+    MimeFilter.video,
+    TypeFilter.animated,
+    TypeFilter.panorama,
+    TypeFilter.sphericalVideo,
+    TypeFilter.geotiff,
     MimeFilter(MimeTypes.svg),
-    TypeFilter(TypeFilter.animated),
-    TypeFilter(TypeFilter.panorama),
-    TypeFilter(TypeFilter.sphericalVideo),
-    TypeFilter(TypeFilter.geotiff),
   ];
 
   CollectionSearchDelegate({@required this.source, this.parentCollection});
@@ -87,7 +87,14 @@ class CollectionSearchDelegate {
                 selector: (context, s) => s.hiddenFilters,
                 builder: (context, hiddenFilters, child) {
                   bool notHidden(CollectionFilter filter) => !hiddenFilters.contains(filter);
+
+                  final visibleTypeFilters = typeFilters.where(notHidden).toList();
+                  if (hiddenFilters.contains(MimeFilter.video)) {
+                    [MimeFilter.image, TypeFilter.sphericalVideo].forEach(visibleTypeFilters.remove);
+                  }
+
                   final history = settings.searchHistory.where(notHidden).toList();
+
                   return ListView(
                     padding: EdgeInsets.only(top: 8),
                     children: [
@@ -95,7 +102,7 @@ class CollectionSearchDelegate {
                         context: context,
                         filters: [
                           queryFilter,
-                          ...typeFilters.where(notHidden),
+                          ...visibleTypeFilters,
                         ].where((f) => f != null && containQuery(f.getLabel(context))).toList(),
                         // usually perform hero animation only on tapped chips,
                         // but we also need to animate the query chip when it is selected by submitting the search query
