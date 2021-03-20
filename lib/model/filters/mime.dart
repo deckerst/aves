@@ -14,6 +14,9 @@ class MimeFilter extends CollectionFilter {
   String _label;
   IconData _icon;
 
+  static final image = MimeFilter(MimeTypes.anyImage);
+  static final video = MimeFilter(MimeTypes.anyVideo);
+
   MimeFilter(this.mime) {
     var lowMime = mime.toLowerCase();
     if (lowMime.endsWith('/*')) {

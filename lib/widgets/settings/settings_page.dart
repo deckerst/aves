@@ -1,8 +1,10 @@
+import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -61,6 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       _buildDisplaySection(context),
                       _buildThumbnailsSection(context),
                       _buildViewerSection(context),
+                      _buildVideoSection(context),
                       _buildSearchSection(context),
                       _buildPrivacySection(context),
                     ],
@@ -208,6 +211,22 @@ class _SettingsPageState extends State<SettingsPage> {
           value: settings.showOverlayShootingDetails,
           onChanged: settings.showOverlayInfo ? (v) => settings.showOverlayShootingDetails = v : null,
           title: Text(context.l10n.settingsViewerShowShootingDetails),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVideoSection(BuildContext context) {
+    final hiddenFilters = settings.hiddenFilters;
+    final showVideos = !hiddenFilters.contains(MimeFilter.video);
+    return AvesExpansionTile(
+      title: context.l10n.settingsSectionVideo,
+      expandedNotifier: _expandedNotifier,
+      children: [
+        SwitchListTile(
+          value: showVideos,
+          onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility(MimeFilter.video, v),
+          title: Text(context.l10n.settingsVideoShowVideos),
         ),
       ],
     );
