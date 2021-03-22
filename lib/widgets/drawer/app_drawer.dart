@@ -47,11 +47,12 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget build(BuildContext context) {
     final hiddenFilters = settings.hiddenFilters;
     final showVideos = !hiddenFilters.contains(MimeFilter.video);
+    final showFavourites = !hiddenFilters.contains(FavouriteFilter.instance);
     final drawerItems = <Widget>[
       _buildHeader(context),
       allCollectionTile,
       if (showVideos) videoTile,
-      favouriteTile,
+      if (showFavourites) favouriteTile,
       _buildSpecialAlbumSection(),
       Divider(),
       albumListTile,
@@ -161,7 +162,7 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget get favouriteTile => CollectionNavTile(
         leading: Icon(AIcons.favourite),
         title: context.l10n.drawerCollectionFavourites,
-        filter: FavouriteFilter(),
+        filter: FavouriteFilter.instance,
       );
 
   Widget get albumListTile => NavTile(

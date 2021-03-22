@@ -31,7 +31,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
       case AlbumFilter.type:
         return AlbumFilter.fromMap(jsonMap);
       case FavouriteFilter.type:
-        return FavouriteFilter();
+        return FavouriteFilter.instance;
       case LocationFilter.type:
         return LocationFilter.fromMap(jsonMap);
       case TypeFilter.type:
