@@ -30,7 +30,7 @@ class CollectionSearchDelegate {
 
   static const searchHistoryCount = 10;
   static final typeFilters = [
-    FavouriteFilter(),
+    FavouriteFilter.instance,
     MimeFilter.image,
     MimeFilter.video,
     TypeFilter.animated,

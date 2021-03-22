@@ -15,7 +15,7 @@ void main() {
     final album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
 
-    final fav = FavouriteFilter();
+    final fav = FavouriteFilter.instance;
     expect(fav, jsonRoundTrip(fav));
 
     final location = LocationFilter(LocationLevel.country, 'France${LocationFilter.locationSeparator}FR');

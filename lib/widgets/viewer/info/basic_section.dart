@@ -90,7 +90,7 @@ class BasicSection extends StatelessWidget {
       builder: (context, child) {
         final effectiveFilters = [
           ...filters,
-          if (entry.isFavourite) FavouriteFilter(),
+          if (entry.isFavourite) FavouriteFilter.instance,
         ]..sort();
         if (effectiveFilters.isEmpty) return SizedBox.shrink();
         return Padding(
