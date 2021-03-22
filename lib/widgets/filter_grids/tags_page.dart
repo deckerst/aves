@@ -31,6 +31,7 @@ class TagListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage<TagFilter>(
             source: source,
             title: context.l10n.tagPageTitle,
+            sortFactor: settings.tagSortFactor,
             chipSetActionDelegate: TagChipSetActionDelegate(),
             chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [

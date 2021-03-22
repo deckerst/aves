@@ -3,6 +3,7 @@
   "welcomeMessage": "아베스 사용을 환영합니다",
   "welcomeAnalyticsToggle": "진단 데이터를 보내는 것에 동의합니다 (선택)",
   "welcomeTermsToggle": "이용약관에 동의합니다",
+  "itemCount": "{count, plural, other{{count}개}}",
 
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",

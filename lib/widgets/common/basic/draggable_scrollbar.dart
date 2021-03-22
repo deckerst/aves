@@ -62,7 +62,7 @@ class DraggableScrollbar extends StatefulWidget {
     @required this.controller,
     this.padding,
     this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
-    this.scrollbarTimeToFade = const Duration(milliseconds: 600),
+    this.scrollbarTimeToFade = const Duration(milliseconds: 1000),
     this.labelTextBuilder,
     @required this.child,
   })  : assert(controller != null),
@@ -91,6 +91,7 @@ class DraggableScrollbar extends StatefulWidget {
                 backgroundColor: backgroundColor,
                 child: labelText,
               ),
+              SizedBox(width: 24),
               scrollThumb,
             ],
           );
@@ -133,6 +134,7 @@ class ScrollLabel extends StatelessWidget {
 class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProviderStateMixin {
   final ValueNotifier<double> _thumbOffsetNotifier = ValueNotifier(0), _viewOffsetNotifier = ValueNotifier(0);
   bool _isDragInProcess = false;
+  Offset _longPressLastGlobalPosition;
 
   AnimationController _thumbAnimationController;
   Animation<double> _thumbAnimation;
@@ -193,9 +195,19 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
           ),
           RepaintBoundary(
             child: GestureDetector(
-              onVerticalDragStart: _onVerticalDragStart,
-              onVerticalDragUpdate: _onVerticalDragUpdate,
-              onVerticalDragEnd: _onVerticalDragEnd,
+              onLongPressStart: (details) {
+                _longPressLastGlobalPosition = details.globalPosition;
+                _onVerticalDragStart();
+              },
+              onLongPressMoveUpdate: (details) {
+                final dy = (details.globalPosition - _longPressLastGlobalPosition).dy;
+                _longPressLastGlobalPosition = details.globalPosition;
+                _onVerticalDragUpdate(dy);
+              },
+              onLongPressEnd: (_) => _onVerticalDragEnd(),
+              onVerticalDragStart: (_) => _onVerticalDragStart(),
+              onVerticalDragUpdate: (details) => _onVerticalDragUpdate(details.delta.dy),
+              onVerticalDragEnd: (_) => _onVerticalDragEnd(),
               child: ValueListenableBuilder(
                 valueListenable: _thumbOffsetNotifier,
                 builder: (context, thumbOffset, child) => Container(
@@ -244,17 +256,18 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     }
   }
 
-  void _onVerticalDragStart(DragStartDetails details) {
+  void _onVerticalDragStart() {
     _labelAnimationController.forward();
     _fadeoutTimer?.cancel();
+    _showThumb();
     setState(() => _isDragInProcess = true);
   }
 
-  void _onVerticalDragUpdate(DragUpdateDetails details) {
+  void _onVerticalDragUpdate(double deltaY) {
     _showThumb();
     if (_isDragInProcess) {
       // thumb offset
-      _thumbOffsetNotifier.value = (_thumbOffsetNotifier.value + details.delta.dy).clamp(thumbMinScrollExtent, thumbMaxScrollExtent);
+      _thumbOffsetNotifier.value = (_thumbOffsetNotifier.value + deltaY).clamp(thumbMinScrollExtent, thumbMaxScrollExtent);
 
       // scroll offset
       final min = controller.position.minScrollExtent;
@@ -263,7 +276,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
     }
   }
 
-  void _onVerticalDragEnd(DragEndDetails details) {
+  void _onVerticalDragEnd() {
     _scheduleFadeout();
     setState(() => _isDragInProcess = false);
   }
