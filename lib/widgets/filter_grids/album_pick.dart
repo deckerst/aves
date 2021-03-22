@@ -62,6 +62,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
             appBar: appBar,
             appBarHeight: AlbumPickAppBar.preferredHeight,
             filterSections: AlbumListPage.getAlbumEntries(context, source),
+            sortFactor: settings.albumSortFactor,
             showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
             queryNotifier: _queryNotifier,
             applyQuery: (filters, query) {

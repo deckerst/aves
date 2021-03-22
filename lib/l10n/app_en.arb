@@ -7,6 +7,12 @@
   "@welcomeAnalyticsToggle": {},
   "welcomeTermsToggle": "I agree to the terms and conditions",
   "@welcomeTermsToggle": {},
+  "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
+  "@itemCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
 
   "applyButtonLabel": "APPLY",
   "@applyButtonLabel": {},

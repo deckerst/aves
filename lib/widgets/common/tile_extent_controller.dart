@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 class TileExtentController {
@@ -45,7 +46,7 @@ class TileExtentController {
             ? oldUserPreferredExtent
             : currentExtent;
 
-    final columnCount = getEffectiveColumnCountForExtent(targetExtent);
+    final columnCount = _effectiveColumnCountForExtent(targetExtent);
     final newExtent = _extentForColumnCount(columnCount);
 
     if (userPreferredExtent > 0 || oldUserPreferredExtent == 0) {
@@ -67,15 +68,24 @@ class TileExtentController {
 
   int _effectiveColumnCountMax() => _columnCountForExtent(extentMin).floor();
 
-  double get effectiveExtentMin => _extentForColumnCount(_effectiveColumnCountMax());
-
-  double get effectiveExtentMax => _extentForColumnCount(_effectiveColumnCountMin());
-
-  int getEffectiveColumnCountForExtent(double extent) {
+  int _effectiveColumnCountForExtent(double extent) {
     if (extent > 0) {
       final columnCount = _columnCountForExtent(extent);
       return columnCount.clamp(_effectiveColumnCountMin(), _effectiveColumnCountMax()).round();
     }
     return columnCountDefault;
+  }
+
+  double get effectiveExtentMin => _extentForColumnCount(_effectiveColumnCountMax());
+
+  double get effectiveExtentMax => _extentForColumnCount(_effectiveColumnCountMin());
+
+  int get columnCount => _effectiveColumnCountForExtent(extentNotifier.value);
+
+  Duration getTileAnimationDelay(Duration pageTarget) {
+    final extent = extentNotifier.value;
+    final columnCount = ((viewportSize.width + spacing) / (extent + spacing)).round();
+    final rowCount = (viewportSize.height + spacing) ~/ (extent + spacing);
+    return pageTarget ~/ (columnCount + rowCount) * timeDilation;
   }
 }

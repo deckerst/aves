@@ -9,6 +9,7 @@ class Durations {
   static const dialogTransitionAnimation = Duration(milliseconds: 150); // ref `transitionDuration` in `showDialog()`
 
   static const staggeredAnimation = Duration(milliseconds: 375);
+  static const staggeredAnimationPageTarget = Duration(milliseconds: 900);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
   static const appBarTitleAnimation = Duration(milliseconds: 300);

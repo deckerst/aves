@@ -28,6 +28,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final String title;
   final ChipSetActionDelegate chipSetActionDelegate;
+  final ChipSortFactor sortFactor;
   final bool groupable, showHeaders;
   final ChipActionDelegate chipActionDelegate;
   final List<ChipAction> Function(T filter) chipActionsBuilder;
@@ -37,6 +38,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   const FilterNavigationPage({
     @required this.source,
     @required this.title,
+    @required this.sortFactor,
     this.groupable = false,
     this.showHeaders = false,
     @required this.chipSetActionDelegate,
@@ -64,6 +66,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
         floating: true,
       ),
       filterSections: filterSections,
+      sortFactor: sortFactor,
       showHeaders: showHeaders,
       queryNotifier: ValueNotifier(''),
       emptyBuilder: () => ValueListenableBuilder<SourceState>(

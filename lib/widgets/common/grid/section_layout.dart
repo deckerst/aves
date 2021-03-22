@@ -12,6 +12,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final int columnCount;
   final double spacing, tileExtent;
   final Widget Function(T item) tileBuilder;
+  final Duration tileAnimationDelay;
   final Widget child;
 
   const SectionedListLayoutProvider({
@@ -20,6 +21,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     this.spacing = 0,
     @required this.tileExtent,
     @required this.tileBuilder,
+    this.tileAnimationDelay,
     @required this.child,
   }) : assert(scrollableWidth != 0);
 
@@ -40,6 +42,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     final _showHeaders = showHeaders;
     final _sections = sections;
     final sectionKeys = _sections.keys.toList();
+    final animate = tileAnimationDelay > Duration.zero;
 
     final sectionLayouts = <SectionLayout>[];
     var currentIndex = 0, currentOffset = 0.0;
@@ -76,6 +79,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
             listIndex - sectionFirstIndex,
             sectionKey,
             headerExtent,
+            animate,
           ),
         ),
       );
@@ -97,10 +101,11 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     int sectionChildIndex,
     SectionKey sectionKey,
     double headerExtent,
+    bool animate,
   ) {
     if (sectionChildIndex == 0) {
       final header = headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : SizedBox.shrink();
-      return _buildAnimation(sectionGridIndex, header);
+      return animate ? _buildAnimation(sectionGridIndex, header) : header;
     }
     sectionChildIndex--;
 
@@ -113,7 +118,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       final itemGridIndex = sectionGridIndex + i - minItemIndex;
       final item = tileBuilder(section[i]);
       if (i != minItemIndex) children.add(SizedBox(width: spacing));
-      children.add(_buildAnimation(itemGridIndex, item));
+      children.add(animate ? _buildAnimation(itemGridIndex, item) : item);
     }
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -126,7 +131,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       position: index,
       columnCount: columnCount,
       duration: Durations.staggeredAnimation,
-      delay: Durations.staggeredAnimationDelay,
+      delay: tileAnimationDelay ?? Durations.staggeredAnimationDelay,
       child: SlideAnimation(
         verticalOffset: 50.0,
         child: FadeInAnimation(
@@ -189,9 +194,11 @@ class SectionedListLayout<T> {
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
   }
 
+  SectionLayout getSectionAt(double offsetY) => sectionLayouts.firstWhere((sl) => offsetY < sl.maxOffset, orElse: () => null);
+
   T getItemAt(Offset position) {
     var dy = position.dy;
-    final sectionLayout = sectionLayouts.firstWhere((sl) => dy < sl.maxOffset, orElse: () => null);
+    final sectionLayout = getSectionAt(dy);
     if (sectionLayout == null) return null;
 
     final section = sections[sectionLayout.sectionKey];
