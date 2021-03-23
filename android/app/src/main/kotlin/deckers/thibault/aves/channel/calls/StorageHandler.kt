@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
-import android.util.Log
 import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.PermissionManager
@@ -150,7 +149,6 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             try {
                 val dir = File(it)
                 if (dir.isDirectory && dir.listFiles()?.isEmpty() == true && dir.delete()) {
-                    Log.d("TLAD", "deleted empty directory=$dir")
                     deleted++
                 }
             } catch (e: SecurityException) {

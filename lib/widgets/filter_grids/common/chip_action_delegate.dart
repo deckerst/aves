@@ -11,7 +11,6 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -24,7 +23,6 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -181,7 +179,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         }
 
         // cleanup
-        await StorageService.deleteEmptyDirectories({album});
+        await storageService.deleteEmptyDirectories({album});
       },
     );
   }
@@ -196,7 +194,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     // check whether renaming is possible given OS restrictions,
     // before asking to input a new name
-    final restrictedDirs = await StorageService.getRestrictedDirectories();
+    final restrictedDirs = await storageService.getRestrictedDirectories();
     final dir = VolumeRelativeDirectory.fromPath(album);
     if (restrictedDirs.contains(dir)) {
       await showRestrictedDirectoryDialog(context, dir);
@@ -211,8 +209,8 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final destinationAlbumParent = path.dirname(album);
-    final destinationAlbum = path.join(destinationAlbumParent, newName);
+    final destinationAlbumParent = pContext.dirname(album);
+    final destinationAlbum = pContext.join(destinationAlbumParent, newName);
     if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;
 
     if (!(await File(destinationAlbum).exists())) {
@@ -239,7 +237,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         }
 
         // cleanup
-        await StorageService.deleteEmptyDirectories({album});
+        await storageService.deleteEmptyDirectories({album});
       },
     );
   }

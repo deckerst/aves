@@ -2,10 +2,11 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
 
 mixin AlbumMixin on SourceBase {
   final Set<String> _directories = {};
@@ -13,8 +14,8 @@ mixin AlbumMixin on SourceBase {
   List<String> get rawAlbums => List.unmodifiable(_directories);
 
   int compareAlbumsByName(String a, String b) {
-    final ua = getUniqueAlbumName(null, a);
-    final ub = getUniqueAlbumName(null, b);
+    final ua = getAlbumDisplayName(null, a);
+    final ub = getAlbumDisplayName(null, b);
     final c = compareAsciiUpperCase(ua, ub);
     if (c != 0) return c;
     final va = androidFileUtils.getStorageVolume(a)?.path ?? '';
@@ -24,36 +25,50 @@ mixin AlbumMixin on SourceBase {
 
   void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
 
-  String getUniqueAlbumName(BuildContext context, String dirPath) {
-    String unique(String dirPath, [bool Function(String) test]) {
-      final otherAlbums = _directories.where(test ?? (_) => true).where((item) => item != dirPath);
-      final parts = dirPath.split(separator);
-      var partCount = 0;
-      String testName;
-      do {
-        testName = separator + parts.skip(parts.length - ++partCount).join(separator);
-      } while (otherAlbums.any((item) => item.endsWith(testName)));
-      final uniqueName = parts.skip(parts.length - partCount).join(separator);
-      return uniqueName;
+  String getAlbumDisplayName(BuildContext context, String dirPath) {
+    assert(!dirPath.endsWith(pContext.separator));
+
+    if (context != null) {
+      final type = androidFileUtils.getAlbumType(dirPath);
+      if (type == AlbumType.camera) return context.l10n.albumCamera;
+      if (type == AlbumType.download) return context.l10n.albumDownload;
+      if (type == AlbumType.screenshots) return context.l10n.albumScreenshots;
+      if (type == AlbumType.screenRecordings) return context.l10n.albumScreenRecordings;
     }
 
     final dir = VolumeRelativeDirectory.fromPath(dirPath);
     if (dir == null) return dirPath;
 
-    final uniqueNameInDevice = unique(dirPath);
     final relativeDir = dir.relativeDir;
-    if (relativeDir.isEmpty) return uniqueNameInDevice;
+    if (relativeDir.isEmpty) {
+      final volume = androidFileUtils.getStorageVolume(dirPath);
+      return volume.getDescription(context);
+    }
 
+    String unique(String dirPath, Set<String> others) {
+      final parts = pContext.split(dirPath);
+      for (var i = parts.length - 1; i > 0; i--) {
+        final testName = pContext.joinAll(['', ...parts.skip(i)]);
+        if (others.every((item) => !item.endsWith(testName))) return testName;
+      }
+      return dirPath;
+    }
+
+    final otherAlbumsOnDevice = _directories.where((item) => item != dirPath).toSet();
+    final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
     if (uniqueNameInDevice.length < relativeDir.length) {
       return uniqueNameInDevice;
+    }
+
+    final volumePath = dir.volumePath;
+    String trimVolumePath(String path) => path.substring(dir.volumePath.length);
+    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path.startsWith(volumePath)).map(trimVolumePath).toSet();
+    final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
+    final volume = androidFileUtils.getStorageVolume(dirPath);
+    if (volume.isPrimary) {
+      return uniqueNameInVolume;
     } else {
-      final uniqueNameInVolume = unique(dirPath, (item) => item.startsWith(dir.volumePath));
-      final volume = androidFileUtils.getStorageVolume(dirPath);
-      if (volume.isPrimary) {
-        return uniqueNameInVolume;
-      } else {
-        return '$uniqueNameInVolume (${volume.getDescription(context)})';
-      }
+      return '$uniqueNameInVolume (${volume.getDescription(context)})';
     }
   }
 

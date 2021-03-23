@@ -5,11 +5,35 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
-class StorageService {
+abstract class StorageService {
+  Future<Set<StorageVolume>> getStorageVolumes();
+
+  Future<int> getFreeSpace(StorageVolume volume);
+
+  Future<List<String>> getGrantedDirectories();
+
+  Future<void> revokeDirectoryAccess(String path);
+
+  Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths);
+
+  Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories();
+
+  // returns whether user granted access to volume root at `volumePath`
+  Future<bool> requestVolumeAccess(String volumePath);
+
+  // returns number of deleted directories
+  Future<int> deleteEmptyDirectories(Iterable<String> dirPaths);
+
+  // returns media URI
+  Future<Uri> scanFile(String path, String mimeType);
+}
+
+class PlatformStorageService implements StorageService {
   static const platform = MethodChannel('deckers.thibault/aves/storage');
   static final StreamsChannel storageAccessChannel = StreamsChannel('deckers.thibault/aves/storageaccessstream');
 
-  static Future<Set<StorageVolume>> getStorageVolumes() async {
+  @override
+  Future<Set<StorageVolume>> getStorageVolumes() async {
     try {
       final result = await platform.invokeMethod('getStorageVolumes');
       return (result as List).cast<Map>().map((map) => StorageVolume.fromMap(map)).toSet();
@@ -19,7 +43,8 @@ class StorageService {
     return {};
   }
 
-  static Future<int> getFreeSpace(StorageVolume volume) async {
+  @override
+  Future<int> getFreeSpace(StorageVolume volume) async {
     try {
       final result = await platform.invokeMethod('getFreeSpace', <String, dynamic>{
         'path': volume.path,
@@ -31,7 +56,8 @@ class StorageService {
     return 0;
   }
 
-  static Future<List<String>> getGrantedDirectories() async {
+  @override
+  Future<List<String>> getGrantedDirectories() async {
     try {
       final result = await platform.invokeMethod('getGrantedDirectories');
       return (result as List).cast<String>();
@@ -41,7 +67,8 @@ class StorageService {
     return [];
   }
 
-  static Future<void> revokeDirectoryAccess(String path) async {
+  @override
+  Future<void> revokeDirectoryAccess(String path) async {
     try {
       await platform.invokeMethod('revokeDirectoryAccess', <String, dynamic>{
         'path': path,
@@ -52,7 +79,8 @@ class StorageService {
     return;
   }
 
-  static Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
+  @override
+  Future<Set<VolumeRelativeDirectory>> getInaccessibleDirectories(Iterable<String> dirPaths) async {
     try {
       final result = await platform.invokeMethod('getInaccessibleDirectories', <String, dynamic>{
         'dirPaths': dirPaths.toList(),
@@ -64,7 +92,8 @@ class StorageService {
     return null;
   }
 
-  static Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories() async {
+  @override
+  Future<Set<VolumeRelativeDirectory>> getRestrictedDirectories() async {
     try {
       final result = await platform.invokeMethod('getRestrictedDirectories');
       return (result as List).cast<Map>().map((map) => VolumeRelativeDirectory.fromMap(map)).toSet();
@@ -75,7 +104,8 @@ class StorageService {
   }
 
   // returns whether user granted access to volume root at `volumePath`
-  static Future<bool> requestVolumeAccess(String volumePath) async {
+  @override
+  Future<bool> requestVolumeAccess(String volumePath) async {
     try {
       final completer = Completer<bool>();
       storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
@@ -96,7 +126,8 @@ class StorageService {
   }
 
   // returns number of deleted directories
-  static Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
+  @override
+  Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
     try {
       return await platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
         'dirPaths': dirPaths.toList(),
@@ -108,7 +139,8 @@ class StorageService {
   }
 
   // returns media URI
-  static Future<Uri> scanFile(String path, String mimeType) async {
+  @override
+  Future<Uri> scanFile(String path, String mimeType) async {
     debugPrint('scanFile with path=$path, mimeType=$mimeType');
     try {
       final uriString = await platform.invokeMethod('scanFile', <String, dynamic>{

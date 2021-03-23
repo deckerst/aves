@@ -82,7 +82,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
-      if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(context, album)),
+      if (album != null) AlbumFilter(album, collection?.source?.getAlbumDisplayName(context, album)),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(

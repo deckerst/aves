@@ -9,7 +9,6 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -69,7 +68,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (moveType == MoveType.move) {
       // check whether moving is possible given OS restrictions,
       // before asking to pick a destination album
-      final restrictedDirs = await StorageService.getRestrictedDirectories();
+      final restrictedDirs = await storageService.getRestrictedDirectories();
       for (final selectionDir in selectionDirs) {
         final dir = VolumeRelativeDirectory.fromPath(selectionDir);
         if (restrictedDirs.contains(dir)) {
@@ -127,7 +126,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
         // cleanup
         if (moveType == MoveType.move) {
-          await StorageService.deleteEmptyDirectories(selectionDirs);
+          await storageService.deleteEmptyDirectories(selectionDirs);
         }
       },
     );
@@ -178,7 +177,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         }
 
         // cleanup
-        await StorageService.deleteEmptyDirectories(selectionDirs);
+        await storageService.deleteEmptyDirectories(selectionDirs);
       },
     );
   }
