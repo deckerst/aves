@@ -68,7 +68,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
             applyQuery: (filters, query) {
               if (query == null || query.isEmpty) return filters;
               query = query.toUpperCase();
-              return filters.where((item) => item.filter.uniqueName.toUpperCase().contains(query)).toList();
+              return filters.where((item) => item.filter.displayName.toUpperCase().contains(query)).toList();
             },
             emptyBuilder: () => EmptyContent(
               icon: AIcons.album,

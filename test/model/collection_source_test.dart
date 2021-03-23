@@ -12,29 +12,36 @@ import 'package:aves/services/image_file_service.dart';
 import 'package:aves/services/media_store_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/time_service.dart';
+import 'package:aves/utils/android_file_utils.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 
 import '../fake/availability.dart';
 import '../fake/image_file_service.dart';
 import '../fake/media_store_service.dart';
 import '../fake/metadata_db.dart';
 import '../fake/metadata_service.dart';
+import '../fake/storage_service.dart';
 import '../fake/time_service.dart';
 
 void main() {
-  const volume = '/storage/emulated/0/';
-  const testAlbum = '${volume}Pictures/test';
-  const sourceAlbum = '${volume}Pictures/source';
-  const destinationAlbum = '${volume}Pictures/destination';
+  const testAlbum = '${FakeStorageService.primaryPath}Pictures/test';
+  const sourceAlbum = '${FakeStorageService.primaryPath}Pictures/source';
+  const destinationAlbum = '${FakeStorageService.primaryPath}Pictures/destination';
 
   setUp(() async {
+    // specify Posix style path context for consistent behaviour when running tests on Windows
+    getIt.registerLazySingleton<p.Context>(() => p.Context(style: p.Style.posix));
     getIt.registerLazySingleton<AvesAvailability>(() => FakeAvesAvailability());
     getIt.registerLazySingleton<MetadataDb>(() => FakeMetadataDb());
 
     getIt.registerLazySingleton<ImageFileService>(() => FakeImageFileService());
     getIt.registerLazySingleton<MediaStoreService>(() => FakeMediaStoreService());
     getIt.registerLazySingleton<MetadataService>(() => FakeMetadataService());
+    getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
     getIt.registerLazySingleton<TimeService>(() => FakeTimeService());
 
     await settings.init();
@@ -235,5 +242,36 @@ void main() {
     expect(image1.isFavourite, true);
     expect(covers.count, 1);
     expect(covers.coverContentId(albumFilter), image1.contentId);
+  });
+
+  testWidgets('unique album names', (tester) async {
+    (mediaStoreService as FakeMediaStoreService).entries = {
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Elea/Zeno', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Citium/Zeno', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Cleanthes', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Chrysippus', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Chrysippus', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Seneca', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Seneca', '1'),
+    };
+
+    await androidFileUtils.init();
+    final source = await _initSource();
+    await tester.pumpWidget(
+      Builder(
+        builder: (context) {
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Elea/Zeno'), 'Elea/Zeno');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Citium/Zeno'), 'Citium/Zeno');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Cleanthes'), 'Cleanthes');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Chrysippus'), 'Chrysippus');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Chrysippus'), 'Chrysippus (${FakeStorageService.removableDescription})');
+          expect(source.getAlbumDisplayName(context, FakeStorageService.primaryRootAlbum), FakeStorageService.primaryDescription);
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Seneca'), 'Pictures/Seneca');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
+          return Placeholder();
+        },
+      ),
+    );
   });
 }

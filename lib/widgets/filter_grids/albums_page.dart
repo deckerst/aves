@@ -61,7 +61,7 @@ class AlbumListPage extends StatelessWidget {
   // common with album selection page to move/copy entries
 
   static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> getAlbumEntries(BuildContext context, CollectionSource source) {
-    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getUniqueAlbumName(context, album))).toSet();
+    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getAlbumDisplayName(context, album))).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
     return _group(context, sorted);

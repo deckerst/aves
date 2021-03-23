@@ -1,4 +1,4 @@
-import 'package:aves/services/storage_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
@@ -39,7 +39,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
     _load();
   }
 
-  void _load() => _pathLoader = StorageService.getGrantedDirectories();
+  void _load() => _pathLoader = storageService.getGrantedDirectories();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                               trailing: IconButton(
                                 icon: Icon(AIcons.clear),
                                 onPressed: () async {
-                                  await StorageService.revokeDirectoryAccess(path);
+                                  await storageService.revokeDirectoryAccess(path);
                                   _load();
                                   setState(() {});
                                 },

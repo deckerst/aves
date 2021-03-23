@@ -1,10 +1,9 @@
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/storage_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
@@ -21,13 +20,13 @@ class AndroidFileUtils {
   AndroidFileUtils._private();
 
   Future<void> init() async {
-    storageVolumes = await StorageService.getStorageVolumes();
+    storageVolumes = await storageService.getStorageVolumes();
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
     primaryStorage = storageVolumes.firstWhere((volume) => volume.isPrimary).path;
-    dcimPath = join(primaryStorage, 'DCIM');
-    downloadPath = join(primaryStorage, 'Download');
-    moviesPath = join(primaryStorage, 'Movies');
-    picturesPath = join(primaryStorage, 'Pictures');
+    dcimPath = pContext.join(primaryStorage, 'DCIM');
+    downloadPath = pContext.join(primaryStorage, 'Download');
+    moviesPath = pContext.join(primaryStorage, 'Movies');
+    picturesPath = pContext.join(primaryStorage, 'Pictures');
   }
 
   Future<void> initAppNames() async {
@@ -60,7 +59,7 @@ class AndroidFileUtils {
       if (isScreenRecordingsPath(albumPath)) return AlbumType.screenRecordings;
       if (isScreenshotsPath(albumPath)) return AlbumType.screenshots;
 
-      final dir = albumPath.split(separator).last;
+      final dir = pContext.split(albumPath).last;
       if (albumPath.startsWith(primaryStorage) && _potentialAppDirs.contains(dir)) return AlbumType.app;
     }
     return AlbumType.regular;
@@ -68,7 +67,7 @@ class AndroidFileUtils {
 
   String getAlbumAppPackageName(String albumPath) {
     if (albumPath == null) return null;
-    final dir = albumPath.split(separator).last;
+    final dir = pContext.split(albumPath).last;
     final package = _launcherPackages.firstWhere((package) => package.potentialDirs.contains(dir), orElse: () => null);
     return package?.packageName;
   }

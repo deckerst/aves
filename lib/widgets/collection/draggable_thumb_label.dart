@@ -28,7 +28,7 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               case EntryGroupFactor.album:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
-                  if (_hasMultipleSections(context)) context.read<CollectionSource>().getUniqueAlbumName(context, entry.directory),
+                  if (_hasMultipleSections(context)) context.read<CollectionSource>().getAlbumDisplayName(context, entry.directory),
                 ];
               case EntryGroupFactor.month:
               case EntryGroupFactor.none:
@@ -43,7 +43,7 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
             break;
           case EntrySortFactor.name:
             return [
-              if (_hasMultipleSections(context)) context.read<CollectionSource>().getUniqueAlbumName(context, entry.directory),
+              if (_hasMultipleSections(context)) context.read<CollectionSource>().getAlbumDisplayName(context, entry.directory),
               entry.bestTitle,
             ];
           case EntrySortFactor.size:

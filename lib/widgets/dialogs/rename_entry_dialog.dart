@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 
 import 'aves_dialog.dart';
 
@@ -69,7 +69,7 @@ class _RenameEntryDialogState extends State<RenameEntryDialog> {
 
   String _buildEntryPath(String name) {
     if (name == null || name.isEmpty) return '';
-    return path.join(entry.directory, name + entry.extension);
+    return pContext.join(entry.directory, name + entry.extension);
   }
 
   Future<void> _validate() async {

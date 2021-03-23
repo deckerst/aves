@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/storage_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -20,7 +20,7 @@ mixin SizeAwareMixin {
     MoveType moveType,
   ) async {
     final destinationVolume = androidFileUtils.getStorageVolume(destinationAlbum);
-    final free = await StorageService.getFreeSpace(destinationVolume);
+    final free = await storageService.getFreeSpace(destinationVolume);
     int needed;
     int sumSize(sum, entry) => sum + entry.sizeBytes;
     switch (moveType) {

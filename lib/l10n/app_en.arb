@@ -450,6 +450,15 @@
   "albumPickPageTitleMove": "Move to Album",
   "@albumPickPageTitleMove": {},
 
+  "albumCamera": "Camera",
+  "@albumCamera": {},
+  "albumDownload": "Download",
+  "@albumDownload": {},
+  "albumScreenshots": "Screenshots",
+  "@albumScreenshots": {},
+  "albumScreenRecordings": "Screen recordings",
+  "@albumScreenRecordings": {},
+
   "albumPageTitle": "Albums",
   "@albumPageTitle": {},
   "albumEmpty": "No albums",

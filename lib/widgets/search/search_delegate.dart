@@ -117,8 +117,14 @@ class CollectionSearchDelegate {
                       StreamBuilder(
                           stream: source.eventBus.on<AlbumsChangedEvent>(),
                           builder: (context, snapshot) {
-                            // filter twice: full path, and then unique name
-                            final filters = source.rawAlbums.where(containQuery).map((s) => AlbumFilter(s, source.getUniqueAlbumName(context, s))).where((f) => containQuery(f.uniqueName)).toList()..sort();
+                            final filters = source.rawAlbums
+                                .map((album) => AlbumFilter(
+                                      album,
+                                      source.getAlbumDisplayName(context, album),
+                                    ))
+                                .where((filter) => containQuery(filter.album) || containQuery(filter.displayName))
+                                .toList()
+                                  ..sort();
                             return _buildFilterRow(
                               context: context,
                               title: context.l10n.searchSectionAlbums,

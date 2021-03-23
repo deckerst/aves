@@ -46,7 +46,7 @@ class AlbumSectionHeader extends StatelessWidget {
     return SectionHeader.getPreferredHeight(
       context: context,
       maxWidth: maxWidth,
-      title: source.getUniqueAlbumName(context, directory),
+      title: source.getAlbumDisplayName(context, directory),
       hasLeading: androidFileUtils.getAlbumType(directory) != AlbumType.regular,
       hasTrailing: androidFileUtils.isOnRemovableStorage(directory),
     );

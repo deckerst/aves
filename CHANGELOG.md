@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Collection / Albums / Countries / Tags: added label when dragging scrollbar thumb
+- Albums: localized common album names
 
 ### Changed
 - Upgraded Flutter to beta v2.1.0-12.2.pre

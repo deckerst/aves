@@ -17,7 +17,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final sll = context.read<SectionedListLayout<T>>();
     final sectionLayout = sll.getSectionAt(offsetY);
-    if (sectionLayout == null) return null;
+    if (sectionLayout == null) return SizedBox();
 
     final section = sll.sections[sectionLayout.sectionKey];
     final dy = offsetY - (sectionLayout.minOffset + sectionLayout.headerExtent);

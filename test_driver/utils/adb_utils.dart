@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart' as p;
 
 String get adb {
   final env = Platform.environment;
   // e.g. C:\Users\<username>\AppData\Local\Android\Sdk
   final sdkDir = env['ANDROID_SDK_ROOT'] ?? env['ANDROID_SDK'];
-  return path.join(sdkDir, 'platform-tools', Platform.isWindows ? 'adb.exe' : 'adb');
+  return p.join(sdkDir, 'platform-tools', Platform.isWindows ? 'adb.exe' : 'adb');
 }
 
 /*
