@@ -1,4 +1,4 @@
-import 'package:aves/services/android_file_service.dart';
+import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -17,7 +17,7 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
   void initState() {
     super.initState();
     androidFileUtils.storageVolumes.forEach((volume) async {
-      final byteCount = await AndroidFileService.getFreeSpace(volume);
+      final byteCount = await StorageService.getFreeSpace(volume);
       setState(() => _freeSpaceByVolume[volume.path] = byteCount);
     });
   }

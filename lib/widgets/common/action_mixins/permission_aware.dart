@@ -1,5 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/services/android_file_service.dart';
+import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -11,9 +11,9 @@ mixin PermissionAwareMixin {
   }
 
   Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths) async {
-    final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
+    final restrictedDirs = await StorageService.getRestrictedDirectories();
     while (true) {
-      final dirs = await AndroidFileService.getInaccessibleDirectories(albumPaths);
+      final dirs = await StorageService.getInaccessibleDirectories(albumPaths);
       if (dirs == null) return false;
       if (dirs.isEmpty) return true;
 
@@ -49,7 +49,7 @@ mixin PermissionAwareMixin {
       // abort if the user cancels in Flutter
       if (confirmed == null || !confirmed) return false;
 
-      final granted = await AndroidFileService.requestVolumeAccess(dir.volumePath);
+      final granted = await StorageService.requestVolumeAccess(dir.volumePath);
       if (!granted) {
         // abort if the user denies access from the native dialog
         return false;

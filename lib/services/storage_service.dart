@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:streams_channel/streams_channel.dart';
 
-class AndroidFileService {
+class StorageService {
   static const platform = MethodChannel('deckers.thibault/aves/storage');
   static final StreamsChannel storageAccessChannel = StreamsChannel('deckers.thibault/aves/storageaccessstream');
 
@@ -93,6 +93,18 @@ class AndroidFileService {
       debugPrint('requestVolumeAccess failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return false;
+  }
+
+  // returns number of deleted directories
+  static Future<int> deleteEmptyDirectories(Iterable<String> dirPaths) async {
+    try {
+      return await platform.invokeMethod('deleteEmptyDirectories', <String, dynamic>{
+        'dirPaths': dirPaths.toList(),
+      });
+    } on PlatformException catch (e) {
+      debugPrint('deleteEmptyDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return 0;
   }
 
   // returns media URI
