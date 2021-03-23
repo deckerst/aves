@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.storage.StorageManager
+import android.util.Log
 import androidx.core.os.EnvironmentCompat
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.utils.PermissionManager
@@ -29,6 +30,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
             "getInaccessibleDirectories" -> safe(call, result, ::getInaccessibleDirectories)
             "getRestrictedDirectories" -> safe(call, result, ::getRestrictedDirectories)
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
+            "deleteEmptyDirectories" -> safe(call, result, ::deleteEmptyDirectories)
             "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
         }
@@ -134,6 +136,28 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
 
         val success = PermissionManager.revokeDirectoryAccess(context, path)
         result.success(success)
+    }
+
+    private fun deleteEmptyDirectories(call: MethodCall, result: MethodChannel.Result) {
+        val dirPaths = call.argument<List<String>>("dirPaths")
+        if (dirPaths == null) {
+            result.error("deleteEmptyDirectories-args", "failed because of missing arguments", null)
+            return
+        }
+
+        var deleted = 0
+        dirPaths.forEach {
+            try {
+                val dir = File(it)
+                if (dir.isDirectory && dir.listFiles()?.isEmpty() == true && dir.delete()) {
+                    Log.d("TLAD", "deleted empty directory=$dir")
+                    deleted++
+                }
+            } catch (e: SecurityException) {
+                // ignore
+            }
+        }
+        result.success(deleted)
     }
 
     private fun scanFile(call: MethodCall, result: MethodChannel.Result) {

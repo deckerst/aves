@@ -7,9 +7,9 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -69,7 +69,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     if (moveType == MoveType.move) {
       // check whether moving is possible given OS restrictions,
       // before asking to pick a destination album
-      final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
+      final restrictedDirs = await StorageService.getRestrictedDirectories();
       for (final selectionDir in selectionDirs) {
         final dir = VolumeRelativeDirectory.fromPath(selectionDir);
         if (restrictedDirs.contains(dir)) {
@@ -124,19 +124,25 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           final count = movedCount;
           showFeedback(context, copy ? l10n.collectionCopySuccessFeedback(count) : l10n.collectionMoveSuccessFeedback(count));
         }
+
+        // cleanup
+        if (moveType == MoveType.move) {
+          await StorageService.deleteEmptyDirectories(selectionDirs);
+        }
       },
     );
   }
 
   Future<void> _showDeleteDialog(BuildContext context) async {
-    final count = selection.length;
+    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).toSet();
+    final todoCount = selection.length;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(count)),
+          content: Text(context.l10n.deleteEntriesConfirmationDialogMessage(todoCount)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -152,14 +158,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     );
     if (confirmed == null || !confirmed) return;
 
-    if (!await checkStoragePermission(context, selection)) return;
+    if (!await checkStoragePermissionForAlbums(context, selectionDirs)) return;
 
-    final selectionCount = selection.length;
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
       opStream: imageFileService.delete(selection),
-      itemCount: selectionCount,
+      itemCount: todoCount,
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris);
@@ -167,10 +172,13 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         source.resumeMonitoring();
 
         final deletedCount = deletedUris.length;
-        if (deletedCount < selectionCount) {
-          final count = selectionCount - deletedCount;
+        if (deletedCount < todoCount) {
+          final count = todoCount - deletedCount;
           showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
         }
+
+        // cleanup
+        await StorageService.deleteEmptyDirectories(selectionDirs);
       },
     );
   }

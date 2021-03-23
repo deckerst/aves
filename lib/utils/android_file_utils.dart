@@ -1,5 +1,5 @@
 import 'package:aves/services/android_app_service.dart';
-import 'package:aves/services/android_file_service.dart';
+import 'package:aves/services/storage_service.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/foundation.dart';
@@ -21,7 +21,7 @@ class AndroidFileUtils {
   AndroidFileUtils._private();
 
   Future<void> init() async {
-    storageVolumes = await AndroidFileService.getStorageVolumes();
+    storageVolumes = await StorageService.getStorageVolumes();
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
     primaryStorage = storageVolumes.firstWhere((volume) => volume.isPrimary).path;
     dcimPath = join(primaryStorage, 'DCIM');
