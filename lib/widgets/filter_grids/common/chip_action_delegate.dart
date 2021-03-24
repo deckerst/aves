@@ -192,10 +192,13 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     final todoEntries = source.visibleEntries.where(filter.test).toSet();
     final todoCount = todoEntries.length;
 
+    final dir = VolumeRelativeDirectory.fromPath(album);
+    // do not allow renaming volume root
+    if (dir == null || dir.relativeDir.isEmpty) return;
+
     // check whether renaming is possible given OS restrictions,
     // before asking to input a new name
     final restrictedDirs = await storageService.getRestrictedDirectories();
-    final dir = VolumeRelativeDirectory.fromPath(album);
     if (restrictedDirs.contains(dir)) {
       await showRestrictedDirectoryDialog(context, dir);
       return;
