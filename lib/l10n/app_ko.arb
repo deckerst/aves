@@ -229,16 +229,9 @@
 
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
-  "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
-
-  "settingsSectionDisplay": "디스플레이",
-  "settingsLanguage": "언어",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",
   "settingsKeepScreenOnTitle": "화면 자동 꺼짐 방지",
-  "settingsRasterImageBackground": "래스터 그래픽스 배경",
-  "settingsVectorImageBackground": "벡터 그래픽스 배경",
-  "settingsCoordinateFormatTile": "좌표 표현",
-  "settingsCoordinateFormatTitle": "좌표 표현",
+  "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
 
   "settingsSectionThumbnails": "섬네일",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
@@ -246,6 +239,8 @@
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
   "settingsSectionViewer": "뷰어",
+  "settingsRasterImageBackground": "래스터 그래픽스 배경",
+  "settingsVectorImageBackground": "벡터 그래픽스 배경",
   "settingsViewerShowMinimap": "미니맵 표시",
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
@@ -254,11 +249,9 @@
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
 
-  "settingsSectionSearch": "검색",
-  "settingsSaveSearchHistory": "검색기록",
-
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",
+  "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",
   "settingsHiddenFiltersTitle": "숨겨진 필터",
@@ -270,6 +263,11 @@
   "settingsStorageAccessBanner": "어떤 폴더는 사용자의 허용을 받아야만 앱이 파일에 접근이 가능합니다. 이 화면에 허용을 받은 폴더를 확인할 수 있으며 원하지 않으면 취소할 수 있습니다.",
   "settingsStorageAccessEmpty": "접근 허용이 없습니다",
   "settingsStorageAccessRevokeTooltip": "취소",
+
+  "settingsSectionLanguage": "언어 및 표시 형식",
+  "settingsLanguage": "언어",
+  "settingsCoordinateFormatTile": "좌표 표현",
+  "settingsCoordinateFormatTitle": "좌표 표현",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",
