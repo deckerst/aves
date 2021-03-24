@@ -13,8 +13,12 @@ class AIcons {
   static const IconData date = Icons.calendar_today_outlined;
   static const IconData disc = Icons.fiber_manual_record;
   static const IconData error = Icons.error_outline;
+  static const IconData grid = Icons.grid_on_outlined;
+  static const IconData home = Icons.home_outlined;
+  static const IconData language = Icons.translate_outlined;
   static const IconData location = Icons.place_outlined;
   static const IconData locationOff = Icons.location_off_outlined;
+  static const IconData privacy = MdiIcons.shieldAccountOutline;
   static const IconData raw = Icons.camera_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;

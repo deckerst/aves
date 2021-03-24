@@ -9,6 +9,7 @@ class HighlightTitle extends StatelessWidget {
   final Color color;
   final double fontSize;
   final bool enabled, selectable;
+  final bool showHighlight;
 
   const HighlightTitle(
     this.title, {
@@ -16,6 +17,7 @@ class HighlightTitle extends StatelessWidget {
     this.fontSize = 18,
     this.enabled = true,
     this.selectable = false,
+    this.showHighlight = true,
   }) : assert(title != null);
 
   static const disabledColor = Colors.grey;
@@ -38,9 +40,11 @@ class HighlightTitle extends StatelessWidget {
     return Align(
       alignment: AlignmentDirectional.centerStart,
       child: Container(
-        decoration: HighlightDecoration(
-          color: enabled ? color ?? stringToColor(title) : disabledColor,
-        ),
+        decoration: showHighlight
+            ? HighlightDecoration(
+                color: enabled ? color ?? stringToColor(title) : disabledColor,
+              )
+            : null,
         margin: EdgeInsets.symmetric(vertical: 4.0),
         child: selectable
             ? SelectableText(
