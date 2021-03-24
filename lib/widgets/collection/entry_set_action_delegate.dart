@@ -71,6 +71,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
       final restrictedDirs = await storageService.getRestrictedDirectories();
       for (final selectionDir in selectionDirs) {
         final dir = VolumeRelativeDirectory.fromPath(selectionDir);
+        if (dir == null) return;
         if (restrictedDirs.contains(dir)) {
           await showRestrictedDirectoryDialog(context, dir);
           return;

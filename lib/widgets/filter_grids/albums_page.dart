@@ -39,13 +39,18 @@ class AlbumListPage extends StatelessWidget {
               showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
               chipSetActionDelegate: AlbumChipSetActionDelegate(),
               chipActionDelegate: AlbumChipActionDelegate(),
-              chipActionsBuilder: (filter) => [
-                settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
-                ChipAction.setCover,
-                ChipAction.rename,
-                ChipAction.delete,
-                ChipAction.hide,
-              ],
+              chipActionsBuilder: (filter) {
+                final dir = VolumeRelativeDirectory.fromPath(filter.album);
+                // do not allow renaming volume root
+                final canRename = dir != null && dir.relativeDir.isNotEmpty;
+                return [
+                  settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+                  ChipAction.setCover,
+                  if (canRename) ChipAction.rename,
+                  ChipAction.delete,
+                  ChipAction.hide,
+                ];
+              },
               filterSections: getAlbumEntries(context, source),
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.album,
