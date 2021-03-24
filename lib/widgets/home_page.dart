@@ -106,7 +106,13 @@ class _HomePageState extends State<HomePage> {
       unawaited(source.refresh());
     }
 
-    unawaited(Navigator.pushReplacement(context, _getRedirectRoute(appMode)));
+    // `pushReplacement` is not enough in some edge cases
+    // e.g. when opening the viewer in `view` mode should replace a viewer in `main` mode
+    unawaited(Navigator.pushAndRemoveUntil(
+      context,
+      _getRedirectRoute(appMode),
+      (route) => false,
+    ));
   }
 
   Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
