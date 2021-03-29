@@ -44,7 +44,7 @@ class AppShortcutService {
       await platform.invokeMethod('pin', <String, dynamic>{
         'label': label,
         'iconBytes': iconBytes,
-        'filters': filters.map((filter) => filter.toJson()).toList(),
+        'filters': filters.where((filter) => filter != null).map((filter) => filter.toJson()).toList(),
       });
     } on PlatformException catch (e) {
       debugPrint('pin failed with code=${e.code}, exception=${e.message}, details=${e.details}');

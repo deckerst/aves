@@ -52,7 +52,7 @@ extension ExtraEntryAction on EntryAction {
       // in app actions
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
-        return null;
+        return context.l10n.entryActionAddFavourite;
       case EntryAction.delete:
         return context.l10n.entryActionDelete;
       case EntryAction.export:
@@ -93,7 +93,7 @@ extension ExtraEntryAction on EntryAction {
       // in app actions
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
-        return null;
+        return AIcons.favourite;
       case EntryAction.delete:
         return AIcons.delete;
       case EntryAction.export:

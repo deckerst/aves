@@ -10,10 +10,9 @@ class OverlayButton extends StatelessWidget {
 
   const OverlayButton({
     Key key,
-    @required this.scale,
+    this.scale = kAlwaysCompleteAnimation,
     @required this.child,
-  })  : assert(scale != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -367,7 +367,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
     if (name == null || name.isEmpty) return;
 
-    unawaited(AppShortcutService.pin(name, coverEntry, collection.filters));
+    unawaited(AppShortcutService.pin(name, coverEntry, filters));
   }
 
   void _goToSearch() {
