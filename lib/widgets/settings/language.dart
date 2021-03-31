@@ -1,10 +1,12 @@
 import 'dart:collection';
 
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
@@ -30,6 +32,8 @@ class LanguageTile extends StatelessWidget {
             title: context.l10n.settingsLanguage,
           ),
         );
+        // wait for the dialog to hide as applying the change may block the UI
+        await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.locale = value == _systemLocaleOption ? null : value;
         }

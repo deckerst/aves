@@ -44,7 +44,7 @@ class AvesFilterChip extends StatefulWidget {
     this.showGenericIcon = true,
     this.background,
     this.details,
-    this.borderRadius = const BorderRadius.all(Radius.circular(defaultRadius)),
+    this.borderRadius,
     this.padding = 6.0,
     this.heroType = HeroType.onTap,
     this.onTap,
@@ -95,8 +95,6 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
   Offset _tapPosition;
 
   CollectionFilter get filter => widget.filter;
-
-  BorderRadius get borderRadius => widget.borderRadius;
 
   double get padding => widget.padding;
 
@@ -197,6 +195,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
       );
     }
 
+    final borderRadius = widget.borderRadius ?? BorderRadius.circular(AvesFilterChip.defaultRadius);
     Widget chip = Container(
       constraints: BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,

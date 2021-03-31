@@ -93,7 +93,7 @@ class DecoratedFilterChip extends StatelessWidget {
               );
     final radius = min<double>(AvesFilterChip.defaultRadius, extent / 4);
     final titlePadding = min<double>(4.0, extent / 32);
-    final borderRadius = BorderRadius.all(Radius.circular(radius));
+    final borderRadius = BorderRadius.circular(radius);
     Widget child = AvesFilterChip(
       filter: filter,
       showGenericIcon: false,

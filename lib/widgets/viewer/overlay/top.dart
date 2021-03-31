@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
@@ -17,7 +15,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerTopOverlay extends StatelessWidget {
   final AvesEntry entry;
@@ -29,10 +26,6 @@ class ViewerTopOverlay extends StatelessWidget {
   final MultiPageController multiPageController;
 
   static const double padding = 8;
-
-  static const int landscapeActionCount = 3;
-
-  static const int portraitActionCount = 2;
 
   const ViewerTopOverlay({
     Key key,
@@ -52,21 +45,11 @@ class ViewerTopOverlay extends StatelessWidget {
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
         padding: EdgeInsets.all(padding),
-        child: Selector<MediaQueryData, Tuple2<double, Orientation>>(
-          selector: (c, mq) => Tuple2(mq.size.width, mq.orientation),
-          builder: (c, mq, child) {
-            final mqWidth = mq.item1;
-            final mqOrientation = mq.item2;
-
-            final targetCount = mqOrientation == Orientation.landscape ? landscapeActionCount : portraitActionCount;
-            final availableCount = (mqWidth / (kMinInteractiveDimension + padding)).floor() - 2;
-            final quickActionCount = min(targetCount, availableCount);
-
-            final quickActions = [
-              EntryAction.toggleFavourite,
-              EntryAction.share,
-              EntryAction.delete,
-            ].where(_canDo).take(quickActionCount).toList();
+        child: Selector<MediaQueryData, double>(
+          selector: (c, mq) => mq.size.width - mq.padding.horizontal,
+          builder: (c, mqWidth, child) {
+            final availableCount = (mqWidth / (OverlayButton.getSize(context) + padding)).floor() - 2;
+            final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount).toList();
             final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
             final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
             final buttonRow = _TopOverlayRow(

@@ -108,7 +108,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     return GestureDetector(
       onTap: _pickEntry,
       child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(32)),
+        borderRadius: BorderRadius.circular(32),
         child: SizedBox(
           width: extent,
           height: extent,

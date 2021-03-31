@@ -3,6 +3,7 @@ import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 
 class AvesExpansionTile extends StatelessWidget {
+  final String value;
   final Widget leading;
   final String title;
   final Color color;
@@ -11,6 +12,7 @@ class AvesExpansionTile extends StatelessWidget {
   final List<Widget> children;
 
   const AvesExpansionTile({
+    String value,
     this.leading,
     @required this.title,
     this.color,
@@ -18,7 +20,7 @@ class AvesExpansionTile extends StatelessWidget {
     this.initiallyExpanded = false,
     this.showHighlight = true,
     @required this.children,
-  });
+  }): value = value ?? title;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +46,8 @@ class AvesExpansionTile extends StatelessWidget {
         accentColor: Colors.white,
       ),
       child: ExpansionTileCard(
-        key: Key('tilecard-$title'),
-        value: title,
+        key: Key('tilecard-$value'),
+        value: value,
         expandedNotifier: expandedNotifier,
         title: titleChild,
         expandable: enabled,

@@ -18,6 +18,7 @@ import 'package:aves/widgets/settings/access_grants.dart';
 import 'package:aves/widgets/settings/entry_background.dart';
 import 'package:aves/widgets/settings/hidden_filters.dart';
 import 'package:aves/widgets/settings/language.dart';
+import 'package:aves/widgets/settings/quick_actions/editor.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -131,8 +132,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildThumbnailsSection(BuildContext context) {
-    final iconColor = IconTheme.of(context).color;
-    Color iconColorFor(bool enabled) => iconColor.withOpacity(enabled ? 1 : .12);
+    final iconSize = IconTheme.of(context).size * MediaQuery.of(context).textScaleFactor;
+    double opacityFor(bool enabled) => enabled ? 1 : .2;
     return AvesExpansionTile(
       leading: _buildLeading(AIcons.grid, stringToColor('Thumbnails')),
       title: context.l10n.settingsSectionThumbnails,
@@ -145,9 +146,13 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Row(
             children: [
               Expanded(child: Text(context.l10n.settingsThumbnailShowLocationIcon)),
-              Icon(
-                AIcons.location,
-                color: iconColorFor(settings.showThumbnailLocation),
+              AnimatedOpacity(
+                opacity: opacityFor(settings.showThumbnailLocation),
+                duration: Durations.toggleableTransitionAnimation,
+                child: Icon(
+                  AIcons.location,
+                  size: iconSize,
+                ),
               ),
             ],
           ),
@@ -158,9 +163,13 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Row(
             children: [
               Expanded(child: Text(context.l10n.settingsThumbnailShowRawIcon)),
-              Icon(
-                AIcons.raw,
-                color: iconColorFor(settings.showThumbnailRaw),
+              AnimatedOpacity(
+                opacity: opacityFor(settings.showThumbnailRaw),
+                duration: Durations.toggleableTransitionAnimation,
+                child: Icon(
+                  AIcons.raw,
+                  size: iconSize,
+                ),
               ),
             ],
           ),
@@ -181,20 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
       expandedNotifier: _expandedNotifier,
       showHighlight: false,
       children: [
-        ListTile(
-          title: Text(context.l10n.settingsRasterImageBackground),
-          trailing: EntryBackgroundSelector(
-            getter: () => settings.rasterBackground,
-            setter: (value) => settings.rasterBackground = value,
-          ),
-        ),
-        ListTile(
-          title: Text(context.l10n.settingsVectorImageBackground),
-          trailing: EntryBackgroundSelector(
-            getter: () => settings.vectorBackground,
-            setter: (value) => settings.vectorBackground = value,
-          ),
-        ),
+        QuickActionsTile(),
         SwitchListTile(
           value: settings.showOverlayMinimap,
           onChanged: (v) => settings.showOverlayMinimap = v,
@@ -210,6 +206,20 @@ class _SettingsPageState extends State<SettingsPage> {
           value: settings.showOverlayShootingDetails,
           onChanged: settings.showOverlayInfo ? (v) => settings.showOverlayShootingDetails = v : null,
           title: Text(context.l10n.settingsViewerShowShootingDetails),
+        ),
+        ListTile(
+          title: Text(context.l10n.settingsRasterImageBackground),
+          trailing: EntryBackgroundSelector(
+            getter: () => settings.rasterBackground,
+            setter: (value) => settings.rasterBackground = value,
+          ),
+        ),
+        ListTile(
+          title: Text(context.l10n.settingsVectorImageBackground),
+          trailing: EntryBackgroundSelector(
+            getter: () => settings.vectorBackground,
+            setter: (value) => settings.vectorBackground = value,
+          ),
         ),
       ],
     );
@@ -263,6 +273,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildLanguageSection(BuildContext context) {
     return AvesExpansionTile(
+      // use a fixed value instead of the title to identify this expansion tile
+      // so that the tile state is kept when the language is modified
+      value: 'language',
       leading: _buildLeading(AIcons.language, stringToColor('Language')),
       title: context.l10n.settingsSectionLanguage,
       expandedNotifier: _expandedNotifier,
