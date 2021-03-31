@@ -320,6 +320,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             title: context.l10n.collectionGroupTitle,
           ),
         );
+        // wait for the dialog to hide as applying the change may block the UI
+        await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionGroupFactor = value;
           collection.group(value);
@@ -338,6 +340,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             title: context.l10n.collectionSortTitle,
           ),
         );
+        // wait for the dialog to hide as applying the change may block the UI
+        await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionSortFactor = value;
           collection.sort(value);

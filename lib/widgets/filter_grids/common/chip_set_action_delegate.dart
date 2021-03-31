@@ -2,10 +2,12 @@ import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 abstract class ChipSetActionDelegate {
@@ -39,6 +41,8 @@ abstract class ChipSetActionDelegate {
         title: context.l10n.chipSortTitle,
       ),
     );
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
     if (factor != null) {
       sortFactor = factor;
     }
@@ -90,6 +94,8 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate {
         title: context.l10n.albumGroupTitle,
       ),
     );
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
     if (factor != null) {
       settings.albumGroupFactor = factor;
     }

@@ -1,12 +1,15 @@
 import 'package:flutter/scheduler.dart';
 
 class Durations {
+  // Flutter animations (with margin)
+  static const popupMenuAnimation = Duration(milliseconds: 300 + 10); // ref `_kMenuDuration` used in `_PopupMenuRoute`
+  static const dialogTransitionAnimation = Duration(milliseconds: 150 + 10); // ref `transitionDuration` used in `DialogRoute`
+  static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 10); // ref `_kToggleDuration` used in `ToggleableStateMixin`
+
   // common animations
   static const iconAnimation = Duration(milliseconds: 300);
   static const sweeperOpacityAnimation = Duration(milliseconds: 150);
   static const sweepingAnimation = Duration(milliseconds: 650);
-  static const popupMenuAnimation = Duration(milliseconds: 300); // ref _PopupMenuRoute._kMenuDuration
-  static const dialogTransitionAnimation = Duration(milliseconds: 150); // ref `transitionDuration` in `showDialog()`
 
   static const staggeredAnimation = Duration(milliseconds: 375);
   static const staggeredAnimationPageTarget = Duration(milliseconds: 900);
@@ -41,6 +44,10 @@ class Durations {
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);
   static const xmpStructArrayCardTransition = Duration(milliseconds: 300);
+
+  // settings animations
+  static const quickActionListAnimation = Duration(milliseconds: 200);
+  static const quickActionHighlightAnimation = Duration(milliseconds: 200);
 
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 3);

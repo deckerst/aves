@@ -123,7 +123,7 @@ class ScrollLabel extends StatelessWidget {
         child: Material(
           elevation: 4.0,
           color: backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(16.0)),
+          borderRadius: BorderRadius.circular(16),
           child: child,
         ),
       ),
