@@ -12,6 +12,7 @@ import 'package:aves/widgets/common/magnifier/magnifier.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves/widgets/common/video/video.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
@@ -20,7 +21,6 @@ import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -31,7 +31,7 @@ class EntryPageView extends StatefulWidget {
   final SinglePageInfo page;
   final Size viewportSize;
   final MagnifierTapCallback onTap;
-  final List<Tuple2<String, IjkMediaController>> videoControllers;
+  final List<Tuple2<String, AvesVideoController>> videoControllers;
   final VoidCallback onDisposed;
 
   static const decorationCheckSize = 20.0;
@@ -138,7 +138,7 @@ class _EntryPageViewState extends State<EntryPageView> {
         }
         child ??= ErrorView(
           entry: entry,
-          onTap: () => onTap?.call(null),
+          onTap: onTap == null ? null : () => onTap(null),
         );
         return child;
       },
@@ -221,7 +221,7 @@ class _EntryPageViewState extends State<EntryPageView> {
       initialScale: initialScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
-      onTap: (c, d, s, childPosition) => onTap?.call(childPosition),
+      onTap: onTap == null ? null : (c, d, s, childPosition) => onTap(childPosition),
       child: child,
     );
   }

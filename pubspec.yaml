@@ -40,6 +40,7 @@ dependencies:
   firebase_analytics:
   firebase_crashlytics:
   flutter_highlight:
+#  fijkplayer:
   flutter_ijkplayer:
 #    path: ../flutter_ijkplayer
     git:
@@ -120,13 +121,15 @@ flutter:
 # - does not support AVI/XVID, AC3
 # - cannot play if only the video or audio stream is supported
 
-# fijkplayer (as of v0.7.1, backed by IJKPlayer & ffmpeg):
+# fijkplayer (as of v0.8.7, backed by IJKPlayer & ffmpeg):
 # - support content URIs
 # - does not support XVID, AC3 (by default, but possible by custom build)
 # - can play if only the video or audio stream is supported
 # - crash when calling `seekTo` for some files (e.g. TED talk videos)
+# - no edge smear (with default build)
 
 # flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
 # - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
 # - does not support AC3 (by default, but possible by custom build)
 # - can play if only the video or audio stream is supported
+# - edge smear on some videos, depending on dimensions (dimension not multiple of 16?)
