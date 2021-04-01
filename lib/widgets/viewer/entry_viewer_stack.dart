@@ -11,6 +11,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/video/video.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -25,7 +26,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -55,7 +55,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   EntryActionDelegate _actionDelegate;
-  final List<Tuple2<String, IjkMediaController>> _videoControllers = [];
+  final List<Tuple2<String, AvesVideoController>> _videoControllers = [];
   final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
   final ValueNotifier<HeroInfo> _heroInfoNotifier = ValueNotifier(null);
@@ -496,10 +496,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       (_) => _.dispose(),
     );
     if (entry.isVideo) {
-      _initViewSpecificController<IjkMediaController>(
+      _initViewSpecificController<AvesVideoController>(
         uri,
         _videoControllers,
-        () => IjkMediaController(),
+        () => AvesVideoController.flutterIjkPlayer(),
         (_) => _.dispose(),
       );
     }

@@ -8,13 +8,13 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
+import 'package:aves/widgets/common/video/video.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
 class VideoControlOverlay extends StatefulWidget {
   final AvesEntry entry;
-  final IjkMediaController controller;
+  final AvesVideoController controller;
   final Animation<double> scale;
 
   const VideoControlOverlay({
@@ -42,18 +42,11 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   Animation<double> get scale => widget.scale;
 
-  IjkMediaController get controller => widget.controller;
+  AvesVideoController get controller => widget.controller;
 
-  // `videoInfo` is never null (even if `toString` prints `null`)
-  // check presence with `hasData` instead
-  VideoInfo get videoInfo => controller.videoInfo;
+  bool get isPlayable => controller.isPlayable;
 
-  // we check whether video info is ready instead of checking for `noDatasource` status,
-  // as the controller could also be uninitialized with the `pause` status
-  // (e.g. when switching between video entries without playing them the first time)
-  bool get isInitialized => videoInfo.hasData;
-
-  bool get isPlaying => controller.ijkStatus == IjkStatus.playing;
+  bool get isPlaying => controller.isPlaying;
 
   @override
   void initState() {
@@ -80,10 +73,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _registerWidget(VideoControlOverlay widget) {
-    _subscriptions.add(widget.controller.ijkStatusStream.listen(_onStatusChange));
-    _subscriptions.add(widget.controller.textureIdStream.listen(_onTextureIdChange));
-    _onStatusChange(widget.controller.ijkStatus);
-    _onTextureIdChange(widget.controller.textureId);
+    _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
+    _subscriptions.add(widget.controller.isVideoReadyStream.listen(_onVideoReadinessChanged));
+    _onStatusChange(widget.controller.status);
+    _onVideoReadinessChanged(widget.controller.isVideoReady);
   }
 
   void _unregisterWidget(VideoControlOverlay widget) {
@@ -95,18 +88,18 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<IjkStatus>(
-        stream: controller.ijkStatusStream,
+    return StreamBuilder<VideoStatus>(
+        stream: controller.statusStream,
         builder: (context, snapshot) {
           // do not use stream snapshot because it is obsolete when switching between videos
-          final status = controller.ijkStatus;
+          final status = controller.status;
           return TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: status == IjkStatus.error
+              children: status == VideoStatus.error
                   ? [
                       OverlayButton(
                         scale: scale,
@@ -171,22 +164,22 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
               children: [
                 Row(
                   children: [
-                    StreamBuilder<VideoInfo>(
-                        stream: controller.videoInfoStream,
+                    StreamBuilder<int>(
+                        stream: controller.positionStream,
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
-                          final position = videoInfo.currentPosition?.floor() ?? 0;
-                          return Text(formatDuration(Duration(seconds: position)));
+                          final position = controller.currentPosition?.floor() ?? 0;
+                          return Text(formatDuration(Duration(milliseconds: position)));
                         }),
                     Spacer(),
                     Text(entry.durationText),
                   ],
                 ),
-                StreamBuilder<VideoInfo>(
-                    stream: controller.videoInfoStream,
+                StreamBuilder<int>(
+                    stream: controller.positionStream,
                     builder: (context, snapshot) {
                       // do not use stream snapshot because it is obsolete when switching between videos
-                      var progress = videoInfo.progress;
+                      var progress = controller.progress;
                       if (!progress.isFinite) progress = 0.0;
                       return LinearProgressIndicator(value: progress);
                     }),
@@ -199,7 +192,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _startTimer() {
-    if (controller.textureId == null) return;
+    if (!controller.isVideoReady) return;
     _progressTimer?.cancel();
     _progressTimer = Timer.periodic(Durations.videoProgressTimerInterval, (_) => controller.refreshVideoInfo());
   }
@@ -208,16 +201,16 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     _progressTimer?.cancel();
   }
 
-  void _onTextureIdChange(int textureId) {
-    if (textureId != null) {
+  void _onVideoReadinessChanged(bool isVideoReady) {
+    if (isVideoReady) {
       _startTimer();
     } else {
       _stopTimer();
     }
   }
 
-  void _onStatusChange(IjkStatus status) {
-    if (status == IjkStatus.playing && _seekTargetPercent != null) {
+  void _onStatusChange(VideoStatus status) {
+    if (status == VideoStatus.playing && _seekTargetPercent != null) {
       _seekFromTarget();
     }
     _updatePlayPauseIcon();
@@ -226,10 +219,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   Future<void> _playPause() async {
     if (isPlaying) {
       await controller.pause();
-    } else if (isInitialized) {
+    } else if (isPlayable) {
       await controller.play();
     } else {
-      await controller.setDataSource(DataSource.photoManagerUrl(entry.uri), autoPlay: true);
+      await controller.setDataSource(entry.uri);
     }
   }
 
@@ -248,19 +241,17 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     final localPosition = box.globalToLocal(globalPosition);
     _seekTargetPercent = (localPosition.dx / box.size.width);
 
-    if (isInitialized) {
+    if (isPlayable) {
       await _seekFromTarget();
     } else {
-      // autoplay when seeking on uninitialized player, otherwise the texture is not updated
-      // as a workaround, pausing after a brief duration is possible, but fiddly
-      await controller.setDataSource(DataSource.photoManagerUrl(entry.uri), autoPlay: true);
+      await controller.setDataSource(entry.uri);
     }
   }
 
   Future _seekFromTarget() async {
     // `seekToProgress` is not safe as it can be called when the `duration` is not set yet
     // so we make sure the video info is up to date first
-    if (videoInfo.duration == null) {
+    if (controller.duration == null) {
       await controller.refreshVideoInfo();
     } else {
       await controller.seekToProgress(_seekTargetPercent);
