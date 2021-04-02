@@ -111,7 +111,7 @@ class MainActivity : FlutterActivity() {
                     )
                 }
             }
-            Intent.ACTION_VIEW -> {
+            Intent.ACTION_VIEW, "com.android.camera.action.REVIEW" -> {
                 intent.data?.let { uri ->
                     return hashMapOf(
                         "action" to "view",
