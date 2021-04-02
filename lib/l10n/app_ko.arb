@@ -3,6 +3,7 @@
   "welcomeMessage": "아베스 사용을 환영합니다",
   "welcomeAnalyticsToggle": "진단 데이터를 보내는 것에 동의합니다 (선택)",
   "welcomeTermsToggle": "이용약관에 동의합니다",
+  "itemCount": "{count, plural, other{{count}개}}",
 
   "applyButtonLabel": "확인",
   "deleteButtonLabel": "삭제",
@@ -131,9 +132,6 @@
   "aboutCreditsWorldAtlas2": "의 TopoJSON 파일(ISC 라이선스)을 이용합니다.",
   "aboutLicenses": "오픈 소스 라이선스",
   "aboutLicensesBanner": "이 앱은 다음의 오픈 소스 패키지와 라이브러리를 이용합니다.",
-  "aboutLicensesSortTooltip": "정렬",
-  "aboutLicensesSortByName": "이름순 정렬",
-  "aboutLicensesSortByLicense": "라이선스순 정렬",
   "aboutLicensesAndroidLibraries": "안드로이드 라이브러리",
   "aboutLicensesFlutterPlugins": "플러터 플러그인",
   "aboutLicensesFlutterPackages": "플러터 패키지",
@@ -200,6 +198,11 @@
   "albumPickPageTitleExport": "앨범으로 내보내기",
   "albumPickPageTitleMove": "앨범으로 이동",
 
+  "albumCamera": "카메라",
+  "albumDownload": "다운로드",
+  "albumScreenshots": "스크린샷",
+  "albumScreenRecordings": "화면 녹화 파일",
+
   "albumPageTitle": "앨범",
   "albumEmpty": "앨범이 없습니다",
   "createAlbumTooltip": "새 앨범 만들기",
@@ -223,16 +226,9 @@
 
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
-  "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
-
-  "settingsSectionDisplay": "디스플레이",
-  "settingsLanguage": "언어",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",
   "settingsKeepScreenOnTitle": "화면 자동 꺼짐 방지",
-  "settingsRasterImageBackground": "래스터 그래픽스 배경",
-  "settingsVectorImageBackground": "벡터 그래픽스 배경",
-  "settingsCoordinateFormatTile": "좌표 표현",
-  "settingsCoordinateFormatTitle": "좌표 표현",
+  "settingsDoubleBackExit": "뒤로가기 두번 눌러 앱 종료하기",
 
   "settingsSectionThumbnails": "섬네일",
   "settingsThumbnailShowLocationIcon": "위치 아이콘 표시",
@@ -240,16 +236,26 @@
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
   "settingsSectionViewer": "뷰어",
+  "settingsRasterImageBackground": "래스터 그래픽스 배경",
+  "settingsVectorImageBackground": "벡터 그래픽스 배경",
   "settingsViewerShowMinimap": "미니맵 표시",
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
 
-  "settingsSectionSearch": "검색",
-  "settingsSaveSearchHistory": "검색기록",
+  "settingsViewerQuickActionsTile": "빠른 작업",
+  "settingsViewerQuickActionEditorTitle": "빠른 작업",
+  "settingsViewerQuickActionEditorBanner": "버튼을 길게 누른 후 이동하여 뷰어에 표시될 버튼을 선택하세요.",
+  "settingsViewerQuickActionEditorDisplayedButtons": "표시될 버튼",
+  "settingsViewerQuickActionEditorAvailableButtons": "추가 가능한 버튼",
+  "settingsViewerQuickActionEmpty": "버튼이 없습니다",
+
+  "settingsSectionVideo": "동영상",
+  "settingsVideoShowVideos": "미디어에 동영상 표시",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",
+  "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",
   "settingsHiddenFiltersTitle": "숨겨진 필터",
@@ -261,6 +267,11 @@
   "settingsStorageAccessBanner": "어떤 폴더는 사용자의 허용을 받아야만 앱이 파일에 접근이 가능합니다. 이 화면에 허용을 받은 폴더를 확인할 수 있으며 원하지 않으면 취소할 수 있습니다.",
   "settingsStorageAccessEmpty": "접근 허용이 없습니다",
   "settingsStorageAccessRevokeTooltip": "취소",
+
+  "settingsSectionLanguage": "언어 및 표시 형식",
+  "settingsLanguage": "언어",
+  "settingsCoordinateFormatTile": "좌표 표현",
+  "settingsCoordinateFormatTitle": "좌표 표현",
 
   "statsPageTitle": "통계",
   "statsImage": "{count, plural, other{사진}}",

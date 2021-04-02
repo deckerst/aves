@@ -31,6 +31,7 @@ class CountryListPage extends StatelessWidget {
           builder: (context, snapshot) => FilterNavigationPage<LocationFilter>(
             source: source,
             title: context.l10n.countryPageTitle,
+            sortFactor: settings.countrySortFactor,
             chipSetActionDelegate: CountryChipSetActionDelegate(),
             chipActionDelegate: ChipActionDelegate(),
             chipActionsBuilder: (filter) => [

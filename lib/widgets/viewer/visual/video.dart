@@ -1,16 +1,15 @@
-import 'dart:async';
 import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/common/video/video.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 
 class VideoView extends StatefulWidget {
   final AvesEntry entry;
-  final IjkMediaController controller;
+  final AvesVideoController controller;
 
   const VideoView({
     Key key,
@@ -23,11 +22,9 @@ class VideoView extends StatefulWidget {
 }
 
 class _VideoViewState extends State<VideoView> {
-  final List<StreamSubscription> _subscriptions = [];
-
   AvesEntry get entry => widget.entry;
 
-  IjkMediaController get controller => widget.controller;
+  AvesVideoController get controller => widget.controller;
 
   @override
   void initState() {
@@ -49,56 +46,24 @@ class _VideoViewState extends State<VideoView> {
   }
 
   void _registerWidget(VideoView widget) {
-    _subscriptions.add(widget.controller.playFinishStream.listen(_onPlayFinish));
+    widget.controller.playCompletedListenable.addListener(_onPlayCompleted);
   }
 
   void _unregisterWidget(VideoView widget) {
-    _subscriptions
-      ..forEach((sub) => sub.cancel())
-      ..clear();
+    widget.controller.playCompletedListenable.removeListener(_onPlayCompleted);
   }
 
-  bool isPlayable(IjkStatus status) => controller != null && [IjkStatus.prepared, IjkStatus.playing, IjkStatus.pause, IjkStatus.complete].contains(status);
+  bool isPlayable(VideoStatus status) => controller != null && [VideoStatus.prepared, VideoStatus.playing, VideoStatus.paused, VideoStatus.completed].contains(status);
 
   @override
   Widget build(BuildContext context) {
     if (controller == null) return SizedBox();
-    return StreamBuilder<IjkStatus>(
-        stream: widget.controller.ijkStatusStream,
+    return StreamBuilder<VideoStatus>(
+        stream: widget.controller.statusStream,
         builder: (context, snapshot) {
           final status = snapshot.data;
           return isPlayable(status)
-              ? IjkPlayer(
-                  mediaController: controller,
-                  controllerWidgetBuilder: (controller) => SizedBox.shrink(),
-                  statusWidgetBuilder: (context, controller, status) => SizedBox.shrink(),
-                  textureBuilder: (context, controller, info) {
-                    var id = controller.textureId;
-                    var child = id != null
-                        ? Texture(
-                            textureId: id,
-                          )
-                        : Container(
-                            color: Colors.black,
-                          );
-
-                    final degree = entry.rotationDegrees ?? 0;
-                    if (degree != 0) {
-                      child = RotatedBox(
-                        quarterTurns: degree ~/ 90,
-                        child: child,
-                      );
-                    }
-
-                    return Center(
-                      child: AspectRatio(
-                        aspectRatio: entry.displayAspectRatio,
-                        child: child,
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.transparent,
-                )
+              ? controller.buildPlayerWidget(entry)
               : Image(
                   image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
                   fit: BoxFit.contain,
@@ -106,5 +71,5 @@ class _VideoViewState extends State<VideoView> {
         });
   }
 
-  void _onPlayFinish(IjkMediaController controller) => controller.seekTo(0);
+  void _onPlayCompleted() => controller.seekTo(0);
 }

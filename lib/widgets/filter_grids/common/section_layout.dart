@@ -14,6 +14,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
     double spacing = 0,
     @required double tileExtent,
     @required Widget Function(FilterGridItem<T> gridItem) tileBuilder,
+    @required Duration tileAnimationDelay,
     @required Widget child,
   }) : super(
           scrollableWidth: scrollableWidth,
@@ -21,6 +22,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
           spacing: spacing,
           tileExtent: tileExtent,
           tileBuilder: tileBuilder,
+          tileAnimationDelay: tileAnimationDelay,
           child: child,
         );
 

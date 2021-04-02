@@ -7,7 +7,6 @@ import 'package:aves/model/filters/mime.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -78,12 +77,12 @@ class BasicSection extends StatelessWidget {
     final album = entry.directory;
     final filters = {
       MimeFilter(entry.mimeType),
-      if (entry.isAnimated) TypeFilter(TypeFilter.animated),
-      if (entry.isGeotiff) TypeFilter(TypeFilter.geotiff),
-      if (entry.isImage && entry.is360) TypeFilter(TypeFilter.panorama),
-      if (entry.isVideo && entry.is360) TypeFilter(TypeFilter.sphericalVideo),
-      if (entry.isVideo && !entry.is360) MimeFilter(MimeTypes.anyVideo),
-      if (album != null) AlbumFilter(album, collection?.source?.getUniqueAlbumName(context, album)),
+      if (entry.isAnimated) TypeFilter.animated,
+      if (entry.isGeotiff) TypeFilter.geotiff,
+      if (entry.isImage && entry.is360) TypeFilter.panorama,
+      if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
+      if (entry.isVideo && !entry.is360) MimeFilter.video,
+      if (album != null) AlbumFilter(album, collection?.source?.getAlbumDisplayName(context, album)),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(
@@ -91,7 +90,7 @@ class BasicSection extends StatelessWidget {
       builder: (context, child) {
         final effectiveFilters = [
           ...filters,
-          if (entry.isFavourite) FavouriteFilter(),
+          if (entry.isFavourite) FavouriteFilter.instance,
         ]..sort();
         if (effectiveFilters.isEmpty) return SizedBox.shrink();
         return Padding(

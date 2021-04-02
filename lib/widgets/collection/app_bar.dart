@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -27,6 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class CollectionAppBar extends StatefulWidget {
   final ValueNotifier<double> appBarHeightNotifier;
@@ -318,6 +320,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             title: context.l10n.collectionGroupTitle,
           ),
         );
+        // wait for the dialog to hide as applying the change may block the UI
+        await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionGroupFactor = value;
           collection.group(value);
@@ -336,6 +340,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
             title: context.l10n.collectionSortTitle,
           ),
         );
+        // wait for the dialog to hide as applying the change may block the UI
+        await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionSortFactor = value;
           collection.sort(value);
@@ -347,22 +353,25 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   Future<void> _showShortcutDialog(BuildContext context) async {
     final filters = collection.filters;
     var defaultName;
-    if (filters.isEmpty) {
-      defaultName = context.l10n.collectionPageTitle;
-    } else {
+    if (filters.isNotEmpty) {
+      // we compute the default name beforehand
+      // because some filter labels need localization
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context);
     }
-    final name = await showDialog<String>(
+    final result = await showDialog<Tuple2<AvesEntry, String>>(
       context: context,
-      builder: (context) {
-        return AddShortcutDialog(defaultName: defaultName);
-      },
+      builder: (context) => AddShortcutDialog(
+        collection: collection,
+        defaultName: defaultName,
+      ),
     );
+    final coverEntry = result.item1;
+    final name = result.item2;
+
     if (name == null || name.isEmpty) return;
 
-    final iconEntry = collection.sortedEntries.isNotEmpty ? collection.sortedEntries.first : null;
-    unawaited(AppShortcutService.pin(name, iconEntry, filters));
+    unawaited(AppShortcutService.pin(name, coverEntry, filters));
   }
 
   void _goToSearch() {

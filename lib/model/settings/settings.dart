@@ -1,3 +1,4 @@
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -46,6 +47,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
+  static const viewerQuickActionsKey = 'viewer_quick_actions';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -62,6 +64,12 @@ class Settings extends ChangeNotifier {
 
   // version
   static const lastVersionCheckDateKey = 'last_version_check_date';
+
+  // defaults
+  static const viewerQuickActionsDefault = [
+    EntryAction.toggleFavourite,
+    EntryAction.share,
+  ];
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
@@ -211,6 +219,10 @@ class Settings extends ChangeNotifier {
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
+  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
+
+  set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+
   // info
 
   EntryMapStyle get infoMapStyle => getEnumOrDefault(infoMapStyleKey, EntryMapStyle.stamenWatercolor, EntryMapStyle.values);
@@ -258,16 +270,16 @@ class Settings extends ChangeNotifier {
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
     final valueString = _prefs.getString(key);
-    for (final element in values) {
-      if (element.toString() == valueString) {
-        return element;
+    for (final v in values) {
+      if (v.toString() == valueString) {
+        return v;
       }
     }
     return defaultValue;
   }
 
   List<T> getEnumListOrDefault<T>(String key, List<T> defaultValue, Iterable<T> values) {
-    return _prefs.getStringList(key)?.map((s) => values.firstWhere((el) => el.toString() == s, orElse: () => null))?.where((el) => el != null)?.toList() ?? defaultValue;
+    return _prefs.getStringList(key)?.map((s) => values.firstWhere((v) => v.toString() == s, orElse: () => null))?.where((v) => v != null)?.toList() ?? defaultValue;
   }
 
   void setAndNotify(String key, dynamic newValue, {bool notify = true}) {

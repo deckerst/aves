@@ -5,8 +5,8 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
+import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class MetadataDb {
@@ -82,7 +82,7 @@ abstract class MetadataDb {
 class SqfliteMetadataDb implements MetadataDb {
   Future<Database> _database;
 
-  Future<String> get path async => join(await getDatabasesPath(), 'metadata.db');
+  Future<String> get path async => pContext.join(await getDatabasesPath(), 'metadata.db');
 
   static const entryTable = 'entry';
   static const dateTakenTable = 'dateTaken';

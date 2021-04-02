@@ -10,10 +10,9 @@ class OverlayButton extends StatelessWidget {
 
   const OverlayButton({
     Key key,
-    @required this.scale,
+    this.scale = kAlwaysCompleteAnimation,
     @required this.child,
-  })  : assert(scale != null),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +33,9 @@ class OverlayButton extends StatelessWidget {
       ),
     );
   }
+
+  // icon (24) + icon padding (8) + button padding (16) + border (2)
+  static double getSize(BuildContext context) => 50.0;
 }
 
 class OverlayTextButton extends StatelessWidget {
@@ -67,7 +69,7 @@ class OverlayTextButton extends StatelessWidget {
             minimumSize: _minSize,
             side: MaterialStateProperty.all<BorderSide>(AvesCircleBorder.buildSide(context)),
             shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
+              borderRadius: BorderRadius.circular(_borderRadius),
             )),
             // shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
           ),

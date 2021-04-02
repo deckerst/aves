@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/covers.dart';
@@ -7,7 +9,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
-import 'package:aves/services/android_file_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -22,7 +23,6 @@ import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -132,16 +132,19 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
-    final selection = source.visibleEntries.where(filter.test).toSet();
-    final count = selection.length;
+    final album = filter.album;
+    final todoEntries = source.visibleEntries.where(filter.test).toSet();
+    final todoCount = todoEntries.length;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text(context.l10n.deleteAlbumConfirmationDialogMessage(count)),
+          content: Text(l10n.deleteAlbumConfirmationDialogMessage(todoCount)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -149,7 +152,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.deleteButtonLabel),
+              child: Text(l10n.deleteButtonLabel),
             ),
           ],
         );
@@ -157,41 +160,50 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     );
     if (confirmed == null || !confirmed) return;
 
-    if (!await checkStoragePermission(context, selection)) return;
+    if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final selectionCount = selection.length;
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: imageFileService.delete(selection),
-      itemCount: selectionCount,
+      opStream: imageFileService.delete(todoEntries),
+      itemCount: todoCount,
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris);
         source.resumeMonitoring();
 
         final deletedCount = deletedUris.length;
-        if (deletedCount < selectionCount) {
-          final count = selectionCount - deletedCount;
-          showFeedback(context, context.l10n.collectionDeleteFailureFeedback(count));
+        if (deletedCount < todoCount) {
+          final count = todoCount - deletedCount;
+          showFeedbackWithMessenger(messenger, l10n.collectionDeleteFailureFeedback(count));
         }
+
+        // cleanup
+        await storageService.deleteEmptyDirectories({album});
       },
     );
   }
 
   Future<void> _showRenameDialog(BuildContext context, AlbumFilter filter) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final source = context.read<CollectionSource>();
     final album = filter.album;
+    final todoEntries = source.visibleEntries.where(filter.test).toSet();
+    final todoCount = todoEntries.length;
+
+    final dir = VolumeRelativeDirectory.fromPath(album);
+    // do not allow renaming volume root
+    if (dir == null || dir.relativeDir.isEmpty) return;
 
     // check whether renaming is possible given OS restrictions,
     // before asking to input a new name
-    final restrictedDirs = await AndroidFileService.getRestrictedDirectories();
-    final dir = VolumeRelativeDirectory.fromPath(album);
+    final restrictedDirs = await storageService.getRestrictedDirectories();
     if (restrictedDirs.contains(dir)) {
       await showRestrictedDirectoryDialog(context, dir);
       return;
     }
 
-    final source = context.read<CollectionSource>();
     final newName = await showDialog<String>(
       context: context,
       builder: (context) => RenameAlbumDialog(album),
@@ -200,15 +212,15 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     if (!await checkStoragePermissionForAlbums(context, {album})) return;
 
-    final todoEntries = source.visibleEntries.where(filter.test).toSet();
-    final destinationAlbum = path.join(path.dirname(album), newName);
-
+    final destinationAlbumParent = pContext.dirname(album);
+    final destinationAlbum = pContext.join(destinationAlbumParent, newName);
     if (!await checkFreeSpaceForMove(context, todoEntries, destinationAlbum, MoveType.move)) return;
 
-    final l10n = context.l10n;
-    final messenger = ScaffoldMessenger.of(context);
+    if (!(await File(destinationAlbum).exists())) {
+      // access to the destination parent is required to create the underlying destination folder
+      if (!await checkStoragePermissionForAlbums(context, {destinationAlbumParent})) return;
+    }
 
-    final todoCount = todoEntries.length;
     source.pauseMonitoring();
     showOpReport<MoveOpEvent>(
       context: context,
@@ -226,6 +238,9 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         } else {
           showFeedbackWithMessenger(messenger, l10n.genericSuccessFeedback);
         }
+
+        // cleanup
+        await storageService.deleteEmptyDirectories({album});
       },
     );
   }

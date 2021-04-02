@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 
 import '../dialogs/aves_dialog.dart';
 
@@ -22,7 +22,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
 
   String get album => widget.album;
 
-  String get initialValue => path.basename(album);
+  String get initialValue => pContext.basename(album);
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
 
   String _buildAlbumPath(String name) {
     if (name == null || name.isEmpty) return '';
-    return path.join(path.dirname(album), name);
+    return pContext.join(pContext.dirname(album), name);
   }
 
   Future<void> _validate() async {

@@ -62,12 +62,13 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
             appBar: appBar,
             appBarHeight: AlbumPickAppBar.preferredHeight,
             filterSections: AlbumListPage.getAlbumEntries(context, source),
+            sortFactor: settings.albumSortFactor,
             showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
             queryNotifier: _queryNotifier,
             applyQuery: (filters, query) {
               if (query == null || query.isEmpty) return filters;
               query = query.toUpperCase();
-              return filters.where((item) => item.filter.uniqueName.toUpperCase().contains(query)).toList();
+              return filters.where((item) => item.filter.displayName.toUpperCase().contains(query)).toList();
             },
             emptyBuilder: () => EmptyContent(
               icon: AIcons.album,

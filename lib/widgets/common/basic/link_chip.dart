@@ -9,7 +9,7 @@ class LinkChip extends StatelessWidget {
   final Color color;
   final TextStyle textStyle;
 
-  static const borderRadius = BorderRadius.all(Radius.circular(8));
+  static final borderRadius = BorderRadius.circular(8);
 
   const LinkChip({
     Key key,
