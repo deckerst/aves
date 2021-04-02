@@ -2,11 +2,11 @@ import 'dart:ui';
 
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/album.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -45,11 +45,14 @@ class _AppDrawerState extends State<AppDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final hiddenFilters = settings.hiddenFilters;
+    final showVideos = !hiddenFilters.contains(MimeFilter.video);
+    final showFavourites = !hiddenFilters.contains(FavouriteFilter.instance);
     final drawerItems = <Widget>[
       _buildHeader(context),
       allCollectionTile,
-      videoTile,
-      favouriteTile,
+      if (showVideos) videoTile,
+      if (showFavourites) favouriteTile,
       _buildSpecialAlbumSection(),
       Divider(),
       albumListTile,
@@ -153,13 +156,13 @@ class _AppDrawerState extends State<AppDrawer> {
   Widget get videoTile => CollectionNavTile(
         leading: Icon(AIcons.video),
         title: context.l10n.drawerCollectionVideos,
-        filter: MimeFilter(MimeTypes.anyVideo),
+        filter: MimeFilter.video,
       );
 
   Widget get favouriteTile => CollectionNavTile(
         leading: Icon(AIcons.favourite),
         title: context.l10n.drawerCollectionFavourites,
-        filter: FavouriteFilter(),
+        filter: FavouriteFilter.instance,
       );
 
   Widget get albumListTile => NavTile(

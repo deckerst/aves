@@ -34,17 +34,23 @@ class AlbumListPage extends StatelessWidget {
             builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
               source: source,
               title: context.l10n.albumPageTitle,
+              sortFactor: settings.albumSortFactor,
               groupable: true,
               showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
               chipSetActionDelegate: AlbumChipSetActionDelegate(),
               chipActionDelegate: AlbumChipActionDelegate(),
-              chipActionsBuilder: (filter) => [
-                settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
-                ChipAction.setCover,
-                ChipAction.rename,
-                ChipAction.delete,
-                ChipAction.hide,
-              ],
+              chipActionsBuilder: (filter) {
+                final dir = VolumeRelativeDirectory.fromPath(filter.album);
+                // do not allow renaming volume root
+                final canRename = dir != null && dir.relativeDir.isNotEmpty;
+                return [
+                  settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
+                  ChipAction.setCover,
+                  if (canRename) ChipAction.rename,
+                  ChipAction.delete,
+                  ChipAction.hide,
+                ];
+              },
               filterSections: getAlbumEntries(context, source),
               emptyBuilder: () => EmptyContent(
                 icon: AIcons.album,
@@ -60,7 +66,7 @@ class AlbumListPage extends StatelessWidget {
   // common with album selection page to move/copy entries
 
   static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> getAlbumEntries(BuildContext context, CollectionSource source) {
-    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getUniqueAlbumName(context, album))).toSet();
+    final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getAlbumDisplayName(context, album))).toSet();
 
     final sorted = FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
     return _group(context, sorted);

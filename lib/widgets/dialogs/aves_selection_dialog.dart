@@ -53,11 +53,7 @@ class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
       key: Key(value.toString()),
       value: value,
       groupValue: _selectedValue,
-      onChanged: (v) {
-        _selectedValue = v;
-        Navigator.pop(context, _selectedValue);
-        setState(() {});
-      },
+      onChanged: (v) => Navigator.pop(context, v),
       reselectable: true,
       title: Text(
         title,

@@ -8,7 +8,9 @@ import 'package:flutter/widgets.dart';
 class FavouriteFilter extends CollectionFilter {
   static const type = 'favourite';
 
-  const FavouriteFilter();
+  static const instance = FavouriteFilter._private();
+
+  const FavouriteFilter._private();
 
   @override
   Map<String, dynamic> toMap() => {

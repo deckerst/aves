@@ -15,13 +15,13 @@ class AlbumTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();
-    final uniqueName = source.getUniqueAlbumName(context, album);
+    final displayName = source.getAlbumDisplayName(context, album);
     return CollectionNavTile(
       leading: IconUtils.getAlbumIcon(
         context: context,
         album: album,
       ),
-      title: uniqueName,
+      title: displayName,
       trailing: androidFileUtils.isOnRemovableStorage(album)
           ? Icon(
               AIcons.removableStorage,
@@ -29,7 +29,7 @@ class AlbumTile extends StatelessWidget {
               color: Colors.grey,
             )
           : null,
-      filter: AlbumFilter(album, uniqueName),
+      filter: AlbumFilter(album, displayName),
     );
   }
 }

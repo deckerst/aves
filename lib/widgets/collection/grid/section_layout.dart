@@ -15,12 +15,14 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
     @required int columnCount,
     @required double tileExtent,
     @required Widget Function(AvesEntry entry) tileBuilder,
+    @required Duration tileAnimationDelay,
     @required Widget child,
   }) : super(
           scrollableWidth: scrollableWidth,
           columnCount: columnCount,
           tileExtent: tileExtent,
           tileBuilder: tileBuilder,
+          tileAnimationDelay: tileAnimationDelay,
           child: child,
         );
 

@@ -17,7 +17,7 @@ import 'package:flutter/scheduler.dart';
 class MapDecorator extends StatelessWidget {
   final Widget child;
 
-  static const BorderRadius mapBorderRadius = BorderRadius.all(Radius.circular(24)); // to match button circles
+  static final BorderRadius mapBorderRadius = BorderRadius.circular(24); // to match button circles
 
   const MapDecorator({@required this.child});
 
@@ -90,7 +90,7 @@ class MapButtonPanel extends StatelessWidget {
                         );
                       },
                     );
-                    // wait for the dialog to hide because switching to Google Maps layer may block the UI
+                    // wait for the dialog to hide as applying the change may block the UI
                     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
                     if (style != null && style != settings.infoMapStyle) {
                       settings.infoMapStyle = style;

@@ -4,6 +4,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/draggable_scrollbar.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
@@ -20,12 +21,14 @@ import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:aves/widgets/drawer/app_drawer.dart';
 import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
+import 'package:aves/widgets/filter_grids/common/draggable_thumb_label.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 typedef QueryTest<T extends CollectionFilter> = Iterable<FilterGridItem<T>> Function(Iterable<FilterGridItem<T>> filters, String query);
 
@@ -34,6 +37,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final Widget appBar;
   final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final ChipSortFactor sortFactor;
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
   final QueryTest<T> applyQuery;
@@ -47,6 +51,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     @required this.appBar,
     this.appBarHeight = kToolbarHeight,
     @required this.filterSections,
+    @required this.sortFactor,
     @required this.showHeaders,
     @required this.queryNotifier,
     this.applyQuery,
@@ -72,6 +77,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                   appBar: appBar,
                   appBarHeight: appBarHeight,
                   filterSections: filterSections,
+                  sortFactor: sortFactor,
                   showHeaders: showHeaders,
                   queryNotifier: queryNotifier,
                   applyQuery: applyQuery,
@@ -95,6 +101,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
   final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final ChipSortFactor sortFactor;
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
   final QueryTest<T> applyQuery;
@@ -108,6 +115,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     @required this.appBar,
     @required this.appBarHeight,
     @required this.filterSections,
+    @required this.sortFactor,
     @required this.showHeaders,
     @required this.queryNotifier,
     @required this.applyQuery,
@@ -137,6 +145,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
         appBar: widget.appBar,
         appBarHeight: widget.appBarHeight,
         filterSections: widget.filterSections,
+        sortFactor: widget.sortFactor,
         showHeaders: widget.showHeaders,
         queryNotifier: widget.queryNotifier,
         applyQuery: widget.applyQuery,
@@ -151,6 +160,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
 class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final Widget appBar;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
+  final ChipSortFactor sortFactor;
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
   final Widget Function() emptyBuilder;
@@ -165,6 +175,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     @required this.appBar,
     @required double appBarHeight,
     @required this.filterSections,
+    @required this.sortFactor,
     @required this.showHeaders,
     @required this.queryNotifier,
     @required this.applyQuery,
@@ -197,38 +208,48 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
         final sectionedListLayoutProvider = ValueListenableBuilder<double>(
           valueListenable: context.select<TileExtentController, ValueNotifier<double>>((controller) => controller.extentNotifier),
           builder: (context, tileExtent, child) {
-            final columnCount = context.select<TileExtentController, int>((controller) => controller.getEffectiveColumnCountForExtent(tileExtent));
-            final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
-            return SectionedFilterListLayoutProvider<T>(
-              sections: visibleFilterSections,
-              showHeaders: showHeaders,
-              scrollableWidth: context.select<TileExtentController, double>((controller) => controller.viewportSize.width),
-              tileExtent: tileExtent,
-              columnCount: columnCount,
-              spacing: tileSpacing,
-              tileBuilder: (gridItem) {
-                final filter = gridItem.filter;
-                final entry = gridItem.entry;
-                return MetaData(
-                  metaData: ScalerMetadata(FilterGridItem<T>(filter, entry)),
-                  child: DecoratedFilterChip(
-                    key: Key(filter.key),
-                    filter: filter,
-                    extent: tileExtent,
-                    pinned: pinnedFilters.contains(filter),
-                    onTap: onTap,
-                    onLongPress: onLongPress,
-                  ),
-                );
-              },
-              child: _FilterSectionedContent<T>(
-                appBar: appBar,
-                appBarHeightNotifier: _appBarHeightNotifier,
-                visibleFilterSections: visibleFilterSections,
-                emptyBuilder: emptyBuilder,
-                scrollController: PrimaryScrollController.of(context),
-              ),
-            );
+            return Selector<TileExtentController, Tuple3<double, int, double>>(
+                selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
+                builder: (context, c, child) {
+                  final scrollableWidth = c.item1;
+                  final columnCount = c.item2;
+                  final tileSpacing = c.item3;
+                  // do not listen for animation delay change
+                  final controller = Provider.of<TileExtentController>(context, listen: false);
+                  final tileAnimationDelay = controller.getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
+                  return SectionedFilterListLayoutProvider<T>(
+                    sections: visibleFilterSections,
+                    showHeaders: showHeaders,
+                    scrollableWidth: scrollableWidth,
+                    tileExtent: tileExtent,
+                    columnCount: columnCount,
+                    spacing: tileSpacing,
+                    tileBuilder: (gridItem) {
+                      final filter = gridItem.filter;
+                      final entry = gridItem.entry;
+                      return MetaData(
+                        metaData: ScalerMetadata(FilterGridItem<T>(filter, entry)),
+                        child: DecoratedFilterChip(
+                          key: Key(filter.key),
+                          filter: filter,
+                          extent: tileExtent,
+                          pinned: pinnedFilters.contains(filter),
+                          onTap: onTap,
+                          onLongPress: onLongPress,
+                        ),
+                      );
+                    },
+                    tileAnimationDelay: tileAnimationDelay,
+                    child: _FilterSectionedContent<T>(
+                      appBar: appBar,
+                      appBarHeightNotifier: _appBarHeightNotifier,
+                      visibleFilterSections: visibleFilterSections,
+                      sortFactor: sortFactor,
+                      emptyBuilder: emptyBuilder,
+                      scrollController: PrimaryScrollController.of(context),
+                    ),
+                  );
+                });
           },
         );
         return sectionedListLayoutProvider;
@@ -241,6 +262,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> visibleFilterSections;
+  final ChipSortFactor sortFactor;
   final Widget Function() emptyBuilder;
   final ScrollController scrollController;
 
@@ -248,6 +270,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
     @required this.appBar,
     @required this.appBarHeightNotifier,
     @required this.visibleFilterSections,
+    @required this.sortFactor,
     @required this.emptyBuilder,
     @required this.scrollController,
   });
@@ -282,6 +305,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
         scrollableKey: _scrollableKey,
         appBar: appBar,
         appBarHeightNotifier: appBarHeightNotifier,
+        sortFactor: widget.sortFactor,
         emptyBuilder: emptyBuilder,
         scrollController: scrollController,
       ),
@@ -380,6 +404,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   final GlobalKey scrollableKey;
   final Widget appBar;
   final ValueNotifier<double> appBarHeightNotifier;
+  final ChipSortFactor sortFactor;
   final Widget Function() emptyBuilder;
   final ScrollController scrollController;
 
@@ -387,6 +412,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
     @required this.scrollableKey,
     @required this.appBar,
     @required this.appBarHeightNotifier,
+    @required this.sortFactor,
     @required this.emptyBuilder,
     @required this.scrollController,
   });
@@ -412,6 +438,10 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
           // padding to keep scroll thumb between app bar above and nav bar below
           top: appBarHeightNotifier.value,
           bottom: mqPaddingBottom,
+        ),
+        labelTextBuilder: (offsetY) => FilterDraggableThumbLabel<T>(
+          sortFactor: sortFactor,
+          offsetY: offsetY,
         ),
         child: scrollView,
       ),

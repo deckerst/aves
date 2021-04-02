@@ -94,7 +94,6 @@ class _PanoramaPageState extends State<PanoramaPage> {
                             return Padding(
                               padding: EdgeInsets.all(8) + EdgeInsets.only(right: mqPadding.right, bottom: mqPadding.bottom),
                               child: OverlayButton(
-                                scale: kAlwaysCompleteAnimation,
                                 child: ValueListenableBuilder<SensorControl>(
                                     valueListenable: _sensorControl,
                                     builder: (context, sensorControl, child) {

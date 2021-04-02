@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.3.7] - 2021-04-02
+### Added
+- Collection / Albums / Countries / Tags: added label when dragging scrollbar thumb
+- Albums: localized common album names
+- Collection: select shortcut icon image
+- Settings: custom viewer quick actions
+- Settings: option to hide videos from collection
+
+### Changed
+- Upgraded Flutter to beta v2.1.0-12.2.pre
+
+### Fixed
+- opening media shared by other apps as file media content
+- navigation stack when opening media shared by other apps
+
 ## [v1.3.6] - 2021-03-18
 ### Added
 - Korean translation

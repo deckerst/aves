@@ -37,6 +37,7 @@ class DebugSettingsSection extends StatelessWidget {
                 'tileExtent - Countries': '${settings.getTileExtent(CountryListPage.routeName)}',
                 'tileExtent - Tags': '${settings.getTileExtent(TagListPage.routeName)}',
                 'infoMapZoom': '${settings.infoMapZoom}',
+                'viewerQuickActions': '${settings.viewerQuickActions}',
                 'pinnedFilters': toMultiline(settings.pinnedFilters),
                 'hiddenFilters': toMultiline(settings.hiddenFilters),
                 'searchHistory': toMultiline(settings.searchHistory),

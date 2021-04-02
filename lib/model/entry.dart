@@ -18,7 +18,6 @@ import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
-import 'package:path/path.dart' as ppath;
 
 import '../ref/mime_types.dart';
 
@@ -186,17 +185,17 @@ class AvesEntry {
   String get path => _path;
 
   String get directory {
-    _directory ??= path != null ? ppath.dirname(path) : null;
+    _directory ??= path != null ? pContext.dirname(path) : null;
     return _directory;
   }
 
   String get filenameWithoutExtension {
-    _filename ??= path != null ? ppath.basenameWithoutExtension(path) : null;
+    _filename ??= path != null ? pContext.basenameWithoutExtension(path) : null;
     return _filename;
   }
 
   String get extension {
-    _extension ??= path != null ? ppath.extension(path) : null;
+    _extension ??= path != null ? pContext.extension(path) : null;
     return _extension;
   }
 

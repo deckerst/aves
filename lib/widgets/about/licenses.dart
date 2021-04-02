@@ -1,8 +1,6 @@
 import 'package:aves/ref/brand_colors.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/basic/link_chip.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:collection/collection.dart';
@@ -15,7 +13,6 @@ class Licenses extends StatefulWidget {
 
 class _LicensesState extends State<Licenses> {
   final ValueNotifier<String> _expandedNotifier = ValueNotifier(null);
-  LicenseSort _sort = LicenseSort.name;
   List<Dependency> _platform, _flutterPlugins, _flutterPackages, _dartPackages;
 
   @override
@@ -29,17 +26,7 @@ class _LicensesState extends State<Licenses> {
   }
 
   void _sortPackages() {
-    int compare(Dependency a, Dependency b) {
-      switch (_sort) {
-        case LicenseSort.license:
-          final c = compareAsciiUpperCase(a.license, b.license);
-          return c != 0 ? c : compareAsciiUpperCase(a.name, b.name);
-        case LicenseSort.name:
-        default:
-          return compareAsciiUpperCase(a.name, b.name);
-      }
-    }
-
+    int compare(Dependency a, Dependency b) => compareAsciiUpperCase(a.name, b.name);
     _platform.sort(compare);
     _flutterPlugins.sort(compare);
     _flutterPackages.sort(compare);
@@ -103,44 +90,22 @@ class _LicensesState extends State<Licenses> {
   }
 
   Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.only(start: 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(context.l10n.aboutLicenses, style: Constants.titleTextStyle),
-              ),
-              PopupMenuButton<LicenseSort>(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: LicenseSort.name,
-                    child: MenuRow(text: context.l10n.aboutLicensesSortByName, checked: _sort == LicenseSort.name),
-                  ),
-                  PopupMenuItem(
-                    value: LicenseSort.license,
-                    child: MenuRow(text: context.l10n.aboutLicensesSortByLicense, checked: _sort == LicenseSort.license),
-                  ),
-                ],
-                onSelected: (newSort) {
-                  _sort = newSort;
-                  _sortPackages();
-                  setState(() {});
-                },
-                tooltip: context.l10n.aboutLicensesSortTooltip,
-                icon: Icon(AIcons.sort),
-              ),
-            ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 48),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(context.l10n.aboutLicenses, style: Constants.titleTextStyle),
+            ),
           ),
-        ),
-        SizedBox(height: 8),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
-          child: Text(context.l10n.aboutLicensesBanner),
-        ),
-      ],
+          SizedBox(height: 8),
+          Text(context.l10n.aboutLicensesBanner),
+        ],
+      ),
     );
   }
 }
@@ -179,5 +144,3 @@ class LicenseRow extends StatelessWidget {
     );
   }
 }
-
-enum LicenseSort { license, name }

@@ -1,12 +1,12 @@
 import 'dart:io';
 
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path/path.dart';
 
 import 'aves_dialog.dart';
 
@@ -143,7 +143,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
 
   String _buildAlbumPath(String name) {
     if (name == null || name.isEmpty) return '';
-    return join(_selectedVolume.path, 'Pictures', name);
+    return pContext.join(_selectedVolume.path, 'Pictures', name);
   }
 
   Future<void> _validate() async {

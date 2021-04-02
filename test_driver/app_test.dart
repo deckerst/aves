@@ -1,6 +1,6 @@
 import 'package:aves/model/source/enums.dart';
 import 'package:flutter_driver/flutter_driver.dart';
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart' as p;
 import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 
@@ -141,9 +141,9 @@ void searchAlbum() {
     await driver.waitUntilNoTransientCallbacks();
 
     const albumPath = targetPicturesDirEmulated;
-    final albumUniqueName = path.split(albumPath).last;
+    final albumDisplayName = p.split(albumPath).last;
     await driver.tap(find.byType('TextField'));
-    await driver.enterText(albumUniqueName);
+    await driver.enterText(albumDisplayName);
 
     final albumChip = find.byValueKey('album-$albumPath');
     await driver.waitFor(albumChip);

@@ -12,7 +12,7 @@ ScrollThumbBuilder avesScrollThumbBuilder({
   final scrollThumb = Container(
     decoration: BoxDecoration(
       color: Colors.black26,
-      borderRadius: BorderRadius.circular(12.0),
+      borderRadius: BorderRadius.circular(12),
     ),
     height: height,
     margin: EdgeInsets.only(right: .5),
@@ -23,7 +23,7 @@ ScrollThumbBuilder avesScrollThumbBuilder({
         width: 20.0,
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     ),

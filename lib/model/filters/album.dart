@@ -1,12 +1,12 @@
 import 'package:aves/image_providers/app_icon_image_provider.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:path/path.dart';
 
 class AlbumFilter extends CollectionFilter {
   static const type = 'album';
@@ -14,9 +14,9 @@ class AlbumFilter extends CollectionFilter {
   static final Map<String, Color> _appColors = {};
 
   final String album;
-  final String uniqueName;
+  final String displayName;
 
-  const AlbumFilter(this.album, this.uniqueName);
+  const AlbumFilter(this.album, this.displayName);
 
   AlbumFilter.fromMap(Map<String, dynamic> json)
       : this(
@@ -28,14 +28,14 @@ class AlbumFilter extends CollectionFilter {
   Map<String, dynamic> toMap() => {
         'type': type,
         'album': album,
-        'uniqueName': uniqueName,
+        'uniqueName': displayName,
       };
 
   @override
   EntryFilter get test => (entry) => entry.directory == album;
 
   @override
-  String get universalLabel => uniqueName ?? album.split(separator).last;
+  String get universalLabel => displayName ?? pContext.split(album).last;
 
   @override
   String getTooltip(BuildContext context) => album;

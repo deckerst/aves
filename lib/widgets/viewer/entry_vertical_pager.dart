@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
+import 'package:aves/widgets/common/video/video.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
@@ -10,13 +11,12 @@ import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:tuple/tuple.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
   final ValueNotifier<AvesEntry> entryNotifier;
-  final List<Tuple2<String, IjkMediaController>> videoControllers;
+  final List<Tuple2<String, AvesVideoController>> videoControllers;
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
@@ -32,7 +32,7 @@ class ViewerVerticalPageView extends StatefulWidget {
     @required this.horizontalPager,
     @required this.onVerticalPageChanged,
     @required this.onHorizontalPageChanged,
-    @required this.onImageTap,
+    this.onImageTap,
     @required this.onImagePageRequested,
     @required this.onViewDisposed,
   });

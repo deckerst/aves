@@ -11,6 +11,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
+import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
 import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
@@ -29,9 +30,9 @@ import 'package:aves/widgets/common/providers/tile_extent_controller_provider.da
 import 'package:aves/widgets/common/scaling.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class CollectionGrid extends StatefulWidget {
   final String settingsRouteKey;
@@ -74,23 +75,34 @@ class _CollectionGridContent extends StatelessWidget {
           builder: (context, tileExtent, child) {
             return ThumbnailTheme(
               extent: tileExtent,
-              child: SectionedEntryListLayoutProvider(
-                collection: collection,
-                scrollableWidth: context.select<TileExtentController, double>((controller) => controller.viewportSize.width),
-                tileExtent: tileExtent,
-                columnCount: context.select<TileExtentController, int>((controller) => controller.getEffectiveColumnCountForExtent(tileExtent)),
-                tileBuilder: (entry) => InteractiveThumbnail(
-                  key: ValueKey(entry.contentId),
-                  collection: collection,
-                  entry: entry,
-                  tileExtent: tileExtent,
-                  isScrollingNotifier: _isScrollingNotifier,
-                ),
-                child: _CollectionSectionedContent(
-                  collection: collection,
-                  isScrollingNotifier: _isScrollingNotifier,
-                  scrollController: PrimaryScrollController.of(context),
-                ),
+              child: Selector<TileExtentController, Tuple2<double, int>>(
+                selector: (context, c) => Tuple2(c.viewportSize.width, c.columnCount),
+                builder: (context, c, child) {
+                  final scrollableWidth = c.item1;
+                  final columnCount = c.item2;
+                  // do not listen for animation delay change
+                  final controller = Provider.of<TileExtentController>(context, listen: false);
+                  final tileAnimationDelay = controller.getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
+                  return SectionedEntryListLayoutProvider(
+                    collection: collection,
+                    scrollableWidth: scrollableWidth,
+                    tileExtent: tileExtent,
+                    columnCount: columnCount,
+                    tileBuilder: (entry) => InteractiveThumbnail(
+                      key: ValueKey(entry.contentId),
+                      collection: collection,
+                      entry: entry,
+                      tileExtent: tileExtent,
+                      isScrollingNotifier: _isScrollingNotifier,
+                    ),
+                    tileAnimationDelay: tileAnimationDelay,
+                    child: _CollectionSectionedContent(
+                      collection: collection,
+                      isScrollingNotifier: _isScrollingNotifier,
+                      scrollController: PrimaryScrollController.of(context),
+                    ),
+                  );
+                },
               ),
             );
           },
@@ -266,10 +278,10 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
   @override
   Widget build(BuildContext context) {
     final scrollView = _buildScrollView(widget.appBar, widget.collection);
-    return _buildDraggableScrollView(scrollView);
+    return _buildDraggableScrollView(scrollView, widget.collection);
   }
 
-  Widget _buildDraggableScrollView(ScrollView scrollView) {
+  Widget _buildDraggableScrollView(ScrollView scrollView, CollectionLens collection) {
     return ValueListenableBuilder<double>(
       valueListenable: widget.appBarHeightNotifier,
       builder: (context, appBarHeight, child) => Selector<MediaQueryData, double>(
@@ -286,6 +298,10 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
             // padding to keep scroll thumb between app bar above and nav bar below
             top: appBarHeight,
             bottom: mqPaddingBottom,
+          ),
+          labelTextBuilder: (offsetY) => CollectionDraggableThumbLabel(
+            collection: collection,
+            offsetY: offsetY,
           ),
           child: scrollView,
         ),
