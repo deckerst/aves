@@ -15,7 +15,6 @@ environment:
 
 # not null safe, as of 2021/03/13
 # `charts_flutter` - https://github.com/google/charts/issues/579
-# `decorated_icon` - https://github.com/benPesso/flutter_decorated_icon/issues/2
 # `flutter_ijkplayer` - unmaintained?
 # `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
 # `latlong` - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
