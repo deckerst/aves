@@ -41,8 +41,11 @@ dependencies:
   firebase_crashlytics:
   flutter_highlight:
 #  fijkplayer:
+##    path: ../fijkplayer
+#    git:
+#      url: git://github.com/deckerst/fijkplayer.git
+#      ref: aves-config
   flutter_ijkplayer:
-#    path: ../flutter_ijkplayer
     git:
       url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_localized_locales:
@@ -89,6 +92,21 @@ flutter:
   uses-material-design: true
 
 ################################################################################
+# Build
+
+# deckerst/fijkplayer
+
+# This fork depends on a local .aar, but Flutter does not support this well
+# cf https://github.com/flutter/flutter/issues/28195
+# so building an app with this plugin requires the file to be present at:
+# `<app-root>/android/app/libs/fijkplayer-full-release.aar`
+# The .aar file in the app will take precedence over the one in the plugin itself.
+
+# The reference file is available at:
+# - [git] https://github.com/deckerst/fijkplayer/blob/aves-config/android/libs/fijkplayer-full-release.aar
+# - [local/win] C:\Users\<user>\AppData\Local\Pub\Cache\git\fijkplayer-<version>\android\libs\fijkplayer-full-release.aar
+
+################################################################################
 # Localization
 
 # language files:
@@ -121,15 +139,16 @@ flutter:
 # - does not support AVI/XVID, AC3
 # - cannot play if only the video or audio stream is supported
 
-# fijkplayer (as of v0.8.7, backed by IJKPlayer & ffmpeg):
-# - support content URIs
-# - does not support XVID, AC3 (by default, but possible by custom build)
-# - can play if only the video or audio stream is supported
-# - crash when calling `seekTo` for some files (e.g. TED talk videos)
-# - no edge smear (with default build)
-
 # flutter_ijkplayer (as of v0.3.5+1, backed by IJKPlayer & ffmpeg):
-# - support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
-# - does not support AC3 (by default, but possible by custom build)
-# - can play if only the video or audio stream is supported
+# ~ support content URIs (`DataSource.photoManagerUrl` from v0.3.6, but need fork to support content URIs on Android <Q)
+# + does not support AC3 (by default, but possible by custom build)
+# + can play if only the video or audio stream is supported
 # - edge smear on some videos, depending on dimensions (dimension not multiple of 16?)
+# - unmaintained
+
+# fijkplayer (as of v0.8.7, backed by IJKPlayer & ffmpeg):
+# + support content URIs
+# + does not support XVID, AC3 (by default, but possible by custom build)
+# + can play if only the video or audio stream is supported
+# + no edge smear (with default build)
+# - crash when calling `seekTo` for some files, cf https://github.com/befovy/fijkplayer/issues/360
