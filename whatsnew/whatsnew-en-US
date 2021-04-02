@@ -1,6 +1,8 @@
 Thanks for using Aves!
-v1.3.6:
-- Korean translation
-- cover selection for albums, countries & tags
-- TIFF decoding fixes
+v1.3.7:
+- fast scroll label
+- localized common album names
+- customizable shortcut icon image
+- customizable viewer quick actions
+- option to hide videos from collection
 Full changelog available on Github
