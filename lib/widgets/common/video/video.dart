@@ -1,14 +1,12 @@
 import 'package:aves/model/entry.dart';
-// import 'package:aves/widgets/common/video/fijkplayer.dart';
-import 'package:aves/widgets/common/video/flutter_ijkplayer.dart';
+import 'package:aves/widgets/common/video/fijkplayer.dart';
+// import 'package:aves/widgets/common/video/flutter_ijkplayer.dart';
 import 'package:flutter/material.dart';
 
 abstract class AvesVideoController {
   AvesVideoController();
 
-  factory AvesVideoController.flutterIjkPlayer() => FlutterIjkPlayerAvesVideoController();
-
-  // factory AvesVideoController.fijkPlayer() => FijkPlayerAvesVideoController();
+  factory AvesVideoController.ijkPlayer() => IjkPlayerAvesVideoController();
 
   void dispose();
 

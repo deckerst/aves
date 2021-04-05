@@ -499,7 +499,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       _initViewSpecificController<AvesVideoController>(
         uri,
         _videoControllers,
-        () => AvesVideoController.flutterIjkPlayer(),
+        () => AvesVideoController.ijkPlayer(),
         (_) => _.dispose(),
       );
     }

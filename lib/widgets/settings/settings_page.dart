@@ -239,6 +239,11 @@ class _SettingsPageState extends State<SettingsPage> {
           onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility(MimeFilter.video, v),
           title: Text(context.l10n.settingsVideoShowVideos),
         ),
+        SwitchListTile(
+          value: settings.isVideoHardwareAccelerationEnabled,
+          onChanged: (v) => settings.isVideoHardwareAccelerationEnabled = v,
+          title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
+        ),
       ],
     );
   }

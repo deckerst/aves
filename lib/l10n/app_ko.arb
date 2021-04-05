@@ -252,6 +252,7 @@
 
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
+  "settingsVideoEnableHardwareAcceleration": "하드웨어 가속 사용",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",

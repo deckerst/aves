@@ -49,6 +49,9 @@ class Settings extends ChangeNotifier {
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const viewerQuickActionsKey = 'viewer_quick_actions';
 
+  // video
+  static const isVideoHardwareAccelerationEnabledKey = 'video_hwaccel_mediacodec';
+
   // info
   static const infoMapStyleKey = 'info_map_style';
   static const infoMapZoomKey = 'info_map_zoom';
@@ -222,6 +225,12 @@ class Settings extends ChangeNotifier {
   List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+
+  // video
+
+  set isVideoHardwareAccelerationEnabled(bool newValue) => setAndNotify(isVideoHardwareAccelerationEnabledKey, newValue);
+
+  bool get isVideoHardwareAccelerationEnabled => getBoolOrDefault(isVideoHardwareAccelerationEnabledKey, true);
 
   // info
 
