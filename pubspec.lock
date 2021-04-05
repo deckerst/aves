@@ -206,6 +206,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  fijkplayer:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: aves
+      resolved-ref: c48e515a98851e55c857308d5482cd7bf5c9faad
+      url: "git://github.com/deckerst/fijkplayer.git"
+    source: git
+    version: "0.8.7"
   file:
     dependency: transitive
     description:
@@ -300,15 +309,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.0"
-  flutter_ijkplayer:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: d4e079404ba8e4f82a7e053ffdc47af787a61c3b
-      url: "git://github.com/deckerst/flutter_ijkplayer.git"
-    source: git
-    version: "0.3.7"
   flutter_image:
     dependency: transitive
     description:

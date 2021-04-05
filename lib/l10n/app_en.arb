@@ -542,6 +542,8 @@
   "@settingsSectionVideo": {},
   "settingsVideoShowVideos": "Show videos",
   "@settingsVideoShowVideos": {},
+  "settingsVideoEnableHardwareAcceleration": "Enable hardware acceleration",
+  "@settingsVideoEnableHardwareAcceleration": {},
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},
