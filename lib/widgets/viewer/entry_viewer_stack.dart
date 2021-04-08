@@ -11,7 +11,8 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
+import 'package:aves/widgets/common/video/fijkplayer.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -499,7 +500,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       _initViewSpecificController<AvesVideoController>(
         uri,
         _videoControllers,
-        () => AvesVideoController.ijkPlayer(),
+        () => IjkPlayerAvesVideoController(entry),
         (_) => _.dispose(),
       );
     }

@@ -8,7 +8,7 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/material.dart';
 
@@ -175,14 +175,17 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                     Text(entry.durationText),
                   ],
                 ),
-                StreamBuilder<int>(
-                    stream: controller.positionStream,
-                    builder: (context, snapshot) {
-                      // do not use stream snapshot because it is obsolete when switching between videos
-                      var progress = controller.progress;
-                      if (!progress.isFinite) progress = 0.0;
-                      return LinearProgressIndicator(value: progress);
-                    }),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: StreamBuilder<int>(
+                      stream: controller.positionStream,
+                      builder: (context, snapshot) {
+                        // do not use stream snapshot because it is obsolete when switching between videos
+                        var progress = controller.progress;
+                        if (!progress.isFinite) progress = 0.0;
+                        return LinearProgressIndicator(value: progress);
+                      }),
+                ),
               ],
             ),
           ),
