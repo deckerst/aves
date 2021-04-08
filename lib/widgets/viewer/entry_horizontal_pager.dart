@@ -3,7 +3,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:flutter/material.dart';

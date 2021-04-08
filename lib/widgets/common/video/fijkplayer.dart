@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 
@@ -12,10 +13,11 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
   final AChangeNotifier _playFinishNotifier = AChangeNotifier();
+  Offset _macroBlockCrop = Offset.zero;
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
 
-  IjkPlayerAvesVideoController() {
+  IjkPlayerAvesVideoController(AvesEntry entry) {
     _instance = FijkPlayer();
 
     // FFmpeg options
@@ -30,14 +32,26 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // `framedrop`: drop frames when cpu is too slow, default: 0, in [-1, 120]
     option.setPlayerOption('framedrop', 5);
 
-    final hwAccel = settings.isVideoHardwareAccelerationEnabled ? 1 : 0;
+    final _hwAccelerationEnabled = settings.isVideoHardwareAccelerationEnabled;
+    if (_hwAccelerationEnabled) {
+      // crop HW acceleration macroblock misalignment for videos with dimensions that do not fit 16x
+      final s = entry.displaySize % 16 * -1 % 16;
+      _macroBlockCrop = Offset(s.width, s.height);
+    }
     // `mediacodec-all-videos`: MediaCodec: enable all videos, default: 0, in [0, 1]
     // TODO TLAD enabling `mediacodec-all-videos` randomly fails to render some videos, e.g. MP2TS/h264(HDPR)
-    option.setPlayerOption('mediacodec-all-videos', hwAccel);
+    option.setPlayerOption('mediacodec-all-videos', _hwAccelerationEnabled ? 1 : 0);
 
     // option.setPlayerOption('analyzemaxduration', 200 * 1024);
     // option.setPlayerOption('analyzeduration', 200 * 1024);
     // option.setPlayerOption('probesize', 1024 * 1024);
+
+    // CJL options
+    // option.setPlayerOption('reconnect', 5);
+    // option.setPlayerOption('mediacodec', 1);
+    // option.setPlayerOption('packet-buffering', 1);
+    // option.setPlayerOption('soundtouch', 1);
+    // option.setPlayerOption('start-on-prepared', 1);
 
     // TODO TLAD check looping
     // option.setPlayerOption('loop', 42);
@@ -95,9 +109,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   @override
   Stream<bool> get isVideoReadyStream => _valueStream.map((value) => value.videoRenderStart);
 
-  // we check whether video info is ready instead of checking for `noDatasource` status,
-  // as the controller could also be uninitialized with the `pause` status
-  // (e.g. when switching between video entries without playing them the first time)
   @override
   bool get isPlayable => _instance.isPlayable();
 
@@ -111,11 +122,19 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   Stream<int> get positionStream => _instance.onCurrentPosUpdate.map((pos) => pos.inMilliseconds);
 
   @override
-  Widget buildPlayerWidget(AvesEntry entry) => FijkView(
-        player: _instance,
-        panelBuilder: (player, data, context, viewSize, texturePos) => SizedBox(),
-        color: Colors.transparent,
-      );
+  Widget buildPlayerWidget(BuildContext context, AvesEntry entry) {
+    return FijkView(
+      player: _instance,
+      fit: FijkFit(
+        sizeFactor: 1.0,
+        aspectRatio: -1,
+        alignment: Alignment.topLeft,
+        macroBlockCrop: _macroBlockCrop,
+      ),
+      panelBuilder: (player, data, context, viewSize, texturePos) => SizedBox(),
+      color: Colors.transparent,
+    );
+  }
 }
 
 extension ExtraIjkStatus on FijkState {

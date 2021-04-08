@@ -1,12 +1,8 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/common/video/fijkplayer.dart';
-// import 'package:aves/widgets/common/video/flutter_ijkplayer.dart';
 import 'package:flutter/material.dart';
 
 abstract class AvesVideoController {
   AvesVideoController();
-
-  factory AvesVideoController.ijkPlayer() => IjkPlayerAvesVideoController();
 
   void dispose();
 
@@ -44,7 +40,7 @@ abstract class AvesVideoController {
 
   Stream<int> get positionStream;
 
-  Widget buildPlayerWidget(AvesEntry entry);
+  Widget buildPlayerWidget(BuildContext context, AvesEntry entry);
 }
 
 class AvesVideoInfo {

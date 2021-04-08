@@ -2,7 +2,7 @@
 //
 // import 'package:aves/model/entry.dart';
 // import 'package:aves/utils/change_notifier.dart';
-// import 'package:aves/widgets/common/video/video.dart';
+// import 'package:aves/widgets/common/video/controller.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 //
@@ -57,7 +57,7 @@
 //   // as the controller could also be uninitialized with the `pause` status
 //   // (e.g. when switching between video entries without playing them the first time)
 //   @override
-//   bool get isPlayable => _videoInfo.hasData;
+//   bool get isPlayable => _videoInfo.hasData && [VideoStatus.prepared, VideoStatus.playing, VideoStatus.paused, VideoStatus.completed].contains(status);
 //
 //   @override
 //   bool get isVideoReady => _instance.textureId != null;
@@ -79,7 +79,7 @@
 //   Stream<int> get positionStream => _instance.videoInfoStream.map((info) => info.currentPositionMillis);
 //
 //   @override
-//   Widget buildPlayerWidget(AvesEntry entry) => IjkPlayer(
+//   Widget buildPlayerWidget(BuildContext context, AvesEntry entry) => IjkPlayer(
 //         mediaController: _instance,
 //         controllerWidgetBuilder: (controller) => SizedBox.shrink(),
 //         statusWidgetBuilder: (context, controller, status) => SizedBox.shrink(),
