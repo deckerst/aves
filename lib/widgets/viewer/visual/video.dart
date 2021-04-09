@@ -68,5 +68,6 @@ class _VideoViewState extends State<VideoView> {
         });
   }
 
+  // not called when looping
   void _onPlayCompleted() => controller.seekTo(0);
 }

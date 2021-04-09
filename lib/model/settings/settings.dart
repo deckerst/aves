@@ -51,6 +51,7 @@ class Settings extends ChangeNotifier {
 
   // video
   static const isVideoHardwareAccelerationEnabledKey = 'video_hwaccel_mediacodec';
+  static const videoLoopModeKey = 'video_loop';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -231,6 +232,10 @@ class Settings extends ChangeNotifier {
   set isVideoHardwareAccelerationEnabled(bool newValue) => setAndNotify(isVideoHardwareAccelerationEnabledKey, newValue);
 
   bool get isVideoHardwareAccelerationEnabled => getBoolOrDefault(isVideoHardwareAccelerationEnabledKey, true);
+
+  VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, VideoLoopMode.shortOnly, VideoLoopMode.values);
+
+  set videoLoopMode(VideoLoopMode newValue) => setAndNotify(videoLoopModeKey, newValue.toString());
 
   // info
 

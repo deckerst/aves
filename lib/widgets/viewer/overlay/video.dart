@@ -35,9 +35,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   final List<StreamSubscription> _subscriptions = [];
   double _seekTargetPercent;
 
-  // video info is not refreshed by default, so we use a timer to do so
-  Timer _progressTimer;
-
   AvesEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
@@ -74,16 +71,13 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   void _registerWidget(VideoControlOverlay widget) {
     _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
-    _subscriptions.add(widget.controller.isVideoReadyStream.listen(_onVideoReadinessChanged));
     _onStatusChange(widget.controller.status);
-    _onVideoReadinessChanged(widget.controller.isVideoReady);
   }
 
   void _unregisterWidget(VideoControlOverlay widget) {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _stopTimer();
   }
 
   @override
@@ -194,24 +188,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     );
   }
 
-  void _startTimer() {
-    if (!controller.isVideoReady) return;
-    _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(Durations.videoProgressTimerInterval, (_) => controller.refreshVideoInfo());
-  }
-
-  void _stopTimer() {
-    _progressTimer?.cancel();
-  }
-
-  void _onVideoReadinessChanged(bool isVideoReady) {
-    if (isVideoReady) {
-      _startTimer();
-    } else {
-      _stopTimer();
-    }
-  }
-
   void _onStatusChange(VideoStatus status) {
     if (status == VideoStatus.playing && _seekTargetPercent != null) {
       _seekFromTarget();
@@ -247,16 +223,17 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     if (isPlayable) {
       await _seekFromTarget();
     } else {
-      await controller.setDataSource(entry.uri);
+      // controller duration is not set yet, so we use the expected duration instead
+      final seekTargetMillis = (entry.durationMillis * _seekTargetPercent).toInt();
+      await controller.setDataSource(entry.uri, startMillis: seekTargetMillis);
+      _seekTargetPercent = null;
     }
   }
 
   Future _seekFromTarget() async {
     // `seekToProgress` is not safe as it can be called when the `duration` is not set yet
     // so we make sure the video info is up to date first
-    if (controller.duration == null) {
-      await controller.refreshVideoInfo();
-    } else {
+    if (controller.duration != null) {
       await controller.seekToProgress(_seekTargetPercent);
       _seekTargetPercent = null;
     }
