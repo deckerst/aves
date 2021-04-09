@@ -4,6 +4,7 @@ import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/settings/video_loop_mode.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -243,6 +244,23 @@ class _SettingsPageState extends State<SettingsPage> {
           value: settings.isVideoHardwareAccelerationEnabled,
           onChanged: (v) => settings.isVideoHardwareAccelerationEnabled = v,
           title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
+        ),
+        ListTile(
+          title: Text(context.l10n.settingsVideoLoopModeTile),
+          subtitle: Text(settings.videoLoopMode.getName(context)),
+          onTap: () async {
+            final value = await showDialog<VideoLoopMode>(
+              context: context,
+              builder: (context) => AvesSelectionDialog<VideoLoopMode>(
+                initialValue: settings.videoLoopMode,
+                options: Map.fromEntries(VideoLoopMode.values.map((v) => MapEntry(v, v.getName(context)))),
+                title: context.l10n.settingsVideoLoopModeTitle,
+              ),
+            );
+            if (value != null) {
+              settings.videoLoopMode = value;
+            }
+          },
         ),
       ],
     );

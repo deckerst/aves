@@ -6,9 +6,7 @@ abstract class AvesVideoController {
 
   void dispose();
 
-  Future<void> setDataSource(String uri);
-
-  Future<void> refreshVideoInfo();
+  Future<void> setDataSource(String uri, {int startMillis = 0});
 
   Future<void> play();
 
@@ -16,7 +14,11 @@ abstract class AvesVideoController {
 
   Future<void> seekTo(int targetMillis);
 
-  Future<void> seekToProgress(double progress);
+  Future<void> seekToProgress(double progress) async {
+    if (duration != null) {
+      await seekTo((duration * progress).toInt());
+    }
+  }
 
   Listenable get playCompletedListenable;
 
@@ -28,40 +30,22 @@ abstract class AvesVideoController {
 
   bool get isPlaying => status == VideoStatus.playing;
 
-  bool get isVideoReady;
-
-  Stream<bool> get isVideoReadyStream;
-
   int get duration;
 
   int get currentPosition;
 
-  double get progress => (currentPosition ?? 0).toDouble() / (duration ?? 1);
+  double get progress => duration == null ? 0 : (currentPosition ?? 0).toDouble() / duration;
 
   Stream<int> get positionStream;
 
   Widget buildPlayerWidget(BuildContext context, AvesEntry entry);
 }
 
-class AvesVideoInfo {
-  // in millis
-  int duration, currentPosition;
-
-  AvesVideoInfo({
-    this.duration,
-    this.currentPosition,
-  });
-}
-
 enum VideoStatus {
   idle,
   initialized,
-  preparing,
-  prepared,
-  playing,
   paused,
+  playing,
   completed,
-  stopped,
-  disposed,
   error,
 }

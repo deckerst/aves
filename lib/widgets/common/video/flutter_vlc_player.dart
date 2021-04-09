@@ -21,7 +21,7 @@
 //   VlcAvesVideoController();
 //
 //   @override
-//   Future<void> setDataSource(String uri) async {
+//   Future<void> setDataSource(String uri, {int startMillis = 0}) async {
 //     _instance = VlcPlayerController.file(
 //       File(uri),
 //     );
@@ -49,9 +49,6 @@
 //   void _onValueChanged() => _valueStreamController.add(_instance.value);
 //
 //   @override
-//   Future<void> refreshVideoInfo() => null;
-//
-//   @override
 //   Future<void> play() => _instance.play();
 //
 //   @override
@@ -61,9 +58,6 @@
 //   Future<void> seekTo(int targetMillis) => _instance.seekTo(Duration(milliseconds: targetMillis));
 //
 //   @override
-//   Future<void> seekToProgress(double progress) => _instance.seekTo(Duration(milliseconds: (duration * progress).toInt()));
-//
-//   @override
 //   Listenable get playCompletedListenable => _playFinishNotifier;
 //
 //   @override
@@ -71,12 +65,6 @@
 //
 //   @override
 //   Stream<VideoStatus> get statusStream => _valueStream.map((value) => value.toAves);
-//
-//   @override
-//   bool get isVideoReady => _instance != null && _instance.value.isInitialized && !_instance.value.hasError;
-//
-//   @override
-//   Stream<bool> get isVideoReadyStream => _valueStream.map((value) => value.isInitialized && !value.hasError);
 //
 //   @override
 //   bool get isPlayable => _instance != null;
