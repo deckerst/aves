@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/video/streams.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
@@ -139,6 +142,18 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
       final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataService.getAllMetadata(entry)) ?? {};
+      if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultipage)) {
+        final info = await StreamInfo.getVideoInfo(entry);
+        if (info.containsKey('streams')) {
+          final streams = (info['streams'] as List).cast<Map>();
+          for (final stream in streams) {
+            if (stream.containsKey('index')) {
+              final index = stream['index'] + 1;
+              rawMetadata['Stream $index'] = StreamInfo.formatStreamInfo(stream);
+            }
+          }
+        }
+      }
       final directories = rawMetadata.entries.map((dirKV) {
         var directoryName = dirKV.key as String ?? '';
 

@@ -210,6 +210,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             if (mediaDir.isNotEmpty()) {
                 metadataMap[Metadata.DIR_MEDIA] = mediaDir
             }
+            // Android's `MediaExtractor` and `MediaPlayer` cannot be used for details
+            // about embedded images as they do not list them as separate tracks
+            // and only identify at most one
         }
 
         if (metadataMap.isNotEmpty()) {

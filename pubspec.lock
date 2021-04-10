@@ -211,7 +211,7 @@ packages:
     description:
       path: "."
       ref: aves
-      resolved-ref: a4640923c7c6141ff543f676a8cb7d2fe8b0ffba
+      resolved-ref: "118fa08b30a7948df04d2692649b124a09ccb480"
       url: "git://github.com/deckerst/fijkplayer.git"
     source: git
     version: "0.8.7"

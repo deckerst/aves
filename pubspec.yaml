@@ -42,9 +42,6 @@ dependencies:
   firebase_analytics:
   firebase_crashlytics:
   flutter_highlight:
-#  flutter_ijkplayer:
-#    git:
-#      url: git://github.com/deckerst/flutter_ijkplayer.git
   flutter_localized_locales:
   flutter_map:
   flutter_markdown:
