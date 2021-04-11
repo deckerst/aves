@@ -61,6 +61,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // `mediacodec-all-videos`: MediaCodec: enable all videos, default: 0, in [0, 1]
     option.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
 
+    // TODO TLAD try subs
+    // `subtitle`: decode subtitle stream, default: 0, in [0, 1]
+    // option.setPlayerOption('subtitle', 1);
+
     _instance.applyOptions(option);
 
     _instance.addListener(_onValueChanged);
@@ -122,6 +126,8 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Widget buildPlayerWidget(BuildContext context, AvesEntry entry) {
+    // TODO TLAD derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
+    // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
     return FijkView(
       player: _instance,
       fit: FijkFit(
