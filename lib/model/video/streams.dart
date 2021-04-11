@@ -6,6 +6,29 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 
 class StreamInfo {
+  static const keyBitrate = 'bitrate';
+  static const keyChannelLayout = 'channel_layout';
+  static const keyCodecName = 'codec_name';
+  static const keyFpsDen = 'fps_den';
+  static const keyFpsNum = 'fps_num';
+  static const keyHeight = 'height';
+  static const keyIndex = 'index';
+  static const keyLanguage = 'language';
+  static const keySampleRate = 'sample_rate';
+  static const keySarDen = 'sar_den';
+  static const keySarNum = 'sar_num';
+  static const keyTbrDen = 'tbr_den';
+  static const keyTbrNum = 'tbr_num';
+  static const keyType = 'type';
+  static const keyWidth = 'width';
+
+  static const typeAudio = 'audio';
+  static const typeMetadata = 'metadata';
+  static const typeSubtitle = 'subtitle';
+  static const typeTimedText = 'timedtext';
+  static const typeUnknown = 'unknown';
+  static const typeVideo = 'video';
+
   static Future<Map> getVideoInfo(AvesEntry entry) async {
     final player = FijkPlayer();
     await player.setDataSource(entry.uri, autoPlay: false);
@@ -53,51 +76,51 @@ class StreamInfo {
       if (value != null) {
         final key = kv.key;
         switch (key) {
-          case 'index':
-          case 'fps_num':
-          case 'sar_num':
-          case 'tbr_num':
-          case 'tbr_den':
+          case keyIndex:
+          case keyFpsNum:
+          case keySarNum:
+          case keyTbrNum:
+          case keyTbrDen:
             break;
-          case 'bitrate':
+          case keyBitrate:
             dir['Bitrate'] = formatBitrate(value, round: 1);
             break;
-          case 'channel_layout':
-            dir['Channel Layout'] = ChannelLayouts.names[value] ?? value.toString();
+          case keyChannelLayout:
+            dir['Channel Layout'] = ChannelLayouts.names[value] ?? 'unknown ($value)';
             break;
-          case 'codec_name':
+          case keyCodecName:
             dir['Codec'] = value.toString().toUpperCase().replaceAll('_', ' ');
             break;
-          case 'fps_den':
-            dir['Frame Rate'] = roundToPrecision(stream['fps_num'] / stream['fps_den'], decimals: 3).toString();
+          case keyFpsDen:
+            dir['Frame Rate'] = roundToPrecision(stream[keyFpsNum] / stream[keyFpsDen], decimals: 3).toString();
             break;
-          case 'height':
+          case keyHeight:
             dir['Height'] = '$value pixels';
             break;
-          case 'language':
+          case keyLanguage:
             dir['Language'] = value;
             break;
-          case 'sample_rate':
+          case keySampleRate:
             dir['Sample Rate'] = '$value Hz';
             break;
-          case 'sar_den':
-            dir['SAR'] = '${stream['sar_num']}:${stream['sar_den']}';
+          case keySarDen:
+            dir['SAR'] = '${stream[keySarNum]}:${stream[keySarDen]}';
             break;
-          case 'type':
+          case keyType:
             switch (value) {
-              case 'timedtext':
+              case typeTimedText:
                 dir['Type'] = 'timed text';
                 break;
-              case 'audio':
-              case 'video':
-              case 'metadata':
-              case 'subtitle':
-              case 'unknown':
+              case typeAudio:
+              case typeMetadata:
+              case typeSubtitle:
+              case typeUnknown:
+              case typeVideo:
               default:
                 dir['Type'] = value;
             }
             break;
-          case 'width':
+          case keyWidth:
             dir['Width'] = '$value pixels';
             break;
           default:

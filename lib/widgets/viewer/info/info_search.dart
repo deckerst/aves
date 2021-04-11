@@ -108,7 +108,7 @@ class InfoSearchDelegate extends SearchDelegate {
               title: kv.key,
               dir: kv.value,
               initiallyExpanded: true,
-              showPrefixChildren: false,
+              showThumbnails: false,
             ))
         .toList();
     return SafeArea(
