@@ -227,7 +227,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return dirMap
         try {
             for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {
-                retriever.getSafeDescription(code, context) { dirMap[name] = it }
+                retriever.getSafeDescription(code) { dirMap[name] = it }
             }
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=$uri", e)
