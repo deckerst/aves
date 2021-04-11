@@ -9,11 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 
 class LanguageTile extends StatelessWidget {
-  final Locale _systemLocale = WidgetsBinding.instance.window.locale;
-
   static const _systemLocaleOption = Locale('system');
 
   @override
@@ -21,14 +18,13 @@ class LanguageTile extends StatelessWidget {
     final current = settings.locale;
     return ListTile(
       title: Text(context.l10n.settingsLanguage),
-      subtitle: Text('${current == null ? '${context.l10n.settingsSystemDefault} • ${_getLocaleName(_systemLocale)}' : _getLocaleName(current)}'),
+      subtitle: Text('${current == null ? context.l10n.settingsSystemDefault : _getLocaleName(current)}'),
       onTap: () async {
         final value = await showDialog<Locale>(
           context: context,
           builder: (context) => AvesSelectionDialog<Locale>(
             initialValue: settings.locale ?? _systemLocaleOption,
             options: _getLocaleOptions(context),
-            optionSubtitleBuilder: (locale) => locale == _systemLocaleOption ? _getLocaleName(_systemLocale) : null,
             title: context.l10n.settingsLanguage,
           ),
         );
@@ -41,12 +37,20 @@ class LanguageTile extends StatelessWidget {
     );
   }
 
-  String _getLocaleName(Locale locale) => LocaleNamesLocalizationsDelegate.nativeLocaleNames[locale.toString()];
+  String _getLocaleName(Locale locale) {
+    // the package `flutter_localized_locales` has the answer for all locales
+    // but it comes with 3 MB of assets
+    switch (locale.languageCode) {
+      case 'en':
+        return 'English';
+      case 'ko':
+        return '한국어';
+    }
+    return locale.toString();
+  }
 
   LinkedHashMap<Locale, String> _getLocaleOptions(BuildContext context) {
-    final supportedLocales = List<Locale>.from(AppLocalizations.supportedLocales);
-    supportedLocales.removeWhere((locale) => locale == _systemLocale);
-    final displayLocales = supportedLocales.map((locale) => MapEntry(locale, _getLocaleName(locale))).toList()..sort((a, b) => compareAsciiUpperCase(a.value, b.value));
+    final displayLocales = AppLocalizations.supportedLocales.map((locale) => MapEntry(locale, _getLocaleName(locale))).toList()..sort((a, b) => compareAsciiUpperCase(a.value, b.value));
 
     return LinkedHashMap.of({
       _systemLocaleOption: context.l10n.settingsSystemDefault,

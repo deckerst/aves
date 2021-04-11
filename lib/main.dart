@@ -24,7 +24,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
@@ -107,7 +106,6 @@ class _AvesAppState extends State<AvesApp> {
                           locale: settingsLocale,
                           localizationsDelegates: [
                             ...AppLocalizations.localizationsDelegates,
-                            LocaleNamesLocalizationsDelegate(),
                           ],
                           supportedLocales: AppLocalizations.supportedLocales,
                         );
