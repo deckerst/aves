@@ -42,10 +42,6 @@ class CollectionSearchDelegate {
 
   CollectionSearchDelegate({@required this.source, this.parentCollection});
 
-  ThemeData appBarTheme(BuildContext context) {
-    return Theme.of(context);
-  }
-
   Widget buildLeading(BuildContext context) {
     return Navigator.canPop(context)
         ? IconButton(
