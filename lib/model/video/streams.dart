@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/video/channel_layouts.dart';
+import 'package:aves/ref/languages.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 
@@ -81,6 +82,7 @@ class StreamInfo {
           case keySarNum:
           case keyTbrNum:
           case keyTbrDen:
+          case keyType:
             break;
           case keyBitrate:
             dir['Bitrate'] = formatBitrate(value, round: 1);
@@ -89,7 +91,7 @@ class StreamInfo {
             dir['Channel Layout'] = ChannelLayouts.names[value] ?? 'unknown ($value)';
             break;
           case keyCodecName:
-            dir['Codec'] = value.toString().toUpperCase().replaceAll('_', ' ');
+            dir['Codec'] = _getCodecName(value);
             break;
           case keyFpsDen:
             dir['Frame Rate'] = roundToPrecision(stream[keyFpsNum] / stream[keyFpsDen], decimals: 3).toString();
@@ -98,27 +100,16 @@ class StreamInfo {
             dir['Height'] = '$value pixels';
             break;
           case keyLanguage:
-            dir['Language'] = value;
+            if (value != 'und') {
+              final language = Language.living639_2.firstWhere((language) => language.iso639_2 == value, orElse: () => null);
+              dir['Language'] = language?.native ?? value;
+            }
             break;
           case keySampleRate:
             dir['Sample Rate'] = '$value Hz';
             break;
           case keySarDen:
             dir['SAR'] = '${stream[keySarNum]}:${stream[keySarDen]}';
-            break;
-          case keyType:
-            switch (value) {
-              case typeTimedText:
-                dir['Type'] = 'timed text';
-                break;
-              case typeAudio:
-              case typeMetadata:
-              case typeSubtitle:
-              case typeUnknown:
-              case typeVideo:
-              default:
-                dir['Type'] = value;
-            }
             break;
           case keyWidth:
             dir['Width'] = '$value pixels';
@@ -129,5 +120,26 @@ class StreamInfo {
       }
     }
     return dir;
+  }
+
+  static String _getCodecName(String value) {
+    switch (value) {
+      case 'ac3':
+        return 'AC-3';
+      case 'eac3':
+        return 'E-AC-3';
+      case 'h264':
+        return 'AVC (H.264)';
+      case 'hdmv_pgs_subtitle':
+        return 'PGS';
+      case 'hevc':
+        return 'HEVC (H.265)';
+      case 'mpeg4':
+        return 'MPEG-4 Visual';
+      case 'subrip':
+        return 'SubRip';
+      default:
+        return value.toUpperCase().replaceAll('_', ' ');
+    }
   }
 }
