@@ -42,7 +42,6 @@ dependencies:
   firebase_analytics:
   firebase_crashlytics:
   flutter_highlight:
-  flutter_localized_locales:
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:
@@ -108,6 +107,7 @@ flutter:
 # - /android/app/src/main/res/values-{language}/strings.xml
 # - /android/app/src/debug/res/values-{language}/strings.xml (optional)
 # - /android/app/src/profile/res/values-{language}/strings.xml (optional)
+# - edit locale name resolution for language setting
 
 # generate `AppLocalizations`
 # % flutter gen-l10n
