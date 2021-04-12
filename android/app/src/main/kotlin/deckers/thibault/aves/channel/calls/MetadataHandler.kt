@@ -22,6 +22,10 @@ import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
+import com.drew.metadata.mov.QuickTimeDirectory
+import com.drew.metadata.mov.media.QuickTimeMediaDirectory
+import com.drew.metadata.mp4.Mp4Directory
+import com.drew.metadata.mp4.media.Mp4MediaDirectory
 import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
@@ -76,6 +80,7 @@ import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.File
 import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -145,6 +150,33 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                 byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
                             } else {
                                 dirMap.putAll(tags.map { tagMapper(it) })
+                            }
+                        } else if (dir is Mp4Directory || dir is QuickTimeDirectory) {
+                            tags.map { tag ->
+                                val tagName = tag.tagName
+                                when (tag.tagType) {
+                                    Mp4Directory.TAG_CREATION_TIME,
+                                    Mp4Directory.TAG_MODIFICATION_TIME,
+                                    Mp4MediaDirectory.TAG_CREATION_TIME,
+                                    Mp4MediaDirectory.TAG_MODIFICATION_TIME,
+                                    QuickTimeMediaDirectory.TAG_CREATION_TIME,
+                                    QuickTimeMediaDirectory.TAG_MODIFICATION_TIME -> {
+                                        val date = dir.getObject(tag.tagType)
+                                        if (date is Date) {
+                                            // only consider dates after Epoch time
+                                            date.takeIf { it.time > 0 }?.let {
+                                                // harmonize date format for further processing on Dart side
+                                                dirMap[tagName] = MP4_DATE_FORMAT.format(date)
+                                            }
+                                        } else {
+                                            dirMap[tagName] = tag.description
+                                        }
+                                    }
+                                    Mp4MediaDirectory.TAG_LANGUAGE_CODE -> {
+                                        tag.description.takeIf { it != "```" && it != "und" }?.let { dirMap[tagName] = it }
+                                    }
+                                    else -> dirMap[tagName] = tag.description
+                                }
                             }
                         } else {
                             dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
@@ -874,6 +906,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     companion object {
         private val LOG_TAG = LogUtils.createTag(MetadataHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/metadata"
+
+        private val MP4_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXX", Locale.ROOT).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
 
         // catalog metadata & page info
         private const val KEY_MIME_TYPE = "mimeType"

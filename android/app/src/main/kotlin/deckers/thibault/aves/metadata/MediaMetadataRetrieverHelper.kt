@@ -1,6 +1,5 @@
 package deckers.thibault.aves.metadata
 
-import android.content.Context
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
