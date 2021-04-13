@@ -56,7 +56,7 @@ mixin AlbumMixin on SourceBase {
 
     final otherAlbumsOnDevice = _directories.where((item) => item != dirPath).toSet();
     final uniqueNameInDevice = unique(dirPath, otherAlbumsOnDevice);
-    if (uniqueNameInDevice.length < relativeDir.length) {
+    if (uniqueNameInDevice.length <= relativeDir.length) {
       return uniqueNameInDevice;
     }
 
