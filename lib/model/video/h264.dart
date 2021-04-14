@@ -13,7 +13,7 @@ class H264 {
   static const profileHigh444 = 144;
   static const profileHigh444Predictive = 244;
   static const profileHigh444Intra = 244 | profileIntra;
-  static const profileCAVLC_444 = 44;
+  static const profileCAVLC444 = 44;
 
   static String formatProfile(int profileIndex, int level) {
     String profile;
@@ -54,7 +54,7 @@ class H264 {
       case profileHigh444Intra:
         profile = 'High 4:4:4 Intra';
         break;
-      case profileCAVLC_444:
+      case profileCAVLC444:
         profile = 'CAVLC 4:4:4';
         break;
       default:

@@ -18,7 +18,7 @@ import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeifLike
+import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -42,7 +42,7 @@ class ThumbnailFetcher internal constructor(
     private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
     private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
     private val tiffFetch = mimeType == MimeTypes.TIFF
-    private val multiTrackFetch = isHeifLike(mimeType) && pageId != null
+    private val multiTrackFetch = isHeic(mimeType) && pageId != null
     private val customFetch = tiffFetch || multiTrackFetch
 
     fun fetch() {

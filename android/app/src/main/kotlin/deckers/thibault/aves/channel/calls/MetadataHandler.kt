@@ -18,14 +18,11 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.Rational
 import com.drew.metadata.Tag
+import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
 import com.drew.metadata.iptc.IptcDirectory
-import com.drew.metadata.mov.QuickTimeDirectory
-import com.drew.metadata.mov.media.QuickTimeMediaDirectory
-import com.drew.metadata.mp4.Mp4Directory
-import com.drew.metadata.mp4.media.Mp4MediaDirectory
 import com.drew.metadata.mp4.media.Mp4UuidBoxDirectory
 import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
@@ -62,9 +59,8 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeifLike
+import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -80,7 +76,6 @@ import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.File
 import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToLong
 
@@ -120,9 +115,19 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
 
-                    for (dir in metadata.directories.filter { it.tagCount > 0 && it !is FileTypeDirectory }) {
+                    for (dir in metadata.directories.filter {
+                        it.tagCount > 0
+                                && it !is FileTypeDirectory
+                                && it !is AviDirectory
+                    }) {
                         // directory name
                         var dirName = dir.name
+
+                        // exclude directories known to be redundant with info derived on the Dart side
+                        // they are excluded by name instead of runtime type because excluding `Mp4Directory`
+                        // would also exclude derived directories, such as `Mp4UuidBoxDirectory`
+                        if (allMetadataRedundantDirNames.contains(dirName)) continue
+
                         // optional parent to distinguish child directories of the same type
                         dir.parent?.name?.let { dirName = "$it/$dirName" }
 
@@ -150,33 +155,6 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                 byGeoTiff[false]?.map { tagMapper(it) }?.let { dirMap.putAll(it) }
                             } else {
                                 dirMap.putAll(tags.map { tagMapper(it) })
-                            }
-                        } else if (dir is Mp4Directory || dir is QuickTimeDirectory) {
-                            tags.map { tag ->
-                                val tagName = tag.tagName
-                                when (tag.tagType) {
-                                    Mp4Directory.TAG_CREATION_TIME,
-                                    Mp4Directory.TAG_MODIFICATION_TIME,
-                                    Mp4MediaDirectory.TAG_CREATION_TIME,
-                                    Mp4MediaDirectory.TAG_MODIFICATION_TIME,
-                                    QuickTimeMediaDirectory.TAG_CREATION_TIME,
-                                    QuickTimeMediaDirectory.TAG_MODIFICATION_TIME -> {
-                                        val date = dir.getObject(tag.tagType)
-                                        if (date is Date) {
-                                            // only consider dates after Epoch time
-                                            date.takeIf { it.time > 0 }?.let {
-                                                // harmonize date format for further processing on Dart side
-                                                dirMap[tagName] = MP4_DATE_FORMAT.format(date)
-                                            }
-                                        } else {
-                                            dirMap[tagName] = tag.description
-                                        }
-                                    }
-                                    Mp4MediaDirectory.TAG_LANGUAGE_CODE -> {
-                                        tag.description.takeIf { it != "```" && it != "und" }?.let { dirMap[tagName] = it }
-                                    }
-                                    else -> dirMap[tagName] = tag.description
-                                }
                             }
                         } else {
                             dirMap.putAll(tags.map { Pair(it.tagName, it.description) })
@@ -237,7 +215,9 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (isMultimedia(mimeType)) {
+        if (isVideo(mimeType)) {
+            // this is used as fallback when the video metadata cannot be found on the Dart side
+            // do not include HEIC here
             val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
             if (mediaDir.isNotEmpty()) {
                 metadataMap[Metadata.DIR_MEDIA] = mediaDir
@@ -298,7 +278,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
         val metadataMap = HashMap<String, Any>()
         getCatalogMetadataByMetadataExtractor(uri, mimeType, path, sizeBytes, metadataMap)
-        if (isMultimedia(mimeType)) {
+        if (isVideo(mimeType) || isHeic(mimeType)) {
             getMultimediaCatalogMetadataByMediaMetadataRetriever(uri, mimeType, metadataMap)
         }
 
@@ -514,7 +494,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 }
             }
 
-            if (isHeifLike(mimeType)) {
+            if (isHeic(mimeType)) {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS) {
                     if (it > 1) flags = flags or MASK_IS_MULTIPAGE
                 }
@@ -622,7 +602,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     getTiffPageInfo(uri, i)?.let { pages.add(toMap(i, it)) }
                 }
             }
-        } else if (isHeifLike(mimeType)) {
+        } else if (isHeic(mimeType)) {
             fun MediaFormat.getSafeInt(key: String, save: (value: Int) -> Unit) {
                 if (this.containsKey(key)) save(this.getInteger(key))
             }
@@ -907,9 +887,14 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private val LOG_TAG = LogUtils.createTag(MetadataHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/metadata"
 
-        private val MP4_DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXX", Locale.ROOT).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }
+        private val allMetadataRedundantDirNames = setOf(
+            "MP4",
+            "MP4 Sound",
+            "MP4 Video",
+            "QuickTime",
+            "QuickTime Sound",
+            "QuickTime Video",
+        )
 
         // catalog metadata & page info
         private const val KEY_MIME_TYPE = "mimeType"

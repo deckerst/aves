@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/video/streams.dart';
+import 'package:aves/model/video/keys.dart';
+import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
@@ -180,28 +181,35 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
   Future<List<MetadataDirectory>> _getStreamDirectories() async {
     final directories = <MetadataDirectory>[];
-    final info = await StreamInfo.getVideoInfo(entry);
-    if (info.containsKey('streams')) {
+    final mediaInfo = await VideoMetadataFormatter.getVideoMetadata(entry);
+
+    final formattedMediaTags = VideoMetadataFormatter.formatInfo(mediaInfo);
+    if (formattedMediaTags.isNotEmpty) {
+      // overwrite generic directory found from the platform side
+      directories.add(MetadataDirectory(MetadataDirectory.mediaDirectory, null, _toSortedTags(formattedMediaTags)));
+    }
+
+    if (mediaInfo.containsKey('streams')) {
       String getTypeText(Map stream) {
-        final type = stream[StreamInfo.keyType] ?? StreamInfo.typeUnknown;
+        final type = stream[Keys.streamType] ?? StreamTypes.unknown;
         switch (type) {
-          case StreamInfo.typeAudio:
+          case StreamTypes.audio:
             return 'Audio';
-          case StreamInfo.typeMetadata:
+          case StreamTypes.metadata:
             return 'Metadata';
-          case StreamInfo.typeSubtitle:
-          case StreamInfo.typeTimedText:
+          case StreamTypes.subtitle:
+          case StreamTypes.timedText:
             return 'Text';
-          case StreamInfo.typeVideo:
-            return stream.containsKey(StreamInfo.keyFpsDen) ? 'Video' : 'Image';
-          case StreamInfo.typeUnknown:
+          case StreamTypes.video:
+            return stream.containsKey(Keys.fpsDen) ? 'Video' : 'Image';
+          case StreamTypes.unknown:
           default:
             return 'Unknown';
         }
       }
 
-      final allStreams = (info['streams'] as List).cast<Map>();
-      final unknownStreams = allStreams.where((stream) => stream[StreamInfo.keyType] == StreamInfo.typeUnknown).toList();
+      final allStreams = (mediaInfo['streams'] as List).cast<Map>();
+      final unknownStreams = allStreams.where((stream) => stream[Keys.streamType] == StreamTypes.unknown).toList();
       final knownStreams = allStreams.whereNot(unknownStreams.contains);
 
       // display known streams as separate directories (e.g. video, audio, subs)
@@ -209,24 +217,34 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         final indexDigits = knownStreams.length.toString().length;
 
         for (final stream in knownStreams) {
-          final index = (stream[StreamInfo.keyIndex] ?? 0) + 1;
+          final index = (stream[Keys.index] ?? 0) + 1;
           final typeText = getTypeText(stream);
           final dirName = 'Stream ${index.toString().padLeft(indexDigits, '0')} • $typeText';
-          final rawTags = StreamInfo.formatStreamInfo(stream);
-          final color = stringToColor(typeText);
-          directories.add(MetadataDirectory(dirName, null, _toSortedTags(rawTags), color: color));
+          final formattedStreamTags = VideoMetadataFormatter.formatInfo(stream);
+          if (formattedStreamTags.isNotEmpty) {
+            final color = stringToColor(typeText);
+            directories.add(MetadataDirectory(dirName, null, _toSortedTags(formattedStreamTags), color: color));
+          }
         }
       }
 
       // display unknown streams as attachments (e.g. fonts)
       if (unknownStreams.isNotEmpty) {
-        final unknownCodecCount = <String, int>{};
+        final unknownCodecCount = <String, List<String>>{};
         for (final stream in unknownStreams) {
-          final codec = (stream[StreamInfo.keyCodecName] as String ?? 'unknown').toUpperCase();
-          unknownCodecCount[codec] = (unknownCodecCount[codec] ?? 0) + 1;
+          final codec = (stream[Keys.codecName] as String ?? 'unknown').toUpperCase();
+          if (!unknownCodecCount.containsKey(codec)) {
+            unknownCodecCount[codec] = [];
+          }
+          unknownCodecCount[codec].add(stream[Keys.filename]);
         }
         if (unknownCodecCount.isNotEmpty) {
-          final rawTags = unknownCodecCount.map((key, value) => MapEntry(key, value.toString()));
+          final rawTags = unknownCodecCount.map((key, value) {
+            final count = value.length;
+            // remove duplicate names, so number of displayed names may not match displayed count
+            final names = value.where((v) => v != null).toSet().toList()..sort(compareAsciiUpperCase);
+            return MapEntry(key, '$count items: ${names.join(', ')}');
+          });
           directories.add(MetadataDirectory('Attachments', null, _toSortedTags(rawTags)));
         }
       }
