@@ -16,7 +16,7 @@ import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeifLike
+import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByFlutter
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
@@ -115,7 +115,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     }
 
     private fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
-        val model: Any = if (isHeifLike(mimeType) && pageId != null) {
+        val model: Any = if (isHeic(mimeType) && pageId != null) {
             MultiTrackImage(activity, uri, pageId)
         } else if (mimeType == MimeTypes.TIFF) {
             TiffImage(activity, uri, pageId)

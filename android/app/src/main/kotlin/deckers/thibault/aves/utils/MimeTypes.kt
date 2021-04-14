@@ -43,9 +43,7 @@ object MimeTypes {
 
     fun isVideo(mimeType: String?) = mimeType != null && mimeType.startsWith(VIDEO)
 
-    fun isHeifLike(mimeType: String?) = mimeType != null && (mimeType == HEIC || mimeType == HEIF)
-
-    fun isMultimedia(mimeType: String?) = isVideo(mimeType) || isHeifLike(mimeType)
+    fun isHeic(mimeType: String?) = mimeType != null && (mimeType == HEIC || mimeType == HEIF)
 
     fun isRaw(mimeType: String): Boolean {
         return when (mimeType) {

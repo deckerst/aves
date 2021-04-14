@@ -163,7 +163,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
                           final position = controller.currentPosition?.floor() ?? 0;
-                          return Text(formatDuration(Duration(milliseconds: position)));
+                          return Text(formatFriendlyDuration(Duration(milliseconds: position)));
                         }),
                     Spacer(),
                     Text(entry.durationText),
