@@ -33,7 +33,7 @@ class XmpBasicNamespace extends XmpNamespace {
                 if (struct.containsKey(thumbnailDataDisplayKey))
                   thumbnailDataDisplayKey: InfoLinkHandler(
                     linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-                    onTap: (context) => OpenEmbeddedDataNotification(
+                    onTap: (context) => OpenEmbeddedDataNotification.xmp(
                       propPath: 'xmp:Thumbnails[$index]/xmpGImg:image',
                       mimeType: MimeTypes.jpeg,
                     ).dispatch(context),

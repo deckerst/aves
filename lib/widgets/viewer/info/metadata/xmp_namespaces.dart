@@ -117,15 +117,33 @@ class XmpProp {
   String toString() => '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
 }
 
+enum EmbeddedDataSource { videoCover, xmp }
+
 class OpenEmbeddedDataNotification extends Notification {
+  final EmbeddedDataSource source;
   final String propPath;
   final String mimeType;
 
-  const OpenEmbeddedDataNotification({
-    @required this.propPath,
-    @required this.mimeType,
+  const OpenEmbeddedDataNotification._private({
+    @required this.source,
+    this.propPath,
+    this.mimeType,
   });
 
+  factory OpenEmbeddedDataNotification.videoCover() => OpenEmbeddedDataNotification._private(
+        source: EmbeddedDataSource.videoCover,
+      );
+
+  factory OpenEmbeddedDataNotification.xmp({
+    @required String propPath,
+    @required String mimeType,
+  }) =>
+      OpenEmbeddedDataNotification._private(
+        source: EmbeddedDataSource.xmp,
+        propPath: propPath,
+        mimeType: mimeType,
+      );
+
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{propPath=$propPath, mimeType=$mimeType}';
+  String toString() => '$runtimeType#${shortHash(this)}{source=$source, propPath=$propPath, mimeType=$mimeType}';
 }

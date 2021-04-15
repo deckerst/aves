@@ -20,7 +20,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
               dataProp.displayKey,
               InfoLinkHandler(
                 linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-                onTap: (context) => OpenEmbeddedDataNotification(
+                onTap: (context) => OpenEmbeddedDataNotification.xmp(
                   propPath: dataProp.path,
                   mimeType: mimeProp.value,
                 ).dispatch(context),

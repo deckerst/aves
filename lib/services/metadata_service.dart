@@ -22,9 +22,9 @@ abstract class MetadataService {
 
   Future<String> getContentResolverProp(AvesEntry entry, String prop);
 
-  Future<List<Uint8List>> getEmbeddedPictures(String uri);
-
   Future<List<Uint8List>> getExifThumbnails(AvesEntry entry);
+
+  Future<Map> extractVideoEmbeddedPicture(String uri);
 
   Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType);
 }
@@ -153,19 +153,6 @@ class PlatformMetadataService implements MetadataService {
   }
 
   @override
-  Future<List<Uint8List>> getEmbeddedPictures(String uri) async {
-    try {
-      final result = await platform.invokeMethod('getEmbeddedPictures', <String, dynamic>{
-        'uri': uri,
-      });
-      return (result as List).cast<Uint8List>();
-    } on PlatformException catch (e) {
-      debugPrint('getEmbeddedPictures failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return [];
-  }
-
-  @override
   Future<List<Uint8List>> getExifThumbnails(AvesEntry entry) async {
     try {
       final result = await platform.invokeMethod('getExifThumbnails', <String, dynamic>{
@@ -178,6 +165,19 @@ class PlatformMetadataService implements MetadataService {
       debugPrint('getExifThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return [];
+  }
+
+  @override
+  Future<Map> extractVideoEmbeddedPicture(String uri) async {
+    try {
+      final result = await platform.invokeMethod('extractVideoEmbeddedPicture', <String, dynamic>{
+        'uri': uri,
+      });
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('extractVideoEmbeddedPicture failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return null;
   }
 
   @override
