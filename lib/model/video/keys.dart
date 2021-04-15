@@ -35,6 +35,9 @@ class Keys {
   static const sampleRate = 'sample_rate';
   static const sarDen = 'sar_den';
   static const sarNum = 'sar_num';
+  static const selectedAudioStream = 'audio';
+  static const selectedTextStream = 'timedtext';
+  static const selectedVideoStream = 'video';
   static const startMicros = 'start_us';
   static const statisticsTags = '_statistics_tags';
   static const statisticsWritingApp = '_statistics_writing_app';
@@ -43,6 +46,7 @@ class Keys {
   static const tbrDen = 'tbr_den';
   static const tbrNum = 'tbr_num';
   static const streamType = 'type';
+  static const title = 'title';
   static const track = 'track';
   static const width = 'width';
 }
