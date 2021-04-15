@@ -96,11 +96,14 @@ class VideoMetadataFormatter {
             case Keys.handlerName:
             case Keys.index:
             case Keys.sarNum:
+            case Keys.selectedAudioStream:
+            case Keys.selectedTextStream:
+            case Keys.selectedVideoStream:
+            case Keys.statisticsTags:
             case Keys.streams:
+            case Keys.streamType:
             case Keys.tbrNum:
             case Keys.tbrDen:
-            case Keys.statisticsTags:
-            case Keys.streamType:
               break;
             case Keys.androidCaptureFramerate:
               final captureFps = double.parse(value);

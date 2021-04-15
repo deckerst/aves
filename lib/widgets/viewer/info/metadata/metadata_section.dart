@@ -189,7 +189,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       directories.add(MetadataDirectory(MetadataDirectory.mediaDirectory, null, _toSortedTags(formattedMediaTags)));
     }
 
-    if (mediaInfo.containsKey('streams')) {
+    if (mediaInfo.containsKey(Keys.streams)) {
       String getTypeText(Map stream) {
         final type = stream[Keys.streamType] ?? StreamTypes.unknown;
         switch (type) {
@@ -208,7 +208,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         }
       }
 
-      final allStreams = (mediaInfo['streams'] as List).cast<Map>();
+      final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
       final unknownStreams = allStreams.where((stream) => stream[Keys.streamType] == StreamTypes.unknown).toList();
       final knownStreams = allStreams.whereNot(unknownStreams.contains);
 

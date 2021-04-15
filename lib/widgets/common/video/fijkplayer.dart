@@ -4,10 +4,14 @@ import 'dart:ui';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/settings/video_loop_mode.dart';
+import 'package:aves/model/video/keys.dart';
+import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/video/controller.dart';
 import 'package:fijkplayer/fijkplayer.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
   FijkPlayer _instance;
@@ -15,10 +19,16 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
+  final List<StreamSummary> _streams = [];
+  final ValueNotifier<StreamSummary> _selectedVideoStream = ValueNotifier(null);
+  final ValueNotifier<StreamSummary> _selectedAudioStream = ValueNotifier(null);
+  final ValueNotifier<StreamSummary> _selectedTextStream = ValueNotifier(null);
+  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(Tuple2(1, 1));
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
 
   IjkPlayerAvesVideoController(AvesEntry entry) {
+    FijkLog.setLevel(FijkLogLevel.Warn);
     _instance = FijkPlayer();
 
     // FFmpeg options
@@ -81,7 +91,56 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _instance.release();
   }
 
-  void _onValueChanged() => _valueStreamController.add(_instance.value);
+  void _fetchSelectedStreams() async {
+    final mediaInfo = await _instance.getInfo();
+    if (!mediaInfo.containsKey(Keys.streams)) return;
+
+    _streams.clear();
+    final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
+    allStreams.forEach((stream) {
+      final type = ExtraStreamType.fromTypeString(stream[Keys.streamType]);
+      if (type != null) {
+        _streams.add(StreamSummary(
+          type: type,
+          index: stream[Keys.index],
+          language: stream[Keys.language],
+          title: stream[Keys.title],
+        ));
+      }
+    });
+
+    StreamSummary _getSelectedStream(String selectedIndexKey) {
+      final indexString = mediaInfo[selectedIndexKey];
+      if (indexString != null) {
+        final index = int.tryParse(indexString);
+        if (index != null && index != -1) {
+          return _streams.firstWhere((stream) => stream.index == index, orElse: () => null);
+        }
+      }
+      return null;
+    }
+
+    _selectedVideoStream.value = _getSelectedStream(Keys.selectedVideoStream);
+    _selectedAudioStream.value = _getSelectedStream(Keys.selectedAudioStream);
+    _selectedTextStream.value = _getSelectedStream(Keys.selectedTextStream);
+
+    if (_selectedVideoStream.value != null) {
+      final streamIndex = _selectedVideoStream.value.index;
+      final streamInfo = allStreams.firstWhere((stream) => stream[Keys.index] == streamIndex, orElse: () => null);
+      if (streamInfo != null) {
+        final num = streamInfo[Keys.sarNum];
+        final den = streamInfo[Keys.sarDen];
+        _sar.value = Tuple2((num ?? 0) != 0 ? num : 1, (den ?? 0) != 0 ? den : 1);
+      }
+    }
+  }
+
+  void _onValueChanged() {
+    if (_instance.state == FijkState.prepared && _streams.isEmpty) {
+      _fetchSelectedStreams();
+    }
+    _valueStreamController.add(_instance.value);
+  }
 
   // enable autoplay, even when seeking on uninitialized player, otherwise the texture is not updated
   // as a workaround, pausing after a brief duration is possible, but fiddly
@@ -126,19 +185,27 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Widget buildPlayerWidget(BuildContext context, AvesEntry entry) {
-    // TODO TLAD derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
-    // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
-    return FijkView(
-      player: _instance,
-      fit: FijkFit(
-        sizeFactor: 1.0,
-        aspectRatio: -1,
-        alignment: Alignment.topLeft,
-        macroBlockCrop: _macroBlockCrop,
-      ),
-      panelBuilder: (player, data, context, viewSize, texturePos) => SizedBox(),
-      color: Colors.transparent,
-    );
+    return ValueListenableBuilder<Tuple2<int, int>>(
+        valueListenable: _sar,
+        builder: (context, sar, child) {
+          final sarNum = sar.item1;
+          final sarDen = sar.item2;
+          // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
+          // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
+          final dar = entry.displayAspectRatio * sarNum / sarDen;
+          // TODO TLAD notify SAR to make the magnifier and minimap use the rendering DAR instead of entry DAR
+          return FijkView(
+            player: _instance,
+            fit: FijkFit(
+              sizeFactor: 1.0,
+              aspectRatio: dar,
+              alignment: Alignment.topLeft,
+              macroBlockCrop: _macroBlockCrop,
+            ),
+            panelBuilder: (player, data, context, viewSize, texturePos) => SizedBox(),
+            color: Colors.transparent,
+          );
+        });
   }
 }
 
@@ -164,4 +231,38 @@ extension ExtraIjkStatus on FijkState {
     }
     return VideoStatus.idle;
   }
+}
+
+enum StreamType { video, audio, text }
+
+extension ExtraStreamType on StreamType {
+  static StreamType fromTypeString(String type) {
+    switch (type) {
+      case StreamTypes.video:
+        return StreamType.video;
+      case StreamTypes.audio:
+        return StreamType.audio;
+      case StreamTypes.subtitle:
+      case StreamTypes.timedText:
+        return StreamType.text;
+      default:
+        return null;
+    }
+  }
+}
+
+class StreamSummary {
+  final StreamType type;
+  final int index;
+  final String language, title;
+
+  const StreamSummary({
+    @required this.type,
+    @required this.index,
+    @required this.language,
+    @required this.title,
+  });
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{type: type, index: $index, language: $language, title: $title}';
 }
