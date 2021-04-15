@@ -276,7 +276,8 @@ class MetadataDirectory {
   // special directory names
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
-  static const mediaDirectory = 'Media'; // additional media (video/audio/images) directory
+  static const mediaDirectory = 'Media'; // custom
+  static const coverDirectory = 'Cover'; // custom
 
   const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String> tags, this.color})
       : allTags = allTags,

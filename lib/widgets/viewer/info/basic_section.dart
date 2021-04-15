@@ -216,8 +216,9 @@ class _OwnerPropState extends State<OwnerProp> {
   Future<void> _getOwner() async {
     if (entry == null) return;
     if (_loadedUri.value == entry.uri) return;
-    if (isVisible) {
-      _ownerPackage = await metadataService.getContentResolverProp(widget.entry, 'owner_package_name');
+    final isMediaContent = entry.uri.startsWith('content://media/external/');
+    if (isVisible && isMediaContent) {
+      _ownerPackage = await metadataService.getContentResolverProp(entry, 'owner_package_name');
       _loadedUri.value = entry.uri;
     } else {
       _ownerPackage = null;

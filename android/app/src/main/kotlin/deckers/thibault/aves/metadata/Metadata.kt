@@ -25,7 +25,8 @@ object Metadata {
     // directory names, as shown when listing all metadata
     const val DIR_GPS = "GPS" // from metadata-extractor
     const val DIR_XMP = "XMP" // from metadata-extractor
-    const val DIR_MEDIA = "Media"
+    const val DIR_MEDIA = "Media" // custom
+    const val DIR_COVER_ART = "Cover" // custom
 
     // interpret EXIF code to angle (0, 90, 180 or 270 degrees)
     fun getRotationDegreesForExifCode(exifOrientation: Int): Int = when (exifOrientation) {
