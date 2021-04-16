@@ -1,8 +1,6 @@
 Thanks for using Aves!
-v1.3.7:
-- fast scroll label
-- localized common album names
-- customizable shortcut icon image
-- customizable viewer quick actions
-- option to hide videos from collection
+v1.4.0:
+- improved video support
+- more consistent and comprehensive info for videos
+- options to auto play and loop videos
 Full changelog available on Github

@@ -1,10 +1,5 @@
-import 'dart:ui';
-
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/settings/settings.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoView extends StatefulWidget {
@@ -53,23 +48,16 @@ class _VideoViewState extends State<VideoView> {
     widget.controller.playCompletedListenable.removeListener(_onPlayCompleted);
   }
 
-  bool isPlayable(VideoStatus status) => controller != null && [VideoStatus.prepared, VideoStatus.playing, VideoStatus.paused, VideoStatus.completed].contains(status);
-
   @override
   Widget build(BuildContext context) {
     if (controller == null) return SizedBox();
     return StreamBuilder<VideoStatus>(
-        stream: widget.controller.statusStream,
+        stream: controller.statusStream,
         builder: (context, snapshot) {
-          final status = snapshot.data;
-          return isPlayable(status)
-              ? controller.buildPlayerWidget(entry)
-              : Image(
-                  image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
-                  fit: BoxFit.contain,
-                );
+          return controller.isPlayable ? controller.buildPlayerWidget(context, entry) : SizedBox();
         });
   }
 
+  // not called when looping
   void _onPlayCompleted() => controller.seekTo(0);
 }

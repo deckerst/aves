@@ -42,10 +42,6 @@ class CollectionSearchDelegate {
 
   CollectionSearchDelegate({@required this.source, this.parentCollection});
 
-  ThemeData appBarTheme(BuildContext context) {
-    return Theme.of(context);
-  }
-
   Widget buildLeading(BuildContext context) {
     return Navigator.canPop(context)
         ? IconButton(
@@ -122,7 +118,7 @@ class CollectionSearchDelegate {
                                       album,
                                       source.getAlbumDisplayName(context, album),
                                     ))
-                                .where((filter) => containQuery(filter.album) || containQuery(filter.displayName))
+                                .where((filter) => containQuery(filter.displayName))
                                 .toList()
                                   ..sort();
                             return _buildFilterRow(

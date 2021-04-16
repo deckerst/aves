@@ -40,6 +40,7 @@ class Durations {
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
   static const viewerOverlayPageScrollAnimation = Duration(milliseconds: 200);
   static const viewerOverlayPageShadeAnimation = Duration(milliseconds: 150);
+  static const viewerVideoPlayerTransition = Duration(milliseconds: 500);
 
   // info animations
   static const mapStyleSwitchAnimation = Duration(milliseconds: 300);

@@ -79,10 +79,10 @@ class Constants {
       sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
     ),
     Dependency(
-      name: 'Flutter ijkplayer',
+      name: 'fijkplayer',
       license: 'MIT',
-      licenseUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/CaiJingLong/flutter_ijkplayer',
+      licenseUrl: 'https://github.com/deckerst/fijkplayer/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/deckerst/fijkplayer',
     ),
     Dependency(
       name: 'Google API Availability',
@@ -231,20 +231,14 @@ class Constants {
     Dependency(
       name: 'Expansion Tile Card',
       license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/Skylled/expansion_tile_card/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/Skylled/expansion_tile_card',
+      licenseUrl: 'https://github.com/deckerst/expansion_tile_card/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/deckerst/expansion_tile_card',
     ),
     Dependency(
       name: 'Flutter Highlight',
       license: 'MIT',
       licenseUrl: 'https://github.com/git-touch/highlight/blob/master/LICENSE',
       sourceUrl: 'https://github.com/git-touch/highlight',
-    ),
-    Dependency(
-      name: 'Flutter Localized Locales',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/guidezpl/flutter-localized-locales/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/guidezpl/flutter-localized-locales',
     ),
     Dependency(
       name: 'Flutter Map',

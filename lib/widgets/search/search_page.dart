@@ -88,7 +88,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = widget.delegate.appBarTheme(context);
+    final theme = Theme.of(context);
     Widget body;
     switch (widget.delegate.currentBody) {
       case SearchBody.suggestions:

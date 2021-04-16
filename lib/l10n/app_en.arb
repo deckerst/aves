@@ -115,6 +115,13 @@
   "coordinateFormatDecimal": "Decimal degrees",
   "@coordinateFormatDecimal": {},
 
+  "videoLoopModeNever": "Never",
+  "@videoLoopModeNever": {},
+  "videoLoopModeShortOnly": "Short videos only",
+  "@videoLoopModeShortOnly": {},
+  "videoLoopModeAlways": "Always",
+  "@videoLoopModeAlways": {},
+
   "mapStyleGoogleNormal": "Google Maps",
   "@mapStyleGoogleNormal": {},
   "mapStyleGoogleHybrid": "Google Maps (Hybrid)",
@@ -542,6 +549,14 @@
   "@settingsSectionVideo": {},
   "settingsVideoShowVideos": "Show videos",
   "@settingsVideoShowVideos": {},
+  "settingsVideoEnableHardwareAcceleration": "Hardware acceleration",
+  "@settingsVideoEnableHardwareAcceleration": {},
+  "settingsVideoEnableAutoPlay": "Auto play",
+  "@settingsVideoEnableAutoPlay": {},
+  "settingsVideoLoopModeTile":  "Loop mode",
+  "@settingsVideoLoopModeTile": {},
+  "settingsVideoLoopModeTitle":  "Loop Mode",
+  "@settingsVideoLoopModeTitle": {},
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},

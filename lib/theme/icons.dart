@@ -5,7 +5,6 @@ class AIcons {
   static const IconData allCollection = Icons.collections_outlined;
   static const IconData image = Icons.photo_outlined;
   static const IconData video = Icons.movie_outlined;
-  static const IconData audio = Icons.audiotrack_outlined;
   static const IconData vector = Icons.code_outlined;
 
   static const IconData android = Icons.android;

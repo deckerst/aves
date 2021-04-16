@@ -1,10 +1,15 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/video/keys.dart';
+import 'package:aves/model/video/metadata.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:collection/collection.dart';
@@ -150,14 +155,12 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         }
 
         final rawTags = dirKV.value as Map ?? {};
-        final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
-          final value = (tagKV.value as String ?? '').trim();
-          if (value.isEmpty) return null;
-          final tagName = tagKV.key as String ?? '';
-          return MapEntry(tagName, value);
-        }).where((kv) => kv != null)));
-        return MetadataDirectory(directoryName, parent, tags);
+        return MetadataDirectory(directoryName, parent, _toSortedTags(rawTags));
       }).toList();
+
+      if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultipage)) {
+        directories.addAll(await _getStreamDirectories());
+      }
 
       final titledDirectories = directories.map((dir) {
         var title = dir.name;
@@ -176,12 +179,96 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
     _expandedDirectoryNotifier.value = null;
   }
 
+  Future<List<MetadataDirectory>> _getStreamDirectories() async {
+    final directories = <MetadataDirectory>[];
+    final mediaInfo = await VideoMetadataFormatter.getVideoMetadata(entry);
+
+    final formattedMediaTags = VideoMetadataFormatter.formatInfo(mediaInfo);
+    if (formattedMediaTags.isNotEmpty) {
+      // overwrite generic directory found from the platform side
+      directories.add(MetadataDirectory(MetadataDirectory.mediaDirectory, null, _toSortedTags(formattedMediaTags)));
+    }
+
+    if (mediaInfo.containsKey(Keys.streams)) {
+      String getTypeText(Map stream) {
+        final type = stream[Keys.streamType] ?? StreamTypes.unknown;
+        switch (type) {
+          case StreamTypes.audio:
+            return 'Audio';
+          case StreamTypes.metadata:
+            return 'Metadata';
+          case StreamTypes.subtitle:
+          case StreamTypes.timedText:
+            return 'Text';
+          case StreamTypes.video:
+            return stream.containsKey(Keys.fpsDen) ? 'Video' : 'Image';
+          case StreamTypes.unknown:
+          default:
+            return 'Unknown';
+        }
+      }
+
+      final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
+      final unknownStreams = allStreams.where((stream) => stream[Keys.streamType] == StreamTypes.unknown).toList();
+      final knownStreams = allStreams.whereNot(unknownStreams.contains);
+
+      // display known streams as separate directories (e.g. video, audio, subs)
+      if (knownStreams.isNotEmpty) {
+        final indexDigits = knownStreams.length.toString().length;
+
+        for (final stream in knownStreams) {
+          final index = (stream[Keys.index] ?? 0) + 1;
+          final typeText = getTypeText(stream);
+          final dirName = 'Stream ${index.toString().padLeft(indexDigits, '0')} • $typeText';
+          final formattedStreamTags = VideoMetadataFormatter.formatInfo(stream);
+          if (formattedStreamTags.isNotEmpty) {
+            final color = stringToColor(typeText);
+            directories.add(MetadataDirectory(dirName, null, _toSortedTags(formattedStreamTags), color: color));
+          }
+        }
+      }
+
+      // display unknown streams as attachments (e.g. fonts)
+      if (unknownStreams.isNotEmpty) {
+        final unknownCodecCount = <String, List<String>>{};
+        for (final stream in unknownStreams) {
+          final codec = (stream[Keys.codecName] as String ?? 'unknown').toUpperCase();
+          if (!unknownCodecCount.containsKey(codec)) {
+            unknownCodecCount[codec] = [];
+          }
+          unknownCodecCount[codec].add(stream[Keys.filename]);
+        }
+        if (unknownCodecCount.isNotEmpty) {
+          final rawTags = unknownCodecCount.map((key, value) {
+            final count = value.length;
+            // remove duplicate names, so number of displayed names may not match displayed count
+            final names = value.where((v) => v != null).toSet().toList()..sort(compareAsciiUpperCase);
+            return MapEntry(key, '$count items: ${names.join(', ')}');
+          });
+          directories.add(MetadataDirectory('Attachments', null, _toSortedTags(rawTags)));
+        }
+      }
+    }
+    return directories;
+  }
+
+  SplayTreeMap<String, String> _toSortedTags(Map rawTags) {
+    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
+      final value = (tagKV.value as String ?? '').trim();
+      if (value.isEmpty) return null;
+      final tagName = tagKV.key as String ?? '';
+      return MapEntry(tagName, value);
+    }).where((kv) => kv != null)));
+    return tags;
+  }
+
   @override
   bool get wantKeepAlive => true;
 }
 
 class MetadataDirectory {
   final String name;
+  final Color color;
   final String parent;
   final SplayTreeMap<String, String> allTags;
   final SplayTreeMap<String, String> tags;
@@ -189,14 +276,15 @@ class MetadataDirectory {
   // special directory names
   static const exifThumbnailDirectory = 'Exif Thumbnail'; // from metadata-extractor
   static const xmpDirectory = 'XMP'; // from metadata-extractor
-  static const mediaDirectory = 'Media'; // additional media (video/audio/images) directory
+  static const mediaDirectory = 'Media'; // custom
+  static const coverDirectory = 'Cover'; // custom
 
-  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String> tags})
+  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String> tags, this.color})
       : allTags = allTags,
         tags = tags ?? allTags;
 
   MetadataDirectory filterKeys(bool Function(String key) testKey) {
     final filteredTags = SplayTreeMap.of(Map.fromEntries(allTags.entries.where((kv) => testKey(kv.key))));
-    return MetadataDirectory(name, parent, tags, tags: filteredTags);
+    return MetadataDirectory(name, parent, tags, tags: filteredTags, color: color);
   }
 }

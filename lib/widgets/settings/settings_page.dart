@@ -4,6 +4,7 @@ import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/home_page.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/settings/video_loop_mode.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -238,6 +239,33 @@ class _SettingsPageState extends State<SettingsPage> {
           value: showVideos,
           onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility(MimeFilter.video, v),
           title: Text(context.l10n.settingsVideoShowVideos),
+        ),
+        SwitchListTile(
+          value: settings.enableVideoHardwareAcceleration,
+          onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
+          title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
+        ),
+        SwitchListTile(
+          value: settings.enableVideoAutoPlay,
+          onChanged: (v) => settings.enableVideoAutoPlay = v,
+          title: Text(context.l10n.settingsVideoEnableAutoPlay),
+        ),
+        ListTile(
+          title: Text(context.l10n.settingsVideoLoopModeTile),
+          subtitle: Text(settings.videoLoopMode.getName(context)),
+          onTap: () async {
+            final value = await showDialog<VideoLoopMode>(
+              context: context,
+              builder: (context) => AvesSelectionDialog<VideoLoopMode>(
+                initialValue: settings.videoLoopMode,
+                options: Map.fromEntries(VideoLoopMode.values.map((v) => MapEntry(v, v.getName(context)))),
+                title: context.l10n.settingsVideoLoopModeTitle,
+              ),
+            );
+            if (value != null) {
+              settings.videoLoopMode = value;
+            }
+          },
         ),
       ],
     );

@@ -8,3 +8,5 @@ enum HomePageSetting { collection, albums }
 enum EntryMapStyle { googleNormal, googleHybrid, googleTerrain, osmHot, stamenToner, stamenWatercolor }
 
 enum KeepScreenOn { never, viewerOnly, always }
+
+enum VideoLoopMode { never, shortOnly, always }
