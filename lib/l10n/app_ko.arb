@@ -59,6 +59,10 @@
   "coordinateFormatDms": "도분초",
   "coordinateFormatDecimal": "소수점",
 
+  "videoLoopModeNever": "반복 안 함",
+  "videoLoopModeShortOnly": "짧은 동영상만 반복",
+  "videoLoopModeAlways": "항상 반복",
+
   "mapStyleGoogleNormal": "구글 지도",
   "mapStyleGoogleHybrid": "구글 지도 (위성)",
   "mapStyleGoogleTerrain": "구글 지도 (지형)",
@@ -252,6 +256,10 @@
 
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
+  "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
+  "settingsVideoEnableAutoPlay": "자동 재생",
+  "settingsVideoLoopModeTile":  "반복 모드",
+  "settingsVideoLoopModeTitle":  "반복 모드",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",

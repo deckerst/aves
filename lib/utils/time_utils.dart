@@ -1,14 +1,17 @@
-String formatDuration(Duration d) {
-  String twoDigits(int n) {
-    if (n >= 10) return '$n';
-    return '0$n';
-  }
+String formatFriendlyDuration(Duration d) {
+  final seconds = (d.inSeconds.remainder(Duration.secondsPerMinute)).toString().padLeft(2, '0');
+  if (d.inHours == 0) return '${d.inMinutes}:$seconds';
 
-  final twoDigitSeconds = twoDigits(d.inSeconds.remainder(Duration.secondsPerMinute));
-  if (d.inHours == 0) return '${d.inMinutes}:$twoDigitSeconds';
+  final minutes = (d.inMinutes.remainder(Duration.minutesPerHour)).toString().padLeft(2, '0');
+  return '${d.inHours}:$minutes:$seconds';
+}
 
-  final twoDigitMinutes = twoDigits(d.inMinutes.remainder(Duration.minutesPerHour));
-  return '${d.inHours}:$twoDigitMinutes:$twoDigitSeconds';
+String formatPreciseDuration(Duration d) {
+  final millis = ((d.inMicroseconds / 1000.0).round() % 1000).toString().padLeft(3, '0');
+  final seconds = (d.inSeconds.remainder(Duration.secondsPerMinute)).toString().padLeft(2, '0');
+  final minutes = (d.inMinutes.remainder(Duration.minutesPerHour)).toString().padLeft(2, '0');
+  final hours = (d.inHours).toString().padLeft(2, '0');
+  return '$hours:$minutes:$seconds.$millis';
 }
 
 extension ExtraDateTime on DateTime {

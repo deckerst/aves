@@ -366,7 +366,7 @@ class AvesEntry {
   String _durationText;
 
   String get durationText {
-    _durationText ??= formatDuration(Duration(milliseconds: durationMillis ?? 0));
+    _durationText ??= formatFriendlyDuration(Duration(milliseconds: durationMillis ?? 0));
     return _durationText;
   }
 

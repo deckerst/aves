@@ -195,11 +195,12 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
     return FutureBuilder<String>(
       future: _addressLineLoader,
       builder: (context, snapshot) {
-        final address = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : null;
+        final fullAddress = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : null;
+        final address = fullAddress ?? entry.shortAddress;
         final l10n = context.l10n;
         return InfoRowGroup({
           l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(entry.latLng),
-          if (address?.isNotEmpty == true) l10n.viewerInfoLabelAddress: address,
+          if (address.isNotEmpty) l10n.viewerInfoLabelAddress: address,
         });
       },
     );

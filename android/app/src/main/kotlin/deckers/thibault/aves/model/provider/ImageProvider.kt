@@ -130,7 +130,7 @@ abstract class ImageProvider {
         val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, desiredNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
-        val model: Any = if (MimeTypes.isHeifLike(sourceMimeType) && pageId != null) {
+        val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
             MultiTrackImage(context, sourceUri, pageId)
         } else if (sourceMimeType == MimeTypes.TIFF) {
             TiffImage(context, sourceUri, pageId)

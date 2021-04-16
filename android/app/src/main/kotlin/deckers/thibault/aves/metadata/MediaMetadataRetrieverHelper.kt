@@ -1,10 +1,8 @@
 package deckers.thibault.aves.metadata
 
-import android.content.Context
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.os.Build
-import android.text.format.Formatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -95,7 +93,16 @@ object MediaMetadataRetrieverHelper {
         if (dateMillis > 0) save(dateMillis)
     }
 
-    fun MediaMetadataRetriever.getSafeDescription(tag: Int, context: Context, save: (value: String) -> Unit) {
+    private fun formatBitrate(size: Long): String {
+        val divider = 1000
+        val symbol = "bit/s"
+
+        if (size < divider) return "$size $symbol"
+        if (size < divider * divider) return "${String.format("%.2f", size.toDouble() / divider)} K$symbol"
+        return "${String.format("%.2f", size.toDouble() / divider / divider)} M$symbol"
+    }
+
+    fun MediaMetadataRetriever.getSafeDescription(tag: Int, save: (value: String) -> Unit) {
         val value = this.extractMetadata(tag)
         if (value != null) {
             when (tag) {
@@ -106,7 +113,7 @@ object MediaMetadataRetrieverHelper {
                 MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT, MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH -> "$value pixels"
                 MediaMetadataRetriever.METADATA_KEY_BITRATE -> {
                     val bitrate = value.toLongOrNull() ?: 0
-                    if (bitrate > 0) "${Formatter.formatFileSize(context, bitrate)}/sec" else null
+                    if (bitrate > 0) formatBitrate(bitrate) else null
                 }
                 MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE -> {
                     val framerate = value.toDoubleOrNull() ?: 0.0

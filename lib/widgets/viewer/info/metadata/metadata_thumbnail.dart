@@ -6,15 +6,11 @@ import 'package:aves/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-enum MetadataThumbnailSource { embedded, exif }
-
 class MetadataThumbnails extends StatefulWidget {
-  final MetadataThumbnailSource source;
   final AvesEntry entry;
 
   const MetadataThumbnails({
     Key key,
-    @required this.source,
     @required this.entry,
   }) : super(key: key);
 
@@ -32,14 +28,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
   @override
   void initState() {
     super.initState();
-    switch (widget.source) {
-      case MetadataThumbnailSource.embedded:
-        _loader = metadataService.getEmbeddedPictures(uri);
-        break;
-      case MetadataThumbnailSource.exif:
-        _loader = metadataService.getExifThumbnails(entry);
-        break;
-    }
+    _loader = metadataService.getExifThumbnails(entry);
   }
 
   @override

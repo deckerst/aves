@@ -7,14 +7,14 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "18.0.0"
+    version: "19.0.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.3.0"
   ansicolor:
     dependency: transitive
     description:
@@ -175,7 +175,7 @@ packages:
       name: decorated_icon
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.0"
   event_bus:
     dependency: "direct main"
     description:
@@ -206,6 +206,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  fijkplayer:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: aves
+      resolved-ref: "0f25874db46d1af6fcfbeb8722915cbc211a10fb"
+      url: "git://github.com/deckerst/fijkplayer.git"
+    source: git
+    version: "0.8.7"
   file:
     dependency: transitive
     description:
@@ -219,7 +228,7 @@ packages:
       name: firebase
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.1"
   firebase_analytics:
     dependency: "direct main"
     description:
@@ -247,7 +256,7 @@ packages:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -261,7 +270,7 @@ packages:
       name: firebase_core_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   firebase_crashlytics:
     dependency: "direct main"
     description:
@@ -300,15 +309,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.0"
-  flutter_ijkplayer:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: d4e079404ba8e4f82a7e053ffdc47af787a61c3b
-      url: "git://github.com/deckerst/flutter_ijkplayer.git"
-    source: git
-    version: "0.3.7"
   flutter_image:
     dependency: transitive
     description:
@@ -321,13 +321,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_localized_locales:
-    dependency: "direct main"
-    description:
-      name: flutter_localized_locales
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   flutter_map:
     dependency: "direct main"
     description:
@@ -341,14 +334,14 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.6.1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -398,7 +391,7 @@ packages:
       name: glob
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   google_api_availability:
     dependency: "direct main"
     description:
@@ -412,14 +405,14 @@ packages:
       name: google_maps_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
       name: google_maps_flutter_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.4"
   highlight:
     dependency: transitive
     description:
@@ -433,7 +426,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.0"
+    version: "0.13.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -454,7 +447,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.0.2"
   intl:
     dependency: "direct main"
     description:
@@ -482,7 +475,7 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   latlong:
     dependency: "direct main"
     description:
@@ -650,7 +643,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "3.1.0"
   pedantic:
     dependency: "direct main"
     description:
@@ -664,7 +657,7 @@ packages:
       name: percent_indicator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.9+1"
+    version: "3.0.1"
   permission_handler:
     dependency: "direct main"
     description:
@@ -720,7 +713,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.3"
+    version: "5.0.4"
   process:
     dependency: transitive
     description:
@@ -984,7 +977,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.2"
+    version: "6.0.3"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -1082,7 +1075,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   wkt_parser:
     dependency: transitive
     description:

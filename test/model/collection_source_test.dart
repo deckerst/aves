@@ -254,6 +254,8 @@ void main() {
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Seneca', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Seneca', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Cicero', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Marcus Aurelius', '1'),
     };
 
     await androidFileUtils.init();
@@ -269,6 +271,8 @@ void main() {
           expect(source.getAlbumDisplayName(context, FakeStorageService.primaryRootAlbum), FakeStorageService.primaryDescription);
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Seneca'), 'Pictures/Seneca');
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
           return Placeholder();
         },
       ),

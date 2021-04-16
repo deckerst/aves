@@ -116,16 +116,3 @@ class XmpProp {
   @override
   String toString() => '$runtimeType#${shortHash(this)}{path=$path, value=$value}';
 }
-
-class OpenEmbeddedDataNotification extends Notification {
-  final String propPath;
-  final String mimeType;
-
-  const OpenEmbeddedDataNotification({
-    @required this.propPath,
-    @required this.mimeType,
-  });
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{propPath=$propPath, mimeType=$mimeType}';
-}

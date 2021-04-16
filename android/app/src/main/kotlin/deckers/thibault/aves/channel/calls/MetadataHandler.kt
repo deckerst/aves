@@ -18,6 +18,7 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.drew.imaging.ImageMetadataReader
 import com.drew.lang.Rational
 import com.drew.metadata.Tag
+import com.drew.metadata.avi.AviDirectory
 import com.drew.metadata.exif.*
 import com.drew.metadata.file.FileTypeDirectory
 import com.drew.metadata.gif.GifAnimationDirectory
@@ -58,9 +59,8 @@ import deckers.thibault.aves.utils.BitmapUtils
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.MimeTypes.isHeifLike
+import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isImage
-import deckers.thibault.aves.utils.MimeTypes.isMultimedia
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByExifInterface
 import deckers.thibault.aves.utils.MimeTypes.isSupportedByMetadataExtractor
 import deckers.thibault.aves.utils.MimeTypes.isVideo
@@ -88,8 +88,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
             "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
-            "getEmbeddedPictures" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEmbeddedPictures) }
             "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifThumbnails) }
+            "extractVideoEmbeddedPicture" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractVideoEmbeddedPicture) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
             else -> result.notImplemented()
         }
@@ -115,9 +115,19 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
 
-                    for (dir in metadata.directories.filter { it.tagCount > 0 && it !is FileTypeDirectory }) {
+                    for (dir in metadata.directories.filter {
+                        it.tagCount > 0
+                                && it !is FileTypeDirectory
+                                && it !is AviDirectory
+                    }) {
                         // directory name
                         var dirName = dir.name
+
+                        // exclude directories known to be redundant with info derived on the Dart side
+                        // they are excluded by name instead of runtime type because excluding `Mp4Directory`
+                        // would also exclude derived directories, such as `Mp4UuidBoxDirectory`
+                        if (allMetadataRedundantDirNames.contains(dirName)) continue
+
                         // optional parent to distinguish child directories of the same type
                         dir.parent?.name?.let { dirName = "$it/$dirName" }
 
@@ -205,11 +215,23 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
 
-        if (isMultimedia(mimeType)) {
+        if (isVideo(mimeType)) {
+            // this is used as fallback when the video metadata cannot be found on the Dart side
+            // and to identify whether there is an accessible cover image
+            // do not include HEIC here
             val mediaDir = getAllMetadataByMediaMetadataRetriever(uri)
             if (mediaDir.isNotEmpty()) {
                 metadataMap[Metadata.DIR_MEDIA] = mediaDir
+                if (mediaDir.containsKey(KEY_HAS_EMBEDDED_PICTURE)) {
+                    metadataMap[Metadata.DIR_COVER_ART] = hashMapOf(
+                        // dummy entry value
+                        "Image" to "data",
+                    )
+                }
             }
+            // Android's `MediaExtractor` and `MediaPlayer` cannot be used for details
+            // about embedded images as they do not list them as separate tracks
+            // and only identify at most one
         }
 
         if (metadataMap.isNotEmpty()) {
@@ -224,7 +246,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         val retriever = StorageUtils.openMetadataRetriever(context, uri) ?: return dirMap
         try {
             for ((code, name) in MediaMetadataRetrieverHelper.allKeys) {
-                retriever.getSafeDescription(code, context) { dirMap[name] = it }
+                retriever.getSafeDescription(code) { dirMap[name] = it }
+            }
+            if (retriever.embeddedPicture != null) {
+                // additional key for the Dart side to know whether to add a `Cover` section
+                dirMap[KEY_HAS_EMBEDDED_PICTURE] = "yes"
             }
         } catch (e: Exception) {
             Log.w(LOG_TAG, "failed to get video metadata by MediaMetadataRetriever for uri=$uri", e)
@@ -263,7 +289,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
 
         val metadataMap = HashMap<String, Any>()
         getCatalogMetadataByMetadataExtractor(uri, mimeType, path, sizeBytes, metadataMap)
-        if (isMultimedia(mimeType)) {
+        if (isVideo(mimeType) || isHeic(mimeType)) {
             getMultimediaCatalogMetadataByMediaMetadataRetriever(uri, mimeType, metadataMap)
         }
 
@@ -479,7 +505,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                 }
             }
 
-            if (isHeifLike(mimeType)) {
+            if (isHeic(mimeType)) {
                 retriever.getSafeInt(MediaMetadataRetriever.METADATA_KEY_NUM_TRACKS) {
                     if (it > 1) flags = flags or MASK_IS_MULTIPAGE
                 }
@@ -587,7 +613,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     getTiffPageInfo(uri, i)?.let { pages.add(toMap(i, it)) }
                 }
             }
-        } else if (isHeifLike(mimeType)) {
+        } else if (isHeic(mimeType)) {
             fun MediaFormat.getSafeInt(key: String, save: (value: Int) -> Unit) {
                 if (this.containsKey(key)) save(this.getInteger(key))
             }
@@ -719,28 +745,6 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(value?.toString())
     }
 
-    private fun getEmbeddedPictures(call: MethodCall, result: MethodChannel.Result) {
-        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
-        if (uri == null) {
-            result.error("getEmbeddedPictures-args", "failed because of missing arguments", null)
-            return
-        }
-
-        val pictures = ArrayList<ByteArray>()
-        val retriever = StorageUtils.openMetadataRetriever(context, uri)
-        if (retriever != null) {
-            try {
-                retriever.embeddedPicture?.let { pictures.add(it) }
-            } catch (e: Exception) {
-                // ignore
-            } finally {
-                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-                retriever.release()
-            }
-        }
-        result.success(pictures)
-    }
-
     private fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -768,6 +772,39 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.success(thumbnails)
+    }
+
+    private fun extractVideoEmbeddedPicture(call: MethodCall, result: MethodChannel.Result) {
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        if (uri == null) {
+            result.error("extractVideoEmbeddedPicture-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val retriever = StorageUtils.openMetadataRetriever(context, uri)
+        if (retriever != null) {
+            try {
+                retriever.embeddedPicture?.let { bytes ->
+                    var embedMimeType: String? = null
+                    bytes.inputStream().use { input ->
+                        val metadata = ImageMetadataReader.readMetadata(input)
+                        metadata.getFirstDirectoryOfType(FileTypeDirectory::class.java)?.let { dir ->
+                            dir.getSafeString(FileTypeDirectory.TAG_DETECTED_FILE_MIME_TYPE) { embedMimeType = it }
+                        }
+                    }
+                    embedMimeType?.let { mime ->
+                        copyEmbeddedBytes(bytes, mime, result)
+                        return
+                    }
+                }
+            } catch (e: Exception) {
+                result.error("extractVideoEmbeddedPicture-fetch", "failed to fetch picture for uri=$uri", e.message)
+            } finally {
+                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                retriever.release()
+            }
+        }
+        result.error("extractVideoEmbeddedPicture-empty", "failed to extract picture for uri=$uri", null)
     }
 
     private fun extractXmpDataProp(call: MethodCall, result: MethodChannel.Result) {
@@ -805,36 +842,10 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
                         }
 
-                        val embedFile = File.createTempFile("aves", null, context.cacheDir).apply {
-                            deleteOnExit()
-                            outputStream().use { outputStream ->
-                                embedBytes.inputStream().use { inputStream ->
-                                    inputStream.copyTo(outputStream)
-                                }
-                            }
-                        }
-                        val embedUri = Uri.fromFile(embedFile)
-                        val embedFields: FieldMap = hashMapOf(
-                            "uri" to embedUri.toString(),
-                            "mimeType" to embedMimeType,
-                        )
-                        if (isImage(embedMimeType) || isVideo(embedMimeType)) {
-                            GlobalScope.launch(Dispatchers.IO) {
-                                FileImageProvider().fetchSingle(context, embedUri, embedMimeType, object : ImageProvider.ImageOpCallback {
-                                    override fun onSuccess(fields: FieldMap) {
-                                        embedFields.putAll(fields)
-                                        result.success(embedFields)
-                                    }
-
-                                    override fun onFailure(throwable: Throwable) = result.error("extractXmpDataProp-failure", "failed to get entry for uri=$embedUri mime=$embedMimeType", throwable.message)
-                                })
-                            }
-                        } else {
-                            result.success(embedFields)
-                        }
+                        copyEmbeddedBytes(embedBytes, embedMimeType, result)
                         return
                     } catch (e: XMPException) {
-                        result.error("extractXmpDataProp-args", "failed to read XMP directory for uri=$uri prop=$dataPropPath", e.message)
+                        result.error("extractXmpDataProp-xmp", "failed to read XMP directory for uri=$uri prop=$dataPropPath", e.message)
                         return
                     }
                 }
@@ -845,6 +856,36 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             }
         }
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)
+    }
+
+    private fun copyEmbeddedBytes(embedBytes: ByteArray, embedMimeType: String, result: MethodChannel.Result) {
+        val embedFile = File.createTempFile("aves", null, context.cacheDir).apply {
+            deleteOnExit()
+            outputStream().use { outputStream ->
+                embedBytes.inputStream().use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            }
+        }
+        val embedUri = Uri.fromFile(embedFile)
+        val embedFields: FieldMap = hashMapOf(
+            "uri" to embedUri.toString(),
+            "mimeType" to embedMimeType,
+        )
+        if (isImage(embedMimeType) || isVideo(embedMimeType)) {
+            GlobalScope.launch(Dispatchers.IO) {
+                FileImageProvider().fetchSingle(context, embedUri, embedMimeType, object : ImageProvider.ImageOpCallback {
+                    override fun onSuccess(fields: FieldMap) {
+                        embedFields.putAll(fields)
+                        result.success(embedFields)
+                    }
+
+                    override fun onFailure(throwable: Throwable) = result.error("copyEmbeddedBytes-failure", "failed to get entry for uri=$embedUri mime=$embedMimeType", throwable.message)
+                })
+            }
+        } else {
+            result.success(embedFields)
+        }
     }
 
     private fun isMultiPageTiff(uri: Uri) = getTiffPageInfo(uri, 0)?.outDirectoryCount ?: 1 > 1
@@ -871,6 +912,15 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
     companion object {
         private val LOG_TAG = LogUtils.createTag(MetadataHandler::class.java)
         const val CHANNEL = "deckers.thibault/aves/metadata"
+
+        private val allMetadataRedundantDirNames = setOf(
+            "MP4",
+            "MP4 Sound",
+            "MP4 Video",
+            "QuickTime",
+            "QuickTime Sound",
+            "QuickTime Video",
+        )
 
         // catalog metadata & page info
         private const val KEY_MIME_TYPE = "mimeType"
@@ -899,5 +949,8 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         private const val KEY_EXPOSURE_TIME = "exposureTime"
         private const val KEY_FOCAL_LENGTH = "focalLength"
         private const val KEY_ISO = "iso"
+
+        // additional media key
+        private const val KEY_HAS_EMBEDDED_PICTURE = "Has Embedded Picture"
     }
 }

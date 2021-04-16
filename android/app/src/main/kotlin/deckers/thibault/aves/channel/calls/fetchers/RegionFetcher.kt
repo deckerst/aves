@@ -40,7 +40,7 @@ class RegionFetcher internal constructor(
         imageHeight: Int,
         result: MethodChannel.Result,
     ) {
-        if (MimeTypes.isHeifLike(mimeType) && pageId != null) {
+        if (MimeTypes.isHeic(mimeType) && pageId != null) {
             val id = Pair(uri, pageId)
             fetch(
                 uri = pageTempUris.getOrPut(id) { createJpegForPage(uri, pageId) },

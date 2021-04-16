@@ -8,8 +8,9 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:flutter/material.dart';
 
 class VideoControlOverlay extends StatefulWidget {
@@ -34,9 +35,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   AnimationController _playPauseAnimation;
   final List<StreamSubscription> _subscriptions = [];
   double _seekTargetPercent;
-
-  // video info is not refreshed by default, so we use a timer to do so
-  Timer _progressTimer;
 
   AvesEntry get entry => widget.entry;
 
@@ -74,16 +72,13 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   void _registerWidget(VideoControlOverlay widget) {
     _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
-    _subscriptions.add(widget.controller.isVideoReadyStream.listen(_onVideoReadinessChanged));
     _onStatusChange(widget.controller.status);
-    _onVideoReadinessChanged(widget.controller.isVideoReady);
   }
 
   void _unregisterWidget(VideoControlOverlay widget) {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _stopTimer();
   }
 
   @override
@@ -122,7 +117,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                             icon: AnimatedIcons.play_pause,
                             progress: _playPauseAnimation,
                           ),
-                          onPressed: _playPause,
+                          onPressed: _togglePlayPause,
                           tooltip: isPlaying ? context.l10n.viewerPauseTooltip : context.l10n.viewerPlayTooltip,
                         ),
                       ),
@@ -169,44 +164,29 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
                           final position = controller.currentPosition?.floor() ?? 0;
-                          return Text(formatDuration(Duration(milliseconds: position)));
+                          return Text(formatFriendlyDuration(Duration(milliseconds: position)));
                         }),
                     Spacer(),
                     Text(entry.durationText),
                   ],
                 ),
-                StreamBuilder<int>(
-                    stream: controller.positionStream,
-                    builder: (context, snapshot) {
-                      // do not use stream snapshot because it is obsolete when switching between videos
-                      var progress = controller.progress;
-                      if (!progress.isFinite) progress = 0.0;
-                      return LinearProgressIndicator(value: progress);
-                    }),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: StreamBuilder<int>(
+                      stream: controller.positionStream,
+                      builder: (context, snapshot) {
+                        // do not use stream snapshot because it is obsolete when switching between videos
+                        var progress = controller.progress;
+                        if (!progress.isFinite) progress = 0.0;
+                        return LinearProgressIndicator(value: progress);
+                      }),
+                ),
               ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  void _startTimer() {
-    if (!controller.isVideoReady) return;
-    _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(Durations.videoProgressTimerInterval, (_) => controller.refreshVideoInfo());
-  }
-
-  void _stopTimer() {
-    _progressTimer?.cancel();
-  }
-
-  void _onVideoReadinessChanged(bool isVideoReady) {
-    if (isVideoReady) {
-      _startTimer();
-    } else {
-      _stopTimer();
-    }
   }
 
   void _onStatusChange(VideoStatus status) {
@@ -216,14 +196,24 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     _updatePlayPauseIcon();
   }
 
-  Future<void> _playPause() async {
+  Future<void> _togglePlayPause() async {
     if (isPlaying) {
       await controller.pause();
-    } else if (isPlayable) {
+    } else {
+      await _play();
+    }
+  }
+
+  Future<void> _play() async {
+    if (isPlayable) {
       await controller.play();
     } else {
       await controller.setDataSource(entry.uri);
     }
+
+    // hide overlay
+    await Future.delayed(Durations.iconAnimation);
+    ToggleOverlayNotification().dispatch(context);
   }
 
   void _updatePlayPauseIcon() {
@@ -244,16 +234,17 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     if (isPlayable) {
       await _seekFromTarget();
     } else {
-      await controller.setDataSource(entry.uri);
+      // controller duration is not set yet, so we use the expected duration instead
+      final seekTargetMillis = (entry.durationMillis * _seekTargetPercent).toInt();
+      await controller.setDataSource(entry.uri, startMillis: seekTargetMillis);
+      _seekTargetPercent = null;
     }
   }
 
   Future _seekFromTarget() async {
     // `seekToProgress` is not safe as it can be called when the `duration` is not set yet
     // so we make sure the video info is up to date first
-    if (controller.duration == null) {
-      await controller.refreshVideoInfo();
-    } else {
+    if (controller.duration != null) {
       await controller.seekToProgress(_seekTargetPercent);
       _seekTargetPercent = null;
     }

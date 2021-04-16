@@ -32,15 +32,6 @@ Aves is a gallery and metadata explorer app. It is built for Android, with Flutt
 - SVG: unsupported `<style>` (cf [flutter_svg issue #105](https://github.com/dnfield/flutter_svg/issues/105))
 - SVG: limited support for `%`, `mm` or `pt` unit (cf [flutter_svg issue #110](https://github.com/dnfield/flutter_svg/issues/110))
 
-## Test Devices
-
-| Model       | Name                       | Android Version | API |
-| ----------- | -------------------------- | --------------- | ---:|
-| SM-G981N    | Samsung Galaxy S20 5G      | 11 (R)          | 30  |
-| SM-G970N    | Samsung Galaxy S10e        | 11 (R)          | 30  |
-| SM-P580     | Samsung Galaxy Tab A 10.1  | 8.1.0 (Oreo)    | 27  |
-| SM-G930S    | Samsung Galaxy S7          | 8.0.0 (Oreo)    | 26  |
-
 ## Project Setup
 
 Create a file named `<app dir>/android/key.properties`. It should contain a reference to a keystore for app signing, and other necessary credentials. See `<app dir>/android/key_template.properties` for the expected keys.

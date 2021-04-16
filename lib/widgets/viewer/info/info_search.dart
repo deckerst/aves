@@ -25,11 +25,6 @@ class InfoSearchDelegate extends SearchDelegate {
         );
 
   @override
-  ThemeData appBarTheme(BuildContext context) {
-    return Theme.of(context);
-  }
-
-  @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: AnimatedIcon(
@@ -108,7 +103,7 @@ class InfoSearchDelegate extends SearchDelegate {
               title: kv.key,
               dir: kv.value,
               initiallyExpanded: true,
-              showPrefixChildren: false,
+              showThumbnails: false,
             ))
         .toList();
     return SafeArea(

@@ -11,13 +11,15 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/video/video.dart';
+import 'package:aves/widgets/common/video/controller.dart';
+import 'package:aves/widgets/common/video/fijkplayer.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video.dart';
@@ -174,7 +176,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         value: _heroInfoNotifier,
         child: NotificationListener(
           onNotification: (notification) {
-            if (notification is FilterNotification) {
+            if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
             } else if (notification is ViewStateNotification) {
               _updateViewState(notification.uri, notification.viewState);
@@ -183,25 +185,33 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             }
             return false;
           },
-          child: Stack(
-            children: [
-              ViewerVerticalPageView(
-                collection: collection,
-                entryNotifier: _entryNotifier,
-                videoControllers: _videoControllers,
-                multiPageControllers: _multiPageControllers,
-                verticalPager: _verticalPager,
-                horizontalPager: _horizontalPager,
-                onVerticalPageChanged: _onVerticalPageChanged,
-                onHorizontalPageChanged: _onHorizontalPageChanged,
-                onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
-                onImagePageRequested: () => _goToVerticalPage(imagePage),
-                onViewDisposed: (uri) => _updateViewState(uri, null),
-              ),
-              _buildTopOverlay(),
-              _buildBottomOverlay(),
-              BottomGestureAreaProtector(),
-            ],
+          child: NotificationListener(
+            onNotification: (notification) {
+              if (notification is ToggleOverlayNotification) {
+                _overlayVisible.value = !_overlayVisible.value;
+                return true;
+              }
+              return false;
+            },
+            child: Stack(
+              children: [
+                ViewerVerticalPageView(
+                  collection: collection,
+                  entryNotifier: _entryNotifier,
+                  videoControllers: _videoControllers,
+                  multiPageControllers: _multiPageControllers,
+                  verticalPager: _verticalPager,
+                  horizontalPager: _horizontalPager,
+                  onVerticalPageChanged: _onVerticalPageChanged,
+                  onHorizontalPageChanged: _onHorizontalPageChanged,
+                  onImagePageRequested: () => _goToVerticalPage(imagePage),
+                  onViewDisposed: (uri) => _updateViewState(uri, null),
+                ),
+                _buildTopOverlay(),
+                _buildBottomOverlay(),
+                BottomGestureAreaProtector(),
+              ],
+            ),
           ),
         ),
       ),
@@ -499,9 +509,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       _initViewSpecificController<AvesVideoController>(
         uri,
         _videoControllers,
-        () => AvesVideoController.flutterIjkPlayer(),
+        () => IjkPlayerAvesVideoController(entry),
         (_) => _.dispose(),
       );
+      if (settings.enableVideoAutoPlay) {
+        _playVideo();
+      }
     }
     if (entry.isMultipage) {
       _initViewSpecificController<MultiPageController>(
@@ -513,6 +526,22 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     }
 
     setState(() {});
+  }
+
+  Future<void> _playVideo() async {
+    await Future.delayed(Duration(milliseconds: 300));
+
+    final entry = _entryNotifier.value;
+    if (entry == null) return;
+
+    final videoController = _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+    if (videoController != null) {
+      if (videoController.isPlayable) {
+        await videoController.play();
+      } else {
+        await videoController.setDataSource(entry.uri);
+      }
+    }
   }
 
   void _initViewSpecificController<T>(String uri, List<Tuple2<String, T>> controllers, T Function() builder, void Function(T controller) disposer) {

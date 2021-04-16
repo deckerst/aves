@@ -3,6 +3,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_structs.dart';
+import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:flutter/material.dart';
 
 class XmpBasicNamespace extends XmpNamespace {
@@ -33,7 +34,7 @@ class XmpBasicNamespace extends XmpNamespace {
                 if (struct.containsKey(thumbnailDataDisplayKey))
                   thumbnailDataDisplayKey: InfoLinkHandler(
                     linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-                    onTap: (context) => OpenEmbeddedDataNotification(
+                    onTap: (context) => OpenEmbeddedDataNotification.xmp(
                       propPath: 'xmp:Thumbnails[$index]/xmpGImg:image',
                       mimeType: MimeTypes.jpeg,
                     ).dispatch(context),

@@ -15,6 +15,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 class AppShortcutHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
@@ -53,7 +54,9 @@ class AppShortcutHandler(private val context: Context) : MethodCallHandler {
             .putExtra("page", "/collection")
             .putExtra("filters", filters.toTypedArray())
 
-        val shortcut = ShortcutInfoCompat.Builder(context, "collection-${filters.joinToString("-")}")
+        // multiple shortcuts sharing the same ID cannot be created with different labels or icons
+        // so we provide a unique ID for each one, and let the user manage duplicates (i.e. same filter set), if any
+        val shortcut = ShortcutInfoCompat.Builder(context, UUID.randomUUID().toString())
             .setShortLabel(label)
             .setIcon(icon)
             .setIntent(intent)
