@@ -20,7 +20,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
-  final VoidCallback onImageTap, onImagePageRequested;
+  final VoidCallback onImagePageRequested;
   final void Function(String uri) onViewDisposed;
 
   const ViewerVerticalPageView({
@@ -32,7 +32,6 @@ class ViewerVerticalPageView extends StatefulWidget {
     @required this.horizontalPager,
     @required this.onVerticalPageChanged,
     @required this.onHorizontalPageChanged,
-    this.onImageTap,
     @required this.onImagePageRequested,
     @required this.onViewDisposed,
   });
@@ -92,7 +91,6 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
           ? MultiEntryScroller(
               collection: collection,
               pageController: widget.horizontalPager,
-              onTap: widget.onImageTap,
               onPageChanged: widget.onHorizontalPageChanged,
               videoControllers: widget.videoControllers,
               multiPageControllers: widget.multiPageControllers,
@@ -100,7 +98,6 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
             )
           : SingleEntryScroller(
               entry: entry,
-              onTap: widget.onImageTap,
               videoControllers: widget.videoControllers,
               multiPageControllers: widget.multiPageControllers,
             ),

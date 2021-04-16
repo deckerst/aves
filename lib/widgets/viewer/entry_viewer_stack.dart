@@ -19,6 +19,7 @@ import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/bottom.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/overlay/video.dart';
@@ -175,7 +176,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         value: _heroInfoNotifier,
         child: NotificationListener(
           onNotification: (notification) {
-            if (notification is FilterNotification) {
+            if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
             } else if (notification is ViewStateNotification) {
               _updateViewState(notification.uri, notification.viewState);
@@ -184,25 +185,33 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             }
             return false;
           },
-          child: Stack(
-            children: [
-              ViewerVerticalPageView(
-                collection: collection,
-                entryNotifier: _entryNotifier,
-                videoControllers: _videoControllers,
-                multiPageControllers: _multiPageControllers,
-                verticalPager: _verticalPager,
-                horizontalPager: _horizontalPager,
-                onVerticalPageChanged: _onVerticalPageChanged,
-                onHorizontalPageChanged: _onHorizontalPageChanged,
-                onImageTap: () => _overlayVisible.value = !_overlayVisible.value,
-                onImagePageRequested: () => _goToVerticalPage(imagePage),
-                onViewDisposed: (uri) => _updateViewState(uri, null),
-              ),
-              _buildTopOverlay(),
-              _buildBottomOverlay(),
-              BottomGestureAreaProtector(),
-            ],
+          child: NotificationListener(
+            onNotification: (notification) {
+              if (notification is ToggleOverlayNotification) {
+                _overlayVisible.value = !_overlayVisible.value;
+                return true;
+              }
+              return false;
+            },
+            child: Stack(
+              children: [
+                ViewerVerticalPageView(
+                  collection: collection,
+                  entryNotifier: _entryNotifier,
+                  videoControllers: _videoControllers,
+                  multiPageControllers: _multiPageControllers,
+                  verticalPager: _verticalPager,
+                  horizontalPager: _horizontalPager,
+                  onVerticalPageChanged: _onVerticalPageChanged,
+                  onHorizontalPageChanged: _onHorizontalPageChanged,
+                  onImagePageRequested: () => _goToVerticalPage(imagePage),
+                  onViewDisposed: (uri) => _updateViewState(uri, null),
+                ),
+                _buildTopOverlay(),
+                _buildBottomOverlay(),
+                BottomGestureAreaProtector(),
+              ],
+            ),
           ),
         ),
       ),

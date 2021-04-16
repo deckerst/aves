@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
 import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/hero.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -30,7 +31,6 @@ class EntryPageView extends StatefulWidget {
   final AvesEntry entry;
   final SinglePageInfo page;
   final Size viewportSize;
-  final MagnifierTapCallback onTap;
   final List<Tuple2<String, AvesVideoController>> videoControllers;
   final VoidCallback onDisposed;
 
@@ -41,7 +41,6 @@ class EntryPageView extends StatefulWidget {
     this.mainEntry,
     this.page,
     this.viewportSize,
-    @required this.onTap,
     @required this.videoControllers,
     this.onDisposed,
   })  : entry = mainEntry.getPageEntry(page) ?? mainEntry,
@@ -61,8 +60,6 @@ class _EntryPageViewState extends State<EntryPageView> {
   AvesEntry get entry => widget.entry;
 
   Size get viewportSize => widget.viewportSize;
-
-  MagnifierTapCallback get onTap => widget.onTap;
 
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
@@ -138,7 +135,7 @@ class _EntryPageViewState extends State<EntryPageView> {
         }
         child ??= ErrorView(
           entry: entry,
-          onTap: onTap == null ? null : () => onTap(null),
+          onTap: _onTap,
         );
         return child;
       },
@@ -162,7 +159,7 @@ class _EntryPageViewState extends State<EntryPageView> {
         viewStateNotifier: _viewStateNotifier,
         errorBuilder: (context, error, stackTrace) => ErrorView(
           entry: entry,
-          onTap: () => onTap?.call(null),
+          onTap: _onTap,
         ),
       ),
     );
@@ -221,10 +218,12 @@ class _EntryPageViewState extends State<EntryPageView> {
       initialScale: initialScale,
       scaleStateCycle: scaleStateCycle,
       applyScale: applyScale,
-      onTap: onTap == null ? null : (c, d, s, childPosition) => onTap(childPosition),
+      onTap: (c, d, s, o) => _onTap(),
       child: child,
     );
   }
+
+  void _onTap() => ToggleOverlayNotification().dispatch(context);
 
   void _onViewStateChanged(MagnifierState v) {
     final current = _viewStateNotifier.value;

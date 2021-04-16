@@ -10,6 +10,7 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:flutter/material.dart';
 
 class VideoControlOverlay extends StatefulWidget {
@@ -209,6 +210,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     } else {
       await controller.setDataSource(entry.uri);
     }
+
+    // hide overlay
+    await Future.delayed(Durations.iconAnimation);
+    ToggleOverlayNotification().dispatch(context);
   }
 
   void _updatePlayPauseIcon() {

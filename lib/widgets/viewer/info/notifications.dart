@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 
 class BackUpNotification extends Notification {}
 
-class FilterNotification extends Notification {
+class FilterSelectedNotification extends Notification {
   final CollectionFilter filter;
 
-  const FilterNotification(this.filter);
+  const FilterSelectedNotification(this.filter);
 }
 
 class EntryDeletedNotification extends Notification {
@@ -26,4 +26,35 @@ class OpenTempEntryNotification extends Notification {
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{entry=$entry}';
+}
+
+enum EmbeddedDataSource { videoCover, xmp }
+
+class OpenEmbeddedDataNotification extends Notification {
+  final EmbeddedDataSource source;
+  final String propPath;
+  final String mimeType;
+
+  const OpenEmbeddedDataNotification._private({
+    @required this.source,
+    this.propPath,
+    this.mimeType,
+  });
+
+  factory OpenEmbeddedDataNotification.videoCover() => OpenEmbeddedDataNotification._private(
+        source: EmbeddedDataSource.videoCover,
+      );
+
+  factory OpenEmbeddedDataNotification.xmp({
+    @required String propPath,
+    @required String mimeType,
+  }) =>
+      OpenEmbeddedDataNotification._private(
+        source: EmbeddedDataSource.xmp,
+        propPath: propPath,
+        mimeType: mimeType,
+      );
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{source=$source, propPath=$propPath, mimeType=$mimeType}';
 }
