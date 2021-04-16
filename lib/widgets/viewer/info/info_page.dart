@@ -222,6 +222,6 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   void _goToCollection(CollectionFilter filter) {
     if (collection == null) return;
-    FilterNotification(filter).dispatch(context);
+    FilterSelectedNotification(filter).dispatch(context);
   }
 }
