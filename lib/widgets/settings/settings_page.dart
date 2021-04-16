@@ -241,9 +241,14 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text(context.l10n.settingsVideoShowVideos),
         ),
         SwitchListTile(
-          value: settings.isVideoHardwareAccelerationEnabled,
-          onChanged: (v) => settings.isVideoHardwareAccelerationEnabled = v,
+          value: settings.enableVideoHardwareAcceleration,
+          onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
           title: Text(context.l10n.settingsVideoEnableHardwareAcceleration),
+        ),
+        SwitchListTile(
+          value: settings.enableVideoAutoPlay,
+          onChanged: (v) => settings.enableVideoAutoPlay = v,
+          title: Text(context.l10n.settingsVideoEnableAutoPlay),
         ),
         ListTile(
           title: Text(context.l10n.settingsVideoLoopModeTile),

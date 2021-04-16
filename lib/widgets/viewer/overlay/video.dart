@@ -116,7 +116,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                             icon: AnimatedIcons.play_pause,
                             progress: _playPauseAnimation,
                           ),
-                          onPressed: _playPause,
+                          onPressed: _togglePlayPause,
                           tooltip: isPlaying ? context.l10n.viewerPauseTooltip : context.l10n.viewerPlayTooltip,
                         ),
                       ),
@@ -195,10 +195,16 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     _updatePlayPauseIcon();
   }
 
-  Future<void> _playPause() async {
+  Future<void> _togglePlayPause() async {
     if (isPlaying) {
       await controller.pause();
-    } else if (isPlayable) {
+    } else {
+      await _play();
+    }
+  }
+
+  Future<void> _play() async {
+    if (isPlayable) {
       await controller.play();
     } else {
       await controller.setDataSource(entry.uri);

@@ -256,7 +256,8 @@
 
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
-  "settingsVideoEnableHardwareAcceleration": "하드웨어 가속 사용",
+  "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
+  "settingsVideoEnableAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile":  "반복 모드",
   "settingsVideoLoopModeTitle":  "반복 모드",
 
