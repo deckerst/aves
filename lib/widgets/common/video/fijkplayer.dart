@@ -24,8 +24,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final ValueNotifier<StreamSummary> _selectedAudioStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary> _selectedTextStream = ValueNotifier(null);
   final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(Tuple2(1, 1));
+  Timer _initialPlayTimer;
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
+
+  static const initialPlayDelay = Duration(milliseconds: 100);
+  static const gifLikeVideoDurationThreshold = Duration(seconds: 10);
 
   IjkPlayerAvesVideoController(AvesEntry entry) {
     FijkLog.setLevel(FijkLogLevel.Warn);
@@ -42,10 +46,14 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // player cannot be dynamically set to use accurate seek only when playing
     const accurateSeekEnabled = false;
 
-    // when HW acceleration is enabled, videos with dimensions that do not fit 16x macroblocks need cropping
+    // playing with HW acceleration seems to skip the last frames of some videos
+    // so HW acceleration is always disabled for gif-like videos where the last frames may be significant
+    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis > gifLikeVideoDurationThreshold.inMilliseconds;
+
     // TODO TLAD HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
-    final hwAccelerationEnabled = settings.isVideoHardwareAccelerationEnabled;
     if (hwAccelerationEnabled) {
+      // when HW acceleration is enabled, videos with dimensions that do not fit 16x macroblocks need cropping
+      // TODO TLAD not all formats/devices need this correction, e.g. 498x278 MP4 on S7, 408x244 WEBM on S10e do not
       final s = entry.displaySize % 16 * -1 % 16;
       _macroBlockCrop = Offset(s.width, s.height);
     }
@@ -83,6 +91,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   void dispose() {
+    _initialPlayTimer?.cancel();
     _instance.removeListener(_onValueChanged);
     _valueStreamController.close();
     _subscriptions
@@ -142,7 +151,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _valueStreamController.add(_instance.value);
   }
 
-  // enable autoplay, even when seeking on uninitialized player, otherwise the texture is not updated
+  // always start playing, even when seeking on uninitialized player, otherwise the texture is not updated
   // as a workaround, pausing after a brief duration is possible, but fiddly
   @override
   Future<void> setDataSource(String uri, {int startMillis = 0}) async {
@@ -150,14 +159,28 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       // `seek-at-start`: set offset of player should be seeked, default: 0, in [0, INT_MAX]
       await _instance.setOption(FijkOption.playerCategory, 'seek-at-start', startMillis);
     }
-    await _instance.setDataSource(uri, autoPlay: true);
+    // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
+    // so we introduce a small delay after the player is declared `prepared`, before playing
+    await _instance.setDataSourceUntilPrepared(uri);
+    _initialPlayTimer = Timer(initialPlayDelay, play);
   }
 
   @override
-  Future<void> play() => _instance.start();
+  Future<void> play() {
+    if (_instance.isPlayable()) {
+      _instance.start();
+    }
+    return SynchronousFuture(null);
+  }
 
   @override
-  Future<void> pause() => _instance.pause();
+  Future<void> pause() {
+    if (_instance.isPlayable()) {
+      _initialPlayTimer?.cancel();
+      _instance.pause();
+    }
+    return SynchronousFuture(null);
+  }
 
   @override
   Future<void> seekTo(int targetMillis) => _instance.seekTo(targetMillis);
@@ -199,13 +222,27 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
             fit: FijkFit(
               sizeFactor: 1.0,
               aspectRatio: dar,
-              alignment: Alignment.topLeft,
+              alignment: _alignmentForRotation(entry.rotationDegrees),
               macroBlockCrop: _macroBlockCrop,
             ),
             panelBuilder: (player, data, context, viewSize, texturePos) => SizedBox(),
             color: Colors.transparent,
           );
         });
+  }
+
+  Alignment _alignmentForRotation(int rotation) {
+    switch (rotation) {
+      case 90:
+        return Alignment.topRight;
+      case 180:
+        return Alignment.bottomRight;
+      case 270:
+        return Alignment.bottomLeft;
+      case 0:
+      default:
+        return Alignment.topLeft;
+    }
   }
 }
 
@@ -230,6 +267,32 @@ extension ExtraIjkStatus on FijkState {
         return VideoStatus.error;
     }
     return VideoStatus.idle;
+  }
+}
+
+extension ExtraFijkPlayer on FijkPlayer {
+  Future<void> setDataSourceUntilPrepared(String uri) async {
+    await setDataSource(uri, autoPlay: false);
+
+    final completer = Completer();
+    void onChange() {
+      switch (state) {
+        case FijkState.prepared:
+          removeListener(onChange);
+          completer.complete();
+          break;
+        case FijkState.error:
+          removeListener(onChange);
+          completer.completeError(value.exception);
+          break;
+        default:
+          break;
+      }
+    }
+
+    addListener(onChange);
+    await prepareAsync();
+    return completer.future;
   }
 }
 

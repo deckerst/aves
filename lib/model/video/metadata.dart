@@ -10,6 +10,7 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
+import 'package:aves/widgets/common/video/fijkplayer.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
@@ -32,20 +33,7 @@ class VideoMetadataFormatter {
 
   static Future<Map> getVideoMetadata(AvesEntry entry) async {
     final player = FijkPlayer();
-    await player.setDataSource(entry.uri, autoPlay: false);
-
-    final completer = Completer();
-    void onChange() {
-      if ([FijkState.prepared, FijkState.error].contains(player.state)) {
-        completer.complete();
-      }
-    }
-
-    player.addListener(onChange);
-    await player.prepareAsync();
-    await completer.future;
-    player.removeListener(onChange);
-
+    await player.setDataSourceUntilPrepared(entry.uri);
     final info = await player.getInfo();
     await player.release();
     return info;

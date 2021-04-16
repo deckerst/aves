@@ -503,6 +503,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         () => IjkPlayerAvesVideoController(entry),
         (_) => _.dispose(),
       );
+      if (settings.enableVideoAutoPlay) {
+        _playVideo();
+      }
     }
     if (entry.isMultipage) {
       _initViewSpecificController<MultiPageController>(
@@ -514,6 +517,22 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     }
 
     setState(() {});
+  }
+
+  Future<void> _playVideo() async {
+    await Future.delayed(Duration(milliseconds: 300));
+
+    final entry = _entryNotifier.value;
+    if (entry == null) return;
+
+    final videoController = _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+    if (videoController != null) {
+      if (videoController.isPlayable) {
+        await videoController.play();
+      } else {
+        await videoController.setDataSource(entry.uri);
+      }
+    }
   }
 
   void _initViewSpecificController<T>(String uri, List<Tuple2<String, T>> controllers, T Function() builder, void Function(T controller) disposer) {
