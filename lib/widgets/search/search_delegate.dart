@@ -118,7 +118,7 @@ class CollectionSearchDelegate {
                                       album,
                                       source.getAlbumDisplayName(context, album),
                                     ))
-                                .where((filter) => containQuery(filter.album) || containQuery(filter.displayName))
+                                .where((filter) => containQuery(filter.displayName))
                                 .toList()
                                   ..sort();
                             return _buildFilterRow(
