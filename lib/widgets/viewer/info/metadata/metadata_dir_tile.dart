@@ -15,7 +15,6 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_thumbnail.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_tile.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
