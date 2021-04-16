@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.0] - 2021-04-16
+### Added
+- Viewer: support for videos with EAC3/FLAC/OPUS audio
+- Info: more consistent and comprehensive info for videos and streams
+- Settings: more video options (auto play, loop, hardware acceleration)
+
+### Changed
+- Info: present video cover like XMP embedded images
+
+### Removed
+- locale name package (-3 MB)
+
+### Fixed
+- Albums: auto naming for folders on SD card
+- Viewer: display of videos with unusual SAR
+
 ## [v1.3.7] - 2021-04-02
 ### Added
 - Collection / Albums / Countries / Tags: added label when dragging scrollbar thumb
