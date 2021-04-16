@@ -4,7 +4,7 @@ import 'package:aves/geo/topojson.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 final CountryTopology countryTopology = CountryTopology._private();
 

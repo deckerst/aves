@@ -1,7 +1,7 @@
 import 'package:aves/geo/countries.dart';
 import 'package:aves/geo/topojson.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 void main() {
   // [lng, lat, z]
