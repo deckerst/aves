@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:aves/utils/math_utils.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, double distance) {
   var mSemiMajorAxis = 6378137.0; //WGS84 major axis
