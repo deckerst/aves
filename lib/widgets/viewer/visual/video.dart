@@ -1,10 +1,4 @@
-import 'dart:ui';
-
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/settings/settings.dart';
-import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/video/controller.dart';
 import 'package:flutter/material.dart';
 
@@ -60,22 +54,7 @@ class _VideoViewState extends State<VideoView> {
     return StreamBuilder<VideoStatus>(
         stream: controller.statusStream,
         builder: (context, snapshot) {
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              if (controller.isPlayable) controller.buildPlayerWidget(context, entry),
-              // fade out image to ease transition with the player as it starts with a black texture
-              AnimatedOpacity(
-                opacity: controller.isPlayable ? 0 : 1,
-                curve: Curves.easeInCirc,
-                duration: Durations.viewerVideoPlayerTransition,
-                child: Image(
-                  image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
-                  fit: BoxFit.fill,
-                ),
-              ),
-            ],
-          );
+          return controller.isPlayable ? controller.buildPlayerWidget(context, entry) : SizedBox();
         });
   }
 
