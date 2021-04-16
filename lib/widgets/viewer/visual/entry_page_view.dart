@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
@@ -194,11 +197,38 @@ class _EntryPageViewState extends State<EntryPageView> {
   Widget _buildVideoView() {
     final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
     if (videoController == null) return SizedBox();
-    return _buildMagnifier(
-      child: VideoView(
-        entry: entry,
-        controller: videoController,
-      ),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        _buildMagnifier(
+          child: VideoView(
+            entry: entry,
+            controller: videoController,
+          ),
+        ),
+        // fade out image to ease transition with the player
+        StreamBuilder<VideoStatus>(
+          stream: videoController.statusStream,
+          builder: (context, snapshot) {
+            final showCover = videoController.isPlayable;
+            return IgnorePointer(
+              ignoring: showCover,
+              child: AnimatedOpacity(
+                opacity: showCover ? 0 : 1,
+                curve: Curves.easeInCirc,
+                duration: Durations.viewerVideoPlayerTransition,
+                child: GestureDetector(
+                  onTap: _onTap,
+                  child: Image(
+                    image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
