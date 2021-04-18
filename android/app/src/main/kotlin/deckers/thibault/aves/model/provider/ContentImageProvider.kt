@@ -19,6 +19,7 @@ internal class ContentImageProvider : ImageProvider() {
         try {
             val cursor = context.contentResolver.query(uri, projection, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
+                cursor.getColumnIndex(PATH).let { if (it != -1) map["path"] = cursor.getString(it) }
                 cursor.getColumnIndex(MediaStore.MediaColumns.SIZE).let { if (it != -1) map["sizeBytes"] = cursor.getLong(it) }
                 cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) map["title"] = cursor.getString(it) }
                 cursor.close()
@@ -37,7 +38,11 @@ internal class ContentImageProvider : ImageProvider() {
     }
 
     companion object {
+        @Suppress("DEPRECATION")
+        const val PATH = MediaStore.MediaColumns.DATA
+
         private val projection = arrayOf(
+            PATH,
             MediaStore.MediaColumns.SIZE,
             MediaStore.MediaColumns.DISPLAY_NAME
         )

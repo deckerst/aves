@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.pm.ShortcutInfoCompat
@@ -111,8 +112,8 @@ class MainActivity : FlutterActivity() {
                     )
                 }
             }
-            Intent.ACTION_VIEW, "com.android.camera.action.REVIEW" -> {
-                intent.data?.let { uri ->
+            Intent.ACTION_VIEW, Intent.ACTION_SEND, "com.android.camera.action.REVIEW" -> {
+                (intent.data ?: (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri))?.let { uri ->
                     return hashMapOf(
                         "action" to "view",
                         "uri" to uri.toString(),
