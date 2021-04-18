@@ -10,7 +10,6 @@ class Themes {
     brightness: Brightness.dark,
     accentColor: _accentColor,
     scaffoldBackgroundColor: Colors.grey[900],
-    buttonColor: _accentColor,
     dialogBackgroundColor: Colors.grey[850],
     toggleableActiveColor: _accentColor,
     tooltipTheme: TooltipThemeData(
@@ -25,22 +24,18 @@ class Themes {
         ),
       ),
     ),
+    colorScheme: ColorScheme.dark(
+      primary: _accentColor,
+      secondary: _accentColor,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+    ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: Colors.grey[800],
       contentTextStyle: TextStyle(
         color: Colors.white,
       ),
       behavior: SnackBarBehavior.floating,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        primary: _accentColor,
-      ),
-    ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        primary: _accentColor,
-      ),
     ),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
