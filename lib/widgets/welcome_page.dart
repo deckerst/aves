@@ -157,15 +157,27 @@ class _WelcomePageState extends State<WelcomePage> {
       constraints: BoxConstraints(maxWidth: 460),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: Markdown(
-          data: terms,
-          selectable: true,
-          onTapLink: (text, href, title) async {
-            if (await canLaunch(href)) {
-              await launch(href);
-            }
-          },
-          shrinkWrap: true,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            scrollbarTheme: ScrollbarThemeData(
+              radius: Radius.circular(16),
+              crossAxisMargin: 6,
+              mainAxisMargin: 16,
+              interactive: true,
+            ),
+          ),
+          child: Scrollbar(
+            child: Markdown(
+              data: terms,
+              selectable: true,
+              onTapLink: (text, href, title) async {
+                if (await canLaunch(href)) {
+                  await launch(href);
+                }
+              },
+              shrinkWrap: true,
+            ),
+          ),
         ),
       ),
     );
