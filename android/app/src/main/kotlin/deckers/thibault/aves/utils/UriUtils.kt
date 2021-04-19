@@ -5,7 +5,7 @@ import android.net.Uri
 import android.util.Log
 
 object UriUtils {
-    private val LOG_TAG = LogUtils.createTag(UriUtils::class.java)
+    private val LOG_TAG = LogUtils.createTag<UriUtils>()
 
     fun Uri.tryParseId(): Long? {
         try {

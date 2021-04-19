@@ -349,6 +349,6 @@ abstract class ImageProvider {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(ImageProvider::class.java)
+        private val LOG_TAG = LogUtils.createTag<ImageProvider>()
     }
 }

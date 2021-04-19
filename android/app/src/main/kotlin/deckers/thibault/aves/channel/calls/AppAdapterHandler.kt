@@ -263,7 +263,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(AppAdapterHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag<AppAdapterHandler>()
         const val CHANNEL = "deckers.thibault/aves/app"
     }
 }

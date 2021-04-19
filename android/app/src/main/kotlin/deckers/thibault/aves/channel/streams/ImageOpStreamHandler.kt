@@ -176,7 +176,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(ImageOpStreamHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag<ImageOpStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/imageopstream"
     }
 }

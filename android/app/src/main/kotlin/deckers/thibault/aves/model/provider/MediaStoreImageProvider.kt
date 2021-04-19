@@ -335,7 +335,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(MediaStoreImageProvider::class.java)
+        private val LOG_TAG = LogUtils.createTag<MediaStoreImageProvider>()
 
         private val IMAGE_CONTENT_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         private val VIDEO_CONTENT_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
