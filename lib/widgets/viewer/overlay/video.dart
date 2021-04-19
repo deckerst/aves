@@ -178,7 +178,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         // do not use stream snapshot because it is obsolete when switching between videos
                         var progress = controller.progress;
                         if (!progress.isFinite) progress = 0.0;
-                        return LinearProgressIndicator(value: progress);
+                        return LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[700],
+                        );
                       }),
                 ),
               ],
