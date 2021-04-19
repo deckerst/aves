@@ -8,7 +8,7 @@ import deckers.thibault.aves.utils.LogUtils
 import java.util.*
 
 object XMP {
-    private val LOG_TAG = LogUtils.createTag(XMP::class.java)
+    private val LOG_TAG = LogUtils.createTag<XMP>()
 
     // standard namespaces
     // cf com.adobe.internal.xmp.XMPConst

@@ -75,7 +75,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(StorageAccessStreamHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag<StorageAccessStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/storageaccessstream"
     }
 }

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 
 object PermissionManager {
-    private val LOG_TAG = LogUtils.createTag(PermissionManager::class.java)
+    private val LOG_TAG = LogUtils.createTag<PermissionManager>()
 
     const val VOLUME_ACCESS_REQUEST_CODE = 1
 

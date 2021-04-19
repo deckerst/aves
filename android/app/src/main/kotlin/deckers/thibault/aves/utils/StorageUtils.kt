@@ -23,7 +23,7 @@ import java.util.*
 import java.util.regex.Pattern
 
 object StorageUtils {
-    private val LOG_TAG = LogUtils.createTag(StorageUtils::class.java)
+    private val LOG_TAG = LogUtils.createTag<StorageUtils>()
 
     /**
      * Volume paths

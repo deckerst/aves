@@ -172,7 +172,7 @@ class MainActivity : FlutterActivity() {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(MainActivity::class.java)
+        private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
     }
 }

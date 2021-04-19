@@ -175,7 +175,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     }
 
     private fun streamBytes(inputStream: InputStream) {
-        val buffer = ByteArray(bufferSize)
+        val buffer = ByteArray(BUFFER_SIZE)
         var len: Int
         while (inputStream.read(buffer).also { len = it } != -1) {
             // cannot decode image on Flutter side when using `buffer` directly
@@ -184,10 +184,10 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(ImageByteStreamHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag<ImageByteStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/imagebytestream"
 
-        const val bufferSize = 2 shl 17 // 256kB
+        const val BUFFER_SIZE = 2 shl 17 // 256kB
 
         // request a fresh image with the highest quality format
         val glideOptions = RequestOptions()

@@ -9,7 +9,7 @@ import deckers.thibault.aves.metadata.Metadata.getExifCode
 import java.io.ByteArrayOutputStream
 
 object BitmapUtils {
-    private val LOG_TAG = LogUtils.createTag(BitmapUtils::class.java)
+    private val LOG_TAG = LogUtils.createTag<BitmapUtils>()
 
     fun Bitmap.getBytes(canHaveAlpha: Boolean = false, quality: Int = 100, recycle: Boolean = true): ByteArray? {
         try {
