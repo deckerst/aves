@@ -30,7 +30,7 @@ class RegionFetcher internal constructor(
         .diskCacheStrategy(DiskCacheStrategy.NONE)
         .skipMemoryCache(true)
 
-    fun fetch(
+    suspend fun fetch(
         uri: Uri,
         mimeType: String,
         pageId: Int?,

@@ -31,8 +31,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getEntry) }
-            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getThumbnail) }
-            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRegion) }
+            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getThumbnail) }
+            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getRegion) }
             "rename" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::rename) }
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
@@ -61,7 +61,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         })
     }
 
-    private fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")
         val mimeType = call.argument<String>("mimeType")
         val dateModifiedSecs = call.argument<Number>("dateModifiedSecs")?.toLong()
@@ -93,7 +93,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         ).fetch()
     }
 
-    private fun getRegion(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getRegion(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         val pageId = call.argument<Int>("pageId")

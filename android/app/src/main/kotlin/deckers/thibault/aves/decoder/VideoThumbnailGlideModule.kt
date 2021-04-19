@@ -19,6 +19,9 @@ import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.StorageUtils.openMetadataRetriever
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
@@ -47,40 +50,42 @@ internal class VideoThumbnailLoader : ModelLoader<VideoThumbnail, InputStream> {
 
 internal class VideoThumbnailFetcher(private val model: VideoThumbnail) : DataFetcher<InputStream> {
     override fun loadData(priority: Priority, callback: DataCallback<in InputStream>) {
-        val retriever = openMetadataRetriever(model.context, model.uri)
-        if (retriever != null) {
-            try {
-                var bytes = retriever.embeddedPicture
-                if (bytes == null) {
-                    // try to match the thumbnails returned by the content resolver / Media Store
-                    // the following strategies are from empirical evidence from a few test devices:
-                    // - API 29: sync frame closest to the middle
-                    // - API 26/27: default representative frame at any time position
-                    var timeMillis: Long? = null
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        val durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
-                        if (durationMillis != null) {
-                            timeMillis = durationMillis / 2
+        GlobalScope.launch(Dispatchers.IO) {
+            val retriever = openMetadataRetriever(model.context, model.uri)
+            if (retriever != null) {
+                try {
+                    var bytes = retriever.embeddedPicture
+                    if (bytes == null) {
+                        // try to match the thumbnails returned by the content resolver / Media Store
+                        // the following strategies are from empirical evidence from a few test devices:
+                        // - API 29: sync frame closest to the middle
+                        // - API 26/27: default representative frame at any time position
+                        var timeMillis: Long? = null
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            val durationMillis = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull()
+                            if (durationMillis != null) {
+                                timeMillis = durationMillis / 2
+                            }
                         }
+                        val frame = if (timeMillis != null) {
+                            retriever.getFrameAtTime(timeMillis * 1000)
+                        } else {
+                            retriever.frameAtTime
+                        }
+                        bytes = frame?.getBytes(canHaveAlpha = false, recycle = false)
                     }
-                    val frame = if (timeMillis != null) {
-                        retriever.getFrameAtTime(timeMillis * 1000)
-                    } else {
-                        retriever.frameAtTime
-                    }
-                    bytes = frame?.getBytes(canHaveAlpha = false, recycle = false)
-                }
 
-                if (bytes != null) {
-                    callback.onDataReady(ByteArrayInputStream(bytes))
-                } else {
-                    callback.onLoadFailed(Exception("failed to get embedded picture or any frame"))
+                    if (bytes != null) {
+                        callback.onDataReady(ByteArrayInputStream(bytes))
+                    } else {
+                        callback.onLoadFailed(Exception("failed to get embedded picture or any frame"))
+                    }
+                } catch (e: Exception) {
+                    callback.onLoadFailed(e)
+                } finally {
+                    // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
+                    retriever.release()
                 }
-            } catch (e: Exception) {
-                callback.onLoadFailed(e)
-            } finally {
-                // cannot rely on `MediaMetadataRetriever` being `AutoCloseable` on older APIs
-                retriever.release()
             }
         }
     }

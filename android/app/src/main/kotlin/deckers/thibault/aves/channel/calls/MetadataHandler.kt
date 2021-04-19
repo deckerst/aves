@@ -28,6 +28,7 @@ import com.drew.metadata.png.PngDirectory
 import com.drew.metadata.webp.WebpDirectory
 import com.drew.metadata.xmp.XmpDirectory
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
 import deckers.thibault.aves.metadata.*
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.describeAll
 import deckers.thibault.aves.metadata.ExifInterfaceHelper.getSafeDateMillis
@@ -88,7 +89,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getMultiPageInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getMultiPageInfo) }
             "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
             "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
-            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getExifThumbnails) }
+            "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getExifThumbnails) }
             "extractVideoEmbeddedPicture" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractVideoEmbeddedPicture) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
             else -> result.notImplemented()
@@ -745,7 +746,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(value?.toString())
     }
 
-    private fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getExifThumbnails(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType")
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
