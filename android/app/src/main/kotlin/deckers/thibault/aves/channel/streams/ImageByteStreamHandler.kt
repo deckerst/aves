@@ -76,7 +76,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
     // - Flutter (as of v1.20): JPEG, PNG, GIF, Animated GIF, WebP, Animated WebP, BMP, and WBMP
     // - Android: https://developer.android.com/guide/topics/media/media-formats#image-formats
     // - Glide: https://github.com/bumptech/glide/blob/master/library/src/main/java/com/bumptech/glide/load/ImageHeaderParser.java
-    private fun streamImage() {
+    private suspend fun streamImage() {
         if (arguments !is Map<*, *>) {
             endOfStream()
             return
@@ -114,7 +114,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
     }
 
-    private fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
+    private suspend fun streamImageByGlide(uri: Uri, pageId: Int?, mimeType: String, rotationDegrees: Int, isFlipped: Boolean) {
         val model: Any = if (isHeic(mimeType) && pageId != null) {
             MultiTrackImage(activity, uri, pageId)
         } else if (mimeType == MimeTypes.TIFF) {
@@ -145,7 +145,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         }
     }
 
-    private fun streamVideoByGlide(uri: Uri) {
+    private suspend fun streamVideoByGlide(uri: Uri) {
         val target = Glide.with(activity)
             .asBitmap()
             .apply(glideOptions)
