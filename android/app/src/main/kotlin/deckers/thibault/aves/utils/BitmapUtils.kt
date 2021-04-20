@@ -29,9 +29,11 @@ object BitmapUtils {
             }
         }
         try {
-            // we compress the bitmap because Flutter cannot decode the raw bytes
+            // the Bitmap raw bytes are not decodable by Flutter
+            // we need to format them (compress, or add a BMP header) before sending them
             // `Bitmap.CompressFormat.PNG` is slower than `JPEG`, but it allows transparency
-            if (canHaveAlpha) {
+            // the BMP format allows an alpha channel, but Android decoding seems to ignore it
+            if (canHaveAlpha && hasAlpha()) {
                 this.compress(Bitmap.CompressFormat.PNG, quality, stream)
             } else {
                 this.compress(Bitmap.CompressFormat.JPEG, quality, stream)
@@ -43,7 +45,7 @@ object BitmapUtils {
                 freeBaos.add(stream)
             }
             return byteArray
-        } catch (e: IllegalStateException) {
+        } catch (e: Exception) {
             Log.e(LOG_TAG, "failed to get bytes from bitmap", e)
         }
         return null

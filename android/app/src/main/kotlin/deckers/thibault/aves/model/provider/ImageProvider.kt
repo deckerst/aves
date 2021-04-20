@@ -20,6 +20,7 @@ import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils
+import deckers.thibault.aves.utils.BmpWriter
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils.copyFileToTemp
@@ -112,6 +113,7 @@ abstract class ImageProvider {
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
         val desiredFileName = desiredNameWithoutExtension + when (exportMimeType) {
+            MimeTypes.BMP -> ".bmp"
             MimeTypes.JPEG -> ".jpg"
             MimeTypes.PNG -> ".png"
             MimeTypes.WEBP -> ".webp"
@@ -157,26 +159,29 @@ abstract class ImageProvider {
             }
             bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
 
-            val quality = 100
-            val format = when (exportMimeType) {
-                MimeTypes.JPEG -> Bitmap.CompressFormat.JPEG
-                MimeTypes.PNG -> Bitmap.CompressFormat.PNG
-                MimeTypes.WEBP -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (quality == 100) {
-                        Bitmap.CompressFormat.WEBP_LOSSLESS
-                    } else {
-                        Bitmap.CompressFormat.WEBP_LOSSY
-                    }
-                } else {
-                    @Suppress("DEPRECATION")
-                    Bitmap.CompressFormat.WEBP
-                }
-                else -> throw Exception("unsupported export MIME type=$exportMimeType")
-            }
-
             @Suppress("BlockingMethodInNonBlockingContext")
             destinationDocFile.openOutputStream().use {
-                bitmap.compress(format, quality, it)
+                if (exportMimeType == MimeTypes.BMP) {
+                    BmpWriter.writeRGB24(bitmap, it)
+                } else {
+                    val quality = 100
+                    val format = when (exportMimeType) {
+                        MimeTypes.JPEG -> Bitmap.CompressFormat.JPEG
+                        MimeTypes.PNG -> Bitmap.CompressFormat.PNG
+                        MimeTypes.WEBP -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            if (quality == 100) {
+                                Bitmap.CompressFormat.WEBP_LOSSLESS
+                            } else {
+                                Bitmap.CompressFormat.WEBP_LOSSY
+                            }
+                        } else {
+                            @Suppress("DEPRECATION")
+                            Bitmap.CompressFormat.WEBP
+                        }
+                        else -> throw Exception("unsupported export MIME type=$exportMimeType")
+                    }
+                    bitmap.compress(format, quality, it)
+                }
             }
         } finally {
             Glide.with(context).clear(target)

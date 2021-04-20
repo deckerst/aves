@@ -6,7 +6,7 @@ object MimeTypes {
     private const val IMAGE = "image"
 
     // generic raster
-    private const val BMP = "image/bmp"
+    const val BMP = "image/bmp"
     private const val DJVU = "image/vnd.djvu"
     const val GIF = "image/gif"
     const val HEIC = "image/heic"
