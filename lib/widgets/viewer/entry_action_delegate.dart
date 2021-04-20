@@ -5,6 +5,7 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
@@ -183,7 +184,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final selectionCount = selection.length;
     showOpReport<ExportOpEvent>(
       context: context,
-      opStream: imageFileService.export(selection, destinationAlbum: destinationAlbum),
+      opStream: imageFileService.export(
+        selection,
+        mimeType: MimeTypes.jpeg,
+        destinationAlbum: destinationAlbum,
+      ),
       itemCount: selectionCount,
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);

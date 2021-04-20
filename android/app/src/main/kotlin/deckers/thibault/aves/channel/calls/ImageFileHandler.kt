@@ -3,7 +3,6 @@ package deckers.thibault.aves.channel.calls
 import android.app.Activity
 import android.graphics.Rect
 import android.net.Uri
-import android.util.Size
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
