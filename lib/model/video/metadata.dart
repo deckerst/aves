@@ -33,8 +33,12 @@ class VideoMetadataFormatter {
 
   static Future<Map> getVideoMetadata(AvesEntry entry) async {
     final player = FijkPlayer();
-    await player.setDataSourceUntilPrepared(entry.uri);
-    final info = await player.getInfo();
+    final info = await player.setDataSourceUntilPrepared(entry.uri).then((v) {
+      return player.getInfo();
+    }).catchError((error) {
+      debugPrint('failed to get video metadata for entry=$entry, error=$error');
+      return {};
+    });
     await player.release();
     return info;
   }
