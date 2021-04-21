@@ -11,8 +11,8 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
+import 'package:aves/widgets/common/video/conductor.dart';
 import 'package:aves/widgets/common/video/controller.dart';
-import 'package:aves/widgets/common/video/fijkplayer.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
@@ -57,7 +57,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   EntryActionDelegate _actionDelegate;
-  final List<Tuple2<String, AvesVideoController>> _videoControllers = [];
   final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
   final ValueNotifier<HeroInfo> _heroInfoNotifier = ValueNotifier(null);
@@ -128,8 +127,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   void dispose() {
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
-    _videoControllers.forEach((kv) => kv.item2.dispose());
-    _videoControllers.clear();
     _multiPageControllers.forEach((kv) => kv.item2.dispose());
     _multiPageControllers.clear();
     _verticalPager.removeListener(_onVerticalPageControllerChange);
@@ -198,7 +195,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 ViewerVerticalPageView(
                   collection: collection,
                   entryNotifier: _entryNotifier,
-                  videoControllers: _videoControllers,
                   multiPageControllers: _multiPageControllers,
                   verticalPager: _verticalPager,
                   horizontalPager: _horizontalPager,
@@ -266,7 +262,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
         Widget extraBottomOverlay;
         if (entry.isVideo) {
-          final videoController = _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+          final videoController = context.read<VideoConductor>().getController(entry);
           if (videoController != null) {
             extraBottomOverlay = VideoControlOverlay(
               entry: entry,
@@ -506,14 +502,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       (_) => _.dispose(),
     );
     if (entry.isVideo) {
-      _initViewSpecificController<AvesVideoController>(
-        uri,
-        _videoControllers,
-        () => IjkPlayerAvesVideoController(entry),
-        (_) => _.dispose(),
-      );
+      final controller = context.read<VideoConductor>().getOrCreateController(entry);
       if (settings.enableVideoAutoPlay) {
-        _playVideo();
+        _playVideo(controller);
       }
     }
     if (entry.isMultipage) {
@@ -528,19 +519,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     setState(() {});
   }
 
-  Future<void> _playVideo() async {
-    await Future.delayed(Duration(milliseconds: 300));
+  Future<void> _playVideo(AvesVideoController videoController) async {
+    // video decoding may fail or have initial artifacts when the player initializes
+    // during this widget initialization (because of the page transition and hero animation?)
+    // so we play after a delay for increased stability
+    await Future.delayed(Duration(milliseconds: 300) * timeDilation);
 
-    final entry = _entryNotifier.value;
-    if (entry == null) return;
+    await videoController.play();
 
-    final videoController = _videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
-    if (videoController != null) {
-      if (videoController.isPlayable) {
-        await videoController.play();
-      } else {
-        await videoController.setDataSource(entry.uri);
-      }
+    // playing controllers are paused when the entry changes,
+    // but the controller may still be preparing (not yet playing) when this happens
+    // so we make sure the current entry is still the same to keep playing
+    if (videoController.entry != _entryNotifier.value) {
+      await videoController.pause();
     }
   }
 
@@ -557,5 +548,5 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     }
   }
 
-  void _pauseVideoControllers() => _videoControllers.forEach((e) => e.item2.pause());
+  void _pauseVideoControllers() => context.read<VideoConductor>().pauseAll();
 }

@@ -15,6 +15,7 @@ import 'package:aves/widgets/common/magnifier/magnifier.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_boundaries.dart';
 import 'package:aves/widgets/common/magnifier/scale/scale_level.dart';
 import 'package:aves/widgets/common/magnifier/scale/state.dart';
+import 'package:aves/widgets/common/video/conductor.dart';
 import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
@@ -27,14 +28,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry;
   final AvesEntry entry;
   final SinglePageInfo page;
   final Size viewportSize;
-  final List<Tuple2<String, AvesVideoController>> videoControllers;
   final VoidCallback onDisposed;
 
   static const decorationCheckSize = 20.0;
@@ -44,7 +43,6 @@ class EntryPageView extends StatefulWidget {
     this.mainEntry,
     this.page,
     this.viewportSize,
-    @required this.videoControllers,
     this.onDisposed,
   })  : entry = mainEntry.getPageEntry(page) ?? mainEntry,
         super(key: key);
@@ -195,7 +193,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   Widget _buildVideoView() {
-    final videoController = widget.videoControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+    final videoController = context.read<VideoConductor>().getController(entry);
     if (videoController == null) return SizedBox();
     return Stack(
       fit: StackFit.expand,
@@ -210,11 +208,11 @@ class _EntryPageViewState extends State<EntryPageView> {
         StreamBuilder<VideoStatus>(
           stream: videoController.statusStream,
           builder: (context, snapshot) {
-            final showCover = videoController.isPlayable;
+            final showCover = !videoController.isReady;
             return IgnorePointer(
-              ignoring: showCover,
+              ignoring: !showCover,
               child: AnimatedOpacity(
-                opacity: showCover ? 0 : 1,
+                opacity: showCover ? 1 : 0,
                 curve: Curves.easeInCirc,
                 duration: Durations.viewerVideoPlayerTransition,
                 child: GestureDetector(

@@ -34,15 +34,12 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   bool _playingOnDragStart = false;
   AnimationController _playPauseAnimation;
   final List<StreamSubscription> _subscriptions = [];
-  double _seekTargetPercent;
 
   AvesEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
 
   AvesVideoController get controller => widget.controller;
-
-  bool get isPlayable => controller.isPlayable;
 
   bool get isPlaying => controller.isPlaying;
 
@@ -193,33 +190,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _onStatusChange(VideoStatus status) {
-    if (status == VideoStatus.playing && _seekTargetPercent != null) {
-      _seekFromTarget();
-    }
-    _updatePlayPauseIcon();
-  }
-
-  Future<void> _togglePlayPause() async {
-    if (isPlaying) {
-      await controller.pause();
-    } else {
-      await _play();
-    }
-  }
-
-  Future<void> _play() async {
-    if (isPlayable) {
-      await controller.play();
-    } else {
-      await controller.setDataSource(entry.uri);
-    }
-
-    // hide overlay
-    await Future.delayed(Durations.iconAnimation);
-    ToggleOverlayNotification().dispatch(context);
-  }
-
-  void _updatePlayPauseIcon() {
     final status = _playPauseAnimation.status;
     if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
       _playPauseAnimation.forward();
@@ -228,28 +198,21 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     }
   }
 
+  Future<void> _togglePlayPause() async {
+    if (isPlaying) {
+      await controller.pause();
+    } else {
+      await controller.play();
+      // hide overlay
+      await Future.delayed(Durations.iconAnimation);
+      ToggleOverlayNotification().dispatch(context);
+    }
+  }
+
   void _seekFromTap(Offset globalPosition) async {
     final keyContext = _progressBarKey.currentContext;
     final RenderBox box = keyContext.findRenderObject();
     final localPosition = box.globalToLocal(globalPosition);
-    _seekTargetPercent = (localPosition.dx / box.size.width);
-
-    if (isPlayable) {
-      await _seekFromTarget();
-    } else {
-      // controller duration is not set yet, so we use the expected duration instead
-      final seekTargetMillis = (entry.durationMillis * _seekTargetPercent).toInt();
-      await controller.setDataSource(entry.uri, startMillis: seekTargetMillis);
-      _seekTargetPercent = null;
-    }
-  }
-
-  Future _seekFromTarget() async {
-    // `seekToProgress` is not safe as it can be called when the `duration` is not set yet
-    // so we make sure the video info is up to date first
-    if (controller.duration != null) {
-      await controller.seekToProgress(_seekTargetPercent);
-      _seekTargetPercent = null;
-    }
+    await controller.seekToProgress(localPosition.dx / box.size.width);
   }
 }
