@@ -14,6 +14,8 @@ object MimeTypes {
     private const val ICO = "image/x-icon"
     const val JPEG = "image/jpeg"
     const val PNG = "image/png"
+    const val PSD_VND = "image/vnd.adobe.photoshop"
+    const val PSD_X = "image/x-photoshop"
     const val TIFF = "image/tiff"
     private const val WBMP = "image/vnd.wap.wbmp"
     const val WEBP = "image/webp"
