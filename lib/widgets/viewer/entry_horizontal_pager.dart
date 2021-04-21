@@ -3,7 +3,6 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
-import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ class MultiEntryScroller extends StatefulWidget {
   final CollectionLens collection;
   final PageController pageController;
   final ValueChanged<int> onPageChanged;
-  final List<Tuple2<String, AvesVideoController>> videoControllers;
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final void Function(String uri) onViewDisposed;
 
@@ -22,7 +20,6 @@ class MultiEntryScroller extends StatefulWidget {
     this.collection,
     this.pageController,
     this.onPageChanged,
-    this.videoControllers,
     this.multiPageControllers,
     this.onViewDisposed,
   });
@@ -87,7 +84,6 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           mainEntry: entry,
           page: page,
           viewportSize: mqSize,
-          videoControllers: widget.videoControllers,
           onDisposed: () => widget.onViewDisposed?.call(entry.uri),
         );
       },
@@ -104,12 +100,10 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 
 class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
-  final List<Tuple2<String, AvesVideoController>> videoControllers;
   final List<Tuple2<String, MultiPageController>> multiPageControllers;
 
   const SingleEntryScroller({
     this.entry,
-    this.videoControllers,
     this.multiPageControllers,
   });
 
@@ -158,7 +152,6 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
           mainEntry: entry,
           page: page,
           viewportSize: mqSize,
-          videoControllers: widget.videoControllers,
         );
       },
     );

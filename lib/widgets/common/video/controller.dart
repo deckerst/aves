@@ -1,12 +1,17 @@
 import 'package:aves/model/entry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 abstract class AvesVideoController {
-  AvesVideoController();
+  AvesEntry _entry;
 
-  void dispose();
+  AvesEntry get entry => _entry;
 
-  Future<void> setDataSource(String uri, {int startMillis = 0});
+  AvesVideoController(AvesEntry entry) {
+    _entry = entry;
+  }
+
+  Future<void> dispose();
 
   Future<void> play();
 
@@ -14,11 +19,7 @@ abstract class AvesVideoController {
 
   Future<void> seekTo(int targetMillis);
 
-  Future<void> seekToProgress(double progress) async {
-    if (duration != null) {
-      await seekTo((duration * progress).toInt());
-    }
-  }
+  Future<void> seekToProgress(double progress) => seekTo((duration * progress).toInt());
 
   Listenable get playCompletedListenable;
 
@@ -26,7 +27,7 @@ abstract class AvesVideoController {
 
   Stream<VideoStatus> get statusStream;
 
-  bool get isPlayable;
+  bool get isReady;
 
   bool get isPlaying => status == VideoStatus.playing;
 
@@ -34,11 +35,11 @@ abstract class AvesVideoController {
 
   int get currentPosition;
 
-  double get progress => duration == null ? 0 : (currentPosition ?? 0).toDouble() / duration;
+  double get progress => (currentPosition ?? 0).toDouble() / duration;
 
   Stream<int> get positionStream;
 
-  Widget buildPlayerWidget(BuildContext context, AvesEntry entry);
+  Widget buildPlayerWidget(BuildContext context);
 }
 
 enum VideoStatus {
