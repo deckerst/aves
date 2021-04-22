@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -11,18 +12,18 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/video/conductor.dart';
-import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
-import 'package:aves/widgets/viewer/overlay/bottom.dart';
+import 'package:aves/widgets/viewer/multipage/conductor.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/common.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/panorama.dart';
+import 'package:aves/widgets/viewer/overlay/bottom/video.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
-import 'package:aves/widgets/viewer/overlay/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
-import 'package:aves/widgets/viewer/overlay/video.dart';
+import 'package:aves/widgets/viewer/video/conductor.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Animation<Offset> _bottomOverlayOffset;
   EdgeInsets _frozenViewInsets, _frozenViewPadding;
   EntryActionDelegate _actionDelegate;
-  final List<Tuple2<String, MultiPageController>> _multiPageControllers = [];
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
   final ValueNotifier<HeroInfo> _heroInfoNotifier = ValueNotifier(null);
 
@@ -127,8 +127,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   void dispose() {
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
-    _multiPageControllers.forEach((kv) => kv.item2.dispose());
-    _multiPageControllers.clear();
     _verticalPager.removeListener(_onVerticalPageControllerChange);
     WidgetsBinding.instance.removeObserver(this);
     _unregisterWidget(widget);
@@ -195,7 +193,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 ViewerVerticalPageView(
                   collection: collection,
                   entryNotifier: _entryNotifier,
-                  multiPageControllers: _multiPageControllers,
                   verticalPager: _verticalPager,
                   horizontalPager: _horizontalPager,
                   onVerticalPageChanged: _onVerticalPageChanged,
@@ -225,8 +222,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
 
-        final multiPageController = _getMultiPageController(entry);
-
         final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
         return ViewerTopOverlay(
           entry: entry,
@@ -236,7 +231,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           viewPadding: _frozenViewPadding,
           onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
           viewStateNotifier: viewStateNotifier,
-          multiPageController: multiPageController,
         );
       },
     );
@@ -258,24 +252,42 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
 
-        final multiPageController = _getMultiPageController(entry);
-
-        Widget extraBottomOverlay;
-        if (entry.isVideo) {
-          final videoController = context.read<VideoConductor>().getController(entry);
-          if (videoController != null) {
-            extraBottomOverlay = VideoControlOverlay(
-              entry: entry,
-              controller: videoController,
+        Widget _buildExtraBottomOverlay(AvesEntry pageEntry) {
+          // a 360 video is both a video and a panorama but only the video controls are displayed
+          if (pageEntry.isVideo) {
+            final videoController = context.read<VideoConductor>().getController(pageEntry);
+            if (videoController != null) {
+              return VideoControlOverlay(
+                entry: pageEntry,
+                controller: videoController,
+                scale: _bottomOverlayScale,
+              );
+            }
+          } else if (pageEntry.is360) {
+            return PanoramaOverlay(
+              entry: pageEntry,
               scale: _bottomOverlayScale,
             );
           }
-        } else if (entry.is360) {
-          extraBottomOverlay = PanoramaOverlay(
-            entry: entry,
-            scale: _bottomOverlayScale,
-          );
+          return null;
         }
+
+        final multiPageController = entry.isMultipage ? context.read<MultiPageConductor>().getController(entry) : null;
+        final extraBottomOverlay = multiPageController != null
+            ? FutureBuilder<MultiPageInfo>(
+                future: multiPageController.info,
+                builder: (context, snapshot) {
+                  final multiPageInfo = snapshot.data;
+                  if (multiPageInfo == null) return SizedBox.shrink();
+                  return ValueListenableBuilder<int>(
+                    valueListenable: multiPageController.pageNotifier,
+                    builder: (context, page, child) {
+                      final pageEntry = entry.getPageEntry(multiPageInfo?.getByIndex(page));
+                      return _buildExtraBottomOverlay(pageEntry) ?? SizedBox();
+                    },
+                  );
+                })
+            : _buildExtraBottomOverlay(entry);
 
         final child = Column(
           children: [
@@ -329,10 +341,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       child: bottomOverlay,
     );
     return bottomOverlay;
-  }
-
-  MultiPageController _getMultiPageController(AvesEntry entry) {
-    return entry.isMultipage ? _multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2 : null;
   }
 
   void _onVerticalPageControllerChange() {
@@ -504,22 +512,41 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     if (entry.isVideo) {
       final controller = context.read<VideoConductor>().getOrCreateController(entry);
       if (settings.enableVideoAutoPlay) {
-        _playVideo(controller);
+        _playVideo(controller, () => entry == _entryNotifier.value);
       }
     }
     if (entry.isMultipage) {
-      _initViewSpecificController<MultiPageController>(
-        uri,
-        _multiPageControllers,
-        () => MultiPageController(entry),
-        (_) => _.dispose(),
-      );
+      final multiPageController = context.read<MultiPageConductor>().getOrCreateController(entry);
+      multiPageController.info.then((info) {
+        final videoPageEntries = info.pages.where((page) => page.isVideo).map(entry.getPageEntry).toSet();
+        if (videoPageEntries.isNotEmpty) {
+          // init video controllers for all pages that could need it
+          final videoConductor = context.read<VideoConductor>();
+          videoPageEntries.forEach(videoConductor.getOrCreateController);
+
+          // auto play/pause when changing page
+          void _onPageChange() {
+            _pauseVideoControllers();
+            if (settings.enableVideoAutoPlay) {
+              final page = multiPageController.page;
+              final pageInfo = info.getByIndex(page);
+              if (pageInfo.isVideo) {
+                final pageVideoController = videoConductor.getController(entry.getPageEntry(pageInfo));
+                _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
+              }
+            }
+          }
+
+          multiPageController.pageNotifier.addListener(_onPageChange);
+          _onPageChange();
+        }
+      });
     }
 
     setState(() {});
   }
 
-  Future<void> _playVideo(AvesVideoController videoController) async {
+  Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent) async {
     // video decoding may fail or have initial artifacts when the player initializes
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
@@ -530,7 +557,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     // playing controllers are paused when the entry changes,
     // but the controller may still be preparing (not yet playing) when this happens
     // so we make sure the current entry is still the same to keep playing
-    if (videoController.entry != _entryNotifier.value) {
+    if (!isCurrent()) {
       await videoController.pause();
     }
   }

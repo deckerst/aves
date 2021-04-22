@@ -8,9 +8,9 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoControlOverlay extends StatefulWidget {

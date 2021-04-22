@@ -3,13 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 abstract class AvesVideoController {
-  AvesEntry _entry;
+  final AvesEntry _entry;
 
   AvesEntry get entry => _entry;
 
-  AvesVideoController(AvesEntry entry) {
-    _entry = entry;
-  }
+  AvesVideoController(AvesEntry entry) : _entry = entry;
 
   Future<void> dispose();
 

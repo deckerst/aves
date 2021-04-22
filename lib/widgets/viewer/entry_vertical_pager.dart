@@ -6,16 +6,13 @@ import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
   final ValueNotifier<AvesEntry> entryNotifier;
-  final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
@@ -24,7 +21,6 @@ class ViewerVerticalPageView extends StatefulWidget {
   const ViewerVerticalPageView({
     @required this.collection,
     @required this.entryNotifier,
-    @required this.multiPageControllers,
     @required this.verticalPager,
     @required this.horizontalPager,
     @required this.onVerticalPageChanged,
@@ -89,12 +85,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               collection: collection,
               pageController: widget.horizontalPager,
               onPageChanged: widget.onHorizontalPageChanged,
-              multiPageControllers: widget.multiPageControllers,
               onViewDisposed: widget.onViewDisposed,
             )
           : SingleEntryScroller(
               entry: entry,
-              multiPageControllers: widget.multiPageControllers,
             ),
       NotificationListener(
         onNotification: (notification) {

@@ -1,3 +1,4 @@
+import 'package:aves/ref/mime_types.dart';
 import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
@@ -79,6 +80,8 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
       durationMillis: map['durationMillis'] as int,
     );
   }
+
+  bool get isVideo => MimeTypes.isVideo(mimeType);
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{index=$index, pageId=$pageId, mimeType=$mimeType, isDefault=$isDefault, width=$width, height=$height, durationMillis=$durationMillis}';

@@ -7,7 +7,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
+import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -23,7 +23,6 @@ class ViewerTopOverlay extends StatelessWidget {
   final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
   final ValueNotifier<ViewState> viewStateNotifier;
-  final MultiPageController multiPageController;
 
   static const double padding = 8;
 
@@ -36,7 +35,6 @@ class ViewerTopOverlay extends StatelessWidget {
     @required this.viewPadding,
     @required this.onActionSelected,
     @required this.viewStateNotifier,
-    @required this.multiPageController,
   }) : super(key: key);
 
   @override
@@ -72,7 +70,7 @@ class ViewerTopOverlay extends StatelessWidget {
                         child: Minimap(
                           mainEntry: entry,
                           viewStateNotifier: viewStateNotifier,
-                          multiPageController: multiPageController,
+                          multiPageController: entry.isMultipage ? context.read<MultiPageConductor>().getController(entry) : null,
                         ),
                       )
                     ],

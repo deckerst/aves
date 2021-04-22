@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
+import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
