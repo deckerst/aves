@@ -5,7 +5,7 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/collection/thumbnail/theme.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
+import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/common/video/controller.dart';
-import 'package:aves/widgets/common/video/fijkplayer.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 
 class VideoConductor {
@@ -31,7 +31,9 @@ class VideoConductor {
     return controller;
   }
 
-  AvesVideoController getController(AvesEntry entry) => _controllers.firstWhere((controller) => controller.entry == entry, orElse: () => null);
+  AvesVideoController getController(AvesEntry entry) {
+    return _controllers.firstWhere((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId, orElse: () => null);
+  }
 
   void pauseAll() => _controllers.forEach((controller) => controller.pause());
 }

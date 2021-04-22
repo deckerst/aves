@@ -7,7 +7,7 @@ import 'package:aves/model/settings/video_loop_mode.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/widgets/common/video/controller.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

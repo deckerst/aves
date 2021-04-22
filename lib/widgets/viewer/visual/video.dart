@@ -1,5 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/common/video/controller.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoView extends StatefulWidget {
