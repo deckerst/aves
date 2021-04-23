@@ -4,21 +4,61 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/widgets/common/identity/highlight_title.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
+import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class XmpNamespace {
   final String namespace;
+  final Map<String, String> rawProps;
 
-  const XmpNamespace(this.namespace);
+  const XmpNamespace(this.namespace, this.rawProps);
+
+  factory XmpNamespace.create(String namespace, Map<String, String> rawProps) {
+    switch (namespace) {
+      case XmpBasicNamespace.ns:
+        return XmpBasicNamespace(rawProps);
+      case XmpExifNamespace.ns:
+        return XmpExifNamespace(rawProps);
+      case XmpGAudioNamespace.ns:
+        return XmpGAudioNamespace(rawProps);
+      case XmpGCameraNamespace.ns:
+        return XmpGCameraNamespace(rawProps);
+      case XmpGDepthNamespace.ns:
+        return XmpGDepthNamespace(rawProps);
+      case XmpGImageNamespace.ns:
+        return XmpGImageNamespace(rawProps);
+      case XmpIptcCoreNamespace.ns:
+        return XmpIptcCoreNamespace(rawProps);
+      case XmpMgwRegionsNamespace.ns:
+        return XmpMgwRegionsNamespace(rawProps);
+      case XmpMMNamespace.ns:
+        return XmpMMNamespace(rawProps);
+      case XmpNoteNamespace.ns:
+        return XmpNoteNamespace(rawProps);
+      case XmpPhotoshopNamespace.ns:
+        return XmpPhotoshopNamespace(rawProps);
+      case XmpTiffNamespace.ns:
+        return XmpTiffNamespace(rawProps);
+      default:
+        return XmpNamespace(namespace, rawProps);
+    }
+  }
 
   String get displayTitle => XMP.namespaces[namespace] ?? namespace;
 
-  List<Widget> buildNamespaceSection({
-    @required List<MapEntry<String, String>> rawProps,
-  }) {
-    final props = rawProps
+  Map<String, String> get buildProps => rawProps;
+
+  List<Widget> buildNamespaceSection() {
+    final props = buildProps
+        .entries
         .map((kv) {
           final prop = XmpProp(kv.key, kv.value);
           return extractData(prop) ? null : prop;

@@ -9,7 +9,7 @@ class XmpIptcCoreNamespace extends XmpNamespace {
 
   final creatorContactInfo = <String, String>{};
 
-  XmpIptcCoreNamespace() : super(ns);
+  XmpIptcCoreNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   String get displayTitle => 'IPTC Core';

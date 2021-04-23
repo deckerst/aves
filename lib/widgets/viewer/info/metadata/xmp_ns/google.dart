@@ -5,7 +5,7 @@ import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
-  XmpGoogleNamespace(String ns) : super(ns);
+  XmpGoogleNamespace(String ns, Map<String, String> rawProps) : super(ns, rawProps);
 
   List<Tuple2<String, String>> get dataProps;
 
@@ -34,7 +34,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
 class XmpGAudioNamespace extends XmpGoogleNamespace {
   static const ns = 'GAudio';
 
-  XmpGAudioNamespace() : super(ns);
+  XmpGAudioNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   List<Tuple2<String, String>> get dataProps => [Tuple2('$ns:Data', '$ns:Mime')];
@@ -46,7 +46,7 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
 class XmpGDepthNamespace extends XmpGoogleNamespace {
   static const ns = 'GDepth';
 
-  XmpGDepthNamespace() : super(ns);
+  XmpGDepthNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   List<Tuple2<String, String>> get dataProps => [
@@ -61,11 +61,43 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
 class XmpGImageNamespace extends XmpGoogleNamespace {
   static const ns = 'GImage';
 
-  XmpGImageNamespace() : super(ns);
+  XmpGImageNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   List<Tuple2<String, String>> get dataProps => [Tuple2('$ns:Data', '$ns:Mime')];
 
   @override
   String get displayTitle => 'Google Image';
+}
+
+class XmpGCameraNamespace extends XmpNamespace {
+  static const ns = 'GCamera';
+  static const videoOffsetKey = 'GCamera:MicroVideoOffset';
+  static const videoDataKey = 'Data';
+
+  bool _isMotionPhoto;
+
+  XmpGCameraNamespace(Map<String, String> rawProps) : super(ns, rawProps) {
+    _isMotionPhoto = rawProps.keys.any((key) => key == videoOffsetKey);
+  }
+
+  @override
+  Map<String, String> get buildProps {
+    return _isMotionPhoto
+        ? Map.fromEntries({
+            MapEntry(videoDataKey, '[skipped]'),
+            ...rawProps.entries,
+          })
+        : rawProps;
+  }
+
+  @override
+  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) {
+    return {
+      videoDataKey: InfoLinkHandler(
+        linkText: (context) => context.l10n.viewerInfoOpenLinkText,
+        onTap: (context) => OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context),
+      ),
+    };
+  }
 }

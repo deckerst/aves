@@ -5,7 +5,7 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 class XmpPhotoshopNamespace extends XmpNamespace {
   static const ns = 'photoshop';
 
-  XmpPhotoshopNamespace() : super(ns);
+  XmpPhotoshopNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   String get displayTitle => 'Photoshop';

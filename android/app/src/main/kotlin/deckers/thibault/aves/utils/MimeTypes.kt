@@ -39,6 +39,7 @@ object MimeTypes {
 
     private const val MP2T = "video/mp2t"
     private const val MP2TS = "video/mp2ts"
+    const val MP4 = "video/mp4"
     private const val WEBM = "video/webm"
 
     fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith(IMAGE)

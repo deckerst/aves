@@ -42,6 +42,12 @@ object XMP {
 
     fun isDataPath(path: String) = knownDataPaths.contains(path)
 
+    // motion photo
+
+    const val GCAMERA_SCHEMA_NS = "http://ns.google.com/photos/1.0/camera/"
+
+    const val GCAMERA_VIDEO_OFFSET_PROP_NAME = "GCamera:MicroVideoOffset"
+
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
 

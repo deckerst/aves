@@ -12,7 +12,7 @@ class XmpMgwRegionsNamespace extends XmpNamespace {
   final dimensions = <String, String>{};
   final regionList = <int, Map<String, String>>{};
 
-  XmpMgwRegionsNamespace() : super(ns);
+  XmpMgwRegionsNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   String get displayTitle => 'Regions';
