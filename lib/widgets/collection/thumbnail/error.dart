@@ -37,7 +37,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.blueGrey;
+    const color = Colors.blueGrey;
     return FutureBuilder<bool>(
         future: _exists,
         builder: (context, snapshot) {
