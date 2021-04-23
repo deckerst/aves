@@ -14,7 +14,7 @@ class XmpBasicNamespace extends XmpNamespace {
 
   final thumbnails = <int, Map<String, String>>{};
 
-  XmpBasicNamespace() : super(ns);
+  XmpBasicNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   String get displayTitle => 'Basic';
@@ -61,7 +61,7 @@ class XmpMMNamespace extends XmpNamespace {
   final ingredients = <int, Map<String, String>>{};
   final pantry = <int, Map<String, String>>{};
 
-  XmpMMNamespace() : super(ns);
+  XmpMMNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   String get displayTitle => 'Media Management';
@@ -114,7 +114,7 @@ class XmpNoteNamespace extends XmpNamespace {
   // `xmpNote:HasExtendedXMP` is structural and should not be displayed to users
   static const hasExtendedXmp = '$ns:HasExtendedXMP';
 
-  XmpNoteNamespace() : super(ns);
+  XmpNoteNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   bool extractData(XmpProp prop) {

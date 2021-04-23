@@ -121,6 +121,9 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
   Future<void> _openEmbeddedData(BuildContext context, OpenEmbeddedDataNotification notification) async {
     Map fields;
     switch (notification.source) {
+      case EmbeddedDataSource.motionPhotoVideo:
+        fields = await metadataService.extractMotionPhotoVideo(entry);
+        break;
       case EmbeddedDataSource.videoCover:
         fields = await metadataService.extractVideoEmbeddedPicture(entry.uri);
         break;

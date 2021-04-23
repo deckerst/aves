@@ -76,6 +76,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 import java.io.File
+import java.io.InputStream
 import java.text.ParseException
 import java.util.*
 import kotlin.math.roundToLong
@@ -90,6 +91,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
             "getPanoramaInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPanoramaInfo) }
             "getContentResolverProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverProp) }
             "getExifThumbnails" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getExifThumbnails) }
+            "extractMotionPhotoVideo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractMotionPhotoVideo) }
             "extractVideoEmbeddedPicture" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractVideoEmbeddedPicture) }
             "extractXmpDataProp" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::extractXmpDataProp) }
             else -> result.notImplemented()
@@ -775,6 +777,41 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.success(thumbnails)
     }
 
+    private fun extractMotionPhotoVideo(call: MethodCall, result: MethodChannel.Result) {
+        val mimeType = call.argument<String>("mimeType")
+        val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
+        val sizeBytes = call.argument<Number>("sizeBytes")?.toLong()
+        if (mimeType == null || uri == null || sizeBytes == null) {
+            result.error("extractMotionPhotoVideo-args", "failed because of missing arguments", null)
+            return
+        }
+
+        try {
+            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                val metadata = ImageMetadataReader.readMetadata(input)
+                for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+                    val xmpMeta = dir.xmpMeta
+                    // offset from end
+                    var offsetFromEnd: Int? = null
+                    xmpMeta.getSafeInt(XMP.GCAMERA_SCHEMA_NS, XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
+                    if (offsetFromEnd != null) {
+                        StorageUtils.openInputStream(context, uri)?.let { original ->
+                            original.skip(sizeBytes - offsetFromEnd!!)
+                            copyEmbeddedBytes(result, MimeTypes.MP4, original)
+                        }
+                        return
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to extract video from motion photo", e)
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to extract video from motion photo", e)
+        }
+
+        result.error("extractMotionPhotoVideo-empty", "failed to extract video from motion photo at uri=$uri", null)
+    }
+
     private fun extractVideoEmbeddedPicture(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
@@ -794,7 +831,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
                     }
                     embedMimeType?.let { mime ->
-                        copyEmbeddedBytes(bytes, mime, result)
+                        copyEmbeddedBytes(result, mime, bytes.inputStream())
                         return
                     }
                 }
@@ -843,7 +880,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
                         }
 
-                        copyEmbeddedBytes(embedBytes, embedMimeType, result)
+                        copyEmbeddedBytes(result, embedMimeType, embedBytes.inputStream())
                         return
                     } catch (e: XMPException) {
                         result.error("extractXmpDataProp-xmp", "failed to read XMP directory for uri=$uri prop=$dataPropPath", e.message)
@@ -859,11 +896,11 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
         result.error("extractXmpDataProp-empty", "failed to extract file from XMP uri=$uri prop=$dataPropPath", null)
     }
 
-    private fun copyEmbeddedBytes(embedBytes: ByteArray, embedMimeType: String, result: MethodChannel.Result) {
+    private fun copyEmbeddedBytes(result: MethodChannel.Result, embedMimeType: String, embedByteStream: InputStream) {
         val embedFile = File.createTempFile("aves", null, context.cacheDir).apply {
             deleteOnExit()
             outputStream().use { outputStream ->
-                embedBytes.inputStream().use { inputStream ->
+                embedByteStream.use { inputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }

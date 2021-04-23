@@ -24,6 +24,8 @@ abstract class MetadataService {
 
   Future<List<Uint8List>> getExifThumbnails(AvesEntry entry);
 
+  Future<Map> extractMotionPhotoVideo(AvesEntry entry);
+
   Future<Map> extractVideoEmbeddedPicture(String uri);
 
   Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType);
@@ -165,6 +167,21 @@ class PlatformMetadataService implements MetadataService {
       debugPrint('getExifThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return [];
+  }
+
+  @override
+  Future<Map> extractMotionPhotoVideo(AvesEntry entry) async {
+    try {
+      final result = await platform.invokeMethod('extractMotionPhotoVideo', <String, dynamic>{
+        'mimeType': entry.mimeType,
+        'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
+      });
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('extractMotionPhotoVideo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return null;
   }
 
   @override

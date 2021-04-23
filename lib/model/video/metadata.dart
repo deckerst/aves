@@ -115,7 +115,9 @@ class VideoMetadataFormatter {
               save('Channel Layout', _formatChannelLayout(value));
               break;
             case Keys.codecName:
-              save('Format', _formatCodecName(value));
+              if (value != 'none') {
+                save('Format', _formatCodecName(value));
+              }
               break;
             case Keys.codecPixelFormat:
               if (streamType == StreamTypes.video) {
@@ -296,6 +298,7 @@ class VideoMetadataFormatter {
 }
 
 class StreamTypes {
+  static const attachment = 'attachment';
   static const audio = 'audio';
   static const metadata = 'metadata';
   static const subtitle = 'subtitle';
