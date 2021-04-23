@@ -1,6 +1,6 @@
 package deckers.thibault.aves.channel.streams
 
-import android.content.Context
+import android.app.Activity
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -18,7 +18,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ImageOpStreamHandler(private val context: Context, private val arguments: Any?) : EventChannel.StreamHandler {
+class ImageOpStreamHandler(private val activity: Activity, private val arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
 
@@ -103,7 +103,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
                     "uri" to uri.toString(),
                 )
                 try {
-                    provider.delete(context, uri, path)
+                    provider.delete(activity, uri, path)
                     result["success"] = true
                 } catch (e: Exception) {
                     Log.w(LOG_TAG, "failed to delete entry with path=$path", e)
@@ -138,7 +138,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.exportMultiple(context, mimeType, destinationDir, entries, object : ImageOpCallback {
+        provider.exportMultiple(activity, mimeType, destinationDir, entries, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("export-failure", "failed to export entries", throwable)
         })
@@ -168,7 +168,7 @@ class ImageOpStreamHandler(private val context: Context, private val arguments: 
 
         destinationDir = StorageUtils.ensureTrailingSeparator(destinationDir)
         val entries = entryMapList.map(::AvesEntry)
-        provider.moveMultiple(context, copy, destinationDir, entries, object : ImageOpCallback {
+        provider.moveMultiple(activity, copy, destinationDir, entries, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = success(fields)
             override fun onFailure(throwable: Throwable) = error("move-failure", "failed to move entries", throwable)
         })

@@ -13,6 +13,7 @@ import androidx.core.graphics.drawable.IconCompat
 import app.loup.streams_channel.StreamsChannel
 import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
+import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.embedding.android.FlutterActivity
@@ -84,21 +85,29 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PermissionManager.VOLUME_ACCESS_REQUEST_CODE) {
-            val treeUri = data?.data
-            if (resultCode != RESULT_OK || treeUri == null) {
-                PermissionManager.onPermissionResult(requestCode, null)
-                return
+        when (requestCode) {
+            VOLUME_ACCESS_REQUEST -> {
+                val treeUri = data?.data
+                if (resultCode != RESULT_OK || treeUri == null) {
+                    PermissionManager.onPermissionResult(requestCode, null)
+                    return
+                }
+
+                // save access permissions across reboots
+                val takeFlags = (data.flags
+                        and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+
+                // resume pending action
+                PermissionManager.onPermissionResult(requestCode, treeUri)
             }
-
-            // save access permissions across reboots
-            val takeFlags = (data.flags
-                    and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-            contentResolver.takePersistableUriPermission(treeUri, takeFlags)
-
-            // resume pending action
-            PermissionManager.onPermissionResult(requestCode, treeUri)
+            DELETE_PERMISSION_REQUEST -> {
+                // delete permission may be requested on Android 10+ only
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
+                }
+            }
         }
     }
 
@@ -174,5 +183,7 @@ class MainActivity : FlutterActivity() {
     companion object {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
+        const val VOLUME_ACCESS_REQUEST = 1
+        const val DELETE_PERMISSION_REQUEST = 2
     }
 }

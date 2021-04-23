@@ -1,5 +1,6 @@
 package deckers.thibault.aves.model.provider
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
@@ -40,11 +41,11 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException())
     }
 
-    open suspend fun delete(context: Context, uri: Uri, path: String?) {
+    open suspend fun delete(activity: Activity, uri: Uri, path: String?) {
         throw UnsupportedOperationException()
     }
 
-    open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException())
     }
 
