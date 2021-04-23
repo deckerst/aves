@@ -1,6 +1,8 @@
 package deckers.thibault.aves.model.provider
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.RecoverableSecurityException
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -8,6 +10,7 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import com.commonsware.cwac.document.DocumentFileCompat
+import deckers.thibault.aves.MainActivity.Companion.DELETE_PERMISSION_REQUEST
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.SourceEntry
@@ -22,6 +25,7 @@ import deckers.thibault.aves.utils.StorageUtils.requireAccessPermission
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import java.io.File
 import java.util.*
+import java.util.concurrent.CompletableFuture
 import kotlin.collections.ArrayList
 
 class MediaStoreImageProvider : ImageProvider() {
@@ -205,31 +209,55 @@ class MediaStoreImageProvider : ImageProvider() {
     private fun needSize(mimeType: String) = MimeTypes.SVG != mimeType
 
     // `uri` is a media URI, not a document URI
-    override suspend fun delete(context: Context, uri: Uri, path: String?) {
+    override suspend fun delete(activity: Activity, uri: Uri, path: String?) {
         path ?: throw Exception("failed to delete file because path is null")
 
-        if (File(path).exists() && requireAccessPermission(context, path)) {
+        if (File(path).exists() && requireAccessPermission(activity, path)) {
             // if the file is on SD card, calling the content resolver `delete()` removes the entry from the Media Store
             // but it doesn't delete the file, even if the app has the permission
-            val df = getDocumentFile(context, path, uri)
+            val df = getDocumentFile(activity, path, uri)
 
             @Suppress("BlockingMethodInNonBlockingContext")
             if (df != null && df.delete()) return
             throw Exception("failed to delete file with df=$df")
         }
 
-        if (context.contentResolver.delete(uri, null, null) > 0) return
+        try {
+            if (activity.contentResolver.delete(uri, null, null) > 0) return
+        } catch (securityException: SecurityException) {
+            // even if the app has access permission granted on the containing directory,
+            // the delete request may yield a `RecoverableSecurityException` on Android 10+
+            // when the underlying file no longer exists and this is an orphaned entry in the Media Store
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val rse = securityException as? RecoverableSecurityException ?: throw securityException
+                val intentSender = rse.userAction.actionIntent.intentSender
+
+                // request user permission for this item
+                pendingDeleteCompleter = CompletableFuture<Boolean>()
+                activity.startIntentSenderForResult(intentSender, DELETE_PERMISSION_REQUEST, null, 0, 0, 0, null)
+                val granted = pendingDeleteCompleter!!.join()
+
+                pendingDeleteCompleter = null
+                if (granted) {
+                    delete(activity, uri, path)
+                } else {
+                    throw Exception("failed to get delete permission")
+                }
+            } else {
+                throw securityException
+            }
+        }
         throw Exception("failed to delete row from content provider")
     }
 
     override suspend fun moveMultiple(
-        context: Context,
+        activity: Activity,
         copy: Boolean,
         destinationDir: String,
         entries: List<AvesEntry>,
         callback: ImageOpCallback,
     ) {
-        val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
+        val destinationDirDocFile = createDirectoryIfAbsent(activity, destinationDir)
         if (destinationDirDocFile == null) {
             callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
             return
@@ -262,7 +290,7 @@ class MediaStoreImageProvider : ImageProvider() {
                 // - the Media Store only allows inserting in specific primary directories ("DCIM", "Pictures") when using scoped storage
                 try {
                     val newFields = moveSingleByTreeDocAndScan(
-                        context, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy,
+                        activity, sourcePath, sourceUri, destinationDir, destinationDirDocFile, mimeType, copy,
                     )
                     result["newFields"] = newFields
                     result["success"] = true
@@ -275,7 +303,7 @@ class MediaStoreImageProvider : ImageProvider() {
     }
 
     private suspend fun moveSingleByTreeDocAndScan(
-        context: Context,
+        activity: Activity,
         sourcePath: String,
         sourceUri: Uri,
         destinationDir: String,
@@ -303,12 +331,12 @@ class MediaStoreImageProvider : ImageProvider() {
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
         @Suppress("BlockingMethodInNonBlockingContext")
         val destinationTreeFile = destinationDirDocFile.createFile(mimeType, desiredNameWithoutExtension)
-        val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+        val destinationDocFile = DocumentFileCompat.fromSingleUri(activity, destinationTreeFile.uri)
 
         // `DocumentsContract.moveDocument()` needs `sourceParentDocumentUri`, which could be different for each entry
         // `DocumentsContract.copyDocument()` yields "Unsupported call: android:copyDocument"
         // when used with entry URI as `sourceDocumentUri`, and destinationDirDocFile URI as `targetParentDocumentUri`
-        val source = DocumentFileCompat.fromSingleUri(context, sourceUri)
+        val source = DocumentFileCompat.fromSingleUri(activity, sourceUri)
         @Suppress("BlockingMethodInNonBlockingContext")
         source.copyTo(destinationDocFile)
 
@@ -322,14 +350,14 @@ class MediaStoreImageProvider : ImageProvider() {
         if (!copy) {
             // delete original entry
             try {
-                delete(context, sourceUri, sourcePath)
+                delete(activity, sourceUri, sourcePath)
                 deletedSource = true
             } catch (e: Exception) {
                 Log.w(LOG_TAG, "failed to delete entry with path=$sourcePath", e)
             }
         }
 
-        return scanNewPath(context, destinationFullPath, mimeType).apply {
+        return scanNewPath(activity, destinationFullPath, mimeType).apply {
             put("deletedSource", deletedSource)
         }
     }
@@ -366,6 +394,8 @@ class MediaStoreImageProvider : ImageProvider() {
                 MediaStore.MediaColumns.ORIENTATION,
             ) else emptyArray()
         )
+
+        var pendingDeleteCompleter: CompletableFuture<Boolean>? = null
     }
 }
 

@@ -45,7 +45,7 @@ class _ErrorViewState extends State<ErrorView> {
               if (snapshot.connectionState != ConnectionState.done) return SizedBox();
               final exists = snapshot.data;
               return EmptyContent(
-                icon: AIcons.error,
+                icon: exists ? AIcons.error : AIcons.broken,
                 text: exists ? context.l10n.viewerErrorUnknown : context.l10n.viewerErrorDoesNotExist,
                 alignment: Alignment.center,
               );

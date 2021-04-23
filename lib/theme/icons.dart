@@ -8,6 +8,7 @@ class AIcons {
   static const IconData vector = Icons.code_outlined;
 
   static const IconData android = Icons.android;
+  static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
   static const IconData date = Icons.calendar_today_outlined;
   static const IconData disc = Icons.fiber_manual_record;
