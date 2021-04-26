@@ -117,6 +117,20 @@ object XMP {
         }
     }
 
+    fun XMPMeta.getSafeLong(schema: String, propName: String, save: (value: Long) -> Unit) {
+        try {
+            if (doesPropertyExist(schema, propName)) {
+                val item = getPropertyLong(schema, propName)
+                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                if (item != null) {
+                    save(item)
+                }
+            }
+        } catch (e: XMPException) {
+            Log.w(LOG_TAG, "failed to get long for XMP schema=$schema, propName=$propName", e)
+        }
+    }
+
     fun XMPMeta.getSafeString(schema: String, propName: String, save: (value: String) -> Unit) {
         try {
             if (doesPropertyExist(schema, propName)) {

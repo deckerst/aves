@@ -141,6 +141,9 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     } else {
       Navigator.pop(context);
     }
+
+    // needed to refresh when entry changes but the page does not (e.g. on page deletion)
+    setState(() {});
   }
 
   // when the entry image itself changed (e.g. after rotation)

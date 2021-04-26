@@ -178,7 +178,7 @@ class _BottomOverlayContent extends AnimatedWidget {
               infoColumn = _buildInfoColumn(orientation);
             }
 
-            if (mainEntry.isMultipage && multiPageController != null) {
+            if (mainEntry.isMultiPage && multiPageController != null) {
               infoColumn = Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -23,7 +23,7 @@ class VideoIcon extends StatelessWidget {
     final thumbnailTheme = context.watch<ThumbnailThemeData>();
     final showDuration = thumbnailTheme.showVideoDuration;
     Widget child = OverlayIcon(
-      icon: entry.is360 ? AIcons.threesixty : AIcons.play,
+      icon: entry.is360 ? AIcons.threeSixty : AIcons.play,
       size: thumbnailTheme.iconSize,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
@@ -72,7 +72,7 @@ class SphericalImageIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: AIcons.threesixty,
+      icon: AIcons.threeSixty,
       size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
     );
   }
@@ -102,13 +102,18 @@ class RawIcon extends StatelessWidget {
   }
 }
 
-class MultipageIcon extends StatelessWidget {
-  const MultipageIcon({Key key}) : super(key: key);
+class MultiPageIcon extends StatelessWidget {
+  final AvesEntry entry;
+
+  const MultiPageIcon({
+    Key key,
+    this.entry,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return OverlayIcon(
-      icon: AIcons.multipage,
+      icon: entry.isMotionPhoto ? AIcons.motionPhoto : AIcons.multiPage,
       size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
       iconScale: .8,
     );

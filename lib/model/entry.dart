@@ -106,14 +106,14 @@ class AvesEntry {
     final pageId = eraseDefaultPageId && pageInfo.isDefault ? null : pageInfo.pageId;
 
     return AvesEntry(
-      uri: uri,
+      uri: pageInfo.uri ?? uri,
       path: path,
       contentId: contentId,
       pageId: pageId,
       sourceMimeType: pageInfo.mimeType ?? sourceMimeType,
       width: pageInfo.width ?? width,
       height: pageInfo.height ?? height,
-      sourceRotationDegrees: sourceRotationDegrees,
+      sourceRotationDegrees: pageInfo.rotationDegrees ?? sourceRotationDegrees,
       sizeBytes: sizeBytes,
       sourceTitle: sourceTitle,
       dateModifiedSecs: dateModifiedSecs,
@@ -122,7 +122,8 @@ class AvesEntry {
     )
       ..catalogMetadata = _catalogMetadata?.copyWith(
         mimeType: pageInfo.mimeType,
-        isMultipage: false,
+        isMultiPage: false,
+        rotationDegrees: pageInfo.rotationDegrees,
       )
       ..addressDetails = _addressDetails?.copyWith();
   }
@@ -251,7 +252,9 @@ class AvesEntry {
 
   bool get is360 => _catalogMetadata?.is360 ?? false;
 
-  bool get isMultipage => _catalogMetadata?.isMultipage ?? false;
+  bool get isMultiPage => _catalogMetadata?.isMultiPage ?? false;
+
+  bool get isMotionPhoto => isMultiPage && mimeType == MimeTypes.jpeg;
 
   bool get canEdit => path != null;
 

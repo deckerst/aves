@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/multipage.dart';
@@ -21,14 +19,6 @@ abstract class MetadataService {
   Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry);
 
   Future<String> getContentResolverProp(AvesEntry entry, String prop);
-
-  Future<List<Uint8List>> getExifThumbnails(AvesEntry entry);
-
-  Future<Map> extractMotionPhotoVideo(AvesEntry entry);
-
-  Future<Map> extractVideoEmbeddedPicture(String uri);
-
-  Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType);
 }
 
 class PlatformMetadataService implements MetadataService {
@@ -113,9 +103,16 @@ class PlatformMetadataService implements MetadataService {
       final result = await platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
+        'sizeBytes': entry.sizeBytes,
       });
       final pageMaps = (result as List).cast<Map>();
-      return MultiPageInfo.fromPageMaps(entry.uri, pageMaps);
+      if (entry.isMotionPhoto && pageMaps.isNotEmpty) {
+        final imagePage = pageMaps[0];
+        imagePage['width'] = entry.width;
+        imagePage['height'] = entry.height;
+        imagePage['rotationDegrees'] = entry.rotationDegrees;
+      }
+      return MultiPageInfo.fromPageMaps(entry, pageMaps);
     } on PlatformException catch (e) {
       debugPrint('getMultiPageInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -150,66 +147,6 @@ class PlatformMetadataService implements MetadataService {
       });
     } on PlatformException catch (e) {
       debugPrint('getContentResolverProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return null;
-  }
-
-  @override
-  Future<List<Uint8List>> getExifThumbnails(AvesEntry entry) async {
-    try {
-      final result = await platform.invokeMethod('getExifThumbnails', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      });
-      return (result as List).cast<Uint8List>();
-    } on PlatformException catch (e) {
-      debugPrint('getExifThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return [];
-  }
-
-  @override
-  Future<Map> extractMotionPhotoVideo(AvesEntry entry) async {
-    try {
-      final result = await platform.invokeMethod('extractMotionPhotoVideo', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-      });
-      return result;
-    } on PlatformException catch (e) {
-      debugPrint('extractMotionPhotoVideo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return null;
-  }
-
-  @override
-  Future<Map> extractVideoEmbeddedPicture(String uri) async {
-    try {
-      final result = await platform.invokeMethod('extractVideoEmbeddedPicture', <String, dynamic>{
-        'uri': uri,
-      });
-      return result;
-    } on PlatformException catch (e) {
-      debugPrint('extractVideoEmbeddedPicture failed with code=${e.code}, exception=${e.message}, details=${e.details}');
-    }
-    return null;
-  }
-
-  @override
-  Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType) async {
-    try {
-      final result = await platform.invokeMethod('extractXmpDataProp', <String, dynamic>{
-        'mimeType': entry.mimeType,
-        'uri': entry.uri,
-        'sizeBytes': entry.sizeBytes,
-        'propPath': propPath,
-        'propMimeType': propMimeType,
-      });
-      return result;
-    } on PlatformException catch (e) {
-      debugPrint('extractXmpDataProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return null;
   }

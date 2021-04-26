@@ -6,10 +6,12 @@ import 'package:provider/provider.dart';
 
 class ThumbnailTheme extends StatelessWidget {
   final double extent;
+  final bool showLocation;
   final Widget child;
 
   const ThumbnailTheme({
     @required this.extent,
+    this.showLocation,
     @required this.child,
   });
 
@@ -22,7 +24,7 @@ class ThumbnailTheme extends StatelessWidget {
         return ThumbnailThemeData(
           iconSize: iconSize,
           fontSize: fontSize,
-          showLocation: settings.showThumbnailLocation,
+          showLocation: showLocation ?? settings.showThumbnailLocation,
           showRaw: settings.showThumbnailRaw,
           showVideoDuration: settings.showThumbnailVideoDuration,
         );

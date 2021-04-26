@@ -44,7 +44,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           final entry = entries[index];
 
           Widget child;
-          if (entry.isMultipage) {
+          if (entry.isMultiPage) {
             final multiPageController = context.read<MultiPageConductor>().getController(entry);
             if (multiPageController != null) {
               child = FutureBuilder<MultiPageInfo>(
@@ -110,7 +110,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     super.build(context);
 
     Widget child;
-    if (entry.isMultipage) {
+    if (entry.isMultiPage) {
       final multiPageController = context.read<MultiPageConductor>().getController(entry);
       if (multiPageController != null) {
         child = FutureBuilder<MultiPageInfo>(

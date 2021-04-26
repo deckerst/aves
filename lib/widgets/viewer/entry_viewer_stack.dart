@@ -107,7 +107,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       collection: collection,
       showInfo: () => _goToVerticalPage(infoPage),
     );
-    _initViewStateControllers();
+    _initEntryControllers();
     _registerWidget(widget);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
@@ -255,14 +255,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         Widget _buildExtraBottomOverlay(AvesEntry pageEntry) {
           // a 360 video is both a video and a panorama but only the video controls are displayed
           if (pageEntry.isVideo) {
-            final videoController = context.read<VideoConductor>().getController(pageEntry);
-            if (videoController != null) {
-              return VideoControlOverlay(
+            return Selector<VideoConductor, AvesVideoController>(
+              selector: (context, vc) => vc.getController(pageEntry),
+              builder: (context, videoController, child) => VideoControlOverlay(
                 entry: pageEntry,
                 controller: videoController,
                 scale: _bottomOverlayScale,
-              );
-            }
+              ),
+            );
           } else if (pageEntry.is360) {
             return PanoramaOverlay(
               entry: pageEntry,
@@ -272,7 +272,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           return null;
         }
 
-        final multiPageController = entry.isMultipage ? context.read<MultiPageConductor>().getController(entry) : null;
+        final multiPageController = entry.isMultiPage ? context.read<MultiPageConductor>().getController(entry) : null;
         final extraBottomOverlay = multiPageController != null
             ? FutureBuilder<MultiPageInfo>(
                 future: multiPageController.info,
@@ -409,7 +409,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     }
   }
 
-  void _updateEntry() {
+  Future<void> _updateEntry() async {
     if (_currentHorizontalPage != null && entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
       // as of Flutter v1.22.2, `PageView` does not call `onPageChanged` when the last page is deleted
       // so we manually track the page change, and let the entry update follow
@@ -420,8 +420,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     final newEntry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (_entryNotifier.value == newEntry) return;
     _entryNotifier.value = newEntry;
-    _pauseVideoControllers();
-    _initViewStateControllers();
+    await _pauseVideoControllers();
+    await _initEntryControllers();
   }
 
   void _popVisual() {
@@ -498,52 +498,75 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   // state controllers/monitors
 
-  void _initViewStateControllers() {
+  Future<void> _initEntryControllers() async {
     final entry = _entryNotifier.value;
     if (entry == null) return;
 
-    final uri = entry.uri;
-    _initViewSpecificController<ValueNotifier<ViewState>>(
-      uri,
-      _viewStateNotifiers,
-      () => ValueNotifier<ViewState>(ViewState.zero),
-      (_) => _.dispose(),
-    );
+    _initViewStateController(entry);
     if (entry.isVideo) {
-      final controller = context.read<VideoConductor>().getOrCreateController(entry);
-      if (settings.enableVideoAutoPlay) {
-        _playVideo(controller, () => entry == _entryNotifier.value);
-      }
+      await _initVideoController(entry);
     }
-    if (entry.isMultipage) {
-      final multiPageController = context.read<MultiPageConductor>().getOrCreateController(entry);
-      multiPageController.info.then((info) {
-        final videoPageEntries = info.pages.where((page) => page.isVideo).map(entry.getPageEntry).toSet();
-        if (videoPageEntries.isNotEmpty) {
-          // init video controllers for all pages that could need it
-          final videoConductor = context.read<VideoConductor>();
-          videoPageEntries.forEach(videoConductor.getOrCreateController);
-
-          // auto play/pause when changing page
-          void _onPageChange() {
-            _pauseVideoControllers();
-            if (settings.enableVideoAutoPlay) {
-              final page = multiPageController.page;
-              final pageInfo = info.getByIndex(page);
-              if (pageInfo.isVideo) {
-                final pageVideoController = videoConductor.getController(entry.getPageEntry(pageInfo));
-                _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
-              }
-            }
-          }
-
-          multiPageController.pageNotifier.addListener(_onPageChange);
-          _onPageChange();
-        }
-      });
+    if (entry.isMultiPage) {
+      await _initMultiPageController(entry);
     }
+  }
 
+  void _initViewStateController(AvesEntry entry) {
+    final uri = entry.uri;
+    var controller = _viewStateNotifiers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
+    if (controller != null) {
+      _viewStateNotifiers.remove(controller);
+    } else {
+      controller = Tuple2(uri, ValueNotifier<ViewState>(ViewState.zero));
+    }
+    _viewStateNotifiers.insert(0, controller);
+    while (_viewStateNotifiers.length > 3) {
+      _viewStateNotifiers.removeLast().item2.dispose();
+    }
+  }
+
+  Future<void> _initVideoController(AvesEntry entry) async {
+    final controller = context.read<VideoConductor>().getOrCreateController(entry);
     setState(() {});
+
+    if (settings.enableVideoAutoPlay) {
+      await _playVideo(controller, () => entry == _entryNotifier.value);
+    }
+  }
+
+  Future<void> _initMultiPageController(AvesEntry entry) async {
+    final multiPageController = context.read<MultiPageConductor>().getOrCreateController(entry);
+    setState(() {});
+
+    final multiPageInfo = await multiPageController.info;
+    if (entry.isMotionPhoto) {
+      await multiPageInfo.extractMotionPhotoVideo();
+    }
+
+    final pages = multiPageInfo.pages;
+    final videoPageEntries = pages.where((page) => page.isVideo).map(entry.getPageEntry).toSet();
+    if (videoPageEntries.isNotEmpty) {
+      // init video controllers for all pages that could need it
+      final videoConductor = context.read<VideoConductor>();
+      videoPageEntries.forEach(videoConductor.getOrCreateController);
+
+      // auto play/pause when changing page
+      Future<void> _onPageChange() async {
+        await _pauseVideoControllers();
+        if (settings.enableVideoAutoPlay) {
+          final page = multiPageController.page;
+          final pageInfo = multiPageInfo.getByIndex(page);
+          if (pageInfo.isVideo) {
+            final pageEntry = entry.getPageEntry(pageInfo);
+            final pageVideoController = videoConductor.getController(pageEntry);
+            await _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
+          }
+        }
+      }
+
+      multiPageController.pageNotifier.addListener(_onPageChange);
+      await _onPageChange();
+    }
   }
 
   Future<void> _playVideo(AvesVideoController videoController, bool Function() isCurrent) async {
@@ -562,18 +585,5 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     }
   }
 
-  void _initViewSpecificController<T>(String uri, List<Tuple2<String, T>> controllers, T Function() builder, void Function(T controller) disposer) {
-    var controller = controllers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
-    if (controller != null) {
-      controllers.remove(controller);
-    } else {
-      controller = Tuple2(uri, builder());
-    }
-    controllers.insert(0, controller);
-    while (controllers.length > 3) {
-      disposer?.call(controllers.removeLast().item2);
-    }
-  }
-
-  void _pauseVideoControllers() => context.read<VideoConductor>().pauseAll();
+  Future<void> _pauseVideoControllers() => context.read<VideoConductor>().pauseAll();
 }

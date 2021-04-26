@@ -28,7 +28,7 @@ class _MetadataThumbnailsState extends State<MetadataThumbnails> {
   @override
   void initState() {
     super.initState();
-    _loader = metadataService.getExifThumbnails(entry);
+    _loader = embeddedDataService.getExifThumbnails(entry);
   }
 
   @override

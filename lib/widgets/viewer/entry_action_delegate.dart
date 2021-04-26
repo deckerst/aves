@@ -169,8 +169,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
 
     final selection = <AvesEntry>{};
-    if (entry.isMultipage) {
+    if (entry.isMultiPage) {
       final multiPageInfo = await metadataService.getMultiPageInfo(entry);
+      if (entry.isMotionPhoto) {
+        await multiPageInfo.extractMotionPhotoVideo();
+      }
       if (multiPageInfo.pageCount > 1) {
         for (final page in multiPageInfo.pages) {
           final pageEntry = entry.getPageEntry(page, eraseDefaultPageId: false);

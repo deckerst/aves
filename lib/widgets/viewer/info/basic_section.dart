@@ -79,6 +79,7 @@ class BasicSection extends StatelessWidget {
       MimeFilter(entry.mimeType),
       if (entry.isAnimated) TypeFilter.animated,
       if (entry.isGeotiff) TypeFilter.geotiff,
+      if (entry.isMotionPhoto) TypeFilter.motionPhoto,
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,

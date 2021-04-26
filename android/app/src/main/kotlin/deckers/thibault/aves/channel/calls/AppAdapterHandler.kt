@@ -255,8 +255,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         return when (uri.scheme?.toLowerCase(Locale.ROOT)) {
             ContentResolver.SCHEME_FILE -> {
                 uri.path?.let { path ->
-                    val applicationId = context.applicationContext.packageName
-                    FileProvider.getUriForFile(context, "$applicationId.fileprovider", File(path))
+                    val authority = "${context.applicationContext.packageName}.fileprovider"
+                    FileProvider.getUriForFile(context, authority, File(path))
                 }
             }
             else -> uri
