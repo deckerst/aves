@@ -158,7 +158,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         return MetadataDirectory(directoryName, parent, _toSortedTags(rawTags));
       }).toList();
 
-      if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultipage)) {
+      if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultiPage)) {
         directories.addAll(await _getStreamDirectories());
       }
 

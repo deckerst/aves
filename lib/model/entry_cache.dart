@@ -12,7 +12,7 @@ class EntryCache {
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
-    // TODO TLAD provide pageId parameter for multipage items, if someday image editing features are added for them
+    // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
     int pageId;
 
     // evict fullscreen image

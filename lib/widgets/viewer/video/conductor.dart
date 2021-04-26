@@ -35,5 +35,5 @@ class VideoConductor {
     return _controllers.firstWhere((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId, orElse: () => null);
   }
 
-  void pauseAll() => _controllers.forEach((controller) => controller.pause());
+  Future<void> pauseAll() => Future.forEach(_controllers, (controller) => controller.pause());
 }

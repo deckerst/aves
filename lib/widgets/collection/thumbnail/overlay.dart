@@ -34,7 +34,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
         AnimatedImageIcon()
       else ...[
         if (entry.isRaw && context.select<ThumbnailThemeData, bool>((t) => t.showRaw)) RawIcon(),
-        if (entry.isMultipage) MultipageIcon(),
+        if (entry.isMultiPage) MultiPageIcon(entry: entry),
         if (entry.isGeotiff) GeotiffIcon(),
         if (entry.is360) SphericalImageIcon(),
       ]

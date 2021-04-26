@@ -34,6 +34,7 @@ class CollectionSearchDelegate {
     MimeFilter.image,
     MimeFilter.video,
     TypeFilter.animated,
+    TypeFilter.motionPhoto,
     TypeFilter.panorama,
     TypeFilter.sphericalVideo,
     TypeFilter.geotiff,

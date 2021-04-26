@@ -99,6 +99,8 @@
   "@filterTagEmptyLabel": {},
   "filterTypeAnimatedLabel": "Animated",
   "@filterTypeAnimatedLabel": {},
+  "filterTypeMotionPhotoLabel": "Motion Photo",
+  "@filterTypeMotionPhotoLabel": {},
   "filterTypePanoramaLabel": "Panorama",
   "@filterTypePanoramaLabel": {},
   "filterTypeSphericalVideoLabel": "360° Video",

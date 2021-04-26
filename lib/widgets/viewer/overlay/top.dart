@@ -70,7 +70,7 @@ class ViewerTopOverlay extends StatelessWidget {
                         child: Minimap(
                           mainEntry: entry,
                           viewStateNotifier: viewStateNotifier,
-                          multiPageController: entry.isMultipage ? context.read<MultiPageConductor>().getController(entry) : null,
+                          multiPageController: entry.isMultiPage ? context.read<MultiPageConductor>().getController(entry) : null,
                         ),
                       )
                     ],

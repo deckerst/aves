@@ -47,7 +47,7 @@ class EntryPrinter with FeedbackMixin {
       ));
     }
 
-    if (entry.isMultipage) {
+    if (entry.isMultiPage && !entry.isMotionPhoto) {
       final multiPageInfo = await metadataService.getMultiPageInfo(entry);
       if (multiPageInfo.pageCount > 1) {
         final streamController = StreamController<AvesEntry>.broadcast();

@@ -41,7 +41,11 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   AvesVideoController get controller => widget.controller;
 
-  bool get isPlaying => controller.isPlaying;
+  Stream<VideoStatus> get statusStream => controller?.statusStream ?? Stream.value(VideoStatus.idle);
+
+  Stream<int> get positionStream => controller?.positionStream ?? Stream.value(0);
+
+  bool get isPlaying => controller?.isPlaying ?? false;
 
   @override
   void initState() {
@@ -68,8 +72,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _registerWidget(VideoControlOverlay widget) {
-    _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
-    _onStatusChange(widget.controller.status);
+    if (widget.controller != null) {
+      _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
+      _onStatusChange(widget.controller.status);
+    }
   }
 
   void _unregisterWidget(VideoControlOverlay widget) {
@@ -81,10 +87,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
-        stream: controller.statusStream,
+        stream: statusStream,
         builder: (context, snapshot) {
           // do not use stream snapshot because it is obsolete when switching between videos
-          final status = controller.status;
+          final status = controller?.status ?? VideoStatus.idle;
           return TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
@@ -157,10 +163,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                 Row(
                   children: [
                     StreamBuilder<int>(
-                        stream: controller.positionStream,
+                        stream: positionStream,
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
-                          final position = controller.currentPosition?.floor() ?? 0;
+                          final position = controller?.currentPosition?.floor() ?? 0;
                           return Text(formatFriendlyDuration(Duration(milliseconds: position)));
                         }),
                     Spacer(),
@@ -170,10 +176,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: StreamBuilder<int>(
-                      stream: controller.positionStream,
+                      stream: positionStream,
                       builder: (context, snapshot) {
                         // do not use stream snapshot because it is obsolete when switching between videos
-                        var progress = controller.progress;
+                        var progress = controller?.progress ?? 0.0;
                         if (!progress.isFinite) progress = 0.0;
                         return LinearProgressIndicator(
                           value: progress,
@@ -199,6 +205,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   Future<void> _togglePlayPause() async {
+    if (controller == null) return;
     if (isPlaying) {
       await controller.pause();
     } else {
@@ -210,6 +217,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _seekFromTap(Offset globalPosition) async {
+    if (controller == null) return;
     final keyContext = _progressBarKey.currentContext;
     final RenderBox box = keyContext.findRenderObject();
     final localPosition = box.globalToLocal(globalPosition);

@@ -19,7 +19,7 @@ class MultiPageOverlay extends StatefulWidget {
     @required this.mainEntry,
     @required this.controller,
     @required this.availableWidth,
-  })  : assert(mainEntry.isMultipage),
+  })  : assert(mainEntry.isMultiPage),
         assert(controller != null),
         super(key: key);
 
@@ -83,12 +83,13 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
 
     return ThumbnailTheme(
       extent: extent,
+      showLocation: false,
       child: FutureBuilder<MultiPageInfo>(
         future: controller.info,
         builder: (context, snapshot) {
           final multiPageInfo = snapshot.data;
           if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox();
-          if (multiPageInfo.uri != mainEntry.uri) return SizedBox();
+          if (multiPageInfo.mainEntry != mainEntry) return SizedBox();
           return SizedBox(
             height: extent,
             child: ListView.separated(
