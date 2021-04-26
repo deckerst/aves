@@ -60,7 +60,7 @@ class Durations {
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
-  static const contentChangeDebounceDelay = Duration(milliseconds: 500);
+  static const contentChangeDebounceDelay = Duration(milliseconds: 1000);
 
   // app life
   static const lastVersionCheckInterval = Duration(days: 7);
