@@ -114,6 +114,7 @@ object Metadata {
     private fun getSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): Uri {
         return when (mimeType) {
             // formats known to yield OOM for large files
+            MimeTypes.MP4,
             MimeTypes.PSD_VND,
             MimeTypes.PSD_X,
             MimeTypes.TIFF -> {
