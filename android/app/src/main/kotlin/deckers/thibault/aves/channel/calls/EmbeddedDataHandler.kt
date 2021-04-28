@@ -90,19 +90,13 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
             return
         }
 
-        try {
-            MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
-                val videoStartOffset = sizeBytes - videoSizeBytes
-                StorageUtils.openInputStream(context, uri)?.let { input ->
-                    input.skip(videoStartOffset)
-                    copyEmbeddedBytes(result, MimeTypes.MP4, displayName, input)
-                }
-                return
+        MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.let { videoSizeBytes ->
+            val videoStartOffset = sizeBytes - videoSizeBytes
+            StorageUtils.openInputStream(context, uri)?.let { input ->
+                input.skip(videoStartOffset)
+                copyEmbeddedBytes(result, MimeTypes.MP4, displayName, input)
             }
-        } catch (e: Exception) {
-            Log.w(LOG_TAG, "failed to extract video from motion photo", e)
-        } catch (e: NoClassDefFoundError) {
-            Log.w(LOG_TAG, "failed to extract video from motion photo", e)
+            return
         }
 
         result.error("extractMotionPhotoVideo-empty", "failed to extract video from motion photo at uri=$uri", null)
@@ -198,9 +192,9 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         val extension = extensionFor(mimeType)
         val file = File.createTempFile("aves", extension, context.cacheDir).apply {
             deleteOnExit()
-            outputStream().use { outputStream ->
-                embeddedByteStream.use { inputStream ->
-                    inputStream.copyTo(outputStream)
+            outputStream().use { output ->
+                embeddedByteStream.use { input ->
+                    input.copyTo(output)
                 }
             }
         }

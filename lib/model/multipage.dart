@@ -5,20 +5,21 @@ import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
   final AvesEntry mainEntry;
-  final List<SinglePageInfo> pages;
+  final List<SinglePageInfo> _pages;
+  final Map<SinglePageInfo, AvesEntry> _pageEntries = {};
 
-  int get pageCount => pages.length;
+  int get pageCount => _pages.length;
 
   MultiPageInfo({
     @required this.mainEntry,
-    this.pages,
-  }) {
-    if (pages.isNotEmpty) {
-      pages.sort();
+    List<SinglePageInfo> pages,
+  }) : _pages = pages {
+    if (_pages.isNotEmpty) {
+      _pages.sort();
       // make sure there is a page marked as default
       if (defaultPage == null) {
-        final firstPage = pages.removeAt(0);
-        pages.insert(0, firstPage.copyWith(isDefault: true));
+        final firstPage = _pages.removeAt(0);
+        _pages.insert(0, firstPage.copyWith(isDefault: true));
       }
     }
   }
@@ -30,31 +31,78 @@ class MultiPageInfo {
     );
   }
 
-  SinglePageInfo get defaultPage => pages.firstWhere((page) => page.isDefault, orElse: () => null);
+  SinglePageInfo get defaultPage => _pages.firstWhere((page) => page.isDefault, orElse: () => null);
 
-  SinglePageInfo getByIndex(int index) => pages.firstWhere((page) => page.index == index, orElse: () => null);
+  SinglePageInfo getById(int pageId) => _pages.firstWhere((page) => page.pageId == pageId, orElse: () => null);
 
-  SinglePageInfo getById(int pageId) => pages.firstWhere((page) => page.pageId == pageId, orElse: () => null);
+  SinglePageInfo getByIndex(int pageIndex) => _pages.firstWhere((page) => page.index == pageIndex, orElse: () => null);
+
+  AvesEntry getPageEntryByIndex(int pageIndex) => _getPageEntry(getByIndex(pageIndex));
+
+  AvesEntry _getPageEntry(SinglePageInfo pageInfo) {
+    if (pageInfo != null) {
+      return _pageEntries.putIfAbsent(pageInfo, () => _createPageEntry(pageInfo));
+    } else {
+      return mainEntry;
+    }
+  }
+
+  Set<AvesEntry> get videoPageEntries => _pages.where((page) => page.isVideo).map(_getPageEntry).toSet();
+
+  List<AvesEntry> get exportEntries => _pages.map((pageInfo) => _createPageEntry(pageInfo, eraseDefaultPageId: false)).toList();
 
   Future<void> extractMotionPhotoVideo() async {
-    final videoPage = pages.firstWhere((page) => page.isVideo, orElse: () => null);
+    final videoPage = _pages.firstWhere((page) => page.isVideo, orElse: () => null);
     if (videoPage != null && videoPage.uri == null) {
       final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
-      final extractedUri = fields != null ? fields['uri'] as String : null;
-      if (extractedUri != null) {
-        final pageIndex = pages.indexOf(videoPage);
-        pages.removeAt(pageIndex);
-        pages.insert(
+      if (fields != null) {
+        final pageIndex = _pages.indexOf(videoPage);
+        _pages.removeAt(pageIndex);
+        _pages.insert(
             pageIndex,
             videoPage.copyWith(
-              uri: extractedUri,
+              uri: fields['uri'] as String,
+              // the initial fake page may contain inaccurate values for the following fields
+              // so we override them with values from the extracted standalone video
+              rotationDegrees: fields['sourceRotationDegrees'] as int,
+              durationMillis: fields['durationMillis'] as int,
             ));
+        _pageEntries.remove(videoPage);
       }
     }
   }
 
+  AvesEntry _createPageEntry(SinglePageInfo pageInfo, {bool eraseDefaultPageId = true}) {
+    // do not provide the page ID for the default page,
+    // so that we can treat this page like the main entry
+    // and retrieve cached images for it
+    final pageId = eraseDefaultPageId && pageInfo.isDefault ? null : pageInfo.pageId;
+
+    return AvesEntry(
+      uri: pageInfo.uri ?? mainEntry.uri,
+      path: mainEntry.path,
+      contentId: mainEntry.contentId,
+      pageId: pageId,
+      sourceMimeType: pageInfo.mimeType ?? mainEntry.sourceMimeType,
+      width: pageInfo.width ?? mainEntry.width,
+      height: pageInfo.height ?? mainEntry.height,
+      sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
+      sizeBytes: mainEntry.sizeBytes,
+      sourceTitle: mainEntry.sourceTitle,
+      dateModifiedSecs: mainEntry.dateModifiedSecs,
+      sourceDateTakenMillis: mainEntry.sourceDateTakenMillis,
+      durationMillis: pageInfo.durationMillis ?? mainEntry.durationMillis,
+    )
+      ..catalogMetadata = mainEntry.catalogMetadata?.copyWith(
+        mimeType: pageInfo.mimeType,
+        isMultiPage: false,
+        rotationDegrees: pageInfo.rotationDegrees,
+      )
+      ..addressDetails = mainEntry.addressDetails?.copyWith();
+  }
+
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{mainEntry=$mainEntry, pages=$pages}';
+  String toString() => '$runtimeType#${shortHash(this)}{mainEntry=$mainEntry, pages=$_pages}';
 }
 
 class SinglePageInfo implements Comparable<SinglePageInfo> {
@@ -78,6 +126,8 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
   SinglePageInfo copyWith({
     bool isDefault,
     String uri,
+    int rotationDegrees,
+    int durationMillis,
   }) {
     return SinglePageInfo(
       index: index,
@@ -87,8 +137,8 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
       mimeType: mimeType,
       width: width,
       height: height,
-      rotationDegrees: rotationDegrees,
-      durationMillis: durationMillis,
+      rotationDegrees: rotationDegrees ?? this.rotationDegrees,
+      durationMillis: durationMillis ?? this.durationMillis,
     );
   }
 

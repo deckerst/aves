@@ -49,15 +49,16 @@ class EntryPrinter with FeedbackMixin {
 
     if (entry.isMultiPage && !entry.isMotionPhoto) {
       final multiPageInfo = await metadataService.getMultiPageInfo(entry);
-      if (multiPageInfo.pageCount > 1) {
+      final pageCount = multiPageInfo.pageCount;
+      if (pageCount > 1) {
         final streamController = StreamController<AvesEntry>.broadcast();
         showOpReport<AvesEntry>(
           context: context,
           opStream: streamController.stream,
-          itemCount: multiPageInfo.pageCount,
+          itemCount: pageCount,
         );
-        for (final page in multiPageInfo.pages) {
-          final pageEntry = entry.getPageEntry(page);
+        for (var page = 0; page < pageCount; page++) {
+          final pageEntry = multiPageInfo.getPageEntryByIndex(page);
           _addPdfPage(await _buildPageImage(pageEntry));
           streamController.sink.add(pageEntry);
         }

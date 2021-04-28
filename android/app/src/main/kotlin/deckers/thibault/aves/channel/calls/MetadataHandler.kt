@@ -47,6 +47,7 @@ import deckers.thibault.aves.metadata.XMP.getSafeDateMillis
 import deckers.thibault.aves.metadata.XMP.getSafeInt
 import deckers.thibault.aves.metadata.XMP.getSafeLocalizedText
 import deckers.thibault.aves.metadata.XMP.getSafeString
+import deckers.thibault.aves.metadata.XMP.isMotionPhoto
 import deckers.thibault.aves.metadata.XMP.isPanorama
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.LogUtils
@@ -371,7 +372,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                             }
 
                             // identification of motion photo
-                            if (xmpMeta.doesPropertyExist(XMP.GCAMERA_SCHEMA_NS, XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME)) {
+                            if (xmpMeta.isMotionPhoto()) {
                                 flags = flags or MASK_IS_MULTIPAGE
                             }
                         } catch (e: XMPException) {

@@ -103,6 +103,7 @@ class PlatformImageFileService implements ImageFileService {
       'rotationDegrees': entry.rotationDegrees,
       'isFlipped': entry.isFlipped,
       'dateModifiedSecs': entry.dateModifiedSecs,
+      'sizeBytes': entry.sizeBytes,
     };
   }
 

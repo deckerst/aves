@@ -6,25 +6,34 @@ import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class MultiPageController extends ChangeNotifier {
+class MultiPageController {
   final AvesEntry entry;
-  Future<MultiPageInfo> info;
   final ValueNotifier<int> pageNotifier = ValueNotifier(null);
 
-  MultiPageController(this.entry) {
-    info = metadataService.getMultiPageInfo(entry).then((value) {
-      pageNotifier.value = value.defaultPage.index;
-      return value;
-    });
-  }
+  MultiPageInfo _info;
+
+  final StreamController<MultiPageInfo> _infoStreamController = StreamController.broadcast();
+
+  Stream<MultiPageInfo> get infoStream => _infoStreamController.stream;
+
+  MultiPageInfo get info => _info;
 
   int get page => pageNotifier.value;
 
   set page(int page) => pageNotifier.value = page;
 
-  @override
+  MultiPageController(this.entry) {
+    metadataService.getMultiPageInfo(entry).then((value) {
+      pageNotifier.value = value.defaultPage.index;
+      _info = value;
+      _infoStreamController.add(_info);
+    });
+  }
+
   void dispose() {
     pageNotifier.dispose();
-    super.dispose();
   }
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{entry=$entry, page=$page, info=$info}';
 }

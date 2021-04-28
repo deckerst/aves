@@ -47,14 +47,14 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           if (entry.isMultiPage) {
             final multiPageController = context.read<MultiPageConductor>().getController(entry);
             if (multiPageController != null) {
-              child = FutureBuilder<MultiPageInfo>(
-                future: multiPageController.info,
+              child = StreamBuilder<MultiPageInfo>(
+                stream: multiPageController.infoStream,
                 builder: (context, snapshot) {
-                  final multiPageInfo = snapshot.data;
+                  final multiPageInfo = multiPageController.info;
                   return ValueListenableBuilder<int>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
-                      return _buildViewer(entry, page: multiPageInfo?.getByIndex(page));
+                      return _buildViewer(entry, pageEntry: multiPageInfo?.getPageEntryByIndex(page));
                     },
                   );
                 },
@@ -72,16 +72,16 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  Widget _buildViewer(AvesEntry entry, {SinglePageInfo page}) {
+  Widget _buildViewer(AvesEntry mainEntry, {AvesEntry pageEntry}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
           key: Key('imageview'),
-          mainEntry: entry,
-          page: page,
+          mainEntry: mainEntry,
+          pageEntry: pageEntry ?? mainEntry,
           viewportSize: mqSize,
-          onDisposed: () => widget.onViewDisposed?.call(entry.uri),
+          onDisposed: () => widget.onViewDisposed?.call(mainEntry.uri),
         );
       },
     );
@@ -103,24 +103,24 @@ class SingleEntryScroller extends StatefulWidget {
 }
 
 class _SingleEntryScrollerState extends State<SingleEntryScroller> with AutomaticKeepAliveClientMixin {
-  AvesEntry get entry => widget.entry;
+  AvesEntry get mainEntry => widget.entry;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     Widget child;
-    if (entry.isMultiPage) {
-      final multiPageController = context.read<MultiPageConductor>().getController(entry);
+    if (mainEntry.isMultiPage) {
+      final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
-        child = FutureBuilder<MultiPageInfo>(
-          future: multiPageController.info,
+        child = StreamBuilder<MultiPageInfo>(
+          stream: multiPageController.infoStream,
           builder: (context, snapshot) {
-            final multiPageInfo = snapshot.data;
+            final multiPageInfo = multiPageController.info;
             return ValueListenableBuilder<int>(
               valueListenable: multiPageController.pageNotifier,
               builder: (context, page, child) {
-                return _buildViewer(page: multiPageInfo?.getByIndex(page));
+                return _buildViewer(pageEntry: multiPageInfo?.getPageEntryByIndex(page));
               },
             );
           },
@@ -135,13 +135,13 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  Widget _buildViewer({SinglePageInfo page}) {
+  Widget _buildViewer({AvesEntry pageEntry}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
-          mainEntry: entry,
-          page: page,
+          mainEntry: mainEntry,
+          pageEntry: pageEntry ?? mainEntry,
           viewportSize: mqSize,
         );
       },

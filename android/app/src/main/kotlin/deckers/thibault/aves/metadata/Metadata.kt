@@ -129,11 +129,11 @@ object Metadata {
                     if (previewFile == null) {
                         previewFile = File.createTempFile("aves", null, context.cacheDir).apply {
                             deleteOnExit()
-                            outputStream().use { outputStream ->
-                                StorageUtils.openInputStream(context, uri)?.use { inputStream ->
+                            outputStream().use { output ->
+                                StorageUtils.openInputStream(context, uri)?.use { input ->
                                     val b = ByteArray(previewSize)
-                                    inputStream.read(b, 0, previewSize)
-                                    outputStream.write(b)
+                                    input.read(b, 0, previewSize)
+                                    output.write(b)
                                 }
                             }
                         }

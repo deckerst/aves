@@ -114,8 +114,8 @@ class RegionFetcher internal constructor(
             val bitmap = target.get()
             val tempFile = File.createTempFile("aves", null, context.cacheDir).apply {
                 deleteOnExit()
-                outputStream().use { outputStream ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                outputStream().use { output ->
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
                 }
             }
             return Uri.fromFile(tempFile)

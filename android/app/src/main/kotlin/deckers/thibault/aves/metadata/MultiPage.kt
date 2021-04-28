@@ -135,13 +135,19 @@ object MultiPage {
     }
 
     fun getMotionPhotoOffset(context: Context, uri: Uri, mimeType: String, sizeBytes: Long): Long? {
-        Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
-            val metadata = ImageMetadataReader.readMetadata(input)
-            for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
-                var offsetFromEnd: Long? = null
-                dir.xmpMeta.getSafeLong(XMP.GCAMERA_SCHEMA_NS, XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
-                return offsetFromEnd
+        try {
+            Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                val metadata = ImageMetadataReader.readMetadata(input)
+                for (dir in metadata.getDirectoriesOfType(XmpDirectory::class.java)) {
+                    var offsetFromEnd: Long? = null
+                    dir.xmpMeta.getSafeLong(XMP.GCAMERA_SCHEMA_NS, XMP.GCAMERA_VIDEO_OFFSET_PROP_NAME) { offsetFromEnd = it }
+                    return offsetFromEnd
+                }
             }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
+        } catch (e: NoClassDefFoundError) {
+            Log.w(LOG_TAG, "failed to get motion photo offset from uri=$uri", e)
         }
         return null
     }

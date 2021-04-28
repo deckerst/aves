@@ -1,6 +1,7 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -17,7 +18,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class ViewerTopOverlay extends StatelessWidget {
-  final AvesEntry entry;
+  final AvesEntry mainEntry;
   final Animation<double> scale;
   final EdgeInsets viewInsets, viewPadding;
   final Function(EntryAction value) onActionSelected;
@@ -28,7 +29,7 @@ class ViewerTopOverlay extends StatelessWidget {
 
   const ViewerTopOverlay({
     Key key,
-    @required this.entry,
+    @required this.mainEntry,
     @required this.scale,
     @required this.canToggleFavourite,
     @required this.viewInsets,
@@ -47,78 +48,103 @@ class ViewerTopOverlay extends StatelessWidget {
           selector: (c, mq) => mq.size.width - mq.padding.horizontal,
           builder: (c, mqWidth, child) {
             final availableCount = (mqWidth / (OverlayButton.getSize(context) + padding)).floor() - 2;
-            final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount).toList();
-            final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
-            final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
-            final buttonRow = _TopOverlayRow(
-              quickActions: quickActions,
-              inAppActions: inAppActions,
-              externalAppActions: externalAppActions,
-              scale: scale,
-              entry: entry,
-              onActionSelected: onActionSelected,
-            );
 
-            return settings.showOverlayMinimap && viewStateNotifier != null
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      buttonRow,
-                      SizedBox(height: 8),
-                      FadeTransition(
-                        opacity: scale,
-                        child: Minimap(
-                          mainEntry: entry,
-                          viewStateNotifier: viewStateNotifier,
-                          multiPageController: entry.isMultiPage ? context.read<MultiPageConductor>().getController(entry) : null,
-                        ),
-                      )
-                    ],
-                  )
-                : buttonRow;
+            Widget child;
+            if (mainEntry.isMultiPage) {
+              final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
+              if (multiPageController != null) {
+                child = StreamBuilder<MultiPageInfo>(
+                  stream: multiPageController.infoStream,
+                  builder: (context, snapshot) {
+                    final multiPageInfo = multiPageController.info;
+                    return ValueListenableBuilder<int>(
+                      valueListenable: multiPageController.pageNotifier,
+                      builder: (context, page, child) {
+                        return _buildOverlay(availableCount, mainEntry, pageEntry: multiPageInfo?.getPageEntryByIndex(page));
+                      },
+                    );
+                  },
+                );
+              }
+            }
+
+            return child ??= _buildOverlay(availableCount, mainEntry);
           },
         ),
       ),
     );
   }
 
-  bool _canDo(EntryAction action) {
-    switch (action) {
-      case EntryAction.toggleFavourite:
-        return canToggleFavourite;
-      case EntryAction.delete:
-      case EntryAction.rename:
-        return entry.canEdit;
-      case EntryAction.rotateCCW:
-      case EntryAction.rotateCW:
-      case EntryAction.flip:
-        return entry.canRotateAndFlip;
-      case EntryAction.export:
-      case EntryAction.print:
-        return !entry.isVideo;
-      case EntryAction.openMap:
-        return entry.hasGps;
-      case EntryAction.viewSource:
-        return entry.isSvg;
-      case EntryAction.share:
-      case EntryAction.info:
-      case EntryAction.open:
-      case EntryAction.edit:
-      case EntryAction.setAs:
-        return true;
-      case EntryAction.debug:
-        return kDebugMode;
+  Widget _buildOverlay(int availableCount, AvesEntry mainEntry, {AvesEntry pageEntry}) {
+    pageEntry ??= mainEntry;
+
+    bool _canDo(EntryAction action) {
+      final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
+      switch (action) {
+        case EntryAction.toggleFavourite:
+          return canToggleFavourite;
+        case EntryAction.delete:
+        case EntryAction.rename:
+          return targetEntry.canEdit;
+        case EntryAction.rotateCCW:
+        case EntryAction.rotateCW:
+        case EntryAction.flip:
+          return targetEntry.canRotateAndFlip;
+        case EntryAction.export:
+        case EntryAction.print:
+          return !targetEntry.isVideo;
+        case EntryAction.openMap:
+          return targetEntry.hasGps;
+        case EntryAction.viewSource:
+          return targetEntry.isSvg;
+        case EntryAction.share:
+        case EntryAction.info:
+        case EntryAction.open:
+        case EntryAction.edit:
+        case EntryAction.setAs:
+          return true;
+        case EntryAction.debug:
+          return kDebugMode;
+      }
+      return false;
     }
-    return false;
+
+    final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount).toList();
+    final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
+    final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
+    final buttonRow = _TopOverlayRow(
+      quickActions: quickActions,
+      inAppActions: inAppActions,
+      externalAppActions: externalAppActions,
+      scale: scale,
+      mainEntry: mainEntry,
+      pageEntry: pageEntry,
+      onActionSelected: onActionSelected,
+    );
+
+    return settings.showOverlayMinimap && viewStateNotifier != null
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buttonRow,
+              SizedBox(height: 8),
+              FadeTransition(
+                opacity: scale,
+                child: Minimap(
+                  entry: pageEntry,
+                  viewStateNotifier: viewStateNotifier,
+                ),
+              )
+            ],
+          )
+        : buttonRow;
   }
 }
 
 class _TopOverlayRow extends StatelessWidget {
-  final List<EntryAction> quickActions;
-  final List<EntryAction> inAppActions;
-  final List<EntryAction> externalAppActions;
+  final List<EntryAction> quickActions, inAppActions, externalAppActions;
   final Animation<double> scale;
-  final AvesEntry entry;
+  final AvesEntry mainEntry, pageEntry;
   final Function(EntryAction value) onActionSelected;
 
   const _TopOverlayRow({
@@ -127,7 +153,8 @@ class _TopOverlayRow extends StatelessWidget {
     @required this.inAppActions,
     @required this.externalAppActions,
     @required this.scale,
-    @required this.entry,
+    @required this.mainEntry,
+    @required this.pageEntry,
     @required this.onActionSelected,
   }) : super(key: key);
 
@@ -149,7 +176,7 @@ class _TopOverlayRow extends StatelessWidget {
             key: Key('entry-menu-button'),
             itemBuilder: (context) => [
               ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
-              if (entry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
+              if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
               PopupMenuDivider(),
               ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
               if (kDebugMode) ...[
@@ -173,7 +200,7 @@ class _TopOverlayRow extends StatelessWidget {
     switch (action) {
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(
-          entry: entry,
+          entry: mainEntry,
           onPressed: onPressed,
         );
         break;
@@ -217,7 +244,7 @@ class _TopOverlayRow extends StatelessWidget {
       // in app actions
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(
-          entry: entry,
+          entry: mainEntry,
           isMenuItem: true,
         );
         break;

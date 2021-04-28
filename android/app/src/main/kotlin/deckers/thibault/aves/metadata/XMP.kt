@@ -77,6 +77,19 @@ object XMP {
 
     // extensions
 
+    fun XMPMeta.isMotionPhoto(): Boolean {
+        try {
+            return doesPropertyExist(GCAMERA_SCHEMA_NS, GCAMERA_VIDEO_OFFSET_PROP_NAME)
+        } catch (e: XMPException) {
+            if (e.errorCode != XMPError.BADSCHEMA) {
+                // `BADSCHEMA` code is reported when we check a property
+                // from a non standard namespace, and that namespace is not declared in the XMP
+                Log.w(LOG_TAG, "failed to check Google motion photo props from XMP", e)
+            }
+        }
+        return false
+    }
+
     fun XMPMeta.isPanorama(): Boolean {
         // Google
         try {

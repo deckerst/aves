@@ -102,7 +102,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
                 Widget _buildContent({MultiPageInfo multiPageInfo, int page}) => _BottomOverlayContent(
                       mainEntry: _lastEntry,
-                      page: multiPageInfo?.getByIndex(page),
+                      pageEntry: multiPageInfo?.getPageEntryByIndex(page) ?? _lastEntry,
                       details: _lastDetails,
                       position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
                       availableWidth: availableWidth,
@@ -111,10 +111,10 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
                 if (multiPageController == null) return _buildContent();
 
-                return FutureBuilder<MultiPageInfo>(
-                  future: multiPageController.info,
+                return StreamBuilder<MultiPageInfo>(
+                  stream: multiPageController.infoStream,
                   builder: (context, snapshot) {
-                    final multiPageInfo = snapshot.data;
+                    final multiPageInfo = multiPageController.info;
                     return ValueListenableBuilder<int>(
                       valueListenable: multiPageController.pageNotifier,
                       builder: (context, page, child) {
@@ -138,8 +138,7 @@ const double _interRowPadding = 2.0;
 const double _subRowMinWidth = 300.0;
 
 class _BottomOverlayContent extends AnimatedWidget {
-  final AvesEntry mainEntry, entry;
-  final SinglePageInfo page;
+  final AvesEntry mainEntry, pageEntry;
   final OverlayMetadata details;
   final String position;
   final double availableWidth;
@@ -150,13 +149,18 @@ class _BottomOverlayContent extends AnimatedWidget {
   _BottomOverlayContent({
     Key key,
     this.mainEntry,
-    this.page,
+    this.pageEntry,
     this.details,
     this.position,
     this.availableWidth,
     this.multiPageController,
-  })  : entry = mainEntry.getPageEntry(page),
-        super(key: key, listenable: mainEntry.metadataChangeNotifier);
+  }) : super(
+          key: key,
+          listenable: Listenable.merge([
+            mainEntry.metadataChangeNotifier,
+            pageEntry.metadataChangeNotifier,
+          ]),
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +188,6 @@ class _BottomOverlayContent extends AnimatedWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   MultiPageOverlay(
-                    mainEntry: mainEntry,
                     controller: multiPageController,
                     availableWidth: availableWidth,
                   ),
@@ -204,7 +207,7 @@ class _BottomOverlayContent extends AnimatedWidget {
     final infoMaxWidth = availableWidth - infoPadding.horizontal;
     final twoColumns = orientation == Orientation.landscape && infoMaxWidth / 2 > _subRowMinWidth;
     final subRowWidth = twoColumns ? min(_subRowMinWidth, infoMaxWidth / 2) : infoMaxWidth;
-    final positionTitle = _PositionTitleRow(entry: entry, collectionPosition: position, multiPageController: multiPageController);
+    final positionTitle = _PositionTitleRow(entry: pageEntry, collectionPosition: position, multiPageController: multiPageController);
     final hasShootingDetails = details != null && !details.isEmpty && settings.showOverlayShootingDetails;
 
     return Padding(
@@ -223,7 +226,7 @@ class _BottomOverlayContent extends AnimatedWidget {
                   Container(
                       width: subRowWidth,
                       child: _DateRow(
-                        entry: entry,
+                        entry: pageEntry,
                         multiPageController: multiPageController,
                       )),
                   _buildDuoShootingRow(subRowWidth, hasShootingDetails),
@@ -235,7 +238,7 @@ class _BottomOverlayContent extends AnimatedWidget {
               padding: EdgeInsets.only(top: _interRowPadding),
               width: subRowWidth,
               child: _DateRow(
-                entry: entry,
+                entry: pageEntry,
                 multiPageController: multiPageController,
               ),
             ),
@@ -251,10 +254,10 @@ class _BottomOverlayContent extends AnimatedWidget {
         switchInCurve: Curves.easeInOutCubic,
         switchOutCurve: Curves.easeInOutCubic,
         transitionBuilder: _soloTransition,
-        child: entry.hasGps
+        child: pageEntry.hasGps
             ? Container(
                 padding: EdgeInsets.only(top: _interRowPadding),
-                child: _LocationRow(entry: entry),
+                child: _LocationRow(entry: pageEntry),
               )
             : SizedBox.shrink(),
       );
@@ -354,10 +357,10 @@ class _PositionTitleRow extends StatelessWidget {
 
     if (multiPageController == null) return toText();
 
-    return FutureBuilder<MultiPageInfo>(
-      future: multiPageController.info,
+    return StreamBuilder<MultiPageInfo>(
+      stream: multiPageController.infoStream,
       builder: (context, snapshot) {
-        final multiPageInfo = snapshot.data;
+        final multiPageInfo = multiPageController.info;
         String pagePosition;
         if (multiPageInfo != null) {
           // page count may be 0 when we know an entry to have multiple pages

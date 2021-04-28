@@ -17,20 +17,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
+import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.BmpWriter
-import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.*
 import deckers.thibault.aves.utils.MimeTypes.extensionFor
 import deckers.thibault.aves.utils.MimeTypes.isImage
 import deckers.thibault.aves.utils.MimeTypes.isVideo
-import deckers.thibault.aves.utils.StorageUtils.copyFileToTemp
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.UriUtils.tryParseId
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -233,7 +231,7 @@ abstract class ImageProvider {
         }
     }
 
-    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, op: ExifOrientationOp, callback: ImageOpCallback) {
+    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, sizeBytes: Long, op: ExifOrientationOp, callback: ImageOpCallback) {
         if (!canEditExif(mimeType)) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
             return
@@ -245,16 +243,44 @@ abstract class ImageProvider {
             return
         }
 
-        // copy original file to a temporary file for editing
-        val editablePath = copyFileToTemp(originalDocumentFile, path)
-        if (editablePath == null) {
-            callback.onFailure(Exception("failed to create a temporary file for path=$path"))
-            return
+        val videoSizeBytes = MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.toInt()
+        var videoBytes: ByteArray? = null
+        val editableFile = File.createTempFile("aves", null).apply {
+            deleteOnExit()
+            try {
+                outputStream().use { output ->
+                    if (videoSizeBytes != null) {
+                        // handle motion photo and embedded video separately
+                        val imageSizeBytes = (sizeBytes - videoSizeBytes).toInt()
+                        videoBytes = ByteArray(videoSizeBytes)
+
+                        StorageUtils.openInputStream(context, uri)?.let { input ->
+                            val imageBytes = ByteArray(imageSizeBytes)
+                            input.read(imageBytes, 0, imageSizeBytes)
+                            input.read(videoBytes, 0, videoSizeBytes)
+
+                            // copy only the image to a temporary file for editing
+                            // video will be appended after EXIF modification
+                            ByteArrayInputStream(imageBytes).use { imageInput ->
+                                imageInput.copyTo(output)
+                            }
+                        }
+                    } else {
+                        // copy original file to a temporary file for editing
+                        originalDocumentFile.openInputStream().use { imageInput ->
+                            imageInput.copyTo(output)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                callback.onFailure(e)
+                return
+            }
         }
 
         val newFields = HashMap<String, Any?>()
         try {
-            val exif = ExifInterface(editablePath)
+            val exif = ExifInterface(editableFile)
             // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
             // in that case we explicitly set it to `normal` first
             // because ExifInterface fails to rotate an image with undefined orientation
@@ -270,8 +296,12 @@ abstract class ImageProvider {
             }
             exif.saveAttributes()
 
+            if (videoBytes != null) {
+                // append motion photo video, if any
+                editableFile.appendBytes(videoBytes!!)
+            }
             // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(File(editablePath)).copyTo(originalDocumentFile)
+            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
 
             newFields["rotationDegrees"] = exif.rotationDegrees
             newFields["isFlipped"] = exif.isFlipped
@@ -300,7 +330,7 @@ abstract class ImageProvider {
     // as of androidx.exifinterface:exifinterface:1.3.0
     private fun canEditExif(mimeType: String): Boolean {
         return when (mimeType) {
-            "image/jpeg", "image/png", "image/webp" -> true
+            MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP -> true
             else -> false
         }
     }

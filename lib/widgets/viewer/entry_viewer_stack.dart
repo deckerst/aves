@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/multipage.dart';
@@ -219,17 +220,30 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Widget _buildTopOverlay() {
     final child = ValueListenableBuilder<AvesEntry>(
       valueListenable: _entryNotifier,
-      builder: (context, entry, child) {
-        if (entry == null) return SizedBox.shrink();
+      builder: (context, mainEntry, child) {
+        if (mainEntry == null) return SizedBox.shrink();
 
-        final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
+        final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == mainEntry.uri, orElse: () => null)?.item2;
         return ViewerTopOverlay(
-          entry: entry,
+          mainEntry: mainEntry,
           scale: _topOverlayScale,
           canToggleFavourite: hasCollection,
           viewInsets: _frozenViewInsets,
           viewPadding: _frozenViewPadding,
-          onActionSelected: (action) => _actionDelegate.onActionSelected(context, entry, action),
+          onActionSelected: (action) {
+            var targetEntry = mainEntry;
+            if (mainEntry.isMultiPage && EntryActions.pageActions.contains(action)) {
+              final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
+              if (multiPageController != null) {
+                final multiPageInfo = multiPageController.info;
+                final pageEntry = multiPageInfo?.getPageEntryByIndex(multiPageController.page);
+                if (pageEntry != null) {
+                  targetEntry = pageEntry;
+                }
+              }
+            }
+            _actionDelegate.onActionSelected(context, targetEntry, action);
+          },
           viewStateNotifier: viewStateNotifier,
         );
       },
@@ -274,15 +288,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
         final multiPageController = entry.isMultiPage ? context.read<MultiPageConductor>().getController(entry) : null;
         final extraBottomOverlay = multiPageController != null
-            ? FutureBuilder<MultiPageInfo>(
-                future: multiPageController.info,
+            ? StreamBuilder<MultiPageInfo>(
+                stream: multiPageController.infoStream,
                 builder: (context, snapshot) {
-                  final multiPageInfo = snapshot.data;
+                  final multiPageInfo = multiPageController.info;
                   if (multiPageInfo == null) return SizedBox.shrink();
                   return ValueListenableBuilder<int>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
-                      final pageEntry = entry.getPageEntry(multiPageInfo?.getByIndex(page));
+                      final pageEntry = multiPageInfo.getPageEntryByIndex(page);
                       return _buildExtraBottomOverlay(pageEntry) ?? SizedBox();
                     },
                   );
@@ -538,13 +552,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     final multiPageController = context.read<MultiPageConductor>().getOrCreateController(entry);
     setState(() {});
 
-    final multiPageInfo = await multiPageController.info;
+    final multiPageInfo = multiPageController.info ?? await multiPageController.infoStream.first;
     if (entry.isMotionPhoto) {
       await multiPageInfo.extractMotionPhotoVideo();
     }
 
-    final pages = multiPageInfo.pages;
-    final videoPageEntries = pages.where((page) => page.isVideo).map(entry.getPageEntry).toSet();
+    final videoPageEntries = multiPageInfo.videoPageEntries;
     if (videoPageEntries.isNotEmpty) {
       // init video controllers for all pages that could need it
       final videoConductor = context.read<VideoConductor>();
@@ -557,8 +570,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           final page = multiPageController.page;
           final pageInfo = multiPageInfo.getByIndex(page);
           if (pageInfo.isVideo) {
-            final pageEntry = entry.getPageEntry(pageInfo);
+            final pageEntry = multiPageInfo.getPageEntryByIndex(page);
             final pageVideoController = videoConductor.getController(pageEntry);
+            assert(pageVideoController != null);
             await _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
           }
         }

@@ -184,7 +184,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
+        val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
+        if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("changeOrientation-args", "failed because entry fields are missing", null)
             return
         }
@@ -195,7 +196,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.changeOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
+        provider.changeOrientation(activity, path, uri, mimeType, sizeBytes, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", throwable.message)
         })
