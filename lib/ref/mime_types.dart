@@ -14,7 +14,8 @@ class MimeTypes {
 
   static const art = 'image/x-jg';
   static const djvu = 'image/vnd.djvu';
-  static const psd = 'image/vnd.adobe.photoshop';
+  static const psdVnd = 'image/vnd.adobe.photoshop';
+  static const psdX = 'image/x-photoshop';
 
   static const arw = 'image/x-sony-arw';
   static const cr2 = 'image/x-canon-cr2';

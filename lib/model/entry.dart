@@ -42,7 +42,13 @@ class AvesEntry {
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
-  static const List<String> undecodable = [MimeTypes.art, MimeTypes.crw, MimeTypes.djvu, MimeTypes.psd];
+  static const List<String> undecodable = [
+    MimeTypes.art,
+    MimeTypes.crw,
+    MimeTypes.djvu,
+    MimeTypes.psdVnd,
+    MimeTypes.psdX,
+  ];
 
   AvesEntry({
     this.uri,
