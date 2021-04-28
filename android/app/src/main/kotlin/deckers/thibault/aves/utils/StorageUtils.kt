@@ -11,13 +11,11 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
-import android.webkit.MimeTypeMap
 import androidx.annotation.RequiresApi
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.utils.PermissionManager.getGrantedDirForPath
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.IOException
 import java.io.InputStream
 import java.util.*
 import java.util.regex.Pattern
@@ -348,19 +346,6 @@ object StorageUtils {
             }
             DocumentFileCompat.fromFile(directory)
         }
-    }
-
-    fun copyFileToTemp(documentFile: DocumentFileCompat, path: String): String? {
-        val extension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(File(path)).toString())
-        try {
-            val temp = File.createTempFile("aves", ".$extension")
-            documentFile.copyTo(DocumentFileCompat.fromFile(temp))
-            temp.deleteOnExit()
-            return temp.path
-        } catch (e: IOException) {
-            Log.e(LOG_TAG, "failed to copy file from path=$path")
-        }
-        return null
     }
 
     private fun getDocumentFileFromVolumeTree(context: Context, rootTreeUri: Uri, anyPath: String): DocumentFileCompat? {

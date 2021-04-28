@@ -175,10 +175,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         await multiPageInfo.extractMotionPhotoVideo();
       }
       if (multiPageInfo.pageCount > 1) {
-        for (final page in multiPageInfo.pages) {
-          final pageEntry = entry.getPageEntry(page, eraseDefaultPageId: false);
-          selection.add(pageEntry);
-        }
+        selection.addAll(multiPageInfo.exportEntries);
       }
     } else {
       selection.add(entry);

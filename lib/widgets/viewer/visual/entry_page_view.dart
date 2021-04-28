@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -30,22 +29,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
-  final AvesEntry mainEntry;
-  final AvesEntry entry;
-  final SinglePageInfo page;
+  final AvesEntry mainEntry, pageEntry;
   final Size viewportSize;
   final VoidCallback onDisposed;
 
   static const decorationCheckSize = 20.0;
 
-  EntryPageView({
+  const EntryPageView({
     Key key,
     this.mainEntry,
-    this.page,
+    this.pageEntry,
     this.viewportSize,
     this.onDisposed,
-  })  : entry = mainEntry.getPageEntry(page) ?? mainEntry,
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _EntryPageViewState createState() => _EntryPageViewState();
@@ -58,7 +54,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   AvesEntry get mainEntry => widget.mainEntry;
 
-  AvesEntry get entry => widget.entry;
+  AvesEntry get entry => widget.pageEntry;
 
   Size get viewportSize => widget.viewportSize;
 
@@ -76,7 +72,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   void didUpdateWidget(covariant EntryPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.entry.displaySize != entry.displaySize) {
+    if (oldWidget.pageEntry.displaySize != widget.pageEntry.displaySize) {
       // do not reset the magnifier view state unless page dimensions change,
       // in effect locking the zoom & position when browsing entry pages of the same size
       _unregisterWidget();
