@@ -2,8 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Motion photo support
+- Viewer: play videos in multi-track HEIC
+- Handle share intent
+
 ### Changed
 - Upgraded Flutter to beta v2.2.0-10.1.pre
+
+### Fixed
+- fixed crash when cataloguing large MP4/PSD
 
 ## [v1.4.0] - 2021-04-16
 ### Added
