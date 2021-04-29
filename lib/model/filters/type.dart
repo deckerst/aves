@@ -9,6 +9,7 @@ class TypeFilter extends CollectionFilter {
 
   static const _animated = 'animated'; // subset of `image/gif` and `image/webp`
   static const _geotiff = 'geotiff'; // subset of `image/tiff`
+  static const _motionPhoto = 'motion_photo'; // subset of `image/jpeg`
   static const _panorama = 'panorama'; // subset of images
   static const _sphericalVideo = 'spherical_video'; // subset of videos
 
@@ -18,6 +19,7 @@ class TypeFilter extends CollectionFilter {
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);
+  static final motionPhoto = TypeFilter._private(_motionPhoto);
   static final panorama = TypeFilter._private(_panorama);
   static final sphericalVideo = TypeFilter._private(_sphericalVideo);
 
@@ -27,13 +29,17 @@ class TypeFilter extends CollectionFilter {
         _test = (entry) => entry.isAnimated;
         _icon = AIcons.animated;
         break;
+      case _motionPhoto:
+        _test = (entry) => entry.isMotionPhoto;
+        _icon = AIcons.motionPhoto;
+        break;
       case _panorama:
         _test = (entry) => entry.isImage && entry.is360;
-        _icon = AIcons.threesixty;
+        _icon = AIcons.threeSixty;
         break;
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
-        _icon = AIcons.threesixty;
+        _icon = AIcons.threeSixty;
         break;
       case _geotiff:
         _test = (entry) => entry.isGeotiff;
@@ -64,6 +70,8 @@ class TypeFilter extends CollectionFilter {
     switch (itemType) {
       case _animated:
         return context.l10n.filterTypeAnimatedLabel;
+      case _motionPhoto:
+        return context.l10n.filterTypeMotionPhotoLabel;
       case _panorama:
         return context.l10n.filterTypePanoramaLabel;
       case _sphericalVideo:

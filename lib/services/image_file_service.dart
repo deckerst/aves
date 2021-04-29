@@ -75,7 +75,7 @@ abstract class ImageFileService {
 
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    String mimeType = MimeTypes.jpeg,
+    @required String mimeType,
     @required String destinationAlbum,
   });
 
@@ -103,6 +103,7 @@ class PlatformImageFileService implements ImageFileService {
       'rotationDegrees': entry.rotationDegrees,
       'isFlipped': entry.isFlipped,
       'dateModifiedSecs': entry.dateModifiedSecs,
+      'sizeBytes': entry.sizeBytes,
     };
   }
 
@@ -316,7 +317,7 @@ class PlatformImageFileService implements ImageFileService {
   @override
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    String mimeType = MimeTypes.jpeg,
+    @required String mimeType,
     @required String destinationAlbum,
   }) {
     try {

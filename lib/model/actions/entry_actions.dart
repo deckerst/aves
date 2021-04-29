@@ -44,6 +44,12 @@ class EntryActions {
     EntryAction.setAs,
     EntryAction.openMap,
   ];
+
+  static const pageActions = [
+    EntryAction.rotateCCW,
+    EntryAction.rotateCW,
+    EntryAction.flip,
+  ];
 }
 
 extension ExtraEntryAction on EntryAction {

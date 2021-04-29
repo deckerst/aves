@@ -4,13 +4,6 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/ref/xmp.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/exif.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/google.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/iptc.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/mwg.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
-import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -36,40 +29,13 @@ class _XmpDirTileState extends State<XmpDirTile> {
 
   @override
   Widget build(BuildContext context) {
-    final sections = SplayTreeMap<XmpNamespace, List<MapEntry<String, String>>>.of(
-      groupBy(widget.tags.entries, (kv) {
-        final fullKey = kv.key;
-        final i = fullKey.indexOf(XMP.propNamespaceSeparator);
-        final namespace = i == -1 ? '' : fullKey.substring(0, i);
-        switch (namespace) {
-          case XmpBasicNamespace.ns:
-            return XmpBasicNamespace();
-          case XmpExifNamespace.ns:
-            return XmpExifNamespace();
-          case XmpGAudioNamespace.ns:
-            return XmpGAudioNamespace();
-          case XmpGDepthNamespace.ns:
-            return XmpGDepthNamespace();
-          case XmpGImageNamespace.ns:
-            return XmpGImageNamespace();
-          case XmpIptcCoreNamespace.ns:
-            return XmpIptcCoreNamespace();
-          case XmpMgwRegionsNamespace.ns:
-            return XmpMgwRegionsNamespace();
-          case XmpMMNamespace.ns:
-            return XmpMMNamespace();
-          case XmpNoteNamespace.ns:
-            return XmpNoteNamespace();
-          case XmpPhotoshopNamespace.ns:
-            return XmpPhotoshopNamespace();
-          case XmpTiffNamespace.ns:
-            return XmpTiffNamespace();
-          default:
-            return XmpNamespace(namespace);
-        }
-      }),
-      (a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle),
-    );
+    final sections = groupBy(widget.tags.entries, (kv) {
+      final fullKey = kv.key;
+      final i = fullKey.indexOf(XMP.propNamespaceSeparator);
+      final namespace = i == -1 ? '' : fullKey.substring(0, i);
+      return namespace;
+    }).entries.map((kv) => XmpNamespace.create(kv.key, Map.fromEntries(kv.value))).toList()
+      ..sort((a, b) => compareAsciiUpperCase(a.displayTitle, b.displayTitle));
     return AvesExpansionTile(
       title: 'XMP',
       expandedNotifier: widget.expandedNotifier,
@@ -79,11 +45,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
           padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: sections.entries
-                .expand((kv) => kv.key.buildNamespaceSection(
-                      rawProps: kv.value,
-                    ))
-                .toList(),
+            children: sections.expand((section) => section.buildNamespaceSection()).toList(),
           ),
         ),
       ],

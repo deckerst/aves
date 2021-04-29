@@ -58,7 +58,7 @@ class ContentChangeStreamHandler(private val context: Context) : EventChannel.St
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(ContentChangeStreamHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag<ContentChangeStreamHandler>()
         const val CHANNEL = "deckers.thibault/aves/contentchange"
     }
 }

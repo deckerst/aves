@@ -1,5 +1,6 @@
 package deckers.thibault.aves.model.provider
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,16 +17,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
+import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
 import deckers.thibault.aves.model.FieldMap
-import deckers.thibault.aves.utils.BitmapUtils
-import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.MimeTypes
-import deckers.thibault.aves.utils.StorageUtils.copyFileToTemp
+import deckers.thibault.aves.utils.*
+import deckers.thibault.aves.utils.MimeTypes.extensionFor
+import deckers.thibault.aves.utils.MimeTypes.isImage
+import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.StorageUtils.createDirectoryIfAbsent
 import deckers.thibault.aves.utils.StorageUtils.getDocumentFile
 import deckers.thibault.aves.utils.UriUtils.tryParseId
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -39,21 +42,25 @@ abstract class ImageProvider {
         callback.onFailure(UnsupportedOperationException())
     }
 
-    open suspend fun delete(context: Context, uri: Uri, path: String?) {
+    open suspend fun delete(activity: Activity, uri: Uri, path: String?) {
         throw UnsupportedOperationException()
     }
 
-    open suspend fun moveMultiple(context: Context, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
+    open suspend fun moveMultiple(activity: Activity, copy: Boolean, destinationDir: String, entries: List<AvesEntry>, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException())
     }
 
     suspend fun exportMultiple(
         context: Context,
-        mimeType: String,
+        imageExportMimeType: String,
         destinationDir: String,
         entries: List<AvesEntry>,
         callback: ImageOpCallback,
     ) {
+        if (!supportedExportMimeTypes.contains(imageExportMimeType)) {
+            throw Exception("unsupported export MIME type=$imageExportMimeType")
+        }
+
         val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
         if (destinationDirDocFile == null) {
             callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
@@ -71,13 +78,15 @@ abstract class ImageProvider {
                 "success" to false,
             )
 
+            val sourceMimeType = entry.mimeType
+            val exportMimeType = if (isVideo(sourceMimeType)) sourceMimeType else imageExportMimeType
             try {
                 val newFields = exportSingleByTreeDocAndScan(
                     context = context,
                     sourceEntry = entry,
                     destinationDir = destinationDir,
                     destinationDirDocFile = destinationDirDocFile,
-                    exportMimeType = mimeType,
+                    exportMimeType = exportMimeType,
                 )
                 result["newFields"] = newFields
                 result["success"] = true
@@ -111,12 +120,7 @@ abstract class ImageProvider {
             val page = if (sourceMimeType == MimeTypes.TIFF) pageId + 1 else pageId
             desiredNameWithoutExtension += "_${page.toString().padStart(3, '0')}"
         }
-        val desiredFileName = desiredNameWithoutExtension + when (exportMimeType) {
-            MimeTypes.JPEG -> ".jpg"
-            MimeTypes.PNG -> ".png"
-            MimeTypes.WEBP -> ".webp"
-            else -> throw Exception("unsupported export MIME type=$exportMimeType")
-        }
+        val desiredFileName = desiredNameWithoutExtension + extensionFor(exportMimeType)
 
         if (File(destinationDir, desiredFileName).exists()) {
             throw Exception("file with name=$desiredFileName already exists in destination directory")
@@ -130,56 +134,65 @@ abstract class ImageProvider {
         val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, desiredNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
-        val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
-            MultiTrackImage(context, sourceUri, pageId)
-        } else if (sourceMimeType == MimeTypes.TIFF) {
-            TiffImage(context, sourceUri, pageId)
+        if (isVideo(sourceMimeType)) {
+            val sourceDocFile = DocumentFileCompat.fromSingleUri(context, sourceUri)
+            @Suppress("BlockingMethodInNonBlockingContext")
+            sourceDocFile.copyTo(destinationDocFile)
         } else {
-            sourceUri
-        }
-
-        // request a fresh image with the highest quality format
-        val glideOptions = RequestOptions()
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.NONE)
-            .skipMemoryCache(true)
-
-        val target = Glide.with(context)
-            .asBitmap()
-            .apply(glideOptions)
-            .load(model)
-            .submit()
-        try {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            var bitmap = target.get()
-            if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
-                bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
+            val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
+                MultiTrackImage(context, sourceUri, pageId)
+            } else if (sourceMimeType == MimeTypes.TIFF) {
+                TiffImage(context, sourceUri, pageId)
+            } else {
+                sourceUri
             }
-            bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
 
-            val quality = 100
-            val format = when (exportMimeType) {
-                MimeTypes.JPEG -> Bitmap.CompressFormat.JPEG
-                MimeTypes.PNG -> Bitmap.CompressFormat.PNG
-                MimeTypes.WEBP -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (quality == 100) {
-                        Bitmap.CompressFormat.WEBP_LOSSLESS
-                    } else {
-                        Bitmap.CompressFormat.WEBP_LOSSY
-                    }
-                } else {
-                    @Suppress("DEPRECATION")
-                    Bitmap.CompressFormat.WEBP
+            // request a fresh image with the highest quality format
+            val glideOptions = RequestOptions()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+
+            val target = Glide.with(context)
+                .asBitmap()
+                .apply(glideOptions)
+                .load(model)
+                .submit()
+            try {
+                @Suppress("BlockingMethodInNonBlockingContext")
+                var bitmap = target.get()
+                if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
+                    bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
-                else -> throw Exception("unsupported export MIME type=$exportMimeType")
-            }
+                bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
 
-            @Suppress("BlockingMethodInNonBlockingContext")
-            destinationDocFile.openOutputStream().use {
-                bitmap.compress(format, quality, it)
+                @Suppress("BlockingMethodInNonBlockingContext")
+                destinationDocFile.openOutputStream().use { output ->
+                    if (exportMimeType == MimeTypes.BMP) {
+                        BmpWriter.writeRGB24(bitmap, output)
+                    } else {
+                        val quality = 100
+                        val format = when (exportMimeType) {
+                            MimeTypes.JPEG -> Bitmap.CompressFormat.JPEG
+                            MimeTypes.PNG -> Bitmap.CompressFormat.PNG
+                            MimeTypes.WEBP -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                if (quality == 100) {
+                                    Bitmap.CompressFormat.WEBP_LOSSLESS
+                                } else {
+                                    Bitmap.CompressFormat.WEBP_LOSSY
+                                }
+                            } else {
+                                @Suppress("DEPRECATION")
+                                Bitmap.CompressFormat.WEBP
+                            }
+                            else -> throw Exception("unsupported export MIME type=$exportMimeType")
+                        }
+                        bitmap.compress(format, quality, output)
+                    }
+                }
+            } finally {
+                Glide.with(context).clear(target)
             }
-        } finally {
-            Glide.with(context).clear(target)
         }
 
         val fileName = destinationDocFile.name
@@ -218,7 +231,7 @@ abstract class ImageProvider {
         }
     }
 
-    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, op: ExifOrientationOp, callback: ImageOpCallback) {
+    fun changeOrientation(context: Context, path: String, uri: Uri, mimeType: String, sizeBytes: Long, op: ExifOrientationOp, callback: ImageOpCallback) {
         if (!canEditExif(mimeType)) {
             callback.onFailure(UnsupportedOperationException("unsupported mimeType=$mimeType"))
             return
@@ -230,16 +243,44 @@ abstract class ImageProvider {
             return
         }
 
-        // copy original file to a temporary file for editing
-        val editablePath = copyFileToTemp(originalDocumentFile, path)
-        if (editablePath == null) {
-            callback.onFailure(Exception("failed to create a temporary file for path=$path"))
-            return
+        val videoSizeBytes = MultiPage.getMotionPhotoOffset(context, uri, mimeType, sizeBytes)?.toInt()
+        var videoBytes: ByteArray? = null
+        val editableFile = File.createTempFile("aves", null).apply {
+            deleteOnExit()
+            try {
+                outputStream().use { output ->
+                    if (videoSizeBytes != null) {
+                        // handle motion photo and embedded video separately
+                        val imageSizeBytes = (sizeBytes - videoSizeBytes).toInt()
+                        videoBytes = ByteArray(videoSizeBytes)
+
+                        StorageUtils.openInputStream(context, uri)?.let { input ->
+                            val imageBytes = ByteArray(imageSizeBytes)
+                            input.read(imageBytes, 0, imageSizeBytes)
+                            input.read(videoBytes, 0, videoSizeBytes)
+
+                            // copy only the image to a temporary file for editing
+                            // video will be appended after EXIF modification
+                            ByteArrayInputStream(imageBytes).use { imageInput ->
+                                imageInput.copyTo(output)
+                            }
+                        }
+                    } else {
+                        // copy original file to a temporary file for editing
+                        originalDocumentFile.openInputStream().use { imageInput ->
+                            imageInput.copyTo(output)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                callback.onFailure(e)
+                return
+            }
         }
 
         val newFields = HashMap<String, Any?>()
         try {
-            val exif = ExifInterface(editablePath)
+            val exif = ExifInterface(editableFile)
             // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
             // in that case we explicitly set it to `normal` first
             // because ExifInterface fails to rotate an image with undefined orientation
@@ -255,8 +296,12 @@ abstract class ImageProvider {
             }
             exif.saveAttributes()
 
+            if (videoBytes != null) {
+                // append motion photo video, if any
+                editableFile.appendBytes(videoBytes!!)
+            }
             // copy the edited temporary file back to the original
-            DocumentFileCompat.fromFile(File(editablePath)).copyTo(originalDocumentFile)
+            DocumentFileCompat.fromFile(editableFile).copyTo(originalDocumentFile)
 
             newFields["rotationDegrees"] = exif.rotationDegrees
             newFields["isFlipped"] = exif.isFlipped
@@ -285,7 +330,7 @@ abstract class ImageProvider {
     // as of androidx.exifinterface:exifinterface:1.3.0
     private fun canEditExif(mimeType: String): Boolean {
         return when (mimeType) {
-            "image/jpeg", "image/png", "image/webp" -> true
+            MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP -> true
             else -> false
         }
     }
@@ -300,9 +345,9 @@ abstract class ImageProvider {
                     // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
                     contentId = newUri.tryParseId()
                     if (contentId != null) {
-                        if (MimeTypes.isImage(mimeType)) {
+                        if (isImage(mimeType)) {
                             contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
-                        } else if (MimeTypes.isVideo(mimeType)) {
+                        } else if (isVideo(mimeType)) {
                             contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
                         }
                     }
@@ -349,6 +394,8 @@ abstract class ImageProvider {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(ImageProvider::class.java)
+        private val LOG_TAG = LogUtils.createTag<ImageProvider>()
+
+        val supportedExportMimeTypes = listOf(MimeTypes.BMP, MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP)
     }
 }

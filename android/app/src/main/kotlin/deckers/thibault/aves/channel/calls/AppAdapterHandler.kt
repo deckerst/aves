@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.RequestOptions
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
+import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.LogUtils
@@ -30,7 +31,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getPackages" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getPackages) }
-            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getAppIcon) }
+            "getAppIcon" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getAppIcon) }
             "edit" -> {
                 val title = call.argument<String>("title")
                 val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
@@ -109,7 +110,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         result.success(ArrayList(packages.values))
     }
 
-    private fun getAppIcon(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getAppIcon(call: MethodCall, result: MethodChannel.Result) {
         val packageName = call.argument<String>("packageName")
         val sizeDip = call.argument<Double>("sizeDip")
         if (packageName == null || sizeDip == null) {
@@ -254,8 +255,8 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
         return when (uri.scheme?.toLowerCase(Locale.ROOT)) {
             ContentResolver.SCHEME_FILE -> {
                 uri.path?.let { path ->
-                    val applicationId = context.applicationContext.packageName
-                    FileProvider.getUriForFile(context, "$applicationId.fileprovider", File(path))
+                    val authority = "${context.applicationContext.packageName}.fileprovider"
+                    FileProvider.getUriForFile(context, authority, File(path))
                 }
             }
             else -> uri
@@ -263,7 +264,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag(AppAdapterHandler::class.java)
+        private val LOG_TAG = LogUtils.createTag<AppAdapterHandler>()
         const val CHANNEL = "deckers.thibault/aves/app"
     }
 }

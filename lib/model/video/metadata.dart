@@ -10,7 +10,7 @@ import 'package:aves/utils/file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
-import 'package:aves/widgets/common/video/fijkplayer.dart';
+import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
@@ -33,8 +33,12 @@ class VideoMetadataFormatter {
 
   static Future<Map> getVideoMetadata(AvesEntry entry) async {
     final player = FijkPlayer();
-    await player.setDataSourceUntilPrepared(entry.uri);
-    final info = await player.getInfo();
+    final info = await player.setDataSourceUntilPrepared(entry.uri).then((v) {
+      return player.getInfo();
+    }).catchError((error) {
+      debugPrint('failed to get video metadata for entry=$entry, error=$error');
+      return {};
+    });
     await player.release();
     return info;
   }
@@ -111,7 +115,9 @@ class VideoMetadataFormatter {
               save('Channel Layout', _formatChannelLayout(value));
               break;
             case Keys.codecName:
-              save('Format', _formatCodecName(value));
+              if (value != 'none') {
+                save('Format', _formatCodecName(value));
+              }
               break;
             case Keys.codecPixelFormat:
               if (streamType == StreamTypes.video) {
@@ -292,6 +298,7 @@ class VideoMetadataFormatter {
 }
 
 class StreamTypes {
+  static const attachment = 'attachment';
   static const audio = 'audio';
   static const metadata = 'metadata';
   static const subtitle = 'subtitle';

@@ -1,6 +1,6 @@
 import 'package:aves/utils/math_utils.dart';
 import 'package:intl/intl.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 String _decimal2sexagesimal(final double degDecimal) {
   List<int> _split(final double value) {

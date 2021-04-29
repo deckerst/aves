@@ -50,6 +50,7 @@
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
   "filterTypeAnimatedLabel": "애니메이션",
+  "filterTypeMotionPhotoLabel": "모션 포토",
   "filterTypePanoramaLabel": "파노라마",
   "filterTypeSphericalVideoLabel": "360° 동영상",
   "filterTypeGeotiffLabel": "GeoTIFF",

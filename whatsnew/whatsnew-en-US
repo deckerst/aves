@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.4.0:
-- improved video support
-- more consistent and comprehensive info for videos
-- options to auto play and loop videos
+v1.4.1:
+- motion photo support
+- handle share intent
+- fixes to handle large MP4 and PSD files
 Full changelog available on Github

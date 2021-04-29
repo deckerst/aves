@@ -11,7 +11,7 @@ import org.beyka.tiffbitmapfactory.TiffBitmapFactory
 class TiffRegionFetcher internal constructor(
     private val context: Context,
 ) {
-    fun fetch(
+    suspend fun fetch(
         uri: Uri,
         page: Int,
         sampleSize: Int,

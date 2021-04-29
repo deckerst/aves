@@ -8,10 +8,10 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/about/about_page.dart';
-import 'package:aves/widgets/about/news_badge.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/identity/aves_logo.dart';
@@ -58,9 +58,6 @@ class _AppDrawerState extends State<AppDrawer> {
       albumListTile,
       countryListTile,
       tagListTile,
-      Divider(),
-      settingsTile,
-      aboutTile,
       if (kDebugMode) ...[
         Divider(),
         debugTile,
@@ -92,8 +89,19 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    Future<void> goTo(String routeName, WidgetBuilder pageBuilder) async {
+      Navigator.pop(context);
+      await Future.delayed(Durations.drawerTransitionAnimation);
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+            settings: RouteSettings(name: routeName),
+            builder: pageBuilder,
+          ));
+    }
+
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
       color: Theme.of(context).accentColor,
       child: SafeArea(
         bottom: false,
@@ -119,6 +127,61 @@ class _AppDrawerState extends State<AppDrawer> {
                 ],
               ),
             ),
+            SizedBox(height: 8),
+            OutlinedButtonTheme(
+              data: OutlinedButtonThemeData(
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  overlayColor: MaterialStateProperty.all<Color>(Colors.white24),
+                ),
+              ),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () => goTo(AboutPage.routeName, (_) => AboutPage()),
+                    icon: Icon(AIcons.info),
+                    label: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(context.l10n.aboutPageTitle),
+                        FutureBuilder<bool>(
+                          future: _newVersionLoader,
+                          builder: (context, snapshot) {
+                            final newVersion = snapshot.data == true;
+                            final badgeSize = 8.0 * MediaQuery.textScaleFactorOf(context);
+                            return AnimatedOpacity(
+                              duration: Durations.newsBadgeAnimation,
+                              opacity: newVersion ? 1 : 0,
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.only(start: 2),
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white70),
+                                    borderRadius: BorderRadius.circular(badgeSize),
+                                  ),
+                                  child: Icon(
+                                    Icons.circle,
+                                    size: badgeSize,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => goTo(SettingsPage.routeName, (_) => SettingsPage()),
+                    icon: Icon(AIcons.settings),
+                    label: Text(context.l10n.settingsPageTitle),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -196,29 +259,6 @@ class _AppDrawerState extends State<AppDrawer> {
         ),
         routeName: TagListPage.routeName,
         pageBuilder: (_) => TagListPage(),
-      );
-
-  Widget get settingsTile => NavTile(
-        icon: AIcons.settings,
-        title: context.l10n.settingsPageTitle,
-        topLevel: false,
-        routeName: SettingsPage.routeName,
-        pageBuilder: (_) => SettingsPage(),
-      );
-
-  Widget get aboutTile => FutureBuilder<bool>(
-        future: _newVersionLoader,
-        builder: (context, snapshot) {
-          final newVersion = snapshot.data == true;
-          return NavTile(
-            icon: AIcons.info,
-            title: context.l10n.aboutPageTitle,
-            trailing: newVersion ? AboutNewsBadge() : null,
-            topLevel: false,
-            routeName: AboutPage.routeName,
-            pageBuilder: (_) => AboutPage(),
-          );
-        },
       );
 
   Widget get debugTile => NavTile(

@@ -40,12 +40,12 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
               Row(
                 children: [
                   Expanded(
-                    child: Text('SVG cache: ${PictureProvider.cacheCount} items'),
+                    child: Text('SVG cache: ${PictureProvider.cache.count} items'),
                   ),
                   SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
-                      PictureProvider.clearCache();
+                      PictureProvider.cache.clear();
 
                       setState(() {});
                     },

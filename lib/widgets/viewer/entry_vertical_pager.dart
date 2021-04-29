@@ -3,21 +3,16 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
-import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:tuple/tuple.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
   final CollectionLens collection;
   final ValueNotifier<AvesEntry> entryNotifier;
-  final List<Tuple2<String, AvesVideoController>> videoControllers;
-  final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
@@ -26,8 +21,6 @@ class ViewerVerticalPageView extends StatefulWidget {
   const ViewerVerticalPageView({
     @required this.collection,
     @required this.entryNotifier,
-    @required this.videoControllers,
-    @required this.multiPageControllers,
     @required this.verticalPager,
     @required this.horizontalPager,
     @required this.onVerticalPageChanged,
@@ -92,14 +85,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               collection: collection,
               pageController: widget.horizontalPager,
               onPageChanged: widget.onHorizontalPageChanged,
-              videoControllers: widget.videoControllers,
-              multiPageControllers: widget.multiPageControllers,
               onViewDisposed: widget.onViewDisposed,
             )
           : SingleEntryScroller(
               entry: entry,
-              videoControllers: widget.videoControllers,
-              multiPageControllers: widget.multiPageControllers,
             ),
       NotificationListener(
         onNotification: (notification) {
@@ -152,6 +141,9 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
     } else {
       Navigator.pop(context);
     }
+
+    // needed to refresh when entry changes but the page does not (e.g. on page deletion)
+    setState(() {});
   }
 
   // when the entry image itself changed (e.g. after rotation)

@@ -4,6 +4,7 @@ class Durations {
   // Flutter animations (with margin)
   static const popupMenuAnimation = Duration(milliseconds: 300 + 10); // ref `_kMenuDuration` used in `_PopupMenuRoute`
   static const dialogTransitionAnimation = Duration(milliseconds: 150 + 10); // ref `transitionDuration` used in `DialogRoute`
+  static const drawerTransitionAnimation = Duration(milliseconds: 246 + 10); // ref `_kBaseSettleDuration` used in `DrawerControllerState`
   static const toggleableTransitionAnimation = Duration(milliseconds: 200 + 10); // ref `_kToggleDuration` used in `ToggleableStateMixin`
 
   // common animations
@@ -12,11 +13,14 @@ class Durations {
   static const sweepingAnimation = Duration(milliseconds: 650);
 
   static const staggeredAnimation = Duration(milliseconds: 375);
-  static const staggeredAnimationPageTarget = Duration(milliseconds: 900);
+  static const staggeredAnimationPageTarget = Duration(milliseconds: 800);
   static const dialogFieldReachAnimation = Duration(milliseconds: 300);
 
   static const appBarTitleAnimation = Duration(milliseconds: 300);
   static const appBarActionChangeAnimation = Duration(milliseconds: 200);
+
+  // drawer
+  static const newsBadgeAnimation = Duration(milliseconds: 200);
 
   // filter grids animations
   static const chipDecorationAnimation = Duration(milliseconds: 200);
@@ -60,7 +64,7 @@ class Durations {
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);
   static const softKeyboardDisplayDelay = Duration(milliseconds: 300);
   static const searchDebounceDelay = Duration(milliseconds: 250);
-  static const contentChangeDebounceDelay = Duration(milliseconds: 500);
+  static const contentChangeDebounceDelay = Duration(milliseconds: 1000);
 
   // app life
   static const lastVersionCheckInterval = Duration(days: 7);

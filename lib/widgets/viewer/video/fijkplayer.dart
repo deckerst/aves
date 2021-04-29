@@ -7,7 +7,7 @@ import 'package:aves/model/settings/video_loop_mode.dart';
 import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
-import 'package:aves/widgets/common/video/controller.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final ValueNotifier<StreamSummary> _selectedVideoStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary> _selectedAudioStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary> _selectedTextStream = ValueNotifier(null);
-  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(Tuple2(1, 1));
+  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(null);
   Timer _initialPlayTimer;
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
@@ -31,15 +31,47 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const initialPlayDelay = Duration(milliseconds: 100);
   static const gifLikeVideoDurationThreshold = Duration(seconds: 10);
 
-  IjkPlayerAvesVideoController(AvesEntry entry) {
-    FijkLog.setLevel(FijkLogLevel.Warn);
+  IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
     _instance = FijkPlayer();
+    _startListening();
+  }
 
+  @override
+  Future<void> dispose() async {
+    _initialPlayTimer?.cancel();
+    _stopListening();
+    await _valueStreamController.close();
+    await _instance.release();
+  }
+
+  void _startListening() {
+    _instance.addListener(_onValueChanged);
+    _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notifyListeners()));
+  }
+
+  void _stopListening() {
+    _instance.removeListener(_onValueChanged);
+    _subscriptions
+      ..forEach((sub) => sub.cancel())
+      ..clear();
+  }
+
+  Future<void> _init({int startMillis = 0}) async {
+    _sar.value = Tuple2(1, 1);
+    _applyOptions(startMillis);
+
+    // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
+    // so we introduce a small delay after the player is declared `prepared`, before playing
+    await _instance.setDataSourceUntilPrepared(entry.uri);
+    _initialPlayTimer = Timer(initialPlayDelay, play);
+  }
+
+  void _applyOptions(int startMillis) {
     // FFmpeg options
     // cf https://github.com/Bilibili/ijkplayer/blob/master/ijkmedia/ijkplayer/ff_ffplay_options.h
     // cf https://www.jianshu.com/p/843c86a9e9ad
 
-    final option = FijkOption();
+    final options = FijkOption();
 
     // when accurate seek is enabled and seeking fails, it takes time (cf `accurate-seek-timeout`) to acknowledge the error and proceed
     // failure seems to happen when pause-seeking videos with an audio stream, whatever container or video stream
@@ -62,42 +94,34 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // `fastseek`: enable fast, but inaccurate seeks for some formats
     // in practice the flag seems ineffective, but harmless too
-    option.setFormatOption('fflags', 'fastseek');
+    options.setFormatOption('fflags', 'fastseek');
 
     // `enable-accurate-seek`: enable accurate seek, default: 0, in [0, 1]
-    option.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
+    options.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
 
     // `accurate-seek-timeout`: accurate seek timeout, default: 5000 ms, in [0, 5000]
-    option.setPlayerOption('accurate-seek-timeout', 1000);
+    options.setPlayerOption('accurate-seek-timeout', 1000);
 
     // `framedrop`: drop frames when cpu is too slow, default: 0, in [-1, 120]
-    option.setPlayerOption('framedrop', 5);
+    options.setPlayerOption('framedrop', 5);
 
     // `loop`: set number of times the playback shall be looped, default: 1, in [INT_MIN, INT_MAX]
-    option.setPlayerOption('loop', loopEnabled ? -1 : 1);
+    options.setPlayerOption('loop', loopEnabled ? -1 : 1);
 
     // `mediacodec-all-videos`: MediaCodec: enable all videos, default: 0, in [0, 1]
-    option.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
+    options.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
+
+    // `seek-at-start`: set offset of player should be seeked, default: 0, in [0, INT_MAX]
+    options.setPlayerOption('seek-at-start', startMillis);
+
+    // `cover-after-prepared`: show cover provided to `FijkView` when player is `prepared` without auto play, default: 0, in [0, 1]
+    options.setPlayerOption('cover-after-prepared', 0);
 
     // TODO TLAD try subs
     // `subtitle`: decode subtitle stream, default: 0, in [0, 1]
     // option.setPlayerOption('subtitle', 1);
 
-    _instance.applyOptions(option);
-
-    _instance.addListener(_onValueChanged);
-    _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notifyListeners()));
-  }
-
-  @override
-  void dispose() {
-    _initialPlayTimer?.cancel();
-    _instance.removeListener(_onValueChanged);
-    _valueStreamController.close();
-    _subscriptions
-      ..forEach((sub) => sub.cancel())
-      ..clear();
-    _instance.release();
+    _instance.applyOptions(options);
   }
 
   void _fetchSelectedStreams() async {
@@ -151,39 +175,33 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _valueStreamController.add(_instance.value);
   }
 
-  // always start playing, even when seeking on uninitialized player, otherwise the texture is not updated
-  // as a workaround, pausing after a brief duration is possible, but fiddly
   @override
-  Future<void> setDataSource(String uri, {int startMillis = 0}) async {
-    if (startMillis > 0) {
-      // `seek-at-start`: set offset of player should be seeked, default: 0, in [0, INT_MAX]
-      await _instance.setOption(FijkOption.playerCategory, 'seek-at-start', startMillis);
+  Future<void> play() async {
+    if (isReady) {
+      await _instance.start();
+    } else {
+      await _init();
     }
-    // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
-    // so we introduce a small delay after the player is declared `prepared`, before playing
-    await _instance.setDataSourceUntilPrepared(uri);
-    _initialPlayTimer = Timer(initialPlayDelay, play);
   }
 
   @override
-  Future<void> play() {
-    if (_instance.isPlayable()) {
-      _instance.start();
-    }
-    return SynchronousFuture(null);
-  }
-
-  @override
-  Future<void> pause() {
-    if (_instance.isPlayable()) {
+  Future<void> pause() async {
+    if (isReady) {
       _initialPlayTimer?.cancel();
-      _instance.pause();
+      await _instance.pause();
     }
-    return SynchronousFuture(null);
   }
 
   @override
-  Future<void> seekTo(int targetMillis) => _instance.seekTo(targetMillis);
+  Future<void> seekTo(int targetMillis) async {
+    if (isReady) {
+      await _instance.seekTo(targetMillis);
+    } else {
+      // always start playing, even when seeking on uninitialized player, otherwise the texture is not updated
+      // as a workaround, pausing after a brief duration is possible, but fiddly
+      await _init(startMillis: targetMillis);
+    }
+  }
 
   @override
   Listenable get playCompletedListenable => _completedNotifier;
@@ -195,10 +213,14 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   Stream<VideoStatus> get statusStream => _valueStream.map((value) => value.state.toAves);
 
   @override
-  bool get isPlayable => _instance.isPlayable();
+  bool get isReady => _instance.isPlayable();
 
   @override
-  int get duration => _instance.value.duration.inMilliseconds;
+  int get duration {
+    final controllerDuration = _instance.value.duration.inMilliseconds;
+    // use expected duration when controller duration is not set yet
+    return (controllerDuration == null || controllerDuration == 0) ? entry.durationMillis : controllerDuration;
+  }
 
   @override
   int get currentPosition => _instance.currentPos.inMilliseconds;
@@ -207,7 +229,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   Stream<int> get positionStream => _instance.onCurrentPosUpdate.map((pos) => pos.inMilliseconds);
 
   @override
-  Widget buildPlayerWidget(BuildContext context, AvesEntry entry) {
+  Widget buildPlayerWidget(BuildContext context) {
     return ValueListenableBuilder<Tuple2<int, int>>(
         valueListenable: _sar,
         builder: (context, sar, child) {
@@ -272,7 +294,7 @@ extension ExtraIjkStatus on FijkState {
 
 extension ExtraFijkPlayer on FijkPlayer {
   Future<void> setDataSourceUntilPrepared(String uri) async {
-    await setDataSource(uri, autoPlay: false);
+    await setDataSource(uri, autoPlay: false, showCover: false);
 
     final completer = Completer();
     void onChange() {

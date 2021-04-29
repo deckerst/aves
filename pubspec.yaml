@@ -1,7 +1,7 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.4.0+44
+version: 1.4.1+45
 publish_to: none
 
 environment:
@@ -13,11 +13,10 @@ environment:
 # bump `crypto` and others - 2021/02/05 https://github.com/flutter/flutter/commit/bc1cf4945841ba5874f5262b8146d52750e7c11f
 # bump `archive` from 3.0.0 to 3.1.2 - 2021/03/04 https://github.com/flutter/flutter/commit/ddcb8d7d6d3fcedc906b2f1bf26b73c018d3dc28
 
-# not null safe, as of 2021/03/13
+# not null safe, as of 2021/04/28
 # `charts_flutter` - https://github.com/google/charts/issues/579
 # `fijkplayer` - https://github.com/befovy/fijkplayer/issues/381
 # `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
-# `latlong` - archived - migrate to maps_toolkit? cf https://github.com/fleaflet/flutter_map/pull/750
 # `streams_channel` - unmaintained? - no issue/PR
 
 dependencies:
@@ -43,6 +42,9 @@ dependencies:
   firebase_crashlytics:
   flutter_highlight:
   flutter_map:
+    git:
+      url: git://github.com/fleaflet/flutter_map.git
+      ref: issues/829-nullsafety
   flutter_markdown:
   flutter_staggered_animations:
   flutter_svg:
@@ -51,12 +53,13 @@ dependencies:
   google_api_availability:
   google_maps_flutter:
   intl:
-  latlong:
+  latlong2:
   material_design_icons_flutter:
   overlay_support:
   package_info:
   palette_generator:
-  panorama:
+# TODO TLAD upgrade panorama when this is fixed: https://github.com/zesage/panorama/issues/25 (bug in v0.4.1)
+  panorama: 0.4.0
   pdf:
   pedantic:
   percent_indicator:

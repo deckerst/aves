@@ -6,14 +6,16 @@ object MimeTypes {
     private const val IMAGE = "image"
 
     // generic raster
-    private const val BMP = "image/bmp"
+    const val BMP = "image/bmp"
     private const val DJVU = "image/vnd.djvu"
     const val GIF = "image/gif"
     const val HEIC = "image/heic"
-    private const val HEIF = "image/heif"
+    const val HEIF = "image/heif"
     private const val ICO = "image/x-icon"
     const val JPEG = "image/jpeg"
     const val PNG = "image/png"
+    const val PSD_VND = "image/vnd.adobe.photoshop"
+    const val PSD_X = "image/x-photoshop"
     const val TIFF = "image/tiff"
     private const val WBMP = "image/vnd.wap.wbmp"
     const val WEBP = "image/webp"
@@ -37,6 +39,7 @@ object MimeTypes {
 
     private const val MP2T = "video/mp2t"
     private const val MP2TS = "video/mp2ts"
+    const val MP4 = "video/mp4"
     private const val WEBM = "video/webm"
 
     fun isImage(mimeType: String?) = mimeType != null && mimeType.startsWith(IMAGE)
@@ -94,6 +97,18 @@ object MimeTypes {
     }
 
     // extensions
+
+    fun extensionFor(mimeType: String): String? = when (mimeType) {
+        BMP -> ".bmp"
+        GIF -> ".gif"
+        HEIC, HEIF -> ".heif"
+        JPEG -> ".jpg"
+        MP4 -> ".mp4"
+        PNG -> ".png"
+        TIFF -> ".tiff"
+        WEBP -> ".webp"
+        else -> null
+    }
 
     val tiffExtensionPattern = Regex(".*\\.tiff?", RegexOption.IGNORE_CASE)
 }

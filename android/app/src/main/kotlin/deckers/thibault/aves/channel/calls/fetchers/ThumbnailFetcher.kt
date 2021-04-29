@@ -45,7 +45,7 @@ class ThumbnailFetcher internal constructor(
     private val multiTrackFetch = isHeic(mimeType) && pageId != null
     private val customFetch = tiffFetch || multiTrackFetch
 
-    fun fetch() {
+    suspend fun fetch() {
         var bitmap: Bitmap? = null
         var exception: Exception? = null
 

@@ -8,9 +8,9 @@ import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/common/video/controller.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoControlOverlay extends StatefulWidget {
@@ -34,7 +34,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   bool _playingOnDragStart = false;
   AnimationController _playPauseAnimation;
   final List<StreamSubscription> _subscriptions = [];
-  double _seekTargetPercent;
 
   AvesEntry get entry => widget.entry;
 
@@ -42,9 +41,11 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   AvesVideoController get controller => widget.controller;
 
-  bool get isPlayable => controller.isPlayable;
+  Stream<VideoStatus> get statusStream => controller?.statusStream ?? Stream.value(VideoStatus.idle);
 
-  bool get isPlaying => controller.isPlaying;
+  Stream<int> get positionStream => controller?.positionStream ?? Stream.value(0);
+
+  bool get isPlaying => controller?.isPlaying ?? false;
 
   @override
   void initState() {
@@ -71,8 +72,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _registerWidget(VideoControlOverlay widget) {
-    _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
-    _onStatusChange(widget.controller.status);
+    if (widget.controller != null) {
+      _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
+      _onStatusChange(widget.controller.status);
+    }
   }
 
   void _unregisterWidget(VideoControlOverlay widget) {
@@ -84,10 +87,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
-        stream: controller.statusStream,
+        stream: statusStream,
         builder: (context, snapshot) {
           // do not use stream snapshot because it is obsolete when switching between videos
-          final status = controller.status;
+          final status = controller?.status ?? VideoStatus.idle;
           return TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
@@ -160,10 +163,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                 Row(
                   children: [
                     StreamBuilder<int>(
-                        stream: controller.positionStream,
+                        stream: positionStream,
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
-                          final position = controller.currentPosition?.floor() ?? 0;
+                          final position = controller?.currentPosition?.floor() ?? 0;
                           return Text(formatFriendlyDuration(Duration(milliseconds: position)));
                         }),
                     Spacer(),
@@ -173,12 +176,15 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: StreamBuilder<int>(
-                      stream: controller.positionStream,
+                      stream: positionStream,
                       builder: (context, snapshot) {
                         // do not use stream snapshot because it is obsolete when switching between videos
-                        var progress = controller.progress;
+                        var progress = controller?.progress ?? 0.0;
                         if (!progress.isFinite) progress = 0.0;
-                        return LinearProgressIndicator(value: progress);
+                        return LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[700],
+                        );
                       }),
                 ),
               ],
@@ -190,33 +196,6 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _onStatusChange(VideoStatus status) {
-    if (status == VideoStatus.playing && _seekTargetPercent != null) {
-      _seekFromTarget();
-    }
-    _updatePlayPauseIcon();
-  }
-
-  Future<void> _togglePlayPause() async {
-    if (isPlaying) {
-      await controller.pause();
-    } else {
-      await _play();
-    }
-  }
-
-  Future<void> _play() async {
-    if (isPlayable) {
-      await controller.play();
-    } else {
-      await controller.setDataSource(entry.uri);
-    }
-
-    // hide overlay
-    await Future.delayed(Durations.iconAnimation);
-    ToggleOverlayNotification().dispatch(context);
-  }
-
-  void _updatePlayPauseIcon() {
     final status = _playPauseAnimation.status;
     if (isPlaying && status != AnimationStatus.forward && status != AnimationStatus.completed) {
       _playPauseAnimation.forward();
@@ -225,28 +204,23 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     }
   }
 
-  void _seekFromTap(Offset globalPosition) async {
-    final keyContext = _progressBarKey.currentContext;
-    final RenderBox box = keyContext.findRenderObject();
-    final localPosition = box.globalToLocal(globalPosition);
-    _seekTargetPercent = (localPosition.dx / box.size.width);
-
-    if (isPlayable) {
-      await _seekFromTarget();
+  Future<void> _togglePlayPause() async {
+    if (controller == null) return;
+    if (isPlaying) {
+      await controller.pause();
     } else {
-      // controller duration is not set yet, so we use the expected duration instead
-      final seekTargetMillis = (entry.durationMillis * _seekTargetPercent).toInt();
-      await controller.setDataSource(entry.uri, startMillis: seekTargetMillis);
-      _seekTargetPercent = null;
+      await controller.play();
+      // hide overlay
+      await Future.delayed(Durations.iconAnimation);
+      ToggleOverlayNotification().dispatch(context);
     }
   }
 
-  Future _seekFromTarget() async {
-    // `seekToProgress` is not safe as it can be called when the `duration` is not set yet
-    // so we make sure the video info is up to date first
-    if (controller.duration != null) {
-      await controller.seekToProgress(_seekTargetPercent);
-      _seekTargetPercent = null;
-    }
+  void _seekFromTap(Offset globalPosition) async {
+    if (controller == null) return;
+    final keyContext = _progressBarKey.currentContext;
+    final RenderBox box = keyContext.findRenderObject();
+    final localPosition = box.globalToLocal(globalPosition);
+    await controller.seekToProgress(localPosition.dx / box.size.width);
   }
 }
