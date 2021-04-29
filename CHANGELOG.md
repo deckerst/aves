@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.4.1] - 2021-04-29
 ### Added
 - Motion photo support
 - Viewer: play videos in multi-track HEIC
@@ -12,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - fixed crash when cataloguing large MP4/PSD
+- prevent videos playing in the background when quickly switching entries
 
 ## [v1.4.0] - 2021-04-16
 ### Added
