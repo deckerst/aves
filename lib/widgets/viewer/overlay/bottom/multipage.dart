@@ -1,26 +1,22 @@
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/collection/thumbnail/theme.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
+import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MultiPageOverlay extends StatefulWidget {
-  final AvesEntry mainEntry;
   final MultiPageController controller;
   final double availableWidth;
 
-  MultiPageOverlay({
+  const MultiPageOverlay({
     Key key,
-    @required this.mainEntry,
     @required this.controller,
     @required this.availableWidth,
-  })  : assert(mainEntry.isMultipage),
-        assert(controller != null),
+  })  : assert(controller != null),
         super(key: key);
 
   @override
@@ -31,11 +27,10 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   final _cancellableNotifier = ValueNotifier(true);
   ScrollController _scrollController;
   bool _syncScroll = true;
+  int _initControllerPage;
 
   static const double extent = 48;
   static const double separatorWidth = 2;
-
-  AvesEntry get mainEntry => widget.mainEntry;
 
   MultiPageController get controller => widget.controller;
 
@@ -64,10 +59,26 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   }
 
   void _registerWidget() {
-    final page = controller.page ?? 0;
-    final scrollOffset = pageToScrollOffset(page);
+    _initControllerPage = controller.page;
+    final scrollOffset = pageToScrollOffset(_initControllerPage ?? 0);
     _scrollController = ScrollController(initialScrollOffset: scrollOffset);
     _scrollController.addListener(_onScrollChange);
+
+    if (_initControllerPage == null) {
+      _correctDefaultPageScroll();
+    }
+  }
+
+  // correct scroll offset to match default page
+  // if default page was unknown when the scroll controller was created
+  void _correctDefaultPageScroll() async {
+    await controller.infoStream.first;
+    if (_initControllerPage == null) {
+      _initControllerPage = controller.page;
+      if (_initControllerPage != 0) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _goToPage(_initControllerPage));
+      }
+    }
   }
 
   void _unregisterWidget() {
@@ -83,39 +94,30 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
 
     return ThumbnailTheme(
       extent: extent,
-      child: FutureBuilder<MultiPageInfo>(
-        future: controller.info,
+      showLocation: false,
+      child: StreamBuilder<MultiPageInfo>(
+        stream: controller.infoStream,
         builder: (context, snapshot) {
-          final multiPageInfo = snapshot.data;
-          if ((multiPageInfo?.pageCount ?? 0) <= 1) return SizedBox();
-          if (multiPageInfo.uri != mainEntry.uri) return SizedBox();
+          final multiPageInfo = controller.info;
+          final pageCount = multiPageInfo?.pageCount ?? 0;
           return SizedBox(
             height: extent,
             child: ListView.separated(
-              key: ValueKey(mainEntry),
+              key: ValueKey(multiPageInfo),
               scrollDirection: Axis.horizontal,
               controller: _scrollController,
               // default padding in scroll direction matches `MediaQuery.viewPadding`,
               // but we already accommodate for it, so make sure horizontal padding is 0
               padding: EdgeInsets.zero,
               itemBuilder: (context, index) {
-                if (index == 0 || index == multiPageInfo.pageCount + 1) return horizontalMargin;
+                if (index == 0 || index == pageCount + 1) return horizontalMargin;
                 final page = index - 1;
-                final pageEntry = mainEntry.getPageEntry(multiPageInfo.getByIndex(page));
+                final pageEntry = multiPageInfo.getPageEntryByIndex(page);
 
                 return Stack(
                   children: [
                     GestureDetector(
-                      onTap: () async {
-                        _syncScroll = false;
-                        controller.page = page;
-                        await _scrollController.animateTo(
-                          pageToScrollOffset(page),
-                          duration: Durations.viewerOverlayPageScrollAnimation,
-                          curve: Curves.easeOutCubic,
-                        );
-                        _syncScroll = true;
-                      },
+                      onTap: () => _goToPage(page),
                       child: DecoratedThumbnail(
                         entry: pageEntry,
                         extent: extent,
@@ -139,12 +141,23 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                 );
               },
               separatorBuilder: (context, index) => separator,
-              itemCount: multiPageInfo.pageCount + 2,
+              itemCount: pageCount + 2,
             ),
           );
         },
       ),
     );
+  }
+
+  Future<void> _goToPage(int page) async {
+    _syncScroll = false;
+    controller.page = page;
+    await _scrollController.animateTo(
+      pageToScrollOffset(page),
+      duration: Durations.viewerOverlayPageScrollAnimation,
+      curve: Curves.easeOutCubic,
+    );
+    _syncScroll = true;
   }
 
   void _onScrollChange() {

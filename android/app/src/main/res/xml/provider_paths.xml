@@ -4,9 +4,8 @@
         name="external_files"
         path="." />
 
-    <!-- for images & other media embedded in XMP
-    and exported for viewing and sharing -->
+    <!-- embedded images & other media that are exported for viewing and sharing -->
     <cache-path
-        name="xmp_props"
+        name="embedded"
         path="." />
 </paths>

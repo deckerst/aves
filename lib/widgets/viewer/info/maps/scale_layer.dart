@@ -31,8 +31,8 @@ class ScaleLayerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mapState = MapState.of(context);
-    return ScaleLayer(options, mapState, mapState.onMoved);
+    final mapState = MapState.maybeOf(context);
+    return mapState != null ? ScaleLayer(options, mapState, mapState.onMoved) : SizedBox();
   }
 }
 

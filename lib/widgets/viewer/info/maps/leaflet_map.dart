@@ -7,7 +7,7 @@ import 'package:aves/widgets/viewer/info/maps/scale_layer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -71,7 +71,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
       options: MapOptions(
         center: widget.latLng,
         zoom: widget.initialZoom,
-        interactive: false,
+        interactiveFlags: InteractiveFlag.none,
       ),
       mapController: _mapController,
       children: [

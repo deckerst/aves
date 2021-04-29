@@ -4,7 +4,6 @@ import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
-import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -17,7 +16,7 @@ import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../ref/mime_types.dart';
 
@@ -43,7 +42,13 @@ class AvesEntry {
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
-  static const List<String> undecodable = [MimeTypes.crw, MimeTypes.djvu, MimeTypes.psd];
+  static const List<String> undecodable = [
+    MimeTypes.art,
+    MimeTypes.crw,
+    MimeTypes.djvu,
+    MimeTypes.psdVnd,
+    MimeTypes.psdX,
+  ];
 
   AvesEntry({
     this.uri,
@@ -95,36 +100,6 @@ class AvesEntry {
       ..addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
 
     return copied;
-  }
-
-  AvesEntry getPageEntry(SinglePageInfo pageInfo, {bool eraseDefaultPageId = true}) {
-    if (pageInfo == null) return this;
-
-    // do not provide the page ID for the default page,
-    // so that we can treat this page like the main entry
-    // and retrieve cached images for it
-    final pageId = eraseDefaultPageId && pageInfo.isDefault ? null : pageInfo.pageId;
-
-    return AvesEntry(
-      uri: uri,
-      path: path,
-      contentId: contentId,
-      pageId: pageId,
-      sourceMimeType: pageInfo.mimeType ?? sourceMimeType,
-      width: pageInfo.width ?? width,
-      height: pageInfo.height ?? height,
-      sourceRotationDegrees: sourceRotationDegrees,
-      sizeBytes: sizeBytes,
-      sourceTitle: sourceTitle,
-      dateModifiedSecs: dateModifiedSecs,
-      sourceDateTakenMillis: sourceDateTakenMillis,
-      durationMillis: pageInfo.durationMillis ?? durationMillis,
-    )
-      ..catalogMetadata = _catalogMetadata?.copyWith(
-        mimeType: pageInfo.mimeType,
-        isMultipage: false,
-      )
-      ..addressDetails = _addressDetails?.copyWith();
   }
 
   // from DB or platform source entry
@@ -251,7 +226,9 @@ class AvesEntry {
 
   bool get is360 => _catalogMetadata?.is360 ?? false;
 
-  bool get isMultipage => _catalogMetadata?.isMultipage ?? false;
+  bool get isMultiPage => _catalogMetadata?.isMultiPage ?? false;
+
+  bool get isMotionPhoto => isMultiPage && mimeType == MimeTypes.jpeg;
 
   bool get canEdit => path != null;
 

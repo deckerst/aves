@@ -1,68 +1,46 @@
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/multipage.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Minimap extends StatelessWidget {
-  final AvesEntry mainEntry;
+  final AvesEntry entry;
   final ValueNotifier<ViewState> viewStateNotifier;
-  final MultiPageController multiPageController;
   final Size size;
 
   static const defaultSize = Size(96, 96);
 
   const Minimap({
-    @required this.mainEntry,
+    @required this.entry,
     @required this.viewStateNotifier,
-    @required this.multiPageController,
     this.size = defaultSize,
   });
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
-      child: multiPageController != null
-          ? FutureBuilder<MultiPageInfo>(
-              future: multiPageController.info,
-              builder: (context, snapshot) {
-                final multiPageInfo = snapshot.data;
-                if (multiPageInfo == null) return SizedBox.shrink();
-                return ValueListenableBuilder<int>(
-                  valueListenable: multiPageController.pageNotifier,
-                  builder: (context, page, child) {
-                    final pageEntry = mainEntry.getPageEntry(multiPageInfo?.getByIndex(page));
-                    return _buildForEntrySize(pageEntry);
-                  },
-                );
-              })
-          : _buildForEntrySize(mainEntry),
-    );
-  }
-
-  Widget _buildForEntrySize(AvesEntry entry) {
-    return ValueListenableBuilder<ViewState>(
-        valueListenable: viewStateNotifier,
-        builder: (context, viewState, child) {
-          final viewportSize = viewState.viewportSize;
-          if (viewportSize == null) return SizedBox.shrink();
-          return AnimatedBuilder(
-            animation: entry.imageChangeNotifier,
-            builder: (context, child) => CustomPaint(
-              painter: MinimapPainter(
-                viewportSize: viewportSize,
-                entrySize: entry.displaySize,
-                viewCenterOffset: viewState.position,
-                viewScale: viewState.scale,
-                minimapBorderColor: Colors.white30,
+      child: ValueListenableBuilder<ViewState>(
+          valueListenable: viewStateNotifier,
+          builder: (context, viewState, child) {
+            final viewportSize = viewState.viewportSize;
+            if (viewportSize == null) return SizedBox.shrink();
+            return AnimatedBuilder(
+              animation: entry.imageChangeNotifier,
+              builder: (context, child) => CustomPaint(
+                painter: MinimapPainter(
+                  viewportSize: viewportSize,
+                  entrySize: entry.displaySize,
+                  viewCenterOffset: viewState.position,
+                  viewScale: viewState.scale,
+                  minimapBorderColor: Colors.white30,
+                ),
+                size: size,
               ),
-              size: size,
-            ),
-          );
-        });
+            );
+          }),
+    );
   }
 }
 

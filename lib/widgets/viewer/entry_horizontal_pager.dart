@@ -3,27 +3,21 @@ import 'package:aves/model/multipage.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/widgets/common/magnifier/pan/gesture_detector_scope.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
-import 'package:aves/widgets/common/video/controller.dart';
-import 'package:aves/widgets/viewer/multipage.dart';
+import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class MultiEntryScroller extends StatefulWidget {
   final CollectionLens collection;
   final PageController pageController;
   final ValueChanged<int> onPageChanged;
-  final List<Tuple2<String, AvesVideoController>> videoControllers;
-  final List<Tuple2<String, MultiPageController>> multiPageControllers;
   final void Function(String uri) onViewDisposed;
 
   const MultiEntryScroller({
     this.collection,
     this.pageController,
     this.onPageChanged,
-    this.videoControllers,
-    this.multiPageControllers,
     this.onViewDisposed,
   });
 
@@ -50,17 +44,17 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           final entry = entries[index];
 
           Widget child;
-          if (entry.isMultipage) {
-            final multiPageController = _getMultiPageController(entry);
+          if (entry.isMultiPage) {
+            final multiPageController = context.read<MultiPageConductor>().getController(entry);
             if (multiPageController != null) {
-              child = FutureBuilder<MultiPageInfo>(
-                future: multiPageController.info,
+              child = StreamBuilder<MultiPageInfo>(
+                stream: multiPageController.infoStream,
                 builder: (context, snapshot) {
-                  final multiPageInfo = snapshot.data;
+                  final multiPageInfo = multiPageController.info;
                   return ValueListenableBuilder<int>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
-                      return _buildViewer(entry, page: multiPageInfo?.getByIndex(page));
+                      return _buildViewer(entry, pageEntry: multiPageInfo?.getPageEntryByIndex(page));
                     },
                   );
                 },
@@ -78,24 +72,19 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  Widget _buildViewer(AvesEntry entry, {SinglePageInfo page}) {
+  Widget _buildViewer(AvesEntry mainEntry, {AvesEntry pageEntry}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
           key: Key('imageview'),
-          mainEntry: entry,
-          page: page,
+          mainEntry: mainEntry,
+          pageEntry: pageEntry ?? mainEntry,
           viewportSize: mqSize,
-          videoControllers: widget.videoControllers,
-          onDisposed: () => widget.onViewDisposed?.call(entry.uri),
+          onDisposed: () => widget.onViewDisposed?.call(mainEntry.uri),
         );
       },
     );
-  }
-
-  MultiPageController _getMultiPageController(AvesEntry entry) {
-    return widget.multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
   }
 
   @override
@@ -104,13 +93,9 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
 
 class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
-  final List<Tuple2<String, AvesVideoController>> videoControllers;
-  final List<Tuple2<String, MultiPageController>> multiPageControllers;
 
   const SingleEntryScroller({
     this.entry,
-    this.videoControllers,
-    this.multiPageControllers,
   });
 
   @override
@@ -118,24 +103,24 @@ class SingleEntryScroller extends StatefulWidget {
 }
 
 class _SingleEntryScrollerState extends State<SingleEntryScroller> with AutomaticKeepAliveClientMixin {
-  AvesEntry get entry => widget.entry;
+  AvesEntry get mainEntry => widget.entry;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
 
     Widget child;
-    if (entry.isMultipage) {
-      final multiPageController = _getMultiPageController(entry);
+    if (mainEntry.isMultiPage) {
+      final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
-        child = FutureBuilder<MultiPageInfo>(
-          future: multiPageController.info,
+        child = StreamBuilder<MultiPageInfo>(
+          stream: multiPageController.infoStream,
           builder: (context, snapshot) {
-            final multiPageInfo = snapshot.data;
+            final multiPageInfo = multiPageController.info;
             return ValueListenableBuilder<int>(
               valueListenable: multiPageController.pageNotifier,
               builder: (context, page, child) {
-                return _buildViewer(page: multiPageInfo?.getByIndex(page));
+                return _buildViewer(pageEntry: multiPageInfo?.getPageEntryByIndex(page));
               },
             );
           },
@@ -150,22 +135,17 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  Widget _buildViewer({SinglePageInfo page}) {
+  Widget _buildViewer({AvesEntry pageEntry}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
-          mainEntry: entry,
-          page: page,
+          mainEntry: mainEntry,
+          pageEntry: pageEntry ?? mainEntry,
           viewportSize: mqSize,
-          videoControllers: widget.videoControllers,
         );
       },
     );
-  }
-
-  MultiPageController _getMultiPageController(AvesEntry entry) {
-    return widget.multiPageControllers.firstWhere((kv) => kv.item1 == entry.uri, orElse: () => null)?.item2;
   }
 
   @override

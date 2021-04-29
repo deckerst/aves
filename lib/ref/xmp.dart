@@ -16,6 +16,7 @@ class XMP {
     'GettyImagesGIFT': 'Getty Images',
     'GIMP': 'GIMP',
     'GCamera': 'Google Camera',
+    'GCreations': 'Google Creations',
     'GFocus': 'Google Focus',
     'GPano': 'Google Panorama',
     'illustrator': 'Illustrator',

@@ -1,5 +1,5 @@
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/common/video/controller.dart';
+import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 
 class VideoView extends StatefulWidget {
@@ -54,7 +54,7 @@ class _VideoViewState extends State<VideoView> {
     return StreamBuilder<VideoStatus>(
         stream: controller.statusStream,
         builder: (context, snapshot) {
-          return controller.isPlayable ? controller.buildPlayerWidget(context, entry) : SizedBox();
+          return controller.isReady ? controller.buildPlayerWidget(context) : SizedBox();
         });
   }
 

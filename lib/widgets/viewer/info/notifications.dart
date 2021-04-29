@@ -28,7 +28,7 @@ class OpenTempEntryNotification extends Notification {
   String toString() => '$runtimeType#${shortHash(this)}{entry=$entry}';
 }
 
-enum EmbeddedDataSource { videoCover, xmp }
+enum EmbeddedDataSource { motionPhotoVideo, videoCover, xmp }
 
 class OpenEmbeddedDataNotification extends Notification {
   final EmbeddedDataSource source;
@@ -40,6 +40,10 @@ class OpenEmbeddedDataNotification extends Notification {
     this.propPath,
     this.mimeType,
   });
+
+  factory OpenEmbeddedDataNotification.motionPhotoVideo() => OpenEmbeddedDataNotification._private(
+        source: EmbeddedDataSource.motionPhotoVideo,
+      );
 
   factory OpenEmbeddedDataNotification.videoCover() => OpenEmbeddedDataNotification._private(
         source: EmbeddedDataSource.videoCover,

@@ -1,5 +1,5 @@
 import 'package:aves/geo/format.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -8,6 +8,7 @@ class AIcons {
   static const IconData vector = Icons.code_outlined;
 
   static const IconData android = Icons.android;
+  static const IconData broken = Icons.broken_image_outlined;
   static const IconData checked = Icons.done_outlined;
   static const IconData date = Icons.calendar_today_outlined;
   static const IconData disc = Icons.fiber_manual_record;
@@ -71,9 +72,10 @@ class AIcons {
   // thumbnail overlay
   static const IconData animated = Icons.slideshow;
   static const IconData geo = Icons.language_outlined;
-  static const IconData multipage = Icons.burst_mode_outlined;
+  static const IconData motionPhoto = Icons.motion_photos_on_outlined;
+  static const IconData multiPage = Icons.burst_mode_outlined;
   static const IconData play = Icons.play_circle_outline;
-  static const IconData threesixty = Icons.threesixty_outlined;
+  static const IconData threeSixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;
 }

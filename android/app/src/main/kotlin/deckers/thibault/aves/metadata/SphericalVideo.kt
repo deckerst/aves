@@ -82,7 +82,7 @@ class GSpherical(xmlBytes: ByteArray) {
     ).filterValues { it != null }
 
     companion object SphericalVideo {
-        private val LOG_TAG = LogUtils.createTag(SphericalVideo::class.java)
+        private val LOG_TAG = LogUtils.createTag<SphericalVideo>()
 
         // cf https://github.com/google/spatial-media
         const val SPHERICAL_VIDEO_V1_UUID = "ffcc8263-f855-4a93-8814-587a02521fdd"

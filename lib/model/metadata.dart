@@ -29,7 +29,7 @@ class DateMetadata {
 
 class CatalogMetadata {
   final int contentId, dateMillis;
-  final bool isAnimated, isGeotiff, is360, isMultipage;
+  final bool isAnimated, isGeotiff, is360, isMultiPage;
   bool isFlipped;
   int rotationDegrees;
   final String mimeType, xmpSubjects, xmpTitleDescription;
@@ -41,7 +41,7 @@ class CatalogMetadata {
   static const _isFlippedMask = 1 << 1;
   static const _isGeotiffMask = 1 << 2;
   static const _is360Mask = 1 << 3;
-  static const _isMultipageMask = 1 << 4;
+  static const _isMultiPageMask = 1 << 4;
 
   CatalogMetadata({
     this.contentId,
@@ -51,7 +51,7 @@ class CatalogMetadata {
     this.isFlipped = false,
     this.isGeotiff = false,
     this.is360 = false,
-    this.isMultipage = false,
+    this.isMultiPage = false,
     this.rotationDegrees,
     this.xmpSubjects,
     this.xmpTitleDescription,
@@ -70,7 +70,8 @@ class CatalogMetadata {
   CatalogMetadata copyWith({
     int contentId,
     String mimeType,
-    bool isMultipage,
+    bool isMultiPage,
+    int rotationDegrees,
   }) {
     return CatalogMetadata(
       contentId: contentId ?? this.contentId,
@@ -80,8 +81,8 @@ class CatalogMetadata {
       isFlipped: isFlipped,
       isGeotiff: isGeotiff,
       is360: is360,
-      isMultipage: isMultipage ?? this.isMultipage,
-      rotationDegrees: rotationDegrees,
+      isMultiPage: isMultiPage ?? this.isMultiPage,
+      rotationDegrees: rotationDegrees ?? this.rotationDegrees,
       xmpSubjects: xmpSubjects,
       xmpTitleDescription: xmpTitleDescription,
       latitude: latitude,
@@ -99,7 +100,7 @@ class CatalogMetadata {
       isFlipped: flags & _isFlippedMask != 0,
       isGeotiff: flags & _isGeotiffMask != 0,
       is360: flags & _is360Mask != 0,
-      isMultipage: flags & _isMultipageMask != 0,
+      isMultiPage: flags & _isMultiPageMask != 0,
       // `rotationDegrees` should default to `sourceRotationDegrees`, not 0
       rotationDegrees: map['rotationDegrees'],
       xmpSubjects: map['xmpSubjects'] ?? '',
@@ -113,7 +114,7 @@ class CatalogMetadata {
         'contentId': contentId,
         'mimeType': mimeType,
         'dateMillis': dateMillis,
-        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultipage ? _isMultipageMask : 0),
+        'flags': (isAnimated ? _isAnimatedMask : 0) | (isFlipped ? _isFlippedMask : 0) | (isGeotiff ? _isGeotiffMask : 0) | (is360 ? _is360Mask : 0) | (isMultiPage ? _isMultiPageMask : 0),
         'rotationDegrees': rotationDegrees,
         'xmpSubjects': xmpSubjects,
         'xmpTitleDescription': xmpTitleDescription,
@@ -122,7 +123,7 @@ class CatalogMetadata {
       };
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultipage=$isMultipage, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
+  String toString() => '$runtimeType#${shortHash(this)}{contentId=$contentId, mimeType=$mimeType, dateMillis=$dateMillis, isAnimated=$isAnimated, isFlipped=$isFlipped, isGeotiff=$isGeotiff, is360=$is360, isMultiPage=$isMultiPage, rotationDegrees=$rotationDegrees, latitude=$latitude, longitude=$longitude, xmpSubjects=$xmpSubjects, xmpTitleDescription=$xmpTitleDescription}';
 }
 
 class OverlayMetadata {

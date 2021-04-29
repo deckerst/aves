@@ -13,7 +13,7 @@ import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 
 object MultiTrackMedia {
-    private val LOG_TAG = LogUtils.createTag(MultiTrackMedia::class.java)
+    private val LOG_TAG = LogUtils.createTag<MultiTrackMedia>()
 
     @RequiresApi(Build.VERSION_CODES.P)
     fun getImage(context: Context, uri: Uri, trackIndex: Int?): Bitmap? {

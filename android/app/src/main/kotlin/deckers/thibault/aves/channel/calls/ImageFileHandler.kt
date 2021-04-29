@@ -3,7 +3,6 @@ package deckers.thibault.aves.channel.calls
 import android.app.Activity
 import android.graphics.Rect
 import android.net.Uri
-import android.util.Size
 import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
@@ -31,8 +30,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getEntry) }
-            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getThumbnail) }
-            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRegion) }
+            "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getThumbnail) }
+            "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getRegion) }
             "rename" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::rename) }
             "rotate" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::rotate) }
             "flip" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::flip) }
@@ -61,7 +60,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         })
     }
 
-    private fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getThumbnail(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")
         val mimeType = call.argument<String>("mimeType")
         val dateModifiedSecs = call.argument<Number>("dateModifiedSecs")?.toLong()
@@ -93,7 +92,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         ).fetch()
     }
 
-    private fun getRegion(call: MethodCall, result: MethodChannel.Result) {
+    private suspend fun getRegion(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         val mimeType = call.argument<String>("mimeType")
         val pageId = call.argument<Int>("pageId")
@@ -185,7 +184,8 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         val uri = (entryMap["uri"] as String?)?.let { Uri.parse(it) }
         val path = entryMap["path"] as String?
         val mimeType = entryMap["mimeType"] as String?
-        if (uri == null || path == null || mimeType == null) {
+        val sizeBytes = (entryMap["sizeBytes"] as Number?)?.toLong()
+        if (uri == null || path == null || mimeType == null || sizeBytes == null) {
             result.error("changeOrientation-args", "failed because entry fields are missing", null)
             return
         }
@@ -196,7 +196,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
 
-        provider.changeOrientation(activity, path, uri, mimeType, op, object : ImageOpCallback {
+        provider.changeOrientation(activity, path, uri, mimeType, sizeBytes, op, object : ImageOpCallback {
             override fun onSuccess(fields: FieldMap) = result.success(fields)
             override fun onFailure(throwable: Throwable) = result.error("changeOrientation-failure", "failed to change orientation", throwable.message)
         })

@@ -9,6 +9,7 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.util.Log
 import androidx.annotation.RequiresApi
+import deckers.thibault.aves.MainActivity.Companion.VOLUME_ACCESS_REQUEST
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
@@ -16,9 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 
 object PermissionManager {
-    private val LOG_TAG = LogUtils.createTag(PermissionManager::class.java)
-
-    const val VOLUME_ACCESS_REQUEST_CODE = 1
+    private val LOG_TAG = LogUtils.createTag<PermissionManager>()
 
     // permission request code to pending runnable
     private val pendingPermissionMap = ConcurrentHashMap<Int, PendingPermissionHandler>()
@@ -39,8 +38,8 @@ object PermissionManager {
         }
 
         if (intent.resolveActivity(activity.packageManager) != null) {
-            pendingPermissionMap[VOLUME_ACCESS_REQUEST_CODE] = PendingPermissionHandler(path, onGranted, onDenied)
-            activity.startActivityForResult(intent, VOLUME_ACCESS_REQUEST_CODE, null)
+            pendingPermissionMap[VOLUME_ACCESS_REQUEST] = PendingPermissionHandler(path, onGranted, onDenied)
+            activity.startActivityForResult(intent, VOLUME_ACCESS_REQUEST, null)
         } else {
             Log.e(LOG_TAG, "failed to resolve activity for intent=$intent")
             onDenied()

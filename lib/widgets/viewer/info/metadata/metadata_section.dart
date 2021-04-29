@@ -158,7 +158,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         return MetadataDirectory(directoryName, parent, _toSortedTags(rawTags));
       }).toList();
 
-      if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultipage)) {
+      if (entry.isVideo || (entry.mimeType == MimeTypes.heif && entry.isMultiPage)) {
         directories.addAll(await _getStreamDirectories());
       }
 
@@ -193,6 +193,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       String getTypeText(Map stream) {
         final type = stream[Keys.streamType] ?? StreamTypes.unknown;
         switch (type) {
+          case StreamTypes.attachment:
+            return 'Attachment';
           case StreamTypes.audio:
             return 'Audio';
           case StreamTypes.metadata:
@@ -209,8 +211,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
       }
 
       final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
-      final unknownStreams = allStreams.where((stream) => stream[Keys.streamType] == StreamTypes.unknown).toList();
-      final knownStreams = allStreams.whereNot(unknownStreams.contains);
+      final attachmentStreams = allStreams.where((stream) => stream[Keys.streamType] == StreamTypes.attachment).toList();
+      final knownStreams = allStreams.whereNot(attachmentStreams.contains);
 
       // display known streams as separate directories (e.g. video, audio, subs)
       if (knownStreams.isNotEmpty) {
@@ -228,18 +230,18 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         }
       }
 
-      // display unknown streams as attachments (e.g. fonts)
-      if (unknownStreams.isNotEmpty) {
-        final unknownCodecCount = <String, List<String>>{};
-        for (final stream in unknownStreams) {
+      // group attachments by format (e.g. TTF fonts)
+      if (attachmentStreams.isNotEmpty) {
+        final formatCount = <String, List<String>>{};
+        for (final stream in attachmentStreams) {
           final codec = (stream[Keys.codecName] as String ?? 'unknown').toUpperCase();
-          if (!unknownCodecCount.containsKey(codec)) {
-            unknownCodecCount[codec] = [];
+          if (!formatCount.containsKey(codec)) {
+            formatCount[codec] = [];
           }
-          unknownCodecCount[codec].add(stream[Keys.filename]);
+          formatCount[codec].add(stream[Keys.filename]);
         }
-        if (unknownCodecCount.isNotEmpty) {
-          final rawTags = unknownCodecCount.map((key, value) {
+        if (formatCount.isNotEmpty) {
+          final rawTags = formatCount.map((key, value) {
             final count = value.length;
             // remove duplicate names, so number of displayed names may not match displayed count
             final names = value.where((v) => v != null).toSet().toList()..sort(compareAsciiUpperCase);

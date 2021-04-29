@@ -2,7 +2,9 @@ package deckers.thibault.aves.metadata
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import deckers.thibault.aves.utils.LogUtils
 import deckers.thibault.aves.utils.MimeTypes
 import deckers.thibault.aves.utils.StorageUtils
 import java.io.File
@@ -13,6 +15,8 @@ import java.util.*
 import java.util.regex.Pattern
 
 object Metadata {
+    private val LOG_TAG = LogUtils.createTag<Metadata>()
+
     // Pattern to extract latitude & longitude from a video location tag (cf ISO 6709)
     // Examples:
     // "+37.5090+127.0243/" (Samsung)
@@ -96,10 +100,10 @@ object Metadata {
         return dateMillis
     }
 
-    // opening large TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
+    // opening large PSD/TIFF files yields an OOM (both with `metadata-extractor` v2.15.0 and `ExifInterface` v1.3.1),
     // so we define an arbitrary threshold to avoid a crash on launch.
     // It is not clear whether it is because of the file itself or its metadata.
-    private const val tiffSizeBytesMax = 100 * (1 shl 20) // MB
+    private const val fileSizeBytesMax = 100 * (1 shl 20) // MB
 
     // we try and read metadata from large files by copying an arbitrary amount from its beginning
     // to a temporary file, and reusing that preview file for all metadata reading purposes
@@ -108,25 +112,39 @@ object Metadata {
     private val previewFiles = HashMap<Uri, File>()
 
     private fun getSafeUri(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): Uri {
-        if (mimeType != MimeTypes.TIFF) return uri
-
-        if (sizeBytes != null && sizeBytes < tiffSizeBytesMax) return uri
-
-        var previewFile = previewFiles[uri]
-        if (previewFile == null) {
-            previewFile = File.createTempFile("aves", null, context.cacheDir).apply {
-                deleteOnExit()
-                outputStream().use { outputStream ->
-                    StorageUtils.openInputStream(context, uri)?.use { inputStream ->
-                        val b = ByteArray(previewSize)
-                        inputStream.read(b, 0, previewSize)
-                        outputStream.write(b)
+        return when (mimeType) {
+            // formats known to yield OOM for large files
+            MimeTypes.MP4,
+            MimeTypes.PSD_VND,
+            MimeTypes.PSD_X,
+            MimeTypes.TIFF -> {
+                if (sizeBytes != null && sizeBytes < fileSizeBytesMax) {
+                    // small enough to be safe as it is
+                    uri
+                } else {
+                    // make a preview from the beginning of the file,
+                    // hoping the metadata is accessible in the copied chunk
+                    Log.d(LOG_TAG, "use a preview for uri=$uri mimeType=$mimeType size=$sizeBytes")
+                    var previewFile = previewFiles[uri]
+                    if (previewFile == null) {
+                        previewFile = File.createTempFile("aves", null, context.cacheDir).apply {
+                            deleteOnExit()
+                            outputStream().use { output ->
+                                StorageUtils.openInputStream(context, uri)?.use { input ->
+                                    val b = ByteArray(previewSize)
+                                    input.read(b, 0, previewSize)
+                                    output.write(b)
+                                }
+                            }
+                        }
+                        previewFiles[uri] = previewFile
                     }
+                    Uri.fromFile(previewFile)
                 }
             }
-            previewFiles[uri] = previewFile
+            // *probably* safe
+            else -> uri
         }
-        return Uri.fromFile(previewFile)
     }
 
     fun openSafeInputStream(context: Context, uri: Uri, mimeType: String, sizeBytes: Long?): InputStream? {

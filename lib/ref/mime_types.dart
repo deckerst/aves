@@ -12,13 +12,15 @@ class MimeTypes {
   static const tiff = 'image/tiff';
   static const webp = 'image/webp';
 
-  static const psd = 'image/vnd.adobe.photoshop';
+  static const art = 'image/x-jg';
+  static const djvu = 'image/vnd.djvu';
+  static const psdVnd = 'image/vnd.adobe.photoshop';
+  static const psdX = 'image/x-photoshop';
 
   static const arw = 'image/x-sony-arw';
   static const cr2 = 'image/x-canon-cr2';
   static const crw = 'image/x-canon-crw';
   static const dcr = 'image/x-kodak-dcr';
-  static const djvu = 'image/vnd.djvu';
   static const dng = 'image/x-adobe-dng';
   static const erf = 'image/x-epson-erf';
   static const k25 = 'image/x-kodak-k25';

@@ -8,7 +8,7 @@ import deckers.thibault.aves.utils.LogUtils
 import java.util.*
 
 object XMP {
-    private val LOG_TAG = LogUtils.createTag(XMP::class.java)
+    private val LOG_TAG = LogUtils.createTag<XMP>()
 
     // standard namespaces
     // cf com.adobe.internal.xmp.XMPConst
@@ -42,6 +42,12 @@ object XMP {
 
     fun isDataPath(path: String) = knownDataPaths.contains(path)
 
+    // motion photo
+
+    const val GCAMERA_SCHEMA_NS = "http://ns.google.com/photos/1.0/camera/"
+
+    const val GCAMERA_VIDEO_OFFSET_PROP_NAME = "GCamera:MicroVideoOffset"
+
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
 
@@ -70,6 +76,19 @@ object XMP {
     )
 
     // extensions
+
+    fun XMPMeta.isMotionPhoto(): Boolean {
+        try {
+            return doesPropertyExist(GCAMERA_SCHEMA_NS, GCAMERA_VIDEO_OFFSET_PROP_NAME)
+        } catch (e: XMPException) {
+            if (e.errorCode != XMPError.BADSCHEMA) {
+                // `BADSCHEMA` code is reported when we check a property
+                // from a non standard namespace, and that namespace is not declared in the XMP
+                Log.w(LOG_TAG, "failed to check Google motion photo props from XMP", e)
+            }
+        }
+        return false
+    }
 
     fun XMPMeta.isPanorama(): Boolean {
         // Google
@@ -108,6 +127,20 @@ object XMP {
             }
         } catch (e: XMPException) {
             Log.w(LOG_TAG, "failed to get int for XMP schema=$schema, propName=$propName", e)
+        }
+    }
+
+    fun XMPMeta.getSafeLong(schema: String, propName: String, save: (value: Long) -> Unit) {
+        try {
+            if (doesPropertyExist(schema, propName)) {
+                val item = getPropertyLong(schema, propName)
+                // double check retrieved items as the property sometimes is reported to exist but it is actually null
+                if (item != null) {
+                    save(item)
+                }
+            }
+        } catch (e: XMPException) {
+            Log.w(LOG_TAG, "failed to get long for XMP schema=$schema, propName=$propName", e)
         }
     }
 
