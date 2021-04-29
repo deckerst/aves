@@ -42,8 +42,8 @@ class Constants {
     Dependency(
       name: 'Android-TiffBitmapFactory',
       license: 'MIT',
-      licenseUrl: 'https://github.com/Beyka/Android-TiffBitmapFactory/blob/master/license.txt',
-      sourceUrl: 'https://github.com/Beyka/Android-TiffBitmapFactory',
+      licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
+      sourceUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory',
     ),
     Dependency(
       name: 'CWAC-Document',
