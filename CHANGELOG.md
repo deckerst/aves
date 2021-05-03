@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Changed
+- Upgraded Flutter to beta v2.2.0-10.2.pre
 
 ## [v1.4.1] - 2021-04-29
 ### Added

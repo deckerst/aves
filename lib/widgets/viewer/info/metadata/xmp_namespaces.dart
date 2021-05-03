@@ -57,8 +57,7 @@ class XmpNamespace {
   Map<String, String> get buildProps => rawProps;
 
   List<Widget> buildNamespaceSection() {
-    final props = buildProps
-        .entries
+    final props = buildProps.entries
         .map((kv) {
           final prop = XmpProp(kv.key, kv.value);
           return extractData(prop) ? null : prop;

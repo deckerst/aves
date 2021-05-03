@@ -312,7 +312,7 @@ packages:
     description:
       path: "."
       ref: "issues/829-nullsafety"
-      resolved-ref: "622d7e894034681c46470a4e4c94964d0ccd6454"
+      resolved-ref: "09b306afdfc5d748cdaf3307084e70fcb6a21c6d"
       url: "git://github.com/fleaflet/flutter_map.git"
     source: git
     version: "0.12.0"
@@ -365,7 +365,7 @@ packages:
       name: get_it
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "7.0.0"
   github:
     dependency: "direct main"
     description:
@@ -414,7 +414,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.1"
+    version: "0.13.2"
   http_multi_server:
     dependency: transitive
     description:
@@ -652,7 +652,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.0.0"
+    version: "7.1.0"
   permission_handler_platform_interface:
     dependency: transitive
     description:

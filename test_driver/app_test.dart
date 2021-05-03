@@ -68,7 +68,7 @@ void visitAbout() {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('About-tile'));
+    await driver.tap(find.byValueKey('drawer-about-button'));
     await driver.waitUntilNoTransientCallbacks();
 
     await pressDeviceBackButton();
@@ -81,7 +81,7 @@ void visitSettings() {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('Settings-tile'));
+    await driver.tap(find.byValueKey('drawer-settings-button'));
     await driver.waitUntilNoTransientCallbacks();
 
     await pressDeviceBackButton();

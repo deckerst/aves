@@ -259,8 +259,8 @@
   "settingsVideoShowVideos": "미디어에 동영상 표시",
   "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
   "settingsVideoEnableAutoPlay": "자동 재생",
-  "settingsVideoLoopModeTile":  "반복 모드",
-  "settingsVideoLoopModeTitle":  "반복 모드",
+  "settingsVideoLoopModeTile": "반복 모드",
+  "settingsVideoLoopModeTitle": "반복 모드",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",

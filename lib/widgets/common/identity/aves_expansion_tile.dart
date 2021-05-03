@@ -20,7 +20,7 @@ class AvesExpansionTile extends StatelessWidget {
     this.initiallyExpanded = false,
     this.showHighlight = true,
     @required this.children,
-  }): value = value ?? title;
+  }) : value = value ?? title;
 
   @override
   Widget build(BuildContext context) {
