@@ -29,7 +29,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getEntry) }
+            "getEntry" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getEntry) }
             "getThumbnail" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getThumbnail) }
             "getRegion" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::getRegion) }
             "rename" -> GlobalScope.launch(Dispatchers.IO) { safesus(call, result, ::rename) }
@@ -40,7 +40,7 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
         }
     }
 
-    private suspend fun getEntry(call: MethodCall, result: MethodChannel.Result) {
+    private fun getEntry(call: MethodCall, result: MethodChannel.Result) {
         val mimeType = call.argument<String>("mimeType") // MIME type is optional
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }
         if (uri == null) {
