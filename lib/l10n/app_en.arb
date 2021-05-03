@@ -555,9 +555,9 @@
   "@settingsVideoEnableHardwareAcceleration": {},
   "settingsVideoEnableAutoPlay": "Auto play",
   "@settingsVideoEnableAutoPlay": {},
-  "settingsVideoLoopModeTile":  "Loop mode",
+  "settingsVideoLoopModeTile": "Loop mode",
   "@settingsVideoLoopModeTile": {},
-  "settingsVideoLoopModeTitle":  "Loop Mode",
+  "settingsVideoLoopModeTitle": "Loop Mode",
   "@settingsVideoLoopModeTitle": {},
 
   "settingsSectionPrivacy": "Privacy",

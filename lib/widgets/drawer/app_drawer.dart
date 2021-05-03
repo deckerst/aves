@@ -140,6 +140,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 runSpacing: 8,
                 children: [
                   OutlinedButton.icon(
+                    key: Key('drawer-about-button'),
                     onPressed: () => goTo(AboutPage.routeName, (_) => AboutPage()),
                     icon: Icon(AIcons.info),
                     label: Row(
@@ -175,6 +176,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                   ),
                   OutlinedButton.icon(
+                    key: Key('drawer-settings-button'),
                     onPressed: () => goTo(SettingsPage.routeName, (_) => SettingsPage()),
                     icon: Icon(AIcons.settings),
                     label: Text(context.l10n.settingsPageTitle),
