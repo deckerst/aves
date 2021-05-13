@@ -30,8 +30,8 @@ class StorageAccessPage extends StatefulWidget {
 }
 
 class _StorageAccessPageState extends State<StorageAccessPage> {
-  Future<List<String>> _pathLoader;
-  List<String> _lastPaths;
+  late Future<List<String>> _pathLoader;
+  List<String>? _lastPaths;
 
   @override
   void initState() {
@@ -72,15 +72,15 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                   if (snapshot.connectionState != ConnectionState.done && _lastPaths == null) {
                     return SizedBox.shrink();
                   }
-                  _lastPaths = snapshot.data..sort();
-                  if (_lastPaths.isEmpty) {
+                  _lastPaths = snapshot.data!..sort();
+                  if (_lastPaths!.isEmpty) {
                     return EmptyContent(
                       text: context.l10n.settingsStorageAccessEmpty,
                     );
                   }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: _lastPaths
+                    children: _lastPaths!
                         .map((path) => ListTile(
                               title: Text(path),
                               dense: true,

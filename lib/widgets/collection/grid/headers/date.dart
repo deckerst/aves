@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DaySectionHeader extends StatelessWidget {
-  final DateTime date;
+  final DateTime? date;
 
   const DaySectionHeader({
-    Key key,
-    @required this.date,
+    Key? key,
+    required this.date,
   }) : super(key: key);
 
   // Examples (en_US):
@@ -33,7 +33,7 @@ class DaySectionHeader extends StatelessWidget {
   // `MEd`:         `1. 26. (화)`
   // `yMEd`:        `2021. 1. 26. (화)`
 
-  static String _formatDate(BuildContext context, DateTime date) {
+  static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
     if (date.isToday) return l10n.dateToday;
@@ -53,14 +53,14 @@ class DaySectionHeader extends StatelessWidget {
 }
 
 class MonthSectionHeader extends StatelessWidget {
-  final DateTime date;
+  final DateTime? date;
 
   const MonthSectionHeader({
-    Key key,
-    @required this.date,
+    Key? key,
+    required this.date,
   }) : super(key: key);
 
-  static String _formatDate(BuildContext context, DateTime date) {
+  static String _formatDate(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
     if (date.isThisMonth) return l10n.dateThisMonth;

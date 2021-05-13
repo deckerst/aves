@@ -35,7 +35,7 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class CollectionGrid extends StatefulWidget {
-  final String settingsRouteKey;
+  final String? settingsRouteKey;
 
   const CollectionGrid({
     this.settingsRouteKey,
@@ -46,18 +46,18 @@ class CollectionGrid extends StatefulWidget {
 }
 
 class _CollectionGridState extends State<CollectionGrid> {
-  TileExtentController _tileExtentController;
+  TileExtentController? _tileExtentController;
 
   @override
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
-      settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName,
+      settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
       columnCountDefault: 4,
       extentMin: 46,
       spacing: 0,
     );
     return TileExtentControllerProvider(
-      controller: _tileExtentController,
+      controller: _tileExtentController!,
       child: _CollectionGridContent(),
     );
   }
@@ -99,7 +99,7 @@ class _CollectionGridContent extends StatelessWidget {
                     child: _CollectionSectionedContent(
                       collection: collection,
                       isScrollingNotifier: _isScrollingNotifier,
-                      scrollController: PrimaryScrollController.of(context),
+                      scrollController: PrimaryScrollController.of(context)!,
                     ),
                   );
                 },
@@ -119,9 +119,9 @@ class _CollectionSectionedContent extends StatefulWidget {
   final ScrollController scrollController;
 
   const _CollectionSectionedContent({
-    @required this.collection,
-    @required this.isScrollingNotifier,
-    @required this.scrollController,
+    required this.collection,
+    required this.isScrollingNotifier,
+    required this.scrollController,
   });
 
   @override
@@ -177,9 +177,9 @@ class _CollectionScaler extends StatelessWidget {
   final Widget child;
 
   const _CollectionScaler({
-    @required this.scrollableKey,
-    @required this.appBarHeightNotifier,
-    @required this.child,
+    required this.scrollableKey,
+    required this.appBarHeightNotifier,
+    required this.child,
   });
 
   @override
@@ -228,12 +228,12 @@ class _CollectionScrollView extends StatefulWidget {
   final ScrollController scrollController;
 
   const _CollectionScrollView({
-    @required this.scrollableKey,
-    @required this.collection,
-    @required this.appBar,
-    @required this.appBarHeightNotifier,
-    @required this.isScrollingNotifier,
-    @required this.scrollController,
+    required this.scrollableKey,
+    required this.collection,
+    required this.appBar,
+    required this.appBarHeightNotifier,
+    required this.isScrollingNotifier,
+    required this.scrollController,
   });
 
   @override
@@ -241,7 +241,7 @@ class _CollectionScrollView extends StatefulWidget {
 }
 
 class _CollectionScrollViewState extends State<_CollectionScrollView> {
-  Timer _scrollMonitoringTimer;
+  Timer? _scrollMonitoringTimer;
 
   @override
   void initState() {

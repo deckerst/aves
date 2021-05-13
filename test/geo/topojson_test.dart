@@ -92,6 +92,9 @@ void main() {
 
   test('parse example', () async {
     final topo = await TopoJson().parse(example1);
+    expect(topo != null, true);
+    if (topo == null) return;
+
     expect(topo.objects.containsKey('example'), true);
 
     final exampleObj = topo.objects['example'] as GeometryCollection;
@@ -105,12 +108,15 @@ void main() {
 
     final polygon = exampleObj.geometries[2] as Polygon;
     expect(polygon.arcs.first, [-2]);
-    expect(polygon.properties.containsKey('prop0'), true);
+    expect(polygon.properties!.containsKey('prop0'), true);
   });
 
   test('parse quantized example', () async {
     final topo = await TopoJson().parse(example1Quantized);
+    expect(topo != null, true);
+    if (topo == null) return;
+
     expect(topo.arcs.first.first, [4000, 0]);
-    expect(topo.transform.scale, [0.0005000500050005, 0.00010001000100010001]);
+    expect(topo.transform!.scale, [0.0005000500050005, 0.00010001000100010001]);
   });
 }

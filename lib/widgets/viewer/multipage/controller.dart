@@ -8,23 +8,24 @@ import 'package:flutter/material.dart';
 
 class MultiPageController {
   final AvesEntry entry;
-  final ValueNotifier<int> pageNotifier = ValueNotifier(null);
+  final ValueNotifier<int?> pageNotifier = ValueNotifier(null);
 
-  MultiPageInfo _info;
+  MultiPageInfo? _info;
 
-  final StreamController<MultiPageInfo> _infoStreamController = StreamController.broadcast();
+  final StreamController<MultiPageInfo?> _infoStreamController = StreamController.broadcast();
 
-  Stream<MultiPageInfo> get infoStream => _infoStreamController.stream;
+  Stream<MultiPageInfo?> get infoStream => _infoStreamController.stream;
 
-  MultiPageInfo get info => _info;
+  MultiPageInfo? get info => _info;
 
-  int get page => pageNotifier.value;
+  int? get page => pageNotifier.value;
 
-  set page(int page) => pageNotifier.value = page;
+  set page(int? page) => pageNotifier.value = page;
 
   MultiPageController(this.entry) {
     metadataService.getMultiPageInfo(entry).then((value) {
-      pageNotifier.value = value.defaultPage.index;
+      if (value == null) return;
+      pageNotifier.value = value.defaultPage!.index;
       _info = value;
       _infoStreamController.add(_info);
     });

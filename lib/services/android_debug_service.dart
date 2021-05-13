@@ -9,7 +9,7 @@ class AndroidDebugService {
   static Future<Map> getContextDirs() async {
     try {
       final result = await platform.invokeMethod('getContextDirs');
-      return result as Map;
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getContextDirs failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
@@ -19,7 +19,7 @@ class AndroidDebugService {
   static Future<Map> getEnv() async {
     try {
       final result = await platform.invokeMethod('getEnv');
-      return result as Map;
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getEnv failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
@@ -31,8 +31,8 @@ class AndroidDebugService {
       // returns map with all data available when decoding image bounds with `BitmapFactory`
       final result = await platform.invokeMethod('getBitmapFactoryInfo', <String, dynamic>{
         'uri': entry.uri,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getBitmapFactoryInfo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -45,8 +45,8 @@ class AndroidDebugService {
       final result = await platform.invokeMethod('getContentResolverMetadata', <String, dynamic>{
         'mimeType': entry.mimeType,
         'uri': entry.uri,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getContentResolverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -60,8 +60,8 @@ class AndroidDebugService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getExifInterfaceMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -73,8 +73,8 @@ class AndroidDebugService {
       // returns map with all data available from `MediaMetadataRetriever`
       final result = await platform.invokeMethod('getMediaMetadataRetrieverMetadata', <String, dynamic>{
         'uri': entry.uri,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getMediaMetadataRetrieverMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -88,8 +88,8 @@ class AndroidDebugService {
         'mimeType': entry.mimeType,
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getMetadataExtractorSummary failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -102,8 +102,8 @@ class AndroidDebugService {
     try {
       final result = await platform.invokeMethod('getTiffStructure', <String, dynamic>{
         'uri': entry.uri,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getTiffStructure failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }

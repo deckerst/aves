@@ -10,13 +10,13 @@ import 'package:flutter/material.dart';
 class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final ValueNotifier<bool> cancellableNotifier;
-  final Object heroTag;
+  final ValueNotifier<bool>? cancellableNotifier;
+  final Object? heroTag;
 
   const RasterImageThumbnail({
-    Key key,
-    @required this.entry,
-    @required this.extent,
+    Key? key,
+    required this.entry,
+    required this.extent,
     this.cancellableNotifier,
     this.heroTag,
   }) : super(key: key);
@@ -26,7 +26,7 @@ class RasterImageThumbnail extends StatefulWidget {
 }
 
 class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
-  ThumbnailProvider _fastThumbnailProvider, _sizedThumbnailProvider;
+  ThumbnailProvider? _fastThumbnailProvider, _sizedThumbnailProvider;
 
   AvesEntry get entry => widget.entry;
 
@@ -85,7 +85,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
 
     final fastImage = Image(
       key: ValueKey('LQ'),
-      image: _fastThumbnailProvider,
+      image: _fastThumbnailProvider!,
       errorBuilder: _buildError,
       width: extent,
       height: extent,
@@ -95,7 +95,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
         ? fastImage
         : Image(
             key: ValueKey('HQ'),
-            image: _sizedThumbnailProvider,
+            image: _sizedThumbnailProvider!,
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               if (wasSynchronouslyLoaded) return child;
               return AnimatedSwitcher(
@@ -123,7 +123,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
           );
     return widget.heroTag != null
         ? Hero(
-            tag: widget.heroTag,
+            tag: widget.heroTag!,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
               return TransitionImage(
                 image: entry.getBestThumbnail(extent),
@@ -136,7 +136,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
         : image;
   }
 
-  Widget _buildError(BuildContext context, Object error, StackTrace stackTrace) => ErrorThumbnail(
+  Widget _buildError(BuildContext context, Object error, StackTrace? stackTrace) => ErrorThumbnail(
         entry: entry,
         extent: extent,
         tooltip: error.toString(),

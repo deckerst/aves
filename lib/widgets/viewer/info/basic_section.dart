@@ -19,21 +19,21 @@ import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final ValueNotifier<bool> visibleNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
-    Key key,
-    @required this.entry,
+    Key? key,
+    required this.entry,
     this.collection,
-    @required this.visibleNotifier,
-    @required this.onFilter,
+    required this.visibleNotifier,
+    required this.onFilter,
   }) : super(key: key);
 
   int get megaPixels => entry.megaPixels;
 
-  bool get showMegaPixels => entry.isPhoto && megaPixels != null && megaPixels > 0;
+  bool get showMegaPixels => entry.isPhoto && megaPixels > 0;
 
   String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
 
@@ -48,7 +48,7 @@ class BasicSection extends StatelessWidget {
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
     // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
     final title = entry.bestTitle ?? infoUnknown;
-    final uri = entry.uri ?? infoUnknown;
+    final uri = entry.uri;
     final path = entry.path;
 
     return Column(
@@ -59,7 +59,7 @@ class BasicSection extends StatelessWidget {
           l10n.viewerInfoLabelDate: dateText,
           if (entry.isVideo) ..._buildVideoRows(context),
           if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
-          l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : infoUnknown,
+          l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown,
           l10n.viewerInfoLabelUri: uri,
           if (path != null) l10n.viewerInfoLabelPath: path,
         }),
@@ -83,7 +83,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
-      if (album != null) AlbumFilter(album, collection?.source?.getAlbumDisplayName(context, album)),
+      if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(
@@ -123,8 +123,8 @@ class OwnerProp extends StatefulWidget {
   final ValueNotifier<bool> visibleNotifier;
 
   const OwnerProp({
-    @required this.entry,
-    @required this.visibleNotifier,
+    required this.entry,
+    required this.visibleNotifier,
   });
 
   @override
@@ -132,8 +132,8 @@ class OwnerProp extends StatefulWidget {
 }
 
 class _OwnerPropState extends State<OwnerProp> {
-  final ValueNotifier<String> _loadedUri = ValueNotifier(null);
-  String _ownerPackage;
+  final ValueNotifier<String?> _loadedUri = ValueNotifier(null);
+  String? _ownerPackage;
 
   AvesEntry get entry => widget.entry;
 
@@ -172,11 +172,11 @@ class _OwnerPropState extends State<OwnerProp> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
+    return ValueListenableBuilder<String?>(
       valueListenable: _loadedUri,
       builder: (context, uri, child) {
         if (_ownerPackage == null) return SizedBox();
-        final appName = androidFileUtils.getCurrentAppName(_ownerPackage) ?? _ownerPackage;
+        final appName = androidFileUtils.getCurrentAppName(_ownerPackage!) ?? _ownerPackage;
         // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
         // so be use a basic `Text` instead
         return Text.rich(
@@ -195,7 +195,7 @@ class _OwnerPropState extends State<OwnerProp> {
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     child: Image(
                       image: AppIconImage(
-                        packageName: _ownerPackage,
+                        packageName: _ownerPackage!,
                         size: iconSize,
                       ),
                       width: iconSize,
@@ -215,7 +215,6 @@ class _OwnerPropState extends State<OwnerProp> {
   }
 
   Future<void> _getOwner() async {
-    if (entry == null) return;
     if (_loadedUri.value == entry.uri) return;
     final isMediaContent = entry.uri.startsWith('content://media/external/');
     if (isVisible && isMediaContent) {

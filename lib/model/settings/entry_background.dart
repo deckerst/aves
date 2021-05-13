@@ -15,12 +15,11 @@ extension ExtraEntryBackground on EntryBackground {
 
   Color get color {
     switch (this) {
-      case EntryBackground.black:
-        return Colors.black;
       case EntryBackground.white:
         return Colors.white;
+      case EntryBackground.black:
       default:
-        return null;
+        return Colors.black;
     }
   }
 }

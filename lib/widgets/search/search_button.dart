@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class CollectionSearchButton extends StatelessWidget {
   final CollectionSource source;
-  final CollectionLens parentCollection;
+  final CollectionLens? parentCollection;
 
   const CollectionSearchButton(this.source, {this.parentCollection});
 

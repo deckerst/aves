@@ -11,22 +11,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
-  final CollectionLens collection;
-  final ValueNotifier<AvesEntry> entryNotifier;
+  final CollectionLens? collection;
+  final ValueNotifier<AvesEntry?> entryNotifier;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
   final void Function(String uri) onViewDisposed;
 
   const ViewerVerticalPageView({
-    @required this.collection,
-    @required this.entryNotifier,
-    @required this.verticalPager,
-    @required this.horizontalPager,
-    @required this.onVerticalPageChanged,
-    @required this.onHorizontalPageChanged,
-    @required this.onImagePageRequested,
-    @required this.onViewDisposed,
+    required this.collection,
+    required this.entryNotifier,
+    required this.verticalPager,
+    required this.horizontalPager,
+    required this.onVerticalPageChanged,
+    required this.onHorizontalPageChanged,
+    required this.onImagePageRequested,
+    required this.onViewDisposed,
   });
 
   @override
@@ -36,13 +36,13 @@ class ViewerVerticalPageView extends StatefulWidget {
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
   final ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
-  AvesEntry _oldEntry;
+  AvesEntry? _oldEntry;
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
   bool get hasCollection => collection != null;
 
-  AvesEntry get entry => widget.entryNotifier.value;
+  AvesEntry? get entry => widget.entryNotifier.value;
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   void _unregisterWidget(ViewerVerticalPageView widget) {
     widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.removeListener(_onEntryChanged);
-    _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
+    _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
   }
 
   @override
@@ -82,18 +82,20 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
       SizedBox(),
       hasCollection
           ? MultiEntryScroller(
-              collection: collection,
+              collection: collection!,
               pageController: widget.horizontalPager,
               onPageChanged: widget.onHorizontalPageChanged,
               onViewDisposed: widget.onViewDisposed,
             )
-          : SingleEntryScroller(
-              entry: entry,
-            ),
-      NotificationListener(
+          : entry != null
+              ? SingleEntryScroller(
+                  entry: entry!,
+                )
+              : SizedBox(),
+      NotificationListener<BackUpNotification>(
         onNotification: (notification) {
-          if (notification is BackUpNotification) widget.onImagePageRequested();
-          return false;
+          widget.onImagePageRequested();
+          return true;
         },
         child: InfoPage(
           collection: collection,
@@ -123,21 +125,21 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   }
 
   void _onVerticalPageControllerChanged() {
-    final opacity = min(1.0, widget.verticalPager.page);
+    final opacity = min(1.0, widget.verticalPager.page!);
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
   }
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
   void _onEntryChanged() {
-    _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
+    _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
     _oldEntry = entry;
 
     if (entry != null) {
-      entry.imageChangeNotifier.addListener(_onImageChanged);
+      entry!.imageChangeNotifier.addListener(_onImageChanged);
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      entry.catalog(background: false).then((_) => entry.locate(background: false));
+      entry!.catalog(background: false).then((_) => entry!.locate(background: false));
     } else {
       Navigator.pop(context);
     }

@@ -5,7 +5,7 @@ class SectionKey {
 }
 
 class EntryAlbumSectionKey extends SectionKey {
-  final String directory;
+  final String? directory;
 
   const EntryAlbumSectionKey(this.directory);
 
@@ -23,7 +23,7 @@ class EntryAlbumSectionKey extends SectionKey {
 }
 
 class EntryDateSectionKey extends SectionKey {
-  final DateTime date;
+  final DateTime? date;
 
   const EntryDateSectionKey(this.date);
 

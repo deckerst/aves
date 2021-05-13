@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
   static const routeName = '/';
 
   // untyped map as it is coming from the platform
-  final Map intentData;
+  final Map? intentData;
 
   const HomePage({this.intentData});
 
@@ -35,9 +35,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  AvesEntry _viewerEntry;
-  String _shortcutRouteName;
-  List<String> _shortcutFilters;
+  AvesEntry? _viewerEntry;
+  String? _shortcutRouteName;
+  List<String>? _shortcutFilters;
 
   static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
 
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _setup();
-    imageCache.maximumSizeBytes = 512 * (1 << 20);
+    imageCache!.maximumSizeBytes = 512 * (1 << 20);
     settings.keepScreenOn.apply();
   }
 
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
 
     var appMode = AppMode.main;
     final intentData = widget.intentData ?? await ViewerService.getIntentData();
-    if (intentData?.isNotEmpty == true) {
+    if (intentData.isNotEmpty) {
       final action = intentData['action'];
       switch (action) {
         case 'view':
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
           appMode = AppMode.pickExternal;
           // TODO TLAD apply pick mimetype(s)
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
-          String pickMimeTypes = intentData['mimeType'];
+          String? pickMimeTypes = intentData['mimeType'];
           debugPrint('pick mimeType=$pickMimeTypes');
           break;
         default:
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
     ));
   }
 
-  Future<AvesEntry> _initViewerEntry({@required String uri, @required String mimeType}) async {
+  Future<AvesEntry?> _initViewerEntry({required String uri, required String? mimeType}) async {
     final entry = await imageFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
@@ -129,13 +129,13 @@ class _HomePageState extends State<HomePage> {
       return DirectMaterialPageRoute(
         settings: RouteSettings(name: EntryViewerPage.routeName),
         builder: (_) => EntryViewerPage(
-          initialEntry: _viewerEntry,
+          initialEntry: _viewerEntry!,
         ),
       );
     }
 
     String routeName;
-    Iterable<CollectionFilter> filters;
+    Iterable<CollectionFilter?>? filters;
     if (appMode == AppMode.pickExternal) {
       routeName = CollectionPage.routeName;
     } else {

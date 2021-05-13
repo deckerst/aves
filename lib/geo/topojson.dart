@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 
 // cf https://github.com/topojson/topojson-specification
 class TopoJson {
-  Future<Topology> parse(String data) async {
-    return compute(_isoParse, data);
+  Future<Topology?> parse(String data) async {
+    return compute<String, Topology?>(_isoParse, data);
   }
 
-  static Topology _isoParse(String jsonData) {
+  static Topology? _isoParse(String jsonData) {
     try {
       final data = json.decode(jsonData) as Map<String, dynamic>;
       return Topology.parse(data);
@@ -23,7 +23,7 @@ class TopoJson {
 
 enum TopoJsonObjectType { topology, point, multipoint, linestring, multilinestring, polygon, multipolygon, geometrycollection }
 
-TopoJsonObjectType _parseTopoJsonObjectType(String data) {
+TopoJsonObjectType? _parseTopoJsonObjectType(String? data) {
   switch (data) {
     case 'Topology':
       return TopoJsonObjectType.topology;
@@ -46,7 +46,7 @@ TopoJsonObjectType _parseTopoJsonObjectType(String data) {
 }
 
 class TopologyJsonObject {
-  final List<num> bbox;
+  final List<num>? bbox;
 
   TopologyJsonObject.parse(Map<String, dynamic> data) : bbox = data.containsKey('bbox') ? (data['bbox'] as List).cast<num>().toList() : null;
 }
@@ -54,10 +54,19 @@ class TopologyJsonObject {
 class Topology extends TopologyJsonObject {
   final Map<String, Geometry> objects;
   final List<List<List<num>>> arcs;
-  final Transform transform;
+  final Transform? transform;
 
   Topology.parse(Map<String, dynamic> data)
-      : objects = (data['objects'] as Map).cast<String, dynamic>().map<String, Geometry>((name, geometry) => MapEntry(name, Geometry.build(geometry))),
+      : objects = Map.fromEntries((data['objects'] as Map)
+            .cast<String, dynamic>()
+            .entries
+            .map((kv) {
+              final name = kv.key;
+              final geometry = Geometry.build(kv.value);
+              return geometry != null ? MapEntry(name, geometry) : null;
+            })
+            .where((kv) => kv != null)
+            .cast<MapEntry<String, Geometry>>()),
         arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<List>().map((position) => position.cast<num>()).toList()).toList(),
         transform = data.containsKey('transform') ? Transform.parse((data['transform'] as Map).cast<String, dynamic>()) : null,
         super.parse(data);
@@ -69,8 +78,8 @@ class Topology extends TopologyJsonObject {
       var x = 0, y = 0;
       arc = arc.map((quantized) {
         final absolute = List.of(quantized);
-        absolute[0] = (x += quantized[0]) * transform.scale[0] + transform.translate[0];
-        absolute[1] = (y += quantized[1]) * transform.scale[1] + transform.translate[1];
+        absolute[0] = (x += quantized[0] as int) * transform!.scale[0] + transform!.translate[0];
+        absolute[1] = (y += quantized[1] as int) * transform!.scale[1] + transform!.translate[1];
         return absolute;
       }).toList();
     }
@@ -126,17 +135,18 @@ class Transform {
 
 abstract class Geometry extends TopologyJsonObject {
   final dynamic id;
-  final Map<String, dynamic> properties;
+  final Map<String, dynamic>? properties;
 
   Geometry.parse(Map<String, dynamic> data)
       : id = data.containsKey('id') ? data['id'] : null,
-        properties = data.containsKey('properties') ? data['properties'] as Map<String, dynamic> : null,
+        properties = data.containsKey('properties') ? data['properties'] as Map<String, dynamic>? : null,
         super.parse(data);
 
-  static Geometry build(Map<String, dynamic> data) {
-    final type = _parseTopoJsonObjectType(data['type'] as String);
+  static Geometry? build(Map<String, dynamic> data) {
+    final type = _parseTopoJsonObjectType(data['type'] as String?);
     switch (type) {
       case TopoJsonObjectType.topology:
+      case null:
         return null;
       case TopoJsonObjectType.point:
         return Point.parse(data);
@@ -153,7 +163,6 @@ abstract class Geometry extends TopologyJsonObject {
       case TopoJsonObjectType.geometrycollection:
         return GeometryCollection.parse(data);
     }
-    return null;
   }
 
   bool containsPoint(Topology topology, List<num> point) => false;
@@ -198,11 +207,11 @@ class Polygon extends Geometry {
       : arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<int>()).toList(),
         super.parse(data);
 
-  List<List<List<num>>> _rings;
+  List<List<List<num>>>? _rings;
 
   List<List<List<num>>> rings(Topology topology) {
     _rings ??= topology._decodePolygonArcs(arcs);
-    return _rings;
+    return _rings!;
   }
 
   @override
@@ -218,11 +227,11 @@ class MultiPolygon extends Geometry {
       : arcs = (data['arcs'] as List).cast<List>().map((polygon) => polygon.cast<List>().map((arc) => arc.cast<int>()).toList()).toList(),
         super.parse(data);
 
-  List<List<List<List<num>>>> _polygons;
+  List<List<List<List<num>>>>? _polygons;
 
   List<List<List<List<num>>>> polygons(Topology topology) {
     _polygons ??= topology._decodeMultiPolygonArcs(arcs);
-    return _polygons;
+    return _polygons!;
   }
 
   @override
@@ -235,7 +244,7 @@ class GeometryCollection extends Geometry {
   final List<Geometry> geometries;
 
   GeometryCollection.parse(Map<String, dynamic> data)
-      : geometries = (data['geometries'] as List).cast<Map<String, dynamic>>().map(Geometry.build).toList(),
+      : geometries = (data['geometries'] as List).cast<Map<String, dynamic>>().map(Geometry.build).where((geometry) => geometry != null).cast<Geometry>().toList(),
         super.parse(data);
 
   @override

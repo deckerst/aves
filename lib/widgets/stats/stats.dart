@@ -16,6 +16,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
+
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -27,20 +29,20 @@ class StatsPage extends StatelessWidget {
   static const routeName = '/collection/stats';
 
   final CollectionSource source;
-  final CollectionLens parentCollection;
+  final CollectionLens? parentCollection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
-  Set<AvesEntry> get entries => parentCollection?.sortedEntries?.toSet() ?? source.visibleEntries;
+  Set<AvesEntry> get entries => parentCollection?.sortedEntries.toSet() ?? source.visibleEntries;
 
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
-    @required this.source,
+    required this.source,
     this.parentCollection,
-  }) : assert(source != null) {
+  }) {
     entries.forEach((entry) {
       if (entry.hasAddress) {
-        final address = entry.addressDetails;
+        final address = entry.addressDetails!;
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {
           country += '${LocationFilter.locationSeparator}${address.countryCode}';
@@ -129,7 +131,7 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
+  Widget _buildMimeDonut(BuildContext context, String Function(int) label, Map<String, int> byMimeTypes) {
     if (byMimeTypes.isEmpty) return SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
@@ -257,11 +259,11 @@ class StatsPage extends StatelessWidget {
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    parentCollection.addFilter(filter);
+    parentCollection!.addFilter(filter);
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       Navigator.pop(context);
     });
   }
@@ -287,8 +289,8 @@ class EntryByMimeDatum {
   final int entryCount;
 
   EntryByMimeDatum({
-    @required this.mimeType,
-    @required this.entryCount,
+    required this.mimeType,
+    required this.entryCount,
   }) : displayText = MimeUtils.displayType(mimeType);
 
   Color get color => stringToColor(displayText);

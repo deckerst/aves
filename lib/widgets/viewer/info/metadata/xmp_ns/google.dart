@@ -2,6 +2,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
@@ -14,8 +15,8 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
     return Map.fromEntries(dataProps.map((t) {
       final dataPropPath = t.item1;
       final mimePropPath = t.item2;
-      final dataProp = props.firstWhere((prop) => prop.path == dataPropPath, orElse: () => null);
-      final mimeProp = props.firstWhere((prop) => prop.path == mimePropPath, orElse: () => null);
+      final dataProp = props.firstWhereOrNull((prop) => prop.path == dataPropPath);
+      final mimeProp = props.firstWhereOrNull((prop) => prop.path == mimePropPath);
       return (dataProp != null && mimeProp != null)
           ? MapEntry(
               dataProp.displayKey,
@@ -27,7 +28,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
                 ).dispatch(context),
               ))
           : null;
-    }).where((e) => e != null));
+    }).where((kv) => kv != null).cast<MapEntry<String, InfoLinkHandler>>());
   }
 }
 
@@ -75,7 +76,7 @@ class XmpGCameraNamespace extends XmpNamespace {
   static const videoOffsetKey = 'GCamera:MicroVideoOffset';
   static const videoDataKey = 'Data';
 
-  bool _isMotionPhoto;
+  late bool _isMotionPhoto;
 
   XmpGCameraNamespace(Map<String, String> rawProps) : super(ns, rawProps) {
     _isMotionPhoto = rawProps.keys.any((key) => key == videoOffsetKey);

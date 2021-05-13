@@ -12,9 +12,9 @@ class InfoAppBar extends StatelessWidget {
   final VoidCallback onBackPressed;
 
   const InfoAppBar({
-    @required this.entry,
-    @required this.metadataNotifier,
-    @required this.onBackPressed,
+    required this.entry,
+    required this.metadataNotifier,
+    required this.onBackPressed,
   });
 
   @override

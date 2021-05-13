@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:collection/collection.dart';
 
 class MultiPageConductor {
   final List<MultiPageController> _controllers = [];
@@ -7,7 +8,7 @@ class MultiPageConductor {
   static const maxControllerCount = 3;
 
   Future<void> dispose() async {
-    await Future.forEach(_controllers, (controller) => controller.dispose());
+    await Future.forEach<MultiPageController>(_controllers, (controller) => controller.dispose());
     _controllers.clear();
   }
 
@@ -25,7 +26,7 @@ class MultiPageConductor {
     return controller;
   }
 
-  MultiPageController getController(AvesEntry entry) {
-    return _controllers.firstWhere((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId, orElse: () => null);
+  MultiPageController? getController(AvesEntry entry) {
+    return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 }

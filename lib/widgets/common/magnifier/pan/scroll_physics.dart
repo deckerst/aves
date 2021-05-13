@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 class MagnifierScrollerPhysics extends ScrollPhysics {
   const MagnifierScrollerPhysics({
     this.touchSlopFactor = 1,
-    ScrollPhysics parent,
+    ScrollPhysics? parent,
   }) : super(parent: parent);
 
   // in [0, 1]
@@ -17,7 +17,7 @@ class MagnifierScrollerPhysics extends ScrollPhysics {
   final double touchSlopFactor;
 
   @override
-  MagnifierScrollerPhysics applyTo(ScrollPhysics ancestor) {
+  MagnifierScrollerPhysics applyTo(ScrollPhysics? ancestor) {
     return MagnifierScrollerPhysics(
       touchSlopFactor: touchSlopFactor,
       parent: buildParent(ancestor),

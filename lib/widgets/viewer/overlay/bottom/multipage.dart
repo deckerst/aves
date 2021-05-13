@@ -13,11 +13,10 @@ class MultiPageOverlay extends StatefulWidget {
   final double availableWidth;
 
   const MultiPageOverlay({
-    Key key,
-    @required this.controller,
-    @required this.availableWidth,
-  })  : assert(controller != null),
-        super(key: key);
+    Key? key,
+    required this.controller,
+    required this.availableWidth,
+  }) : super(key: key);
 
   @override
   _MultiPageOverlayState createState() => _MultiPageOverlayState();
@@ -25,9 +24,9 @@ class MultiPageOverlay extends StatefulWidget {
 
 class _MultiPageOverlayState extends State<MultiPageOverlay> {
   final _cancellableNotifier = ValueNotifier(true);
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
   bool _syncScroll = true;
-  int _initControllerPage;
+  int? _initControllerPage;
 
   static const double extent = 48;
   static const double separatorWidth = 2;
@@ -75,8 +74,8 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     await controller.infoStream.first;
     if (_initControllerPage == null) {
       _initControllerPage = controller.page;
-      if (_initControllerPage != 0) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => _goToPage(_initControllerPage));
+      if (_initControllerPage != null && _initControllerPage != 0) {
+        WidgetsBinding.instance!.addPostFrameCallback((_) => _goToPage(_initControllerPage!));
       }
     }
   }
@@ -88,14 +87,14 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final marginWidth = max(0, (availableWidth - extent) / 2 - separatorWidth);
+    final marginWidth = max(0.0, (availableWidth - extent) / 2 - separatorWidth);
     final horizontalMargin = SizedBox(width: marginWidth);
     final separator = SizedBox(width: separatorWidth);
 
     return ThumbnailTheme(
       extent: extent,
       showLocation: false,
-      child: StreamBuilder<MultiPageInfo>(
+      child: StreamBuilder<MultiPageInfo?>(
         stream: controller.infoStream,
         builder: (context, snapshot) {
           final multiPageInfo = controller.info;
@@ -112,7 +111,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
               itemBuilder: (context, index) {
                 if (index == 0 || index == pageCount + 1) return horizontalMargin;
                 final page = index - 1;
-                final pageEntry = multiPageInfo.getPageEntryByIndex(page);
+                final pageEntry = multiPageInfo!.getPageEntryByIndex(page);
 
                 return Stack(
                   children: [

@@ -16,11 +16,15 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
 
   ScaleBoundaries get scaleBoundaries => controller.scaleBoundaries;
 
+  Size get childSize => scaleBoundaries.childSize;
+
+  Size get viewportSize => scaleBoundaries.viewportSize;
+
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
 
   Alignment get basePosition => Alignment.center;
 
-  Function(double prevScale, double nextScale, Offset nextPosition) _animateScale;
+  Function(double? prevScale, double? nextScale, Offset nextPosition)? _animateScale;
 
   /// Mark if scale need recalculation, useful for scale boundaries changes.
   bool markNeedsScaleRecalc = true;
@@ -47,15 +51,15 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     if (nextScaleState == ScaleState.covering || nextScaleState == ScaleState.originalSize) {
       final childFocalPoint = scaleStateChange.childFocalPoint;
       if (childFocalPoint != null) {
-        nextPosition = scaleBoundaries.childToStatePosition(nextScale, childFocalPoint);
+        nextPosition = scaleBoundaries.childToStatePosition(nextScale!, childFocalPoint);
       }
     }
 
     final prevScale = controller.scale ?? controller.getScaleForScaleState(controller.previousScaleState.state);
-    _animateScale(prevScale, nextScale, nextPosition);
+    _animateScale!(prevScale, nextScale, nextPosition);
   }
 
-  void setScaleStateUpdateAnimation(void Function(double prevScale, double nextScale, Offset nextPosition) animateScale) {
+  void setScaleStateUpdateAnimation(void Function(double? prevScale, double? nextScale, Offset nextPosition) animateScale) {
     _animateScale = animateScale;
   }
 
@@ -64,13 +68,13 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     if (controller.scale == controller.previousState.scale) return;
 
     if (state.source == ChangeSource.internal || state.source == ChangeSource.animation) return;
-    final newScaleState = (scale > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
+    final newScaleState = (scale! > scaleBoundaries.initialScale) ? ScaleState.zoomedIn : ScaleState.zoomedOut;
     controller.setScaleState(newScaleState, state.source);
   }
 
   Offset get position => controller.position;
 
-  double get scale {
+  double? get scale {
     final scaleState = controller.scaleState.state;
     final needsRecalc = markNeedsScaleRecalc && !(scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut);
     final scaleExistsOnController = controller.scale != null;
@@ -83,12 +87,12 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     return controller.scale;
   }
 
-  void setScale(double scale, ChangeSource source) => controller.update(scale: scale, source: source);
+  void setScale(double? scale, ChangeSource source) => controller.update(scale: scale, source: source);
 
   void updateMultiple({
-    @required Offset position,
-    @required double scale,
-    @required ChangeSource source,
+    required Offset position,
+    required double scale,
+    required ChangeSource source,
   }) {
     controller.update(position: position, scale: scale, source: source);
   }
@@ -101,7 +105,7 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     controller.setScaleState(newScaleState, source);
   }
 
-  void nextScaleState(ChangeSource source, {Offset childFocalPoint}) {
+  void nextScaleState(ChangeSource source, {Offset? childFocalPoint}) {
     final scaleState = controller.scaleState.state;
     if (scaleState == ScaleState.zoomedIn || scaleState == ScaleState.zoomedOut) {
       controller.setScaleState(scaleStateCycle(scaleState), source, childFocalPoint: childFocalPoint);
@@ -125,11 +129,11 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     controller.setScaleState(nextScaleState, source, childFocalPoint: childFocalPoint);
   }
 
-  CornersRange cornersX({double scale}) {
-    final _scale = scale ?? this.scale;
+  CornersRange cornersX({double? scale}) {
+    final _scale = scale ?? this.scale!;
 
-    final computedWidth = scaleBoundaries.childSize.width * _scale;
-    final screenWidth = scaleBoundaries.viewportSize.width;
+    final computedWidth = childSize.width * _scale;
+    final screenWidth = viewportSize.width;
 
     final positionX = basePosition.x;
     final widthDiff = computedWidth - screenWidth;
@@ -139,11 +143,11 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     return CornersRange(minX, maxX);
   }
 
-  CornersRange cornersY({double scale}) {
-    final _scale = scale ?? this.scale;
+  CornersRange cornersY({double? scale}) {
+    final _scale = scale ?? this.scale!;
 
-    final computedHeight = scaleBoundaries.childSize.height * _scale;
-    final screenHeight = scaleBoundaries.viewportSize.height;
+    final computedHeight = childSize.height * _scale;
+    final screenHeight = viewportSize.height;
 
     final positionY = basePosition.y;
     final heightDiff = computedHeight - screenHeight;
@@ -153,15 +157,15 @@ mixin MagnifierControllerDelegate on State<MagnifierCore> {
     return CornersRange(minY, maxY);
   }
 
-  Offset clampPosition({Offset position, double scale}) {
-    final _scale = scale ?? this.scale;
+  Offset clampPosition({Offset? position, double? scale}) {
+    final _scale = scale ?? this.scale!;
     final _position = position ?? this.position;
 
-    final computedWidth = scaleBoundaries.childSize.width * _scale;
-    final computedHeight = scaleBoundaries.childSize.height * _scale;
+    final computedWidth = childSize.width * _scale;
+    final computedHeight = childSize.height * _scale;
 
-    final screenWidth = scaleBoundaries.viewportSize.width;
-    final screenHeight = scaleBoundaries.viewportSize.height;
+    final screenWidth = viewportSize.width;
+    final screenHeight = viewportSize.height;
 
     var finalX = 0.0;
     if (screenWidth < computedWidth) {

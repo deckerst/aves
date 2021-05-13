@@ -11,9 +11,9 @@ class PanoramaOverlay extends StatelessWidget {
   final Animation<double> scale;
 
   const PanoramaOverlay({
-    Key key,
-    @required this.entry,
-    @required this.scale,
+    Key? key,
+    required this.entry,
+    required this.scale,
   }) : super(key: key);
 
   @override

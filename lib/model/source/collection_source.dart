@@ -15,6 +15,7 @@ import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
+import 'package:collection/collection.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
 
@@ -31,7 +32,7 @@ mixin SourceBase {
 
   Stream<ProgressEvent> get progressStream => _progressStreamController.stream;
 
-  void setProgress({@required int done, @required int total}) => _progressStreamController.add(ProgressEvent(done: done, total: total));
+  void setProgress({required int done, required int total}) => _progressStreamController.add(ProgressEvent(done: done, total: total));
 }
 
 abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagMixin {
@@ -45,24 +46,24 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   // TODO TLAD use `Set.unmodifiable()` when possible
   Set<AvesEntry> get allEntries => Set.of(_rawEntries);
 
-  Set<AvesEntry> _visibleEntries;
+  Set<AvesEntry>? _visibleEntries;
 
   @override
   Set<AvesEntry> get visibleEntries {
     // TODO TLAD use `Set.unmodifiable()` when possible
     _visibleEntries ??= Set.of(_applyHiddenFilters(_rawEntries));
-    return _visibleEntries;
+    return _visibleEntries!;
   }
 
-  List<AvesEntry> _sortedEntriesByDate;
+  List<AvesEntry>? _sortedEntriesByDate;
 
   @override
   List<AvesEntry> get sortedEntriesByDate {
     _sortedEntriesByDate ??= List.unmodifiable(visibleEntries.toList()..sort(AvesEntry.compareByDate));
-    return _sortedEntriesByDate;
+    return _sortedEntriesByDate!;
   }
 
-  List<DateMetadata> _savedDates;
+  late List<DateMetadata> _savedDates;
 
   Future<void> loadDates() async {
     final stopwatch = Stopwatch()..start();
@@ -75,7 +76,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return hiddenFilters.isEmpty ? entries : entries.where((entry) => !hiddenFilters.any((filter) => filter.test(entry)));
   }
 
-  void _invalidate([Set<AvesEntry> entries]) {
+  void _invalidate([Set<AvesEntry>? entries]) {
     _visibleEntries = null;
     _sortedEntriesByDate = null;
     invalidateAlbumFilterSummary(entries: entries);
@@ -91,7 +92,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     }
     entries.forEach((entry) {
       final contentId = entry.contentId;
-      entry.catalogDateMillis = _savedDates.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null)?.dateMillis;
+      entry.catalogDateMillis = _savedDates.firstWhereOrNull((metadata) => metadata.contentId == contentId)?.dateMillis;
     });
     _rawEntries.addAll(entries);
     _invalidate(entries);
@@ -124,16 +125,16 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   Future<void> _moveEntry(AvesEntry entry, Map newFields) async {
-    final oldContentId = entry.contentId;
-    final newContentId = newFields['contentId'] as int;
+    final oldContentId = entry.contentId!;
+    final newContentId = newFields['contentId'] as int?;
 
     entry.contentId = newContentId;
     // `dateModifiedSecs` changes when moving entries to another directory,
     // but it does not change when renaming the containing directory
-    if (newFields.containsKey('dateModifiedSecs')) entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int;
-    if (newFields.containsKey('path')) entry.path = newFields['path'] as String;
+    if (newFields.containsKey('dateModifiedSecs')) entry.dateModifiedSecs = newFields['dateModifiedSecs'] as int?;
+    if (newFields.containsKey('path')) entry.path = newFields['path'] as String?;
     if (newFields.containsKey('uri')) entry.uri = newFields['uri'] as String;
-    if (newFields.containsKey('title') != null) entry.sourceTitle = newFields['title'] as String;
+    if (newFields.containsKey('title')) entry.sourceTitle = newFields['title'] as String?;
 
     entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
     entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
@@ -159,7 +160,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     final oldFilter = AlbumFilter(sourceAlbum, null);
     final pinned = settings.pinnedFilters.contains(oldFilter);
     final oldCoverContentId = covers.coverContentId(oldFilter);
-    final coverEntry = oldCoverContentId != null ? todoEntries.firstWhere((entry) => entry.contentId == oldCoverContentId, orElse: () => null) : null;
+    final coverEntry = oldCoverContentId != null ? todoEntries.firstWhereOrNull((entry) => entry.contentId == oldCoverContentId) : null;
     await updateAfterMove(
       todoEntries: todoEntries,
       copy: false,
@@ -177,37 +178,39 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
   }
 
   Future<void> updateAfterMove({
-    @required Set<AvesEntry> todoEntries,
-    @required bool copy,
-    @required String destinationAlbum,
-    @required Set<MoveOpEvent> movedOps,
+    required Set<AvesEntry> todoEntries,
+    required bool copy,
+    required String destinationAlbum,
+    required Set<MoveOpEvent> movedOps,
   }) async {
     if (movedOps.isEmpty) return;
 
-    final fromAlbums = <String>{};
+    final fromAlbums = <String?>{};
     final movedEntries = <AvesEntry>{};
     if (copy) {
       movedOps.forEach((movedOp) {
         final sourceUri = movedOp.uri;
         final newFields = movedOp.newFields;
-        final sourceEntry = todoEntries.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
-        fromAlbums.add(sourceEntry.directory);
-        movedEntries.add(sourceEntry?.copyWith(
-          uri: newFields['uri'] as String,
-          path: newFields['path'] as String,
-          contentId: newFields['contentId'] as int,
-          dateModifiedSecs: newFields['dateModifiedSecs'] as int,
-        ));
+        final sourceEntry = todoEntries.firstWhereOrNull((entry) => entry.uri == sourceUri);
+        if (sourceEntry != null) {
+          fromAlbums.add(sourceEntry.directory);
+          movedEntries.add(sourceEntry.copyWith(
+            uri: newFields['uri'] as String?,
+            path: newFields['path'] as String?,
+            contentId: newFields['contentId'] as int?,
+            dateModifiedSecs: newFields['dateModifiedSecs'] as int?,
+          ));
+        }
       });
       await metadataDb.saveEntries(movedEntries);
-      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata));
-      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails));
+      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata).where((v) => v != null).cast<CatalogMetadata >().toSet());
+      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).where((v) => v != null).cast<AddressDetails >().toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
         final newFields = movedOp.newFields;
         if (newFields.isNotEmpty) {
           final sourceUri = movedOp.uri;
-          final entry = todoEntries.firstWhere((entry) => entry.uri == sourceUri, orElse: () => null);
+          final entry = todoEntries.firstWhereOrNull((entry) => entry.uri == sourceUri);
           if (entry != null) {
             fromAlbums.add(entry.directory);
             movedEntries.add(entry);
@@ -255,17 +258,17 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return 0;
   }
 
-  AvesEntry recentEntry(CollectionFilter filter) {
+  AvesEntry? recentEntry(CollectionFilter filter) {
     if (filter is AlbumFilter) return albumRecentEntry(filter);
     if (filter is LocationFilter) return countryRecentEntry(filter);
     if (filter is TagFilter) return tagRecentEntry(filter);
     return null;
   }
 
-  AvesEntry coverEntry(CollectionFilter filter) {
+  AvesEntry? coverEntry(CollectionFilter filter) {
     final contentId = covers.coverContentId(filter);
     if (contentId != null) {
-      final entry = visibleEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+      final entry = visibleEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
       if (entry != null) return entry;
     }
     return recentEntry(filter);
@@ -297,7 +300,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 }
 
 class EntryAddedEvent {
-  final Set<AvesEntry> entries;
+  final Set<AvesEntry>? entries;
 
   const EntryAddedEvent([this.entries]);
 }
@@ -324,5 +327,5 @@ class FilterVisibilityChangedEvent {
 class ProgressEvent {
   final int done, total;
 
-  const ProgressEvent({@required this.done, @required this.total});
+  const ProgressEvent({required this.done, required this.total});
 }

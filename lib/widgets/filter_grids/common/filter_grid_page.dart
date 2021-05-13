@@ -24,6 +24,7 @@ import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/draggable_thumb_label.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:aves/widgets/filter_grids/common/section_layout.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -33,30 +34,30 @@ import 'package:tuple/tuple.dart';
 typedef QueryTest<T extends CollectionFilter> = Iterable<FilterGridItem<T>> Function(Iterable<FilterGridItem<T>> filters, String query);
 
 class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
-  final String settingsRouteKey;
+  final String? settingsRouteKey;
   final Widget appBar;
   final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final ChipSortFactor sortFactor;
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
-  final QueryTest<T> applyQuery;
+  final QueryTest<T>? applyQuery;
   final Widget Function() emptyBuilder;
   final FilterCallback onTap;
-  final OffsetFilterCallback onLongPress;
+  final OffsetFilterCallback? onLongPress;
 
   const FilterGridPage({
-    Key key,
+    Key? key,
     this.settingsRouteKey,
-    @required this.appBar,
+    required this.appBar,
     this.appBarHeight = kToolbarHeight,
-    @required this.filterSections,
-    @required this.sortFactor,
-    @required this.showHeaders,
-    @required this.queryNotifier,
+    required this.filterSections,
+    required this.sortFactor,
+    required this.showHeaders,
+    required this.queryNotifier,
     this.applyQuery,
-    @required this.emptyBuilder,
-    @required this.onTap,
+    required this.emptyBuilder,
+    required this.onTap,
     this.onLongPress,
   }) : super(key: key);
 
@@ -97,31 +98,31 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
 }
 
 class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
-  final String settingsRouteKey;
+  final String? settingsRouteKey;
   final Widget appBar;
   final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final ChipSortFactor sortFactor;
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
-  final QueryTest<T> applyQuery;
+  final QueryTest<T>? applyQuery;
   final Widget Function() emptyBuilder;
   final FilterCallback onTap;
-  final OffsetFilterCallback onLongPress;
+  final OffsetFilterCallback? onLongPress;
 
   const FilterGrid({
-    Key key,
-    @required this.settingsRouteKey,
-    @required this.appBar,
-    @required this.appBarHeight,
-    @required this.filterSections,
-    @required this.sortFactor,
-    @required this.showHeaders,
-    @required this.queryNotifier,
-    @required this.applyQuery,
-    @required this.emptyBuilder,
-    @required this.onTap,
-    @required this.onLongPress,
+    Key? key,
+    required this.settingsRouteKey,
+    required this.appBar,
+    required this.appBarHeight,
+    required this.filterSections,
+    required this.sortFactor,
+    required this.showHeaders,
+    required this.queryNotifier,
+    required this.applyQuery,
+    required this.emptyBuilder,
+    required this.onTap,
+    required this.onLongPress,
   }) : super(key: key);
 
   @override
@@ -129,18 +130,18 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
 }
 
 class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> {
-  TileExtentController _tileExtentController;
+  TileExtentController? _tileExtentController;
 
   @override
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
-      settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName,
+      settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
       columnCountDefault: 2,
       extentMin: 60,
       spacing: 8,
     );
     return TileExtentControllerProvider(
-      controller: _tileExtentController,
+      controller: _tileExtentController!,
       child: _FilterGridContent<T>(
         appBar: widget.appBar,
         appBarHeight: widget.appBarHeight,
@@ -164,24 +165,24 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final bool showHeaders;
   final ValueNotifier<String> queryNotifier;
   final Widget Function() emptyBuilder;
-  final QueryTest<T> applyQuery;
+  final QueryTest<T>? applyQuery;
   final FilterCallback onTap;
-  final OffsetFilterCallback onLongPress;
+  final OffsetFilterCallback? onLongPress;
 
   final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
 
   _FilterGridContent({
-    Key key,
-    @required this.appBar,
-    @required double appBarHeight,
-    @required this.filterSections,
-    @required this.sortFactor,
-    @required this.showHeaders,
-    @required this.queryNotifier,
-    @required this.applyQuery,
-    @required this.emptyBuilder,
-    @required this.onTap,
-    @required this.onLongPress,
+    Key? key,
+    required this.appBar,
+    required double appBarHeight,
+    required this.filterSections,
+    required this.sortFactor,
+    required this.showHeaders,
+    required this.queryNotifier,
+    required this.applyQuery,
+    required this.emptyBuilder,
+    required this.onTap,
+    required this.onLongPress,
   }) : super(key: key) {
     _appBarHeightNotifier.value = appBarHeight;
   }
@@ -197,7 +198,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
         } else {
           visibleFilterSections = {};
           filterSections.forEach((sectionKey, sectionFilters) {
-            final visibleFilters = applyQuery(sectionFilters, query);
+            final visibleFilters = applyQuery!(sectionFilters, query);
             if (visibleFilters.isNotEmpty) {
               visibleFilterSections[sectionKey] = visibleFilters.toList();
             }
@@ -246,7 +247,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                       visibleFilterSections: visibleFilterSections,
                       sortFactor: sortFactor,
                       emptyBuilder: emptyBuilder,
-                      scrollController: PrimaryScrollController.of(context),
+                      scrollController: PrimaryScrollController.of(context)!,
                     ),
                   );
                 });
@@ -267,12 +268,12 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   final ScrollController scrollController;
 
   const _FilterSectionedContent({
-    @required this.appBar,
-    @required this.appBarHeightNotifier,
-    @required this.visibleFilterSections,
-    @required this.sortFactor,
-    @required this.emptyBuilder,
-    @required this.scrollController,
+    required this.appBar,
+    required this.appBarHeightNotifier,
+    required this.visibleFilterSections,
+    required this.sortFactor,
+    required this.emptyBuilder,
+    required this.scrollController,
   });
 
   @override
@@ -295,7 +296,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkInitHighlight());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _checkInitHighlight());
   }
 
   @override
@@ -324,19 +325,21 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
     final highlightInfo = context.read<HighlightInfo>();
     final filter = highlightInfo.clear();
     if (filter is T) {
-      final gridItem = visibleFilterSections.values.expand((list) => list).firstWhere((gridItem) => gridItem.filter == filter, orElse: () => null);
+      final gridItem = visibleFilterSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
       if (gridItem != null) {
         await Future.delayed(Durations.highlightScrollInitDelay);
         final sectionedListLayout = context.read<SectionedListLayout<FilterGridItem<T>>>();
         final tileRect = sectionedListLayout.getTileRect(gridItem);
-        await _scrollToItem(tileRect);
-        highlightInfo.set(filter);
+        if (tileRect != null) {
+          await _scrollToItem(tileRect);
+          highlightInfo.set(filter);
+        }
       }
     }
   }
 
   Future<void> _scrollToItem(Rect tileRect) async {
-    final scrollableContext = _scrollableKey.currentContext;
+    final scrollableContext = _scrollableKey.currentContext!;
     final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
 
     // most of the time the app bar will be scrolled away after scaling,
@@ -360,9 +363,9 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
   final Widget child;
 
   const _FilterScaler({
-    @required this.scrollableKey,
-    @required this.appBarHeightNotifier,
-    @required this.child,
+    required this.scrollableKey,
+    required this.appBarHeightNotifier,
+    required this.child,
   });
 
   @override
@@ -409,12 +412,12 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
   final ScrollController scrollController;
 
   const _FilterScrollView({
-    @required this.scrollableKey,
-    @required this.appBar,
-    @required this.appBarHeightNotifier,
-    @required this.sortFactor,
-    @required this.emptyBuilder,
-    @required this.scrollController,
+    required this.scrollableKey,
+    required this.appBar,
+    required this.appBarHeightNotifier,
+    required this.sortFactor,
+    required this.emptyBuilder,
+    required this.scrollController,
   });
 
   @override

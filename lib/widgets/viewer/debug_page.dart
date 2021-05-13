@@ -16,7 +16,7 @@ class ViewerDebugPage extends StatelessWidget {
 
   final AvesEntry entry;
 
-  const ViewerDebugPage({@required this.entry});
+  const ViewerDebugPage({required this.entry});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class ViewerDebugPage extends StatelessWidget {
   }
 
   Widget _buildEntryTabView() {
-    String toDateValue(int time, {int factor = 1}) {
+    String toDateValue(int? time, {int factor = 1}) {
       var value = '$time';
       if (time != null && time > 0) {
         value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';

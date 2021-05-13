@@ -22,13 +22,13 @@ class AvesFilterChip extends StatefulWidget {
   final CollectionFilter filter;
   final bool removable;
   final bool showGenericIcon;
-  final Widget background;
-  final Widget details;
-  final BorderRadius borderRadius;
+  final Widget? background;
+  final Widget? details;
+  final BorderRadius? borderRadius;
   final double padding;
   final HeroType heroType;
-  final FilterCallback onTap;
-  final OffsetFilterCallback onLongPress;
+  final FilterCallback? onTap;
+  final OffsetFilterCallback? onLongPress;
 
   static const Color defaultOutlineColor = Colors.white;
   static const double defaultRadius = 32;
@@ -38,8 +38,8 @@ class AvesFilterChip extends StatefulWidget {
   static const double maxChipWidth = 160;
 
   const AvesFilterChip({
-    Key key,
-    @required this.filter,
+    Key? key,
+    required this.filter,
     this.removable = false,
     this.showGenericIcon = true,
     this.background,
@@ -49,8 +49,7 @@ class AvesFilterChip extends StatefulWidget {
     this.heroType = HeroType.onTap,
     this.onTap,
     this.onLongPress = showDefaultLongPressMenu,
-  })  : assert(filter != null),
-        super(key: key);
+  }) : super(key: key);
 
   static Future<void> showDefaultLongPressMenu(BuildContext context, CollectionFilter filter, Offset tapPosition) async {
     if (context.read<ValueNotifier<AppMode>>().value == AppMode.main) {
@@ -65,7 +64,7 @@ class AvesFilterChip extends StatefulWidget {
       // after the user is done with the popup menu
       FocusManager.instance.primaryFocus?.unfocus();
 
-      final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+      final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
       final touchArea = Size(40, 40);
       final selectedAction = await showMenu<ChipAction>(
         context: context,
@@ -89,18 +88,18 @@ class AvesFilterChip extends StatefulWidget {
 }
 
 class _AvesFilterChipState extends State<AvesFilterChip> {
-  Future<Color> _colorFuture;
-  Color _outlineColor;
-  bool _tapped;
-  Offset _tapPosition;
+  late Future<Color> _colorFuture;
+  late Color _outlineColor;
+  late bool _tapped;
+  Offset? _tapPosition;
 
   CollectionFilter get filter => widget.filter;
 
   double get padding => widget.padding;
 
-  FilterCallback get onTap => widget.onTap;
+  FilterCallback? get onTap => widget.onTap;
 
-  OffsetFilterCallback get onLongPress => widget.onLongPress;
+  OffsetFilterCallback? get onLongPress => widget.onLongPress;
 
   @override
   void initState() {
@@ -171,7 +170,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         mainAxisSize: MainAxisSize.min,
         children: [
           content,
-          Flexible(child: widget.details),
+          Flexible(child: widget.details!),
         ],
       );
     }
@@ -186,7 +185,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         child: ColoredBox(
           color: Colors.black54,
           child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(
               shadows: [Constants.embossShadow],
             ),
             child: content,
@@ -224,17 +223,17 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                 onTapDown: onLongPress != null ? (details) => _tapPosition = details.globalPosition : null,
                 onTap: onTap != null
                     ? () {
-                        WidgetsBinding.instance.addPostFrameCallback((_) => onTap(filter));
+                        WidgetsBinding.instance!.addPostFrameCallback((_) => onTap!(filter));
                         setState(() => _tapped = true);
                       }
                     : null,
-                onLongPress: onLongPress != null ? () => onLongPress(context, filter, _tapPosition) : null,
+                onLongPress: onLongPress != null ? () => onLongPress!(context, filter, _tapPosition!) : null,
                 borderRadius: borderRadius,
                 child: FutureBuilder<Color>(
                   future: _colorFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      _outlineColor = snapshot.data;
+                      _outlineColor = snapshot.data!;
                     }
                     return DecoratedBox(
                       decoration: BoxDecoration(

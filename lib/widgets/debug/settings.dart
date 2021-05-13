@@ -43,7 +43,7 @@ class DebugSettingsSection extends StatelessWidget {
                 'searchHistory': toMultiline(settings.searchHistory),
                 'lastVersionCheckDate': '${settings.lastVersionCheckDate}',
                 'locale': '${settings.locale}',
-                'systemLocale': '${WidgetsBinding.instance.window.locale}',
+                'systemLocale': '${WidgetsBinding.instance!.window.locale}',
               }),
             ),
           ],

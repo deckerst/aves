@@ -18,26 +18,26 @@ import 'enums.dart';
 
 class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   final CollectionSource source;
-  final Set<CollectionFilter> filters;
+  final Set<CollectionFilter > filters;
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortGroupChangeNotifier = AChangeNotifier();
-  int id;
+  final List<StreamSubscription> _subscriptions = [];
+  int? id;
   bool listenToSource;
 
-  List<AvesEntry> _filteredSortedEntries;
-  List<StreamSubscription> _subscriptions = [];
+  List<AvesEntry> _filteredSortedEntries = [];
 
-  Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
+  Map<SectionKey, List<AvesEntry> > sections = Map.unmodifiable({});
 
   CollectionLens({
-    @required this.source,
-    Iterable<CollectionFilter> filters,
-    EntryGroupFactor groupFactor,
-    EntrySortFactor sortFactor,
+    required this.source,
+    Iterable<CollectionFilter?>? filters,
+    EntryGroupFactor? groupFactor,
+    EntrySortFactor? sortFactor,
     this.id,
     this.listenToSource = true,
-  })  : filters = {if (filters != null) ...filters.where((f) => f != null)},
+  })  : filters = (filters ?? {}).where((f) => f != null).cast<CollectionFilter >().toSet(),
         groupFactor = groupFactor ?? settings.collectionGroupFactor,
         sortFactor = sortFactor ?? settings.collectionSortFactor {
     id ??= hashCode;
@@ -61,7 +61,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    _subscriptions = null;
     super.dispose();
   }
 
@@ -70,11 +69,11 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   int get entryCount => _filteredSortedEntries.length;
 
   // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
-  List<AvesEntry> _sortedEntries;
+  List<AvesEntry >? _sortedEntries;
 
-  List<AvesEntry> get sortedEntries {
-    _sortedEntries ??= List.of(sections.entries.expand((e) => e.value));
-    return _sortedEntries;
+  List<AvesEntry > get sortedEntries {
+    _sortedEntries ??= List.of(sections.entries.expand((kv) => kv.value));
+    return _sortedEntries!;
   }
 
   bool get showHeaders {
@@ -90,7 +89,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   }
 
   void addFilter(CollectionFilter filter) {
-    if (filter == null || filters.contains(filter)) return;
+    if (filters.contains(filter)) return;
     if (filter.isUnique) {
       filters.removeWhere((old) => old.category == filter.category);
     }
@@ -99,7 +98,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   }
 
   void removeFilter(CollectionFilter filter) {
-    if (filter == null || !filters.contains(filter)) return;
+    if (!filters.contains(filter)) return;
     filters.remove(filter);
     onFilterChanged();
   }
@@ -156,19 +155,19 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
-              MapEntry(null, _filteredSortedEntries),
+              MapEntry(SectionKey(), _filteredSortedEntries),
             ]);
             break;
         }
         break;
       case EntrySortFactor.size:
         sections = Map.fromEntries([
-          MapEntry(null, _filteredSortedEntries),
+          MapEntry(SectionKey(), _filteredSortedEntries),
         ]);
         break;
       case EntrySortFactor.name:
         final byAlbum = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
-        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory, b.directory));
+        sections = SplayTreeMap<EntryAlbumSectionKey, List<AvesEntry>>.of(byAlbum, (a, b) => source.compareAlbumsByName(a.directory!, b.directory!));
         break;
     }
     sections = Map.unmodifiable(sections);
@@ -184,7 +183,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _applyGroup();
   }
 
-  void onEntryAdded(Set<AvesEntry> entries) {
+  void onEntryAdded(Set<AvesEntry>? entries) {
     _refresh();
   }
 

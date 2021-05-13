@@ -11,7 +11,7 @@ abstract class EmbeddedDataService {
 
   Future<Map> extractVideoEmbeddedPicture(AvesEntry entry);
 
-  Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType);
+  Future<Map> extractXmpDataProp(AvesEntry entry, String? propPath, String? propMimeType);
 }
 
 class PlatformEmbeddedDataService implements EmbeddedDataService {
@@ -25,7 +25,7 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
       });
-      return (result as List).cast<Uint8List>();
+      if (result != null) return (result as List).cast<Uint8List>();
     } on PlatformException catch (e) {
       debugPrint('getExifThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -41,11 +41,11 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'sizeBytes': entry.sizeBytes,
         'displayName': '${entry.bestTitle} • Video',
       });
-      return result;
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('extractMotionPhotoVideo failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return null;
+    return {};
   }
 
   @override
@@ -55,15 +55,15 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'uri': entry.uri,
         'displayName': '${entry.bestTitle} • Cover',
       });
-      return result;
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('extractVideoEmbeddedPicture failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return null;
+    return {};
   }
 
   @override
-  Future<Map> extractXmpDataProp(AvesEntry entry, String propPath, String propMimeType) async {
+  Future<Map> extractXmpDataProp(AvesEntry entry, String? propPath, String? propMimeType) async {
     try {
       final result = await platform.invokeMethod('extractXmpDataProp', <String, dynamic>{
         'mimeType': entry.mimeType,
@@ -73,10 +73,10 @@ class PlatformEmbeddedDataService implements EmbeddedDataService {
         'propPath': propPath,
         'propMimeType': propMimeType,
       });
-      return result;
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('extractXmpDataProp failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return null;
+    return {};
   }
 }

@@ -17,9 +17,9 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   final double extent;
 
   const ThumbnailEntryOverlay({
-    Key key,
-    @required this.entry,
-    @required this.extent,
+    Key? key,
+    required this.entry,
+    required this.extent,
   }) : super(key: key);
 
   @override
@@ -56,9 +56,9 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
   static const duration = Durations.thumbnailOverlayAnimation;
 
   const ThumbnailSelectionOverlay({
-    Key key,
-    @required this.entry,
-    @required this.extent,
+    Key? key,
+    required this.entry,
+    required this.extent,
   }) : super(key: key);
 
   @override
@@ -113,9 +113,9 @@ class ThumbnailHighlightOverlay extends StatefulWidget {
   final double extent;
 
   const ThumbnailHighlightOverlay({
-    Key key,
-    @required this.entry,
-    @required this.extent,
+    Key? key,
+    required this.entry,
+    required this.extent,
   }) : super(key: key);
 
   @override

@@ -310,9 +310,9 @@ class Dependency {
   final String licenseUrl;
 
   const Dependency({
-    @required this.name,
-    @required this.license,
-    @required this.licenseUrl,
-    @required this.sourceUrl,
+    required this.name,
+    required this.license,
+    required this.licenseUrl,
+    required this.sourceUrl,
   });
 }

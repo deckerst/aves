@@ -9,7 +9,7 @@ class ActionPanel extends StatelessWidget {
 
   const ActionPanel({
     this.highlight = false,
-    @required this.child,
+    required this.child,
   });
 
   @override
@@ -39,7 +39,7 @@ class ActionButton extends StatelessWidget {
   final bool enabled, showCaption;
 
   const ActionButton({
-    @required this.action,
+    required this.action,
     this.enabled = true,
     this.showCaption = true,
   });
@@ -65,7 +65,7 @@ class ActionButton extends StatelessWidget {
             SizedBox(height: padding),
             Text(
               action.getText(context),
-              style: enabled ? textStyle : textStyle.copyWith(color: textStyle.color.withOpacity(.2)),
+              style: enabled ? textStyle : textStyle!.copyWith(color: textStyle.color!.withOpacity(.2)),
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -82,7 +82,7 @@ class DraggedPlaceholder extends StatelessWidget {
   final Widget child;
 
   const DraggedPlaceholder({
-    @required this.child,
+    required this.child,
   });
 
   @override

@@ -17,12 +17,14 @@ class FakeStorageService extends Fake implements StorageService {
           description: primaryDescription,
           isPrimary: true,
           isRemovable: false,
+          state: 'fake',
         ),
         StorageVolume(
           path: removablePath,
           description: removableDescription,
           isPrimary: false,
           isRemovable: true,
+          state: 'fake',
         ),
       });
 }

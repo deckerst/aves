@@ -33,7 +33,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final ValueNotifier<String> _expandedNotifier = ValueNotifier(null);
+  final ValueNotifier<String?> _expandedNotifier = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildThumbnailsSection(BuildContext context) {
-    final iconSize = IconTheme.of(context).size * MediaQuery.of(context).textScaleFactor;
+    final iconSize = IconTheme.of(context).size! * MediaQuery.of(context).textScaleFactor;
     double opacityFor(bool enabled) => enabled ? 1 : .2;
     return AvesExpansionTile(
       leading: _buildLeading(AIcons.grid, stringToColor('Thumbnails')),

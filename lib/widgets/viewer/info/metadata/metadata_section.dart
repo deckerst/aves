@@ -23,9 +23,9 @@ class MetadataSectionSliver extends StatefulWidget {
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
   const MetadataSectionSliver({
-    @required this.entry,
-    @required this.visibleNotifier,
-    @required this.metadataNotifier,
+    required this.entry,
+    required this.visibleNotifier,
+    required this.metadataNotifier,
   });
 
   @override
@@ -33,8 +33,8 @@ class MetadataSectionSliver extends StatefulWidget {
 }
 
 class _MetadataSectionSliverState extends State<MetadataSectionSliver> with AutomaticKeepAliveClientMixin {
-  final ValueNotifier<String> _loadedMetadataUri = ValueNotifier(null);
-  final ValueNotifier<String> _expandedDirectoryNotifier = ValueNotifier(null);
+  final ValueNotifier<String?> _loadedMetadataUri = ValueNotifier(null);
+  final ValueNotifier<String?> _expandedDirectoryNotifier = ValueNotifier(null);
 
   AvesEntry get entry => widget.entry;
 
@@ -92,7 +92,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
         // cancel notification bubbling so that the info page
         // does not misinterpret content scrolling for page scrolling
         onNotification: (notification) => true,
-        child: ValueListenableBuilder<String>(
+        child: ValueListenableBuilder<String?>(
           valueListenable: _loadedMetadataUri,
           builder: (context, uri, child) {
             Widget content;
@@ -124,7 +124,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
             return AnimationLimiter(
               // we update the limiter key after fetching the metadata of a new entry,
               // in order to restart the staggered animation of the metadata section
-              key: Key(uri),
+              key: Key(uri ?? ''),
               child: content,
             );
           },
@@ -140,21 +140,20 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   Future<void> _getMetadata() async {
-    if (entry == null) return;
     if (_loadedMetadataUri.value == entry.uri) return;
     if (isVisible) {
-      final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataService.getAllMetadata(entry)) ?? {};
+      final rawMetadata = await (entry.isSvg ? SvgMetadataService.getAllMetadata(entry) : metadataService.getAllMetadata(entry));
       final directories = rawMetadata.entries.map((dirKV) {
-        var directoryName = dirKV.key as String ?? '';
+        var directoryName = dirKV.key as String;
 
-        String parent;
+        String? parent;
         final parts = directoryName.split(parentChildSeparator);
         if (parts.length > 1) {
           parent = parts[0];
           directoryName = parts[1];
         }
 
-        final rawTags = dirKV.value as Map ?? {};
+        final rawTags = dirKV.value as Map;
         return MetadataDirectory(directoryName, parent, _toSortedTags(rawTags));
       }).toList();
 
@@ -232,19 +231,19 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
       // group attachments by format (e.g. TTF fonts)
       if (attachmentStreams.isNotEmpty) {
-        final formatCount = <String, List<String>>{};
+        final formatCount = <String, List<String?>>{};
         for (final stream in attachmentStreams) {
-          final codec = (stream[Keys.codecName] as String ?? 'unknown').toUpperCase();
+          final codec = (stream[Keys.codecName] as String? ?? 'unknown').toUpperCase();
           if (!formatCount.containsKey(codec)) {
             formatCount[codec] = [];
           }
-          formatCount[codec].add(stream[Keys.filename]);
+          formatCount[codec]!.add(stream[Keys.filename]);
         }
         if (formatCount.isNotEmpty) {
           final rawTags = formatCount.map((key, value) {
             final count = value.length;
             // remove duplicate names, so number of displayed names may not match displayed count
-            final names = value.where((v) => v != null).toSet().toList()..sort(compareAsciiUpperCase);
+            final names = value.where((v) => v != null).cast<String>().toSet().toList()..sort(compareAsciiUpperCase);
             return MapEntry(key, '$count items: ${names.join(', ')}');
           });
           directories.add(MetadataDirectory('Attachments', null, _toSortedTags(rawTags)));
@@ -255,12 +254,15 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
   }
 
   SplayTreeMap<String, String> _toSortedTags(Map rawTags) {
-    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
-      final value = (tagKV.value as String ?? '').trim();
-      if (value.isEmpty) return null;
-      final tagName = tagKV.key as String ?? '';
-      return MapEntry(tagName, value);
-    }).where((kv) => kv != null)));
+    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries
+        .map((tagKV) {
+          var value = (tagKV.value as String? ?? '').trim();
+          if (value.isEmpty) return null;
+          final tagName = tagKV.key as String;
+          return MapEntry(tagName, value);
+        })
+        .where((kv) => kv != null)
+        .cast<MapEntry<String, String>>()));
     return tags;
   }
 
@@ -270,8 +272,8 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> with Auto
 
 class MetadataDirectory {
   final String name;
-  final Color color;
-  final String parent;
+  final Color? color;
+  final String? parent;
   final SplayTreeMap<String, String> allTags;
   final SplayTreeMap<String, String> tags;
 
@@ -281,7 +283,7 @@ class MetadataDirectory {
   static const mediaDirectory = 'Media'; // custom
   static const coverDirectory = 'Cover'; // custom
 
-  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String> tags, this.color})
+  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String>? tags, this.color})
       : allTags = allTags,
         tags = tags ?? allTags;
 

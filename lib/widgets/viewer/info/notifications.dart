@@ -21,7 +21,7 @@ class OpenTempEntryNotification extends Notification {
   final AvesEntry entry;
 
   const OpenTempEntryNotification({
-    @required this.entry,
+    required this.entry,
   });
 
   @override
@@ -32,11 +32,11 @@ enum EmbeddedDataSource { motionPhotoVideo, videoCover, xmp }
 
 class OpenEmbeddedDataNotification extends Notification {
   final EmbeddedDataSource source;
-  final String propPath;
-  final String mimeType;
+  final String? propPath;
+  final String? mimeType;
 
   const OpenEmbeddedDataNotification._private({
-    @required this.source,
+    required this.source,
     this.propPath,
     this.mimeType,
   });
@@ -50,8 +50,8 @@ class OpenEmbeddedDataNotification extends Notification {
       );
 
   factory OpenEmbeddedDataNotification.xmp({
-    @required String propPath,
-    @required String mimeType,
+    required String propPath,
+    required String mimeType,
   }) =>
       OpenEmbeddedDataNotification._private(
         source: EmbeddedDataSource.xmp,

@@ -22,7 +22,7 @@ mixin LocationMixin on SourceBase {
     final saved = await metadataDb.loadAddresses();
     visibleEntries.forEach((entry) {
       final contentId = entry.contentId;
-      entry.addressDetails = saved.firstWhere((address) => address.contentId == contentId, orElse: () => null);
+      entry.addressDetails = saved.firstWhereOrNull((address) => address.contentId == contentId);
     });
     debugPrint('$runtimeType loadAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onAddressMetadataChanged();
@@ -44,19 +44,19 @@ mixin LocationMixin on SourceBase {
     setProgress(done: progressDone, total: progressTotal);
 
     // final stopwatch = Stopwatch()..start();
-    final countryCodeMap = await countryTopology.countryCodeMap(todo.map((entry) => entry.latLng).toSet());
-    final newAddresses = <AddressDetails>[];
+    final countryCodeMap = await countryTopology.countryCodeMap(todo.map((entry) => entry.latLng!).toSet());
+    final newAddresses = <AddressDetails >[];
     todo.forEach((entry) {
       final position = entry.latLng;
-      final countryCode = countryCodeMap.entries.firstWhere((kv) => kv.value.contains(position), orElse: () => null)?.key;
+      final countryCode = countryCodeMap.entries.firstWhereOrNull((kv) => kv.value.contains(position))?.key;
       entry.setCountry(countryCode);
       if (entry.hasAddress) {
-        newAddresses.add(entry.addressDetails);
+        newAddresses.add(entry.addressDetails!);
       }
       setProgress(done: ++progressDone, total: progressTotal);
     });
     if (newAddresses.isNotEmpty) {
-      await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+      await metadataDb.saveAddresses(Set.of(newAddresses));
       onAddressMetadataChanged();
     }
     // debugPrint('$runtimeType _locateCountries complete in ${stopwatch.elapsed.inMilliseconds}ms');
@@ -82,21 +82,23 @@ mixin LocationMixin on SourceBase {
     // cf https://en.wikipedia.org/wiki/Decimal_degrees#Precision
     final latLngFactor = pow(10, 2);
     Tuple2<int, int> approximateLatLng(AvesEntry entry) {
-      final lat = entry.catalogMetadata?.latitude;
-      final lng = entry.catalogMetadata?.longitude;
-      if (lat == null || lng == null) return null;
+      // entry has coordinates
+      final lat = entry.catalogMetadata!.latitude!;
+      final lng = entry.catalogMetadata!.longitude!;
       return Tuple2<int, int>((lat * latLngFactor).round(), (lng * latLngFactor).round());
     }
 
-    final knownLocations = <Tuple2<int, int>, AddressDetails>{};
-    byLocated[true]?.forEach((entry) => knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails));
+    final knownLocations = <Tuple2<int, int>, AddressDetails?>{};
+    byLocated[true]?.forEach((entry) {
+      knownLocations.putIfAbsent(approximateLatLng(entry), () => entry.addressDetails);
+    });
 
     stateNotifier.value = SourceState.locating;
     var progressDone = 0;
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
 
-    final newAddresses = <AddressDetails>[];
+    final newAddresses = <AddressDetails >[];
     await Future.forEach<AvesEntry>(todo, (entry) async {
       final latLng = approximateLatLng(entry);
       if (knownLocations.containsKey(latLng)) {
@@ -108,9 +110,9 @@ mixin LocationMixin on SourceBase {
         knownLocations[latLng] = entry.addressDetails;
       }
       if (entry.hasFineAddress) {
-        newAddresses.add(entry.addressDetails);
+        newAddresses.add(entry.addressDetails!);
         if (newAddresses.length >= _commitCountThreshold) {
-          await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+          await metadataDb.saveAddresses(Set.of(newAddresses));
           onAddressMetadataChanged();
           newAddresses.clear();
         }
@@ -118,7 +120,7 @@ mixin LocationMixin on SourceBase {
       setProgress(done: ++progressDone, total: progressTotal);
     });
     if (newAddresses.isNotEmpty) {
-      await metadataDb.saveAddresses(List.unmodifiable(newAddresses));
+      await metadataDb.saveAddresses(Set.of(newAddresses));
       onAddressMetadataChanged();
     }
     // debugPrint('$runtimeType _locatePlaces complete in ${stopwatch.elapsed.inSeconds}s');
@@ -130,8 +132,8 @@ mixin LocationMixin on SourceBase {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).toList();
-    final updatedPlaces = locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
+    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).cast<AddressDetails >().toList();
+    final updatedPlaces = locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase as int Function(String?, String?)?);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
       eventBus.fire(PlacesChangedEvent());
@@ -140,7 +142,7 @@ mixin LocationMixin on SourceBase {
     // the same country code could be found with different country names
     // e.g. if the locale changed between geocoding calls
     // so we merge countries by code, keeping only one name for each code
-    final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key.isNotEmpty));
+    final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key!.isNotEmpty));
     final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedCountries, sortedCountries)) {
       sortedCountries = List.unmodifiable(updatedCountries);
@@ -153,27 +155,30 @@ mixin LocationMixin on SourceBase {
 
   // by country code
   final Map<String, int> _filterEntryCountMap = {};
-  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+  final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateCountryFilterSummary([Set<AvesEntry> entries]) {
-    Set<String> countryCodes;
+  void invalidateCountryFilterSummary([Set<AvesEntry>? entries]) {
+    Set<String>? countryCodes;
     if (entries == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails.countryCode).toSet();
-      countryCodes.remove(null);
+      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails!.countryCode).where((v) => v != null).cast<String >().toSet();
       countryCodes.forEach(_filterEntryCountMap.remove);
     }
     eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));
   }
 
   int countryEntryCount(LocationFilter filter) {
-    return _filterEntryCountMap.putIfAbsent(filter.countryCode, () => visibleEntries.where(filter.test).length);
+    final countryCode = filter.countryCode;
+    if (countryCode == null) return 0;
+    return _filterEntryCountMap.putIfAbsent(countryCode, () => visibleEntries.where(filter.test).length);
   }
 
-  AvesEntry countryRecentEntry(LocationFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.countryCode, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
+  AvesEntry? countryRecentEntry(LocationFilter filter) {
+    final countryCode = filter.countryCode;
+    if (countryCode == null) return null;
+    return _filterRecentEntryMap.putIfAbsent(countryCode, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
 }
 
@@ -184,7 +189,7 @@ class PlacesChangedEvent {}
 class CountriesChangedEvent {}
 
 class CountrySummaryInvalidatedEvent {
-  final Set<String> countryCodes;
+  final Set<String>? countryCodes;
 
   const CountrySummaryInvalidatedEvent(this.countryCodes);
 }

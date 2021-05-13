@@ -13,6 +13,7 @@ import 'package:aves/widgets/common/app_bar_subtitle.dart';
 import 'package:aves/widgets/common/app_bar_title.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
@@ -36,16 +37,16 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
-    @required this.source,
-    @required this.title,
-    @required this.sortFactor,
+    required this.source,
+    required this.title,
+    required this.sortFactor,
     this.groupable = false,
     this.showHeaders = false,
-    @required this.chipSetActionDelegate,
-    @required this.chipActionDelegate,
-    @required this.chipActionsBuilder,
-    @required this.filterSections,
-    @required this.emptyBuilder,
+    required this.chipSetActionDelegate,
+    required this.chipActionDelegate,
+    required this.chipActionsBuilder,
+    required this.filterSections,
+    required this.emptyBuilder,
   });
 
   @override
@@ -72,7 +73,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
       emptyBuilder: () => ValueListenableBuilder<SourceState>(
         valueListenable: source.stateNotifier,
         builder: (context, sourceState, child) {
-          return sourceState != SourceState.loading && emptyBuilder != null ? emptyBuilder() : SizedBox.shrink();
+          return sourceState != SourceState.loading ? emptyBuilder() : SizedBox.shrink();
         },
       ),
       onTap: (filter) => Navigator.push(
@@ -85,16 +86,16 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
           )),
         ),
       ),
-      onLongPress: isMainMode ? _showMenu : null,
+      onLongPress: isMainMode ? _showMenu as OffsetFilterCallback : null,
     );
   }
 
-  void _showMenu(BuildContext context, T filter, Offset tapPosition) async {
-    final RenderBox overlay = Overlay.of(context).context.findRenderObject();
+  void _showMenu(BuildContext context, T filter, Offset? tapPosition) async {
+    final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
     final touchArea = Size(40, 40);
     final selectedAction = await showMenu<ChipAction>(
       context: context,
-      position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
+      position: RelativeRect.fromRect((tapPosition ?? Offset.zero) & touchArea, Offset.zero & overlay.size),
       items: chipActionsBuilder(filter)
           .map((action) => PopupMenuItem(
                 value: action,
@@ -155,7 +156,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   }
 
   static int compareFiltersByEntryCount(MapEntry<CollectionFilter, num> a, MapEntry<CollectionFilter, num> b) {
-    final c = b.value.compareTo(a.value) ?? -1;
+    final c = b.value.compareTo(a.value);
     return c != 0 ? c : a.key.compareTo(b.key);
   }
 
@@ -164,14 +165,14 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   }
 
   static Iterable<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
-    Iterable<FilterGridItem<T>> toGridItem(CollectionSource source, Iterable<T> filters) {
+    Iterable<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
       return filters.map((filter) => FilterGridItem(
             filter,
             source.recentEntry(filter),
           ));
     }
 
-    Iterable<FilterGridItem<T>> allMapEntries;
+    Iterable<FilterGridItem<T>> allMapEntries = {};
     switch (sortFactor) {
       case ChipSortFactor.name:
         allMapEntries = toGridItem(source, filters).toList()..sort(compareFiltersByName);

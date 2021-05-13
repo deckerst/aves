@@ -20,13 +20,13 @@ class EntryLeafletMap extends StatefulWidget {
   final WidgetBuilder markerBuilder;
 
   const EntryLeafletMap({
-    Key key,
-    this.latLng,
-    this.geoUri,
-    this.initialZoom,
-    this.style,
-    this.markerBuilder,
-    this.markerSize,
+    Key? key,
+    required this.latLng,
+    required this.geoUri,
+    required this.initialZoom,
+    required this.style,
+    required this.markerBuilder,
+    required this.markerSize,
   }) : super(key: key);
 
   @override
@@ -39,7 +39,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
   @override
   void didUpdateWidget(covariant EntryLeafletMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.latLng != oldWidget.latLng && _mapController != null) {
+    if (widget.latLng != oldWidget.latLng) {
       _mapController.move(widget.latLng, settings.infoMapZoom);
     }
   }
@@ -132,7 +132,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
           p: TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
         ),
         onTapLink: (text, href, title) async {
-          if (await canLaunch(href)) {
+          if (href != null && await canLaunch(href)) {
             await launch(href);
           }
         },
@@ -141,8 +141,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
   }
 
   void _zoomBy(double amount) {
-    if (_mapController == null) return;
-
     final endZoom = (settings.infoMapZoom + amount).clamp(1.0, 16.0);
     settings.infoMapZoom = endZoom;
 

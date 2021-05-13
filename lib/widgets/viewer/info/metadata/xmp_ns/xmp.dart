@@ -29,7 +29,7 @@ class XmpBasicNamespace extends XmpNamespace {
             title: 'Thumbnail',
             structByIndex: thumbnails,
             linkifier: (index) {
-              final struct = thumbnails[index];
+              final struct = thumbnails[index]!;
               return {
                 if (struct.containsKey(thumbnailDataDisplayKey))
                   thumbnailDataDisplayKey: InfoLinkHandler(

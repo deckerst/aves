@@ -6,8 +6,8 @@ const double avesScrollThumbHeight = 48;
 // height and background color do not change
 // so we do not rely on the builder props
 ScrollThumbBuilder avesScrollThumbBuilder({
-  @required double height,
-  @required Color backgroundColor,
+  required double height,
+  required Color backgroundColor,
 }) {
   final scrollThumb = Container(
     decoration: BoxDecoration(

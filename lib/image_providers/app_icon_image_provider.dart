@@ -6,11 +6,10 @@ import 'package:flutter/widgets.dart';
 
 class AppIconImage extends ImageProvider<AppIconImageKey> {
   const AppIconImage({
-    @required this.packageName,
-    @required this.size,
+    required this.packageName,
+    required this.size,
     this.scale = 1.0,
-  })  : assert(packageName != null),
-        assert(scale != null);
+  });
 
   final String packageName;
   final double size;
@@ -39,7 +38,7 @@ class AppIconImage extends ImageProvider<AppIconImageKey> {
   Future<ui.Codec> _loadAsync(AppIconImageKey key, DecoderCallback decode) async {
     try {
       final bytes = await AndroidAppService.getAppIcon(key.packageName, key.size);
-      if (bytes == null) {
+      if (bytes.isEmpty) {
         throw StateError('$packageName app icon loading failed');
       }
       return await decode(bytes);
@@ -56,9 +55,9 @@ class AppIconImageKey {
   final double scale;
 
   const AppIconImageKey({
-    @required this.packageName,
-    @required this.size,
-    this.scale,
+    required this.packageName,
+    required this.size,
+    this.scale = 1.0,
   });
 
   @override

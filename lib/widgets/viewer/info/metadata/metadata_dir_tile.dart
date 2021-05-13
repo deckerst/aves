@@ -26,13 +26,13 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
   final String title;
   final MetadataDirectory dir;
-  final ValueNotifier<String> expandedDirectoryNotifier;
+  final ValueNotifier<String?>? expandedDirectoryNotifier;
   final bool initiallyExpanded, showThumbnails;
 
   const MetadataDirTile({
-    @required this.entry,
-    @required this.title,
-    @required this.dir,
+    required this.entry,
+    required this.title,
+    required this.dir,
     this.expandedDirectoryNotifier,
     this.initiallyExpanded = false,
     this.showThumbnails = true,
@@ -53,7 +53,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
         initiallyExpanded: initiallyExpanded,
       );
     } else {
-      Map<String, InfoLinkHandler> linkHandlers;
+      Map<String, InfoLinkHandler>? linkHandlers;
       switch (dirName) {
         case SvgMetadataService.metadataDirectory:
           linkHandlers = getSvgLinkHandlers(tags);
@@ -100,7 +100,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
             MaterialPageRoute(
               settings: RouteSettings(name: SourceViewerPage.routeName),
               builder: (context) => SourceViewerPage(
-                loader: () => SynchronousFuture(tags['Metadata']),
+                loader: () => SynchronousFuture(tags['Metadata'] ?? ''),
               ),
             ),
           );
@@ -119,7 +119,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
   }
 
   Future<void> _openEmbeddedData(BuildContext context, OpenEmbeddedDataNotification notification) async {
-    Map fields;
+    late Map fields;
     switch (notification.source) {
       case EmbeddedDataSource.motionPhotoVideo:
         fields = await embeddedDataService.extractMotionPhotoVideo(entry);
@@ -131,13 +131,13 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
         fields = await embeddedDataService.extractXmpDataProp(entry, notification.propPath, notification.mimeType);
         break;
     }
-    if (fields == null || !fields.containsKey('mimeType') || !fields.containsKey('uri')) {
+    if (!fields.containsKey('mimeType') || !fields.containsKey('uri')) {
       showFeedback(context, context.l10n.viewerInfoOpenEmbeddedFailureFeedback);
       return;
     }
 
-    final mimeType = fields['mimeType'];
-    final uri = fields['uri'];
+    final mimeType = fields['mimeType']!;
+    final uri = fields['uri']!;
     if (!MimeTypes.isImage(mimeType) && !MimeTypes.isVideo(mimeType)) {
       // open with another app
       unawaited(AndroidAppService.open(uri, mimeType).then((success) {

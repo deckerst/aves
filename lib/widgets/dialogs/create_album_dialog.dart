@@ -21,8 +21,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   final FocusNode _nameFieldFocusNode = FocusNode();
   final ValueNotifier<bool> _existsNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
-  Set<StorageVolume> _allVolumes;
-  StorageVolume _primaryVolume, _selectedVolume;
+  late Set<StorageVolume> _allVolumes;
+  late StorageVolume _primaryVolume, _selectedVolume;
 
   @override
   void initState() {
@@ -46,8 +46,8 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     if (_allVolumes.length > 1) {
       final byPrimary = groupBy<StorageVolume, bool>(_allVolumes, (volume) => volume.isPrimary);
       int compare(StorageVolume a, StorageVolume b) => compareAsciiUpperCase(a.path, b.path);
-      final primaryVolumes = byPrimary[true]..sort(compare);
-      final otherVolumes = byPrimary[false]..sort(compare);
+      final primaryVolumes = (byPrimary[true] ?? [])..sort(compare);
+      final otherVolumes = (byPrimary[false] ?? [])..sort(compare);
       volumeTiles.addAll([
         Padding(
           padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(top: 20),
@@ -106,7 +106,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
         value: volume,
         groupValue: _selectedVolume,
         onChanged: (volume) {
-          _selectedVolume = volume;
+          _selectedVolume = volume!;
           _validate();
           setState(() {});
         },
@@ -142,12 +142,12 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
   }
 
   String _buildAlbumPath(String name) {
-    if (name == null || name.isEmpty) return '';
+    if (name.isEmpty) return '';
     return pContext.join(_selectedVolume.path, 'Pictures', name);
   }
 
   Future<void> _validate() async {
-    final newName = _nameController.text ?? '';
+    final newName = _nameController.text;
     final path = _buildAlbumPath(newName);
     final exists = newName.isNotEmpty && await Directory(path).exists();
     _existsNotifier.value = exists;

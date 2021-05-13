@@ -9,9 +9,9 @@ class BlurredRect extends StatelessWidget {
   final Widget child;
 
   const BlurredRect({
-    Key key,
+    Key? key,
     this.enabled = true,
-    this.child,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -31,7 +31,11 @@ class BlurredRRect extends StatelessWidget {
   final double borderRadius;
   final Widget child;
 
-  const BlurredRRect({Key key, this.borderRadius, this.child}) : super(key: key);
+  const BlurredRRect({
+    Key? key,
+    required this.borderRadius,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,10 @@ class BlurredRRect extends StatelessWidget {
 class BlurredOval extends StatelessWidget {
   final Widget child;
 
-  const BlurredOval({Key key, this.child}) : super(key: key);
+  const BlurredOval({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -16,13 +17,13 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final Widget child;
 
   const SectionedListLayoutProvider({
-    @required this.scrollableWidth,
-    @required this.columnCount,
+    required this.scrollableWidth,
+    required this.columnCount,
     this.spacing = 0,
-    @required this.tileExtent,
-    @required this.tileBuilder,
-    this.tileAnimationDelay,
-    @required this.child,
+    required this.tileExtent,
+    required this.tileBuilder,
+    required this.tileAnimationDelay,
+    required this.child,
   }) : assert(scrollableWidth != 0);
 
   @override
@@ -45,9 +46,10 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     final animate = tileAnimationDelay > Duration.zero;
 
     final sectionLayouts = <SectionLayout>[];
-    var currentIndex = 0, currentOffset = 0.0;
+    var currentIndex = 0;
+    var currentOffset = 0.0;
     sectionKeys.forEach((sectionKey) {
-      final section = _sections[sectionKey];
+      final section = _sections[sectionKey]!;
       final sectionItemCount = section.length;
       final rowCount = (sectionItemCount / columnCount).ceil();
       final sectionChildCount = 1 + rowCount;
@@ -131,7 +133,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       position: index,
       columnCount: columnCount,
       duration: Durations.staggeredAnimation,
-      delay: tileAnimationDelay ?? Durations.staggeredAnimationDelay,
+      delay: tileAnimationDelay,
       child: SlideAnimation(
         verticalOffset: 50.0,
         child: FadeInAnimation(
@@ -143,7 +145,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
 
   bool get showHeaders;
 
-  Map<SectionKey, List<T>> get sections;
+  Map<SectionKey, List<T> > get sections;
 
   double getHeaderExtent(BuildContext context, SectionKey sectionKey);
 
@@ -161,27 +163,27 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
 }
 
 class SectionedListLayout<T> {
-  final Map<SectionKey, List<T>> sections;
+  final Map<SectionKey, List<T> > sections;
   final bool showHeaders;
   final int columnCount;
   final double tileExtent, spacing;
   final List<SectionLayout> sectionLayouts;
 
   const SectionedListLayout({
-    @required this.sections,
-    @required this.showHeaders,
-    @required this.columnCount,
-    @required this.tileExtent,
-    @required this.spacing,
-    @required this.sectionLayouts,
+    required this.sections,
+    required this.showHeaders,
+    required this.columnCount,
+    required this.tileExtent,
+    required this.spacing,
+    required this.sectionLayouts,
   });
 
-  Rect getTileRect(T item) {
-    final section = sections.entries.firstWhere((kv) => kv.value.contains(item), orElse: () => null);
+  Rect? getTileRect(T item) {
+    final MapEntry<SectionKey?, List<T>>? section = sections.entries.firstWhereOrNull((kv) => kv.value.contains(item));
     if (section == null) return null;
 
     final sectionKey = section.key;
-    final sectionLayout = sectionLayouts.firstWhere((sl) => sl.sectionKey == sectionKey, orElse: () => null);
+    final sectionLayout = sectionLayouts.firstWhereOrNull((sl) => sl.sectionKey == sectionKey);
     if (sectionLayout == null) return null;
 
     final sectionItemIndex = section.value.indexOf(item);
@@ -194,9 +196,9 @@ class SectionedListLayout<T> {
     return Rect.fromLTWH(left, top, tileExtent, tileExtent);
   }
 
-  SectionLayout getSectionAt(double offsetY) => sectionLayouts.firstWhere((sl) => offsetY < sl.maxOffset, orElse: () => null);
+  SectionLayout? getSectionAt(double offsetY) => sectionLayouts.firstWhereOrNull((sl) => offsetY < sl.maxOffset);
 
-  T getItemAt(Offset position) {
+  T? getItemAt(Offset position) {
     var dy = position.dy;
     final sectionLayout = getSectionAt(dy);
     if (sectionLayout == null) return null;
@@ -224,15 +226,15 @@ class SectionLayout {
   final IndexedWidgetBuilder builder;
 
   const SectionLayout({
-    @required this.sectionKey,
-    @required this.firstIndex,
-    @required this.lastIndex,
-    @required this.minOffset,
-    @required this.maxOffset,
-    @required this.headerExtent,
-    @required this.tileExtent,
-    @required this.spacing,
-    @required this.builder,
+    required this.sectionKey,
+    required this.firstIndex,
+    required this.lastIndex,
+    required this.minOffset,
+    required this.maxOffset,
+    required this.headerExtent,
+    required this.tileExtent,
+    required this.spacing,
+    required this.builder,
   })  : bodyFirstIndex = firstIndex + 1,
         bodyMinOffset = minOffset + headerExtent,
         mainAxisStride = tileExtent + spacing;

@@ -2,13 +2,14 @@ import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
-  String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath;
+  late String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath;
   Set<StorageVolume> storageVolumes = {};
   Set<Package> _packages = {};
   List<String> _potentialAppDirs = [];
@@ -22,7 +23,7 @@ class AndroidFileUtils {
   Future<void> init() async {
     storageVolumes = await storageService.getStorageVolumes();
     // path_provider getExternalStorageDirectory() gives '/storage/emulated/0/Android/data/deckers.thibault.aves/files'
-    primaryStorage = storageVolumes.firstWhere((volume) => volume.isPrimary).path;
+    primaryStorage = storageVolumes.firstWhereOrNull((volume) => volume.isPrimary)?.path ?? '/';
     dcimPath = pContext.join(primaryStorage, 'DCIM');
     downloadPath = pContext.join(primaryStorage, 'Download');
     moviesPath = pContext.join(primaryStorage, 'Movies');
@@ -35,16 +36,17 @@ class AndroidFileUtils {
     appNameChangeNotifier.notifyListeners();
   }
 
-  bool isCameraPath(String path) => path != null && path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));
+  bool isCameraPath(String path) => path.startsWith(dcimPath) && (path.endsWith('Camera') || path.endsWith('100ANDRO'));
 
-  bool isScreenshotsPath(String path) => path != null && (path.startsWith(dcimPath) || path.startsWith(picturesPath)) && path.endsWith('Screenshots');
+  bool isScreenshotsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(picturesPath)) && path.endsWith('Screenshots');
 
-  bool isScreenRecordingsPath(String path) => path != null && (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('Screen recordings') || path.endsWith('ScreenRecords'));
+  bool isScreenRecordingsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('Screen recordings') || path.endsWith('ScreenRecords'));
 
   bool isDownloadPath(String path) => path == downloadPath;
 
-  StorageVolume getStorageVolume(String path) {
-    final volume = storageVolumes.firstWhere((v) => path.startsWith(v.path), orElse: () => null);
+  StorageVolume? getStorageVolume(String? path) {
+    if (path == null) return null;
+    final volume = storageVolumes.firstWhereOrNull((v) => path.startsWith(v.path));
     // storage volume path includes trailing '/', but argument path may or may not,
     // which is an issue when the path is at the root
     return volume != null || path.endsWith('/') ? volume : getStorageVolume('$path/');
@@ -53,27 +55,25 @@ class AndroidFileUtils {
   bool isOnRemovableStorage(String path) => getStorageVolume(path)?.isRemovable ?? false;
 
   AlbumType getAlbumType(String albumPath) {
-    if (albumPath != null) {
-      if (isCameraPath(albumPath)) return AlbumType.camera;
-      if (isDownloadPath(albumPath)) return AlbumType.download;
-      if (isScreenRecordingsPath(albumPath)) return AlbumType.screenRecordings;
-      if (isScreenshotsPath(albumPath)) return AlbumType.screenshots;
+    if (isCameraPath(albumPath)) return AlbumType.camera;
+    if (isDownloadPath(albumPath)) return AlbumType.download;
+    if (isScreenRecordingsPath(albumPath)) return AlbumType.screenRecordings;
+    if (isScreenshotsPath(albumPath)) return AlbumType.screenshots;
 
-      final dir = pContext.split(albumPath).last;
-      if (albumPath.startsWith(primaryStorage) && _potentialAppDirs.contains(dir)) return AlbumType.app;
-    }
+    final dir = pContext.split(albumPath).last;
+    if (albumPath.startsWith(primaryStorage) && _potentialAppDirs.contains(dir)) return AlbumType.app;
+
     return AlbumType.regular;
   }
 
-  String getAlbumAppPackageName(String albumPath) {
-    if (albumPath == null) return null;
+  String? getAlbumAppPackageName(String albumPath) {
     final dir = pContext.split(albumPath).last;
-    final package = _launcherPackages.firstWhere((package) => package.potentialDirs.contains(dir), orElse: () => null);
+    final package = _launcherPackages.firstWhereOrNull((package) => package.potentialDirs.contains(dir));
     return package?.packageName;
   }
 
-  String getCurrentAppName(String packageName) {
-    final package = _packages.firstWhere((package) => package.packageName == packageName, orElse: () => null);
+  String? getCurrentAppName(String packageName) {
+    final package = _packages.firstWhereOrNull((package) => package.packageName == packageName);
     return package?.currentLabel;
   }
 }
@@ -81,25 +81,26 @@ class AndroidFileUtils {
 enum AlbumType { regular, app, camera, download, screenRecordings, screenshots }
 
 class Package {
-  final String packageName, currentLabel, englishLabel;
+  final String packageName;
+  final String? currentLabel, englishLabel;
   final bool categoryLauncher, isSystem;
   final Set<String> ownedDirs = {};
 
   Package({
-    this.packageName,
-    this.currentLabel,
-    this.englishLabel,
-    this.categoryLauncher,
-    this.isSystem,
+    required this.packageName,
+    required this.currentLabel,
+    required this.englishLabel,
+    required this.categoryLauncher,
+    required this.isSystem,
   });
 
   factory Package.fromMap(Map map) {
     return Package(
-      packageName: map['packageName'],
+      packageName: map['packageName'] ?? '',
       currentLabel: map['currentLabel'],
       englishLabel: map['englishLabel'],
-      categoryLauncher: map['categoryLauncher'],
-      isSystem: map['isSystem'],
+      categoryLauncher: map['categoryLauncher'] ?? false,
+      isSystem: map['isSystem'] ?? false,
     );
   }
 
@@ -107,7 +108,7 @@ class Package {
         currentLabel,
         englishLabel,
         ...ownedDirs,
-      ].where((dir) => dir != null).toSet();
+      ].where((dir) => dir != null).cast<String>().toSet();
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{packageName=$packageName, categoryLauncher=$categoryLauncher, isSystem=$isSystem, currentLabel=$currentLabel, englishLabel=$englishLabel, ownedDirs=$ownedDirs}';
@@ -115,24 +116,25 @@ class Package {
 
 @immutable
 class StorageVolume {
-  final String _description, path, state;
+  final String? _description;
+  final String path, state;
   final bool isPrimary, isRemovable;
 
   const StorageVolume({
-    String description,
-    this.isPrimary,
-    this.isRemovable,
-    this.path,
-    this.state,
+    required String? description,
+    required this.isPrimary,
+    required this.isRemovable,
+    required this.path,
+    required this.state,
   }) : _description = description;
 
-  String getDescription(BuildContext context) {
-    if (_description != null) return _description;
+  String getDescription(BuildContext? context) {
+    if (_description != null) return _description!;
     // ideally, the context should always be provided, but in some cases (e.g. album comparison),
     // this would require numerous additional methods to have the context as argument
     // for such a minor benefit: fallback volume description on Android < N
-    if (isPrimary) return context?.l10n?.storageVolumeDescriptionFallbackPrimary ?? 'Internal Storage';
-    return context?.l10n?.storageVolumeDescriptionFallbackNonPrimary ?? 'SD card';
+    if (isPrimary) return context?.l10n.storageVolumeDescriptionFallbackPrimary ?? 'Internal Storage';
+    return context?.l10n.storageVolumeDescriptionFallbackNonPrimary ?? 'SD card';
   }
 
   factory StorageVolume.fromMap(Map map) {
@@ -152,19 +154,19 @@ class VolumeRelativeDirectory {
   final String volumePath, relativeDir;
 
   const VolumeRelativeDirectory({
-    this.volumePath,
-    this.relativeDir,
+    required this.volumePath,
+    required this.relativeDir,
   });
 
-  factory VolumeRelativeDirectory.fromMap(Map map) {
+  static VolumeRelativeDirectory fromMap(Map map) {
     return VolumeRelativeDirectory(
-      volumePath: map['volumePath'],
+      volumePath: map['volumePath'] ?? '',
       relativeDir: map['relativeDir'] ?? '',
     );
   }
 
   // prefer static method over a null returning factory constructor
-  static VolumeRelativeDirectory fromPath(String dirPath) {
+  static VolumeRelativeDirectory? fromPath(String dirPath) {
     final volume = androidFileUtils.getStorageVolume(dirPath);
     if (volume == null) return null;
 
@@ -177,7 +179,7 @@ class VolumeRelativeDirectory {
   }
 
   String getVolumeDescription(BuildContext context) {
-    final volume = androidFileUtils.storageVolumes.firstWhere((volume) => volume.path == volumePath, orElse: () => null);
+    final volume = androidFileUtils.storageVolumes.firstWhereOrNull((volume) => volume.path == volumePath);
     return volume?.getDescription(context) ?? volumePath;
   }
 

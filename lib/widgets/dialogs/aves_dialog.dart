@@ -9,12 +9,12 @@ class AvesDialog extends AlertDialog {
   static const borderWidth = 1.0;
 
   AvesDialog({
-    @required BuildContext context,
-    String title,
-    ScrollController scrollController,
-    List<Widget> scrollableContent,
-    Widget content,
-    @required List<Widget> actions,
+    required BuildContext context,
+    String? title,
+    ScrollController? scrollController,
+    List<Widget>? scrollableContent,
+    Widget? content,
+    required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
         super(
           title: title != null
@@ -64,7 +64,7 @@ class AvesDialog extends AlertDialog {
 class DialogTitle extends StatelessWidget {
   final String title;
 
-  const DialogTitle({@required this.title});
+  const DialogTitle({required this.title});
 
   @override
   Widget build(BuildContext context) {

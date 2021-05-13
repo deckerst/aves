@@ -11,7 +11,7 @@ class AboutUpdate extends StatefulWidget {
 }
 
 class _AboutUpdateState extends State<AboutUpdate> {
-  Future<bool> _updateChecker;
+  late Future<bool> _updateChecker;
 
   @override
   void initState() {

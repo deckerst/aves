@@ -15,15 +15,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InfoPage extends StatefulWidget {
-  final CollectionLens collection;
-  final ValueNotifier<AvesEntry> entryNotifier;
+  final CollectionLens? collection;
+  final ValueNotifier<AvesEntry?> entryNotifier;
   final ValueNotifier<bool> visibleNotifier;
 
   const InfoPage({
-    Key key,
-    @required this.collection,
-    @required this.entryNotifier,
-    @required this.visibleNotifier,
+    Key? key,
+    required this.collection,
+    required this.entryNotifier,
+    required this.visibleNotifier,
   }) : super(key: key);
 
   @override
@@ -34,9 +34,9 @@ class _InfoPageState extends State<InfoPage> {
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
-  AvesEntry get entry => widget.entryNotifier.value;
+  AvesEntry? get entry => widget.entryNotifier.value;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _InfoPageState extends State<InfoPage> {
         body: GestureAreaProtectorStack(
           child: SafeArea(
             bottom: false,
-            child: NotificationListener(
+            child: NotificationListener<ScrollNotification>(
               onNotification: _handleTopScroll,
               child: NotificationListener<OpenTempEntryNotification>(
                 onNotification: (notification) {
@@ -55,7 +55,7 @@ class _InfoPageState extends State<InfoPage> {
                 child: Selector<MediaQueryData, double>(
                   selector: (c, mq) => mq.size.width,
                   builder: (c, mqWidth, child) {
-                    return ValueListenableBuilder<AvesEntry>(
+                    return ValueListenableBuilder<AvesEntry?>(
                       valueListenable: widget.entryNotifier,
                       builder: (context, entry, child) {
                         return entry != null
@@ -81,22 +81,20 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 
-  bool _handleTopScroll(Notification notification) {
-    if (notification is ScrollNotification) {
-      if (notification is ScrollStartNotification) {
-        final metrics = notification.metrics;
-        _scrollStartFromTop = metrics.pixels == metrics.minScrollExtent;
-      }
-      if (_scrollStartFromTop) {
-        if (notification is ScrollUpdateNotification) {
-          _scrollStartFromTop = notification.scrollDelta < 0;
-        } else if (notification is ScrollEndNotification) {
+  bool _handleTopScroll(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      final metrics = notification.metrics;
+      _scrollStartFromTop = metrics.pixels == metrics.minScrollExtent;
+    }
+    if (_scrollStartFromTop) {
+      if (notification is ScrollUpdateNotification) {
+        _scrollStartFromTop = notification.scrollDelta! < 0;
+      } else if (notification is ScrollEndNotification) {
+        _scrollStartFromTop = false;
+      } else if (notification is OverscrollNotification) {
+        if (notification.overscroll < 0) {
+          _goToViewer();
           _scrollStartFromTop = false;
-        } else if (notification is OverscrollNotification) {
-          if (notification.overscroll < 0) {
-            _goToViewer();
-            _scrollStartFromTop = false;
-          }
         }
       }
     }
@@ -126,7 +124,7 @@ class _InfoPageState extends State<InfoPage> {
 }
 
 class _InfoPageContent extends StatefulWidget {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final AvesEntry entry;
   final ValueNotifier<bool> visibleNotifier;
   final ScrollController scrollController;
@@ -134,13 +132,13 @@ class _InfoPageContent extends StatefulWidget {
   final VoidCallback goToViewer;
 
   const _InfoPageContent({
-    Key key,
-    @required this.collection,
-    @required this.entry,
-    @required this.visibleNotifier,
-    @required this.scrollController,
-    @required this.split,
-    @required this.goToViewer,
+    Key? key,
+    required this.collection,
+    required this.entry,
+    required this.visibleNotifier,
+    required this.scrollController,
+    required this.split,
+    required this.goToViewer,
   }) : super(key: key);
 
   @override
@@ -152,7 +150,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
   AvesEntry get entry => widget.entry;
 

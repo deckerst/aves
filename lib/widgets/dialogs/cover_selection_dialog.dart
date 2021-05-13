@@ -14,11 +14,11 @@ import 'package:tuple/tuple.dart';
 
 class CoverSelectionDialog extends StatefulWidget {
   final CollectionFilter filter;
-  final AvesEntry customEntry;
+  final AvesEntry? customEntry;
 
   const CoverSelectionDialog({
-    @required this.filter,
-    @required this.customEntry,
+    required this.filter,
+    required this.customEntry,
   });
 
   @override
@@ -26,8 +26,8 @@ class CoverSelectionDialog extends StatefulWidget {
 }
 
 class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
-  bool _isCustom;
-  AvesEntry _customEntry, _recentEntry;
+  late bool _isCustom;
+  AvesEntry? _customEntry, _recentEntry;
 
   CollectionFilter get filter => widget.filter;
 
@@ -59,10 +59,11 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                     overflow: TextOverflow.fade,
                     maxLines: 1,
                   );
-                  return RadioListTile(
+                  return RadioListTile<bool>(
                     value: isCustom,
                     groupValue: _isCustom,
                     onChanged: (v) {
+                      if (v == null) return;
                       if (v && _customEntry == null) {
                         _pickEntry();
                         return;
@@ -101,7 +102,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                 child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
               ),
               TextButton(
-                onPressed: () => Navigator.pop(context, Tuple2<bool, AvesEntry>(_isCustom, _customEntry)),
+                onPressed: () => Navigator.pop(context, Tuple2<bool, AvesEntry?>(_isCustom, _customEntry)),
                 child: Text(l10n.applyButtonLabel),
               ),
             ],

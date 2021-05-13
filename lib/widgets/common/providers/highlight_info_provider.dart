@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 class HighlightInfoProvider extends StatelessWidget {
   final Widget child;
 
-  const HighlightInfoProvider({@required this.child});
+  const HighlightInfoProvider({required this.child});
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,8 @@ import 'package:aves/utils/math_utils.dart';
 import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
+import 'package:collection/collection.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 
@@ -54,16 +56,16 @@ class VideoMetadataFormatter {
       final value = kv.value;
       if (value != null) {
         try {
-          String key;
-          String keyLanguage;
+          String? key;
+          String? keyLanguage;
           // some keys have a language suffix, but they may be duplicates
           // we only keep the root key when they have the same value as the same key with no language
           final languageMatch = keyWithLanguagePattern.firstMatch(kv.key);
           if (languageMatch != null) {
-            final code = languageMatch.group(2);
+            final code = languageMatch.group(2)!;
             final native = _formatLanguage(code);
             if (native != code) {
-              final root = languageMatch.group(1);
+              final root = languageMatch.group(1)!;
               final rootValue = info[root];
               // skip if it is a duplicate of the same entry with no language
               if (rootValue == value) continue;
@@ -76,7 +78,7 @@ class VideoMetadataFormatter {
           }
           key = (key ?? (kv.key as String)).toLowerCase();
 
-          void save(String key, String value) {
+          void save(String key, String? value) {
             if (value != null) {
               dir[keyLanguage != null ? '$key ($keyLanguage)' : key] = value;
             }
@@ -129,21 +131,26 @@ class VideoMetadataFormatter {
             case Keys.codecProfileId:
               if (codec == 'h264') {
                 final profile = int.tryParse(value);
-                if (profile != null && profile != 0) {
-                  final level = int.tryParse(info[Keys.codecLevel]);
+                final levelString = info[Keys.codecLevel];
+                if (profile != null && profile != 0 && levelString != null) {
+                  final level = int.tryParse(levelString) ?? 0;
                   save('Codec Profile', H264.formatProfile(profile, level));
                 }
               }
               break;
             case Keys.compatibleBrands:
-              save('Compatible Brands', RegExp(r'.{4}').allMatches(value).map((m) => _formatBrand(m.group(0))).join(', '));
+              final formattedBrands = RegExp(r'.{4}').allMatches(value).map((m) {
+                final brand = m.group(0)!;
+                return _formatBrand(brand);
+              }).join(', ');
+              save('Compatible Brands', formattedBrands);
               break;
             case Keys.creationTime:
               save('Creation Time', _formatDate(value));
               break;
             case Keys.date:
-              if (value != '0') {
-                final charCount = (value as String)?.length ?? 0;
+              if (value is String && value != '0') {
+                final charCount = value.length;
                 save(charCount == 4 ? 'Year' : 'Date', value);
               }
               break;
@@ -222,10 +229,10 @@ class VideoMetadataFormatter {
 
   static String _formatChannelLayout(value) => ChannelLayouts.names[value] ?? 'unknown ($value)';
 
-  static String _formatCodecName(String value) => _codecNames[value] ?? value?.toUpperCase()?.replaceAll('_', ' ');
+  static String _formatCodecName(String value) => _codecNames[value] ?? value.toUpperCase().replaceAll('_', ' ');
 
   // input example: '2021-04-12T09:14:37.000000Z'
-  static String _formatDate(String value) {
+  static String? _formatDate(String value) {
     final date = DateTime.tryParse(value);
     if (date == null) return value;
     if (date == _epoch) return null;
@@ -236,10 +243,10 @@ class VideoMetadataFormatter {
   static String _formatDuration(String value) {
     final match = _durationPattern.firstMatch(value);
     if (match != null) {
-      final h = int.tryParse(match.group(1));
-      final m = int.tryParse(match.group(2));
-      final s = int.tryParse(match.group(3));
-      final millis = double.tryParse(match.group(4));
+      final h = int.tryParse(match.group(1)!);
+      final m = int.tryParse(match.group(2)!);
+      final s = int.tryParse(match.group(3)!);
+      final millis = double.tryParse(match.group(4)!);
       if (h != null && m != null && s != null && millis != null) {
         return formatPreciseDuration(Duration(
           hours: h,
@@ -258,15 +265,15 @@ class VideoMetadataFormatter {
   }
 
   static String _formatLanguage(String value) {
-    final language = Language.living639_2.firstWhere((language) => language.iso639_2 == value, orElse: () => null);
+    final language = Language.living639_2.firstWhereOrNull((language) => language.iso639_2 == value);
     return language?.native ?? value;
   }
 
   // format ISO 6709 input, e.g. '+37.5090+127.0243/' (Samsung), '+51.3328-000.7053+113.474/' (Apple)
-  static String _formatLocation(String value) {
+  static String? _formatLocation(String value) {
     final matches = _locationPattern.allMatches(value);
     if (matches.isNotEmpty) {
-      final coordinates = matches.map((m) => double.tryParse(m.group(0))).toList();
+      final coordinates = matches.map((m) => double.tryParse(m.group(0)!)).toList();
       if (coordinates.every((c) => c == 0)) return null;
       return coordinates.join(', ');
     }

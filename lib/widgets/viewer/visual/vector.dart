@@ -10,9 +10,9 @@ class VectorViewCheckeredBackground extends StatelessWidget {
   final Widget child;
 
   const VectorViewCheckeredBackground({
-    @required this.displaySize,
-    @required this.viewStateNotifier,
-    @required this.child,
+    required this.displaySize,
+    required this.viewStateNotifier,
+    required this.child,
   });
 
   @override
@@ -21,12 +21,12 @@ class VectorViewCheckeredBackground extends StatelessWidget {
       valueListenable: viewStateNotifier,
       builder: (context, viewState, child) {
         final viewportSize = viewState.viewportSize;
-        if (viewportSize == null) return child;
+        if (viewportSize == null) return child!;
 
         final side = viewportSize.shortestSide;
         final checkSize = side / ((side / EntryPageView.decorationCheckSize).round());
 
-        final viewSize = displaySize * viewState.scale;
+        final viewSize = displaySize * viewState.scale!;
         final decorationSize = applyBoxFit(BoxFit.none, viewSize, viewportSize).source;
         final offset = ((decorationSize - viewportSize) as Offset) / 2;
 
@@ -43,7 +43,7 @@ class VectorViewCheckeredBackground extends StatelessWidget {
                 ),
               ),
             ),
-            child,
+            child!,
           ],
         );
       },

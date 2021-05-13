@@ -8,20 +8,19 @@ import 'package:pedantic/pedantic.dart';
 
 class UriImage extends ImageProvider<UriImage> {
   final String uri, mimeType;
-  final int pageId, rotationDegrees, expectedContentLength;
+  final int? pageId, rotationDegrees, expectedContentLength;
   final bool isFlipped;
   final double scale;
 
   const UriImage({
-    @required this.uri,
-    @required this.mimeType,
-    @required this.pageId,
-    @required this.rotationDegrees,
-    @required this.isFlipped,
+    required this.uri,
+    required this.mimeType,
+    required this.pageId,
+    required this.rotationDegrees,
+    required this.isFlipped,
     this.expectedContentLength,
     this.scale = 1.0,
-  })  : assert(uri != null),
-        assert(scale != null);
+  });
 
   @override
   Future<UriImage> obtainKey(ImageConfiguration configuration) {
@@ -60,7 +59,7 @@ class UriImage extends ImageProvider<UriImage> {
           ));
         },
       );
-      if (bytes == null) {
+      if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) loading failed');
       }
       return await decode(bytes);

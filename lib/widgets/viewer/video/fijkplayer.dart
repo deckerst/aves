@@ -8,23 +8,25 @@ import 'package:aves/model/video/keys.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:collection/collection.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
-  FijkPlayer _instance;
+  late FijkPlayer _instance;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
   final List<StreamSummary> _streams = [];
-  final ValueNotifier<StreamSummary> _selectedVideoStream = ValueNotifier(null);
-  final ValueNotifier<StreamSummary> _selectedAudioStream = ValueNotifier(null);
-  final ValueNotifier<StreamSummary> _selectedTextStream = ValueNotifier(null);
-  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(null);
-  Timer _initialPlayTimer;
+  final ValueNotifier<StreamSummary?> _selectedVideoStream = ValueNotifier(null);
+  final ValueNotifier<StreamSummary?> _selectedAudioStream = ValueNotifier(null);
+  final ValueNotifier<StreamSummary?> _selectedTextStream = ValueNotifier(null);
+  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(Tuple2(1, 1));
+  Timer? _initialPlayTimer;
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
 
@@ -80,7 +82,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // playing with HW acceleration seems to skip the last frames of some videos
     // so HW acceleration is always disabled for gif-like videos where the last frames may be significant
-    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis > gifLikeVideoDurationThreshold.inMilliseconds;
+    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis! > gifLikeVideoDurationThreshold.inMilliseconds;
 
     // TODO TLAD HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
     if (hwAccelerationEnabled) {
@@ -142,12 +144,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       }
     });
 
-    StreamSummary _getSelectedStream(String selectedIndexKey) {
+    StreamSummary? _getSelectedStream(String selectedIndexKey) {
       final indexString = mediaInfo[selectedIndexKey];
       if (indexString != null) {
         final index = int.tryParse(indexString);
         if (index != null && index != -1) {
-          return _streams.firstWhere((stream) => stream.index == index, orElse: () => null);
+          return _streams.firstWhereOrNull((stream) => stream.index == index);
         }
       }
       return null;
@@ -158,12 +160,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _selectedTextStream.value = _getSelectedStream(Keys.selectedTextStream);
 
     if (_selectedVideoStream.value != null) {
-      final streamIndex = _selectedVideoStream.value.index;
-      final streamInfo = allStreams.firstWhere((stream) => stream[Keys.index] == streamIndex, orElse: () => null);
+      final streamIndex = _selectedVideoStream.value!.index;
+      final streamInfo = allStreams.firstWhereOrNull((stream) => stream[Keys.index] == streamIndex);
       if (streamInfo != null) {
-        final num = streamInfo[Keys.sarNum];
-        final den = streamInfo[Keys.sarDen];
-        _sar.value = Tuple2((num ?? 0) != 0 ? num : 1, (den ?? 0) != 0 ? den : 1);
+        final num = streamInfo[Keys.sarNum] ?? 0;
+        final den = streamInfo[Keys.sarDen] ?? 0;
+        _sar.value = Tuple2(num != 0 ? num : 1, den != 0 ? den : 1);
       }
     }
   }
@@ -219,7 +221,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   int get duration {
     final controllerDuration = _instance.value.duration.inMilliseconds;
     // use expected duration when controller duration is not set yet
-    return (controllerDuration == null || controllerDuration == 0) ? entry.durationMillis : controllerDuration;
+    return (controllerDuration == 0) ? entry.durationMillis! : controllerDuration;
   }
 
   @override
@@ -288,7 +290,6 @@ extension ExtraIjkStatus on FijkState {
       case FijkState.error:
         return VideoStatus.error;
     }
-    return VideoStatus.idle;
   }
 }
 
@@ -321,7 +322,7 @@ extension ExtraFijkPlayer on FijkPlayer {
 enum StreamType { video, audio, text }
 
 extension ExtraStreamType on StreamType {
-  static StreamType fromTypeString(String type) {
+  static StreamType? fromTypeString(String? type) {
     switch (type) {
       case StreamTypes.video:
         return StreamType.video;
@@ -338,14 +339,14 @@ extension ExtraStreamType on StreamType {
 
 class StreamSummary {
   final StreamType type;
-  final int index;
-  final String language, title;
+  final int? index;
+  final String? language, title;
 
   const StreamSummary({
-    @required this.type,
-    @required this.index,
-    @required this.language,
-    @required this.title,
+    required this.type,
+    required this.index,
+    required this.language,
+    required this.title,
   });
 
   @override

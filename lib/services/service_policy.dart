@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tuple/tuple.dart';
 
@@ -22,19 +23,19 @@ class ServicePolicy {
   Future<T> call<T>(
     Future<T> Function() platformCall, {
     int priority = ServiceCallPriority.normal,
-    Object key,
+    Object? key,
   }) {
     Completer<T> completer;
-    _Task task;
+    _Task<T > task;
     key ??= platformCall.hashCode;
     final toResume = _paused.remove(key);
     if (toResume != null) {
       priority = toResume.item1;
-      task = toResume.item2;
+      task = toResume.item2 as _Task<T>;
       completer = task.completer;
     } else {
       completer = Completer<T>();
-      task = _Task(
+      task = _Task<T>(
         () async {
           try {
             completer.complete(await platformCall());
@@ -52,11 +53,11 @@ class ServicePolicy {
     return completer.future;
   }
 
-  Future<T> resume<T>(Object key) {
+  Future<T>? resume<T>(Object key) {
     final toResume = _paused.remove(key);
     if (toResume != null) {
       final priority = toResume.item1;
-      final task = toResume.item2;
+      final task = toResume.item2 as _Task<T >;
       _getQueue(priority)[key] = task;
       _pickNext();
       return task.completer.future;
@@ -70,10 +71,10 @@ class ServicePolicy {
   void _pickNext() {
     _notifyQueueState();
     if (_runningQueue.length >= concurrentTaskMax) return;
-    final queue = _queues.entries.firstWhere((kv) => kv.value.isNotEmpty, orElse: () => null)?.value;
+    final queue = _queues.entries.firstWhereOrNull((kv) => kv.value.isNotEmpty)?.value;
     if (queue != null && queue.isNotEmpty) {
       final key = queue.keys.first;
-      final task = queue.remove(key);
+      final task = queue.remove(key)!;
       _runningQueue[key] = task;
       task.callback();
     }
@@ -109,9 +110,9 @@ class ServicePolicy {
   }
 }
 
-class _Task {
+class _Task<T> {
   final VoidCallback callback;
-  final Completer completer;
+  final Completer<T> completer;
 
   const _Task(this.callback, this.completer);
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class HighlightInfo extends ChangeNotifier {
-  Object _item;
+  Object? _item;
 
   void set(Object item) {
     if (_item == item) return;
@@ -9,7 +9,7 @@ class HighlightInfo extends ChangeNotifier {
     notifyListeners();
   }
 
-  Object clear() {
+  Object? clear() {
     if (_item == null) return null;
     final item = _item;
     _item = null;

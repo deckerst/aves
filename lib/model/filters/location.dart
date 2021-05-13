@@ -1,6 +1,7 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -10,8 +11,8 @@ class LocationFilter extends CollectionFilter {
 
   final LocationLevel level;
   String _location;
-  String _countryCode;
-  EntryFilter _test;
+  String? _countryCode;
+  late EntryFilter _test;
 
   LocationFilter(this.level, this._location) {
     final split = _location.split(locationSeparator);
@@ -29,7 +30,7 @@ class LocationFilter extends CollectionFilter {
 
   LocationFilter.fromMap(Map<String, dynamic> json)
       : this(
-          LocationLevel.values.firstWhere((v) => v.toString() == json['level'], orElse: () => null),
+          LocationLevel.values.firstWhereOrNull((v) => v.toString() == json['level']) ?? LocationLevel.place,
           json['location'],
         );
 
@@ -42,7 +43,7 @@ class LocationFilter extends CollectionFilter {
 
   String get countryNameAndCode => '$_location$locationSeparator$_countryCode';
 
-  String get countryCode => _countryCode;
+  String? get countryCode => _countryCode;
 
   @override
   EntryFilter get test => _test;
@@ -90,8 +91,9 @@ class LocationFilter extends CollectionFilter {
   // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A
   static const _countryCodeToFlagDiff = 0x1F1E6 - 0x0041;
 
-  static String countryCodeToFlag(String code) {
-    return code?.length == 2 ? String.fromCharCodes(code.codeUnits.map((letter) => letter += _countryCodeToFlagDiff)) : null;
+  static String? countryCodeToFlag(String? code) {
+    if (code == null || code.length != 2) return null;
+    return String.fromCharCodes(code.codeUnits.map((letter) => letter += _countryCodeToFlagDiff));
   }
 }
 

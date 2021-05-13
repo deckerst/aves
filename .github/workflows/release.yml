@@ -38,7 +38,7 @@ jobs:
         run: flutter analyze
 
       - name: Unit tests.
-        run: flutter test
+        run: flutter test --no-sound-null-safety
 
       - name: Build signed artifacts.
         # `KEY_JKS` should contain the result of:

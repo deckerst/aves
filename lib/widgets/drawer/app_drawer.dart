@@ -33,7 +33,7 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  Future<bool> _newVersionLoader;
+  late Future<bool> _newVersionLoader;
 
   CollectionSource get source => context.read<CollectionSource>();
 
@@ -75,7 +75,7 @@ class _AppDrawerState extends State<AppDrawer> {
               padding: EdgeInsets.only(bottom: mqPaddingBottom),
               child: IconTheme(
                 data: iconTheme.copyWith(
-                  size: iconTheme.size * MediaQuery.textScaleFactorOf(context),
+                  size: iconTheme.size! * MediaQuery.textScaleFactorOf(context),
                 ),
                 child: Column(
                   children: drawerItems,

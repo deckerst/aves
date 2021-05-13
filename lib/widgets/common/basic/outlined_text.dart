@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 typedef OutlinedWidgetBuilder = Widget Function(BuildContext context, bool isShadow);
 
 class OutlinedText extends StatelessWidget {
-  final OutlinedWidgetBuilder leadingBuilder, trailingBuilder;
+  final OutlinedWidgetBuilder? leadingBuilder, trailingBuilder;
   final String text;
   final TextStyle style;
   final double outlineWidth;
@@ -12,13 +12,13 @@ class OutlinedText extends StatelessWidget {
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
   const OutlinedText({
-    Key key,
+    Key? key,
     this.leadingBuilder,
-    @required this.text,
+    required this.text,
     this.trailingBuilder,
-    @required this.style,
-    double outlineWidth,
-    Color outlineColor,
+    required this.style,
+    double? outlineWidth,
+    Color? outlineColor,
   })  : outlineWidth = outlineWidth ?? 1,
         outlineColor = outlineColor ?? Colors.black,
         super(key: key);
@@ -33,7 +33,7 @@ class OutlinedText extends StatelessWidget {
               if (leadingBuilder != null)
                 WidgetSpan(
                   alignment: widgetSpanAlignment,
-                  child: leadingBuilder(context, true),
+                  child: leadingBuilder!(context, true),
                 ),
               TextSpan(
                 text: text,
@@ -47,7 +47,7 @@ class OutlinedText extends StatelessWidget {
               if (trailingBuilder != null)
                 WidgetSpan(
                   alignment: widgetSpanAlignment,
-                  child: trailingBuilder(context, true),
+                  child: trailingBuilder!(context, true),
                 ),
             ],
           ),
@@ -58,7 +58,7 @@ class OutlinedText extends StatelessWidget {
               if (leadingBuilder != null)
                 WidgetSpan(
                   alignment: widgetSpanAlignment,
-                  child: leadingBuilder(context, false),
+                  child: leadingBuilder!(context, false),
                 ),
               TextSpan(
                 text: text,
@@ -67,7 +67,7 @@ class OutlinedText extends StatelessWidget {
               if (trailingBuilder != null)
                 WidgetSpan(
                   alignment: widgetSpanAlignment,
-                  child: trailingBuilder(context, false),
+                  child: trailingBuilder!(context, false),
                 ),
             ],
           ),

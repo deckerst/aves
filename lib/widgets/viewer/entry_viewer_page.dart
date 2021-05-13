@@ -10,13 +10,13 @@ import 'package:provider/provider.dart';
 class EntryViewerPage extends StatelessWidget {
   static const routeName = '/viewer';
 
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final AvesEntry initialEntry;
 
   const EntryViewerPage({
-    Key key,
+    Key? key,
     this.collection,
-    this.initialEntry,
+    required this.initialEntry,
   }) : super(key: key);
 
   @override

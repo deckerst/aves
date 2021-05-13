@@ -26,12 +26,12 @@ import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final VoidCallback showInfo;
 
   EntryActionDelegate({
-    @required this.collection,
-    @required this.showInfo,
+    required this.collection,
+    required this.showInfo,
   });
 
   bool get hasCollection => collection != null;
@@ -76,7 +76,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.openMap:
-        AndroidAppService.openMap(entry.geoUri).then((success) {
+        AndroidAppService.openMap(entry.geoUri!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -106,7 +106,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
-  Future<void> _rotate(BuildContext context, AvesEntry entry, {@required bool clockwise}) async {
+  Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.rotate(clockwise: clockwise);
@@ -141,7 +141,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, context.l10n.genericFailureFeedback);
     } else {
       if (hasCollection) {
-        await collection.source.removeEntries({entry.uri});
+        await collection!.source.removeEntries({entry.uri});
       }
       EntryDeletedNotification(entry).dispatch(context);
     }
@@ -171,11 +171,13 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
       final multiPageInfo = await metadataService.getMultiPageInfo(entry);
-      if (entry.isMotionPhoto) {
-        await multiPageInfo.extractMotionPhotoVideo();
-      }
-      if (multiPageInfo.pageCount > 1) {
-        selection.addAll(multiPageInfo.exportEntries);
+      if (multiPageInfo != null) {
+        if (entry.isMotionPhoto) {
+          await multiPageInfo.extractMotionPhotoVideo();
+        }
+        if (multiPageInfo.pageCount > 1) {
+          selection.addAll(multiPageInfo.exportEntries);
+        }
       }
     } else {
       selection.add(entry);

@@ -5,7 +5,6 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/entry.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAvesEntry on AvesEntry {
@@ -30,11 +29,11 @@ extension ExtraAvesEntry on AvesEntry {
     );
   }
 
-  RegionProvider getRegion({@required int sampleSize, Rectangle<int> region}) {
+  RegionProvider getRegion({required int sampleSize, Rectangle<int>? region}) {
     return RegionProvider(_getRegionProviderKey(sampleSize, region));
   }
 
-  RegionProviderKey _getRegionProviderKey(int sampleSize, Rectangle<int> region) {
+  RegionProviderKey _getRegionProviderKey(int sampleSize, Rectangle<int>? region) {
     return RegionProviderKey(
       uri: uri,
       mimeType: mimeType,
@@ -56,7 +55,7 @@ extension ExtraAvesEntry on AvesEntry {
         expectedContentLength: sizeBytes,
       );
 
-  bool _isReady(Object providerKey) => imageCache.statusForKey(providerKey).keepAlive;
+  bool _isReady(Object providerKey) => imageCache!.statusForKey(providerKey).keepAlive;
 
   ImageProvider getBestThumbnail(double extent) {
     final sizedThumbnailKey = _getThumbnailProviderKey(extent);

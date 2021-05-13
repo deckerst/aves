@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class HighlightTitle extends StatelessWidget {
   final String title;
-  final Color color;
+  final Color? color;
   final double fontSize;
   final bool enabled, selectable;
   final bool showHighlight;
@@ -18,7 +18,7 @@ class HighlightTitle extends StatelessWidget {
     this.enabled = true,
     this.selectable = false,
     this.showHighlight = true,
-  }) : assert(title != null);
+  });
 
   static const disabledColor = Colors.grey;
 

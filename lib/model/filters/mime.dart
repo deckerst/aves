@@ -10,9 +10,9 @@ class MimeFilter extends CollectionFilter {
   static const type = 'mime';
 
   final String mime;
-  EntryFilter _test;
-  String _label;
-  IconData _icon;
+  late EntryFilter _test;
+  late String _label;
+  IconData? /*late*/ _icon;
 
   static final image = MimeFilter(MimeTypes.anyImage);
   static final video = MimeFilter(MimeTypes.anyVideo);

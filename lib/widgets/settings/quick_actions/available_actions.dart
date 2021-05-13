@@ -7,17 +7,17 @@ class AvailableActionPanel extends StatelessWidget {
   final List<EntryAction> quickActions;
   final Listenable quickActionsChangeNotifier;
   final ValueNotifier<bool> panelHighlight;
-  final ValueNotifier<EntryAction> draggedQuickAction;
-  final ValueNotifier<EntryAction> draggedAvailableAction;
-  final bool Function(EntryAction action) removeQuickAction;
+  final ValueNotifier<EntryAction?> draggedQuickAction;
+  final ValueNotifier<EntryAction?> draggedAvailableAction;
+  final bool Function(EntryAction? action) removeQuickAction;
 
   const AvailableActionPanel({
-    @required this.quickActions,
-    @required this.quickActionsChangeNotifier,
-    @required this.panelHighlight,
-    @required this.draggedQuickAction,
-    @required this.draggedAvailableAction,
-    @required this.removeQuickAction,
+    required this.quickActions,
+    required this.quickActionsChangeNotifier,
+    required this.panelHighlight,
+    required this.draggedQuickAction,
+    required this.draggedAvailableAction,
+    required this.removeQuickAction,
   });
 
   static const allActions = [
@@ -95,9 +95,9 @@ class AvailableActionPanel extends StatelessWidget {
         child: child,
       );
 
-  void _setDraggedQuickAction(EntryAction action) => draggedQuickAction.value = action;
+  void _setDraggedQuickAction(EntryAction? action) => draggedQuickAction.value = action;
 
-  void _setDraggedAvailableAction(EntryAction action) => draggedAvailableAction.value = action;
+  void _setDraggedAvailableAction(EntryAction? action) => draggedAvailableAction.value = action;
 
   void _setPanelHighlight(bool flag) => panelHighlight.value = flag;
 }

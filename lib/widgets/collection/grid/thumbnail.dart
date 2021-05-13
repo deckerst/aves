@@ -13,13 +13,13 @@ class InteractiveThumbnail extends StatelessWidget {
   final CollectionLens collection;
   final AvesEntry entry;
   final double tileExtent;
-  final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<bool>? isScrollingNotifier;
 
   const InteractiveThumbnail({
-    Key key,
-    this.collection,
-    @required this.entry,
-    @required this.tileExtent,
+    Key? key,
+    required this.collection,
+    required this.entry,
+    required this.tileExtent,
     this.isScrollingNotifier,
   }) : super(key: key);
 

@@ -10,6 +10,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/math_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
@@ -27,13 +28,15 @@ class MediaStoreSource extends CollectionSource {
     await favourites.init();
     await covers.init();
     final currentTimeZone = await timeService.getDefaultTimeZone();
-    final catalogTimeZone = settings.catalogTimeZone;
-    if (currentTimeZone != catalogTimeZone) {
-      // clear catalog metadata to get correct date/times when moving to a different time zone
-      debugPrint('$runtimeType clear catalog metadata to get correct date/times');
-      await metadataDb.clearDates();
-      await metadataDb.clearMetadataEntries();
-      settings.catalogTimeZone = currentTimeZone;
+    if (currentTimeZone != null) {
+      final catalogTimeZone = settings.catalogTimeZone;
+      if (currentTimeZone != catalogTimeZone) {
+        // clear catalog metadata to get correct date/times when moving to a different time zone
+        debugPrint('$runtimeType clear catalog metadata to get correct date/times');
+        await metadataDb.clearDates();
+        await metadataDb.clearMetadataEntries();
+        settings.catalogTimeZone = currentTimeZone;
+      }
     }
     await loadDates(); // 100ms for 5400 entries
     _initialized = true;
@@ -49,7 +52,7 @@ class MediaStoreSource extends CollectionSource {
     clearEntries();
 
     final oldEntries = await metadataDb.loadEntries(); // 400ms for 5500 entries
-    final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId, entry.dateModifiedSecs)));
+    final knownDateById = Map.fromEntries(oldEntries.map((entry) => MapEntry(entry.contentId!, entry.dateModifiedSecs!)));
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(knownDateById.keys.toList())).toSet();
     oldEntries.removeWhere((entry) => obsoleteContentIds.contains(entry.contentId));
 
@@ -63,7 +66,7 @@ class MediaStoreSource extends CollectionSource {
     await metadataDb.removeIds(obsoleteContentIds, metadataOnly: false);
 
     // verify paths because some apps move files without updating their `last modified date`
-    final knownPathById = Map.fromEntries(allEntries.map((entry) => MapEntry(entry.contentId, entry.path)));
+    final knownPathById = Map.fromEntries(allEntries.map((entry) => MapEntry(entry.contentId!, entry.path)));
     final movedContentIds = (await mediaStoreService.checkObsoletePaths(knownPathById)).toSet();
     movedContentIds.forEach((contentId) {
       // make obsolete by resetting its modified date
@@ -130,20 +133,22 @@ class MediaStoreSource extends CollectionSource {
   Future<Set<String>> refreshUris(Set<String> changedUris) async {
     if (!_initialized || !isMonitoring) return changedUris;
 
-    final uriByContentId = Map.fromEntries(changedUris.map((uri) {
-      if (uri == null) return null;
-      final pathSegments = Uri.parse(uri).pathSegments;
-      // e.g. URI `content://media/` has no path segment
-      if (pathSegments.isEmpty) return null;
-      final idString = pathSegments.last;
-      final contentId = int.tryParse(idString);
-      if (contentId == null) return null;
-      return MapEntry(contentId, uri);
-    }).where((kv) => kv != null));
+    final uriByContentId = Map.fromEntries(changedUris
+        .map((uri) {
+          final pathSegments = Uri.parse(uri).pathSegments;
+          // e.g. URI `content://media/` has no path segment
+          if (pathSegments.isEmpty) return null;
+          final idString = pathSegments.last;
+          final contentId = int.tryParse(idString);
+          if (contentId == null) return null;
+          return MapEntry(contentId, uri);
+        })
+        .where((kv) => kv != null)
+        .cast<MapEntry<int, String>>());
 
     // clean up obsolete entries
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(uriByContentId.keys.toList())).toSet();
-    final obsoleteUris = obsoleteContentIds.map((contentId) => uriByContentId[contentId]).toSet();
+    final obsoleteUris = obsoleteContentIds.map((contentId) => uriByContentId[contentId]).where((v) => v != null).cast<String>().toSet();
     await removeEntries(obsoleteUris);
     obsoleteContentIds.forEach(uriByContentId.remove);
 
@@ -156,14 +161,16 @@ class MediaStoreSource extends CollectionSource {
       final uri = kv.value;
       final sourceEntry = await imageFileService.getEntry(uri, null);
       if (sourceEntry != null) {
-        final existingEntry = allEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
+        final existingEntry = allEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
         // compare paths because some apps move files without updating their `last modified date`
-        if (existingEntry == null || sourceEntry.dateModifiedSecs > existingEntry.dateModifiedSecs || sourceEntry.path != existingEntry.path) {
-          final volume = androidFileUtils.getStorageVolume(sourceEntry.path);
+        if (existingEntry == null || (sourceEntry.dateModifiedSecs ?? 0) > (existingEntry.dateModifiedSecs ?? 0) || sourceEntry.path != existingEntry.path) {
+          final newPath = sourceEntry.path;
+          final volume = newPath != null ? androidFileUtils.getStorageVolume(newPath) : null;
           if (volume != null) {
             newEntries.add(sourceEntry);
-            if (existingEntry != null) {
-              existingDirectories.add(existingEntry.directory);
+            final existingDirectory = existingEntry?.directory;
+            if (existingDirectory != null) {
+              existingDirectories.add(existingDirectory);
             }
           } else {
             debugPrint('$runtimeType refreshUris entry=$sourceEntry is not located on a known storage volume. Will retry soon...');
@@ -189,7 +196,7 @@ class MediaStoreSource extends CollectionSource {
   @override
   Future<void> refreshMetadata(Set<AvesEntry> entries) {
     final contentIds = entries.map((entry) => entry.contentId).toSet();
-    metadataDb.removeIds(contentIds, metadataOnly: true);
+    metadataDb.removeIds(contentIds as Set<int>, metadataOnly: true);
     return refresh();
   }
 }

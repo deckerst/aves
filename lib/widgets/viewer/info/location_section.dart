@@ -18,19 +18,19 @@ import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
 class LocationSection extends StatefulWidget {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final AvesEntry entry;
   final bool showTitle;
   final ValueNotifier<bool> visibleNotifier;
   final FilterCallback onFilter;
 
   const LocationSection({
-    Key key,
-    @required this.collection,
-    @required this.entry,
-    @required this.showTitle,
-    @required this.visibleNotifier,
-    @required this.onFilter,
+    Key? key,
+    required this.collection,
+    required this.entry,
+    required this.showTitle,
+    required this.visibleNotifier,
+    required this.onFilter,
   }) : super(key: key);
 
   @override
@@ -38,12 +38,12 @@ class LocationSection extends StatefulWidget {
 }
 
 class _LocationSectionState extends State<LocationSection> with TickerProviderStateMixin {
-  String _loadedUri;
+  String? _loadedUri;
 
   static const extent = 48.0;
   static const pointerSize = Size(8.0, 6.0);
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
   AvesEntry get entry => widget.entry;
 
@@ -85,7 +85,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
       _loadedUri = entry.uri;
       final filters = <LocationFilter>[];
       if (entry.hasAddress) {
-        final address = entry.addressDetails;
+        final address = entry.addressDetails!;
         final country = address.countryName;
         if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
         final place = address.place;
@@ -108,10 +108,11 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
             future: availability.isConnected,
             builder: (context, snapshot) {
               if (snapshot.data != true) return SizedBox();
-              return NotificationListener(
+              final latLng = entry.latLng!;
+              return NotificationListener<MapStyleChangedNotification>(
                 onNotification: (notification) {
-                  if (notification is MapStyleChangedNotification) setState(() {});
-                  return false;
+                  setState(() {});
+                  return true;
                 },
                 child: AnimatedSize(
                   alignment: Alignment.topCenter,
@@ -121,15 +122,15 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
                   child: settings.infoMapStyle.isGoogleMaps
                       ? EntryGoogleMap(
                           // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
-                          latLng: Tuple2<double, double>(entry.latLng.latitude, entry.latLng.longitude),
-                          geoUri: entry.geoUri,
+                          latLng: Tuple2<double, double>(latLng.latitude, latLng.longitude),
+                          geoUri: entry.geoUri!,
                           initialZoom: settings.infoMapZoom,
-                          markerId: entry.uri ?? entry.path,
+                          markerId: entry.uri,
                           markerBuilder: buildMarker,
                         )
                       : EntryLeafletMap(
-                          latLng: entry.latLng,
-                          geoUri: entry.geoUri,
+                          latLng: latLng,
+                          geoUri: entry.geoUri!,
                           initialZoom: settings.infoMapZoom,
                           style: settings.infoMapStyle,
                           markerSize: Size(extent, extent + pointerSize.height),
@@ -168,14 +169,14 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
 class _AddressInfoGroup extends StatefulWidget {
   final AvesEntry entry;
 
-  const _AddressInfoGroup({@required this.entry});
+  const _AddressInfoGroup({required this.entry});
 
   @override
   _AddressInfoGroupState createState() => _AddressInfoGroupState();
 }
 
 class _AddressInfoGroupState extends State<_AddressInfoGroup> {
-  Future<String> _addressLineLoader;
+  late Future<String?> _addressLineLoader;
 
   AvesEntry get entry => widget.entry;
 
@@ -192,14 +193,14 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
+    return FutureBuilder<String?>(
       future: _addressLineLoader,
       builder: (context, snapshot) {
         final fullAddress = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : null;
         final address = fullAddress ?? entry.shortAddress;
         final l10n = context.l10n;
         return InfoRowGroup({
-          l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(entry.latLng),
+          l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(entry.latLng!),
           if (address.isNotEmpty) l10n.viewerInfoLabelAddress: address,
         });
       },

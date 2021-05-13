@@ -13,7 +13,7 @@ class AppReference extends StatefulWidget {
 }
 
 class _AppReferenceState extends State<AppReference> {
-  Future<PackageInfo> _packageInfoLoader;
+  late Future<PackageInfo> _packageInfoLoader;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _AppReferenceState extends State<AppReference> {
       builder: (context, snapshot) {
         return LinkChip(
           leading: AvesLogo(
-            size: style.fontSize * MediaQuery.textScaleFactorOf(context) * 1.25,
+            size: style.fontSize! * MediaQuery.textScaleFactorOf(context) * 1.25,
           ),
           text: '${context.l10n.appName} ${snapshot.data?.version}',
           url: 'https://github.com/deckerst/aves',
@@ -59,7 +59,7 @@ class _AppReferenceState extends State<AppReference> {
 
   Widget _buildFlutterLine() {
     final style = DefaultTextStyle.of(context).style;
-    final subColor = style.color.withOpacity(.6);
+    final subColor = style.color!.withOpacity(.6);
 
     return Text.rich(
       TextSpan(
@@ -68,7 +68,7 @@ class _AppReferenceState extends State<AppReference> {
             child: Padding(
               padding: EdgeInsetsDirectional.only(end: 4),
               child: FlutterLogo(
-                size: style.fontSize * 1.25,
+                size: style.fontSize! * 1.25,
               ),
             ),
           ),

@@ -18,7 +18,7 @@ typedef ScrollThumbBuilder = Widget Function(
   Animation<double> thumbAnimation,
   Animation<double> labelAnimation,
   double height, {
-  Widget labelText,
+  Widget? labelText,
 });
 
 /// Build a Text widget using the current scroll offset
@@ -37,7 +37,7 @@ class DraggableScrollbar extends StatefulWidget {
   final ScrollThumbBuilder scrollThumbBuilder;
 
   /// The amount of padding that should surround the thumb
-  final EdgeInsetsGeometry padding;
+  final EdgeInsets? padding;
 
   /// Determines how quickly the scrollbar will animate in and out
   final Duration scrollbarAnimationDuration;
@@ -46,7 +46,7 @@ class DraggableScrollbar extends StatefulWidget {
   final Duration scrollbarTimeToFade;
 
   /// Build a Text widget from the current offset in the BoxScrollView
-  final LabelTextBuilder labelTextBuilder;
+  final LabelTextBuilder? labelTextBuilder;
 
   /// The ScrollController for the BoxScrollView
   final ScrollController controller;
@@ -55,30 +55,28 @@ class DraggableScrollbar extends StatefulWidget {
   final ScrollView child;
 
   DraggableScrollbar({
-    Key key,
-    @required this.backgroundColor,
-    @required this.scrollThumbHeight,
-    @required this.scrollThumbBuilder,
-    @required this.controller,
+    Key? key,
+    required this.backgroundColor,
+    required this.scrollThumbHeight,
+    required this.scrollThumbBuilder,
+    required this.controller,
     this.padding,
     this.scrollbarAnimationDuration = const Duration(milliseconds: 300),
     this.scrollbarTimeToFade = const Duration(milliseconds: 1000),
     this.labelTextBuilder,
-    @required this.child,
-  })  : assert(controller != null),
-        assert(scrollThumbBuilder != null),
-        assert(child.scrollDirection == Axis.vertical),
+    required this.child,
+  })  : assert(child.scrollDirection == Axis.vertical),
         super(key: key);
 
   @override
   _DraggableScrollbarState createState() => _DraggableScrollbarState();
 
   static Widget buildScrollThumbAndLabel({
-    @required Widget scrollThumb,
-    @required Color backgroundColor,
-    @required Animation<double> thumbAnimation,
-    @required Animation<double> labelAnimation,
-    @required Widget labelText,
+    required Widget scrollThumb,
+    required Color backgroundColor,
+    required Animation<double> thumbAnimation,
+    required Animation<double> labelAnimation,
+    required Widget? labelText,
   }) {
     final scrollThumbAndLabel = labelText == null
         ? scrollThumb
@@ -108,10 +106,10 @@ class ScrollLabel extends StatelessWidget {
   final Widget child;
 
   const ScrollLabel({
-    Key key,
-    @required this.child,
-    @required this.animation,
-    @required this.backgroundColor,
+    Key? key,
+    required this.child,
+    required this.animation,
+    required this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -134,13 +132,13 @@ class ScrollLabel extends StatelessWidget {
 class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProviderStateMixin {
   final ValueNotifier<double> _thumbOffsetNotifier = ValueNotifier(0), _viewOffsetNotifier = ValueNotifier(0);
   bool _isDragInProcess = false;
-  Offset _longPressLastGlobalPosition;
+  late Offset _longPressLastGlobalPosition;
 
-  AnimationController _thumbAnimationController;
-  Animation<double> _thumbAnimation;
-  AnimationController _labelAnimationController;
-  Animation<double> _labelAnimation;
-  Timer _fadeoutTimer;
+  late AnimationController _thumbAnimationController;
+  late Animation<double> _thumbAnimation;
+  late AnimationController _labelAnimationController;
+  late Animation<double> _labelAnimation;
+  Timer? _fadeoutTimer;
 
   @override
   void initState() {
@@ -177,7 +175,7 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
 
   ScrollController get controller => widget.controller;
 
-  double get thumbMaxScrollExtent => context.size.height - widget.scrollThumbHeight - (widget.padding?.vertical ?? 0.0);
+  double get thumbMaxScrollExtent => context.size!.height - widget.scrollThumbHeight - (widget.padding?.vertical ?? 0.0);
 
   double get thumbMinScrollExtent => 0.0;
 
@@ -208,20 +206,20 @@ class _DraggableScrollbarState extends State<DraggableScrollbar> with TickerProv
               onVerticalDragStart: (_) => _onVerticalDragStart(),
               onVerticalDragUpdate: (details) => _onVerticalDragUpdate(details.delta.dy),
               onVerticalDragEnd: (_) => _onVerticalDragEnd(),
-              child: ValueListenableBuilder(
+              child: ValueListenableBuilder<double>(
                 valueListenable: _thumbOffsetNotifier,
                 builder: (context, thumbOffset, child) => Container(
                   alignment: AlignmentDirectional.topEnd,
-                  padding: EdgeInsets.only(top: thumbOffset) + widget.padding,
+                  padding: EdgeInsets.only(top: thumbOffset) + (widget.padding ?? EdgeInsets.zero),
                   child: widget.scrollThumbBuilder(
                     widget.backgroundColor,
                     _thumbAnimation,
                     _labelAnimation,
                     widget.scrollThumbHeight,
                     labelText: (widget.labelTextBuilder != null && _isDragInProcess)
-                        ? ValueListenableBuilder(
+                        ? ValueListenableBuilder<double>(
                             valueListenable: _viewOffsetNotifier,
-                            builder: (context, viewOffset, child) => widget.labelTextBuilder(viewOffset + thumbOffset),
+                            builder: (context, viewOffset, child) => widget.labelTextBuilder!.call(viewOffset + thumbOffset),
                           )
                         : null,
                   ),
@@ -376,16 +374,16 @@ class SlideFadeTransition extends StatelessWidget {
   final Widget child;
 
   const SlideFadeTransition({
-    Key key,
-    @required this.animation,
-    @required this.child,
+    Key? key,
+    required this.animation,
+    required this.child,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: animation,
-      builder: (context, child) => animation.value == 0.0 ? Container() : child,
+      builder: (context, child) => animation.value == 0.0 ? Container() : child!,
       child: SlideTransition(
         position: Tween(
           begin: Offset(0.3, 0.0),

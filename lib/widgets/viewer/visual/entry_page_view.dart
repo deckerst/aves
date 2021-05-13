@@ -30,15 +30,15 @@ import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
-  final Size viewportSize;
-  final VoidCallback onDisposed;
+  final Size? viewportSize;
+  final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
 
   const EntryPageView({
-    Key key,
-    this.mainEntry,
-    this.pageEntry,
+    Key? key,
+    required this.mainEntry,
+    required this.pageEntry,
     this.viewportSize,
     this.onDisposed,
   }) : super(key: key);
@@ -48,7 +48,7 @@ class EntryPageView extends StatefulWidget {
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
-  MagnifierController _magnifierController;
+  late MagnifierController _magnifierController;
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
 
@@ -56,7 +56,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   AvesEntry get entry => widget.pageEntry;
 
-  Size get viewportSize => widget.viewportSize;
+  Size? get viewportSize => widget.viewportSize;
 
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
@@ -96,7 +96,7 @@ class _EntryPageViewState extends State<EntryPageView> {
               minScale: minScale,
               maxScale: maxScale,
               initialScale: initialScale,
-              viewportSize: viewportSize,
+              viewportSize: viewportSize!,
               childSize: entry.displaySize,
             ).initialScale,
             viewportSize,
@@ -109,7 +109,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   void _unregisterWidget() {
-    _magnifierController?.dispose();
+    _magnifierController.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -120,7 +120,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     final child = AnimatedBuilder(
       animation: entry.imageChangeNotifier,
       builder: (context, child) {
-        Widget child;
+        Widget? child;
         if (entry.isSvg) {
           child = _buildSvgView();
         } else if (!entry.displaySize.isEmpty) {
@@ -138,11 +138,11 @@ class _EntryPageViewState extends State<EntryPageView> {
       },
     );
 
-    return Consumer<HeroInfo>(
+    return Consumer<HeroInfo?>(
       builder: (context, info, child) => Hero(
-        tag: info?.entry == mainEntry ? hashValues(info.collectionId, mainEntry) : hashCode,
+        tag: info != null && info.entry == mainEntry ? hashValues(info.collectionId, mainEntry) : hashCode,
         transitionOnUserGestures: true,
-        child: child,
+        child: child!,
       ),
       child: child,
     );
@@ -230,7 +230,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     ScaleLevel maxScale = maxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
-    @required Widget child,
+    required Widget child,
   }) {
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
