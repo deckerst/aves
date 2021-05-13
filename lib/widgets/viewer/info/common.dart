@@ -40,7 +40,7 @@ class SectionRow extends StatelessWidget {
 class InfoRowGroup extends StatefulWidget {
   final Map<String, String> keyValues;
   final int maxValueLength;
-  final Map<String, InfoLinkHandler> linkHandlers;
+  final Map<String, InfoLinkHandler>? linkHandlers;
 
   static const keyValuePadding = 16;
   static const linkColor = Colors.blue;
@@ -66,7 +66,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
   int get maxValueLength => widget.maxValueLength;
 
-  Map<String, InfoLinkHandler> get linkHandlers => widget.linkHandlers;
+  Map<String, InfoLinkHandler>? get linkHandlers => widget.linkHandlers;
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +93,11 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
                   (kv) {
                     final key = kv.key;
                     String value;
-                    TextStyle style;
-                    GestureRecognizer recognizer;
+                    TextStyle? style;
+                    GestureRecognizer? recognizer;
 
                     if (linkHandlers?.containsKey(key) == true) {
-                      final handler = linkHandlers[key];
+                      final handler = linkHandlers![key]!;
                       value = handler.linkText(context);
                       // open link on tap
                       recognizer = TapGestureRecognizer()..onTap = () => handler.onTap(context);
@@ -119,7 +119,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
                     // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
                     // so we add padding using multiple hair spaces instead
-                    final thisSpaceSize = max(0.0, (baseValueX - keySizes[key])) + InfoRowGroup.keyValuePadding;
+                    final thisSpaceSize = max(0.0, (baseValueX - keySizes[key]!)) + InfoRowGroup.keyValuePadding;
                     final spaceCount = (100 * thisSpaceSize / baseSpaceWidth).round();
 
                     return [
@@ -153,7 +153,7 @@ class InfoLinkHandler {
   final void Function(BuildContext context) onTap;
 
   const InfoLinkHandler({
-    @required this.linkText,
-    @required this.onTap,
+    required this.linkText,
+    required this.onTap,
   });
 }

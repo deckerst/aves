@@ -17,9 +17,9 @@ class InfoSearchDelegate extends SearchDelegate {
   Map<String, MetadataDirectory> get metadata => metadataNotifier.value;
 
   InfoSearchDelegate({
-    @required String searchFieldLabel,
-    @required this.entry,
-    @required this.metadataNotifier,
+    required String searchFieldLabel,
+    required this.entry,
+    required this.metadataNotifier,
   }) : super(
           searchFieldLabel: searchFieldLabel,
         );

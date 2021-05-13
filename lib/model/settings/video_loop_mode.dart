@@ -25,11 +25,10 @@ extension ExtraVideoLoopMode on VideoLoopMode {
       case VideoLoopMode.never:
         return false;
       case VideoLoopMode.shortOnly:
-        if (entry.durationMillis == null) return false;
-        return entry.durationMillis < shortVideoThreshold.inMilliseconds;
+        final durationMillis = entry.durationMillis;
+        return durationMillis != null ? durationMillis < shortVideoThreshold.inMilliseconds : false;
       case VideoLoopMode.always:
         return true;
     }
-    return false;
   }
 }

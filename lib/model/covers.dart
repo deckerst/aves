@@ -2,6 +2,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/services/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,19 +19,19 @@ class Covers with ChangeNotifier {
 
   int get count => _rows.length;
 
-  int coverContentId(CollectionFilter filter) => _rows.firstWhere((row) => row.filter == filter, orElse: () => null)?.contentId;
+  int? coverContentId(CollectionFilter filter) => _rows.firstWhereOrNull((row) => row.filter == filter)?.contentId;
 
-  Future<void> set(CollectionFilter filter, int contentId) async {
+  Future<void> set(CollectionFilter filter, int? contentId) async {
     // erase contextual properties from filters before saving them
     if (filter is AlbumFilter) {
-      filter = AlbumFilter((filter as AlbumFilter).album, null);
+      filter = AlbumFilter(filter.album, null);
     }
 
-    final row = CoverRow(filter: filter, contentId: contentId);
     _rows.removeWhere((row) => row.filter == filter);
     if (contentId == null) {
-      await metadataDb.removeCovers({row});
+      await metadataDb.removeCovers({filter});
     } else {
+      final row = CoverRow(filter: filter, contentId: contentId);
       _rows.add(row);
       await metadataDb.addCovers({row});
     }
@@ -46,11 +47,11 @@ class Covers with ChangeNotifier {
       final filter = oldRow.filter;
       _rows.remove(oldRow);
       if (filter.test(entry)) {
-        final newRow = CoverRow(filter: filter, contentId: entry.contentId);
+        final newRow = CoverRow(filter: filter, contentId: entry.contentId!);
         await metadataDb.updateCoverEntryId(oldRow.contentId, newRow);
         _rows.add(newRow);
       } else {
-        await metadataDb.removeCovers({oldRow});
+        await metadataDb.removeCovers({filter});
       }
     }
 
@@ -61,7 +62,7 @@ class Covers with ChangeNotifier {
     final contentIds = entries.map((entry) => entry.contentId).toSet();
     final removedRows = _rows.where((row) => contentIds.contains(row.contentId)).toSet();
 
-    await metadataDb.removeCovers(removedRows);
+    await metadataDb.removeCovers(removedRows.map((row) => row.filter).toSet());
     _rows.removeAll(removedRows);
 
     notifyListeners();
@@ -81,13 +82,15 @@ class CoverRow {
   final int contentId;
 
   const CoverRow({
-    @required this.filter,
-    @required this.contentId,
+    required this.filter,
+    required this.contentId,
   });
 
-  factory CoverRow.fromMap(Map map) {
+  static CoverRow? fromMap(Map map) {
+    final filter = CollectionFilter.fromJson(map['filter']);
+    if (filter == null) return null;
     return CoverRow(
-      filter: CollectionFilter.fromJson(map['filter']),
+      filter: filter,
       contentId: map['contentId'],
     );
   }

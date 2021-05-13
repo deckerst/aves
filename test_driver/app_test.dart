@@ -8,7 +8,7 @@ import 'constants.dart';
 import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
-FlutterDriver driver;
+late FlutterDriver driver;
 
 void main() {
   group('[Aves app]', () {
@@ -26,7 +26,7 @@ void main() {
 
     tearDownAll(() async {
       await removeDirectory(targetPicturesDir);
-      unawaited(driver?.close());
+      unawaited(driver.close());
     });
 
     agreeToTerms();

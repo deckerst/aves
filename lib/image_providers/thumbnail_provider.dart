@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   final ThumbnailProviderKey key;
 
-  ThumbnailProvider(this.key) : assert(key != null);
+  ThumbnailProvider(this.key);
 
   @override
   Future<ThumbnailProviderKey> obtainKey(ImageConfiguration configuration) {
@@ -43,7 +43,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
         extent: key.extent,
         taskKey: key,
       );
-      if (bytes == null) {
+      if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) loading failed');
       }
       return await decode(bytes);
@@ -66,25 +66,21 @@ class ThumbnailProviderKey {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
-  final int pageId, rotationDegrees;
+  final int? pageId;
+  final int rotationDegrees;
   final bool isFlipped;
   final int dateModifiedSecs;
   final double extent;
 
   const ThumbnailProviderKey({
-    @required this.uri,
-    @required this.mimeType,
-    @required this.pageId,
-    @required this.rotationDegrees,
-    @required this.isFlipped,
-    @required this.dateModifiedSecs,
+    required this.uri,
+    required this.mimeType,
+    required this.pageId,
+    required this.rotationDegrees,
+    required this.isFlipped,
+    required this.dateModifiedSecs,
     this.extent = 0,
-  })  : assert(uri != null),
-        assert(mimeType != null),
-        assert(rotationDegrees != null),
-        assert(isFlipped != null),
-        assert(dateModifiedSecs != null),
-        assert(extent != null);
+  });
 
   @override
   bool operator ==(Object other) {

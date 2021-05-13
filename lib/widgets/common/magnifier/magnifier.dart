@@ -20,24 +20,17 @@ import 'package:flutter/material.dart';
  */
 class Magnifier extends StatelessWidget {
   const Magnifier({
-    Key key,
-    @required this.controller,
-    @required this.childSize,
+    Key? key,
+    required this.controller,
+    required this.childSize,
     this.minScale = const ScaleLevel(factor: .0),
     this.maxScale = const ScaleLevel(factor: double.infinity),
     this.initialScale = const ScaleLevel(ref: ScaleReference.contained),
     this.scaleStateCycle = defaultScaleStateCycle,
     this.applyScale = true,
     this.onTap,
-    @required this.child,
-  })  : assert(controller != null),
-        assert(childSize != null),
-        assert(minScale != null),
-        assert(maxScale != null),
-        assert(initialScale != null),
-        assert(scaleStateCycle != null),
-        assert(applyScale != null),
-        super(key: key);
+    required this.child,
+  }) : super(key: key);
 
   final MagnifierController controller;
 
@@ -55,7 +48,7 @@ class Magnifier extends StatelessWidget {
 
   final ScaleStateCycle scaleStateCycle;
   final bool applyScale;
-  final MagnifierTapCallback onTap;
+  final MagnifierTapCallback? onTap;
   final Widget child;
 
   @override
@@ -67,7 +60,7 @@ class Magnifier extends StatelessWidget {
           maxScale: maxScale,
           initialScale: initialScale,
           viewportSize: constraints.biggest,
-          childSize: childSize?.isEmpty == false ? childSize : constraints.biggest,
+          childSize: childSize.isEmpty == false ? childSize : constraints.biggest,
         ));
 
         return MagnifierCore(

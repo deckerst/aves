@@ -28,7 +28,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
 
   Set<AvesEntry> get visibleEntries => source.visibleEntries;
 
-  static OverlayEntry _taskQueueOverlayEntry;
+  static OverlayEntry? _taskQueueOverlayEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
               _taskQueueOverlayEntry = OverlayEntry(
                 builder: (context) => DebugTaskQueueOverlay(),
               );
-              Overlay.of(context).insert(_taskQueueOverlayEntry);
+              Overlay.of(context)!.insert(_taskQueueOverlayEntry!);
             } else {
               _taskQueueOverlayEntry = null;
             }

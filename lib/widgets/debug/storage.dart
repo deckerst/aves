@@ -11,7 +11,7 @@ class DebugStorageSection extends StatefulWidget {
 }
 
 class _DebugStorageSectionState extends State<DebugStorageSection> with AutomaticKeepAliveClientMixin {
-  final Map<String, int> _freeSpaceByVolume = {};
+  final Map<String, int?> _freeSpaceByVolume = {};
 
   @override
   void initState() {

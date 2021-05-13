@@ -62,7 +62,8 @@ class XmpNamespace {
           final prop = XmpProp(kv.key, kv.value);
           return extractData(prop) ? null : prop;
         })
-        .where((e) => e != null)
+        .where((v) => v != null)
+        .cast<XmpProp >()
         .toList()
           ..sort((a, b) => compareAsciiUpperCaseNatural(a.displayKey, b.displayKey));
 
@@ -97,7 +98,7 @@ class XmpNamespace {
     if (matches.isEmpty) return false;
 
     final match = matches.first;
-    final field = XmpProp.formatKey(match.group(1));
+    final field = XmpProp.formatKey(match.group(1)!);
     store[field] = formatValue(prop);
     return true;
   }
@@ -107,8 +108,8 @@ class XmpNamespace {
     if (matches.isEmpty) return false;
 
     final match = matches.first;
-    final index = int.parse(match.group(1));
-    final field = XmpProp.formatKey(match.group(2));
+    final index = int.parse(match.group(1)!);
+    final field = XmpProp.formatKey(match.group(2)!);
     final fields = store.putIfAbsent(index, () => <String, String>{});
     fields[field] = formatValue(prop);
     return true;
@@ -120,7 +121,7 @@ class XmpNamespace {
 
   String formatValue(XmpProp prop) => prop.value;
 
-  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) => null;
+  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) => {};
 
   // identity
 

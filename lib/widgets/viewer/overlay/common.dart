@@ -9,9 +9,9 @@ class OverlayButton extends StatelessWidget {
   final Widget child;
 
   const OverlayButton({
-    Key key,
+    Key? key,
     this.scale = kAlwaysCompleteAnimation,
-    @required this.child,
+    required this.child,
   }) : super(key: key);
 
   @override
@@ -41,15 +41,14 @@ class OverlayButton extends StatelessWidget {
 class OverlayTextButton extends StatelessWidget {
   final Animation<double> scale;
   final String buttonLabel;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OverlayTextButton({
-    Key key,
-    @required this.scale,
-    @required this.buttonLabel,
+    Key? key,
+    required this.scale,
+    required this.buttonLabel,
     this.onPressed,
-  })  : assert(scale != null),
-        super(key: key);
+  }) : super(key: key);
 
   static const _borderRadius = 123.0;
   static final _minSize = MaterialStateProperty.all<Size>(Size(kMinInteractiveDimension, kMinInteractiveDimension));

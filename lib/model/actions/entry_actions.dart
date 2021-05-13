@@ -91,10 +91,9 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.debug:
         return 'Debug';
     }
-    return null;
   }
 
-  IconData getIcon() {
+  IconData? getIcon() {
     switch (this) {
       // in app actions
       case EntryAction.toggleFavourite:
@@ -129,6 +128,5 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.debug:
         return AIcons.debug;
     }
-    return null;
   }
 }

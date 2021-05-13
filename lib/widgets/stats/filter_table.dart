@@ -14,10 +14,10 @@ class FilterTable extends StatelessWidget {
   final FilterCallback onFilterSelection;
 
   const FilterTable({
-    @required this.totalEntryCount,
-    @required this.entryCountMap,
-    @required this.filterBuilder,
-    @required this.onFilterSelection,
+    required this.totalEntryCount,
+    required this.entryCountMap,
+    required this.filterBuilder,
+    required this.onFilterSelection,
   });
 
   static const chipWidth = AvesFilterChip.maxChipWidth;

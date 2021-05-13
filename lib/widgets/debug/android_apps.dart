@@ -12,7 +12,7 @@ class DebugAndroidAppSection extends StatefulWidget {
 }
 
 class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with AutomaticKeepAliveClientMixin {
-  Future<Set<Package>> _loader;
+  late Future<Set<Package>> _loader;
 
   static const iconSize = 20.0;
 
@@ -36,7 +36,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
               if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-              final packages = snapshot.data.toList()..sort((a, b) => compareAsciiUpperCase(a.packageName, b.packageName));
+              final packages = snapshot.data!.toList()..sort((a, b) => compareAsciiUpperCase(a.packageName, b.packageName));
               final enabledTheme = IconTheme.of(context);
               final disabledTheme = enabledTheme.merge(IconThemeData(opacity: .2));
               return Column(

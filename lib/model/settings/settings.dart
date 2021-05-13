@@ -1,6 +1,7 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
+import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -14,7 +15,7 @@ import 'enums.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
-  static SharedPreferences _prefs;
+  static SharedPreferences? /*late final*/ _prefs;
 
   Settings._private();
 
@@ -93,7 +94,7 @@ class Settings extends ChangeNotifier {
   }
 
   Future<void> reset() {
-    return _prefs.clear();
+    return _prefs!.clear();
   }
 
   // app
@@ -111,7 +112,7 @@ class Settings extends ChangeNotifier {
 
   static const localeSeparator = '-';
 
-  Locale get locale {
+  Locale? get locale {
     // exceptionally allow getting locale before settings are initialized
     final tag = _prefs?.getString(localeKey);
     if (tag != null) {
@@ -125,11 +126,11 @@ class Settings extends ChangeNotifier {
     return null;
   }
 
-  set locale(Locale newValue) {
-    String tag;
+  set locale(Locale? newValue) {
+    String? tag;
     if (newValue != null) {
       tag = [
-        newValue.languageCode ?? '',
+        newValue.languageCode,
         newValue.scriptCode ?? '',
         newValue.countryCode ?? '',
       ].join(localeSeparator);
@@ -152,11 +153,11 @@ class Settings extends ChangeNotifier {
 
   set homePage(HomePageSetting newValue) => setAndNotify(homePageKey, newValue.toString());
 
-  String get catalogTimeZone => _prefs.getString(catalogTimeZoneKey) ?? '';
+  String get catalogTimeZone => _prefs!.getString(catalogTimeZoneKey) ?? '';
 
   set catalogTimeZone(String newValue) => setAndNotify(catalogTimeZoneKey, newValue);
 
-  double getTileExtent(String routeName) => _prefs.getDouble(tileExtentPrefixKey + routeName) ?? 0;
+  double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
   // do not notify, as tile extents are only used internally by `TileExtentController`
   // and should not trigger rebuilding by change notification
@@ -202,11 +203,11 @@ class Settings extends ChangeNotifier {
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
-  Set<CollectionFilter> get pinnedFilters => (_prefs.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
+  Set<CollectionFilter> get pinnedFilters => (_prefs!.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
-  Set<CollectionFilter> get hiddenFilters => (_prefs.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).toSet();
+  Set<CollectionFilter> get hiddenFilters => (_prefs!.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toSet();
 
   set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -248,7 +249,7 @@ class Settings extends ChangeNotifier {
 
   set infoMapStyle(EntryMapStyle newValue) => setAndNotify(infoMapStyleKey, newValue.toString());
 
-  double get infoMapZoom => _prefs.getDouble(infoMapZoomKey) ?? 12;
+  double get infoMapZoom => _prefs!.getDouble(infoMapZoomKey) ?? 12;
 
   set infoMapZoom(double newValue) => setAndNotify(infoMapZoomKey, newValue);
 
@@ -272,23 +273,23 @@ class Settings extends ChangeNotifier {
 
   set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
 
-  List<CollectionFilter> get searchHistory => (_prefs.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).toList();
+  List<CollectionFilter> get searchHistory => (_prefs!.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
   // version
 
-  DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs.getInt(lastVersionCheckDateKey) ?? 0);
+  DateTime get lastVersionCheckDate => DateTime.fromMillisecondsSinceEpoch(_prefs!.getInt(lastVersionCheckDateKey) ?? 0);
 
   set lastVersionCheckDate(DateTime newValue) => setAndNotify(lastVersionCheckDateKey, newValue.millisecondsSinceEpoch);
 
   // convenience methods
 
   // ignore: avoid_positional_boolean_parameters
-  bool getBoolOrDefault(String key, bool defaultValue) => _prefs.getKeys().contains(key) ? _prefs.getBool(key) : defaultValue;
+  bool getBoolOrDefault(String key, bool defaultValue) => _prefs!.getBool(key) ?? defaultValue;
 
   T getEnumOrDefault<T>(String key, T defaultValue, Iterable<T> values) {
-    final valueString = _prefs.getString(key);
+    final valueString = _prefs!.getString(key);
     for (final v in values) {
       if (v.toString() == valueString) {
         return v;
@@ -298,28 +299,28 @@ class Settings extends ChangeNotifier {
   }
 
   List<T> getEnumListOrDefault<T>(String key, List<T> defaultValue, Iterable<T> values) {
-    return _prefs.getStringList(key)?.map((s) => values.firstWhere((v) => v.toString() == s, orElse: () => null))?.where((v) => v != null)?.toList() ?? defaultValue;
+    return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).where((v) => v != null).cast<T>().toList() ?? defaultValue;
   }
 
   void setAndNotify(String key, dynamic newValue, {bool notify = true}) {
-    var oldValue = _prefs.get(key);
+    var oldValue = _prefs!.get(key);
     if (newValue == null) {
-      _prefs.remove(key);
+      _prefs!.remove(key);
     } else if (newValue is String) {
-      oldValue = _prefs.getString(key);
-      _prefs.setString(key, newValue);
+      oldValue = _prefs!.getString(key);
+      _prefs!.setString(key, newValue);
     } else if (newValue is List<String>) {
-      oldValue = _prefs.getStringList(key);
-      _prefs.setStringList(key, newValue);
+      oldValue = _prefs!.getStringList(key);
+      _prefs!.setStringList(key, newValue);
     } else if (newValue is int) {
-      oldValue = _prefs.getInt(key);
-      _prefs.setInt(key, newValue);
+      oldValue = _prefs!.getInt(key);
+      _prefs!.setInt(key, newValue);
     } else if (newValue is double) {
-      oldValue = _prefs.getDouble(key);
-      _prefs.setDouble(key, newValue);
+      oldValue = _prefs!.getDouble(key);
+      _prefs!.setDouble(key, newValue);
     } else if (newValue is bool) {
-      oldValue = _prefs.getBool(key);
-      _prefs.setBool(key, newValue);
+      oldValue = _prefs!.getBool(key);
+      _prefs!.setBool(key, newValue);
     }
     if (oldValue != newValue && notify) {
       notifyListeners();

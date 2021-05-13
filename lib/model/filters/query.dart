@@ -12,7 +12,7 @@ class QueryFilter extends CollectionFilter {
 
   final String query;
   final bool colorful;
-  EntryFilter _test;
+  late EntryFilter _test;
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
@@ -26,7 +26,7 @@ class QueryFilter extends CollectionFilter {
     // allow untrimmed queries wrapped with `"..."`
     final matches = exactRegex.allMatches(upQuery);
     if (matches.length == 1) {
-      upQuery = matches.first.group(1);
+      upQuery = matches.first.group(1)!;
     }
 
     _test = not ? (entry) => !entry.search(upQuery) : (entry) => entry.search(upQuery);

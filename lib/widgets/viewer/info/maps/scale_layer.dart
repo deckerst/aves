@@ -11,7 +11,7 @@ class ScaleLayerOptions extends LayerOptions {
   final Widget Function(double width, String distance) builder;
 
   ScaleLayerOptions({
-    Key key,
+    Key? key,
     this.builder = defaultBuilder,
     rebuild,
   }) : super(key: key, rebuild: rebuild);
@@ -27,7 +27,7 @@ class ScaleLayerOptions extends LayerOptions {
 class ScaleLayerWidget extends StatelessWidget {
   final ScaleLayerOptions options;
 
-  ScaleLayerWidget({@required this.options}) : super(key: options.key);
+  ScaleLayerWidget({required this.options}) : super(key: options.key);
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class ScaleLayer extends StatelessWidget {
         final targetPoint = util.calculateEndingGlobalCoordinates(center, 90, distance);
         final end = map.project(targetPoint);
         final displayDistance = distance > 999 ? '${(distance / 1000).toStringAsFixed(0)} km' : '${distance.toStringAsFixed(0)} m';
-        final double width = (end.x - start.x);
+        final width = end.x - (start.x as double);
 
         return scaleLayerOpts.builder(width, displayDistance);
       },
@@ -104,8 +104,8 @@ class ScaleBar extends StatelessWidget {
   static const double barThickness = 1;
 
   const ScaleBar({
-    @required this.distance,
-    @required this.width,
+    required this.distance,
+    required this.width,
   });
 
   @override

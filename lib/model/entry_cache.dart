@@ -8,12 +8,12 @@ class EntryCache {
   static Future<void> evict(
     String uri,
     String mimeType,
-    int dateModifiedSecs,
+    int? dateModifiedSecs,
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
     // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
-    int pageId;
+    int? pageId;
 
     // evict fullscreen image
     await UriImage(
@@ -29,7 +29,7 @@ class EntryCache {
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
-      dateModifiedSecs: dateModifiedSecs,
+      dateModifiedSecs: dateModifiedSecs ?? 0,
       rotationDegrees: oldRotationDegrees,
       isFlipped: oldIsFlipped,
     )).evict();
@@ -42,7 +42,7 @@ class EntryCache {
               uri: uri,
               mimeType: mimeType,
               pageId: pageId,
-              dateModifiedSecs: dateModifiedSecs,
+              dateModifiedSecs: dateModifiedSecs ?? 0,
               rotationDegrees: oldRotationDegrees,
               isFlipped: oldIsFlipped,
               extent: extent,

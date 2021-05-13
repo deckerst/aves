@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'dart:ui' as ui;
 
 import 'package:aves/theme/durations.dart';
@@ -17,20 +18,20 @@ class ScalerMetadata<T> {
 class GridScaleGestureDetector<T> extends StatefulWidget {
   final GlobalKey scrollableKey;
   final ValueNotifier<double> appBarHeightNotifier;
-  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
+  final Widget Function(Offset center, double extent, Widget child)? gridBuilder;
   final Widget Function(T item, double extent) scaledBuilder;
   final Rect Function(BuildContext context, T item) getScaledItemTileRect;
   final void Function(T item) onScaled;
   final Widget child;
 
   const GridScaleGestureDetector({
-    @required this.scrollableKey,
-    @required this.appBarHeightNotifier,
+    required this.scrollableKey,
+    required this.appBarHeightNotifier,
     this.gridBuilder,
-    @required this.scaledBuilder,
-    @required this.getScaledItemTileRect,
-    @required this.onScaled,
-    @required this.child,
+    required this.scaledBuilder,
+    required this.getScaledItemTileRect,
+    required this.onScaled,
+    required this.child,
   });
 
   @override
@@ -38,11 +39,11 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
 }
 
 class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T>> {
-  double _startExtent, _extentMin, _extentMax;
+  double? _startExtent, _extentMin, _extentMax;
   bool _applyingScale = false;
-  ValueNotifier<double> _scaledExtentNotifier;
-  OverlayEntry _overlayEntry;
-  ScalerMetadata<T> _metadata;
+  ValueNotifier<double>? _scaledExtentNotifier;
+  OverlayEntry? _overlayEntry;
+  ScalerMetadata<T>? _metadata;
 
   @override
   Widget build(BuildContext context) {
@@ -52,19 +53,19 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         // when scaling ends and we apply the new extent, so we prevent this
         // until we scaled and scrolled to the tile in the new grid
         if (_applyingScale) return;
-        final scrollableContext = widget.scrollableKey.currentContext;
-        final RenderBox scrollableBox = scrollableContext.findRenderObject();
+        final scrollableContext = widget.scrollableKey.currentContext!;
+        final scrollableBox = scrollableContext.findRenderObject() as RenderBox;
         final result = BoxHitTestResult();
         scrollableBox.hitTest(result, position: details.localFocalPoint);
 
         // find `RenderObject`s at the gesture focal point
-        U firstOf<U>(BoxHitTestResult result) => result.path.firstWhere((el) => el.target is U, orElse: () => null)?.target as U;
+        U? firstOf<U>(BoxHitTestResult result) => result.path.firstWhereOrNull((el) => el.target is U)?.target as U?;
         final renderMetaData = firstOf<RenderMetaData>(result);
         // abort if we cannot find an image to show on overlay
         if (renderMetaData == null) return;
         _metadata = renderMetaData.metaData;
         _startExtent = renderMetaData.size.width;
-        _scaledExtentNotifier = ValueNotifier(_startExtent);
+        _scaledExtentNotifier = ValueNotifier(_startExtent!);
 
         // not the same as `MediaQuery.size.width`, because of screen insets/padding
         final gridWidth = scrollableBox.size.width;
@@ -73,28 +74,28 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         _extentMin = tileExtentController.effectiveExtentMin;
         _extentMax = tileExtentController.effectiveExtentMax;
 
-        final halfExtent = _startExtent / 2;
+        final halfExtent = _startExtent! / 2;
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
           builder: (context) => ScaleOverlay(
-            builder: (extent) => widget.scaledBuilder(_metadata.item, extent),
+            builder: (extent) => widget.scaledBuilder(_metadata!.item, extent),
             center: thumbnailCenter,
             viewportWidth: gridWidth,
             gridBuilder: widget.gridBuilder,
-            scaledExtentNotifier: _scaledExtentNotifier,
+            scaledExtentNotifier: _scaledExtentNotifier!,
           ),
         );
-        Overlay.of(scrollableContext).insert(_overlayEntry);
+        Overlay.of(scrollableContext)!.insert(_overlayEntry!);
       },
       onScaleUpdate: (details) {
         if (_scaledExtentNotifier == null) return;
         final s = details.scale;
-        _scaledExtentNotifier.value = (_startExtent * s).clamp(_extentMin, _extentMax);
+        _scaledExtentNotifier!.value = (_startExtent! * s).clamp(_extentMin!, _extentMax!);
       },
       onScaleEnd: (details) {
         if (_scaledExtentNotifier == null) return;
         if (_overlayEntry != null) {
-          _overlayEntry.remove();
+          _overlayEntry!.remove();
           _overlayEntry = null;
         }
 
@@ -102,18 +103,18 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         final tileExtentController = context.read<TileExtentController>();
         final oldExtent = tileExtentController.extentNotifier.value;
         // sanitize and update grid layout if necessary
-        final newExtent = tileExtentController.setUserPreferredExtent(_scaledExtentNotifier.value);
+        final newExtent = tileExtentController.setUserPreferredExtent(_scaledExtentNotifier!.value);
         _scaledExtentNotifier = null;
         if (newExtent == oldExtent) {
           _applyingScale = false;
         } else {
           // scroll to show the focal point thumbnail at its new position
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final entry = _metadata.item;
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            final entry = _metadata!.item;
             _scrollToItem(entry);
             // warning: posting `onScaled` in the next frame with `addPostFrameCallback`
             // would trigger only when the scrollable offset actually changes
-            Future.delayed(Durations.collectionScalingCompleteNotificationDelay).then((_) => widget.onScaled?.call(entry));
+            Future.delayed(Durations.collectionScalingCompleteNotificationDelay).then((_) => widget.onScaled(entry));
             _applyingScale = false;
           });
         }
@@ -136,7 +137,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
   // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
   // `RenderViewport.scrollOffsetOf` is a good alternative
   void _scrollToItem(T item) {
-    final scrollableContext = widget.scrollableKey.currentContext;
+    final scrollableContext = widget.scrollableKey.currentContext!;
     final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
     final tileRect = widget.getScaledItemTileRect(context, item);
     // most of the time the app bar will be scrolled away after scaling,
@@ -157,13 +158,13 @@ class ScaleOverlay extends StatefulWidget {
   final Offset center;
   final double viewportWidth;
   final ValueNotifier<double> scaledExtentNotifier;
-  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
+  final Widget Function(Offset center, double extent, Widget child)? gridBuilder;
 
   const ScaleOverlay({
-    @required this.builder,
-    @required this.center,
-    @required this.viewportWidth,
-    @required this.scaledExtentNotifier,
+    required this.builder,
+    required this.center,
+    required this.viewportWidth,
+    required this.scaledExtentNotifier,
     this.gridBuilder,
   });
 
@@ -181,7 +182,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => _init = true));
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() => _init = true));
   }
 
   @override
@@ -256,11 +257,11 @@ class GridPainter extends CustomPainter {
   final Color color;
 
   const GridPainter({
-    @required this.center,
-    @required this.extent,
+    required this.center,
+    required this.extent,
     this.spacing = 0.0,
     this.strokeWidth = 1.0,
-    @required this.color,
+    required this.color,
   });
 
   @override

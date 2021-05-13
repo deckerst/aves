@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 
 class ThumbnailTheme extends StatelessWidget {
   final double extent;
-  final bool showLocation;
+  final bool? showLocation;
   final Widget child;
 
   const ThumbnailTheme({
-    @required this.extent,
+    required this.extent,
     this.showLocation,
-    @required this.child,
+    required this.child,
   });
 
   @override
@@ -39,10 +39,10 @@ class ThumbnailThemeData {
   final bool showLocation, showRaw, showVideoDuration;
 
   const ThumbnailThemeData({
-    @required this.iconSize,
-    @required this.fontSize,
-    @required this.showLocation,
-    @required this.showRaw,
-    @required this.showVideoDuration,
+    required this.iconSize,
+    required this.fontSize,
+    required this.showLocation,
+    required this.showRaw,
+    required this.showVideoDuration,
   });
 }

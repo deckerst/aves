@@ -74,12 +74,12 @@ class _RenameAlbumDialogState extends State<RenameAlbumDialog> {
   }
 
   String _buildAlbumPath(String name) {
-    if (name == null || name.isEmpty) return '';
+    if (name.isEmpty) return '';
     return pContext.join(pContext.dirname(album), name);
   }
 
   Future<void> _validate() async {
-    final newName = _nameController.text ?? '';
+    final newName = _nameController.text;
     final path = _buildAlbumPath(newName);
     final exists = newName.isNotEmpty && await FileSystemEntity.type(path) != FileSystemEntityType.notFound;
     _existsNotifier.value = exists && newName != initialValue;

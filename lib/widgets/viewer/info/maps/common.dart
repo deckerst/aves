@@ -19,7 +19,7 @@ class MapDecorator extends StatelessWidget {
 
   static final BorderRadius mapBorderRadius = BorderRadius.circular(24); // to match button circles
 
-  const MapDecorator({@required this.child});
+  const MapDecorator({required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +47,8 @@ class MapButtonPanel extends StatelessWidget {
   static const double padding = 4;
 
   const MapButtonPanel({
-    @required this.geoUri,
-    @required this.zoomBy,
+    required this.geoUri,
+    required this.zoomBy,
   });
 
   @override
@@ -126,9 +126,9 @@ class MapOverlayButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const MapOverlayButton({
-    @required this.icon,
-    @required this.tooltip,
-    @required this.onPressed,
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
   });
 
   @override

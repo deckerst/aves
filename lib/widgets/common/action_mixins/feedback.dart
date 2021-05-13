@@ -21,12 +21,12 @@ mixin FeedbackMixin {
   // report overlay for multiple operations
 
   void showOpReport<T>({
-    @required BuildContext context,
-    @required Stream<T> opStream,
-    @required int itemCount,
-    void Function(Set<T> processed) onDone,
+    required BuildContext context,
+    required Stream<T> opStream,
+    required int itemCount,
+    void Function(Set<T> processed)? onDone,
   }) {
-    OverlayEntry _opReportOverlayEntry;
+    late OverlayEntry _opReportOverlayEntry;
     _opReportOverlayEntry = OverlayEntry(
       builder: (context) => ReportOverlay<T>(
         opStream: opStream,
@@ -37,7 +37,7 @@ mixin FeedbackMixin {
         },
       ),
     );
-    Overlay.of(context).insert(_opReportOverlayEntry);
+    Overlay.of(context)!.insert(_opReportOverlayEntry);
   }
 }
 
@@ -47,9 +47,9 @@ class ReportOverlay<T> extends StatefulWidget {
   final void Function(Set<T> processed) onDone;
 
   const ReportOverlay({
-    @required this.opStream,
-    @required this.itemCount,
-    @required this.onDone,
+    required this.opStream,
+    required this.itemCount,
+    required this.onDone,
   });
 
   @override
@@ -58,8 +58,8 @@ class ReportOverlay<T> extends StatefulWidget {
 
 class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerProviderStateMixin {
   final processed = <T>{};
-  AnimationController _animationController;
-  Animation<double> _animation;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   Stream<T> get opStream => widget.opStream;
 

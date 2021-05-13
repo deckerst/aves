@@ -12,7 +12,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
   Future<List<int>> checkObsoleteContentIds(List<int> knownContentIds) => SynchronousFuture([]);
 
   @override
-  Future<List<int>> checkObsoletePaths(Map<int, String> knownPathById) => SynchronousFuture([]);
+  Future<List<int>> checkObsoletePaths(Map<int, String?> knownPathById) => SynchronousFuture([]);
 
   @override
   Stream<AvesEntry> getEntries(Map<int, int> knownEntries) => Stream.fromIterable(entries);
@@ -52,7 +52,7 @@ class FakeMediaStoreService extends Fake implements MediaStoreService {
         'deletedSource': true,
         'uri': 'content://media/external/images/media/$newContentId',
         'contentId': newContentId,
-        'path': entry.path.replaceFirst(sourceAlbum, destinationAlbum),
+        'path': entry.path!.replaceFirst(sourceAlbum, destinationAlbum),
         'displayName': '${entry.filenameWithoutExtension}${entry.extension}',
         'title': entry.filenameWithoutExtension,
         'dateModifiedSecs': FakeMediaStoreService.dateSecs,

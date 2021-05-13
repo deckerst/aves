@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 class QueryBar extends StatefulWidget {
   final ValueNotifier<String> filterNotifier;
 
-  const QueryBar({@required this.filterNotifier});
+  const QueryBar({required this.filterNotifier});
 
   @override
   _QueryBarState createState() => _QueryBarState();
@@ -17,7 +17,7 @@ class QueryBar extends StatefulWidget {
 
 class _QueryBarState extends State<QueryBar> {
   final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
-  TextEditingController _controller;
+  late TextEditingController _controller;
 
   ValueNotifier<String> get filterNotifier => widget.filterNotifier;
 

@@ -25,8 +25,8 @@ import 'package:provider/provider.dart';
 
 class CollectionSearchDelegate {
   final CollectionSource source;
-  final CollectionLens parentCollection;
-  final ValueNotifier<String> expandedSectionNotifier = ValueNotifier(null);
+  final CollectionLens? parentCollection;
+  final ValueNotifier<String?> expandedSectionNotifier = ValueNotifier(null);
 
   static const searchHistoryCount = 10;
   static final typeFilters = [
@@ -41,7 +41,7 @@ class CollectionSearchDelegate {
     MimeFilter(MimeTypes.svg),
   ];
 
-  CollectionSearchDelegate({@required this.source, this.parentCollection});
+  CollectionSearchDelegate({required this.source, this.parentCollection});
 
   Widget buildLeading(BuildContext context) {
     return Navigator.canPop(context)
@@ -76,7 +76,7 @@ class CollectionSearchDelegate {
     final upQuery = query.trim().toUpperCase();
     bool containQuery(String s) => s.toUpperCase().contains(upQuery);
     return SafeArea(
-      child: ValueListenableBuilder<String>(
+      child: ValueListenableBuilder<String?>(
           valueListenable: expandedSectionNotifier,
           builder: (context, expandedSection, child) {
             final queryFilter = _buildQueryFilter(false);
@@ -100,7 +100,7 @@ class CollectionSearchDelegate {
                         filters: [
                           queryFilter,
                           ...visibleTypeFilters,
-                        ].where((f) => f != null && containQuery(f.getLabel(context))).toList(),
+                        ].where((f) => f != null && containQuery(f.getLabel(context))).cast<CollectionFilter>().toList(),
                         // usually perform hero animation only on tapped chips,
                         // but we also need to animate the query chip when it is selected by submitting the search query
                         heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
@@ -119,7 +119,7 @@ class CollectionSearchDelegate {
                                       album,
                                       source.getAlbumDisplayName(context, album),
                                     ))
-                                .where((filter) => containQuery(filter.displayName))
+                                .where((filter) => containQuery(filter.displayName ?? filter.album))
                                 .toList()
                                   ..sort();
                             return _buildFilterRow(
@@ -174,10 +174,10 @@ class CollectionSearchDelegate {
   }
 
   Widget _buildFilterRow({
-    @required BuildContext context,
-    String title,
-    @required List<CollectionFilter> filters,
-    HeroType Function(CollectionFilter filter) heroTypeBuilder,
+    required BuildContext context,
+    String? title,
+    required List<CollectionFilter> filters,
+    HeroType Function(CollectionFilter filter)? heroTypeBuilder,
   }) {
     return ExpandableFilterRow(
       title: title,
@@ -189,7 +189,7 @@ class CollectionSearchDelegate {
   }
 
   Widget buildResults(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       // `buildResults` is called in the build phase,
       // so we post the call that will filter the collection
       // and possibly trigger a rebuild here
@@ -198,12 +198,17 @@ class CollectionSearchDelegate {
     return SizedBox.shrink();
   }
 
-  QueryFilter _buildQueryFilter(bool colorful) {
+  QueryFilter? _buildQueryFilter(bool colorful) {
     final cleanQuery = query.trim();
     return cleanQuery.isNotEmpty ? QueryFilter(cleanQuery, colorful: colorful) : null;
   }
 
-  void _select(BuildContext context, CollectionFilter filter) {
+  void _select(BuildContext context, CollectionFilter? filter) {
+    if (filter == null) {
+      _goBack(context);
+      return;
+    }
+
     if (settings.saveSearchHistory) {
       final history = settings.searchHistory
         ..remove(filter)
@@ -218,11 +223,11 @@ class CollectionSearchDelegate {
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    parentCollection.addFilter(filter);
+    parentCollection!.addFilter(filter);
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       _goBack(context);
     });
   }
@@ -261,13 +266,13 @@ class CollectionSearchDelegate {
 
   void showSuggestions(BuildContext context) {
     assert(focusNode != null, '_focusNode must be set by route before showSuggestions is called.');
-    focusNode.requestFocus();
+    focusNode!.requestFocus();
     currentBody = SearchBody.suggestions;
   }
 
   Animation<double> get transitionAnimation => proxyAnimation;
 
-  FocusNode focusNode;
+  FocusNode? focusNode;
 
   final TextEditingController queryTextController = TextEditingController();
 
@@ -276,19 +281,18 @@ class CollectionSearchDelegate {
   String get query => queryTextController.text;
 
   set query(String value) {
-    assert(query != null);
     queryTextController.text = value;
   }
 
-  final ValueNotifier<SearchBody> currentBodyNotifier = ValueNotifier(null);
+  final ValueNotifier<SearchBody?> currentBodyNotifier = ValueNotifier(null);
 
-  SearchBody get currentBody => currentBodyNotifier.value;
+  SearchBody? get currentBody => currentBodyNotifier.value;
 
-  set currentBody(SearchBody value) {
+  set currentBody(SearchBody? value) {
     currentBodyNotifier.value = value;
   }
 
-  SearchPageRoute route;
+  SearchPageRoute? route;
 }
 
 // adapted from `SearchDelegate`
@@ -297,9 +301,8 @@ enum SearchBody { suggestions, results }
 // adapted from `SearchDelegate`
 class SearchPageRoute<T> extends PageRoute<T> {
   SearchPageRoute({
-    @required this.delegate,
-  })  : assert(delegate != null),
-        super(settings: RouteSettings(name: SearchPage.routeName)) {
+    required this.delegate,
+  })  : super(settings: RouteSettings(name: SearchPage.routeName)) {
     assert(
       delegate.route == null,
       'The ${delegate.runtimeType} instance is currently used by another active '
@@ -312,10 +315,10 @@ class SearchPageRoute<T> extends PageRoute<T> {
   final CollectionSearchDelegate delegate;
 
   @override
-  Color get barrierColor => null;
+  Color? get barrierColor => null;
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   Duration get transitionDuration => const Duration(milliseconds: 300);
@@ -356,7 +359,7 @@ class SearchPageRoute<T> extends PageRoute<T> {
   }
 
   @override
-  void didComplete(T result) {
+  void didComplete(T? result) {
     super.didComplete(result);
     assert(delegate.route == this);
     delegate.route = null;

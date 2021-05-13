@@ -11,7 +11,7 @@ class DebugTaskQueueOverlay extends StatelessWidget {
           alignment: AlignmentDirectional.bottomStart,
           child: SafeArea(
             child: Container(
-              color: Colors.indigo[900].withAlpha(0xCC),
+              color: Colors.indigo[900]!.withAlpha(0xCC),
               padding: EdgeInsets.all(8),
               child: StreamBuilder<QueueState>(
                   stream: servicePolicy.queueStream,
@@ -19,7 +19,7 @@ class DebugTaskQueueOverlay extends StatelessWidget {
                     if (snapshot.hasError) return SizedBox.shrink();
                     final queuedEntries = <MapEntry<dynamic, int>>[];
                     if (snapshot.hasData) {
-                      final state = snapshot.data;
+                      final state = snapshot.data!;
                       queuedEntries.add(MapEntry('run', state.runningCount));
                       queuedEntries.add(MapEntry('paused', state.pausedCount));
                       queuedEntries.addAll(state.queueByPriority.entries.map((kv) => MapEntry(kv.key.toString(), kv.value)));

@@ -22,22 +22,22 @@ import '../ref/mime_types.dart';
 
 class AvesEntry {
   String uri;
-  String _path, _directory, _filename, _extension;
-  int pageId, contentId;
+  String? _path, _directory, _filename, _extension;
+  int? pageId, contentId;
   final String sourceMimeType;
   int width;
   int height;
   int sourceRotationDegrees;
-  final int sizeBytes;
-  String _sourceTitle;
+  final int? sizeBytes;
+  String? _sourceTitle;
 
   // `dateModifiedSecs` can be missing in viewer mode
-  int _dateModifiedSecs;
-  final int sourceDateTakenMillis;
-  final int durationMillis;
-  int _catalogDateMillis;
-  CatalogMetadata _catalogMetadata;
-  AddressDetails _addressDetails;
+  int? _dateModifiedSecs;
+  final int? sourceDateTakenMillis;
+  final int? durationMillis;
+  int? _catalogDateMillis;
+  CatalogMetadata? _catalogMetadata;
+  AddressDetails? _addressDetails;
 
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
@@ -51,21 +51,20 @@ class AvesEntry {
   ];
 
   AvesEntry({
-    this.uri,
-    String path,
-    this.contentId,
-    this.pageId,
-    this.sourceMimeType,
-    @required this.width,
-    @required this.height,
-    this.sourceRotationDegrees,
-    this.sizeBytes,
-    String sourceTitle,
-    int dateModifiedSecs,
-    this.sourceDateTakenMillis,
-    this.durationMillis,
-  })  : assert(width != null),
-        assert(height != null) {
+    required this.uri,
+    required String? path,
+    required this.contentId,
+    required this.pageId,
+    required this.sourceMimeType,
+    required this.width,
+    required this.height,
+    required this.sourceRotationDegrees,
+    required this.sizeBytes,
+    required String? sourceTitle,
+    required int? dateModifiedSecs,
+    required this.sourceDateTakenMillis,
+    required this.durationMillis,
+  }) {
     this.path = path;
     this.sourceTitle = sourceTitle;
     this.dateModifiedSecs = dateModifiedSecs;
@@ -76,16 +75,17 @@ class AvesEntry {
   bool get canHaveAlpha => MimeTypes.alphaImages.contains(mimeType);
 
   AvesEntry copyWith({
-    String uri,
-    String path,
-    int contentId,
-    int dateModifiedSecs,
+    String? uri,
+    String? path,
+    int? contentId,
+    int? dateModifiedSecs,
   }) {
     final copyContentId = contentId ?? this.contentId;
     final copied = AvesEntry(
       uri: uri ?? this.uri,
       path: path ?? this.path,
       contentId: copyContentId,
+      pageId: null,
       sourceMimeType: sourceMimeType,
       width: width,
       height: height,
@@ -106,17 +106,18 @@ class AvesEntry {
   factory AvesEntry.fromMap(Map map) {
     return AvesEntry(
       uri: map['uri'] as String,
-      path: map['path'] as String,
-      contentId: map['contentId'] as int,
+      path: map['path'] as String?,
+      pageId: null,
+      contentId: map['contentId'] as int?,
       sourceMimeType: map['sourceMimeType'] as String,
-      width: map['width'] as int ?? 0,
-      height: map['height'] as int ?? 0,
-      sourceRotationDegrees: map['sourceRotationDegrees'] as int ?? 0,
-      sizeBytes: map['sizeBytes'] as int,
-      sourceTitle: map['title'] as String,
-      dateModifiedSecs: map['dateModifiedSecs'] as int,
-      sourceDateTakenMillis: map['sourceDateTakenMillis'] as int,
-      durationMillis: map['durationMillis'] as int,
+      width: map['width'] as int? ?? 0,
+      height: map['height'] as int? ?? 0,
+      sourceRotationDegrees: map['sourceRotationDegrees'] as int? ?? 0,
+      sizeBytes: map['sizeBytes'] as int?,
+      sourceTitle: map['title'] as String?,
+      dateModifiedSecs: map['dateModifiedSecs'] as int?,
+      sourceDateTakenMillis: map['sourceDateTakenMillis'] as int?,
+      durationMillis: map['durationMillis'] as int?,
     );
   }
 
@@ -150,27 +151,27 @@ class AvesEntry {
   @override
   String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, path=$path, pageId=$pageId}';
 
-  set path(String path) {
+  set path(String? path) {
     _path = path;
     _directory = null;
     _filename = null;
     _extension = null;
   }
 
-  String get path => _path;
+  String? get path => _path;
 
-  String get directory {
-    _directory ??= path != null ? pContext.dirname(path) : null;
+  String? get directory {
+    _directory ??= path != null ? pContext.dirname(path!) : null;
     return _directory;
   }
 
-  String get filenameWithoutExtension {
-    _filename ??= path != null ? pContext.basenameWithoutExtension(path) : null;
+  String? get filenameWithoutExtension {
+    _filename ??= path != null ? pContext.basenameWithoutExtension(path!) : null;
     return _filename;
   }
 
-  String get extension {
-    _extension ??= path != null ? pContext.extension(path) : null;
+  String? get extension {
+    _extension ??= path != null ? pContext.extension(path!) : null;
     return _extension;
   }
 
@@ -258,16 +259,16 @@ class AvesEntry {
   static const ratioSeparator = '\u2236';
   static const resolutionSeparator = ' \u00D7 ';
 
-  bool get isSized => (width ?? 0) > 0 && (height ?? 0) > 0;
+  bool get isSized => width > 0 && height > 0;
 
   String get resolutionText {
-    final ws = width ?? '?';
-    final hs = height ?? '?';
+    final ws = width;
+    final hs = height;
     return isRotated ? '$hs$resolutionSeparator$ws' : '$ws$resolutionSeparator$hs';
   }
 
   String get aspectRatioText {
-    if (width != null && height != null && width > 0 && height > 0) {
+    if (width > 0 && height > 0) {
       final gcd = width.gcd(height);
       final w = width ~/ gcd;
       final h = height ~/ gcd;
@@ -288,24 +289,24 @@ class AvesEntry {
     return isRotated ? Size(h, w) : Size(w, h);
   }
 
-  int get megaPixels => width != null && height != null ? (width * height / 1000000).round() : null;
+  int get megaPixels => (width * height / 1000000).round();
 
-  DateTime _bestDate;
+  DateTime? _bestDate;
 
-  DateTime get bestDate {
+  DateTime? get bestDate {
     if (_bestDate == null) {
       if ((_catalogDateMillis ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogDateMillis);
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(_catalogDateMillis!);
       } else if ((sourceDateTakenMillis ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis);
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(sourceDateTakenMillis!);
       } else if ((dateModifiedSecs ?? 0) > 0) {
-        _bestDate = DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs * 1000);
+        _bestDate = DateTime.fromMillisecondsSinceEpoch(dateModifiedSecs! * 1000);
       }
     }
     return _bestDate;
   }
 
-  int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees ?? 0;
+  int get rotationDegrees => _catalogMetadata?.rotationDegrees ?? sourceRotationDegrees;
 
   set rotationDegrees(int rotationDegrees) {
     sourceRotationDegrees = rotationDegrees;
@@ -316,78 +317,78 @@ class AvesEntry {
 
   set isFlipped(bool isFlipped) => _catalogMetadata?.isFlipped = isFlipped;
 
-  String get sourceTitle => _sourceTitle;
+  String? get sourceTitle => _sourceTitle;
 
-  set sourceTitle(String sourceTitle) {
+  set sourceTitle(String? sourceTitle) {
     _sourceTitle = sourceTitle;
     _bestTitle = null;
   }
 
-  int get dateModifiedSecs => _dateModifiedSecs;
+  int? get dateModifiedSecs => _dateModifiedSecs;
 
-  set dateModifiedSecs(int dateModifiedSecs) {
+  set dateModifiedSecs(int? dateModifiedSecs) {
     _dateModifiedSecs = dateModifiedSecs;
     _bestDate = null;
   }
 
-  DateTime get monthTaken {
+  DateTime? get monthTaken {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month);
   }
 
-  DateTime get dayTaken {
+  DateTime? get dayTaken {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month, d.day);
   }
 
-  String _durationText;
+  String? _durationText;
 
   String get durationText {
     _durationText ??= formatFriendlyDuration(Duration(milliseconds: durationMillis ?? 0));
-    return _durationText;
+    return _durationText!;
   }
 
   // returns whether this entry has GPS coordinates
   // (0, 0) coordinates are considered invalid, as it is likely a default value
-  bool get hasGps => _catalogMetadata != null && _catalogMetadata.latitude != null && _catalogMetadata.longitude != null && (_catalogMetadata.latitude != 0 || _catalogMetadata.longitude != 0);
+  bool get hasGps => (_catalogMetadata?.latitude ?? 0) != 0 || (_catalogMetadata?.longitude ?? 0) != 0;
 
   bool get hasAddress => _addressDetails != null;
 
   // has a place, or at least the full country name
   // derived from Google reverse geocoding addresses
-  bool get hasFineAddress => _addressDetails != null && (_addressDetails.place?.isNotEmpty == true || (_addressDetails.countryName?.length ?? 0) > 3);
+  bool get hasFineAddress => _addressDetails?.place?.isNotEmpty == true || (_addressDetails?.countryName?.length ?? 0) > 3;
 
-  LatLng get latLng => hasGps ? LatLng(_catalogMetadata.latitude, _catalogMetadata.longitude) : null;
+  LatLng? get latLng => hasGps ? LatLng(_catalogMetadata!.latitude!, _catalogMetadata!.longitude!) : null;
 
-  String get geoUri {
+  String? get geoUri {
     if (!hasGps) return null;
-    final latitude = roundToPrecision(_catalogMetadata.latitude, decimals: 6);
-    final longitude = roundToPrecision(_catalogMetadata.longitude, decimals: 6);
+    final latitude = roundToPrecision(_catalogMetadata!.latitude!, decimals: 6);
+    final longitude = roundToPrecision(_catalogMetadata!.longitude!, decimals: 6);
     return 'geo:$latitude,$longitude?q=$latitude,$longitude';
   }
 
-  List<String> _xmpSubjects;
+  List<String>? _xmpSubjects;
 
   List<String> get xmpSubjects {
-    _xmpSubjects ??= _catalogMetadata?.xmpSubjects?.split(';')?.where((tag) => tag.isNotEmpty)?.toList() ?? [];
-    return _xmpSubjects;
+    _xmpSubjects ??= _catalogMetadata?.xmpSubjects?.split(';').where((tag) => tag.isNotEmpty).toList() ?? [];
+    return _xmpSubjects!;
   }
 
-  String _bestTitle;
+  String? _bestTitle;
 
-  String get bestTitle {
-    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata.xmpTitleDescription : sourceTitle;
+  String? get bestTitle {
+    _bestTitle ??= _catalogMetadata?.xmpTitleDescription?.isNotEmpty == true ? _catalogMetadata!.xmpTitleDescription : sourceTitle;
     return _bestTitle;
   }
 
-  CatalogMetadata get catalogMetadata => _catalogMetadata;
+  CatalogMetadata? get catalogMetadata => _catalogMetadata;
 
-  set catalogDateMillis(int dateMillis) {
+  set catalogDateMillis(int? dateMillis) {
     _catalogDateMillis = dateMillis;
     _bestDate = null;
   }
 
-  set catalogMetadata(CatalogMetadata newMetadata) {
+  set catalogMetadata(CatalogMetadata? newMetadata) {
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
@@ -424,14 +425,14 @@ class AvesEntry {
     }
   }
 
-  AddressDetails get addressDetails => _addressDetails;
+  AddressDetails? get addressDetails => _addressDetails;
 
-  set addressDetails(AddressDetails newAddress) {
+  set addressDetails(AddressDetails? newAddress) {
     _addressDetails = newAddress;
     addressChangeNotifier.notifyListeners();
   }
 
-  Future<void> locate({@required bool background}) async {
+  Future<void> locate({required bool background}) async {
     if (!hasGps) return;
     await _locateCountry();
     if (await availability.canLocatePlaces) {
@@ -442,11 +443,11 @@ class AvesEntry {
   // quick reverse geocoding to find the country, using an offline asset
   Future<void> _locateCountry() async {
     if (!hasGps || hasAddress) return;
-    final countryCode = await countryTopology.countryCode(latLng);
+    final countryCode = await countryTopology.countryCode(latLng!);
     setCountry(countryCode);
   }
 
-  void setCountry(CountryCode countryCode) {
+  void setCountry(CountryCode? countryCode) {
     if (hasFineAddress || countryCode == null) return;
     addressDetails = AddressDetails(
       contentId: contentId,
@@ -455,25 +456,25 @@ class AvesEntry {
     );
   }
 
-  String _geocoderLocale;
+  String? _geocoderLocale;
 
   String get geocoderLocale {
-    _geocoderLocale ??= (settings.locale ?? WidgetsBinding.instance.window.locale).toString();
-    return _geocoderLocale;
+    _geocoderLocale ??= (settings.locale ?? WidgetsBinding.instance!.window.locale).toString();
+    return _geocoderLocale!;
   }
 
   // full reverse geocoding, requiring Play Services and some connectivity
-  Future<void> locatePlace({@required bool background}) async {
+  Future<void> locatePlace({required bool background}) async {
     if (!hasGps || hasFineAddress) return;
     try {
-      Future<List<Address>> call() => GeocodingService.getAddress(latLng, geocoderLocale);
+      Future<List<Address>> call() => GeocodingService.getAddress(latLng!, geocoderLocale);
       final addresses = await (background
           ? servicePolicy.call(
               call,
               priority: ServiceCallPriority.getLocation,
             )
           : call());
-      if (addresses != null && addresses.isNotEmpty) {
+      if (addresses.isNotEmpty) {
         final address = addresses.first;
         final cc = address.countryCode;
         final cn = address.countryName;
@@ -493,12 +494,12 @@ class AvesEntry {
     }
   }
 
-  Future<String> findAddressLine() async {
+  Future<String?> findAddressLine() async {
     if (!hasGps) return null;
 
     try {
-      final addresses = await GeocodingService.getAddress(latLng, geocoderLocale);
-      if (addresses != null && addresses.isNotEmpty) {
+      final addresses = await GeocodingService.getAddress(latLng!, geocoderLocale);
+      if (addresses.isNotEmpty) {
         final address = addresses.first;
         return address.addressLine;
       }
@@ -549,12 +550,12 @@ class AvesEntry {
     if (isFlipped is bool) this.isFlipped = isFlipped;
 
     await metadataDb.saveEntries({this});
-    await metadataDb.saveMetadata({catalogMetadata});
+    if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
 
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<bool> rotate({@required bool clockwise}) async {
+  Future<bool> rotate({required bool clockwise}) async {
     final newFields = await imageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
@@ -579,7 +580,7 @@ class AvesEntry {
   }
 
   Future<bool> delete() {
-    Completer completer = Completer<bool>();
+    final completer = Completer<bool>();
     imageFileService.delete([this]).listen(
       (event) => completer.complete(event.success),
       onError: completer.completeError,
@@ -593,7 +594,7 @@ class AvesEntry {
   }
 
   // when the entry image itself changed (e.g. after rotation)
-  Future<void> _onImageChanged(int oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
+  Future<void> _onImageChanged(int? oldDateModifiedSecs, int oldRotationDegrees, bool oldIsFlipped) async {
     if (oldDateModifiedSecs != dateModifiedSecs || oldRotationDegrees != rotationDegrees || oldIsFlipped != isFlipped) {
       await EntryCache.evict(uri, mimeType, oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
       imageChangeNotifier.notifyListeners();
@@ -626,15 +627,15 @@ class AvesEntry {
   // 1) title ascending
   // 2) extension ascending
   static int compareByName(AvesEntry a, AvesEntry b) {
-    final c = compareAsciiUpperCase(a.bestTitle, b.bestTitle);
-    return c != 0 ? c : compareAsciiUpperCase(a.extension, b.extension);
+    final c = compareAsciiUpperCase(a.bestTitle ?? '', b.bestTitle ?? '');
+    return c != 0 ? c : compareAsciiUpperCase(a.extension ?? '', b.extension ?? '');
   }
 
   // compare by:
   // 1) size descending
   // 2) name ascending
   static int compareBySize(AvesEntry a, AvesEntry b) {
-    final c = b.sizeBytes.compareTo(a.sizeBytes);
+    final c = (b.sizeBytes ?? 0).compareTo(a.sizeBytes ?? 0);
     return c != 0 ? c : compareByName(a, b);
   }
 

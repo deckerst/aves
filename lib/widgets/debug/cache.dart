@@ -24,12 +24,12 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
               Row(
                 children: [
                   Expanded(
-                    child: Text('Image cache:\n\t${imageCache.currentSize}/${imageCache.maximumSize} items\n\t${formatFilesize(imageCache.currentSizeBytes)}/${formatFilesize(imageCache.maximumSizeBytes)}'),
+                    child: Text('Image cache:\n\t${imageCache!.currentSize}/${imageCache!.maximumSize} items\n\t${formatFilesize(imageCache!.currentSizeBytes)}/${formatFilesize(imageCache!.maximumSizeBytes)}'),
                   ),
                   SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
-                      imageCache.clear();
+                      imageCache!.clear();
 
                       setState(() {});
                     },

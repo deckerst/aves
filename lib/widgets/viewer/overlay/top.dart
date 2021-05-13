@@ -20,22 +20,22 @@ import 'package:provider/provider.dart';
 class ViewerTopOverlay extends StatelessWidget {
   final AvesEntry mainEntry;
   final Animation<double> scale;
-  final EdgeInsets viewInsets, viewPadding;
+  final EdgeInsets? viewInsets, viewPadding;
   final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
-  final ValueNotifier<ViewState> viewStateNotifier;
+  final ValueNotifier<ViewState>? viewStateNotifier;
 
   static const double padding = 8;
 
   const ViewerTopOverlay({
-    Key key,
-    @required this.mainEntry,
-    @required this.scale,
-    @required this.canToggleFavourite,
-    @required this.viewInsets,
-    @required this.viewPadding,
-    @required this.onActionSelected,
-    @required this.viewStateNotifier,
+    Key? key,
+    required this.mainEntry,
+    required this.scale,
+    required this.canToggleFavourite,
+    required this.viewInsets,
+    required this.viewPadding,
+    required this.onActionSelected,
+    required this.viewStateNotifier,
   }) : super(key: key);
 
   @override
@@ -49,15 +49,15 @@ class ViewerTopOverlay extends StatelessWidget {
           builder: (c, mqWidth, child) {
             final availableCount = (mqWidth / (OverlayButton.getSize(context) + padding)).floor() - 2;
 
-            Widget child;
+            Widget? child;
             if (mainEntry.isMultiPage) {
               final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
               if (multiPageController != null) {
-                child = StreamBuilder<MultiPageInfo>(
+                child = StreamBuilder<MultiPageInfo?>(
                   stream: multiPageController.infoStream,
                   builder: (context, snapshot) {
                     final multiPageInfo = multiPageController.info;
-                    return ValueListenableBuilder<int>(
+                    return ValueListenableBuilder<int?>(
                       valueListenable: multiPageController.pageNotifier,
                       builder: (context, page, child) {
                         return _buildOverlay(availableCount, mainEntry, pageEntry: multiPageInfo?.getPageEntryByIndex(page));
@@ -75,11 +75,11 @@ class ViewerTopOverlay extends StatelessWidget {
     );
   }
 
-  Widget _buildOverlay(int availableCount, AvesEntry mainEntry, {AvesEntry pageEntry}) {
+  Widget _buildOverlay(int availableCount, AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     pageEntry ??= mainEntry;
 
     bool _canDo(EntryAction action) {
-      final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry : mainEntry;
+      final targetEntry = EntryActions.pageActions.contains(action) ? pageEntry! : mainEntry;
       switch (action) {
         case EntryAction.toggleFavourite:
           return canToggleFavourite;
@@ -106,7 +106,6 @@ class ViewerTopOverlay extends StatelessWidget {
         case EntryAction.debug:
           return kDebugMode;
       }
-      return false;
     }
 
     final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount).toList();
@@ -132,7 +131,7 @@ class ViewerTopOverlay extends StatelessWidget {
                 opacity: scale,
                 child: Minimap(
                   entry: pageEntry,
-                  viewStateNotifier: viewStateNotifier,
+                  viewStateNotifier: viewStateNotifier!,
                 ),
               )
             ],
@@ -148,14 +147,14 @@ class _TopOverlayRow extends StatelessWidget {
   final Function(EntryAction value) onActionSelected;
 
   const _TopOverlayRow({
-    Key key,
-    @required this.quickActions,
-    @required this.inAppActions,
-    @required this.externalAppActions,
-    @required this.scale,
-    @required this.mainEntry,
-    @required this.pageEntry,
-    @required this.onActionSelected,
+    Key? key,
+    required this.quickActions,
+    required this.inAppActions,
+    required this.externalAppActions,
+    required this.scale,
+    required this.mainEntry,
+    required this.pageEntry,
+    required this.onActionSelected,
   }) : super(key: key);
 
   static const double padding = 8;
@@ -195,7 +194,7 @@ class _TopOverlayRow extends StatelessWidget {
   }
 
   Widget _buildOverlayButton(BuildContext context, EntryAction action) {
-    Widget child;
+    Widget? child;
     void onPressed() => onActionSelected(action);
     switch (action) {
       case EntryAction.toggleFavourite:
@@ -239,7 +238,7 @@ class _TopOverlayRow extends StatelessWidget {
   }
 
   PopupMenuEntry<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action) {
-    Widget child;
+    Widget? child;
     switch (action) {
       // in app actions
       case EntryAction.toggleFavourite:
@@ -313,10 +312,10 @@ class _TopOverlayRow extends StatelessWidget {
 class _FavouriteToggler extends StatefulWidget {
   final AvesEntry entry;
   final bool isMenuItem;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const _FavouriteToggler({
-    @required this.entry,
+    required this.entry,
     this.isMenuItem = false,
     this.onPressed,
   });
@@ -326,7 +325,7 @@ class _FavouriteToggler extends StatefulWidget {
 }
 
 class _FavouriteTogglerState extends State<_FavouriteToggler> {
-  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(null);
+  final ValueNotifier<bool> isFavouriteNotifier = ValueNotifier(false);
 
   @override
   void initState() {

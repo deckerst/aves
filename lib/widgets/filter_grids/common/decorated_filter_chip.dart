@@ -25,15 +25,15 @@ import 'package:provider/provider.dart';
 class DecoratedFilterChip extends StatelessWidget {
   final CollectionFilter filter;
   final double extent;
-  final AvesEntry coverEntry;
+  final AvesEntry? coverEntry;
   final bool pinned, highlightable;
-  final FilterCallback onTap;
-  final OffsetFilterCallback onLongPress;
+  final FilterCallback? onTap;
+  final OffsetFilterCallback? onLongPress;
 
   const DecoratedFilterChip({
-    Key key,
-    @required this.filter,
-    @required this.extent,
+    Key? key,
+    required this.filter,
+    required this.extent,
     this.coverEntry,
     this.pinned = false,
     this.highlightable = true,
@@ -50,7 +50,7 @@ class DecoratedFilterChip extends StatelessWidget {
             {
               final album = (filter as AlbumFilter).album;
               return StreamBuilder<AlbumSummaryInvalidatedEvent>(
-                stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories.contains(album)),
+                stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
                 builder: (context, snapshot) => _buildChip(source),
               );
             }
@@ -58,7 +58,7 @@ class DecoratedFilterChip extends StatelessWidget {
             {
               final countryCode = (filter as LocationFilter).countryCode;
               return StreamBuilder<CountrySummaryInvalidatedEvent>(
-                stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes.contains(countryCode)),
+                stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
                 builder: (context, snapshot) => _buildChip(source),
               );
             }
@@ -66,7 +66,7 @@ class DecoratedFilterChip extends StatelessWidget {
             {
               final tag = (filter as TagFilter).tag;
               return StreamBuilder<TagSummaryInvalidatedEvent>(
-                stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags.contains(tag)),
+                stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
                 builder: (context, snapshot) => _buildChip(source),
               );
             }

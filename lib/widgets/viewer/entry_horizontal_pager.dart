@@ -15,10 +15,10 @@ class MultiEntryScroller extends StatefulWidget {
   final void Function(String uri) onViewDisposed;
 
   const MultiEntryScroller({
-    this.collection,
-    this.pageController,
-    this.onPageChanged,
-    this.onViewDisposed,
+    required this.collection,
+    required this.pageController,
+    required this.onPageChanged,
+    required this.onViewDisposed,
   });
 
   @override
@@ -43,15 +43,15 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
         itemBuilder: (context, index) {
           final entry = entries[index];
 
-          Widget child;
+          Widget? child;
           if (entry.isMultiPage) {
             final multiPageController = context.read<MultiPageConductor>().getController(entry);
             if (multiPageController != null) {
-              child = StreamBuilder<MultiPageInfo>(
+              child = StreamBuilder<MultiPageInfo?>(
                 stream: multiPageController.infoStream,
                 builder: (context, snapshot) {
                   final multiPageInfo = multiPageController.info;
-                  return ValueListenableBuilder<int>(
+                  return ValueListenableBuilder<int?>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
                       return _buildViewer(entry, pageEntry: multiPageInfo?.getPageEntryByIndex(page));
@@ -72,7 +72,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     );
   }
 
-  Widget _buildViewer(AvesEntry mainEntry, {AvesEntry pageEntry}) {
+  Widget _buildViewer(AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
@@ -81,7 +81,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
           viewportSize: mqSize,
-          onDisposed: () => widget.onViewDisposed?.call(mainEntry.uri),
+          onDisposed: () => widget.onViewDisposed(mainEntry.uri),
         );
       },
     );
@@ -95,7 +95,7 @@ class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
 
   const SingleEntryScroller({
-    this.entry,
+    required this.entry,
   });
 
   @override
@@ -109,15 +109,15 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
   Widget build(BuildContext context) {
     super.build(context);
 
-    Widget child;
+    Widget? child;
     if (mainEntry.isMultiPage) {
       final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
-        child = StreamBuilder<MultiPageInfo>(
+        child = StreamBuilder<MultiPageInfo?>(
           stream: multiPageController.infoStream,
           builder: (context, snapshot) {
             final multiPageInfo = multiPageController.info;
-            return ValueListenableBuilder<int>(
+            return ValueListenableBuilder<int?>(
               valueListenable: multiPageController.pageNotifier,
               builder: (context, page, child) {
                 return _buildViewer(pageEntry: multiPageInfo?.getPageEntryByIndex(page));
@@ -135,7 +135,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     );
   }
 
-  Widget _buildViewer({AvesEntry pageEntry}) {
+  Widget _buildViewer({AvesEntry? pageEntry}) {
     return Selector<MediaQueryData, Size>(
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {

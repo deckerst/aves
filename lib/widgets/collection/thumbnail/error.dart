@@ -13,9 +13,9 @@ class ErrorThumbnail extends StatefulWidget {
   final String tooltip;
 
   const ErrorThumbnail({
-    @required this.entry,
-    @required this.extent,
-    @required this.tooltip,
+    required this.entry,
+    required this.extent,
+    required this.tooltip,
   });
 
   @override
@@ -23,7 +23,7 @@ class ErrorThumbnail extends StatefulWidget {
 }
 
 class _ErrorThumbnailState extends State<ErrorThumbnail> {
-  Future<bool> _exists;
+  late Future<bool> _exists;
 
   AvesEntry get entry => widget.entry;
 
@@ -32,7 +32,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
   @override
   void initState() {
     super.initState();
-    _exists = entry.path != null ? File(entry.path).exists() : SynchronousFuture(true);
+    _exists = entry.path != null ? File(entry.path!).exists() : SynchronousFuture(true);
   }
 
   @override
@@ -42,7 +42,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
         future: _exists,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) return SizedBox();
-          final exists = snapshot.data;
+          final exists = snapshot.data!;
           return Container(
             alignment: Alignment.center,
             color: Colors.black,

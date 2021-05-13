@@ -19,7 +19,7 @@ class AlbumTile extends StatelessWidget {
     return CollectionNavTile(
       leading: IconUtils.getAlbumIcon(
         context: context,
-        album: album,
+        albumPath: album,
       ),
       title: displayName,
       trailing: androidFileUtils.isOnRemovableStorage(album)

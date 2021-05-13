@@ -12,15 +12,15 @@ import 'package:flutter/material.dart';
 class XmpStructArrayCard extends StatefulWidget {
   final String title;
   final List<Map<String, String>> structs = [];
-  final Map<String, InfoLinkHandler> Function(int index) linkifier;
+  final Map<String, InfoLinkHandler> Function(int index)? linkifier;
 
   XmpStructArrayCard({
-    @required this.title,
-    @required Map<int, Map<String, String>> structByIndex,
+    required this.title,
+    required Map<int, Map<String, String>> structByIndex,
     this.linkifier,
   }) {
     structs.length = structByIndex.keys.fold(0, max);
-    structByIndex.keys.forEach((index) => structs[index - 1] = structByIndex[index]);
+    structByIndex.keys.forEach((index) => structs[index - 1] = structByIndex[index]!);
   }
 
   @override
@@ -28,7 +28,7 @@ class XmpStructArrayCard extends StatefulWidget {
 }
 
 class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
-  int _index;
+  late int _index;
 
   List<Map<String, String>> get structs => widget.structs;
 
@@ -90,7 +90,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               // without clipping the text
               padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
-                structs[_index] ?? {},
+                structs[_index],
                 maxValueLength: Constants.infoGroupMaxValueLength,
                 linkHandlers: widget.linkifier?.call(_index + 1),
               ),
@@ -105,13 +105,13 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
 class XmpStructCard extends StatelessWidget {
   final String title;
   final Map<String, String> struct;
-  final Map<String, InfoLinkHandler> Function() linkifier;
+  final Map<String, InfoLinkHandler> Function()? linkifier;
 
   static const cardMargin = EdgeInsets.symmetric(vertical: 8, horizontal: 0);
 
   const XmpStructCard({
-    @required this.title,
-    @required this.struct,
+    required this.title,
+    required this.struct,
     this.linkifier,
   });
 

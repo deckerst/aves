@@ -8,17 +8,17 @@ import 'package:flutter/material.dart';
 class DecoratedThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double extent;
-  final CollectionLens collection;
-  final ValueNotifier<bool> cancellableNotifier;
+  final CollectionLens? collection;
+  final ValueNotifier<bool>? cancellableNotifier;
   final bool selectable, highlightable;
 
   static final Color borderColor = Colors.grey.shade700;
   static const double borderWidth = .5;
 
   const DecoratedThumbnail({
-    Key key,
-    @required this.entry,
-    @required this.extent,
+    Key? key,
+    required this.entry,
+    required this.extent,
     this.collection,
     this.cancellableNotifier,
     this.selectable = true,

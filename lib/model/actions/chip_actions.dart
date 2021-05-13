@@ -42,7 +42,6 @@ extension ExtraChipAction on ChipAction {
       case ChipAction.setCover:
         return context.l10n.chipActionSetCover;
     }
-    return null;
   }
 
   IconData getIcon() {
@@ -65,6 +64,5 @@ extension ExtraChipAction on ChipAction {
       case ChipAction.setCover:
         return AIcons.setCover;
     }
-    return null;
   }
 }

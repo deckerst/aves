@@ -12,14 +12,14 @@ import 'package:flutter/material.dart';
 class MetadataTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const MetadataTab({@required this.entry});
+  const MetadataTab({required this.entry});
 
   @override
   _MetadataTabState createState() => _MetadataTabState();
 }
 
 class _MetadataTabState extends State<MetadataTab> {
-  Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader, _tiffStructureLoader;
+  late Future<Map> _bitmapFactoryLoader, _contentResolverMetadataLoader, _exifInterfaceMetadataLoader, _mediaMetadataLoader, _metadataExtractorLoader, _tiffStructureLoader;
 
   // MediaStore timestamp keys
   static const secondTimestampKeys = ['date_added', 'date_modified', 'date_expires', 'isPlayed'];
@@ -49,7 +49,7 @@ class _MetadataTabState extends State<MetadataTab> {
       final data = SplayTreeMap.of(snapshotData.map((k, v) {
         final key = k.toString();
         var value = v?.toString() ?? 'null';
-        if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is num && v != 0) {
+        if ([...secondTimestampKeys, ...millisecondTimestampKeys].contains(key) && v is int && v != 0) {
           if (secondTimestampKeys.contains(key)) {
             v *= 1000;
           }
@@ -62,24 +62,23 @@ class _MetadataTabState extends State<MetadataTab> {
       }));
       return AvesExpansionTile(
         title: title,
-        children: data.isNotEmpty
-            ? [
-                Padding(
-                  padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                  child: InfoRowGroup(
-                    data,
-                    maxValueLength: Constants.infoGroupMaxValueLength,
-                  ),
-                )
-              ]
-            : null,
+        children: [
+          if (data.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: InfoRowGroup(
+                data,
+                maxValueLength: Constants.infoGroupMaxValueLength,
+              ),
+            )
+        ],
       );
     }
 
     Widget builderFromSnapshot(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
       if (snapshot.hasError) return Text(snapshot.error.toString());
       if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-      return builderFromSnapshotData(context, snapshot.data, title);
+      return builderFromSnapshotData(context, snapshot.data!, title);
     }
 
     return ListView(
@@ -113,7 +112,7 @@ class _MetadataTabState extends State<MetadataTab> {
               if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: snapshot.data.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),
+                children: snapshot.data!.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),
               );
             },
           ),

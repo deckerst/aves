@@ -10,13 +10,13 @@ import 'package:flutter/material.dart';
 
 class TransitionImage extends StatefulWidget {
   final ImageProvider image;
-  final double width, height;
+  final double? width, height;
   final ValueListenable<double> animation;
   final bool gaplessPlayback = false;
 
   const TransitionImage({
-    @required this.image,
-    @required this.animation,
+    required this.image,
+    required this.animation,
     this.width,
     this.height,
   });
@@ -26,10 +26,10 @@ class TransitionImage extends StatefulWidget {
 }
 
 class _TransitionImageState extends State<TransitionImage> {
-  ImageStream _imageStream;
-  ImageInfo _imageInfo;
+  ImageStream? _imageStream;
+  ImageInfo? _imageInfo;
   bool _isListeningToStream = false;
-  int _frameNumber;
+  int? _frameNumber;
 
   @override
   void initState() {
@@ -60,8 +60,8 @@ class _TransitionImageState extends State<TransitionImage> {
   void didUpdateWidget(covariant TransitionImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_isListeningToStream) {
-      _imageStream.removeListener(_getListener());
-      _imageStream.addListener(_getListener());
+      _imageStream!.removeListener(_getListener());
+      _imageStream!.addListener(_getListener());
     }
     if (widget.image != oldWidget.image) _resolveImage();
   }
@@ -76,9 +76,8 @@ class _TransitionImageState extends State<TransitionImage> {
     final provider = widget.image;
     final newStream = provider.resolve(createLocalImageConfiguration(
       context,
-      size: widget.width != null && widget.height != null ? Size(widget.width, widget.height) : null,
+      size: widget.width != null && widget.height != null ? Size(widget.width!, widget.height!) : null,
     ));
-    assert(newStream != null);
     _updateSourceStream(newStream);
   }
 
@@ -92,7 +91,7 @@ class _TransitionImageState extends State<TransitionImage> {
   void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall) {
     setState(() {
       _imageInfo = imageInfo;
-      _frameNumber = _frameNumber == null ? 0 : _frameNumber + 1;
+      _frameNumber = _frameNumber == null ? 0 : _frameNumber! + 1;
     });
   }
 
@@ -100,9 +99,9 @@ class _TransitionImageState extends State<TransitionImage> {
   // registration from the old stream to the new stream (if a listener was
   // registered).
   void _updateSourceStream(ImageStream newStream) {
-    if (_imageStream?.key == newStream?.key) return;
+    if (_imageStream?.key == newStream.key) return;
 
-    if (_isListeningToStream) _imageStream.removeListener(_getListener());
+    if (_isListeningToStream) _imageStream!.removeListener(_getListener());
 
     if (!widget.gaplessPlayback) {
       setState(() {
@@ -115,18 +114,18 @@ class _TransitionImageState extends State<TransitionImage> {
     });
 
     _imageStream = newStream;
-    if (_isListeningToStream) _imageStream.addListener(_getListener());
+    if (_isListeningToStream) _imageStream!.addListener(_getListener());
   }
 
   void _listenToStream() {
     if (_isListeningToStream) return;
-    _imageStream.addListener(_getListener());
+    _imageStream!.addListener(_getListener());
     _isListeningToStream = true;
   }
 
   void _stopListeningToStream() {
     if (!_isListeningToStream) return;
-    _imageStream.removeListener(_getListener());
+    _imageStream!.removeListener(_getListener());
     _isListeningToStream = false;
   }
 
@@ -147,14 +146,14 @@ class _TransitionImageState extends State<TransitionImage> {
 }
 
 class _TransitionImagePainter extends CustomPainter {
-  final ui.Image image;
+  final ui.Image? image;
   final double scale;
   final double t;
 
   const _TransitionImagePainter({
-    @required this.image,
-    @required this.scale,
-    @required this.t,
+    required this.image,
+    required this.scale,
+    required this.t,
   });
 
   @override
@@ -167,13 +166,13 @@ class _TransitionImagePainter extends CustomPainter {
     const alignment = Alignment.center;
 
     final rect = ui.Rect.fromLTWH(0, 0, size.width, size.height);
-    final inputSize = Size(image.width.toDouble(), image.height.toDouble());
+    final inputSize = Size(image!.width.toDouble(), image!.height.toDouble());
     final outputSize = rect.size;
 
     final coverSizes = applyBoxFit(BoxFit.cover, inputSize / scale, size);
     final containSizes = applyBoxFit(BoxFit.contain, inputSize / scale, size);
-    final sourceSize = Size.lerp(coverSizes.source, containSizes.source, t) * scale;
-    final destinationSize = Size.lerp(coverSizes.destination, containSizes.destination, t);
+    final sourceSize = Size.lerp(coverSizes.source, containSizes.source, t)! * scale;
+    final destinationSize = Size.lerp(coverSizes.destination, containSizes.destination, t)!;
 
     final halfWidthDelta = (outputSize.width - destinationSize.width) / 2.0;
     final halfHeightDelta = (outputSize.height - destinationSize.height) / 2.0;
@@ -185,7 +184,7 @@ class _TransitionImagePainter extends CustomPainter {
       sourceSize,
       Offset.zero & inputSize,
     );
-    canvas.drawImageRect(image, sourceRect, destinationRect, paint);
+    canvas.drawImageRect(image!, sourceRect, destinationRect, paint);
   }
 
   @override

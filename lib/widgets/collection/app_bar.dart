@@ -35,9 +35,9 @@ class CollectionAppBar extends StatefulWidget {
   final CollectionLens collection;
 
   const CollectionAppBar({
-    Key key,
-    @required this.appBarHeightNotifier,
-    @required this.collection,
+    Key? key,
+    required this.appBarHeightNotifier,
+    required this.collection,
   }) : super(key: key);
 
   @override
@@ -46,9 +46,9 @@ class CollectionAppBar extends StatefulWidget {
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
   final TextEditingController _searchFieldController = TextEditingController();
-  EntrySetActionDelegate _actionDelegate;
-  AnimationController _browseToSelectAnimation;
-  Future<bool> _canAddShortcutsLoader;
+  late EntrySetActionDelegate _actionDelegate;
+  late AnimationController _browseToSelectAnimation;
+  late Future<bool> _canAddShortcutsLoader;
 
   CollectionLens get collection => widget.collection;
 
@@ -68,7 +68,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
     _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeight());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateHeight());
   }
 
   @override
@@ -127,8 +127,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Widget _buildAppBarLeading() {
-    VoidCallback onPressed;
-    String tooltip;
+    VoidCallback? onPressed;
+    String? tooltip;
     if (collection.isBrowsing) {
       onPressed = Scaffold.of(context).openDrawer;
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
@@ -147,7 +147,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  Widget _buildAppBarTitle() {
+  Widget? _buildAppBarTitle() {
     if (collection.isBrowsing) {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
       Widget title = Text(appMode.isPicking ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
@@ -359,17 +359,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context);
     }
-    final result = await showDialog<Tuple2<AvesEntry, String>>(
+    final result = await showDialog<Tuple2<AvesEntry?, String>>(
       context: context,
       builder: (context) => AddShortcutDialog(
         collection: collection,
-        defaultName: defaultName,
+        defaultName: defaultName ?? '',
       ),
     );
+    if (result == null) return;
+
     final coverEntry = result.item1;
     final name = result.item2;
-
-    if (name == null || name.isEmpty) return;
+    if (name.isEmpty) return;
 
     unawaited(AppShortcutService.pin(name, coverEntry, filters));
   }

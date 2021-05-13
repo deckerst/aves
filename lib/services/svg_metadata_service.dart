@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/string_utils.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xml/xml.dart';
@@ -15,15 +16,15 @@ class SvgMetadataService {
   static const _textElements = ['title', 'desc'];
   static const _metadataElement = 'metadata';
 
-  static Future<Size> getSize(AvesEntry entry) async {
+  static Future<Size?> getSize(AvesEntry entry) async {
     try {
       final data = await imageFileService.getSvg(entry.uri, entry.mimeType);
 
       final document = XmlDocument.parse(utf8.decode(data));
       final root = document.rootElement;
 
-      String getAttribute(String attributeName) => root.attributes.firstWhere((a) => a.name.qualified == attributeName, orElse: () => null)?.value;
-      double tryParseWithoutUnit(String s) => s == null ? null : double.tryParse(s.replaceAll(RegExp(r'[a-z%]'), ''));
+      String? getAttribute(String attributeName) => root.attributes.firstWhereOrNull((a) => a.name.qualified == attributeName)?.value;
+      double? tryParseWithoutUnit(String? s) => s == null ? null : double.tryParse(s.replaceAll(RegExp(r'[a-z%]'), ''));
 
       final width = tryParseWithoutUnit(getAttribute('width'));
       final height = tryParseWithoutUnit(getAttribute('height'));
@@ -37,7 +38,7 @@ class SvgMetadataService {
         if (parts.length == 4) {
           final vbWidth = tryParseWithoutUnit(parts[2]);
           final vbHeight = tryParseWithoutUnit(parts[3]);
-          if (vbWidth > 0 && vbHeight > 0) {
+          if (vbWidth != null && vbWidth > 0 && vbHeight != null && vbHeight > 0) {
             return Size(vbWidth, vbHeight);
           }
         }
@@ -66,7 +67,7 @@ class SvgMetadataService {
 
       final docDir = Map.fromEntries([
         ...root.attributes.where((a) => _attributes.contains(a.name.qualified)).map((a) => MapEntry(formatKey(a.name.qualified), a.value)),
-        ..._textElements.map((name) => MapEntry(formatKey(name), root.getElement(name)?.text)).where((kv) => kv.value != null),
+        ..._textElements.map((name) => MapEntry(formatKey(name), root.getElement(name)?.text)).where((kv) => kv.value != null).cast<MapEntry<String, String >>(),
       ]);
 
       final metadata = root.getElement(_metadataElement);
@@ -80,7 +81,7 @@ class SvgMetadataService {
       };
     } catch (error, stack) {
       debugPrint('failed to parse XML from SVG with error=$error\n$stack');
-      return null;
     }
+    return {};
   }
 }

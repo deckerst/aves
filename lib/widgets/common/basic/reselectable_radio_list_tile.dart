@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 class ReselectableRadioListTile<T> extends StatelessWidget {
   final T value;
   final T groupValue;
-  final ValueChanged<T> onChanged;
+  final ValueChanged<T?>? onChanged;
   final bool toggleable;
   final bool reselectable;
-  final Color activeColor;
-  final Widget title;
-  final Widget subtitle;
-  final Widget secondary;
+  final Color? activeColor;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? secondary;
   final bool isThreeLine;
-  final bool dense;
+  final bool? dense;
   final bool selected;
   final ListTileControlAffinity controlAffinity;
   final bool autofocus;
@@ -20,10 +20,10 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
   bool get checked => value == groupValue;
 
   const ReselectableRadioListTile({
-    Key key,
-    @required this.value,
-    @required this.groupValue,
-    @required this.onChanged,
+    Key? key,
+    required this.value,
+    required this.groupValue,
+    required this.onChanged,
     this.toggleable = false,
     this.reselectable = false,
     this.activeColor,
@@ -35,12 +35,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
     this.selected = false,
     this.controlAffinity = ListTileControlAffinity.platform,
     this.autofocus = false,
-  })  : assert(toggleable != null),
-        assert(isThreeLine != null),
-        assert(!isThreeLine || subtitle != null),
-        assert(selected != null),
-        assert(controlAffinity != null),
-        assert(autofocus != null),
+  })  : assert(!isThreeLine || subtitle != null),
         super(key: key);
 
   @override
@@ -54,7 +49,7 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       autofocus: autofocus,
     );
-    Widget leading, trailing;
+    Widget? leading, trailing;
     switch (controlAffinity) {
       case ListTileControlAffinity.leading:
       case ListTileControlAffinity.platform:
@@ -80,11 +75,11 @@ class ReselectableRadioListTile<T> extends StatelessWidget {
           onTap: onChanged != null
               ? () {
                   if (toggleable && checked) {
-                    onChanged(null);
+                    onChanged!(null);
                     return;
                   }
                   if (reselectable || !checked) {
-                    onChanged(value);
+                    onChanged!(value);
                   }
                 }
               : null,

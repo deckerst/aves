@@ -16,7 +16,6 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -28,7 +27,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Set<AvesEntry> get selection => collection.selection;
 
   EntrySetActionDelegate({
-    @required this.collection,
+    required this.collection,
   });
 
   void onEntryActionSelected(BuildContext context, EntryAction action) {
@@ -63,8 +62,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  Future<void> _moveSelection(BuildContext context, {@required MoveType moveType}) async {
-    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).toSet();
+  Future<void> _moveSelection(BuildContext context, {required MoveType moveType}) async {
+    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet();
     if (moveType == MoveType.move) {
       // check whether moving is possible given OS restrictions,
       // before asking to pick a destination album
@@ -134,7 +133,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _showDeleteDialog(BuildContext context) async {
-    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).toSet();
+    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet();
     final todoCount = selection.length;
 
     final confirmed = await showDialog<bool>(

@@ -13,8 +13,8 @@ class Minimap extends StatelessWidget {
   static const defaultSize = Size(96, 96);
 
   const Minimap({
-    @required this.entry,
-    @required this.viewStateNotifier,
+    required this.entry,
+    required this.viewStateNotifier,
     this.size = defaultSize,
   });
 
@@ -33,7 +33,7 @@ class Minimap extends StatelessWidget {
                   viewportSize: viewportSize,
                   entrySize: entry.displaySize,
                   viewCenterOffset: viewState.position,
-                  viewScale: viewState.scale,
+                  viewScale: viewState.scale!,
                   minimapBorderColor: Colors.white30,
                 ),
                 size: size,
@@ -51,16 +51,13 @@ class MinimapPainter extends CustomPainter {
   final Color minimapBorderColor, viewportBorderColor;
 
   const MinimapPainter({
-    @required this.viewportSize,
-    @required this.entrySize,
-    @required this.viewCenterOffset,
-    @required this.viewScale,
+    required this.viewportSize,
+    required this.entrySize,
+    required this.viewCenterOffset,
+    required this.viewScale,
     this.minimapBorderColor = Colors.white,
     this.viewportBorderColor = Colors.white,
-  })  : assert(viewportSize != null),
-        assert(entrySize != null),
-        assert(viewCenterOffset != null),
-        assert(viewScale != null);
+  });
 
   @override
   void paint(Canvas canvas, Size size) {

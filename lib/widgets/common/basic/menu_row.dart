@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class MenuRow extends StatelessWidget {
   final String text;
-  final IconData icon;
-  final bool checked;
+  final IconData? icon;
+  final bool? checked;
 
   const MenuRow({
-    Key key,
-    this.text,
+    Key? key,
+    required this.text,
     this.icon,
     this.checked,
   }) : super(key: key);
@@ -16,12 +16,12 @@ class MenuRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final iconSize = IconTheme.of(context).size * textScaleFactor;
+    final iconSize = IconTheme.of(context).size! * textScaleFactor;
     return Row(
       children: [
         if (checked != null) ...[
           Opacity(
-            opacity: checked ? 1 : 0,
+            opacity: checked! ? 1 : 0,
             child: Icon(AIcons.checked, size: iconSize),
           ),
           SizedBox(width: 8),

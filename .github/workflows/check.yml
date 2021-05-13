@@ -31,4 +31,4 @@ jobs:
         run: flutter analyze
 
       - name: Unit tests.
-        run: flutter test
+        run: flutter test --no-sound-null-safety

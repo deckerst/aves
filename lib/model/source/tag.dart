@@ -17,7 +17,7 @@ mixin TagMixin on SourceBase {
     final saved = await metadataDb.loadMetadataEntries();
     visibleEntries.forEach((entry) {
       final contentId = entry.contentId;
-      entry.catalogMetadata = saved.firstWhere((metadata) => metadata.contentId == contentId, orElse: () => null);
+      entry.catalogMetadata = saved.firstWhereOrNull((metadata) => metadata.contentId == contentId);
     });
     debugPrint('$runtimeType loadCatalogMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${saved.length} entries');
     onCatalogMetadataChanged();
@@ -37,16 +37,16 @@ mixin TagMixin on SourceBase {
     await Future.forEach<AvesEntry>(todo, (entry) async {
       await entry.catalog(background: true);
       if (entry.isCatalogued) {
-        newMetadata.add(entry.catalogMetadata);
+        newMetadata.add(entry.catalogMetadata!);
         if (newMetadata.length >= _commitCountThreshold) {
-          await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+          await metadataDb.saveMetadata(Set.of(newMetadata));
           onCatalogMetadataChanged();
           newMetadata.clear();
         }
       }
       setProgress(done: ++progressDone, total: progressTotal);
     });
-    await metadataDb.saveMetadata(List.unmodifiable(newMetadata));
+    await metadataDb.saveMetadata(Set.of(newMetadata));
     onCatalogMetadataChanged();
 //    debugPrint('$runtimeType catalogEntries complete in ${stopwatch.elapsed.inSeconds}s');
   }
@@ -69,10 +69,10 @@ mixin TagMixin on SourceBase {
 
   // by tag
   final Map<String, int> _filterEntryCountMap = {};
-  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+  final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateTagFilterSummary([Set<AvesEntry> entries]) {
-    Set<String> tags;
+  void invalidateTagFilterSummary([Set<AvesEntry>? entries]) {
+    Set<String>? tags;
     if (entries == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
@@ -87,8 +87,8 @@ mixin TagMixin on SourceBase {
     return _filterEntryCountMap.putIfAbsent(filter.tag, () => visibleEntries.where(filter.test).length);
   }
 
-  AvesEntry tagRecentEntry(TagFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
+  AvesEntry? tagRecentEntry(TagFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.tag, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
 }
 
@@ -97,7 +97,7 @@ class CatalogMetadataChangedEvent {}
 class TagsChangedEvent {}
 
 class TagSummaryInvalidatedEvent {
-  final Set<String> tags;
+  final Set<String>? tags;
 
   const TagSummaryInvalidatedEvent(this.tags);
 }

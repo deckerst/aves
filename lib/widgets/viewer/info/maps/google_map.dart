@@ -17,12 +17,12 @@ class EntryGoogleMap extends StatefulWidget {
   final WidgetBuilder markerBuilder;
 
   EntryGoogleMap({
-    Key key,
-    Tuple2<double, double> latLng,
-    this.geoUri,
-    this.initialZoom,
-    this.markerId,
-    this.markerBuilder,
+    Key? key,
+    required Tuple2<double, double> latLng,
+    required this.geoUri,
+    required this.initialZoom,
+    required this.markerId,
+    required this.markerBuilder,
   })  : latLng = LatLng(latLng.item1, latLng.item2),
         super(key: key);
 
@@ -31,8 +31,8 @@ class EntryGoogleMap extends StatefulWidget {
 }
 
 class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveClientMixin {
-  GoogleMapController _controller;
-  Completer<Uint8List> _markerLoaderCompleter;
+  GoogleMapController? _controller;
+  late Completer<Uint8List> _markerLoaderCompleter;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAlive
   void didUpdateWidget(covariant EntryGoogleMap oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.latLng != oldWidget.latLng && _controller != null) {
-      _controller.moveCamera(CameraUpdate.newLatLng(widget.latLng));
+      _controller!.moveCamera(CameraUpdate.newLatLng(widget.latLng));
     }
     if (widget.markerId != oldWidget.markerId) {
       _markerLoaderCompleter = Completer<Uint8List>();
@@ -84,7 +84,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAlive
         builder: (context, snapshot) {
           final markers = <Marker>{};
           if (!snapshot.hasError && snapshot.connectionState == ConnectionState.done) {
-            final markerBytes = snapshot.data;
+            final markerBytes = snapshot.data!;
             markers.add(Marker(
               markerId: MarkerId(widget.markerId),
               icon: BitmapDescriptor.fromBytes(markerBytes),
@@ -117,7 +117,7 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAlive
 
   void _zoomBy(double amount) {
     settings.infoMapZoom += amount;
-    _controller.animateCamera(CameraUpdate.zoomBy(amount));
+    _controller?.animateCamera(CameraUpdate.zoomBy(amount));
   }
 
   MapType _toMapStyle(EntryMapStyle style) {

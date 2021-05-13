@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aves/geo/topojson.dart';
+import 'package:collection/collection.dart';
 import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -13,17 +14,17 @@ class CountryTopology {
 
   CountryTopology._private();
 
-  Topology _topology;
+  Topology? _topology;
 
-  Future<Topology> getTopology() => _topology != null ? SynchronousFuture(_topology) : rootBundle.loadString(topoJsonAsset).then(TopoJson().parse);
+  Future<Topology?> getTopology() => _topology != null ? SynchronousFuture(_topology) : rootBundle.loadString(topoJsonAsset).then(TopoJson().parse);
 
   // returns the country containing given coordinates
-  Future<CountryCode> countryCode(LatLng position) async {
+  Future<CountryCode?> countryCode(LatLng position) async {
     return _countryOfNumeric(await numericCode(position));
   }
 
   // returns the ISO 3166-1 numeric code of the country containing given coordinates
-  Future<int> numericCode(LatLng position) async {
+  Future<int?> numericCode(LatLng position) async {
     final topology = await getTopology();
     if (topology == null) return null;
 
@@ -34,21 +35,25 @@ class CountryTopology {
   // returns a map of the given positions by country
   Future<Map<CountryCode, Set<LatLng>>> countryCodeMap(Set<LatLng> positions) async {
     final numericMap = await numericCodeMap(positions);
-    numericMap.remove(null);
-    final codeMap = numericMap.map((key, value) {
-      final code = _countryOfNumeric(key);
-      return code == null ? null : MapEntry(code, value);
-    });
-    codeMap.remove(null);
-    return codeMap;
+    if (numericMap == null) return {};
+
+    final codeMapEntries = numericMap.entries
+        .map((kv) {
+          final code = _countryOfNumeric(kv.key);
+          return MapEntry(code, kv.value);
+        })
+        .where((kv) => kv.key != null)
+        .cast<MapEntry<CountryCode, Set<LatLng>>>();
+
+    return Map.fromEntries(codeMapEntries);
   }
 
   // returns a map of the given positions by the ISO 3166-1 numeric code of the country containing them
-  Future<Map<int, Set<LatLng>>> numericCodeMap(Set<LatLng> positions) async {
+  Future<Map<int, Set<LatLng>>?> numericCodeMap(Set<LatLng> positions) async {
     final topology = await getTopology();
     if (topology == null) return null;
 
-    return compute(_isoNumericCodeMap, _IsoNumericCodeMapData(topology, positions));
+    return compute<_IsoNumericCodeMapData, Map<int, Set<LatLng>>>(_isoNumericCodeMap, _IsoNumericCodeMapData(topology, positions));
   }
 
   static Future<Map<int, Set<LatLng>>> _isoNumericCodeMap(_IsoNumericCodeMapData data) async {
@@ -58,19 +63,21 @@ class CountryTopology {
       final byCode = <int, Set<LatLng>>{};
       for (final position in data.positions) {
         final code = _getNumeric(topology, countries, position);
-        byCode[code] = (byCode[code] ?? {})..add(position);
+        if (code != null) {
+          byCode[code] = (byCode[code] ?? {})..add(position);
+        }
       }
       return byCode;
     } catch (error, stack) {
       // an unhandled error in a spawn isolate would make the app crash
       debugPrint('failed to get country codes with error=$error\n$stack');
     }
-    return null;
+    return {};
   }
 
-  static int _getNumeric(Topology topology, List<Geometry> mruCountries, LatLng position) {
+  static int? _getNumeric(Topology topology, List<Geometry> mruCountries, LatLng position) {
     final point = [position.longitude, position.latitude];
-    final hit = mruCountries.firstWhere((country) => country.containsPoint(topology, point), orElse: () => null);
+    final hit = mruCountries.firstWhereOrNull((country) => country.containsPoint(topology, point));
     if (hit == null) return null;
 
     // promote hit countries, assuming given positions are likely to come from the same countries
@@ -79,12 +86,12 @@ class CountryTopology {
       mruCountries.insert(0, hit);
     }
 
-    final idString = (hit.id as String);
+    final idString = (hit.id as String?);
     final code = idString == null ? null : int.tryParse(idString);
     return code;
   }
 
-  static CountryCode _countryOfNumeric(int numeric) {
+  static CountryCode? _countryOfNumeric(int? numeric) {
     if (numeric == null) return null;
     try {
       return CountryCode.ofNumeric(numeric);

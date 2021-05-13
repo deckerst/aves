@@ -75,8 +75,8 @@ class AlbumListPage extends StatelessWidget {
   static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> _group(BuildContext context, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<AlbumFilter>();
     final byPin = groupBy<FilterGridItem<AlbumFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
-    final pinnedMapEntries = (byPin[true] ?? []);
-    final unpinnedMapEntries = (byPin[false] ?? []);
+    final pinnedMapEntries = byPin[true] ?? [];
+    final unpinnedMapEntries = byPin[false] ?? [];
 
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumFilter>>>{};
     switch (settings.albumGroupFactor) {
@@ -94,11 +94,12 @@ class AlbumListPage extends StatelessWidget {
               return specialKey;
           }
         });
-        sections = {
+        sections = Map.fromEntries({
+          // group ordering
           specialKey: sections[specialKey],
           appsKey: sections[appsKey],
           regularKey: sections[regularKey],
-        }..removeWhere((key, value) => value == null);
+        }.entries.where((kv) => kv.value != null).cast<MapEntry<ChipSectionKey, List<FilterGridItem<AlbumFilter>>>>());
         break;
       case AlbumChipGroupFactor.volume:
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {

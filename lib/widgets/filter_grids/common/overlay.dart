@@ -12,10 +12,10 @@ class ChipHighlightOverlay extends StatefulWidget {
   final BorderRadius borderRadius;
 
   const ChipHighlightOverlay({
-    Key key,
-    @required this.filter,
-    @required this.extent,
-    @required this.borderRadius,
+    Key? key,
+    required this.filter,
+    required this.extent,
+    required this.borderRadius,
   }) : super(key: key);
 
   @override

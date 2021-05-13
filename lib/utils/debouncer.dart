@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 class Debouncer {
   final Duration delay;
 
-  Timer _timer;
+  Timer? _timer;
 
-  Debouncer({@required this.delay});
+  Debouncer({required this.delay});
 
-  void call(Function action) {
+  void call(VoidCallback action) {
     _timer?.cancel();
     _timer = Timer(delay, action);
   }

@@ -1,5 +1,6 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,7 +19,7 @@ class Favourites with ChangeNotifier {
 
   bool isFavourite(AvesEntry entry) => _rows.any((row) => row.contentId == entry.contentId);
 
-  FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(contentId: entry.contentId, path: entry.path);
+  FavouriteRow _entryToRow(AvesEntry entry) => FavouriteRow(contentId: entry.contentId!, path: entry.path!);
 
   Future<void> add(Iterable<AvesEntry> entries) async {
     final newRows = entries.map(_entryToRow);
@@ -40,7 +41,7 @@ class Favourites with ChangeNotifier {
   }
 
   Future<void> moveEntry(int oldContentId, AvesEntry entry) async {
-    final oldRow = _rows.firstWhere((row) => row.contentId == oldContentId, orElse: () => null);
+    final oldRow = _rows.firstWhereOrNull((row) => row.contentId == oldContentId);
     if (oldRow == null) return;
 
     final newRow = _entryToRow(entry);
@@ -66,13 +67,13 @@ class FavouriteRow {
   final String path;
 
   const FavouriteRow({
-    this.contentId,
-    this.path,
+    required this.contentId,
+    required this.path,
   });
 
   factory FavouriteRow.fromMap(Map map) {
     return FavouriteRow(
-      contentId: map['contentId'],
+      contentId: map['contentId'] ?? 0,
       path: map['path'] ?? '',
     );
   }

@@ -10,17 +10,17 @@ class TileExtentController {
   final double spacing, extentMin, extentMax;
   final ValueNotifier<double> extentNotifier = ValueNotifier(0);
 
-  Size _viewportSize;
+  Size _viewportSize = Size.zero;
 
   Size get viewportSize => _viewportSize;
 
   TileExtentController({
-    @required this.settingsRouteKey,
+    required this.settingsRouteKey,
     this.columnCountMin = 2,
-    @required this.columnCountDefault,
-    @required this.extentMin,
+    required this.columnCountDefault,
+    required this.extentMin,
     this.extentMax = 300,
-    @required this.spacing,
+    required this.spacing,
   });
 
   void setViewportSize(Size viewportSize) {

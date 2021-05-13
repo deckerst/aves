@@ -11,7 +11,7 @@ mixin CornerHitDetector on MagnifierControllerDelegate {
   // so be sure to compare with `precisionErrorTolerance`
 
   _CornerHit _hitCornersX() {
-    final childWidth = scaleBoundaries.childSize.width * scale;
+    final childWidth = scaleBoundaries.childSize.width * scale!;
     final viewportWidth = scaleBoundaries.viewportSize.width;
     if (viewportWidth + precisionErrorTolerance >= childWidth) {
       return _CornerHit(true, true);
@@ -22,7 +22,7 @@ mixin CornerHitDetector on MagnifierControllerDelegate {
   }
 
   _CornerHit _hitCornersY() {
-    final childHeight = scaleBoundaries.childSize.height * scale;
+    final childHeight = scaleBoundaries.childSize.height * scale!;
     final viewportHeight = scaleBoundaries.viewportSize.height;
     if (viewportHeight + precisionErrorTolerance >= childHeight) {
       return _CornerHit(true, true);

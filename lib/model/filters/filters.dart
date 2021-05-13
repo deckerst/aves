@@ -24,7 +24,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
     TagFilter.type,
   ];
 
-  static CollectionFilter fromJson(String jsonString) {
+  static CollectionFilter? fromJson(String jsonString) {
     final jsonMap = jsonDecode(jsonString);
     final type = jsonMap['type'];
     switch (type) {
@@ -63,7 +63,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String getTooltip(BuildContext context) => getLabel(context);
 
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false});
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false});
 
   Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(getLabel(context)));
 
@@ -84,7 +84,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
 class FilterGridItem<T extends CollectionFilter> {
   final T filter;
-  final AvesEntry entry;
+  final AvesEntry? entry;
 
   const FilterGridItem(this.filter, this.entry);
 

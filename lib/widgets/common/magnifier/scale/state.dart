@@ -7,14 +7,14 @@ import 'package:flutter/widgets.dart';
 @immutable
 class ScaleStateChange {
   const ScaleStateChange({
-    @required this.state,
-    @required this.source,
+    required this.state,
+    required this.source,
     this.childFocalPoint,
   });
 
   final ScaleState state;
   final ChangeSource source;
-  final Offset childFocalPoint;
+  final Offset? childFocalPoint;
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ScaleStateChange && runtimeType == other.runtimeType && state == other.state && childFocalPoint == other.childFocalPoint;

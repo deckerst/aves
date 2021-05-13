@@ -20,8 +20,8 @@ class PanoramaPage extends StatefulWidget {
   final PanoramaInfo info;
 
   const PanoramaPage({
-    @required this.entry,
-    @required this.info,
+    required this.entry,
+    required this.info,
   });
 
   @override
@@ -40,7 +40,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   void initState() {
     super.initState();
     _overlayVisible.addListener(_onOverlayVisibleChange);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
   }
 
   @override
@@ -65,11 +65,11 @@ class _PanoramaPageState extends State<PanoramaPage> {
                 builder: (context, sensorControl, child) {
                   return Panorama(
                     sensorControl: sensorControl,
-                    croppedArea: info.hasCroppedArea ? info.croppedAreaRect : Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
-                    croppedFullWidth: info.hasCroppedArea ? info.fullPanoSize.width : 1.0,
-                    croppedFullHeight: info.hasCroppedArea ? info.fullPanoSize.height : 1.0,
+                    croppedArea: info.hasCroppedArea ? info.croppedAreaRect! : Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
+                    croppedFullWidth: info.hasCroppedArea ? info.fullPanoSize!.width : 1.0,
+                    croppedFullHeight: info.hasCroppedArea ? info.fullPanoSize!.height : 1.0,
                     onTap: (longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value,
-                    child: child,
+                    child: child as Image?,
                   );
                 },
                 child: Image(
@@ -148,7 +148,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
   Future<void> _initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after page animation is complete
-    await Future.delayed(ModalRoute.of(context).transitionDuration * timeDilation);
+    await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
     await _onOverlayVisibleChange();
   }
 

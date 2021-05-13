@@ -9,12 +9,12 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 
   final List<CollectionFilter> filters;
   final bool removable;
-  final FilterCallback onTap;
+  final FilterCallback? onTap;
 
   FilterBar({
-    Key key,
-    @required Set<CollectionFilter> filters,
-    @required this.removable,
+    Key? key,
+    required Set<CollectionFilter> filters,
+    required this.removable,
     this.onTap,
   })  : filters = List<CollectionFilter>.from(filters)..sort(),
         super(key: key);
@@ -28,9 +28,9 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _FilterBarState extends State<FilterBar> {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'filter-bar-animated-list');
-  CollectionFilter _userTappedFilter;
+  CollectionFilter? _userTappedFilter;
 
-  FilterCallback get onTap => widget.onTap;
+  FilterCallback? get onTap => widget.onTap;
 
   @override
   void didUpdateWidget(covariant FilterBar oldWidget) {
@@ -46,7 +46,7 @@ class _FilterBarState extends State<FilterBar> {
       // only animate item removal when triggered by a user interaction with the chip,
       // not from automatic chip replacement following chip selection
       final animate = _userTappedFilter == filter;
-      listState.removeItem(
+      listState!.removeItem(
         index,
         animate
             ? (context, animation) {
@@ -69,7 +69,7 @@ class _FilterBarState extends State<FilterBar> {
     });
     added.forEach((filter) {
       final index = current.indexOf(filter);
-      listState.insertItem(
+      listState!.insertItem(
         index,
         duration: Duration.zero,
       );
@@ -95,7 +95,7 @@ class _FilterBarState extends State<FilterBar> {
           physics: BouncingScrollPhysics(),
           padding: EdgeInsets.only(left: 8),
           itemBuilder: (context, index, animation) {
-            if (index >= widget.filters.length) return null;
+            if (index >= widget.filters.length) return SizedBox();
             return _buildChip(widget.filters.toList()[index]);
           },
         ),
@@ -115,7 +115,7 @@ class _FilterBarState extends State<FilterBar> {
           onTap: onTap != null
               ? (filter) {
                   _userTappedFilter = filter;
-                  onTap(filter);
+                  onTap!(filter);
                 }
               : null,
         ),

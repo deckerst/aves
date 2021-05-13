@@ -12,8 +12,8 @@ class Licenses extends StatefulWidget {
 }
 
 class _LicensesState extends State<Licenses> {
-  final ValueNotifier<String> _expandedNotifier = ValueNotifier(null);
-  List<Dependency> _platform, _flutterPlugins, _flutterPackages, _dartPackages;
+  final ValueNotifier<String?> _expandedNotifier = ValueNotifier(null);
+  late List<Dependency> _platform, _flutterPlugins, _flutterPackages, _dartPackages;
 
   @override
   void initState() {
@@ -118,8 +118,8 @@ class LicenseRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final bodyTextStyle = textTheme.bodyText2;
-    final subColor = bodyTextStyle.color.withOpacity(.6);
+    final bodyTextStyle = textTheme.bodyText2!;
+    final subColor = bodyTextStyle.color!.withOpacity(.6);
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),

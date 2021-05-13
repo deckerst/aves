@@ -7,6 +7,7 @@ import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -18,8 +19,8 @@ class AddShortcutDialog extends StatefulWidget {
   final String defaultName;
 
   const AddShortcutDialog({
-    @required this.collection,
-    @required this.defaultName,
+    required this.collection,
+    required this.defaultName,
   });
 
   @override
@@ -29,7 +30,7 @@ class AddShortcutDialog extends StatefulWidget {
 class _AddShortcutDialogState extends State<AddShortcutDialog> {
   final TextEditingController _nameController = TextEditingController();
   final ValueNotifier<bool> _isValidNotifier = ValueNotifier(false);
-  AvesEntry _coverEntry;
+  AvesEntry? _coverEntry;
 
   CollectionLens get collection => widget.collection;
 
@@ -40,7 +41,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     super.initState();
     final entries = collection.sortedEntries;
     if (entries.isNotEmpty) {
-      final coverEntries = filters.map(covers.coverContentId).where((id) => id != null).map((id) => entries.firstWhere((entry) => entry.contentId == id, orElse: () => null)).where((entry) => entry != null);
+      final coverEntries = filters.map(covers.coverContentId).where((id) => id != null).map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).where((entry) => entry != null);
       _coverEntry = coverEntries.isNotEmpty ? coverEntries.first : entries.first;
     }
     _nameController.text = widget.defaultName;
@@ -67,7 +68,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
                 Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.only(top: 16),
-                  child: _buildCover(_coverEntry, extent),
+                  child: _buildCover(_coverEntry!, extent),
                 ),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8, horizontal: 24),
@@ -147,9 +148,9 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
   }
 
   Future<void> _validate() async {
-    final name = _nameController.text ?? '';
+    final name = _nameController.text;
     _isValidNotifier.value = name.isNotEmpty;
   }
 
-  void _submit(BuildContext context) => Navigator.pop(context, Tuple2<AvesEntry, String>(_coverEntry, _nameController.text));
+  void _submit(BuildContext context) => Navigator.pop(context, Tuple2<AvesEntry?, String>(_coverEntry, _nameController.text));
 }

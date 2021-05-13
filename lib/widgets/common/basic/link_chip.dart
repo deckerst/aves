@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LinkChip extends StatelessWidget {
-  final Widget leading;
+  final Widget? leading;
   final String text;
   final String url;
-  final Color color;
-  final TextStyle textStyle;
+  final Color? color;
+  final TextStyle? textStyle;
 
   static final borderRadius = BorderRadius.circular(8);
 
   const LinkChip({
-    Key key,
+    Key? key,
     this.leading,
-    @required this.text,
-    @required this.url,
+    required this.text,
+    required this.url,
     this.color,
     this.textStyle,
   }) : super(key: key);
@@ -37,7 +37,7 @@ class LinkChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (leading != null) ...[
-                leading,
+                leading!,
                 SizedBox(width: 8),
               ],
               Flexible(

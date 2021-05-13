@@ -33,7 +33,7 @@ class EntryPrinter with FeedbackMixin {
   Future<List<pdf.Page>> _buildPages(BuildContext context) async {
     final pages = <pdf.Page>[];
 
-    void _addPdfPage(pdf.Widget pdfChild) {
+    void _addPdfPage(pdf.Widget? pdfChild) {
       if (pdfChild == null) return;
       final displaySize = entry.displaySize;
       pages.add(pdf.Page(
@@ -49,20 +49,22 @@ class EntryPrinter with FeedbackMixin {
 
     if (entry.isMultiPage && !entry.isMotionPhoto) {
       final multiPageInfo = await metadataService.getMultiPageInfo(entry);
-      final pageCount = multiPageInfo.pageCount;
-      if (pageCount > 1) {
-        final streamController = StreamController<AvesEntry>.broadcast();
-        showOpReport<AvesEntry>(
-          context: context,
-          opStream: streamController.stream,
-          itemCount: pageCount,
-        );
-        for (var page = 0; page < pageCount; page++) {
-          final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-          _addPdfPage(await _buildPageImage(pageEntry));
-          streamController.sink.add(pageEntry);
+      if (multiPageInfo != null) {
+        final pageCount = multiPageInfo.pageCount;
+        if (pageCount > 1) {
+          final streamController = StreamController<AvesEntry>.broadcast();
+          showOpReport<AvesEntry>(
+            context: context,
+            opStream: streamController.stream,
+            itemCount: pageCount,
+          );
+          for (var page = 0; page < pageCount; page++) {
+            final pageEntry = multiPageInfo.getPageEntryByIndex(page);
+            _addPdfPage(await _buildPageImage(pageEntry));
+            streamController.sink.add(pageEntry);
+          }
+          await streamController.close();
         }
-        await streamController.close();
       }
     }
     if (pages.isEmpty) {
@@ -71,10 +73,10 @@ class EntryPrinter with FeedbackMixin {
     return pages;
   }
 
-  Future<pdf.Widget> _buildPageImage(AvesEntry entry) async {
+  Future<pdf.Widget?> _buildPageImage(AvesEntry entry) async {
     if (entry.isSvg) {
       final bytes = await imageFileService.getSvg(entry.uri, entry.mimeType);
-      if (bytes != null && bytes.isNotEmpty) {
+      if (bytes.isNotEmpty) {
         return pdf.SvgImage(svg: utf8.decode(bytes));
       }
     } else {

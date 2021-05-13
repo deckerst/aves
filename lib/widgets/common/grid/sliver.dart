@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 // With the multiple `SliverGrid` solution, thumbnails at the beginning of each sections are built even though they are offscreen
 // because of `RenderSliverMultiBoxAdaptor.addInitialChild` called by `RenderSliverGrid.performLayout` (line 547), as of Flutter v1.17.0.
 // cf https://github.com/flutter/flutter/issues/49027
+// adapted from `RenderSliverFixedExtentBoxAdaptor`
 class SectionedListSliver<T> extends StatelessWidget {
   const SectionedListSliver();
 
@@ -23,7 +25,7 @@ class SectionedListSliver<T> extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           if (index >= childCount) return null;
-          final sectionLayout = sectionLayouts.firstWhere((section) => section.hasChild(index), orElse: () => null);
+          final sectionLayout = sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
           return sectionLayout?.builder(context, index) ?? SizedBox.shrink();
         },
         childCount: childCount,
@@ -37,9 +39,9 @@ class _SliverKnownExtentList extends SliverMultiBoxAdaptorWidget {
   final List<SectionLayout> sectionLayouts;
 
   const _SliverKnownExtentList({
-    Key key,
-    @required SliverChildDelegate delegate,
-    @required this.sectionLayouts,
+    Key? key,
+    required SliverChildDelegate delegate,
+    required this.sectionLayouts,
   }) : super(key: key, delegate: delegate);
 
   @override
@@ -60,19 +62,18 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
   List<SectionLayout> get sectionLayouts => _sectionLayouts;
 
   set sectionLayouts(List<SectionLayout> value) {
-    assert(value != null);
     if (_sectionLayouts == value) return;
     _sectionLayouts = value;
     markNeedsLayout();
   }
 
   _RenderSliverKnownExtentBoxAdaptor({
-    @required RenderSliverBoxChildManager childManager,
-    @required List<SectionLayout> sectionLayouts,
+    required RenderSliverBoxChildManager childManager,
+    required List<SectionLayout> sectionLayouts,
   })  : _sectionLayouts = sectionLayouts,
         super(childManager: childManager);
 
-  SectionLayout sectionAtIndex(int index) => sectionLayouts.firstWhere((section) => section.hasChild(index), orElse: () => null);
+  SectionLayout? sectionAtIndex(int index) => sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
 
   SectionLayout sectionAtOffset(double scrollOffset) => sectionLayouts.firstWhere((section) => section.hasChildAtOffset(scrollOffset), orElse: () => sectionLayouts.last);
 
@@ -90,10 +91,10 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
 
   double estimateMaxScrollOffset(
     SliverConstraints constraints, {
-    int firstIndex,
-    int lastIndex,
-    double leadingScrollOffset,
-    double trailingScrollOffset,
+    int? firstIndex,
+    int? lastIndex,
+    double? leadingScrollOffset,
+    double? trailingScrollOffset,
   }) {
     return childManager.estimateMaxScrollOffset(
       constraints,
@@ -156,23 +157,11 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     if (firstChild == null) {
       if (!addInitialChild(index: firstIndex, layoutOffset: indexToLayoutOffset(firstIndex))) {
         // There are either no children, or we are past the end of all our children.
-        // If it is the latter, we will need to find the first available child.
         double max;
-        if (childManager.childCount != null) {
-          max = computeMaxScrollOffset(constraints);
-        } else if (firstIndex <= 0) {
+        if (firstIndex <= 0) {
           max = 0.0;
         } else {
-          // We will have to find it manually.
-          var possibleFirstIndex = firstIndex - 1;
-          while (possibleFirstIndex > 0 &&
-              !addInitialChild(
-                index: possibleFirstIndex,
-                layoutOffset: indexToLayoutOffset(possibleFirstIndex),
-              )) {
-            possibleFirstIndex -= 1;
-          }
-          max = sectionAtIndex(possibleFirstIndex).indexToLayoutOffset(possibleFirstIndex);
+          max = computeMaxScrollOffset(constraints);
         }
         geometry = SliverGeometry(
           scrollExtent: max,
@@ -183,9 +172,9 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
       }
     }
 
-    RenderBox trailingChildWithLayout;
+    RenderBox? trailingChildWithLayout;
 
-    for (var index = indexOf(firstChild) - 1; index >= firstIndex; --index) {
+    for (var index = indexOf(firstChild!) - 1; index >= firstIndex; --index) {
       final child = insertAndLayoutLeadingChild(childConstraints);
       if (child == null) {
         // Items before the previously first child are no longer present.
@@ -202,15 +191,15 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
     }
 
     if (trailingChildWithLayout == null) {
-      firstChild.layout(childConstraints);
-      final childParentData = firstChild.parentData as SliverMultiBoxAdaptorParentData;
+      firstChild!.layout(childConstraints);
+      final childParentData = firstChild!.parentData as SliverMultiBoxAdaptorParentData;
       childParentData.layoutOffset = indexToLayoutOffset(firstIndex);
       trailingChildWithLayout = firstChild;
     }
 
     var estimatedMaxScrollOffset = double.infinity;
-    for (var index = indexOf(trailingChildWithLayout) + 1; targetLastIndex == null || index <= targetLastIndex; ++index) {
-      var child = childAfter(trailingChildWithLayout);
+    for (var index = indexOf(trailingChildWithLayout!) + 1; targetLastIndex == null || index <= targetLastIndex; ++index) {
+      var child = childAfter(trailingChildWithLayout!);
       if (child == null || indexOf(child) != index) {
         child = insertAndLayoutChild(childConstraints, after: trailingChildWithLayout);
         if (child == null) {
@@ -223,19 +212,18 @@ class _RenderSliverKnownExtentBoxAdaptor extends RenderSliverMultiBoxAdaptor {
         child.layout(childConstraints);
       }
       trailingChildWithLayout = child;
-      assert(child != null);
       final childParentData = child.parentData as SliverMultiBoxAdaptorParentData;
       assert(childParentData.index == index);
-      childParentData.layoutOffset = indexToLayoutOffset(childParentData.index);
+      childParentData.layoutOffset = indexToLayoutOffset(childParentData.index!);
     }
 
-    final lastIndex = indexOf(lastChild);
+    final lastIndex = indexOf(lastChild!);
     final leadingScrollOffset = indexToLayoutOffset(firstIndex);
     final trailingScrollOffset = indexToLayoutOffset(lastIndex + 1);
 
-    assert(firstIndex == 0 || childScrollOffset(firstChild) - scrollOffset <= precisionErrorTolerance);
+    assert(firstIndex == 0 || childScrollOffset(firstChild!)! - scrollOffset <= precisionErrorTolerance);
     assert(debugAssertChildListIsNonEmptyAndContiguous());
-    assert(indexOf(firstChild) == firstIndex);
+    assert(indexOf(firstChild!) == firstIndex);
     assert(targetLastIndex == null || lastIndex <= targetLastIndex);
 
     estimatedMaxScrollOffset = math.min(

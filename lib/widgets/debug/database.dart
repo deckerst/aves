@@ -13,13 +13,13 @@ class DebugAppDatabaseSection extends StatefulWidget {
 }
 
 class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with AutomaticKeepAliveClientMixin {
-  Future<int> _dbFileSizeLoader;
-  Future<Set<AvesEntry>> _dbEntryLoader;
-  Future<List<DateMetadata>> _dbDateLoader;
-  Future<List<CatalogMetadata>> _dbMetadataLoader;
-  Future<List<AddressDetails>> _dbAddressLoader;
-  Future<Set<FavouriteRow>> _dbFavouritesLoader;
-  Future<Set<CoverRow>> _dbCoversLoader;
+  late Future<int> _dbFileSizeLoader;
+  late Future<Set<AvesEntry>> _dbEntryLoader;
+  late Future<List<DateMetadata>> _dbDateLoader;
+  late Future<List<CatalogMetadata>> _dbMetadataLoader;
+  late Future<List<AddressDetails>> _dbAddressLoader;
+  late Future<Set<FavouriteRow>> _dbFavouritesLoader;
+  late Future<Set<CoverRow>> _dbCoversLoader;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('DB file size: ${formatFilesize(snapshot.data)}'),
+                        child: Text('DB file size: ${formatFilesize(snapshot.data!)}'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
@@ -69,7 +69,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('entry rows: ${snapshot.data.length}'),
+                        child: Text('entry rows: ${snapshot.data!.length}'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
@@ -90,7 +90,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('date rows: ${snapshot.data.length}'),
+                        child: Text('date rows: ${snapshot.data!.length}'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
@@ -111,7 +111,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('metadata rows: ${snapshot.data.length}'),
+                        child: Text('metadata rows: ${snapshot.data!.length}'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
@@ -132,7 +132,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('address rows: ${snapshot.data.length}'),
+                        child: Text('address rows: ${snapshot.data!.length}'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
@@ -153,7 +153,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('favourite rows: ${snapshot.data.length} (${favourites.count} in memory)'),
+                        child: Text('favourite rows: ${snapshot.data!.length} (${favourites.count} in memory)'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
@@ -174,7 +174,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                   return Row(
                     children: [
                       Expanded(
-                        child: Text('cover rows: ${snapshot.data.length} (${covers.count} in memory)'),
+                        child: Text('cover rows: ${snapshot.data!.length} (${covers.count} in memory)'),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(

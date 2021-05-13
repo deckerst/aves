@@ -11,16 +11,16 @@ import 'package:path/path.dart' as p;
 
 final getIt = GetIt.instance;
 
-final pContext = getIt<p.Context>();
-final availability = getIt<AvesAvailability>();
-final metadataDb = getIt<MetadataDb>();
+final p.Context pContext = getIt<p.Context>();
+final AvesAvailability availability = getIt<AvesAvailability>();
+final MetadataDb metadataDb = getIt<MetadataDb>();
 
-final embeddedDataService = getIt<EmbeddedDataService>();
-final imageFileService = getIt<ImageFileService>();
-final mediaStoreService = getIt<MediaStoreService>();
-final metadataService = getIt<MetadataService>();
-final storageService = getIt<StorageService>();
-final timeService = getIt<TimeService>();
+final EmbeddedDataService embeddedDataService = getIt<EmbeddedDataService>();
+final ImageFileService imageFileService = getIt<ImageFileService>();
+final MediaStoreService mediaStoreService = getIt<MediaStoreService>();
+final MetadataService metadataService = getIt<MetadataService>();
+final StorageService storageService = getIt<StorageService>();
+final TimeService timeService = getIt<TimeService>();
 
 void initPlatformServices() {
   getIt.registerLazySingleton<p.Context>(() => p.Context());

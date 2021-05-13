@@ -133,7 +133,7 @@ class Exif {
   }
 
   static String getExifVersionDescription(String valueString) {
-    if (valueString?.length == 4) {
+    if (valueString.length == 4) {
       final major = int.tryParse(valueString.substring(0, 2));
       final minor = int.tryParse(valueString.substring(2, 4));
       if (major != null && minor != null) {

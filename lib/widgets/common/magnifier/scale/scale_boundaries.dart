@@ -14,11 +14,11 @@ class ScaleBoundaries {
   final Size childSize;
 
   const ScaleBoundaries({
-    @required ScaleLevel minScale,
-    @required ScaleLevel maxScale,
-    @required ScaleLevel initialScale,
-    @required this.viewportSize,
-    @required this.childSize,
+    required ScaleLevel minScale,
+    required ScaleLevel maxScale,
+    required ScaleLevel initialScale,
+    required this.viewportSize,
+    required this.childSize,
   })  : _minScale = minScale,
         _maxScale = maxScale,
         _initialScale = initialScale;
@@ -51,7 +51,7 @@ class ScaleBoundaries {
   }
 
   Offset viewportToChildPosition(MagnifierController controller, Offset viewportPosition) {
-    return viewportToStatePosition(controller, viewportPosition) / controller.scale + _childCenter;
+    return viewportToStatePosition(controller, viewportPosition) / controller.scale! + _childCenter;
   }
 
   Offset childToStatePosition(double scale, Offset childPosition) {

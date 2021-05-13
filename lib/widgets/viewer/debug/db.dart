@@ -2,22 +2,23 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class DbTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const DbTab({@required this.entry});
+  const DbTab({required this.entry});
 
   @override
   _DbTabState createState() => _DbTabState();
 }
 
 class _DbTabState extends State<DbTab> {
-  Future<DateMetadata> _dbDateLoader;
-  Future<AvesEntry> _dbEntryLoader;
-  Future<CatalogMetadata> _dbMetadataLoader;
-  Future<AddressDetails> _dbAddressLoader;
+  late Future<DateMetadata?> _dbDateLoader;
+  late Future<AvesEntry?> _dbEntryLoader;
+  late Future<CatalogMetadata?> _dbMetadataLoader;
+  late Future<AddressDetails?> _dbAddressLoader;
 
   AvesEntry get entry => widget.entry;
 
@@ -29,10 +30,10 @@ class _DbTabState extends State<DbTab> {
 
   void _loadDatabase() {
     final contentId = entry.contentId;
-    _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
-    _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhere((row) => row.contentId == contentId, orElse: () => null));
+    _dbDateLoader = metadataDb.loadDates().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbEntryLoader = metadataDb.loadEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbMetadataLoader = metadataDb.loadMetadataEntries().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
+    _dbAddressLoader = metadataDb.loadAddresses().then((values) => values.firstWhereOrNull((row) => row.contentId == contentId));
     setState(() {});
   }
 
@@ -41,7 +42,7 @@ class _DbTabState extends State<DbTab> {
     return ListView(
       padding: EdgeInsets.all(16),
       children: [
-        FutureBuilder<DateMetadata>(
+        FutureBuilder<DateMetadata?>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -60,7 +61,7 @@ class _DbTabState extends State<DbTab> {
           },
         ),
         SizedBox(height: 16),
-        FutureBuilder<AvesEntry>(
+        FutureBuilder<AvesEntry?>(
           future: _dbEntryLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -89,7 +90,7 @@ class _DbTabState extends State<DbTab> {
           },
         ),
         SizedBox(height: 16),
-        FutureBuilder<CatalogMetadata>(
+        FutureBuilder<CatalogMetadata?>(
           future: _dbMetadataLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
@@ -116,7 +117,7 @@ class _DbTabState extends State<DbTab> {
           },
         ),
         SizedBox(height: 16),
-        FutureBuilder<AddressDetails>(
+        FutureBuilder<AddressDetails?>(
           future: _dbAddressLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());

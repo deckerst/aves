@@ -15,14 +15,14 @@ import 'package:flutter/material.dart';
 
 class VideoControlOverlay extends StatefulWidget {
   final AvesEntry entry;
-  final AvesVideoController controller;
+  final AvesVideoController? controller;
   final Animation<double> scale;
 
   const VideoControlOverlay({
-    Key key,
-    @required this.entry,
-    @required this.controller,
-    @required this.scale,
+    Key? key,
+    required this.entry,
+    required this.controller,
+    required this.scale,
   }) : super(key: key);
 
   @override
@@ -32,14 +32,14 @@ class VideoControlOverlay extends StatefulWidget {
 class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTickerProviderStateMixin {
   final GlobalKey _progressBarKey = GlobalKey(debugLabel: 'video-progress-bar');
   bool _playingOnDragStart = false;
-  AnimationController _playPauseAnimation;
+  late AnimationController _playPauseAnimation;
   final List<StreamSubscription> _subscriptions = [];
 
   AvesEntry get entry => widget.entry;
 
   Animation<double> get scale => widget.scale;
 
-  AvesVideoController get controller => widget.controller;
+  AvesVideoController? get controller => widget.controller;
 
   Stream<VideoStatus> get statusStream => controller?.statusStream ?? Stream.value(VideoStatus.idle);
 
@@ -72,9 +72,10 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   }
 
   void _registerWidget(VideoControlOverlay widget) {
-    if (widget.controller != null) {
-      _subscriptions.add(widget.controller.statusStream.listen(_onStatusChange));
-      _onStatusChange(widget.controller.status);
+    final controller = widget.controller;
+    if (controller != null) {
+      _subscriptions.add(controller.statusStream.listen(_onStatusChange));
+      _onStatusChange(controller.status);
     }
   }
 
@@ -142,13 +143,13 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
           },
           onHorizontalDragStart: (details) {
             _playingOnDragStart = isPlaying;
-            if (_playingOnDragStart) controller.pause();
+            if (_playingOnDragStart) controller!.pause();
           },
           onHorizontalDragUpdate: (details) {
             _seekFromTap(details.globalPosition);
           },
           onHorizontalDragEnd: (details) {
-            if (_playingOnDragStart) controller.play();
+            if (_playingOnDragStart) controller!.play();
           },
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
@@ -166,7 +167,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         stream: positionStream,
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
-                          final position = controller?.currentPosition?.floor() ?? 0;
+                          final position = controller?.currentPosition.floor() ?? 0;
                           return Text(formatFriendlyDuration(Duration(milliseconds: position)));
                         }),
                     Spacer(),
@@ -207,9 +208,9 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
   Future<void> _togglePlayPause() async {
     if (controller == null) return;
     if (isPlaying) {
-      await controller.pause();
+      await controller!.pause();
     } else {
-      await controller.play();
+      await controller!.play();
       // hide overlay
       await Future.delayed(Durations.iconAnimation);
       ToggleOverlayNotification().dispatch(context);
@@ -218,9 +219,9 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   void _seekFromTap(Offset globalPosition) async {
     if (controller == null) return;
-    final keyContext = _progressBarKey.currentContext;
-    final RenderBox box = keyContext.findRenderObject();
+    final keyContext = _progressBarKey.currentContext!;
+    final box = keyContext.findRenderObject() as RenderBox;
     final localPosition = box.globalToLocal(globalPosition);
-    await controller.seekToProgress(localPosition.dx / box.size.width);
+    await controller!.seekToProgress(localPosition.dx / box.size.width);
   }
 }

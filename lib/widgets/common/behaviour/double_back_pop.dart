@@ -12,7 +12,7 @@ class DoubleBackPopScope extends StatefulWidget {
   final Widget child;
 
   const DoubleBackPopScope({
-    @required this.child,
+    required this.child,
   });
 
   @override
@@ -21,7 +21,7 @@ class DoubleBackPopScope extends StatefulWidget {
 
 class _DoubleBackPopScopeState extends State<DoubleBackPopScope> with FeedbackMixin {
   bool _backOnce = false;
-  Timer _backTimer;
+  Timer? _backTimer;
 
   @override
   void dispose() {

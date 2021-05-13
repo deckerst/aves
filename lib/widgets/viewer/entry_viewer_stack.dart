@@ -26,6 +26,7 @@ import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -34,13 +35,13 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class EntryViewerStack extends StatefulWidget {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final AvesEntry initialEntry;
 
   const EntryViewerStack({
-    Key key,
+    Key? key,
     this.collection,
-    @required this.initialEntry,
+    required this.initialEntry,
   }) : super(key: key);
 
   @override
@@ -48,25 +49,25 @@ class EntryViewerStack extends StatefulWidget {
 }
 
 class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
-  final ValueNotifier<AvesEntry> _entryNotifier = ValueNotifier(null);
-  int _currentHorizontalPage;
-  ValueNotifier<int> _currentVerticalPage;
-  PageController _horizontalPager, _verticalPager;
+  final ValueNotifier<AvesEntry?> _entryNotifier = ValueNotifier(null);
+  late int _currentHorizontalPage;
+  late ValueNotifier<int> _currentVerticalPage;
+  late PageController _horizontalPager, _verticalPager;
   final AChangeNotifier _verticalScrollNotifier = AChangeNotifier();
   final ValueNotifier<bool> _overlayVisible = ValueNotifier(true);
-  AnimationController _overlayAnimationController;
-  Animation<double> _topOverlayScale, _bottomOverlayScale;
-  Animation<Offset> _bottomOverlayOffset;
-  EdgeInsets _frozenViewInsets, _frozenViewPadding;
-  EntryActionDelegate _actionDelegate;
+  late AnimationController _overlayAnimationController;
+  late Animation<double> _topOverlayScale, _bottomOverlayScale;
+  late Animation<Offset> _bottomOverlayOffset;
+  EdgeInsets? _frozenViewInsets, _frozenViewPadding;
+  late EntryActionDelegate _actionDelegate;
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
-  final ValueNotifier<HeroInfo> _heroInfoNotifier = ValueNotifier(null);
+  final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
   bool get hasCollection => collection != null;
 
-  List<AvesEntry> get entries => hasCollection ? collection.sortedEntries : [widget.initialEntry];
+  List<AvesEntry> get entries => hasCollection ? collection!.sortedEntries : [widget.initialEntry];
 
   static const int transitionPage = 0;
 
@@ -110,8 +111,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     );
     _initEntryControllers();
     _registerWidget(widget);
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initOverlay());
+    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       WindowService.keepScreenOn(true);
     }
@@ -129,7 +130,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _verticalPager.removeListener(_onVerticalPageControllerChange);
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     _unregisterWidget(widget);
     super.dispose();
   }
@@ -168,10 +169,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         }
         return SynchronousFuture(false);
       },
-      child: ValueListenableProvider<HeroInfo>.value(
+      child: ValueListenableProvider<HeroInfo?>.value(
         value: _heroInfoNotifier,
         child: NotificationListener(
-          onNotification: (notification) {
+          onNotification: (dynamic notification) {
             if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
             } else if (notification is ViewStateNotification) {
@@ -181,13 +182,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             }
             return false;
           },
-          child: NotificationListener(
+          child: NotificationListener<ToggleOverlayNotification>(
             onNotification: (notification) {
-              if (notification is ToggleOverlayNotification) {
-                _overlayVisible.value = !_overlayVisible.value;
-                return true;
-              }
-              return false;
+              _overlayVisible.value = !_overlayVisible.value;
+              return true;
             },
             child: Stack(
               children: [
@@ -212,18 +210,18 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     );
   }
 
-  void _updateViewState(String uri, ViewState viewState) {
-    final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == uri, orElse: () => null)?.item2;
+  void _updateViewState(String uri, ViewState? viewState) {
+    final viewStateNotifier = _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == uri)?.item2;
     viewStateNotifier?.value = viewState ?? ViewState.zero;
   }
 
   Widget _buildTopOverlay() {
-    final child = ValueListenableBuilder<AvesEntry>(
+    final child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
       builder: (context, mainEntry, child) {
         if (mainEntry == null) return SizedBox.shrink();
 
-        final viewStateNotifier = _viewStateNotifiers.firstWhere((kv) => kv.item1 == mainEntry.uri, orElse: () => null)?.item2;
+        final viewStateNotifier = _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == mainEntry.uri)?.item2;
         return ViewerTopOverlay(
           mainEntry: mainEntry,
           scale: _topOverlayScale,
@@ -253,7 +251,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       builder: (context, page, child) {
         return Visibility(
           visible: page == imagePage,
-          child: child,
+          child: child!,
         );
       },
       child: child,
@@ -261,15 +259,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   Widget _buildBottomOverlay() {
-    Widget bottomOverlay = ValueListenableBuilder<AvesEntry>(
+    Widget bottomOverlay = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
       builder: (context, entry, child) {
         if (entry == null) return SizedBox.shrink();
 
-        Widget _buildExtraBottomOverlay(AvesEntry pageEntry) {
+        Widget? _buildExtraBottomOverlay(AvesEntry pageEntry) {
           // a 360 video is both a video and a panorama but only the video controls are displayed
           if (pageEntry.isVideo) {
-            return Selector<VideoConductor, AvesVideoController>(
+            return Selector<VideoConductor, AvesVideoController?>(
               selector: (context, vc) => vc.getController(pageEntry),
               builder: (context, videoController, child) => VideoControlOverlay(
                 entry: pageEntry,
@@ -288,12 +286,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
         final multiPageController = entry.isMultiPage ? context.read<MultiPageConductor>().getController(entry) : null;
         final extraBottomOverlay = multiPageController != null
-            ? StreamBuilder<MultiPageInfo>(
+            ? StreamBuilder<MultiPageInfo?>(
                 stream: multiPageController.infoStream,
                 builder: (context, snapshot) {
                   final multiPageInfo = multiPageController.info;
                   if (multiPageInfo == null) return SizedBox.shrink();
-                  return ValueListenableBuilder<int>(
+                  return ValueListenableBuilder<int?>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
                       final pageEntry = multiPageInfo.getPageEntryByIndex(page);
@@ -329,7 +327,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           builder: (context, animation, child) {
             return Visibility(
               visible: _overlayAnimationController.status != AnimationStatus.dismissed,
-              child: child,
+              child: child!,
             );
           },
           child: child,
@@ -342,12 +340,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       builder: (c, mqHeight, child) {
         // when orientation change, the `PageController` offset is not updated right away
         // and it does not trigger its listeners when it does, so we force a refresh in the next frame
-        WidgetsBinding.instance.addPostFrameCallback((_) => _onVerticalPageControllerChange());
+        WidgetsBinding.instance!.addPostFrameCallback((_) => _onVerticalPageControllerChange());
         return AnimatedBuilder(
           animation: _verticalScrollNotifier,
           builder: (context, child) => Positioned(
             bottom: (_verticalPager.position.hasPixels ? _verticalPager.offset : 0) - mqHeight,
-            child: child,
+            child: child!,
           ),
           child: child,
         );
@@ -362,19 +360,23 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   void _goToCollection(CollectionFilter filter) {
+    final baseCollection = collection;
+    if (baseCollection == null) return;
     _onLeave();
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
         settings: RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(
-          CollectionLens(
-            source: collection.source,
-            filters: collection.filters,
-            groupFactor: collection.groupFactor,
-            sortFactor: collection.sortFactor,
-          )..addFilter(filter),
-        ),
+        builder: (context) {
+          return CollectionPage(
+            CollectionLens(
+              source: baseCollection.source,
+              filters: baseCollection.filters,
+              groupFactor: baseCollection.groupFactor,
+              sortFactor: baseCollection.sortFactor,
+            )..addFilter(filter),
+          );
+        },
       ),
       (route) => false,
     );
@@ -410,7 +412,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _onEntryDeleted(BuildContext context, AvesEntry entry) {
     if (hasCollection) {
-      final entries = collection.sortedEntries;
+      final entries = collection!.sortedEntries;
       entries.remove(entry);
       if (entries.isEmpty) {
         Navigator.pop(context);
@@ -424,14 +426,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   Future<void> _updateEntry() async {
-    if (_currentHorizontalPage != null && entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
+    if (entries.isNotEmpty && _currentHorizontalPage >= entries.length) {
       // as of Flutter v1.22.2, `PageView` does not call `onPageChanged` when the last page is deleted
       // so we manually track the page change, and let the entry update follow
       _onHorizontalPageChanged(entries.length - 1);
       return;
     }
 
-    final newEntry = _currentHorizontalPage != null && _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
+    final newEntry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (_entryNotifier.value == newEntry) return;
     _entryNotifier.value = newEntry;
     await _pauseVideoControllers();
@@ -450,7 +452,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       if (_heroInfoNotifier.value != heroInfo) {
         _heroInfoNotifier.value = heroInfo;
         // we post closing the viewer page so that hero animation source is ready
-        WidgetsBinding.instance.addPostFrameCallback((_) => pop());
+        WidgetsBinding.instance!.addPostFrameCallback((_) => pop());
       } else {
         // viewer already has correct hero info, no need to rebuild
         pop();
@@ -479,7 +481,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   Future<void> _initOverlay() async {
     // wait for MaterialPageRoute.transitionDuration
     // to show overlay after hero animation is complete
-    await Future.delayed(ModalRoute.of(context).transitionDuration * timeDilation);
+    await Future.delayed(ModalRoute.of(context)!.transitionDuration * timeDilation);
     await _onOverlayVisibleChange();
   }
 
@@ -527,7 +529,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _initViewStateController(AvesEntry entry) {
     final uri = entry.uri;
-    var controller = _viewStateNotifiers.firstWhere((kv) => kv.item1 == uri, orElse: () => null);
+    var controller = _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == uri);
     if (controller != null) {
       _viewStateNotifiers.remove(controller);
     } else {
@@ -553,6 +555,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     setState(() {});
 
     final multiPageInfo = multiPageController.info ?? await multiPageController.infoStream.first;
+    assert(multiPageInfo != null);
+    if (multiPageInfo == null) return;
+
     if (entry.isMotionPhoto) {
       await multiPageInfo.extractMotionPhotoVideo();
     }
@@ -568,11 +573,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         await _pauseVideoControllers();
         if (settings.enableVideoAutoPlay) {
           final page = multiPageController.page;
-          final pageInfo = multiPageInfo.getByIndex(page);
+          final pageInfo = multiPageInfo.getByIndex(page)!;
           if (pageInfo.isVideo) {
             final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-            final pageVideoController = videoConductor.getController(pageEntry);
-            assert(pageVideoController != null);
+            final pageVideoController = videoConductor.getController(pageEntry)!;
             await _playVideo(pageVideoController, () => entry == _entryNotifier.value && page == multiPageController.page);
           }
         }

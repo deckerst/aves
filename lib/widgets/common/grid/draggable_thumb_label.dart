@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 
 class DraggableThumbLabel<T> extends StatelessWidget {
   final double offsetY;
-  final List<String> Function(BuildContext context, T item) lineBuilder;
+  final List<String > Function(BuildContext context, T item) lineBuilder;
 
   const DraggableThumbLabel({
-    @required this.offsetY,
-    @required this.lineBuilder,
+    required this.offsetY,
+    required this.lineBuilder,
   });
 
   @override
@@ -19,11 +19,10 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     final sectionLayout = sll.getSectionAt(offsetY);
     if (sectionLayout == null) return SizedBox();
 
-    final section = sll.sections[sectionLayout.sectionKey];
+    final section = sll.sections[sectionLayout.sectionKey]!;
     final dy = offsetY - (sectionLayout.minOffset + sectionLayout.headerExtent);
     final itemIndex = dy < 0 ? 0 : (dy ~/ (sll.tileExtent + sll.spacing)) * sll.columnCount;
     final item = section[itemIndex];
-    if (item == null) return SizedBox();
 
     final lines = lineBuilder(context, item);
     if (lines.isEmpty) return SizedBox();
@@ -53,13 +52,13 @@ class DraggableThumbLabel<T> extends StatelessWidget {
         maxLines: 1,
       );
 
-  static String formatMonthThumbLabel(BuildContext context, DateTime date) {
+  static String formatMonthThumbLabel(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
     return DateFormat.yMMM(l10n.localeName).format(date);
   }
 
-  static String formatDayThumbLabel(BuildContext context, DateTime date) {
+  static String formatDayThumbLabel(BuildContext context, DateTime? date) {
     final l10n = context.l10n;
     if (date == null) return l10n.sectionUnknown;
     return DateFormat.yMMMd(l10n.localeName).format(date);

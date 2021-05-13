@@ -22,7 +22,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   bool _hasAcceptedTerms = false;
-  Future<String> _termsLoader;
+  late Future<String> _termsLoader;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class _WelcomePageState extends State<WelcomePage> {
               future: _termsLoader,
               builder: (context, snapshot) {
                 if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-                final terms = snapshot.data;
+                final terms = snapshot.data!;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: _toStaggeredList(
@@ -102,13 +102,17 @@ class _WelcomePageState extends State<WelcomePage> {
       children: [
         LabeledCheckbox(
           value: settings.isCrashlyticsEnabled,
-          onChanged: (v) => setState(() => settings.isCrashlyticsEnabled = v),
+          onChanged: (v) {
+            if (v != null) setState(() => settings.isCrashlyticsEnabled = v);
+          },
           text: context.l10n.welcomeAnalyticsToggle,
         ),
         LabeledCheckbox(
           key: Key('agree-checkbox'),
           value: _hasAcceptedTerms,
-          onChanged: (v) => setState(() => _hasAcceptedTerms = v),
+          onChanged: (v) {
+            if (v != null) setState(() => _hasAcceptedTerms = v);
+          },
           text: context.l10n.welcomeTermsToggle,
         ),
       ],
@@ -171,7 +175,7 @@ class _WelcomePageState extends State<WelcomePage> {
               data: terms,
               selectable: true,
               onTapLink: (text, href, title) async {
-                if (await canLaunch(href)) {
+                if (href != null && await canLaunch(href)) {
                   await launch(href);
                 }
               },
@@ -186,10 +190,10 @@ class _WelcomePageState extends State<WelcomePage> {
   // as of flutter_staggered_animations v0.1.2, `AnimationConfiguration.toStaggeredList` does not handle `Flexible` widgets
   // so we use this workaround instead
   static List<Widget> _toStaggeredList({
-    Duration duration,
-    Duration delay,
-    @required Widget Function(Widget) childAnimationBuilder,
-    @required List<Widget> children,
+    required Duration duration,
+    required Duration delay,
+    required Widget Function(Widget) childAnimationBuilder,
+    required List<Widget> children,
   }) =>
       children
           .asMap()

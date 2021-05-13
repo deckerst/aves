@@ -6,18 +6,18 @@ import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:flutter/material.dart';
 
 class ExpandableFilterRow extends StatelessWidget {
-  final String title;
+  final String? title;
   final Iterable<CollectionFilter> filters;
-  final ValueNotifier<String> expandedNotifier;
-  final HeroType Function(CollectionFilter filter) heroTypeBuilder;
+  final ValueNotifier<String?> expandedNotifier;
+  final HeroType Function(CollectionFilter filter)? heroTypeBuilder;
   final FilterCallback onTap;
 
   const ExpandableFilterRow({
     this.title,
-    @required this.filters,
-    @required this.expandedNotifier,
+    required this.filters,
+    required this.expandedNotifier,
     this.heroTypeBuilder,
-    @required this.onTap,
+    required this.onTap,
   });
 
   static const double horizontalPadding = 8;
@@ -27,18 +27,18 @@ class ExpandableFilterRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (filters.isEmpty) return SizedBox.shrink();
 
-    final hasTitle = title != null && title.isNotEmpty;
+    final hasTitle = title != null && title!.isNotEmpty;
 
     final isExpanded = hasTitle && expandedNotifier.value == title;
 
-    Widget titleRow;
+    Widget? titleRow;
     if (hasTitle) {
       titleRow = Padding(
         padding: EdgeInsets.all(16),
         child: Row(
           children: [
             Text(
-              title,
+              title!,
               style: Constants.titleTextStyle,
             ),
             const Spacer(),
@@ -76,7 +76,7 @@ class ExpandableFilterRow extends StatelessWidget {
         physics: BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
-          return index < filterList.length ? _buildFilterChip(filterList[index]) : null;
+          return index < filterList.length ? _buildFilterChip(filterList[index]) : SizedBox();
         },
         separatorBuilder: (context, index) => SizedBox(width: 8),
         itemCount: filterList.length,

@@ -5,7 +5,7 @@ version: 1.4.1+45
 publish_to: none
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
 # TODO TLAD switch to Flutter stable when possible, currently on dev/beta because of the following mess:
 # printing >=5.0.1 depends on pdf ^3.0.1, pdf >=3.0.1 depends on crypto ^3.0.0 and archive ^3.1.0

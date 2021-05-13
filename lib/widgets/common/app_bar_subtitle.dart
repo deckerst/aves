@@ -9,9 +9,9 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
   final CollectionSource source;
 
   const SourceStateAwareAppBarTitle({
-    Key key,
-    @required this.title,
-    @required this.source,
+    Key? key,
+    required this.title,
+    required this.source,
   }) : super(key: key);
 
   @override
@@ -49,11 +49,11 @@ class SourceStateAwareAppBarTitle extends StatelessWidget {
 class SourceStateSubtitle extends StatelessWidget {
   final CollectionSource source;
 
-  const SourceStateSubtitle({@required this.source});
+  const SourceStateSubtitle({required this.source});
 
   @override
   Widget build(BuildContext context) {
-    String subtitle;
+    String? subtitle;
     switch (source.stateNotifier.value) {
       case SourceState.loading:
         subtitle = context.l10n.sourceStateLoading;
@@ -79,12 +79,12 @@ class SourceStateSubtitle extends StatelessWidget {
                 stream: source.progressStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError || !snapshot.hasData) return SizedBox.shrink();
-                  final progress = snapshot.data;
+                  final progress = snapshot.data!;
                   return Padding(
                     padding: EdgeInsetsDirectional.only(start: 8),
                     child: Text(
                       '${progress.done}/${progress.total}',
-                      style: subtitleStyle.copyWith(color: Colors.white30),
+                      style: subtitleStyle!.copyWith(color: Colors.white30),
                     ),
                   );
                 },

@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 class RegionProvider extends ImageProvider<RegionProviderKey> {
   final RegionProviderKey key;
 
-  RegionProvider(this.key) : assert(key != null);
+  RegionProvider(this.key);
 
   @override
   Future<RegionProviderKey> obtainKey(ImageConfiguration configuration) {
@@ -43,7 +43,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
         pageId: pageId,
         taskKey: key,
       );
-      if (bytes == null) {
+      if (bytes.isEmpty) {
         throw StateError('$uri ($mimeType) region loading failed');
       }
       return await decode(bytes);
@@ -66,30 +66,24 @@ class RegionProviderKey {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
-  final int pageId, rotationDegrees, sampleSize;
+  final int? pageId;
+  final int rotationDegrees, sampleSize;
   final bool isFlipped;
   final Rectangle<int> region;
   final Size imageSize;
   final double scale;
 
   const RegionProviderKey({
-    @required this.uri,
-    @required this.mimeType,
-    @required this.pageId,
-    @required this.rotationDegrees,
-    @required this.isFlipped,
-    @required this.sampleSize,
-    @required this.region,
-    @required this.imageSize,
+    required this.uri,
+    required this.mimeType,
+    required this.pageId,
+    required this.rotationDegrees,
+    required this.isFlipped,
+    required this.sampleSize,
+    required this.region,
+    required this.imageSize,
     this.scale = 1.0,
-  })  : assert(uri != null),
-        assert(mimeType != null),
-        assert(rotationDegrees != null),
-        assert(isFlipped != null),
-        assert(sampleSize != null),
-        assert(region != null),
-        assert(imageSize != null),
-        assert(scale != null);
+  });
 
   @override
   bool operator ==(Object other) {

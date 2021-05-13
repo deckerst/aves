@@ -7,8 +7,8 @@ class TileExtentControllerProvider extends StatelessWidget {
   final Widget child;
 
   const TileExtentControllerProvider({
-    @required this.controller,
-    @required this.child,
+    required this.controller,
+    required this.child,
   });
 
   @override
