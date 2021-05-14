@@ -249,8 +249,8 @@ class Constants {
     Dependency(
       name: 'Flutter Markdown',
       license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/flutter/flutter_markdown/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/flutter/flutter_markdown',
+      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_markdown/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_markdown',
     ),
     Dependency(
       name: 'Flutter Staggered Animations',
