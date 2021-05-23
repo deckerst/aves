@@ -1,23 +1,23 @@
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:github/github.dart';
 import 'package:google_api_availability/google_api_availability.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
 abstract class AvesAvailability {
   void onResume();
 
-  Future<bool > get isConnected;
+  Future<bool> get isConnected;
 
-  Future<bool > get hasPlayServices;
+  Future<bool> get hasPlayServices;
 
   Future<bool> get canLocatePlaces;
 
-  Future<bool > get isNewVersionAvailable;
+  Future<bool> get isNewVersionAvailable;
 }
 
 class LiveAvesAvailability implements AvesAvailability {
@@ -31,7 +31,7 @@ class LiveAvesAvailability implements AvesAvailability {
   void onResume() => _isConnected = null;
 
   @override
-  Future<bool > get isConnected async {
+  Future<bool> get isConnected async {
     if (_isConnected != null) return SynchronousFuture(_isConnected!);
     final result = await (Connectivity().checkConnectivity());
     _updateConnectivityFromResult(result);
@@ -47,7 +47,7 @@ class LiveAvesAvailability implements AvesAvailability {
   }
 
   @override
-  Future<bool > get hasPlayServices async {
+  Future<bool> get hasPlayServices async {
     if (_hasPlayServices != null) return SynchronousFuture(_hasPlayServices!);
     final result = await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
     _hasPlayServices = result == GooglePlayServicesAvailability.success;
@@ -60,7 +60,7 @@ class LiveAvesAvailability implements AvesAvailability {
   Future<bool> get canLocatePlaces => Future.wait<bool>([isConnected, hasPlayServices]).then((results) => results.every((result) => result));
 
   @override
-  Future<bool > get isNewVersionAvailable async {
+  Future<bool> get isNewVersionAvailable async {
     if (_isNewVersionAvailable != null) return SynchronousFuture(_isNewVersionAvailable!);
 
     final now = DateTime.now();

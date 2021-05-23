@@ -12,23 +12,26 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
 
   @override
   Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) {
-    return Map.fromEntries(dataProps.map((t) {
-      final dataPropPath = t.item1;
-      final mimePropPath = t.item2;
-      final dataProp = props.firstWhereOrNull((prop) => prop.path == dataPropPath);
-      final mimeProp = props.firstWhereOrNull((prop) => prop.path == mimePropPath);
-      return (dataProp != null && mimeProp != null)
-          ? MapEntry(
-              dataProp.displayKey,
-              InfoLinkHandler(
-                linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-                onTap: (context) => OpenEmbeddedDataNotification.xmp(
-                  propPath: dataProp.path,
-                  mimeType: mimeProp.value,
-                ).dispatch(context),
-              ))
-          : null;
-    }).where((kv) => kv != null).cast<MapEntry<String, InfoLinkHandler>>());
+    return Map.fromEntries(dataProps
+        .map((t) {
+          final dataPropPath = t.item1;
+          final mimePropPath = t.item2;
+          final dataProp = props.firstWhereOrNull((prop) => prop.path == dataPropPath);
+          final mimeProp = props.firstWhereOrNull((prop) => prop.path == mimePropPath);
+          return (dataProp != null && mimeProp != null)
+              ? MapEntry(
+                  dataProp.displayKey,
+                  InfoLinkHandler(
+                    linkText: (context) => context.l10n.viewerInfoOpenLinkText,
+                    onTap: (context) => OpenEmbeddedDataNotification.xmp(
+                      propPath: dataProp.path,
+                      mimeType: mimeProp.value,
+                    ).dispatch(context),
+                  ))
+              : null;
+        })
+        .where((kv) => kv != null)
+        .cast<MapEntry<String, InfoLinkHandler>>());
   }
 }
 

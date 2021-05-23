@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 class DraggableThumbLabel<T> extends StatelessWidget {
   final double offsetY;
-  final List<String > Function(BuildContext context, T item) lineBuilder;
+  final List<String> Function(BuildContext context, T item) lineBuilder;
 
   const DraggableThumbLabel({
     required this.offsetY,

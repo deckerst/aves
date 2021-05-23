@@ -203,8 +203,8 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
         }
       });
       await metadataDb.saveEntries(movedEntries);
-      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata).where((v) => v != null).cast<CatalogMetadata >().toSet());
-      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).where((v) => v != null).cast<AddressDetails >().toSet());
+      await metadataDb.saveMetadata(movedEntries.map((entry) => entry.catalogMetadata).where((v) => v != null).cast<CatalogMetadata>().toSet());
+      await metadataDb.saveAddresses(movedEntries.map((entry) => entry.addressDetails).where((v) => v != null).cast<AddressDetails>().toSet());
     } else {
       await Future.forEach<MoveOpEvent>(movedOps, (movedOp) async {
         final newFields = movedOp.newFields;

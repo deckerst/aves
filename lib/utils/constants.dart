@@ -40,7 +40,7 @@ class Constants {
       sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/exifinterface/exifinterface',
     ),
     Dependency(
-      name: 'Android-TiffBitmapFactory',
+      name: 'Android-TiffBitmapFactory (Aves fork)',
       license: 'MIT',
       licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
       sourceUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory',
@@ -67,10 +67,10 @@ class Constants {
 
   static const List<Dependency> flutterPlugins = [
     Dependency(
-      name: 'Connectivity',
+      name: 'Connectivity Plus',
       license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/connectivity/connectivity/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/connectivity/connectivity',
+      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/blob/main/packages/connectivity_plus/LICENSE',
+      sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/connectivity_plus',
     ),
     Dependency(
       name: 'FlutterFire (Core, Analytics, Crashlytics)',
@@ -79,7 +79,7 @@ class Constants {
       sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
     ),
     Dependency(
-      name: 'fijkplayer',
+      name: 'fijkplayer (Aves fork)',
       license: 'MIT',
       licenseUrl: 'https://github.com/deckerst/fijkplayer/blob/master/LICENSE',
       sourceUrl: 'https://github.com/deckerst/fijkplayer',
@@ -97,10 +97,10 @@ class Constants {
       sourceUrl: 'https://github.com/flutter/plugins/blob/master/packages/google_maps_flutter/google_maps_flutter',
     ),
     Dependency(
-      name: 'Package Info',
+      name: 'Package Info Plus',
       license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/flutter/plugins/blob/master/packages/package_info/LICENSE',
-      sourceUrl: 'https://github.com/flutter/plugins/tree/master/packages/package_info',
+      licenseUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/package_info_plus/LICENSE',
+      sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/package_info_plus',
     ),
     Dependency(
       name: 'Permission Handler',
@@ -127,10 +127,10 @@ class Constants {
       sourceUrl: 'https://github.com/tekartik/sqflite',
     ),
     Dependency(
-      name: 'Streams Channel',
+      name: 'Streams Channel (Aves fork)',
       license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/loup-v/streams_channel/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/loup-v/streams_channel',
+      licenseUrl: 'https://github.com/deckerst/aves_streams_channel/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/deckerst/aves_streams_channel',
     ),
     Dependency(
       name: 'URL Launcher',
@@ -229,7 +229,7 @@ class Constants {
       sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
     ),
     Dependency(
-      name: 'Expansion Tile Card',
+      name: 'Expansion Tile Card (Aves fork)',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/deckerst/expansion_tile_card/blob/master/LICENSE',
       sourceUrl: 'https://github.com/deckerst/expansion_tile_card',

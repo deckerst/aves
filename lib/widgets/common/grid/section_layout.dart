@@ -145,7 +145,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
 
   bool get showHeaders;
 
-  Map<SectionKey, List<T> > get sections;
+  Map<SectionKey, List<T>> get sections;
 
   double getHeaderExtent(BuildContext context, SectionKey sectionKey);
 
@@ -163,7 +163,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
 }
 
 class SectionedListLayout<T> {
-  final Map<SectionKey, List<T> > sections;
+  final Map<SectionKey, List<T>> sections;
   final bool showHeaders;
   final int columnCount;
   final double tileExtent, spacing;

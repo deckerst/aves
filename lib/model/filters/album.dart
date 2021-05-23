@@ -52,7 +52,7 @@ class AlbumFilter extends CollectionFilter {
   }
 
   @override
-  Future<Color > color(BuildContext context) {
+  Future<Color> color(BuildContext context) {
     // do not use async/await and rely on `SynchronousFuture`
     // to prevent rebuilding of the `FutureBuilder` listening on this future
     if (androidFileUtils.getAlbumType(album) == AlbumType.app) {

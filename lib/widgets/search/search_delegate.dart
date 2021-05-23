@@ -302,7 +302,7 @@ enum SearchBody { suggestions, results }
 class SearchPageRoute<T> extends PageRoute<T> {
   SearchPageRoute({
     required this.delegate,
-  })  : super(settings: RouteSettings(name: SearchPage.routeName)) {
+  }) : super(settings: RouteSettings(name: SearchPage.routeName)) {
     assert(
       delegate.route == null,
       'The ${delegate.runtimeType} instance is currently used by another active '

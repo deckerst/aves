@@ -45,7 +45,7 @@ mixin LocationMixin on SourceBase {
 
     // final stopwatch = Stopwatch()..start();
     final countryCodeMap = await countryTopology.countryCodeMap(todo.map((entry) => entry.latLng!).toSet());
-    final newAddresses = <AddressDetails >[];
+    final newAddresses = <AddressDetails>[];
     todo.forEach((entry) {
       final position = entry.latLng;
       final countryCode = countryCodeMap.entries.firstWhereOrNull((kv) => kv.value.contains(position))?.key;
@@ -98,7 +98,7 @@ mixin LocationMixin on SourceBase {
     final progressTotal = todo.length;
     setProgress(done: progressDone, total: progressTotal);
 
-    final newAddresses = <AddressDetails >[];
+    final newAddresses = <AddressDetails>[];
     await Future.forEach<AvesEntry>(todo, (entry) async {
       final latLng = approximateLatLng(entry);
       if (knownLocations.containsKey(latLng)) {
@@ -132,7 +132,7 @@ mixin LocationMixin on SourceBase {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).cast<AddressDetails >().toList();
+    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).cast<AddressDetails>().toList();
     final updatedPlaces = locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase as int Function(String?, String?)?);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
@@ -163,7 +163,7 @@ mixin LocationMixin on SourceBase {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails!.countryCode).where((v) => v != null).cast<String >().toSet();
+      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails!.countryCode).where((v) => v != null).cast<String>().toSet();
       countryCodes.forEach(_filterEntryCountMap.remove);
     }
     eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));

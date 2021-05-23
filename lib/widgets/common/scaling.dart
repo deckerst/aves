@@ -1,9 +1,9 @@
-import 'package:collection/collection.dart';
 import 'dart:ui' as ui;
 
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
