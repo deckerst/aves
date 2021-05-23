@@ -15,7 +15,7 @@ import 'package:flutter/widgets.dart';
 mixin SizeAwareMixin {
   Future<bool> checkFreeSpaceForMove(
     BuildContext context,
-    Set<AvesEntry > selection,
+    Set<AvesEntry> selection,
     String destinationAlbum,
     MoveType moveType,
   ) async {

@@ -18,7 +18,7 @@ import 'enums.dart';
 
 class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   final CollectionSource source;
-  final Set<CollectionFilter > filters;
+  final Set<CollectionFilter> filters;
   EntryGroupFactor groupFactor;
   EntrySortFactor sortFactor;
   final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortGroupChangeNotifier = AChangeNotifier();
@@ -28,7 +28,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
 
   List<AvesEntry> _filteredSortedEntries = [];
 
-  Map<SectionKey, List<AvesEntry> > sections = Map.unmodifiable({});
+  Map<SectionKey, List<AvesEntry>> sections = Map.unmodifiable({});
 
   CollectionLens({
     required this.source,
@@ -37,7 +37,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     EntrySortFactor? sortFactor,
     this.id,
     this.listenToSource = true,
-  })  : filters = (filters ?? {}).where((f) => f != null).cast<CollectionFilter >().toSet(),
+  })  : filters = (filters ?? {}).where((f) => f != null).cast<CollectionFilter>().toSet(),
         groupFactor = groupFactor ?? settings.collectionGroupFactor,
         sortFactor = sortFactor ?? settings.collectionSortFactor {
     id ??= hashCode;
@@ -69,9 +69,9 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   int get entryCount => _filteredSortedEntries.length;
 
   // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
-  List<AvesEntry >? _sortedEntries;
+  List<AvesEntry>? _sortedEntries;
 
-  List<AvesEntry > get sortedEntries {
+  List<AvesEntry> get sortedEntries {
     _sortedEntries ??= List.of(sections.entries.expand((kv) => kv.value));
     return _sortedEntries!;
   }
