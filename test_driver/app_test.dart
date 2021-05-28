@@ -77,7 +77,7 @@ void visitAbout() {
 }
 
 void visitSettings() {
-  test('[collection] visit about page', () async {
+  test('[collection] visit settings page', () async {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
