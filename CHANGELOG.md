@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Changed
-- Upgraded Flutter to stable v2.2.0
+- Upgraded Flutter to stable v2.2.1
 
 ### Removed
 - no support for Android KitKat (API 19), unsupported by Google Maps package
