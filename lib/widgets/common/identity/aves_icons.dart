@@ -31,7 +31,7 @@ class VideoIcon extends StatelessWidget {
     if (showDuration) {
       child = DefaultTextStyle(
         style: TextStyle(
-          color: Colors.grey[200],
+          color: Colors.grey.shade200,
           fontSize: thumbnailTheme.fontSize,
         ),
         child: child,

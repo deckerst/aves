@@ -32,14 +32,13 @@ class Durations {
   static const collectionOpOverlayAnimation = Duration(milliseconds: 300);
   static const collectionScalingBackgroundAnimation = Duration(milliseconds: 200);
   static const sectionHeaderAnimation = Duration(milliseconds: 200);
-  static const thumbnailTransition = Duration(milliseconds: 200);
   static const thumbnailOverlayAnimation = Duration(milliseconds: 200);
 
   // search animations
   static const filterRowExpandAnimation = Duration(milliseconds: 300);
 
   // viewer animations
-  static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 300);
+  static const viewerVerticalPageScrollAnimation = Duration(milliseconds: 500);
   static const viewerOverlayAnimation = Duration(milliseconds: 200);
   static const viewerOverlayChangeAnimation = Duration(milliseconds: 150);
   static const viewerOverlayPageScrollAnimation = Duration(milliseconds: 200);
@@ -56,6 +55,7 @@ class Durations {
 
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 3);
+  static const infoScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScalingCompleteNotificationDelay = Duration(milliseconds: 300);
   static const highlightScrollInitDelay = Duration(milliseconds: 800);

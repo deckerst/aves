@@ -22,6 +22,7 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: 1.0,
+      debugLabel: kReleaseMode ? null : [key.uri, key.extent].join('-'),
       informationCollector: () sync* {
         yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, extent=${key.extent}');
       },

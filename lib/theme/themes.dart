@@ -9,7 +9,7 @@ class Themes {
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
     accentColor: _accentColor,
-    scaffoldBackgroundColor: Colors.grey[900],
+    scaffoldBackgroundColor: Colors.grey.shade900,
     dialogBackgroundColor: Colors.grey[850],
     toggleableActiveColor: _accentColor,
     tooltipTheme: TooltipThemeData(
@@ -31,7 +31,7 @@ class Themes {
       onSecondary: Colors.white,
     ),
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: Colors.grey[800],
+      backgroundColor: Colors.grey.shade800,
       contentTextStyle: TextStyle(
         color: Colors.white,
       ),

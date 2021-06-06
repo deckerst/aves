@@ -16,8 +16,10 @@ class ImageMarker extends StatelessWidget {
   static const double outerBorderRadiusDim = 8;
   static const double outerBorderWidth = 1.5;
   static const double innerBorderWidth = 2;
-  static const Color outerBorderColor = Colors.white30;
-  static final Color innerBorderColor = Colors.grey[900]!;
+  static const outerBorderColor = Colors.white30;
+  static const innerBorderColor = Color(0xFF212121);
+  static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
+  static const innerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim - outerBorderWidth));
 
   const ImageMarker({
     required this.entry,
@@ -37,8 +39,21 @@ class ImageMarker extends StatelessWidget {
             extent: extent,
           );
 
-    final outerBorderRadius = BorderRadius.circular(outerBorderRadiusDim);
-    final innerBorderRadius = BorderRadius.circular(outerBorderRadiusDim - outerBorderWidth);
+    const outerDecoration = BoxDecoration(
+      border: Border.fromBorderSide(BorderSide(
+        color: outerBorderColor,
+        width: outerBorderWidth,
+      )),
+      borderRadius: outerBorderRadius,
+    );
+
+    const innerDecoration = BoxDecoration(
+      border: Border.fromBorderSide(BorderSide(
+        color: innerBorderColor,
+        width: innerBorderWidth,
+      )),
+      borderRadius: innerBorderRadius,
+    );
 
     return CustomPaint(
       foregroundPainter: MarkerPointerPainter(
@@ -50,21 +65,9 @@ class ImageMarker extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(bottom: pointerSize.height),
         child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: outerBorderColor,
-              width: outerBorderWidth,
-            ),
-            borderRadius: outerBorderRadius,
-          ),
+          decoration: outerDecoration,
           child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: innerBorderColor,
-                width: innerBorderWidth,
-              ),
-              borderRadius: innerBorderRadius,
-            ),
+            decoration: innerDecoration,
             position: DecorationPosition.foreground,
             child: ClipRRect(
               borderRadius: innerBorderRadius,

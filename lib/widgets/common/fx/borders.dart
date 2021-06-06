@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'dart:ui';
 
-class AvesCircleBorder {
+import 'package:flutter/material.dart';
+
+class AvesBorder {
   static const borderColor = Colors.white30;
 
-  static double _borderWidth(BuildContext context) => context.read<MediaQueryData>().devicePixelRatio > 2 ? 0.5 : 1.0;
+  // directly uses `devicePixelRatio` as it never changes, to avoid visiting ancestors via `MediaQuery`
+  static double get borderWidth => window.devicePixelRatio > 2 ? 0.5 : 1.0;
 
-  static Border build(BuildContext context) {
-    return Border.fromBorderSide(buildSide(context));
-  }
+  static BorderSide get side => BorderSide(
+        color: borderColor,
+        width: borderWidth,
+      );
 
-  static BorderSide buildSide(BuildContext context) {
-    return BorderSide(
-      color: borderColor,
-      width: _borderWidth(context),
-    );
-  }
+  static Border get border => Border.fromBorderSide(side);
 }

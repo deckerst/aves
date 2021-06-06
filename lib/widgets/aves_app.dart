@@ -92,6 +92,8 @@ class _AvesAppState extends State<AvesApp> {
                             ...AppLocalizations.localizationsDelegates,
                           ],
                           supportedLocales: AppLocalizations.supportedLocales,
+                          // checkerboardRasterCacheImages: true,
+                          // checkerboardOffscreenLayers: true,
                         );
                       });
                 },

@@ -58,7 +58,7 @@ class _AppDrawerState extends State<AppDrawer> {
       albumListTile,
       countryListTile,
       tagListTile,
-      if (kDebugMode) ...[
+      if (!kReleaseMode) ...[
         Divider(),
         debugTile,
       ],

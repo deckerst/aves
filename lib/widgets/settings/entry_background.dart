@@ -70,7 +70,7 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
           width: radius * 2,
           decoration: BoxDecoration(
             color: selected.isColor ? selected.color : null,
-            border: AvesCircleBorder.build(context),
+            border: AvesBorder.border,
             shape: BoxShape.circle,
           ),
           child: child,

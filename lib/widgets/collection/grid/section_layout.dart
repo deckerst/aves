@@ -12,6 +12,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
     required this.collection,
     required double scrollableWidth,
     required int columnCount,
+    required double spacing,
     required double tileExtent,
     required Widget Function(AvesEntry entry) tileBuilder,
     required Duration tileAnimationDelay,
@@ -19,6 +20,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
   }) : super(
           scrollableWidth: scrollableWidth,
           columnCount: columnCount,
+          spacing: spacing,
           tileExtent: tileExtent,
           tileBuilder: tileBuilder,
           tileAnimationDelay: tileAnimationDelay,

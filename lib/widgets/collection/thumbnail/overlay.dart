@@ -14,12 +14,10 @@ import 'package:provider/provider.dart';
 
 class ThumbnailEntryOverlay extends StatelessWidget {
   final AvesEntry entry;
-  final double extent;
 
   const ThumbnailEntryOverlay({
     Key? key,
     required this.entry,
-    required this.extent,
   }) : super(key: key);
 
   @override
@@ -51,14 +49,12 @@ class ThumbnailEntryOverlay extends StatelessWidget {
 
 class ThumbnailSelectionOverlay extends StatelessWidget {
   final AvesEntry entry;
-  final double extent;
 
   static const duration = Durations.thumbnailOverlayAnimation;
 
   const ThumbnailSelectionOverlay({
     Key? key,
     required this.entry,
-    required this.extent,
   }) : super(key: key);
 
   @override
@@ -110,12 +106,10 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
 class ThumbnailHighlightOverlay extends StatefulWidget {
   final AvesEntry entry;
-  final double extent;
 
   const ThumbnailHighlightOverlay({
     Key? key,
     required this.entry,
-    required this.extent,
   }) : super(key: key);
 
   @override
@@ -138,7 +132,7 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
         decoration: BoxDecoration(
           border: Border.all(
             color: Theme.of(context).accentColor,
-            width: widget.extent * .1,
+            width: context.select<ThumbnailThemeData, double>((t) => t.highlightBorderWidth),
           ),
         ),
       ),

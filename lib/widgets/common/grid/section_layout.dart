@@ -19,7 +19,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   const SectionedListLayoutProvider({
     required this.scrollableWidth,
     required this.columnCount,
-    this.spacing = 0,
+    required this.spacing,
     required this.tileExtent,
     required this.tileBuilder,
     required this.tileAnimationDelay,
@@ -118,12 +118,13 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     final children = <Widget>[];
     for (var i = minItemIndex; i < maxItemIndex; i++) {
       final itemGridIndex = sectionGridIndex + i - minItemIndex;
-      final item = tileBuilder(section[i]);
-      if (i != minItemIndex) children.add(SizedBox(width: spacing));
+      final item = RepaintBoundary(
+        child: tileBuilder(section[i]),
+      );
       children.add(animate ? _buildAnimation(itemGridIndex, item) : item);
     }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      spacing: spacing,
       children: children,
     );
   }

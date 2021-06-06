@@ -178,7 +178,7 @@ class _TopOverlayRow extends StatelessWidget {
               if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
               PopupMenuDivider(),
               ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
-              if (kDebugMode) ...[
+              if (!kReleaseMode) ...[
                 PopupMenuDivider(),
                 _buildPopupMenuItem(context, EntryAction.debug),
               ]

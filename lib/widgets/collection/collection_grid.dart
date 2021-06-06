@@ -75,19 +75,21 @@ class _CollectionGridContent extends StatelessWidget {
           builder: (context, tileExtent, child) {
             return ThumbnailTheme(
               extent: tileExtent,
-              child: Selector<TileExtentController, Tuple2<double, int>>(
-                selector: (context, c) => Tuple2(c.viewportSize.width, c.columnCount),
+              child: Selector<TileExtentController, Tuple3<double, int, double>>(
+                selector: (context, c) => Tuple3(c.viewportSize.width, c.columnCount, c.spacing),
                 builder: (context, c, child) {
                   final scrollableWidth = c.item1;
                   final columnCount = c.item2;
+                  final tileSpacing = c.item3;
                   // do not listen for animation delay change
                   final controller = Provider.of<TileExtentController>(context, listen: false);
                   final tileAnimationDelay = controller.getTileAnimationDelay(Durations.staggeredAnimationPageTarget);
                   return SectionedEntryListLayoutProvider(
                     collection: collection,
                     scrollableWidth: scrollableWidth,
-                    tileExtent: tileExtent,
                     columnCount: columnCount,
+                    spacing: tileSpacing,
+                    tileExtent: tileExtent,
                     tileBuilder: (entry) => InteractiveThumbnail(
                       key: ValueKey(entry.contentId),
                       collection: collection,
@@ -204,7 +206,7 @@ class _CollectionScaler extends StatelessWidget {
         extent: extent,
         child: DecoratedThumbnail(
           entry: entry,
-          extent: extent,
+          tileExtent: extent,
           selectable: false,
           highlightable: false,
         ),
@@ -317,7 +319,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
       physics: collection.isEmpty ? NeverScrollableScrollPhysics() : SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax * 2),
+      cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
       slivers: [
         appBar,
         collection.isEmpty

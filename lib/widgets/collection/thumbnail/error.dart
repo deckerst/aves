@@ -41,12 +41,12 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
     return FutureBuilder<bool>(
         future: _exists,
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) return SizedBox();
-          final exists = snapshot.data!;
-          return Container(
-            alignment: Alignment.center,
-            color: Colors.black,
-            child: Tooltip(
+          Widget child;
+          if (snapshot.connectionState != ConnectionState.done) {
+            child = SizedBox();
+          } else {
+            final exists = snapshot.data!;
+            child = Tooltip(
               message: exists ? widget.tooltip : context.l10n.viewerErrorDoesNotExist,
               preferBelow: false,
               child: exists
@@ -63,7 +63,14 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
                       size: extent / 2,
                       color: color,
                     ),
-            ),
+            );
+          }
+          return Container(
+            alignment: Alignment.center,
+            color: Colors.black,
+            width: extent,
+            height: extent,
+            child: child,
           );
         });
   }

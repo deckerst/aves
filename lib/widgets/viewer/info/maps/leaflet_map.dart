@@ -33,7 +33,7 @@ class EntryLeafletMap extends StatefulWidget {
   State<StatefulWidget> createState() => _EntryLeafletMapState();
 }
 
-class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderStateMixin {
   final MapController _mapController = MapController();
 
   @override
@@ -46,7 +46,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -157,9 +156,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
     });
     controller.forward();
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class OSMHotLayer extends StatelessWidget {

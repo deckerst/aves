@@ -24,7 +24,7 @@ class OverlayButton extends StatelessWidget {
           color: kOverlayBackgroundColor,
           child: Ink(
             decoration: BoxDecoration(
-              border: AvesCircleBorder.build(context),
+              border: AvesBorder.border,
               shape: BoxShape.circle,
             ),
             child: child,
@@ -66,7 +66,7 @@ class OverlayTextButton extends StatelessWidget {
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             overlayColor: MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)),
             minimumSize: _minSize,
-            side: MaterialStateProperty.all<BorderSide>(AvesCircleBorder.buildSide(context)),
+            side: MaterialStateProperty.all<BorderSide>(AvesBorder.side),
             shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(_borderRadius),
             )),
