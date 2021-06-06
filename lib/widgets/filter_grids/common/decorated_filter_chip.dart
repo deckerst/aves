@@ -77,6 +77,8 @@ class DecoratedFilterChip extends StatelessWidget {
     );
   }
 
+  static Radius radius(double extent) => Radius.circular(min<double>(AvesFilterChip.defaultRadius, extent / 4));
+
   Widget _buildChip(CollectionSource source) {
     final entry = coverEntry ?? source.coverEntry(filter);
     final backgroundImage = entry == null
@@ -90,9 +92,8 @@ class DecoratedFilterChip extends StatelessWidget {
                 entry: entry,
                 extent: extent,
               );
-    final radius = min<double>(AvesFilterChip.defaultRadius, extent / 4);
     final titlePadding = min<double>(4.0, extent / 32);
-    final borderRadius = BorderRadius.circular(radius);
+    final borderRadius = BorderRadius.all(radius(extent));
     Widget child = AvesFilterChip(
       filter: filter,
       showGenericIcon: false,

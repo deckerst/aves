@@ -380,6 +380,8 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           center: center,
           extent: extent,
           spacing: tileSpacing,
+          borderWidth: AvesFilterChip.outlineWidth,
+          borderRadius: DecoratedFilterChip.radius(extent),
           color: Colors.grey.shade700,
         ),
         child: child,
