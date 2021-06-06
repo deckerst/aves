@@ -252,15 +252,16 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
 
 class GridPainter extends CustomPainter {
   final Offset center;
-  final double extent, spacing;
-  final double strokeWidth;
+  final double extent, spacing, borderWidth;
+  final Radius borderRadius;
   final Color color;
 
   const GridPainter({
     required this.center,
     required this.extent,
-    this.spacing = 0.0,
-    this.strokeWidth = 1.0,
+    required this.spacing,
+    required this.borderWidth,
+    required this.borderRadius,
     required this.color,
   });
 
@@ -268,7 +269,8 @@ class GridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final radius = extent * 3;
     final paint = Paint()
-      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth
       ..shader = ui.Gradient.radial(
         center,
         radius,
@@ -281,18 +283,26 @@ class GridPainter extends CustomPainter {
           1,
         ],
       );
-    void draw(Offset topLeft) {
-      for (var i = -1; i <= 2; i++) {
-        final ref = (extent + spacing) * i;
-        canvas.drawLine(Offset(0, topLeft.dy + ref), Offset(size.width, topLeft.dy + ref), paint);
-        canvas.drawLine(Offset(topLeft.dx + ref, 0), Offset(topLeft.dx + ref, size.height), paint);
-      }
-    }
 
-    final topLeft = center.translate(-extent / 2, -extent / 2);
-    draw(topLeft);
-    if (spacing > 0) {
-      draw(topLeft.translate(-spacing, -spacing));
+    // final topLeft = center.translate(-extent / 2, -extent / 2);
+    final delta = extent + spacing;
+    for (var i = -2; i <= 2; i++) {
+      final dx = delta * i;
+      for (var j = -2; j <= 2; j++) {
+        if (i == 0 && j == 0) continue;
+        final dy = delta * j;
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(
+              center: center + Offset(dx, dy),
+              width: extent,
+              height: extent,
+            ),
+            borderRadius,
+          ),
+          paint,
+        );
+      }
     }
   }
 

@@ -54,7 +54,7 @@ class _CollectionGridState extends State<CollectionGrid> {
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
       columnCountDefault: 4,
       extentMin: 46,
-      spacing: 0,
+      spacing: 2,
     );
     return TileExtentControllerProvider(
       controller: _tileExtentController!,
@@ -191,13 +191,12 @@ class _CollectionScaler extends StatelessWidget {
       scrollableKey: scrollableKey,
       appBarHeightNotifier: appBarHeightNotifier,
       gridBuilder: (center, extent, child) => CustomPaint(
-        // painting the thumbnail half-border on top of the grid yields artifacts,
-        // so we use a `foregroundPainter` to cover them instead
-        foregroundPainter: GridPainter(
+        painter: GridPainter(
           center: center,
           extent: extent,
           spacing: tileSpacing,
-          strokeWidth: DecoratedThumbnail.borderWidth * 2,
+          borderWidth: DecoratedThumbnail.borderWidth,
+          borderRadius: Radius.zero,
           color: DecoratedThumbnail.borderColor,
         ),
         child: child,
