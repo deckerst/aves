@@ -155,7 +155,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
             padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: kOverlayBackgroundColor,
-              border: AvesCircleBorder.build(context),
+              border: AvesBorder.border,
               borderRadius: BorderRadius.circular(progressBarBorderRadius),
             ),
             child: Column(
@@ -184,7 +184,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         if (!progress.isFinite) progress = 0.0;
                         return LinearProgressIndicator(
                           value: progress,
-                          backgroundColor: Colors.grey[700],
+                          backgroundColor: Colors.grey.shade700,
                         );
                       }),
                 ),

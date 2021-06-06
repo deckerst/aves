@@ -222,9 +222,9 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                     sections: visibleFilterSections,
                     showHeaders: showHeaders,
                     scrollableWidth: scrollableWidth,
-                    tileExtent: tileExtent,
                     columnCount: columnCount,
                     spacing: tileSpacing,
+                    tileExtent: tileExtent,
                     tileBuilder: (gridItem) {
                       final filter = gridItem.filter;
                       final entry = gridItem.entry;

@@ -22,12 +22,14 @@ class AlbumSectionHeader extends StatelessWidget {
     if (directory != null) {
       albumIcon = IconUtils.getAlbumIcon(context: context, albumPath: directory!);
       if (albumIcon != null) {
-        albumIcon = Material(
-          type: MaterialType.circle,
-          elevation: 3,
-          color: Colors.transparent,
-          shadowColor: Colors.black,
-          child: albumIcon,
+        albumIcon = RepaintBoundary(
+          child: Material(
+            type: MaterialType.circle,
+            elevation: 3,
+            color: Colors.transparent,
+            shadowColor: Colors.black,
+            child: albumIcon,
+          ),
         );
       }
     }

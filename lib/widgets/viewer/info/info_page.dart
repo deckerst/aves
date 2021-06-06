@@ -17,13 +17,13 @@ import 'package:provider/provider.dart';
 class InfoPage extends StatefulWidget {
   final CollectionLens? collection;
   final ValueNotifier<AvesEntry?> entryNotifier;
-  final ValueNotifier<bool> visibleNotifier;
+  final ValueNotifier<bool> isScrollingNotifier;
 
   const InfoPage({
     Key? key,
     required this.collection,
     required this.entryNotifier,
-    required this.visibleNotifier,
+    required this.isScrollingNotifier,
   }) : super(key: key);
 
   @override
@@ -62,7 +62,7 @@ class _InfoPageState extends State<InfoPage> {
                             ? _InfoPageContent(
                                 collection: collection,
                                 entry: entry,
-                                visibleNotifier: widget.visibleNotifier,
+                                isScrollingNotifier: widget.isScrollingNotifier,
                                 scrollController: _scrollController,
                                 split: mqWidth > 600,
                                 goToViewer: _goToViewer,
@@ -126,7 +126,7 @@ class _InfoPageState extends State<InfoPage> {
 class _InfoPageContent extends StatefulWidget {
   final CollectionLens? collection;
   final AvesEntry entry;
-  final ValueNotifier<bool> visibleNotifier;
+  final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
   final bool split;
   final VoidCallback goToViewer;
@@ -135,7 +135,7 @@ class _InfoPageContent extends StatefulWidget {
     Key? key,
     required this.collection,
     required this.entry,
-    required this.visibleNotifier,
+    required this.isScrollingNotifier,
     required this.scrollController,
     required this.split,
     required this.goToViewer,
@@ -154,14 +154,11 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   AvesEntry get entry => widget.entry;
 
-  ValueNotifier<bool> get visibleNotifier => widget.visibleNotifier;
-
   @override
   Widget build(BuildContext context) {
     final basicSection = BasicSection(
       entry: entry,
       collection: collection,
-      visibleNotifier: visibleNotifier,
       onFilter: _goToCollection,
     );
     final locationAtTop = widget.split && entry.hasGps;
@@ -169,7 +166,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       collection: collection,
       entry: entry,
       showTitle: !locationAtTop,
-      visibleNotifier: visibleNotifier,
+      isScrollingNotifier: widget.isScrollingNotifier,
       onFilter: _goToCollection,
     );
     final basicAndLocationSliver = locationAtTop
@@ -194,7 +191,6 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     final metadataSliver = MetadataSectionSliver(
       entry: entry,
       metadataNotifier: _metadataNotifier,
-      visibleNotifier: visibleNotifier,
     );
 
     return CustomScrollView(

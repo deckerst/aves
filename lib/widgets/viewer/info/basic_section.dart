@@ -14,20 +14,19 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
   final CollectionLens? collection;
-  final ValueNotifier<bool> visibleNotifier;
   final FilterCallback onFilter;
 
   const BasicSection({
     Key? key,
     required this.entry,
     this.collection,
-    required this.visibleNotifier,
     required this.onFilter,
   }) : super(key: key);
 
@@ -65,7 +64,6 @@ class BasicSection extends StatelessWidget {
         }),
         OwnerProp(
           entry: entry,
-          visibleNotifier: visibleNotifier,
         ),
         _buildChips(context),
       ],
@@ -120,11 +118,9 @@ class BasicSection extends StatelessWidget {
 
 class OwnerProp extends StatefulWidget {
   final AvesEntry entry;
-  final ValueNotifier<bool> visibleNotifier;
 
   const OwnerProp({
     required this.entry,
-    required this.visibleNotifier,
   });
 
   @override
@@ -132,53 +128,33 @@ class OwnerProp extends StatefulWidget {
 }
 
 class _OwnerPropState extends State<OwnerProp> {
-  final ValueNotifier<String?> _loadedUri = ValueNotifier(null);
-  String? _ownerPackage;
+  late Future<String?> _ownerPackageFuture;
 
   AvesEntry get entry => widget.entry;
-
-  bool get isVisible => widget.visibleNotifier.value;
 
   static const iconSize = 20.0;
 
   @override
   void initState() {
     super.initState();
-    _registerWidget(widget);
-    _getOwner();
-  }
-
-  @override
-  void didUpdateWidget(covariant OwnerProp oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-    _getOwner();
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    super.dispose();
-  }
-
-  void _registerWidget(OwnerProp widget) {
-    widget.visibleNotifier.addListener(_getOwner);
-  }
-
-  void _unregisterWidget(OwnerProp widget) {
-    widget.visibleNotifier.removeListener(_getOwner);
+    final isMediaContent = entry.uri.startsWith('content://media/external/');
+    if (isMediaContent) {
+      _ownerPackageFuture = metadataService.getContentResolverProp(entry, 'owner_package_name');
+    } else {
+      _ownerPackageFuture = SynchronousFuture(null);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String?>(
-      valueListenable: _loadedUri,
-      builder: (context, uri, child) {
-        if (_ownerPackage == null) return SizedBox();
-        final appName = androidFileUtils.getCurrentAppName(_ownerPackage!) ?? _ownerPackage;
+    return FutureBuilder<String?>(
+      future: _ownerPackageFuture,
+      builder: (context, snapshot) {
+        final ownerPackage = snapshot.data;
+        if (ownerPackage == null) return SizedBox();
+        final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
         // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
-        // so be use a basic `Text` instead
+        // so we use a basic `Text` instead
         return Text.rich(
           TextSpan(
             children: [
@@ -188,14 +164,14 @@ class _OwnerPropState extends State<OwnerProp> {
               ),
               // `com.android.shell` is the package reported
               // for images copied to the device by ADB for Test Driver
-              if (_ownerPackage != 'com.android.shell')
+              if (ownerPackage != 'com.android.shell')
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     child: Image(
                       image: AppIconImage(
-                        packageName: _ownerPackage!,
+                        packageName: ownerPackage,
                         size: iconSize,
                       ),
                       width: iconSize,
@@ -212,17 +188,5 @@ class _OwnerPropState extends State<OwnerProp> {
         );
       },
     );
-  }
-
-  Future<void> _getOwner() async {
-    if (_loadedUri.value == entry.uri) return;
-    final isMediaContent = entry.uri.startsWith('content://media/external/');
-    if (isVisible && isMediaContent) {
-      _ownerPackage = await metadataService.getContentResolverProp(entry, 'owner_package_name');
-      _loadedUri.value = entry.uri;
-    } else {
-      _ownerPackage = null;
-      _loadedUri.value = null;
-    }
   }
 }

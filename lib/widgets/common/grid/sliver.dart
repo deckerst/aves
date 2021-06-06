@@ -30,6 +30,7 @@ class SectionedListSliver<T> extends StatelessWidget {
         },
         childCount: childCount,
         addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
       ),
     );
   }

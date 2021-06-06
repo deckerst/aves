@@ -1,7 +1,10 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
-import 'package:aves/theme/durations.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
@@ -26,7 +29,12 @@ class RasterImageThumbnail extends StatefulWidget {
 }
 
 class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
-  ThumbnailProvider? _fastThumbnailProvider, _sizedThumbnailProvider;
+  final _providers = <_ConditionalImageProvider>[];
+  _ProviderStream? _currentProviderStream;
+  ImageInfo? _lastImageInfo;
+  Object? _lastException;
+  late final ImageStreamListener _streamListener;
+  late DisposableBuildContext<State<RasterImageThumbnail>> _scrollAwareContext;
 
   AvesEntry get entry => widget.entry;
 
@@ -35,6 +43,8 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   @override
   void initState() {
     super.initState();
+    _streamListener = ImageStreamListener(_onImageLoad, onError: _onError);
+    _scrollAwareContext = DisposableBuildContext<State<RasterImageThumbnail>>(this);
     _registerWidget(widget);
   }
 
@@ -50,6 +60,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _scrollAwareContext.dispose();
     super.dispose();
   }
 
@@ -61,66 +72,119 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   void _unregisterWidget(RasterImageThumbnail widget) {
     widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
     _pauseProvider();
+    _currentProviderStream?.stopListening();
+    _currentProviderStream = null;
+    _replaceImage(null);
   }
 
   void _initProvider() {
     if (!entry.canDecode) return;
 
-    _fastThumbnailProvider = entry.getThumbnail();
-    _sizedThumbnailProvider = entry.getThumbnail(extent: extent);
+    _lastException = null;
+    _providers.clear();
+    _providers.addAll([
+      _ConditionalImageProvider(
+        ScrollAwareImageProvider(
+          context: _scrollAwareContext,
+          imageProvider: entry.getThumbnail(),
+        ),
+      ),
+      _ConditionalImageProvider(
+        ScrollAwareImageProvider(
+          context: _scrollAwareContext,
+          imageProvider: entry.getThumbnail(extent: extent),
+        ),
+        _needSizedProvider,
+      ),
+    ]);
+    _loadNextProvider();
   }
 
-  void _pauseProvider() {
-    if (widget.cancellableNotifier?.value ?? false) {
-      _fastThumbnailProvider?.pause();
-      _sizedThumbnailProvider?.pause();
+  void _loadNextProvider([ImageInfo? imageInfo]) {
+    final nextIndex = _currentProviderStream == null ? 0 : (_providers.indexOf(_currentProviderStream!.provider) + 1);
+    if (nextIndex < _providers.length) {
+      final provider = _providers[nextIndex];
+      if (provider.predicate?.call(imageInfo) ?? true) {
+        _currentProviderStream?.stopListening();
+        _currentProviderStream = _ProviderStream(provider, _streamListener);
+        _currentProviderStream!.startListening();
+      }
     }
+  }
+
+  void _onImageLoad(ImageInfo imageInfo, bool synchronousCall) {
+    _replaceImage(imageInfo);
+    _loadNextProvider(imageInfo);
+  }
+
+  void _replaceImage(ImageInfo? imageInfo) {
+    _lastImageInfo?.dispose();
+    _lastImageInfo = imageInfo;
+    if (imageInfo != null) {
+      setState(() {});
+    }
+  }
+
+  void _onError(Object exception, StackTrace? stackTrace) {
+    if (mounted) {
+      setState(() => _lastException = exception);
+    }
+  }
+
+  bool _needSizedProvider(ImageInfo? currentImageInfo) {
+    if (currentImageInfo == null) return true;
+    final currentImage = currentImageInfo.image;
+    // directly uses `devicePixelRatio` as it never changes, to avoid visiting ancestors via `MediaQuery`
+    final sizedThreshold = extent * window.devicePixelRatio;
+    return sizedThreshold > min(currentImage.width, currentImage.height);
+  }
+
+  void _pauseProvider() async {
+    if (widget.cancellableNotifier?.value ?? false) {
+      final key = await _currentProviderStream?.provider.provider.obtainKey(ImageConfiguration.empty);
+      if (key is ThumbnailProviderKey) {
+        imageFileService.cancelThumbnail(key);
+      }
+    }
+  }
+
+  Color? _backgroundColor;
+
+  Color get backgroundColor {
+    if (_backgroundColor == null) {
+      final rgb = 0x30 + entry.uri.hashCode % 0x20;
+      _backgroundColor = Color.fromARGB(0xFF, rgb, rgb, rgb);
+    }
+    return _backgroundColor!;
   }
 
   @override
   Widget build(BuildContext context) {
     if (!entry.canDecode) {
       return _buildError(context, context.l10n.errorUnsupportedMimeType(entry.mimeType), null);
+    } else if (_lastException != null) {
+      return _buildError(context, _lastException.toString(), null);
     }
 
-    final fastImage = Image(
-      key: ValueKey('LQ'),
-      image: _fastThumbnailProvider!,
-      errorBuilder: _buildError,
-      width: extent,
-      height: extent,
-      fit: BoxFit.cover,
-    );
-    final image = _sizedThumbnailProvider == null
-        ? fastImage
-        : Image(
-            key: ValueKey('HQ'),
-            image: _sizedThumbnailProvider!,
-            frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-              if (wasSynchronouslyLoaded) return child;
-              return AnimatedSwitcher(
-                duration: Durations.thumbnailTransition,
-                transitionBuilder: (child, animation) {
-                  var shouldFade = true;
-                  if (child is Image && child.image == _fastThumbnailProvider) {
-                    // directly show LQ thumbnail, only fade when switching from LQ to HQ
-                    shouldFade = false;
-                  }
-                  return shouldFade
-                      ? FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        )
-                      : child;
-                },
-                child: frame == null ? fastImage : child,
-              );
-            },
-            errorBuilder: _buildError,
+    // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
+    // and have more control when chaining image providers
+
+    final imageInfo = _lastImageInfo;
+    final image = imageInfo == null
+        ? Container(
+            color: backgroundColor,
             width: extent,
             height: extent,
+          )
+        : RawImage(
+            image: imageInfo.image,
+            debugImageLabel: imageInfo.debugLabel,
+            width: extent,
+            height: extent,
+            scale: imageInfo.scale,
             fit: BoxFit.cover,
           );
+
     return widget.heroTag != null
         ? Hero(
             tag: widget.heroTag!,
@@ -149,4 +213,23 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     _initProvider();
     setState(() {});
   }
+}
+
+class _ConditionalImageProvider {
+  final ImageProvider provider;
+  final bool Function(ImageInfo?)? predicate;
+
+  const _ConditionalImageProvider(this.provider, [this.predicate]);
+}
+
+class _ProviderStream {
+  final _ConditionalImageProvider provider;
+  final ImageStream _stream;
+  final ImageStreamListener listener;
+
+  _ProviderStream(this.provider, this.listener) : _stream = provider.provider.resolve(ImageConfiguration.empty);
+
+  void startListening() => _stream.addListener(listener);
+
+  void stopListening() => _stream.removeListener(listener);
 }

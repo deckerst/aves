@@ -16,7 +16,7 @@ class Constants {
   );
 
   static const embossShadow = Shadow(
-    color: Colors.black87,
+    color: Colors.black,
     offset: Offset(0.5, 1.0),
   );
 

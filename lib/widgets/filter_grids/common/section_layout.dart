@@ -11,7 +11,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
     required this.showHeaders,
     required double scrollableWidth,
     required int columnCount,
-    double spacing = 0,
+    required double spacing,
     required double tileExtent,
     required Widget Function(FilterGridItem<T> gridItem) tileBuilder,
     required Duration tileAnimationDelay,

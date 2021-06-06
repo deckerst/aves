@@ -119,7 +119,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                       onTap: () => _goToPage(page),
                       child: DecoratedThumbnail(
                         entry: pageEntry,
-                        extent: extent,
+                        tileExtent: extent,
                         // the retrieval task queue can pile up for thumbnails of heavy pages
                         // (e.g. thumbnails of 15MP HEIF images inside 100MB+ HEIC containers)
                         // so we cancel these requests when possible

@@ -10,6 +10,7 @@ class MultiPageController {
   final AvesEntry entry;
   final ValueNotifier<int?> pageNotifier = ValueNotifier(null);
 
+  bool _disposed = false;
   MultiPageInfo? _info;
 
   final StreamController<MultiPageInfo?> _infoStreamController = StreamController.broadcast();
@@ -24,7 +25,7 @@ class MultiPageController {
 
   MultiPageController(this.entry) {
     metadataService.getMultiPageInfo(entry).then((value) {
-      if (value == null) return;
+      if (value == null || _disposed) return;
       pageNotifier.value = value.defaultPage!.index;
       _info = value;
       _infoStreamController.add(_info);
@@ -32,6 +33,7 @@ class MultiPageController {
   }
 
   void dispose() {
+    _disposed = true;
     pageNotifier.dispose();
   }
 

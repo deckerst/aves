@@ -51,7 +51,7 @@ class InteractiveThumbnail extends StatelessWidget {
         metaData: ScalerMetadata(entry),
         child: DecoratedThumbnail(
           entry: entry,
-          extent: tileExtent,
+          tileExtent: tileExtent,
           collection: collection,
           // when the user is scrolling faster than we can retrieve the thumbnails,
           // the retrieval task queue can pile up for thumbnails that got disposed

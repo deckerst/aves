@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/coordinate_format.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -15,13 +16,14 @@ import 'package:aves/widgets/viewer/info/maps/google_map.dart';
 import 'package:aves/widgets/viewer/info/maps/leaflet_map.dart';
 import 'package:aves/widgets/viewer/info/maps/marker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class LocationSection extends StatefulWidget {
   final CollectionLens? collection;
   final AvesEntry entry;
   final bool showTitle;
-  final ValueNotifier<bool> visibleNotifier;
+  final ValueNotifier<bool> isScrollingNotifier;
   final FilterCallback onFilter;
 
   const LocationSection({
@@ -29,7 +31,7 @@ class LocationSection extends StatefulWidget {
     required this.collection,
     required this.entry,
     required this.showTitle,
-    required this.visibleNotifier,
+    required this.isScrollingNotifier,
     required this.onFilter,
   }) : super(key: key);
 
@@ -38,7 +40,11 @@ class LocationSection extends StatefulWidget {
 }
 
 class _LocationSectionState extends State<LocationSection> with TickerProviderStateMixin {
-  String? _loadedUri;
+  // as of google_maps_flutter v2.0.6, Google Maps initialization is blocking
+  // cf https://github.com/flutter/flutter/issues/28493
+  // it is especially severe the first time, but still significant afterwards
+  // so we prevent loading it while scrolling or animating
+  bool _googleMapsLoaded = false;
 
   static const extent = 48.0;
   static const pointerSize = Size(8.0, 6.0);
@@ -69,98 +75,114 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
   void _registerWidget(LocationSection widget) {
     widget.entry.metadataChangeNotifier.addListener(_handleChange);
     widget.entry.addressChangeNotifier.addListener(_handleChange);
-    widget.visibleNotifier.addListener(_handleChange);
   }
 
   void _unregisterWidget(LocationSection widget) {
     widget.entry.metadataChangeNotifier.removeListener(_handleChange);
     widget.entry.addressChangeNotifier.removeListener(_handleChange);
-    widget.visibleNotifier.removeListener(_handleChange);
   }
 
   @override
   Widget build(BuildContext context) {
-    final showMap = (_loadedUri == entry.uri) || (entry.hasGps && widget.visibleNotifier.value);
-    if (showMap) {
-      _loadedUri = entry.uri;
-      final filters = <LocationFilter>[];
-      if (entry.hasAddress) {
-        final address = entry.addressDetails!;
-        final country = address.countryName;
-        if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
-        final place = address.place;
-        if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
-      }
+    if (!entry.hasGps) return SizedBox();
+    final latLng = entry.latLng!;
+    final geoUri = entry.geoUri!;
 
-      Widget buildMarker(BuildContext context) {
-        return ImageMarker(
+    final filters = <LocationFilter>[];
+    if (entry.hasAddress) {
+      final address = entry.addressDetails!;
+      final country = address.countryName;
+      if (country != null && country.isNotEmpty) filters.add(LocationFilter(LocationLevel.country, '$country${LocationFilter.locationSeparator}${address.countryCode}'));
+      final place = address.place;
+      if (place != null && place.isNotEmpty) filters.add(LocationFilter(LocationLevel.place, place));
+    }
+
+    Widget buildMarker(BuildContext context) => ImageMarker(
           entry: entry,
           extent: extent,
           pointerSize: pointerSize,
         );
-      }
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (widget.showTitle) SectionRow(AIcons.location),
-          FutureBuilder<bool>(
-            future: availability.isConnected,
-            builder: (context, snapshot) {
-              if (snapshot.data != true) return SizedBox();
-              final latLng = entry.latLng!;
-              return NotificationListener<MapStyleChangedNotification>(
-                onNotification: (notification) {
-                  setState(() {});
-                  return true;
-                },
-                child: AnimatedSize(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.showTitle) SectionRow(AIcons.location),
+        FutureBuilder<bool>(
+          future: availability.isConnected,
+          builder: (context, snapshot) {
+            if (snapshot.data != true) return SizedBox();
+            return Selector<Settings, EntryMapStyle>(
+              selector: (context, s) => s.infoMapStyle,
+              builder: (context, mapStyle, child) {
+                final isGoogleMaps = mapStyle.isGoogleMaps;
+                return AnimatedSize(
                   alignment: Alignment.topCenter,
                   curve: Curves.easeInOutCubic,
                   duration: Durations.mapStyleSwitchAnimation,
                   vsync: this,
-                  child: settings.infoMapStyle.isGoogleMaps
-                      ? EntryGoogleMap(
-                          // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
-                          latLng: Tuple2<double, double>(latLng.latitude, latLng.longitude),
-                          geoUri: entry.geoUri!,
-                          initialZoom: settings.infoMapZoom,
-                          markerId: entry.uri,
-                          markerBuilder: buildMarker,
-                        )
-                      : EntryLeafletMap(
-                          latLng: latLng,
-                          geoUri: entry.geoUri!,
-                          initialZoom: settings.infoMapZoom,
-                          style: settings.infoMapStyle,
-                          markerSize: Size(extent, extent + pointerSize.height),
-                          markerBuilder: buildMarker,
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: widget.isScrollingNotifier,
+                    builder: (context, scrolling, child) {
+                      if (!scrolling && isGoogleMaps) {
+                        _googleMapsLoaded = true;
+                      }
+                      return Visibility(
+                        visible: !isGoogleMaps || _googleMapsLoaded,
+                        replacement: Stack(
+                          children: [
+                            MapDecorator(),
+                            MapButtonPanel(
+                              geoUri: geoUri,
+                              zoomBy: (_) {},
+                            ),
+                          ],
                         ),
-                ),
-              );
-            },
-          ),
-          if (entry.hasGps) _AddressInfoGroup(entry: entry),
-          if (filters.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: filters
-                    .map((filter) => AvesFilterChip(
-                          filter: filter,
-                          onTap: widget.onFilter,
-                        ))
-                    .toList(),
-              ),
+                        child: child!,
+                      );
+                    },
+                    child: isGoogleMaps
+                        ? EntryGoogleMap(
+                            // `LatLng` used by `google_maps_flutter` is not the one from `latlong` package
+                            latLng: Tuple2<double, double>(latLng.latitude, latLng.longitude),
+                            geoUri: geoUri,
+                            initialZoom: settings.infoMapZoom,
+                            markerId: entry.uri,
+                            markerBuilder: buildMarker,
+                          )
+                        : EntryLeafletMap(
+                            latLng: latLng,
+                            geoUri: geoUri,
+                            initialZoom: settings.infoMapZoom,
+                            style: settings.infoMapStyle,
+                            markerSize: Size(
+                              extent + ImageMarker.outerBorderWidth * 2,
+                              extent + ImageMarker.outerBorderWidth * 2 + pointerSize.height,
+                            ),
+                            markerBuilder: buildMarker,
+                          ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        _AddressInfoGroup(entry: entry),
+        if (filters.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: filters
+                  .map((filter) => AvesFilterChip(
+                        filter: filter,
+                        onTap: widget.onFilter,
+                      ))
+                  .toList(),
             ),
-        ],
-      );
-    } else {
-      _loadedUri = null;
-      return SizedBox.shrink();
-    }
+          ),
+      ],
+    );
   }
 
   void _handleChange() => setState(() {});

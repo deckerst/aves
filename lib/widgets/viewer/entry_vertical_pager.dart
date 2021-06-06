@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
@@ -35,7 +37,8 @@ class ViewerVerticalPageView extends StatefulWidget {
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
-  final ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
+  Timer? _verticalScrollMonitoringTimer;
   AvesEntry? _oldEntry;
 
   CollectionLens? get collection => widget.collection;
@@ -60,6 +63,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _stopScrollMonitoringTimer();
     super.dispose();
   }
 
@@ -77,32 +81,47 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      // fake page for opacity transition between collection and viewer
-      SizedBox(),
-      hasCollection
-          ? MultiEntryScroller(
-              collection: collection!,
-              pageController: widget.horizontalPager,
-              onPageChanged: widget.onHorizontalPageChanged,
-              onViewDisposed: widget.onViewDisposed,
-            )
-          : entry != null
-              ? SingleEntryScroller(
-                  entry: entry!,
-                )
-              : SizedBox(),
-      NotificationListener<BackUpNotification>(
-        onNotification: (notification) {
-          widget.onImagePageRequested();
-          return true;
+    // fake page for opacity transition between collection and viewer
+    final transitionPage = SizedBox();
+
+    final imagePage = hasCollection
+        ? MultiEntryScroller(
+            collection: collection!,
+            pageController: widget.horizontalPager,
+            onPageChanged: widget.onHorizontalPageChanged,
+            onViewDisposed: widget.onViewDisposed,
+          )
+        : entry != null
+            ? SingleEntryScroller(
+                entry: entry!,
+              )
+            : SizedBox();
+
+    final infoPage = NotificationListener<BackUpNotification>(
+      onNotification: (notification) {
+        widget.onImagePageRequested();
+        return true;
+      },
+      child: AnimatedBuilder(
+        animation: widget.verticalPager,
+        builder: (context, child) {
+          return Visibility(
+            visible: widget.verticalPager.page! > 1,
+            child: child!,
+          );
         },
         child: InfoPage(
           collection: collection,
           entryNotifier: widget.entryNotifier,
-          visibleNotifier: _infoPageVisibleNotifier,
+          isScrollingNotifier: _isVerticallyScrollingNotifier,
         ),
       ),
+    );
+
+    final pages = [
+      transitionPage,
+      imagePage,
+      infoPage,
     ];
     return ValueListenableBuilder<Color>(
       valueListenable: _backgroundColorNotifier,
@@ -115,10 +134,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
         physics: MagnifierScrollerPhysics(parent: PageScrollPhysics()),
-        onPageChanged: (page) {
-          widget.onVerticalPageChanged(page);
-          _infoPageVisibleNotifier.value = page == pages.length - 1;
-        },
+        onPageChanged: widget.onVerticalPageChanged,
         children: pages,
       ),
     );
@@ -127,6 +143,16 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   void _onVerticalPageControllerChanged() {
     final opacity = min(1.0, widget.verticalPager.page!);
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
+
+    _isVerticallyScrollingNotifier.value = true;
+    _stopScrollMonitoringTimer();
+    _verticalScrollMonitoringTimer = Timer(Durations.infoScrollMonitoringTimerDelay, () {
+      _isVerticallyScrollingNotifier.value = false;
+    });
+  }
+
+  void _stopScrollMonitoringTimer() {
+    _verticalScrollMonitoringTimer?.cancel();
   }
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)

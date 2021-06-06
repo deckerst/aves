@@ -11,7 +11,7 @@ class DebugTaskQueueOverlay extends StatelessWidget {
           alignment: AlignmentDirectional.bottomStart,
           child: SafeArea(
             child: Container(
-              color: Colors.indigo[900]!.withAlpha(0xCC),
+              color: Colors.indigo.shade900.withAlpha(0xCC),
               padding: EdgeInsets.all(8),
               child: StreamBuilder<QueueState>(
                   stream: servicePolicy.queueStream,

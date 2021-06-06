@@ -216,12 +216,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   Widget _buildTopOverlay() {
-    final child = ValueListenableBuilder<AvesEntry?>(
+    Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
       builder: (context, mainEntry, child) {
         if (mainEntry == null) return SizedBox.shrink();
 
-        final viewStateNotifier = _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == mainEntry.uri)?.item2;
         return ViewerTopOverlay(
           mainEntry: mainEntry,
           scale: _topOverlayScale,
@@ -242,11 +241,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             }
             _actionDelegate.onActionSelected(context, targetEntry, action);
           },
-          viewStateNotifier: viewStateNotifier,
+          viewStateNotifier: _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == mainEntry.uri)?.item2,
         );
       },
     );
-    return ValueListenableBuilder<int>(
+
+    child = ValueListenableBuilder<int>(
       valueListenable: _currentVerticalPage,
       builder: (context, page, child) {
         return Visibility(
@@ -256,13 +256,26 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       },
       child: child,
     );
+
+    child = ValueListenableBuilder<double>(
+      valueListenable: _overlayAnimationController,
+      builder: (context, animation, child) {
+        return Visibility(
+          visible: !_overlayAnimationController.isDismissed,
+          child: child!,
+        );
+      },
+      child: child,
+    );
+
+    return child;
   }
 
   Widget _buildBottomOverlay() {
-    Widget bottomOverlay = ValueListenableBuilder<AvesEntry?>(
+    Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
-      builder: (context, entry, child) {
-        if (entry == null) return SizedBox.shrink();
+      builder: (context, mainEntry, child) {
+        if (mainEntry == null) return SizedBox.shrink();
 
         Widget? _buildExtraBottomOverlay(AvesEntry pageEntry) {
           // a 360 video is both a video and a panorama but only the video controls are displayed
@@ -284,7 +297,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           return null;
         }
 
-        final multiPageController = entry.isMultiPage ? context.read<MultiPageConductor>().getController(entry) : null;
+        final multiPageController = mainEntry.isMultiPage ? context.read<MultiPageConductor>().getController(mainEntry) : null;
         final extraBottomOverlay = multiPageController != null
             ? StreamBuilder<MultiPageInfo?>(
                 stream: multiPageController.infoStream,
@@ -299,9 +312,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                     },
                   );
                 })
-            : _buildExtraBottomOverlay(entry);
+            : _buildExtraBottomOverlay(mainEntry);
 
-        final child = Column(
+        return Column(
           children: [
             if (extraBottomOverlay != null)
               ExtraBottomOverlay(
@@ -322,20 +335,10 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             ),
           ],
         );
-        return ValueListenableBuilder<double>(
-          valueListenable: _overlayAnimationController,
-          builder: (context, animation, child) {
-            return Visibility(
-              visible: _overlayAnimationController.status != AnimationStatus.dismissed,
-              child: child!,
-            );
-          },
-          child: child,
-        );
       },
     );
 
-    bottomOverlay = Selector<MediaQueryData, double>(
+    child = Selector<MediaQueryData, double>(
       selector: (c, mq) => mq.size.height,
       builder: (c, mqHeight, child) {
         // when orientation change, the `PageController` offset is not updated right away
@@ -350,9 +353,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           child: child,
         );
       },
-      child: bottomOverlay,
+      child: child,
     );
-    return bottomOverlay;
+
+    return ValueListenableBuilder<double>(
+      valueListenable: _overlayAnimationController,
+      builder: (context, animation, child) {
+        return Visibility(
+          visible: !_overlayAnimationController.isDismissed,
+          child: child!,
+        );
+      },
+      child: child,
+    );
   }
 
   void _onVerticalPageControllerChange() {
@@ -383,10 +396,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   Future<void> _goToVerticalPage(int page) {
+    // duration & curve should feel similar to changing page by vertical fling
     return _verticalPager.animateToPage(
       page,
       duration: Durations.viewerVerticalPageScrollAnimation,
-      curve: Curves.easeInOut,
+      curve: Curves.easeOutQuart,
     );
   }
 

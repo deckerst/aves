@@ -30,7 +30,7 @@ class EntryGoogleMap extends StatefulWidget {
   State<StatefulWidget> createState() => _EntryGoogleMapState();
 }
 
-class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAliveClientMixin {
+class _EntryGoogleMapState extends State<EntryGoogleMap> {
   GoogleMapController? _controller;
   late Completer<Uint8List> _markerLoaderCompleter;
 
@@ -59,7 +59,6 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAlive
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Stack(
       children: [
         MarkerGeneratorWidget(
@@ -132,7 +131,4 @@ class _EntryGoogleMapState extends State<EntryGoogleMap> with AutomaticKeepAlive
         return MapType.none;
     }
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

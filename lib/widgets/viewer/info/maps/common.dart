@@ -15,11 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class MapDecorator extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  static final BorderRadius mapBorderRadius = BorderRadius.circular(24); // to match button circles
+  static const mapBorderRadius = BorderRadius.all(Radius.circular(24)); // to match button circles
+  static const mapBackground = Color(0xFFDBD5D3);
+  static const mapLoadingGrid = Color(0xFFC4BEBB);
 
-  const MapDecorator({required this.child});
+  const MapDecorator({this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,22 @@ class MapDecorator extends StatelessWidget {
       child: ClipRRect(
         borderRadius: mapBorderRadius,
         child: Container(
-          color: Colors.white70,
+          color: mapBackground,
           height: 200,
-          child: child,
+          child: Stack(
+            children: [
+              GridPaper(
+                color: mapLoadingGrid,
+                interval: 10,
+                divisions: 1,
+                subdivisions: 1,
+                child: CustomPaint(
+                  size: Size.infinite,
+                ),
+              ),
+              if (child != null) child!,
+            ],
+          ),
         ),
       ),
     );
@@ -94,7 +109,6 @@ class MapButtonPanel extends StatelessWidget {
                     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
                     if (style != null && style != settings.infoMapStyle) {
                       settings.infoMapStyle = style;
-                      MapStyleChangedNotification().dispatch(context);
                     }
                   },
                   tooltip: context.l10n.viewerInfoMapStyleTooltip,
@@ -139,7 +153,7 @@ class MapOverlayButton extends StatelessWidget {
         color: kOverlayBackgroundColor,
         child: Ink(
           decoration: BoxDecoration(
-            border: AvesCircleBorder.build(context),
+            border: AvesBorder.border,
             shape: BoxShape.circle,
           ),
           child: IconButton(
@@ -154,5 +168,3 @@ class MapOverlayButton extends StatelessWidget {
     );
   }
 }
-
-class MapStyleChangedNotification extends Notification {}

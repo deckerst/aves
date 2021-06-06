@@ -5,6 +5,7 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/entry_cache.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAvesEntry on AvesEntry {
@@ -13,11 +14,7 @@ extension ExtraAvesEntry on AvesEntry {
   }
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {
-    // we standardize the thumbnail loading dimension by taking the nearest larger power of 2
-    // so that there are less variants of the thumbnails to load and cache
-    // it increases the chance of cache hit when loading similarly sized columns (e.g. on orientation change)
-    final requestExtent = extent == 0 ? .0 : pow(2, (log(extent) / log(2)).ceil()).toDouble();
-
+    EntryCache.requestExtents.add(extent);
     return ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
@@ -25,7 +22,7 @@ extension ExtraAvesEntry on AvesEntry {
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       dateModifiedSecs: dateModifiedSecs ?? -1,
-      extent: requestExtent,
+      extent: extent,
     );
   }
 

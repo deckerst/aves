@@ -19,8 +19,11 @@ class XmpStructArrayCard extends StatefulWidget {
     required Map<int, Map<String, String>> structByIndex,
     this.linkifier,
   }) {
-    structs.length = structByIndex.keys.fold(0, max);
-    structByIndex.keys.forEach((index) => structs[index - 1] = structByIndex[index]!);
+    final length = structByIndex.keys.fold(0, max);
+    structs.length = length;
+    for (var i = 0; i < length; i++) {
+      structs[i] = structByIndex[i + 1] ?? {};
+    }
   }
 
   @override
