@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/favourites.dart';
 import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -52,6 +54,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
           _refresh();
         }
       }));
+      favourites.addListener(onFavouritesChanged);
     }
     _refresh();
   }
@@ -61,6 +64,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
+    favourites.removeListener(onFavouritesChanged);
     super.dispose();
   }
 
@@ -181,6 +185,12 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _applyFilters();
     _applySort();
     _applyGroup();
+  }
+
+  void onFavouritesChanged() {
+    if (filters.any((filter) => filter is FavouriteFilter)) {
+      _refresh();
+    }
   }
 
   void onEntryAdded(Set<AvesEntry>? entries) {
