@@ -7,7 +7,6 @@ import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
