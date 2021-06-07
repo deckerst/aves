@@ -7,9 +7,8 @@ publish_to: none
 environment:
   sdk: '>=2.12.0 <3.0.0'
 
-# not null safe, as of 2021/05/23
+# not null safe, as of 2021/06/07
 # `charts_flutter` - https://github.com/google/charts/issues/579
-# `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
 
 dependencies:
   flutter:
@@ -34,9 +33,6 @@ dependencies:
   firebase_crashlytics:
   flutter_highlight:
   flutter_map:
-    git:
-      url: git://github.com/fleaflet/flutter_map.git
-      ref: issues/829-nullsafety
   flutter_markdown:
   flutter_staggered_animations:
   flutter_svg:
