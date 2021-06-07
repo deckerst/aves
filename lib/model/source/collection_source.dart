@@ -153,6 +153,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
     await _moveEntry(entry, newFields);
     entry.metadataChangeNotifier.notifyListeners();
+    eventBus.fire(EntryMovedEvent({entry}));
     return true;
   }
 
@@ -312,7 +313,7 @@ class EntryRemovedEvent {
 }
 
 class EntryMovedEvent {
-  final Iterable<AvesEntry> entries;
+  final Set<AvesEntry> entries;
 
   const EntryMovedEvent(this.entries);
 }
