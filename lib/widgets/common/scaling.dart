@@ -78,7 +78,11 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         final thumbnailCenter = renderMetaData.localToGlobal(Offset(halfExtent, halfExtent));
         _overlayEntry = OverlayEntry(
           builder: (context) => ScaleOverlay(
-            builder: (extent) => widget.scaledBuilder(_metadata!.item, extent),
+            builder: (extent) => SizedBox(
+              width: extent,
+              height: extent,
+              child: widget.scaledBuilder(_metadata!.item, extent),
+            ),
             center: thumbnailCenter,
             viewportWidth: gridWidth,
             gridBuilder: widget.gridBuilder,

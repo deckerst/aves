@@ -391,6 +391,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
         return DecoratedFilterChip(
           filter: filter,
           extent: extent,
+          thumbnailExtent: context.read<TileExtentController>().effectiveExtentMax,
           pinned: pinnedFilters.contains(filter),
           highlightable: false,
         );

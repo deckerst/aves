@@ -24,7 +24,7 @@ import 'package:provider/provider.dart';
 
 class DecoratedFilterChip extends StatelessWidget {
   final CollectionFilter filter;
-  final double extent;
+  final double extent, thumbnailExtent;
   final AvesEntry? coverEntry;
   final bool pinned, highlightable;
   final FilterCallback? onTap;
@@ -34,12 +34,14 @@ class DecoratedFilterChip extends StatelessWidget {
     Key? key,
     required this.filter,
     required this.extent,
+    double? thumbnailExtent,
     this.coverEntry,
     this.pinned = false,
     this.highlightable = true,
     this.onTap,
     this.onLongPress,
-  }) : super(key: key);
+  })  : thumbnailExtent = thumbnailExtent ?? extent,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +92,7 @@ class DecoratedFilterChip extends StatelessWidget {
               )
             : RasterImageThumbnail(
                 entry: entry,
-                extent: extent,
+                extent: thumbnailExtent,
               );
     final titlePadding = min<double>(4.0, extent / 32);
     final borderRadius = BorderRadius.all(radius(extent));
