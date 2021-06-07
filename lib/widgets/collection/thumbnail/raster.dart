@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
+  final BoxFit fit;
   final ValueNotifier<bool>? cancellableNotifier;
   final Object? heroTag;
 
@@ -20,6 +21,7 @@ class RasterImageThumbnail extends StatefulWidget {
     Key? key,
     required this.entry,
     required this.extent,
+    this.fit = BoxFit.cover,
     this.cancellableNotifier,
     this.heroTag,
   }) : super(key: key);
@@ -182,7 +184,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
             width: extent,
             height: extent,
             scale: imageInfo.scale,
-            fit: BoxFit.cover,
+            fit: widget.fit,
           );
 
     return widget.heroTag != null
@@ -190,7 +192,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
             tag: widget.heroTag!,
             flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
               return TransitionImage(
-                image: entry.getBestThumbnail(extent),
+                image: entry.bestCachedThumbnail,
                 animation: animation,
               );
             },

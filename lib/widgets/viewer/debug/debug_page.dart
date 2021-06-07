@@ -117,37 +117,36 @@ class ViewerDebugPage extends StatelessWidget {
   }
 
   Widget _buildThumbnailsTabView() {
-    const extent = 128.0;
+    final children = <Widget>[];
+    if (entry.isSvg) {
+      const extent = 128.0;
+      children.addAll([
+        Text('SVG ($extent)'),
+        SvgPicture(
+          UriPicture(
+            uri: entry.uri,
+            mimeType: entry.mimeType,
+          ),
+          width: extent,
+          height: extent,
+        )
+      ]);
+    } else {
+      children.addAll(
+        entry.cachedThumbnails.expand((provider) => [
+              Text('Raster (${provider.key.extent})'),
+              Center(
+                child: Image(
+                  image: provider,
+                ),
+              ),
+              SizedBox(height: 16),
+            ]),
+      );
+    }
     return ListView(
       padding: EdgeInsets.all(16),
-      children: [
-        if (entry.isSvg) ...[
-          Text('SVG ($extent)'),
-          SvgPicture(
-            UriPicture(
-              uri: entry.uri,
-              mimeType: entry.mimeType,
-            ),
-            width: extent,
-            height: extent,
-          )
-        ],
-        if (!entry.isSvg) ...[
-          Text('Raster (fast)'),
-          Center(
-            child: Image(
-              image: entry.getThumbnail(),
-            ),
-          ),
-          SizedBox(height: 16),
-          Text('Raster ($extent)'),
-          Center(
-            child: Image(
-              image: entry.getThumbnail(extent: extent),
-            ),
-          ),
-        ],
-      ],
+      children: children,
     );
   }
 }
