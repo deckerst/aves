@@ -53,7 +53,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     return FilterGridPage<T>(
-      key: ValueKey('filter-grid-page'),
+      key: Key('filter-grid-page'),
       appBar: SliverAppBar(
         title: InteractiveAppBarTitle(
           onTap: () => _goToSearch(context),

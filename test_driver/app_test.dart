@@ -37,6 +37,7 @@ void main() {
     selectFirstAlbum();
     searchAlbum();
     showViewer();
+    goToNextImage();
     toggleOverlay();
     zoom();
     showInfoMetadata();
@@ -154,8 +155,20 @@ void searchAlbum() {
 
 void showViewer() {
   test('[collection] show viewer', () async {
-    await driver.tap(find.byType('DecoratedThumbnail'));
+    await driver.tap(find.descendant(
+      of: find.byValueKey('collection-grid'),
+      matching: find.byType('DecoratedThumbnail'),
+      firstMatchOnly: true,
+    ));
     await driver.waitUntilNoTransientCallbacks();
+    await Future.delayed(Duration(seconds: 2));
+  });
+}
+
+void goToNextImage() {
+  test('[viewer] show next image', () async {
+    final horizontalPageView = find.byValueKey('horizontal-pageview');
+    await driver.scroll(horizontalPageView, -600, 0, Duration(milliseconds: 400));
     await Future.delayed(Duration(seconds: 2));
   });
 }
