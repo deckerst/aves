@@ -38,8 +38,9 @@ class CollectionGrid extends StatefulWidget {
   final String? settingsRouteKey;
 
   const CollectionGrid({
+    Key? key,
     this.settingsRouteKey,
-  });
+  }) : super(key: key);
 
   @override
   _CollectionGridState createState() => _CollectionGridState();

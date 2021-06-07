@@ -284,7 +284,6 @@ class GridPainter extends CustomPainter {
         ],
       );
 
-    // final topLeft = center.translate(-extent / 2, -extent / 2);
     final delta = extent + spacing;
     for (var i = -2; i <= 2; i++) {
       final dx = delta * i;
