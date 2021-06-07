@@ -271,22 +271,24 @@ class GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final radius = extent * 3;
-    final paint = Paint()
+    final strokePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = borderWidth
       ..shader = ui.Gradient.radial(
         center,
-        radius,
+        extent * 2,
         [
           color,
           Colors.transparent,
         ],
         [
-          extent / radius,
+          .8,
           1,
         ],
       );
+    final fillPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = color.withOpacity(.25);
 
     final delta = extent + spacing;
     for (var i = -2; i <= 2; i++) {
@@ -294,17 +296,19 @@ class GridPainter extends CustomPainter {
       for (var j = -2; j <= 2; j++) {
         if (i == 0 && j == 0) continue;
         final dy = delta * j;
-        canvas.drawRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromCenter(
-              center: center + Offset(dx, dy),
-              width: extent,
-              height: extent,
-            ),
-            borderRadius,
+        final rect = RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: center + Offset(dx, dy),
+            width: extent,
+            height: extent,
           ),
-          paint,
+          borderRadius,
         );
+
+        if ((i.abs() == 1 && j == 0) || (j.abs() == 1 && i == 0)) {
+          canvas.drawRRect(rect, fillPaint);
+        }
+        canvas.drawRRect(rect, strokePaint);
       }
     }
   }
