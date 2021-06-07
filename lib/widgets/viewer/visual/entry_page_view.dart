@@ -216,6 +216,7 @@ class _EntryPageViewState extends State<EntryPageView> {
                     entry: entry,
                     extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
                     fit: BoxFit.contain,
+                    showLoadingBackground: false,
                   ),
                 ),
               ),
