@@ -14,6 +14,7 @@ class RasterImageThumbnail extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
   final BoxFit fit;
+  final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
   final Object? heroTag;
 
@@ -22,6 +23,7 @@ class RasterImageThumbnail extends StatefulWidget {
     required this.entry,
     required this.extent,
     this.fit = BoxFit.cover,
+    this.showLoadingBackground = true,
     this.cancellableNotifier,
     this.heroTag,
   }) : super(key: key);
@@ -174,7 +176,7 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     final imageInfo = _lastImageInfo;
     final image = imageInfo == null
         ? Container(
-            color: backgroundColor,
+            color: widget.showLoadingBackground ? backgroundColor : Colors.transparent,
             width: extent,
             height: extent,
           )
