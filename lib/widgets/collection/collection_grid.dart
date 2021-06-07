@@ -204,11 +204,15 @@ class _CollectionScaler extends StatelessWidget {
       ),
       scaledBuilder: (entry, extent) => ThumbnailTheme(
         extent: extent,
-        child: DecoratedThumbnail(
-          entry: entry,
-          tileExtent: extent,
-          selectable: false,
-          highlightable: false,
+        child: Container(
+          width: extent,
+          height: extent,
+          child: DecoratedThumbnail(
+            entry: entry,
+            tileExtent: context.read<TileExtentController>().effectiveExtentMax,
+            selectable: false,
+            highlightable: false,
+          ),
         ),
       ),
       getScaledItemTileRect: (context, entry) {

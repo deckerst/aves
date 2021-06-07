@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
@@ -213,8 +212,9 @@ class _EntryPageViewState extends State<EntryPageView> {
                 duration: Durations.viewerVideoPlayerTransition,
                 child: GestureDetector(
                   onTap: _onTap,
-                  child: Image(
-                    image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
+                  child: RasterImageThumbnail(
+                    entry: entry,
+                    extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
                     fit: BoxFit.contain,
                   ),
                 ),

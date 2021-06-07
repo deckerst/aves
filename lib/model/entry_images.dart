@@ -6,6 +6,7 @@ import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_cache.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAvesEntry on AvesEntry {
@@ -14,7 +15,7 @@ extension ExtraAvesEntry on AvesEntry {
   }
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {
-    EntryCache.requestExtents.add(extent);
+    EntryCache.markThumbnailExtent(extent);
     return ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
@@ -54,10 +55,10 @@ extension ExtraAvesEntry on AvesEntry {
 
   bool _isReady(Object providerKey) => imageCache!.statusForKey(providerKey).keepAlive;
 
-  ImageProvider getBestThumbnail(double extent) {
-    final sizedThumbnailKey = _getThumbnailProviderKey(extent);
-    if (_isReady(sizedThumbnailKey)) return ThumbnailProvider(sizedThumbnailKey);
+  List<ThumbnailProvider> get cachedThumbnails => EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).where(_isReady).map((key) => ThumbnailProvider(key)).toList();
 
-    return getThumbnail();
+  ThumbnailProvider get bestCachedThumbnail {
+    final sizedThumbnailKey = EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).firstWhereOrNull(_isReady);
+    return sizedThumbnailKey != null ? ThumbnailProvider(sizedThumbnailKey) : getThumbnail();
   }
 }

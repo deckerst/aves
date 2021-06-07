@@ -48,7 +48,7 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   ViewState get viewState => viewStateNotifier.value;
 
-  ImageProvider get thumbnailProvider => entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName));
+  ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
   ImageProvider get fullImageProvider {
     if (entry.useTiles) {

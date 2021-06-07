@@ -4,7 +4,16 @@ import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 
 class EntryCache {
-  static final requestExtents = <double>{};
+  // ordered descending
+  static final thumbnailRequestExtents = <double>[];
+
+  static void markThumbnailExtent(double extent) {
+    if (!thumbnailRequestExtents.contains(extent)) {
+      thumbnailRequestExtents
+        ..add(extent)
+        ..sort((a, b) => b.compareTo(a));
+    }
+  }
 
   static Future<void> evict(
     String uri,
@@ -36,7 +45,7 @@ class EntryCache {
     )).evict();
 
     await Future.forEach<double>(
-        requestExtents,
+        thumbnailRequestExtents,
         (extent) => ThumbnailProvider(ThumbnailProviderKey(
               uri: uri,
               mimeType: mimeType,
