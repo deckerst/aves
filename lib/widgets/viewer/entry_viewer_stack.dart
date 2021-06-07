@@ -78,11 +78,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    final entry = widget.initialEntry;
+    // make sure initial entry is actually among the filtered collection entries
+    final entry = entries.contains(widget.initialEntry) ? widget.initialEntry : entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;
-    _currentHorizontalPage = max(0, entries.indexOf(entry));
+    _currentHorizontalPage = max(0, entry != null ? entries.indexOf(entry) : -1);
     _currentVerticalPage = ValueNotifier(imagePage);
     _horizontalPager = PageController(initialPage: _currentHorizontalPage);
     _verticalPager = PageController(initialPage: _currentVerticalPage.value)..addListener(_onVerticalPageControllerChange);

@@ -76,6 +76,7 @@ class InteractiveThumbnail extends StatelessWidget {
             id: collection.id,
             listenToSource: false,
           );
+          assert(viewerCollection.entryCount == collection.entryCount);
           return EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,
