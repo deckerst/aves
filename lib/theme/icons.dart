@@ -20,7 +20,7 @@ class AIcons {
   static const IconData location = Icons.place_outlined;
   static const IconData locationOff = Icons.location_off_outlined;
   static const IconData privacy = MdiIcons.shieldAccountOutline;
-  static const IconData raw = Icons.camera_outlined;
+  static const IconData raw = Icons.raw_on_outlined;
   static const IconData shooting = Icons.camera_outlined;
   static const IconData removableStorage = Icons.sd_storage_outlined;
   static const IconData sensorControl = Icons.explore_outlined;
