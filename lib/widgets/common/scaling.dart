@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:aves/model/highlight.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
@@ -17,20 +18,16 @@ class ScalerMetadata<T> {
 
 class GridScaleGestureDetector<T> extends StatefulWidget {
   final GlobalKey scrollableKey;
-  final ValueNotifier<double> appBarHeightNotifier;
-  final Widget Function(Offset center, double extent, Widget child)? gridBuilder;
+  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
   final Widget Function(T item, double extent) scaledBuilder;
-  final Rect Function(BuildContext context, T item) getScaledItemTileRect;
-  final void Function(T item) onScaled;
+  final Object Function(T item)? highlightItem;
   final Widget child;
 
   const GridScaleGestureDetector({
     required this.scrollableKey,
-    required this.appBarHeightNotifier,
-    this.gridBuilder,
+    required this.gridBuilder,
     required this.scaledBuilder,
-    required this.getScaledItemTileRect,
-    required this.onScaled,
+    this.highlightItem,
     required this.child,
   });
 
@@ -114,11 +111,9 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
         } else {
           // scroll to show the focal point thumbnail at its new position
           WidgetsBinding.instance!.addPostFrameCallback((_) {
-            final entry = _metadata!.item;
-            _scrollToItem(entry);
-            // warning: posting `onScaled` in the next frame with `addPostFrameCallback`
-            // would trigger only when the scrollable offset actually changes
-            Future.delayed(Durations.collectionScalingCompleteNotificationDelay).then((_) => widget.onScaled(entry));
+            final trackItem = _metadata!.item;
+            final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
+            context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlight: highlightItem);
             _applyingScale = false;
           });
         }
@@ -135,26 +130,6 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
       ),
     );
   }
-
-  // about scrolling & offset retrieval:
-  // `Scrollable.ensureVisible` only works on already rendered objects
-  // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
-  // `RenderViewport.scrollOffsetOf` is a good alternative
-  void _scrollToItem(T item) {
-    final scrollableContext = widget.scrollableKey.currentContext!;
-    final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
-    final tileRect = widget.getScaledItemTileRect(context, item);
-    // most of the time the app bar will be scrolled away after scaling,
-    // so we compensate for it to center the focal point thumbnail
-    final appBarHeight = widget.appBarHeightNotifier.value;
-    final scrollOffset = tileRect.top + (tileRect.height - scrollableHeight) / 2 + appBarHeight;
-
-    final controller = PrimaryScrollController.of(context);
-    if (controller != null) {
-      final maxScrollExtent = controller.position.maxScrollExtent;
-      controller.jumpTo(scrollOffset.clamp(.0, maxScrollExtent));
-    }
-  }
 }
 
 class ScaleOverlay extends StatefulWidget {
@@ -162,14 +137,14 @@ class ScaleOverlay extends StatefulWidget {
   final Offset center;
   final double viewportWidth;
   final ValueNotifier<double> scaledExtentNotifier;
-  final Widget Function(Offset center, double extent, Widget child)? gridBuilder;
+  final Widget Function(Offset center, double extent, Widget child) gridBuilder;
 
   const ScaleOverlay({
     required this.builder,
     required this.center,
     required this.viewportWidth,
     required this.scaledExtentNotifier,
-    this.gridBuilder,
+    required this.gridBuilder,
   });
 
   @override
@@ -243,7 +218,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     ),
                   ],
                 );
-                child = widget.gridBuilder?.call(clampedCenter, extent, child) ?? child;
+                child = widget.gridBuilder(clampedCenter, extent, child);
                 return child;
               },
             ),

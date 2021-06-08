@@ -32,6 +32,7 @@ class Themes {
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: Colors.grey.shade800,
+      actionTextColor: _accentColor,
       contentTextStyle: const TextStyle(
         color: Colors.white,
       ),
