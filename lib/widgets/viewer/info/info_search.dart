@@ -41,7 +41,7 @@ class InfoSearchDelegate extends SearchDelegate {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: Icon(AIcons.clear),
+          icon: const Icon(AIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);
@@ -78,7 +78,7 @@ class InfoSearchDelegate extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     if (query.isEmpty) {
       showSuggestions(context);
-      return SizedBox();
+      return const SizedBox();
     }
 
     final queryParts = query.toUpperCase().split(' ')..removeWhere((s) => s.isEmpty);
@@ -118,7 +118,7 @@ class InfoSearchDelegate extends SearchDelegate {
                 return true;
               },
               child: ListView.builder(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) => tiles[index],
                 itemCount: tiles.length,
               ),
@@ -130,7 +130,7 @@ class InfoSearchDelegate extends SearchDelegate {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        settings: RouteSettings(name: EntryViewerPage.routeName),
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (c, a, sa) => EntryViewerPage(
           initialEntry: tempEntry,
         ),

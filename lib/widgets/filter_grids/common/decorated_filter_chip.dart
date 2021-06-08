@@ -73,7 +73,7 @@ class DecoratedFilterChip extends StatelessWidget {
               );
             }
           default:
-            return SizedBox();
+            return const SizedBox();
         }
       },
     );
@@ -143,7 +143,7 @@ class DecoratedFilterChip extends StatelessWidget {
             child: DecoratedIcon(
               AIcons.pin,
               color: FilterGridPage.detailColor,
-              shadows: [Constants.embossShadow],
+              shadows: Constants.embossShadows,
               size: iconSize,
             ),
           ),
@@ -154,7 +154,7 @@ class DecoratedFilterChip extends StatelessWidget {
             child: DecoratedIcon(
               AIcons.removableStorage,
               color: FilterGridPage.detailColor,
-              shadows: [Constants.embossShadow],
+              shadows: Constants.embossShadows,
               size: iconSize,
             ),
           ),

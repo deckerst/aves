@@ -74,11 +74,11 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                     title: isCustom
                         ? Row(children: [
                             title,
-                            Spacer(),
+                            const Spacer(),
                             IconButton(
                               onPressed: _isCustom ? _pickEntry : null,
                               tooltip: 'Change',
-                              icon: Icon(AIcons.setCover),
+                              icon: const Icon(AIcons.setCover),
                             ),
                           ])
                         : title,
@@ -87,7 +87,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               ),
               Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: DecoratedFilterChip(
                   filter: filter,
                   extent: extent,
@@ -116,7 +116,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final entry = await Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: ItemPickDialog.routeName),
+        settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
           CollectionLens(
             source: context.read<CollectionSource>(),

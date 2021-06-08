@@ -27,7 +27,7 @@ Future<void> configureAndLaunch() async {
   await settings.init();
   settings.keepScreenOn = KeepScreenOn.always;
   settings.hasAcceptedTerms = false;
-  settings.locale = Locale('en');
+  settings.locale = const Locale('en');
   settings.homePage = HomePageSetting.collection;
 
   app.main();

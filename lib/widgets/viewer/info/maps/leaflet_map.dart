@@ -104,7 +104,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       case EntryMapStyle.stamenWatercolor:
         return StamenWatercolorLayer();
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
@@ -116,19 +116,19 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
       case EntryMapStyle.stamenWatercolor:
         return _buildAttributionMarkdown(context.l10n.mapAttributionStamen);
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
   Widget _buildAttributionMarkdown(String data) {
     return Padding(
-      padding: EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.only(top: 4),
       child: MarkdownBody(
         data: data,
         selectable: true,
         styleSheet: MarkdownStyleSheet(
           a: TextStyle(color: Theme.of(context).accentColor),
-          p: TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
+          p: const TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
         ),
         onTapLink: (text, href, title) async {
           if (href != null && await canLaunch(href)) {

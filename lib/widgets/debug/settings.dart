@@ -18,19 +18,19 @@ class DebugSettingsSection extends StatelessWidget {
           title: 'Settings',
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: ElevatedButton(
                 onPressed: () => settings.reset(),
-                child: Text('Reset'),
+                child: const Text('Reset'),
               ),
             ),
             SwitchListTile(
               value: settings.hasAcceptedTerms,
               onChanged: (v) => settings.hasAcceptedTerms = v,
-              title: Text('hasAcceptedTerms'),
+              title: const Text('hasAcceptedTerms'),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup({
                 'tileExtent - Collection': '${settings.getTileExtent(CollectionPage.routeName)}',
                 'tileExtent - Albums': '${settings.getTileExtent(AlbumListPage.routeName)}',

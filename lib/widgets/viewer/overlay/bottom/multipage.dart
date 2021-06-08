@@ -89,7 +89,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
   Widget build(BuildContext context) {
     final marginWidth = max(0.0, (availableWidth - extent) / 2 - separatorWidth);
     final horizontalMargin = SizedBox(width: marginWidth);
-    final separator = SizedBox(width: separatorWidth);
+    const separator = SizedBox(width: separatorWidth);
 
     return ThumbnailTheme(
       extent: extent,

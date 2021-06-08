@@ -34,10 +34,10 @@ class _ChipHighlightOverlayState extends State<ChipHighlightOverlay> {
     return Sweeper(
       builder: (context) => Container(
         decoration: BoxDecoration(
-          border: Border.all(
+          border: Border.fromBorderSide(BorderSide(
             color: Theme.of(context).accentColor,
             width: widget.extent * .1,
-          ),
+          )),
           borderRadius: widget.borderRadius,
         ),
       ),

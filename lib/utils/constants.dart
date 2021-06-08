@@ -15,10 +15,12 @@ class Constants {
     fontFeatures: [FontFeature.enable('smcp')],
   );
 
-  static const embossShadow = Shadow(
-    color: Colors.black,
-    offset: Offset(0.5, 1.0),
-  );
+  static const embossShadows = [
+    Shadow(
+      color: Colors.black,
+      offset: Offset(0.5, 1.0),
+    )
+  ];
 
   static const overlayUnknown = '—'; // em dash
 

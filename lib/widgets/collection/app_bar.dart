@@ -137,7 +137,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(
-      key: Key('appbar-leading-button'),
+      key: const Key('appbar-leading-button'),
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,
@@ -197,19 +197,19 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         builder: (context, snapshot) {
           final canAddShortcuts = snapshot.data ?? false;
           return PopupMenuButton<CollectionAction>(
-            key: Key('appbar-menu-button'),
+            key: const Key('appbar-menu-button'),
             itemBuilder: (context) {
               final isNotEmpty = !collection.isEmpty;
               final hasSelection = collection.selection.isNotEmpty;
               return [
                 PopupMenuItem(
-                  key: Key('menu-sort'),
+                  key: const Key('menu-sort'),
                   value: CollectionAction.sort,
                   child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
                 ),
                 if (collection.sortFactor == EntrySortFactor.date)
                   PopupMenuItem(
-                    key: Key('menu-group'),
+                    key: const Key('menu-group'),
                     value: CollectionAction.group,
                     child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
@@ -231,7 +231,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     ),
                 ],
                 if (collection.isSelecting) ...[
-                  PopupMenuDivider(),
+                  const PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.copy,
                     enabled: hasSelection,
@@ -247,7 +247,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     enabled: hasSelection,
                     child: MenuRow(text: context.l10n.collectionActionRefreshMetadata),
                   ),
-                  PopupMenuDivider(),
+                  const PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.selectAll,
                     enabled: collection.selection.length < collection.entryCount,
@@ -390,7 +390,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: StatsPage.routeName),
+        settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
           source: source,
           parentCollection: collection,

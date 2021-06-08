@@ -24,7 +24,7 @@ class QuickActionsTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            settings: RouteSettings(name: QuickActionEditorPage.routeName),
+            settings: const RouteSettings(name: QuickActionEditorPage.routeName),
             builder: (context) => QuickActionEditorPage(),
           ),
         );
@@ -71,7 +71,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
   void _onQuickActionTargetLeave() {
     _stopLeavingTimer();
     final action = _draggedAvailableAction.value;
-    _targetLeavingTimer = Timer(Durations.quickActionListAnimation + Duration(milliseconds: 50), () {
+    _targetLeavingTimer = Timer(Durations.quickActionListAnimation + const Duration(milliseconds: 50), () {
       _removeQuickAction(action);
       _quickActionHighlight.value = false;
     });
@@ -111,18 +111,18 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
             child: ListView(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Row(
                     children: [
-                      Icon(AIcons.info),
-                      SizedBox(width: 16),
+                      const Icon(AIcons.info),
+                      const SizedBox(width: 16),
                       Expanded(child: Text(context.l10n.settingsViewerQuickActionEditorBanner)),
                     ],
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     context.l10n.settingsViewerQuickActionEditorDisplayedButtons,
                     style: Constants.titleTextStyle,
@@ -161,7 +161,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index, animation) {
-                              if (index >= _quickActions.length) return SizedBox();
+                              if (index >= _quickActions.length) return const SizedBox();
                               final action = _quickActions[index];
                               return QuickActionButton(
                                 placement: QuickActionPlacement.action,
@@ -186,14 +186,14 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                 )
-                              : SizedBox(),
+                              : const SizedBox(),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     context.l10n.settingsViewerQuickActionEditorAvailableButtons,
                     style: Constants.titleTextStyle,
@@ -278,7 +278,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
         axis: Axis.horizontal,
         sizeFactor: animation,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
               icon: Icon(action.getIcon()),

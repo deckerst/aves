@@ -41,11 +41,11 @@ class _AvesAppState extends State<AvesApp> {
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final EventChannel _contentChangeChannel = EventChannel('deckers.thibault/aves/contentchange');
-  final EventChannel _newIntentChannel = EventChannel('deckers.thibault/aves/intent');
+  final EventChannel _contentChangeChannel = const EventChannel('deckers.thibault/aves/contentchange');
+  final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
-  Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : WelcomePage();
+  Widget getFirstPage({Map? intentData}) => settings.hasAcceptedTerms ? HomePage(intentData: intentData) : const WelcomePage();
 
   @override
   void initState() {
@@ -75,7 +75,7 @@ class _AvesAppState extends State<AvesApp> {
                   final home = initialized
                       ? getFirstPage()
                       : Scaffold(
-                          body: snapshot.hasError ? _buildError(snapshot.error!) : SizedBox(),
+                          body: snapshot.hasError ? _buildError(snapshot.error!) : const SizedBox(),
                         );
                   return Selector<Settings, Locale?>(
                       selector: (context, s) => s.locale,
@@ -108,12 +108,12 @@ class _AvesAppState extends State<AvesApp> {
   Widget _buildError(Object error) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(AIcons.error),
-          SizedBox(height: 16),
+          const Icon(AIcons.error),
+          const SizedBox(height: 16),
           Text(error.toString()),
         ],
       ),
@@ -151,7 +151,7 @@ class _AvesAppState extends State<AvesApp> {
 
     FirebaseCrashlytics.instance.log('New intent');
     _navigatorKey.currentState!.pushReplacement(DirectMaterialPageRoute(
-      settings: RouteSettings(name: HomePage.routeName),
+      settings: const RouteSettings(name: HomePage.routeName),
       builder: (_) => getFirstPage(intentData: intentData),
     ));
   }

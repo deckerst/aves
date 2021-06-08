@@ -16,7 +16,7 @@ class HiddenFilterTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            settings: RouteSettings(name: HiddenFilterPage.routeName),
+            settings: const RouteSettings(name: HiddenFilterPage.routeName),
             builder: (context) => HiddenFilterPage(),
           ),
         );
@@ -39,19 +39,19 @@ class HiddenFilterPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 children: [
-                  Icon(AIcons.info),
-                  SizedBox(width: 16),
+                  const Icon(AIcons.info),
+                  const SizedBox(width: 16),
                   Expanded(child: Text(context.l10n.settingsHiddenFiltersBanner)),
                 ],
               ),
             ),
-            Divider(),
+            const Divider(),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Consumer<Settings>(
                   builder: (context, settings, child) {
                     final hiddenFilters = settings.hiddenFilters;

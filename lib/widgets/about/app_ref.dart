@@ -28,14 +28,14 @@ class _AppReferenceState extends State<AppReference> {
         children: [
           _buildAvesLine(),
           _buildFlutterLine(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
   Widget _buildAvesLine() {
-    final style = TextStyle(
+    const style = TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.normal,
       letterSpacing: 1.0,
@@ -66,7 +66,7 @@ class _AppReferenceState extends State<AppReference> {
         children: [
           WidgetSpan(
             child: Padding(
-              padding: EdgeInsetsDirectional.only(end: 4),
+              padding: const EdgeInsetsDirectional.only(end: 4),
               child: FlutterLogo(
                 size: style.fontSize! * 1.25,
               ),

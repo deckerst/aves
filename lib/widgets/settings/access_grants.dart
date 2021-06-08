@@ -13,7 +13,7 @@ class StorageAccessTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            settings: RouteSettings(name: StorageAccessPage.routeName),
+            settings: const RouteSettings(name: StorageAccessPage.routeName),
             builder: (context) => StorageAccessPage(),
           ),
         );
@@ -52,16 +52,16 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Row(
                 children: [
-                  Icon(AIcons.info),
-                  SizedBox(width: 16),
+                  const Icon(AIcons.info),
+                  const SizedBox(width: 16),
                   Expanded(child: Text(context.l10n.settingsStorageAccessBanner)),
                 ],
               ),
             ),
-            Divider(),
+            const Divider(),
             Expanded(
               child: FutureBuilder<List<String>>(
                 future: _pathLoader,
@@ -70,7 +70,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                     return Text(snapshot.error.toString());
                   }
                   if (snapshot.connectionState != ConnectionState.done && _lastPaths == null) {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                   _lastPaths = snapshot.data!..sort();
                   if (_lastPaths!.isEmpty) {
@@ -85,7 +85,7 @@ class _StorageAccessPageState extends State<StorageAccessPage> {
                               title: Text(path),
                               dense: true,
                               trailing: IconButton(
-                                icon: Icon(AIcons.clear),
+                                icon: const Icon(AIcons.clear),
                                 onPressed: () async {
                                   await storageService.revokeDirectoryAccess(path);
                                   _load();

@@ -52,7 +52,7 @@ class QuickActionButton extends StatelessWidget {
       },
       onAcceptWithDetails: (details) => _setPanelHighlight(false),
       onLeave: (data) => onTargetLeave(),
-      builder: (context, accepted, rejected) => child ?? SizedBox(),
+      builder: (context, accepted, rejected) => child ?? const SizedBox(),
     );
   }
 

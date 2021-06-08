@@ -25,11 +25,11 @@ class EmptyContent extends StatelessWidget {
               size: 64,
               color: color,
             ),
-            SizedBox(height: 16)
+            const SizedBox(height: 16)
           ],
           Text(
             text,
-            style: TextStyle(
+            style: const TextStyle(
               color: color,
               fontSize: 22,
             ),

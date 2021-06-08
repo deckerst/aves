@@ -24,11 +24,11 @@ class MenuRow extends StatelessWidget {
             opacity: checked! ? 1 : 0,
             child: Icon(AIcons.checked, size: iconSize),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
         if (icon != null) ...[
           Icon(icon, size: iconSize),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
         Expanded(child: Text(text)),
       ],

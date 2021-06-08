@@ -26,7 +26,7 @@ class _MultiCrossFaderState extends State<MultiCrossFader> {
   void initState() {
     super.initState();
     _first = widget.child;
-    _second = SizedBox();
+    _second = const SizedBox();
   }
 
   @override

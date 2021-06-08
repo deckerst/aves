@@ -109,7 +109,7 @@ class AlbumListPage extends StatelessWidget {
       case AlbumChipGroupFactor.none:
         return {
           if (pinnedMapEntries.isNotEmpty || unpinnedMapEntries.isNotEmpty)
-            ChipSectionKey(): [
+            const ChipSectionKey(): [
               ...pinnedMapEntries,
               ...unpinnedMapEntries,
             ],

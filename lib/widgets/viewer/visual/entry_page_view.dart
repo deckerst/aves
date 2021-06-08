@@ -166,7 +166,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
 
     var child = _buildMagnifier(
-      maxScale: ScaleLevel(factor: double.infinity),
+      maxScale: const ScaleLevel(factor: double.infinity),
       scaleStateCycle: _vectorScaleStateCycle,
       child: SvgPicture(
         UriPicture(
@@ -189,7 +189,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   Widget _buildVideoView() {
     final videoController = context.read<VideoConductor>().getController(entry);
-    if (videoController == null) return SizedBox();
+    if (videoController == null) return const SizedBox();
     return Stack(
       fit: StackFit.expand,
       children: [

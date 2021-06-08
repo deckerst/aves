@@ -100,7 +100,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
                   _lastDetails = snapshot.data;
                   _lastEntry = entry;
                 }
-                if (_lastEntry == null) return SizedBox.shrink();
+                if (_lastEntry == null) return const SizedBox.shrink();
 
                 Widget _buildContent({MultiPageInfo? multiPageInfo, int? page}) => _BottomOverlayContent(
                       mainEntry: _lastEntry!,
@@ -168,8 +168,8 @@ class _BottomOverlayContent extends AnimatedWidget {
   Widget build(BuildContext context) {
     return DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyText2!.copyWith(
-        shadows: [Constants.embossShadow],
-      ),
+            shadows: Constants.embossShadows,
+          ),
       softWrap: false,
       overflow: TextOverflow.fade,
       maxLines: 1,
@@ -198,7 +198,7 @@ class _BottomOverlayContent extends AnimatedWidget {
               );
             }
 
-            return infoColumn ?? SizedBox();
+            return infoColumn ?? const SizedBox();
           },
         ),
       ),
@@ -222,7 +222,7 @@ class _BottomOverlayContent extends AnimatedWidget {
           _buildSoloLocationRow(),
           if (twoColumns)
             Padding(
-              padding: EdgeInsets.only(top: _interRowPadding),
+              padding: const EdgeInsets.only(top: _interRowPadding),
               child: Row(
                 children: [
                   Container(
@@ -237,7 +237,7 @@ class _BottomOverlayContent extends AnimatedWidget {
             )
           else ...[
             Container(
-              padding: EdgeInsets.only(top: _interRowPadding),
+              padding: const EdgeInsets.only(top: _interRowPadding),
               width: subRowWidth,
               child: _DateRow(
                 entry: pageEntry,
@@ -258,10 +258,10 @@ class _BottomOverlayContent extends AnimatedWidget {
         transitionBuilder: _soloTransition,
         child: pageEntry.hasGps
             ? Container(
-                padding: EdgeInsets.only(top: _interRowPadding),
+                padding: const EdgeInsets.only(top: _interRowPadding),
                 child: _LocationRow(entry: pageEntry),
               )
-            : SizedBox.shrink(),
+            : const SizedBox.shrink(),
       );
 
   Widget _buildSoloShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
@@ -271,11 +271,11 @@ class _BottomOverlayContent extends AnimatedWidget {
         transitionBuilder: _soloTransition,
         child: hasShootingDetails
             ? Container(
-                padding: EdgeInsets.only(top: _interRowPadding),
+                padding: const EdgeInsets.only(top: _interRowPadding),
                 width: subRowWidth,
                 child: _ShootingRow(details!),
               )
-            : SizedBox.shrink(),
+            : const SizedBox.shrink(),
       );
 
   Widget _buildDuoShootingRow(double subRowWidth, bool hasShootingDetails) => AnimatedSwitcher(
@@ -291,7 +291,7 @@ class _BottomOverlayContent extends AnimatedWidget {
                 width: subRowWidth,
                 child: _ShootingRow(details!),
               )
-            : SizedBox.shrink(),
+            : const SizedBox.shrink(),
       );
 
   static Widget _soloTransition(Widget child, Animation<double> animation) => FadeTransition(
@@ -317,8 +317,8 @@ class _LocationRow extends AnimatedWidget {
     final location = entry.hasAddress ? entry.shortAddress : settings.coordinateFormat.format(entry.latLng!);
     return Row(
       children: [
-        DecoratedIcon(AIcons.location, shadows: [Constants.embossShadow], size: _iconSize),
-        SizedBox(width: _iconPadding),
+        const DecoratedIcon(AIcons.location, shadows: Constants.embossShadows, size: _iconSize),
+        const SizedBox(width: _iconPadding),
         Expanded(child: Text(location, strutStyle: Constants.overflowStrutStyle)),
       ],
     );
@@ -396,8 +396,8 @@ class _DateRow extends StatelessWidget {
 
     return Row(
       children: [
-        DecoratedIcon(AIcons.date, shadows: [Constants.embossShadow], size: _iconSize),
-        SizedBox(width: _iconPadding),
+        const DecoratedIcon(AIcons.date, shadows: Constants.embossShadows, size: _iconSize),
+        const SizedBox(width: _iconPadding),
         Expanded(flex: 3, child: Text(dateText, strutStyle: Constants.overflowStrutStyle)),
         Expanded(flex: 2, child: Text(resolutionText, strutStyle: Constants.overflowStrutStyle)),
       ],
@@ -414,8 +414,8 @@ class _ShootingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        DecoratedIcon(AIcons.shooting, shadows: [Constants.embossShadow], size: _iconSize),
-        SizedBox(width: _iconPadding),
+        const DecoratedIcon(AIcons.shooting, shadows: Constants.embossShadows, size: _iconSize),
+        const SizedBox(width: _iconPadding),
         Expanded(child: Text(details.aperture ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.exposureTime ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
         Expanded(child: Text(details.focalLength ?? Constants.overlayUnknown, strutStyle: Constants.overflowStrutStyle)),
@@ -445,7 +445,7 @@ class ExtraBottomOverlay extends StatelessWidget {
 
     final viewInsets = this.viewInsets ?? mqViewInsets;
     final viewPadding = this.viewPadding ?? mqViewPadding;
-    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + EdgeInsets.symmetric(horizontal: 8.0);
+    final safePadding = (viewInsets + viewPadding).copyWith(bottom: 8) + const EdgeInsets.symmetric(horizontal: 8.0);
 
     return Padding(
       padding: safePadding,

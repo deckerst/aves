@@ -35,10 +35,10 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     return MagnifierGestureDetectorScope(
       axis: [Axis.horizontal, Axis.vertical],
       child: PageView.builder(
-        key: Key('horizontal-pageview'),
+        key: const Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
         controller: widget.pageController,
-        physics: MagnifierScrollerPhysics(parent: BouncingScrollPhysics()),
+        physics: const MagnifierScrollerPhysics(parent: BouncingScrollPhysics()),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
           final entry = entries[index];
@@ -77,7 +77,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
       selector: (c, mq) => mq.size,
       builder: (c, mqSize, child) {
         return EntryPageView(
-          key: Key('imageview'),
+          key: const Key('imageview'),
           mainEntry: mainEntry,
           pageEntry: pageEntry ?? mainEntry,
           viewportSize: mqSize,

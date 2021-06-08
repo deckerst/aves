@@ -18,7 +18,7 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
       title: 'Cache',
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             children: [
               Row(
@@ -26,14 +26,14 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
                   Expanded(
                     child: Text('Image cache:\n\t${imageCache!.currentSize}/${imageCache!.maximumSize} items\n\t${formatFilesize(imageCache!.currentSizeBytes)}/${formatFilesize(imageCache!.maximumSizeBytes)}'),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       imageCache!.clear();
 
                       setState(() {});
                     },
-                    child: Text('Clear'),
+                    child: const Text('Clear'),
                   ),
                 ],
               ),
@@ -42,26 +42,26 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
                   Expanded(
                     child: Text('SVG cache: ${PictureProvider.cache.count} items'),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
                       PictureProvider.cache.clear();
 
                       setState(() {});
                     },
-                    child: Text('Clear'),
+                    child: const Text('Clear'),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: Text('Glide disk cache: ?'),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: imageFileService.clearSizedThumbnailDiskCache,
-                    child: Text('Clear'),
+                    child: const Text('Clear'),
                   ),
                 ],
               ),

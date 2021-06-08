@@ -13,8 +13,8 @@ class CollectionSearchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      key: Key('search-button'),
-      icon: Icon(AIcons.search),
+      key: const Key('search-button'),
+      icon: const Icon(AIcons.search),
       onPressed: () => _goToSearch(context),
       tooltip: MaterialLocalizations.of(context).searchFieldLabel,
     );

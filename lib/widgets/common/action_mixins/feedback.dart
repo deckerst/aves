@@ -103,7 +103,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
             return FadeTransition(
               opacity: _animation,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: RadialGradient(
                     colors: [
                       Colors.black,

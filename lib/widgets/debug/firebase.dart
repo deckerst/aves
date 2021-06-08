@@ -12,26 +12,26 @@ class DebugFirebaseSection extends StatelessWidget {
       title: 'Firebase',
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
               ElevatedButton(
                 onPressed: FirebaseCrashlytics.instance.crash,
-                child: Text('Crash'),
+                child: const Text('Crash'),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () => FirebaseAnalytics().logEvent(
                   name: 'debug_test',
                   parameters: {'time': DateTime.now().toIso8601String()},
                 ),
-                child: Text('Send event'),
+                child: const Text('Send event'),
               ),
             ],
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup({
             'Firebase data collection enabled': '${Firebase.app().isAutomaticDataCollectionEnabled}',
             'Crashlytics collection enabled': '${FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled}',

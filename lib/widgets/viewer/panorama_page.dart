@@ -65,7 +65,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                 builder: (context, sensorControl, child) {
                   return Panorama(
                     sensorControl: sensorControl,
-                    croppedArea: info.hasCroppedArea ? info.croppedAreaRect! : Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
+                    croppedArea: info.hasCroppedArea ? info.croppedAreaRect! : const Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
                     croppedFullWidth: info.hasCroppedArea ? info.fullPanoSize!.width : 1.0,
                     croppedFullHeight: info.hasCroppedArea ? info.fullPanoSize!.height : 1.0,
                     onTap: (longitude, latitude, tilt) => _overlayVisible.value = !_overlayVisible.value,
@@ -92,7 +92,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                           selector: (c, mq) => mq.viewPadding + mq.viewInsets,
                           builder: (c, mqPadding, child) {
                             return Padding(
-                              padding: EdgeInsets.all(8) + EdgeInsets.only(right: mqPadding.right, bottom: mqPadding.bottom),
+                              padding: const EdgeInsets.all(8) + EdgeInsets.only(right: mqPadding.right, bottom: mqPadding.bottom),
                               child: OverlayButton(
                                 child: ValueListenableBuilder<SensorControl>(
                                     valueListenable: _sensorControl,

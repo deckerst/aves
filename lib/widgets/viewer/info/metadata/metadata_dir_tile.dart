@@ -41,7 +41,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
   @override
   Widget build(BuildContext context) {
     final tags = dir.tags;
-    if (tags.isEmpty) return SizedBox.shrink();
+    if (tags.isEmpty) return const SizedBox.shrink();
 
     final dirName = dir.name;
     Widget tile;
@@ -71,7 +71,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
         children: [
           if (showThumbnails && dirName == MetadataDirectory.exifThumbnailDirectory) MetadataThumbnails(entry: entry),
           Padding(
-            padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: InfoRowGroup(
               tags,
               maxValueLength: Constants.infoGroupMaxValueLength,
@@ -98,7 +98,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
           Navigator.push(
             context,
             MaterialPageRoute(
-              settings: RouteSettings(name: SourceViewerPage.routeName),
+              settings: const RouteSettings(name: SourceViewerPage.routeName),
               builder: (context) => SourceViewerPage(
                 loader: () => SynchronousFuture(tags['Metadata'] ?? ''),
               ),

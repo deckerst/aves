@@ -33,11 +33,11 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
           final freeSpace = _freeSpaceByVolume[v.path];
           return [
             Padding(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(v.path),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: InfoRowGroup({
                 'description': '${v.getDescription(context)}',
                 'isPrimary': '${v.isPrimary}',
@@ -46,7 +46,7 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
                 if (freeSpace != null) 'freeSpace': formatFilesize(freeSpace),
               }),
             ),
-            Divider(),
+            const Divider(),
           ];
         })
       ],

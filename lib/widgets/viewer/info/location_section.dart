@@ -84,7 +84,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    if (!entry.hasGps) return SizedBox();
+    if (!entry.hasGps) return const SizedBox();
     final latLng = entry.latLng!;
     final geoUri = entry.geoUri!;
 
@@ -106,11 +106,11 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.showTitle) SectionRow(AIcons.location),
+        if (widget.showTitle) const SectionRow(AIcons.location),
         FutureBuilder<bool>(
           future: availability.isConnected,
           builder: (context, snapshot) {
-            if (snapshot.data != true) return SizedBox();
+            if (snapshot.data != true) return const SizedBox();
             return Selector<Settings, EntryMapStyle>(
               selector: (context, s) => s.infoMapStyle,
               builder: (context, mapStyle, child) {
@@ -130,7 +130,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
                         visible: !isGoogleMaps || _googleMapsLoaded,
                         replacement: Stack(
                           children: [
-                            MapDecorator(),
+                            const MapDecorator(),
                             MapButtonPanel(
                               geoUri: geoUri,
                               zoomBy: (_) {},
@@ -169,7 +169,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
         _AddressInfoGroup(entry: entry),
         if (filters.isNotEmpty)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
             child: Wrap(
               spacing: 8,
               runSpacing: 8,

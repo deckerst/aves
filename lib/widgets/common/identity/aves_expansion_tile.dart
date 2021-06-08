@@ -35,7 +35,7 @@ class AvesExpansionTile extends StatelessWidget {
       titleChild = Row(
         children: [
           leading!,
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Expanded(child: titleChild),
         ],
       );
@@ -52,15 +52,15 @@ class AvesExpansionTile extends StatelessWidget {
         title: titleChild,
         expandable: enabled,
         initiallyExpanded: initiallyExpanded,
-        finalPadding: EdgeInsets.symmetric(vertical: 6.0),
+        finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
         baseColor: Colors.grey.shade900,
         expandedColor: Colors.grey[850],
         shadowColor: Theme.of(context).shadowColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(thickness: 1, height: 1),
-            SizedBox(height: 4),
+            const Divider(thickness: 1, height: 1),
+            const SizedBox(height: 4),
             if (enabled) ...children,
           ],
         ),

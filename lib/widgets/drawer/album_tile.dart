@@ -23,7 +23,7 @@ class AlbumTile extends StatelessWidget {
       ),
       title: displayName,
       trailing: androidFileUtils.isOnRemovableStorage(album)
-          ? Icon(
+          ? const Icon(
               AIcons.removableStorage,
               size: 16,
               color: Colors.grey,

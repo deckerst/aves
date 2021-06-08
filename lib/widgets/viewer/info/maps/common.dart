@@ -37,7 +37,7 @@ class MapDecorator extends StatelessWidget {
           height: 200,
           child: Stack(
             children: [
-              GridPaper(
+              const GridPaper(
                 color: mapLoadingGrid,
                 interval: 10,
                 divisions: 1,
@@ -72,7 +72,7 @@ class MapButtonPanel extends StatelessWidget {
       child: Align(
         alignment: AlignmentDirectional.centerEnd,
         child: Padding(
-          padding: EdgeInsets.all(padding),
+          padding: const EdgeInsets.all(padding),
           child: TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
@@ -87,7 +87,7 @@ class MapButtonPanel extends StatelessWidget {
                   }),
                   tooltip: context.l10n.entryActionOpenMap,
                 ),
-                SizedBox(height: padding),
+                const SizedBox(height: padding),
                 MapOverlayButton(
                   icon: AIcons.layers,
                   onPressed: () async {
@@ -113,13 +113,13 @@ class MapButtonPanel extends StatelessWidget {
                   },
                   tooltip: context.l10n.viewerInfoMapStyleTooltip,
                 ),
-                Spacer(),
+                const Spacer(),
                 MapOverlayButton(
                   icon: AIcons.zoomIn,
                   onPressed: () => zoomBy(1),
                   tooltip: context.l10n.viewerInfoMapZoomInTooltip,
                 ),
-                SizedBox(height: padding),
+                const SizedBox(height: padding),
                 MapOverlayButton(
                   icon: AIcons.zoomOut,
                   onPressed: () => zoomBy(-1),

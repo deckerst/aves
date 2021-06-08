@@ -25,7 +25,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final ValueNotifier<StreamSummary?> _selectedVideoStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary?> _selectedAudioStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary?> _selectedTextStream = ValueNotifier(null);
-  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(Tuple2(1, 1));
+  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(const Tuple2(1, 1));
   Timer? _initialPlayTimer;
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
@@ -59,7 +59,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   Future<void> _init({int startMillis = 0}) async {
-    _sar.value = Tuple2(1, 1);
+    _sar.value = const Tuple2(1, 1);
     _applyOptions(startMillis);
 
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
@@ -249,7 +249,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
               alignment: _alignmentForRotation(entry.rotationDegrees),
               macroBlockCrop: _macroBlockCrop,
             ),
-            panelBuilder: (player, data, context, viewSize, texturePos) => SizedBox(),
+            panelBuilder: (player, data, context, viewSize, texturePos) => const SizedBox(),
             color: Colors.transparent,
           );
         });

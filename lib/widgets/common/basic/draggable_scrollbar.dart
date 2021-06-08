@@ -89,7 +89,7 @@ class DraggableScrollbar extends StatefulWidget {
                 backgroundColor: backgroundColor,
                 child: labelText,
               ),
-              SizedBox(width: 24),
+              const SizedBox(width: 24),
               scrollThumb,
             ],
           );
@@ -117,11 +117,11 @@ class ScrollLabel extends StatelessWidget {
     return FadeTransition(
       opacity: animation,
       child: Container(
-        margin: EdgeInsets.only(right: 12.0),
+        margin: const EdgeInsets.only(right: 12.0),
         child: Material(
           elevation: 4.0,
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
           child: child,
         ),
       ),
@@ -386,8 +386,8 @@ class SlideFadeTransition extends StatelessWidget {
       builder: (context, child) => animation.value == 0.0 ? Container() : child!,
       child: SlideTransition(
         position: Tween(
-          begin: Offset(0.3, 0.0),
-          end: Offset(0.0, 0.0),
+          begin: const Offset(0.3, 0.0),
+          end: const Offset(0.0, 0.0),
         ).animate(animation),
         child: FadeTransition(
           opacity: animation,

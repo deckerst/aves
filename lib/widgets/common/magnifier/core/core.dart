@@ -302,7 +302,7 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return applyScale ? BoxConstraints.tight(subjectSize) : BoxConstraints();
+    return applyScale ? BoxConstraints.tight(subjectSize) : const BoxConstraints();
   }
 
   @override

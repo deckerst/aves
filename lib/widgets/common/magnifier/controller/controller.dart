@@ -28,7 +28,7 @@ class MagnifierController {
     _currentState = initial;
     _setState(initial);
 
-    final _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: ChangeSource.internal);
+    const _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: ChangeSource.internal);
     previousScaleState = _initialScaleState;
     _currentScaleState = _initialScaleState;
     _setScaleState(_initialScaleState);

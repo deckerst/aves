@@ -23,7 +23,7 @@ extension ExtraDateTime on DateTime {
 
   bool get isToday => isAtSameDayAs(DateTime.now());
 
-  bool get isYesterday => isAtSameDayAs(DateTime.now().subtract(Duration(days: 1)));
+  bool get isYesterday => isAtSameDayAs(DateTime.now().subtract(const Duration(days: 1)));
 
   bool get isThisMonth => isAtSameMonthAs(DateTime.now());
 

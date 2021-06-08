@@ -9,12 +9,12 @@ class AboutCredits extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(context.l10n.aboutCredits, style: Constants.titleTextStyle),
@@ -24,7 +24,7 @@ class AboutCredits extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(text: context.l10n.aboutCreditsWorldAtlas1),
-                WidgetSpan(
+                const WidgetSpan(
                   child: LinkChip(
                     text: 'World Atlas',
                     url: 'https://github.com/topojson/world-atlas',
@@ -36,7 +36,7 @@ class AboutCredits extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );

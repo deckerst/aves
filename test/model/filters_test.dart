@@ -13,7 +13,7 @@ void main() {
   test('Filter serialization', () {
     CollectionFilter jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
 
-    final album = AlbumFilter('path/to/album', 'album');
+    const album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));
 
     const fav = FavouriteFilter.instance;

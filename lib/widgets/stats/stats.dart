@@ -16,7 +16,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
-
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
@@ -87,7 +86,7 @@ class StatsPage extends StatelessWidget {
       final textScaleFactor = MediaQuery.textScaleFactorOf(context);
       final lineHeight = 16 * textScaleFactor;
       final locationIndicator = Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             LinearPercentIndicator(
@@ -96,15 +95,15 @@ class StatsPage extends StatelessWidget {
               backgroundColor: Colors.white24,
               progressColor: Theme.of(context).accentColor,
               animation: true,
-              leading: Icon(AIcons.location),
+              leading: const Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below
-              padding: EdgeInsets.symmetric(horizontal: lineHeight) + EdgeInsets.only(right: 24),
+              padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
               center: Text(
                 NumberFormat.percentPattern().format(withGpsPercent),
-                style: TextStyle(shadows: [Constants.embossShadow]),
+                style: const TextStyle(shadows: Constants.embossShadows),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(context.l10n.statsWithGps(withGpsCount)),
           ],
         ),
@@ -132,7 +131,7 @@ class StatsPage extends StatelessWidget {
   }
 
   Widget _buildMimeDonut(BuildContext context, String Function(int) label, Map<String, int> byMimeTypes) {
-    if (byMimeTypes.isEmpty) return SizedBox.shrink();
+    if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
 
@@ -193,12 +192,12 @@ class StatsPage extends StatelessWidget {
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Padding(
-                              padding: EdgeInsetsDirectional.only(end: 8),
+                              padding: const EdgeInsetsDirectional.only(end: 8),
                               child: Icon(AIcons.disc, color: d.color),
                             ),
                           ),
                           TextSpan(text: '${d.displayText}   '),
-                          TextSpan(text: '${d.entryCount}', style: TextStyle(color: Colors.white70)),
+                          TextSpan(text: '${d.entryCount}', style: const TextStyle(color: Colors.white70)),
                         ],
                       ),
                       overflow: TextOverflow.fade,
@@ -235,7 +234,7 @@ class StatsPage extends StatelessWidget {
 
     return [
       Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Text(
           title,
           style: Constants.titleTextStyle,
@@ -272,7 +271,7 @@ class StatsPage extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
+        settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],

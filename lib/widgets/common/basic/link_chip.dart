@@ -9,7 +9,7 @@ class LinkChip extends StatelessWidget {
   final Color? color;
   final TextStyle? textStyle;
 
-  static final borderRadius = BorderRadius.circular(8);
+  static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   const LinkChip({
     Key? key,
@@ -23,7 +23,7 @@ class LinkChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTextStyle.merge(
-      style: (textStyle ?? TextStyle()).copyWith(color: color),
+      style: (textStyle ?? const TextStyle()).copyWith(color: color),
       child: InkWell(
         borderRadius: borderRadius,
         onTap: () async {
@@ -32,13 +32,13 @@ class LinkChip extends StatelessWidget {
           }
         },
         child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (leading != null) ...[
                 leading!,
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
               ],
               Flexible(
                 child: Text(
@@ -48,7 +48,7 @@ class LinkChip extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Builder(
                 builder: (context) => Icon(
                   AIcons.openOutside,

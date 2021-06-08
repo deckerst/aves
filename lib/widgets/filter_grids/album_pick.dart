@@ -113,7 +113,7 @@ class AlbumPickAppBar extends StatelessWidget {
     }
 
     return SliverAppBar(
-      leading: BackButton(),
+      leading: const BackButton(),
       title: SourceStateAwareAppBarTitle(
         title: Text(title()),
         source: source,
@@ -123,7 +123,7 @@ class AlbumPickAppBar extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          icon: Icon(AIcons.createAlbum),
+          icon: const Icon(AIcons.createAlbum),
           onPressed: () async {
             final newAlbum = await showDialog<String>(
               context: context,
@@ -173,7 +173,7 @@ class AlbumFilterBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(preferredHeight);
+  Size get preferredSize => const Size.fromHeight(preferredHeight);
 
   @override
   Widget build(BuildContext context) {

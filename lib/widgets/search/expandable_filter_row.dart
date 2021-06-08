@@ -25,7 +25,7 @@ class ExpandableFilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (filters.isEmpty) return SizedBox.shrink();
+    if (filters.isEmpty) return const SizedBox.shrink();
 
     final hasTitle = title != null && title!.isNotEmpty;
 
@@ -34,7 +34,7 @@ class ExpandableFilterRow extends StatelessWidget {
     Widget? titleRow;
     if (hasTitle) {
       titleRow = Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             Text(
@@ -55,7 +55,7 @@ class ExpandableFilterRow extends StatelessWidget {
     final filterList = filters.toList();
     final wrap = Container(
       key: ValueKey('wrap$title'),
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
       // specify transparent as a workaround to prevent
       // chip border clipping when the floating app bar is fading
       color: Colors.transparent,
@@ -73,12 +73,12 @@ class ExpandableFilterRow extends StatelessWidget {
       height: AvesFilterChip.minChipHeight,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        physics: BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
         itemBuilder: (context, index) {
-          return index < filterList.length ? _buildFilterChip(filterList[index]) : SizedBox();
+          return index < filterList.length ? _buildFilterChip(filterList[index]) : const SizedBox();
         },
-        separatorBuilder: (context, index) => SizedBox(width: 8),
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemCount: filterList.length,
       ),
     );

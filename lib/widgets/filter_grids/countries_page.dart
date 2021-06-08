@@ -65,7 +65,7 @@ class CountryListPage extends StatelessWidget {
 
     return {
       if (pinnedMapEntries.isNotEmpty || unpinnedMapEntries.isNotEmpty)
-        ChipSectionKey(): [
+        const ChipSectionKey(): [
           ...pinnedMapEntries,
           ...unpinnedMapEntries,
         ],

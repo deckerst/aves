@@ -159,14 +159,14 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
             break;
           case EntryGroupFactor.none:
             sections = Map.fromEntries([
-              MapEntry(SectionKey(), _filteredSortedEntries),
+              MapEntry(const SectionKey(), _filteredSortedEntries),
             ]);
             break;
         }
         break;
       case EntrySortFactor.size:
         sections = Map.fromEntries([
-          MapEntry(SectionKey(), _filteredSortedEntries),
+          MapEntry(const SectionKey(), _filteredSortedEntries),
         ]);
         break;
       case EntrySortFactor.name:

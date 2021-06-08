@@ -101,7 +101,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       // no bounce at the bottom, to avoid video controller displacement
       curve: Curves.easeOutQuad,
     );
-    _bottomOverlayOffset = Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(CurvedAnimation(
+    _bottomOverlayOffset = Tween(begin: const Offset(0, 1), end: const Offset(0, 0)).animate(CurvedAnimation(
       parent: _overlayAnimationController,
       curve: Curves.easeOutQuad,
     ));
@@ -220,7 +220,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
       builder: (context, mainEntry, child) {
-        if (mainEntry == null) return SizedBox.shrink();
+        if (mainEntry == null) return const SizedBox.shrink();
 
         return ViewerTopOverlay(
           mainEntry: mainEntry,
@@ -276,7 +276,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
       builder: (context, mainEntry, child) {
-        if (mainEntry == null) return SizedBox.shrink();
+        if (mainEntry == null) return const SizedBox.shrink();
 
         Widget? _buildExtraBottomOverlay(AvesEntry pageEntry) {
           // a 360 video is both a video and a panorama but only the video controls are displayed
@@ -304,12 +304,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 stream: multiPageController.infoStream,
                 builder: (context, snapshot) {
                   final multiPageInfo = multiPageController.info;
-                  if (multiPageInfo == null) return SizedBox.shrink();
+                  if (multiPageInfo == null) return const SizedBox.shrink();
                   return ValueListenableBuilder<int?>(
                     valueListenable: multiPageController.pageNotifier,
                     builder: (context, page, child) {
                       final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-                      return _buildExtraBottomOverlay(pageEntry) ?? SizedBox();
+                      return _buildExtraBottomOverlay(pageEntry) ?? const SizedBox();
                     },
                   );
                 })
@@ -380,7 +380,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
+        settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) {
           return CollectionPage(
             CollectionLens(
@@ -606,7 +606,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     // video decoding may fail or have initial artifacts when the player initializes
     // during this widget initialization (because of the page transition and hero animation?)
     // so we play after a delay for increased stability
-    await Future.delayed(Duration(milliseconds: 300) * timeDilation);
+    await Future.delayed(const Duration(milliseconds: 300) * timeDilation);
 
     await videoController.play();
 

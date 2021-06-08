@@ -26,7 +26,7 @@ class SectionedListSliver<T> extends StatelessWidget {
         (context, index) {
           if (index >= childCount) return null;
           final sectionLayout = sectionLayouts.firstWhereOrNull((section) => section.hasChild(index));
-          return sectionLayout?.builder(context, index) ?? SizedBox.shrink();
+          return sectionLayout?.builder(context, index) ?? const SizedBox.shrink();
         },
         childCount: childCount,
         addAutomaticKeepAlives: false,

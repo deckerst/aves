@@ -41,7 +41,7 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
   XmpGAudioNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('$ns:Data', '$ns:Mime')];
+  List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
 
   @override
   String get displayTitle => 'Google Audio';
@@ -53,7 +53,7 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
   XmpGDepthNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [
+  List<Tuple2<String, String>> get dataProps => const [
         Tuple2('$ns:Data', '$ns:Mime'),
         Tuple2('$ns:Confidence', '$ns:ConfidenceMime'),
       ];
@@ -68,7 +68,7 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
   XmpGImageNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('$ns:Data', '$ns:Mime')];
+  List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
 
   @override
   String get displayTitle => 'Google Image';
@@ -89,7 +89,7 @@ class XmpGCameraNamespace extends XmpNamespace {
   Map<String, String> get buildProps {
     return _isMotionPhoto
         ? Map.fromEntries({
-            MapEntry(videoDataKey, '[skipped]'),
+            const MapEntry(videoDataKey, '[skipped]'),
             ...rawProps.entries,
           })
         : rawProps;

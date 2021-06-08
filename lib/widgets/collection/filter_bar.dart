@@ -20,7 +20,7 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
         super(key: key);
 
   @override
-  final Size preferredSize = Size.fromHeight(preferredHeight);
+  final Size preferredSize = const Size.fromHeight(preferredHeight);
 
   @override
   _FilterBarState createState() => _FilterBarState();
@@ -92,10 +92,10 @@ class _FilterBarState extends State<FilterBar> {
           key: _animatedListKey,
           initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.only(left: 8),
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(left: 8),
           itemBuilder: (context, index, animation) {
-            if (index >= widget.filters.length) return SizedBox();
+            if (index >= widget.filters.length) return const SizedBox();
             return _buildChip(widget.filters.toList()[index]);
           },
         ),
@@ -105,7 +105,7 @@ class _FilterBarState extends State<FilterBar> {
 
   Padding _buildChip(CollectionFilter filter) {
     return Padding(
-      padding: EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.only(right: 8),
       child: Center(
         child: AvesFilterChip(
           key: ValueKey(filter),

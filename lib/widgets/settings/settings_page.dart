@@ -47,14 +47,14 @@ class _SettingsPageState extends State<SettingsPage> {
           data: theme.copyWith(
             textTheme: theme.textTheme.copyWith(
               // dense style font for tile subtitles, without modifying title font
-              bodyText2: TextStyle(fontSize: 12),
+              bodyText2: const TextStyle(fontSize: 12),
             ),
           ),
           child: SafeArea(
             child: Consumer<Settings>(
               builder: (context, settings, child) => AnimationLimiter(
                 child: ListView(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   children: AnimationConfiguration.toStaggeredList(
                     duration: Durations.staggeredAnimation,
                     delay: Durations.staggeredAnimationDelay,
@@ -333,17 +333,17 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildLeading(IconData icon, Color color) => Container(
-        padding: EdgeInsets.all(6),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          border: Border.all(
+          border: Border.fromBorderSide(BorderSide(
             color: color,
             width: AvesFilterChip.outlineWidth,
-          ),
+          )),
           shape: BoxShape.circle,
         ),
         child: DecoratedIcon(
           icon,
-          shadows: [Constants.embossShadow],
+          shadows: Constants.embossShadows,
           size: 18,
         ),
       );

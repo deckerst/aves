@@ -54,12 +54,12 @@ class _AppDrawerState extends State<AppDrawer> {
       if (showVideos) videoTile,
       if (showFavourites) favouriteTile,
       _buildSpecialAlbumSection(),
-      Divider(),
+      const Divider(),
       albumListTile,
       countryListTile,
       tagListTile,
       if (!kReleaseMode) ...[
-        Divider(),
+        const Divider(),
         debugTile,
       ],
     ];
@@ -101,7 +101,7 @@ class _AppDrawerState extends State<AppDrawer> {
     }
 
     return Container(
-      padding: EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
+      padding: const EdgeInsets.only(left: 16, top: 16, right: 16, bottom: 8),
       color: Theme.of(context).accentColor,
       child: SafeArea(
         bottom: false,
@@ -114,10 +114,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 spacing: 16,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  AvesLogo(size: 64),
+                  const AvesLogo(size: 64),
                   Text(
                     context.l10n.appName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 44,
                       fontWeight: FontWeight.w300,
                       letterSpacing: 1.0,
@@ -127,7 +127,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 ],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             OutlinedButtonTheme(
               data: OutlinedButtonThemeData(
                 style: ButtonStyle(
@@ -140,9 +140,9 @@ class _AppDrawerState extends State<AppDrawer> {
                 runSpacing: 8,
                 children: [
                   OutlinedButton.icon(
-                    key: Key('drawer-about-button'),
+                    key: const Key('drawer-about-button'),
                     onPressed: () => goTo(AboutPage.routeName, (_) => AboutPage()),
-                    icon: Icon(AIcons.info),
+                    icon: const Icon(AIcons.info),
                     label: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -156,11 +156,11 @@ class _AppDrawerState extends State<AppDrawer> {
                               duration: Durations.newsBadgeAnimation,
                               opacity: newVersion ? 1 : 0,
                               child: Padding(
-                                padding: EdgeInsetsDirectional.only(start: 2),
+                                padding: const EdgeInsetsDirectional.only(start: 2),
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white70),
-                                    borderRadius: BorderRadius.circular(badgeSize),
+                                    border: const Border.fromBorderSide(BorderSide(color: Colors.white70)),
+                                    borderRadius: BorderRadius.all(Radius.circular(badgeSize)),
                                   ),
                                   child: Icon(
                                     Icons.circle,
@@ -176,9 +176,9 @@ class _AppDrawerState extends State<AppDrawer> {
                     ),
                   ),
                   OutlinedButton.icon(
-                    key: Key('drawer-settings-button'),
+                    key: const Key('drawer-settings-button'),
                     onPressed: () => goTo(SettingsPage.routeName, (_) => SettingsPage()),
-                    icon: Icon(AIcons.settings),
+                    icon: const Icon(AIcons.settings),
                     label: Text(context.l10n.settingsPageTitle),
                   ),
                 ],
@@ -200,10 +200,10 @@ class _AppDrawerState extends State<AppDrawer> {
           }).toList()
             ..sort(source.compareAlbumsByName);
 
-          if (specialAlbums.isEmpty) return SizedBox.shrink();
+          if (specialAlbums.isEmpty) return const SizedBox.shrink();
           return Column(
             children: [
-              Divider(),
+              const Divider(),
               ...specialAlbums.map((album) => AlbumTile(album)),
             ],
           );
@@ -213,19 +213,19 @@ class _AppDrawerState extends State<AppDrawer> {
   // tiles
 
   Widget get allCollectionTile => CollectionNavTile(
-        leading: Icon(AIcons.allCollection),
+        leading: const Icon(AIcons.allCollection),
         title: context.l10n.drawerCollectionAll,
         filter: null,
       );
 
   Widget get videoTile => CollectionNavTile(
-        leading: Icon(AIcons.video),
+        leading: const Icon(AIcons.video),
         title: context.l10n.drawerCollectionVideos,
         filter: MimeFilter.video,
       );
 
   Widget get favouriteTile => CollectionNavTile(
-        leading: Icon(AIcons.favourite),
+        leading: const Icon(AIcons.favourite),
         title: context.l10n.drawerCollectionFavourites,
         filter: FavouriteFilter.instance,
       );

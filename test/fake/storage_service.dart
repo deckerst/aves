@@ -12,14 +12,14 @@ class FakeStorageService extends Fake implements StorageService {
 
   @override
   Future<Set<StorageVolume>> getStorageVolumes() => SynchronousFuture({
-        StorageVolume(
+    const StorageVolume(
           path: primaryPath,
           description: primaryDescription,
           isPrimary: true,
           isRemovable: false,
           state: 'fake',
         ),
-        StorageVolume(
+    const StorageVolume(
           path: removablePath,
           description: removableDescription,
           isPrimary: false,

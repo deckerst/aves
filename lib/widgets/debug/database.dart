@@ -35,7 +35,7 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
       title: 'Database',
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             children: [
               FutureBuilder<int>(
@@ -43,17 +43,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('DB file size: ${formatFilesize(snapshot.data!)}'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => metadataDb.reset().then((_) => _startDbReport()),
-                        child: Text('Reset'),
+                        child: const Text('Reset'),
                       ),
                     ],
                   );
@@ -64,17 +64,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('entry rows: ${snapshot.data!.length}'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => metadataDb.clearEntries().then((_) => _startDbReport()),
-                        child: Text('Clear'),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );
@@ -85,17 +85,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('date rows: ${snapshot.data!.length}'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => metadataDb.clearDates().then((_) => _startDbReport()),
-                        child: Text('Clear'),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );
@@ -106,17 +106,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('metadata rows: ${snapshot.data!.length}'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => metadataDb.clearMetadataEntries().then((_) => _startDbReport()),
-                        child: Text('Clear'),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );
@@ -127,17 +127,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('address rows: ${snapshot.data!.length}'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => metadataDb.clearAddresses().then((_) => _startDbReport()),
-                        child: Text('Clear'),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );
@@ -148,17 +148,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('favourite rows: ${snapshot.data!.length} (${favourites.count} in memory)'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => favourites.clear().then((_) => _startDbReport()),
-                        child: Text('Clear'),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );
@@ -169,17 +169,17 @@ class _DebugAppDatabaseSectionState extends State<DebugAppDatabaseSection> with 
                 builder: (context, snapshot) {
                   if (snapshot.hasError) return Text(snapshot.error.toString());
 
-                  if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                  if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
 
                   return Row(
                     children: [
                       Expanded(
                         child: Text('cover rows: ${snapshot.data!.length} (${covers.count} in memory)'),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () => covers.clear().then((_) => _startDbReport()),
-                        child: Text('Clear'),
+                        child: const Text('Clear'),
                       ),
                     ],
                   );

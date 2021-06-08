@@ -41,11 +41,11 @@ class OpenEmbeddedDataNotification extends Notification {
     this.mimeType,
   });
 
-  factory OpenEmbeddedDataNotification.motionPhotoVideo() => OpenEmbeddedDataNotification._private(
+  factory OpenEmbeddedDataNotification.motionPhotoVideo() => const OpenEmbeddedDataNotification._private(
         source: EmbeddedDataSource.motionPhotoVideo,
       );
 
-  factory OpenEmbeddedDataNotification.videoCover() => OpenEmbeddedDataNotification._private(
+  factory OpenEmbeddedDataNotification.videoCover() => const OpenEmbeddedDataNotification._private(
         source: EmbeddedDataSource.videoCover,
       );
 
