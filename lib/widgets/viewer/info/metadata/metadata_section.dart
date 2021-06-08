@@ -87,7 +87,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
             builder: (context, metadata, child) {
               Widget content;
               if (metadata.isEmpty) {
-                content = SizedBox.shrink();
+                content = const SizedBox.shrink();
               } else {
                 content = Column(
                   children: AnimationConfiguration.toStaggeredList(
@@ -100,7 +100,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
                       ),
                     ),
                     children: [
-                      SectionRow(AIcons.info),
+                      const SectionRow(AIcons.info),
                       ...metadata.entries.map((kv) => MetadataDirTile(
                             entry: entry,
                             title: kv.key,

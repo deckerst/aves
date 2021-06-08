@@ -318,7 +318,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
       primary: true,
       // workaround to prevent scrolling the app bar away
       // when there is no content and we use `SliverFillRemaining`
-      physics: collection.isEmpty ? NeverScrollableScrollPhysics() : SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      physics: collection.isEmpty ? const NeverScrollableScrollPhysics() : const SloppyScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       cacheExtent: context.select<TileExtentController, double>((controller) => controller.effectiveExtentMax),
       slivers: [
         appBar,
@@ -327,7 +327,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
                 hasScrollBody: false,
                 child: _buildEmptyCollectionPlaceholder(collection),
               )
-            : SectionedListSliver<AvesEntry>(),
+            : const SectionedListSliver<AvesEntry>(),
         BottomPaddingSliver(),
       ],
     );
@@ -338,7 +338,7 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
       valueListenable: collection.source.stateNotifier,
       builder: (context, sourceState, child) {
         if (sourceState == SourceState.loading) {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
         if (collection.filters.any((filter) => filter is FavouriteFilter)) {
           return EmptyContent(

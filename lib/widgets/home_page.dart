@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold();
+  Widget build(BuildContext context) => const Scaffold();
 
   Future<void> _setup() async {
     final permissions = await [
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
   Route _getRedirectRoute(AppMode appMode) {
     if (appMode == AppMode.view) {
       return DirectMaterialPageRoute(
-        settings: RouteSettings(name: EntryViewerPage.routeName),
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
         builder: (_) => EntryViewerPage(
           initialEntry: _viewerEntry!,
         ),
@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
     switch (routeName) {
       case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
-          settings: RouteSettings(name: AlbumListPage.routeName),
+          settings: const RouteSettings(name: AlbumListPage.routeName),
           builder: (_) => AlbumListPage(),
         );
       case SearchPage.routeName:
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
       case CollectionPage.routeName:
       default:
         return DirectMaterialPageRoute(
-          settings: RouteSettings(name: CollectionPage.routeName),
+          settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (_) => CollectionPage(
             CollectionLens(
               source: source,

@@ -45,7 +45,7 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
       Widget? child;
       switch (selected) {
         case EntryBackground.transparent:
-          child = Icon(
+          child = const Icon(
             Icons.clear,
             size: 20,
             color: Colors.white30,

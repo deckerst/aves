@@ -10,20 +10,20 @@ ScrollThumbBuilder avesScrollThumbBuilder({
   required Color backgroundColor,
 }) {
   final scrollThumb = Container(
-    decoration: BoxDecoration(
+    decoration: const BoxDecoration(
       color: Colors.black26,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.all(Radius.circular(12)),
     ),
     height: height,
-    margin: EdgeInsets.only(right: .5),
-    padding: EdgeInsets.all(2),
+    margin: const EdgeInsets.only(right: .5),
+    padding: const EdgeInsets.all(2),
     child: ClipPath(
       clipper: ArrowClipper(),
       child: Container(
         width: 20.0,
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
       ),
     ),

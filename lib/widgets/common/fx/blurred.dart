@@ -40,7 +40,7 @@ class BlurredRRect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
+      borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
       child: BackdropFilter(
         filter: _filter,
         child: child,

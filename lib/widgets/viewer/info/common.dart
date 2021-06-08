@@ -13,7 +13,7 @@ class SectionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const dim = 32.0;
-    Widget buildDivider() => SizedBox(
+    Widget buildDivider() => const SizedBox(
           width: dim,
           child: Divider(
             thickness: AvesFilterChip.outlineWidth,
@@ -25,7 +25,7 @@ class SectionRow extends StatelessWidget {
       children: [
         buildDivider(),
         Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Icon(
             icon,
             size: dim,
@@ -45,7 +45,7 @@ class InfoRowGroup extends StatefulWidget {
   static const keyValuePadding = 16;
   static const linkColor = Colors.blue;
   static const fontSize = 13.0;
-  static final baseStyle = TextStyle(fontSize: fontSize);
+  static const baseStyle = TextStyle(fontSize: fontSize);
   static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 2.0);
   static final linkStyle = baseStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
 
@@ -70,7 +70,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
   @override
   Widget build(BuildContext context) {
-    if (keyValues.isEmpty) return SizedBox.shrink();
+    if (keyValues.isEmpty) return const SizedBox.shrink();
 
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
@@ -143,7 +143,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
       span,
       textDirection: TextDirection.ltr,
       textScaleFactor: textScaleFactor,
-    )..layout(BoxConstraints(), parentUsesSize: true);
+    )..layout(const BoxConstraints(), parentUsesSize: true);
     return para.getMaxIntrinsicWidth(double.infinity);
   }
 }

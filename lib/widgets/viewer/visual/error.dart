@@ -42,7 +42,7 @@ class _ErrorViewState extends State<ErrorView> {
         child: FutureBuilder<bool>(
             future: _exists,
             builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) return SizedBox();
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
               final exists = snapshot.data!;
               return EmptyContent(
                 icon: exists ? AIcons.error : AIcons.broken,

@@ -65,7 +65,7 @@ class AvesFilterChip extends StatefulWidget {
       FocusManager.instance.primaryFocus?.unfocus();
 
       final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
-      final touchArea = Size(40, 40);
+      const touchArea = Size(40, 40);
       final selectedAction = await showMenu<ChipAction>(
         context: context,
         position: RelativeRect.fromRect(tapPosition & touchArea, Offset.zero & overlay.size),
@@ -186,17 +186,17 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
           color: Colors.black54,
           child: DefaultTextStyle(
             style: Theme.of(context).textTheme.bodyText2!.copyWith(
-              shadows: [Constants.embossShadow],
-            ),
+                  shadows: Constants.embossShadows,
+                ),
             child: content,
           ),
         ),
       );
     }
 
-    final borderRadius = widget.borderRadius ?? BorderRadius.circular(AvesFilterChip.defaultRadius);
+    final borderRadius = widget.borderRadius ?? const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius));
     Widget chip = Container(
-      constraints: BoxConstraints(
+      constraints: const BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
         maxWidth: AvesFilterChip.maxChipWidth,
         minHeight: AvesFilterChip.minChipHeight,
@@ -237,15 +237,15 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
                     }
                     return DecoratedBox(
                       decoration: BoxDecoration(
-                        border: Border.all(
+                        border: Border.fromBorderSide(BorderSide(
                           color: _outlineColor,
                           width: AvesFilterChip.outlineWidth,
-                        ),
+                        )),
                         borderRadius: borderRadius,
                       ),
                       position: DecorationPosition.foreground,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(vertical: 8),
                         child: content,
                       ),
                     );
@@ -263,7 +263,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
         tag: filter,
         transitionOnUserGestures: true,
         child: DefaultTextStyle(
-          style: TextStyle(),
+          style: const TextStyle(),
           child: chip,
         ),
       );

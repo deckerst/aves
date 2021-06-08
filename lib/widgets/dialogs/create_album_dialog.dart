@@ -50,12 +50,12 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       final otherVolumes = (byPrimary[false] ?? [])..sort(compare);
       volumeTiles.addAll([
         Padding(
-          padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(top: 20),
+          padding: AvesDialog.contentHorizontalPadding + const EdgeInsets.only(top: 20),
           child: Text(context.l10n.newAlbumDialogStorageLabel),
         ),
         ...primaryVolumes.map((volume) => _buildVolumeTile(context, volume)),
         ...otherVolumes.map((volume) => _buildVolumeTile(context, volume)),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
       ]);
     }
 
@@ -66,7 +66,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
       scrollableContent: [
         ...volumeTiles,
         Padding(
-          padding: AvesDialog.contentHorizontalPadding + EdgeInsets.only(bottom: 8),
+          padding: AvesDialog.contentHorizontalPadding + const EdgeInsets.only(bottom: 8),
           child: ValueListenableBuilder<bool>(
               valueListenable: _existsNotifier,
               builder: (context, exists, child) {

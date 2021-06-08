@@ -35,7 +35,7 @@ class SectionHeader extends StatelessWidget {
     return Container(
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
-      constraints: BoxConstraints(minHeight: leadingDimension),
+      constraints: const BoxConstraints(minHeight: leadingDimension),
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
         child: Text.rich(
@@ -158,12 +158,12 @@ class _SectionSelectableLeading extends StatelessWidget {
                     ),
                     child: IconButton(
                       iconSize: 26,
-                      padding: EdgeInsets.only(top: 1),
+                      padding: const EdgeInsets.only(top: 1),
                       alignment: AlignmentDirectional.topStart,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
                       onPressed: onPressed,
                       tooltip: selected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-                      constraints: BoxConstraints(
+                      constraints: const BoxConstraints(
                         minHeight: leadingDimension,
                         minWidth: leadingDimension,
                       ),
@@ -208,5 +208,5 @@ class _SectionSelectableLeading extends StatelessWidget {
     );
   }
 
-  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: leadingDimension);
+  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
 }

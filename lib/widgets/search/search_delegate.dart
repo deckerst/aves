@@ -53,7 +53,7 @@ class CollectionSearchDelegate {
             onPressed: () => _goBack(context),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           )
-        : CloseButton(
+        : const CloseButton(
             onPressed: SystemNavigator.pop,
           );
   }
@@ -62,7 +62,7 @@ class CollectionSearchDelegate {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: Icon(AIcons.clear),
+          icon: const Icon(AIcons.clear),
           onPressed: () {
             query = '';
             showSuggestions(context);
@@ -93,7 +93,7 @@ class CollectionSearchDelegate {
                   final history = settings.searchHistory.where(notHidden).toList();
 
                   return ListView(
-                    padding: EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 8),
                     children: [
                       _buildFilterRow(
                         context: context,
@@ -195,7 +195,7 @@ class CollectionSearchDelegate {
       // and possibly trigger a rebuild here
       _select(context, _buildQueryFilter(true));
     });
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   QueryFilter? _buildQueryFilter(bool colorful) {
@@ -242,7 +242,7 @@ class CollectionSearchDelegate {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
+        settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],
@@ -302,7 +302,7 @@ enum SearchBody { suggestions, results }
 class SearchPageRoute<T> extends PageRoute<T> {
   SearchPageRoute({
     required this.delegate,
-  }) : super(settings: RouteSettings(name: SearchPage.routeName)) {
+  }) : super(settings: const RouteSettings(name: SearchPage.routeName)) {
     assert(
       delegate.route == null,
       'The ${delegate.runtimeType} instance is currently used by another active '

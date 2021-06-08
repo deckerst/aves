@@ -6,17 +6,17 @@ class DebugTaskQueueOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: DefaultTextStyle(
-        style: TextStyle(),
+        style: const TextStyle(),
         child: Align(
           alignment: AlignmentDirectional.bottomStart,
           child: SafeArea(
             child: Container(
               color: Colors.indigo.shade900.withAlpha(0xCC),
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: StreamBuilder<QueueState>(
                   stream: servicePolicy.queueStream,
                   builder: (context, snapshot) {
-                    if (snapshot.hasError) return SizedBox.shrink();
+                    if (snapshot.hasError) return const SizedBox.shrink();
                     final queuedEntries = <MapEntry<dynamic, int>>[];
                     if (snapshot.hasData) {
                       final state = snapshot.data!;

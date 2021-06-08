@@ -32,7 +32,7 @@ class ScaleLayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mapState = MapState.maybeOf(context);
-    return mapState != null ? ScaleLayer(options, mapState, mapState.onMoved) : SizedBox();
+    return mapState != null ? ScaleLayer(options, mapState, mapState.onMoved) : const SizedBox();
   }
 }
 
@@ -112,14 +112,14 @@ class ScaleBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: AlignmentDirectional.bottomStart,
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           OutlinedText(
             text: distance,
-            style: TextStyle(
+            style: const TextStyle(
               color: fillColor,
               fontSize: 11,
             ),
@@ -129,13 +129,13 @@ class ScaleBar extends StatelessWidget {
           Container(
             height: barThickness + outlineWidth * 2,
             width: width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: fillColor,
-              border: Border.all(
+              border: Border.fromBorderSide(BorderSide(
                 color: outlineColor,
                 width: outlineWidth,
-              ),
-              borderRadius: BorderRadius.circular(8),
+              )),
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
         ],

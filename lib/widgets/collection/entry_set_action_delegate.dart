@@ -81,7 +81,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
-        settings: RouteSettings(name: AlbumPickPage.routeName),
+        settings: const RouteSettings(name: AlbumPickPage.routeName),
         builder: (context) => AlbumPickPage(source: source, moveType: moveType),
       ),
     );

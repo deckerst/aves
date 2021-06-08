@@ -42,7 +42,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
       initiallyExpanded: widget.initiallyExpanded,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: sections.expand((section) => section.buildNamespaceSection()).toList(),

@@ -23,21 +23,21 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = [
-      if (entry.hasGps && context.select<ThumbnailThemeData, bool>((t) => t.showLocation)) GpsIcon(),
+      if (entry.hasGps && context.select<ThumbnailThemeData, bool>((t) => t.showLocation)) const GpsIcon(),
       if (entry.isVideo)
         VideoIcon(
           entry: entry,
         )
       else if (entry.isAnimated)
-        AnimatedImageIcon()
+        const AnimatedImageIcon()
       else ...[
-        if (entry.isRaw && context.select<ThumbnailThemeData, bool>((t) => t.showRaw)) RawIcon(),
+        if (entry.isRaw && context.select<ThumbnailThemeData, bool>((t) => t.showRaw)) const RawIcon(),
         if (entry.isMultiPage) MultiPageIcon(entry: entry),
-        if (entry.isGeotiff) GeotiffIcon(),
-        if (entry.is360) SphericalImageIcon(),
+        if (entry.isGeotiff) const GeotiffIcon(),
+        if (entry.is360) const SphericalImageIcon(),
       ]
     ];
-    if (children.isEmpty) return SizedBox.shrink();
+    if (children.isEmpty) return const SizedBox.shrink();
     if (children.length == 1) return children.first;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -74,7 +74,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                           icon: selected ? AIcons.selected : AIcons.unselected,
                           size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
                         )
-                      : SizedBox.shrink();
+                      : const SizedBox.shrink();
                   child = AnimatedSwitcher(
                     duration: duration,
                     switchInCurve: Curves.easeOutBack,
@@ -94,7 +94,7 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
                   return child;
                 },
               )
-            : SizedBox.shrink();
+            : const SizedBox.shrink();
         return AnimatedSwitcher(
           duration: duration,
           child: child,
@@ -130,10 +130,10 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
     return Sweeper(
       builder: (context) => Container(
         decoration: BoxDecoration(
-          border: Border.all(
+          border: Border.fromBorderSide(BorderSide(
             color: Theme.of(context).accentColor,
             width: context.select<ThumbnailThemeData, double>((t) => t.highlightBorderWidth),
-          ),
+          )),
         ),
       ),
       toggledNotifier: _highlightedNotifier,

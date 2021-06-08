@@ -53,7 +53,7 @@ abstract class ChipSetActionDelegate {
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: StatsPage.routeName),
+        settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
           source: source,
         ),

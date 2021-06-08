@@ -156,7 +156,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
-        settings: RouteSettings(name: AlbumPickPage.routeName),
+        settings: const RouteSettings(name: AlbumPickPage.routeName),
         builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
       ),
     );
@@ -227,7 +227,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: SourceViewerPage.routeName),
+        settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
           loader: () => imageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
@@ -239,7 +239,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: ViewerDebugPage.routeName),
+        settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: entry),
       ),
     );

@@ -43,7 +43,7 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
         builder: (context, snapshot) {
           Widget child;
           if (snapshot.connectionState != ConnectionState.done) {
-            child = SizedBox();
+            child = const SizedBox();
           } else {
             final exists = snapshot.data!;
             child = Tooltip(

@@ -36,12 +36,12 @@ class _LicensesState extends State<Licenses> {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       sliver: SliverList(
         delegate: SliverChildListDelegate(
           [
             _buildHeader(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesAndroidLibraries,
               color: BrandColors.android,
@@ -76,7 +76,7 @@ class _LicensesState extends State<Licenses> {
                         // as of Flutter v1.22.4, `cardColor` is used as a background color by `LicensePage`
                         cardColor: Theme.of(context).scaffoldBackgroundColor,
                       ),
-                      child: LicensePage(),
+                      child: const LicensePage(),
                     ),
                   ),
                 ),
@@ -91,18 +91,18 @@ class _LicensesState extends State<Licenses> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 48),
+            constraints: const BoxConstraints(minHeight: 48),
             child: Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(context.l10n.aboutLicenses, style: Constants.titleTextStyle),
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(context.l10n.aboutLicensesBanner),
         ],
       ),
@@ -122,17 +122,17 @@ class LicenseRow extends StatelessWidget {
     final subColor = bodyTextStyle.color!.withOpacity(.6);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LinkChip(
             text: package.name,
             url: package.sourceUrl,
-            textStyle: TextStyle(fontWeight: FontWeight.bold),
+            textStyle: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Padding(
-            padding: EdgeInsetsDirectional.only(start: 16),
+            padding: const EdgeInsetsDirectional.only(start: 16),
             child: LinkChip(
               text: package.license,
               url: package.licenseUrl,

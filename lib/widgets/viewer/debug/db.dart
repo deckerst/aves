@@ -40,13 +40,13 @@ class _DbTabState extends State<DbTab> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       children: [
         FutureBuilder<DateMetadata?>(
           future: _dbDateLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,12 +60,12 @@ class _DbTabState extends State<DbTab> {
             );
           },
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         FutureBuilder<AvesEntry?>(
           future: _dbEntryLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,12 +89,12 @@ class _DbTabState extends State<DbTab> {
             );
           },
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         FutureBuilder<CatalogMetadata?>(
           future: _dbMetadataLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,12 +116,12 @@ class _DbTabState extends State<DbTab> {
             );
           },
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         FutureBuilder<AddressDetails?>(
           future: _dbAddressLoader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+            if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
             final data = snapshot.data;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,

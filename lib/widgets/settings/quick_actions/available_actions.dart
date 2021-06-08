@@ -53,7 +53,7 @@ class AvailableActionPanel extends StatelessWidget {
         return AnimatedBuilder(
           animation: Listenable.merge([quickActionsChangeNotifier, draggedAvailableAction]),
           builder: (context, child) => Padding(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             child: Wrap(
               alignment: WrapAlignment.spaceEvenly,
               spacing: 8,

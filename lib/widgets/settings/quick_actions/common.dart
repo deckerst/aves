@@ -18,16 +18,16 @@ class ActionPanel extends StatelessWidget {
     return AnimatedContainer(
       foregroundDecoration: BoxDecoration(
         color: color.withOpacity(.2),
-        border: Border.all(
+        border: Border.fromBorderSide(BorderSide(
           color: color,
           width: highlight ? 2 : 1,
-        ),
-        borderRadius: BorderRadius.circular(8),
+        )),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
-      margin: EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
       duration: Durations.quickActionHighlightAnimation,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: child,
       ),
     );
@@ -54,7 +54,7 @@ class ActionButton extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(height: padding),
+          const SizedBox(height: padding),
           OverlayButton(
             child: IconButton(
               icon: Icon(action.getIcon()),
@@ -62,7 +62,7 @@ class ActionButton extends StatelessWidget {
             ),
           ),
           if (showCaption) ...[
-            SizedBox(height: padding),
+            const SizedBox(height: padding),
             Text(
               action.getText(context),
               style: enabled ? textStyle : textStyle!.copyWith(color: textStyle.color!.withOpacity(.2)),
@@ -71,7 +71,7 @@ class ActionButton extends StatelessWidget {
               maxLines: 2,
             ),
           ],
-          SizedBox(height: padding),
+          const SizedBox(height: padding),
         ],
       ),
     );

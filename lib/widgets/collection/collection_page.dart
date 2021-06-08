@@ -46,7 +46,7 @@ class _CollectionPageState extends State<CollectionPage> {
                 bottom: false,
                 child: ChangeNotifierProvider<CollectionLens>.value(
                   value: collection,
-                  child: CollectionGrid(
+                  child: const CollectionGrid(
                     key: Key('collection-grid'),
                   ),
                 ),

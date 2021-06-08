@@ -106,7 +106,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     bool animate,
   ) {
     if (sectionChildIndex == 0) {
-      final header = headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : SizedBox.shrink();
+      final header = headerExtent > 0 ? buildHeader(context, sectionKey, headerExtent) : const SizedBox.shrink();
       return animate ? _buildAnimation(sectionGridIndex, header) : header;
     }
     sectionChildIndex--;

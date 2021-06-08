@@ -65,7 +65,7 @@ class _MetadataTabState extends State<MetadataTab> {
         children: [
           if (data.isNotEmpty)
             Padding(
-              padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
                 data,
                 maxValueLength: Constants.infoGroupMaxValueLength,
@@ -77,12 +77,12 @@ class _MetadataTabState extends State<MetadataTab> {
 
     Widget builderFromSnapshot(BuildContext context, AsyncSnapshot<Map> snapshot, String title) {
       if (snapshot.hasError) return Text(snapshot.error.toString());
-      if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+      if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
       return builderFromSnapshotData(context, snapshot.data!, title);
     }
 
     return ListView(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       children: [
         FutureBuilder<Map>(
           future: _bitmapFactoryLoader,
@@ -109,7 +109,7 @@ class _MetadataTabState extends State<MetadataTab> {
             future: _tiffStructureLoader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
-              if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: snapshot.data!.entries.map((kv) => builderFromSnapshotData(context, kv.value as Map, 'TIFF ${kv.key}')).toList(),

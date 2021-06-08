@@ -82,7 +82,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   @override
   Widget build(BuildContext context) {
     // fake page for opacity transition between collection and viewer
-    final transitionPage = SizedBox();
+    const transitionPage = SizedBox();
 
     final imagePage = hasCollection
         ? MultiEntryScroller(
@@ -95,7 +95,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
             ? SingleEntryScroller(
                 entry: entry!,
               )
-            : SizedBox();
+            : const SizedBox();
 
     final infoPage = NotificationListener<BackUpNotification>(
       onNotification: (notification) {
@@ -130,10 +130,10 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         child: child,
       ),
       child: PageView(
-        key: Key('vertical-pageview'),
+        key: const Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
-        physics: MagnifierScrollerPhysics(parent: PageScrollPhysics()),
+        physics: const MagnifierScrollerPhysics(parent: PageScrollPhysics()),
         onPageChanged: widget.onVerticalPageChanged,
         children: pages,
       ),

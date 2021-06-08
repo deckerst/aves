@@ -43,7 +43,7 @@ class ViewerTopOverlay extends StatelessWidget {
     return SafeArea(
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
-        padding: EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(padding),
         child: Selector<MediaQueryData, double>(
           selector: (c, mq) => mq.size.width - mq.padding.horizontal,
           builder: (c, mqWidth, child) {
@@ -126,7 +126,7 @@ class ViewerTopOverlay extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buttonRow,
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               FadeTransition(
                 opacity: scale,
                 child: Minimap(
@@ -165,21 +165,21 @@ class _TopOverlayRow extends StatelessWidget {
       children: [
         OverlayButton(
           scale: scale,
-          child: Navigator.canPop(context) ? BackButton() : CloseButton(),
+          child: Navigator.canPop(context) ? const BackButton() : const CloseButton(),
         ),
-        Spacer(),
+        const Spacer(),
         ...quickActions.map((action) => _buildOverlayButton(context, action)),
         OverlayButton(
           scale: scale,
           child: PopupMenuButton<EntryAction>(
-            key: Key('entry-menu-button'),
+            key: const Key('entry-menu-button'),
             itemBuilder: (context) => [
               ...inAppActions.map((action) => _buildPopupMenuItem(context, action)),
               if (pageEntry.canRotateAndFlip) _buildRotateAndFlipMenuItems(context),
-              PopupMenuDivider(),
+              const PopupMenuDivider(),
               ...externalAppActions.map((action) => _buildPopupMenuItem(context, action)),
               if (!kReleaseMode) ...[
-                PopupMenuDivider(),
+                const PopupMenuDivider(),
                 _buildPopupMenuItem(context, EntryAction.debug),
               ]
             ],
@@ -228,13 +228,13 @@ class _TopOverlayRow extends StatelessWidget {
     }
     return child != null
         ? Padding(
-            padding: EdgeInsetsDirectional.only(end: padding),
+            padding: const EdgeInsetsDirectional.only(end: padding),
             child: OverlayButton(
               scale: scale,
               child: child,
             ),
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 
   PopupMenuEntry<EntryAction> _buildPopupMenuItem(BuildContext context, EntryAction action) {
@@ -275,7 +275,7 @@ class _TopOverlayRow extends StatelessWidget {
   }
 
   PopupMenuItem<EntryAction> _buildRotateAndFlipMenuItems(BuildContext context) {
-    Widget buildDivider() => SizedBox(
+    Widget buildDivider() => const SizedBox(
           height: 16,
           child: VerticalDivider(
             width: 1,
@@ -372,7 +372,7 @@ class _FavouriteTogglerState extends State<_FavouriteToggler> {
             ),
             Sweeper(
               key: ValueKey(widget.entry),
-              builder: (context) => Icon(AIcons.favourite, color: Colors.redAccent),
+              builder: (context) => const Icon(AIcons.favourite, color: Colors.redAccent),
               toggledNotifier: isFavouriteNotifier,
             ),
           ],

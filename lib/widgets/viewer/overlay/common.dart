@@ -51,7 +51,7 @@ class OverlayTextButton extends StatelessWidget {
   }) : super(key: key);
 
   static const _borderRadius = 123.0;
-  static final _minSize = MaterialStateProperty.all<Size>(Size(kMinInteractiveDimension, kMinInteractiveDimension));
+  static final _minSize = MaterialStateProperty.all<Size>(const Size(kMinInteractiveDimension, kMinInteractiveDimension));
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +67,8 @@ class OverlayTextButton extends StatelessWidget {
             overlayColor: MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)),
             minimumSize: _minSize,
             side: MaterialStateProperty.all<BorderSide>(AvesBorder.side),
-            shape: MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(_borderRadius),
+            shape: MaterialStateProperty.all<OutlinedBorder>(const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(_borderRadius)),
             )),
             // shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
           ),

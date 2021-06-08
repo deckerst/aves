@@ -37,11 +37,11 @@ class _WelcomePageState extends State<WelcomePage> {
         body: SafeArea(
           child: Container(
             alignment: Alignment.center,
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: FutureBuilder<String>(
               future: _termsLoader,
               builder: (context, snapshot) {
-                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
+                if (snapshot.hasError || snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
                 final terms = snapshot.data!;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -57,7 +57,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     children: [
                       ..._buildTop(context),
                       Flexible(child: _buildTerms(terms)),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       ..._buildBottomControls(context),
                     ],
                   ),
@@ -78,21 +78,21 @@ class _WelcomePageState extends State<WelcomePage> {
     return [
       ...(context.select<MediaQueryData, Orientation>((mq) => mq.orientation) == Orientation.portrait
           ? [
-              AvesLogo(size: 64),
-              SizedBox(height: 16),
+              const AvesLogo(size: 64),
+              const SizedBox(height: 16),
               message,
             ]
           : [
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AvesLogo(size: 48),
-                  SizedBox(width: 16),
+                  const AvesLogo(size: 48),
+                  const SizedBox(width: 16),
                   message,
                 ],
               )
             ]),
-      SizedBox(height: 16),
+                const SizedBox(height: 16),
     ];
   }
 
@@ -108,7 +108,7 @@ class _WelcomePageState extends State<WelcomePage> {
           text: context.l10n.welcomeAnalyticsToggle,
         ),
         LabeledCheckbox(
-          key: Key('agree-checkbox'),
+          key: const Key('agree-checkbox'),
           value: _hasAcceptedTerms,
           onChanged: (v) {
             if (v != null) setState(() => _hasAcceptedTerms = v);
@@ -119,15 +119,15 @@ class _WelcomePageState extends State<WelcomePage> {
     );
 
     final button = ElevatedButton(
-      key: Key('continue-button'),
+      key: const Key('continue-button'),
       onPressed: _hasAcceptedTerms
           ? () {
               settings.hasAcceptedTerms = true;
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  settings: RouteSettings(name: HomePage.routeName),
-                  builder: (context) => HomePage(),
+                  settings: const RouteSettings(name: HomePage.routeName),
+                  builder: (context) => const HomePage(),
                 ),
               );
             }
@@ -145,7 +145,7 @@ class _WelcomePageState extends State<WelcomePage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 checkboxes,
-                Spacer(),
+    const Spacer(),
                 button,
               ],
             ),
@@ -154,16 +154,16 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget _buildTerms(String terms) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
         color: Colors.white10,
       ),
-      constraints: BoxConstraints(maxWidth: 460),
+      constraints: const BoxConstraints(maxWidth: 460),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
         child: Theme(
           data: Theme.of(context).copyWith(
-            scrollbarTheme: ScrollbarThemeData(
+            scrollbarTheme: const ScrollbarThemeData(
               radius: Radius.circular(16),
               crossAxisMargin: 6,
               mainAxisMargin: 16,

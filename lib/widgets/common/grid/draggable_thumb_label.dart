@@ -17,7 +17,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final sll = context.read<SectionedListLayout<T>>();
     final sectionLayout = sll.getSectionAt(offsetY);
-    if (sectionLayout == null) return SizedBox();
+    if (sectionLayout == null) return const SizedBox();
 
     final section = sll.sections[sectionLayout.sectionKey]!;
     final dy = offsetY - (sectionLayout.minOffset + sectionLayout.headerExtent);
@@ -25,12 +25,12 @@ class DraggableThumbLabel<T> extends StatelessWidget {
     final item = section[itemIndex];
 
     final lines = lineBuilder(context, item);
-    if (lines.isEmpty) return SizedBox();
+    if (lines.isEmpty) return const SizedBox();
 
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 140),
+      constraints: const BoxConstraints(maxWidth: 140),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: lines.length > 1
             ? Column(
                 mainAxisSize: MainAxisSize.min,
@@ -44,7 +44,7 @@ class DraggableThumbLabel<T> extends StatelessWidget {
 
   Widget _buildText(String text) => Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
         ),
         softWrap: false,

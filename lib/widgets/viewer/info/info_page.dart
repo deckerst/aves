@@ -67,7 +67,7 @@ class _InfoPageState extends State<InfoPage> {
                                 split: mqWidth > 600,
                                 goToViewer: _goToViewer,
                               )
-                            : SizedBox.shrink();
+                            : const SizedBox.shrink();
                       },
                     );
                   },
@@ -114,7 +114,7 @@ class _InfoPageState extends State<InfoPage> {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        settings: RouteSettings(name: EntryViewerPage.routeName),
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (c, a, sa) => EntryViewerPage(
           initialEntry: tempEntry,
         ),
@@ -175,7 +175,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: basicSection),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(child: locationSection),
               ],
             ),
@@ -202,11 +202,11 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           onBackPressed: widget.goToViewer,
         ),
         SliverPadding(
-          padding: horizontalPadding + EdgeInsets.only(top: 8),
+          padding: horizontalPadding + const EdgeInsets.only(top: 8),
           sliver: basicAndLocationSliver,
         ),
         SliverPadding(
-          padding: horizontalPadding + EdgeInsets.only(bottom: 8),
+          padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
           sliver: metadataSliver,
         ),
         BottomPaddingSliver(),

@@ -25,7 +25,7 @@ class Minimap extends StatelessWidget {
           valueListenable: viewStateNotifier,
           builder: (context, viewState, child) {
             final viewportSize = viewState.viewportSize;
-            if (viewportSize == null) return SizedBox.shrink();
+            if (viewportSize == null) return const SizedBox.shrink();
             return AnimatedBuilder(
               animation: entry.imageChangeNotifier,
               builder: (context, child) => CustomPaint(
@@ -65,7 +65,7 @@ class MinimapPainter extends CustomPainter {
     if (viewSize.isEmpty) return;
 
     // hide minimap when image is in full view
-    if (viewportSize + Offset(precisionErrorTolerance, precisionErrorTolerance) >= viewSize) return;
+    if (viewportSize + const Offset(precisionErrorTolerance, precisionErrorTolerance) >= viewSize) return;
 
     final canvasScale = size.longestSide / viewSize.longestSide;
     final scaledEntrySize = viewSize * canvasScale;
@@ -86,7 +86,7 @@ class MinimapPainter extends CustomPainter {
 
     final fill = Paint()
       ..style = PaintingStyle.fill
-      ..color = Color(0x33000000);
+      ..color = const Color(0x33000000);
     final minimapStroke = Paint()
       ..style = PaintingStyle.stroke
       ..color = minimapBorderColor;

@@ -40,7 +40,7 @@ class CollectionNavTile extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
+        settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
           source: context.read<CollectionSource>(),
           filters: [filter],

@@ -53,7 +53,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     return FilterGridPage<T>(
-      key: Key('filter-grid-page'),
+      key: const Key('filter-grid-page'),
       appBar: SliverAppBar(
         title: InteractiveAppBarTitle(
           onTap: () => _goToSearch(context),
@@ -73,13 +73,13 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
       emptyBuilder: () => ValueListenableBuilder<SourceState>(
         valueListenable: source.stateNotifier,
         builder: (context, sourceState, child) {
-          return sourceState != SourceState.loading ? emptyBuilder() : SizedBox.shrink();
+          return sourceState != SourceState.loading ? emptyBuilder() : const SizedBox.shrink();
         },
       ),
       onTap: (filter) => Navigator.push(
         context,
         MaterialPageRoute(
-          settings: RouteSettings(name: CollectionPage.routeName),
+          settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (context) => CollectionPage(CollectionLens(
             source: source,
             filters: [filter],
@@ -92,7 +92,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
 
   void _showMenu(BuildContext context, T filter, Offset? tapPosition) async {
     final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
-    final touchArea = Size(40, 40);
+    const touchArea = Size(40, 40);
     final selectedAction = await showMenu<ChipAction>(
       context: context,
       position: RelativeRect.fromRect((tapPosition ?? Offset.zero) & touchArea, Offset.zero & overlay.size),
@@ -113,11 +113,11 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     return [
       CollectionSearchButton(source),
       PopupMenuButton<ChipSetAction>(
-        key: Key('appbar-menu-button'),
+        key: const Key('appbar-menu-button'),
         itemBuilder: (context) {
           return [
             PopupMenuItem(
-              key: Key('menu-sort'),
+              key: const Key('menu-sort'),
               value: ChipSetAction.sort,
               child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
             ),

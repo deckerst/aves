@@ -161,7 +161,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     return ValueListenableBuilder<bool>(
       valueListenable: _fullImageLoaded,
       builder: (context, fullImageLoaded, child) {
-        if (fullImageLoaded) return SizedBox.shrink();
+        if (fullImageLoaded) return const SizedBox.shrink();
 
         return Center(
           child: AspectRatio(
@@ -182,7 +182,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     final viewSize = _displaySize * viewState.scale!;
     final decorationOffset = ((viewSize - viewportSize) as Offset) / 2 - viewState.position;
     // deflate as a quick way to prevent background bleed
-    final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - Offset(.5, .5)) as Size;
+    final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - const Offset(.5, .5)) as Size;
 
     Widget child;
     final background = settings.rasterBackground;
@@ -193,7 +193,7 @@ class _RasterImageViewState extends State<RasterImageView> {
       child = ValueListenableBuilder<bool>(
         valueListenable: _fullImageLoaded,
         builder: (context, fullImageLoaded, child) {
-          if (!fullImageLoaded) return SizedBox.shrink();
+          if (!fullImageLoaded) return const SizedBox.shrink();
 
           return CustomPaint(
             painter: CheckeredPainter(

@@ -81,7 +81,7 @@ class XmpNamespace {
         ? [
             if (displayTitle.isNotEmpty)
               Padding(
-                padding: EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 8),
                 child: HighlightTitle(
                   displayTitle,
                   color: BrandColors.get(displayTitle),

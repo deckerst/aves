@@ -103,7 +103,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                       OverlayButton(
                         scale: scale,
                         child: IconButton(
-                          icon: Icon(AIcons.openOutside),
+                          icon: const Icon(AIcons.openOutside),
                           onPressed: () => AndroidAppService.open(entry.uri, entry.mimeTypeAnySubtype),
                           tooltip: context.l10n.viewerOpenTooltip,
                         ),
@@ -113,7 +113,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                       Expanded(
                         child: _buildProgressBar(),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       OverlayButton(
                         scale: scale,
                         child: IconButton(
@@ -152,11 +152,11 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
             if (_playingOnDragStart) controller!.play();
           },
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16) + EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16) + const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: kOverlayBackgroundColor,
               border: AvesBorder.border,
-              borderRadius: BorderRadius.circular(progressBarBorderRadius),
+              borderRadius: const BorderRadius.all(Radius.circular(progressBarBorderRadius)),
             ),
             child: Column(
               key: _progressBarKey,
@@ -170,12 +170,12 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                           final position = controller?.currentPosition.floor() ?? 0;
                           return Text(formatFriendlyDuration(Duration(milliseconds: position)));
                         }),
-                    Spacer(),
+                    const Spacer(),
                     Text(entry.durationText),
                   ],
                 ),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: const BorderRadius.all(Radius.circular(4)),
                   child: StreamBuilder<int>(
                       stream: positionStream,
                       builder: (context, snapshot) {

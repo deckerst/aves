@@ -67,11 +67,11 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
               if (_coverEntry != null)
                 Container(
                   alignment: Alignment.center,
-                  padding: EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.only(top: 16),
                   child: _buildCover(_coverEntry!, extent),
                 ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
                 child: TextField(
                   controller: _nameController,
                   decoration: InputDecoration(
@@ -109,7 +109,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     return GestureDetector(
       onTap: _pickEntry,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: const BorderRadius.all(Radius.circular(32)),
         child: SizedBox(
           width: extent,
           height: extent,
@@ -131,7 +131,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     final entry = await Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: ItemPickDialog.routeName),
+        settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
           CollectionLens(
             source: collection.source,

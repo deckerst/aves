@@ -91,9 +91,9 @@ class BasicSection extends StatelessWidget {
           ...filters,
           if (entry.isFavourite) FavouriteFilter.instance,
         ]..sort();
-        if (effectiveFilters.isEmpty) return SizedBox.shrink();
+        if (effectiveFilters.isEmpty) return const SizedBox.shrink();
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -151,7 +151,7 @@ class _OwnerPropState extends State<OwnerProp> {
       future: _ownerPackageFuture,
       builder: (context, snapshot) {
         final ownerPackage = snapshot.data;
-        if (ownerPackage == null) return SizedBox();
+        if (ownerPackage == null) return const SizedBox();
         final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
         // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
         // so we use a basic `Text` instead
@@ -168,7 +168,7 @@ class _OwnerPropState extends State<OwnerProp> {
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: Image(
                       image: AppIconImage(
                         packageName: ownerPackage,

@@ -20,7 +20,7 @@ class PanoramaOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Spacer(),
+        const Spacer(),
         OverlayTextButton(
           scale: scale,
           buttonLabel: context.l10n.viewerOpenPanoramaButtonLabel,
@@ -30,7 +30,7 @@ class PanoramaOverlay extends StatelessWidget {
               unawaited(Navigator.push(
                 context,
                 MaterialPageRoute(
-                  settings: RouteSettings(name: PanoramaPage.routeName),
+                  settings: const RouteSettings(name: PanoramaPage.routeName),
                   builder: (context) => PanoramaPage(
                     entry: entry,
                     info: info,

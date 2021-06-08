@@ -17,7 +17,7 @@ class InteractiveAppBarTitle extends StatelessWidget {
       // so that we can also detect taps around the title `Text`
       child: Container(
         alignment: AlignmentDirectional.centerStart,
-        padding: EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
+        padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
         color: Colors.transparent,
         height: kToolbarHeight,
         child: child,

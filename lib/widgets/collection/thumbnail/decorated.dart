@@ -60,10 +60,10 @@ class DecoratedThumbnail extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
+        border: Border.fromBorderSide(BorderSide(
           color: borderColor,
           width: borderWidth,
-        ),
+        )),
       ),
       width: tileExtent,
       height: tileExtent,

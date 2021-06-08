@@ -57,7 +57,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 8, top: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -70,13 +70,13 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(AIcons.previous),
+                  icon: const Icon(AIcons.previous),
                   onPressed: _index > 0 ? () => setIndex(_index - 1) : null,
                   tooltip: context.l10n.previousTooltip,
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(AIcons.next),
+                  icon: const Icon(AIcons.next),
                   onPressed: _index < structs.length - 1 ? () => setIndex(_index + 1) : null,
                   tooltip: context.l10n.nextTooltip,
                 ),
@@ -91,7 +91,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               // add padding at this level (instead of the column level)
               // so that the crossfader can animate the content size
               // without clipping the text
-              padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
                 structs[_index],
                 maxValueLength: Constants.infoGroupMaxValueLength,
@@ -123,7 +123,7 @@ class XmpStructCard extends StatelessWidget {
     return Card(
       margin: cardMargin,
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

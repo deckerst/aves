@@ -12,10 +12,10 @@ class Themes {
     scaffoldBackgroundColor: Colors.grey.shade900,
     dialogBackgroundColor: Colors.grey[850],
     toggleableActiveColor: _accentColor,
-    tooltipTheme: TooltipThemeData(
+    tooltipTheme: const TooltipThemeData(
       verticalOffset: 32,
     ),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       textTheme: TextTheme(
         headline6: TextStyle(
           fontSize: 20,
@@ -24,7 +24,7 @@ class Themes {
         ),
       ),
     ),
-    colorScheme: ColorScheme.dark(
+    colorScheme: const ColorScheme.dark(
       primary: _accentColor,
       secondary: _accentColor,
       onPrimary: Colors.white,
@@ -32,7 +32,7 @@ class Themes {
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: Colors.grey.shade800,
-      contentTextStyle: TextStyle(
+      contentTextStyle: const TextStyle(
         color: Colors.white,
       ),
       behavior: SnackBarBehavior.floating,
