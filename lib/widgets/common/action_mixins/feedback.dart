@@ -6,15 +6,16 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-  void showFeedback(BuildContext context, String message) {
-    showFeedbackWithMessenger(ScaffoldMessenger.of(context), message);
+  void showFeedback(BuildContext context, String message, [SnackBarAction? action]) {
+    showFeedbackWithMessenger(ScaffoldMessenger.of(context), message, action);
   }
 
   // provide the messenger if feedback happens as the widget is disposed
-  void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message) {
+  void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
     messenger.showSnackBar(SnackBar(
       content: Text(message),
-      duration: Durations.opToastDisplay,
+      action: action,
+      duration: action != null ? Durations.opToastActionDisplay : Durations.opToastDisplay,
     ));
   }
 

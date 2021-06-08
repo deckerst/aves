@@ -18,6 +18,8 @@
   "@applyButtonLabel": {},
   "deleteButtonLabel": "DELETE",
   "@deleteButtonLabel": {},
+  "showButtonLabel": "SHOW",
+  "@showButtonLabel": {},
   "hideButtonLabel": "HIDE",
   "@hideButtonLabel": {},
   "continueButtonLabel": "CONTINUE",

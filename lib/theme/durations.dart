@@ -55,9 +55,10 @@ class Durations {
 
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 3);
+  static const opToastActionDisplay = Duration(seconds: 5);
   static const infoScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
-  static const collectionScalingCompleteNotificationDelay = Duration(milliseconds: 300);
+  static const highlightJumpDelay = Duration(milliseconds: 400);
   static const highlightScrollInitDelay = Duration(milliseconds: 800);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;

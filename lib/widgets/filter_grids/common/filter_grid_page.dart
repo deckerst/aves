@@ -11,6 +11,7 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/double_back_pop.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
+import 'package:aves/widgets/common/grid/item_tracker.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
@@ -280,18 +281,21 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   _FilterSectionedContentState createState() => _FilterSectionedContentState<T>();
 }
 
-class _FilterSectionedContentState<T extends CollectionFilter> extends State<_FilterSectionedContent<T>> {
+class _FilterSectionedContentState<T extends CollectionFilter> extends State<_FilterSectionedContent<T>> with GridItemTrackerMixin<FilterGridItem<T>, _FilterSectionedContent<T>> {
   Widget get appBar => widget.appBar;
 
+  @override
   ValueNotifier<double> get appBarHeightNotifier => widget.appBarHeightNotifier;
 
   Map<ChipSectionKey, List<FilterGridItem<T>>> get visibleFilterSections => widget.visibleFilterSections;
 
   Widget Function() get emptyBuilder => widget.emptyBuilder;
 
+  @override
   ScrollController get scrollController => widget.scrollController;
 
-  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'filter-grid-page-scrollable');
+  @override
+  final GlobalKey scrollableKey = GlobalKey(debugLabel: 'filter-grid-page-scrollable');
 
   @override
   void initState() {
@@ -303,7 +307,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
   Widget build(BuildContext context) {
     final scrollView = AnimationLimiter(
       child: _FilterScrollView<T>(
-        scrollableKey: _scrollableKey,
+        scrollableKey: scrollableKey,
         appBar: appBar,
         appBarHeightNotifier: appBarHeightNotifier,
         sortFactor: widget.sortFactor,
@@ -313,7 +317,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
     );
 
     final scaler = _FilterScaler<T>(
-      scrollableKey: _scrollableKey,
+      scrollableKey: scrollableKey,
       appBarHeightNotifier: appBarHeightNotifier,
       child: scrollView,
     );
@@ -328,31 +332,8 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
       final gridItem = visibleFilterSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
       if (gridItem != null) {
         await Future.delayed(Durations.highlightScrollInitDelay);
-        final sectionedListLayout = context.read<SectionedListLayout<FilterGridItem<T>>>();
-        final tileRect = sectionedListLayout.getTileRect(gridItem);
-        if (tileRect != null) {
-          await _scrollToItem(tileRect);
-          highlightInfo.set(filter);
-        }
+        highlightInfo.trackItem(gridItem, animate: true, highlight: filter);
       }
-    }
-  }
-
-  Future<void> _scrollToItem(Rect tileRect) async {
-    final scrollableContext = _scrollableKey.currentContext!;
-    final scrollableHeight = (scrollableContext.findRenderObject() as RenderBox).size.height;
-
-    // most of the time the app bar will be scrolled away after scaling,
-    // so we compensate for it to center the focal point thumbnail
-    final appBarHeight = appBarHeightNotifier.value;
-    final scrollOffset = tileRect.top + (tileRect.height - scrollableHeight) / 2 + appBarHeight;
-
-    if (scrollOffset > 0) {
-      await scrollController.animateTo(
-        scrollOffset,
-        duration: Duration(milliseconds: (scrollOffset / 2).round().clamp(Durations.highlightScrollAnimationMinMillis, Durations.highlightScrollAnimationMaxMillis)),
-        curve: Curves.easeInOutCubic,
-      );
     }
   }
 }
@@ -374,7 +355,6 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
     final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
     return GridScaleGestureDetector<FilterGridItem<T>>(
       scrollableKey: scrollableKey,
-      appBarHeightNotifier: appBarHeightNotifier,
       gridBuilder: (center, extent, child) => CustomPaint(
         painter: GridPainter(
           center: center,
@@ -396,11 +376,7 @@ class _FilterScaler<T extends CollectionFilter> extends StatelessWidget {
           highlightable: false,
         );
       },
-      getScaledItemTileRect: (context, item) {
-        final sectionedListLayout = context.read<SectionedListLayout<FilterGridItem<T>>>();
-        return sectionedListLayout.getTileRect(item) ?? Rect.zero;
-      },
-      onScaled: (item) => context.read<HighlightInfo>().set(item.filter),
+      highlightItem: (item) => item.filter,
       child: child,
     );
   }

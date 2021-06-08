@@ -4,7 +4,6 @@ import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/mime.dart';
-import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -22,7 +21,7 @@ import 'package:aves/widgets/common/basic/insets.dart';
 import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
-import 'package:aves/widgets/common/grid/section_layout.dart';
+import 'package:aves/widgets/common/grid/item_tracker.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
@@ -131,33 +130,37 @@ class _CollectionSectionedContent extends StatefulWidget {
   _CollectionSectionedContentState createState() => _CollectionSectionedContentState();
 }
 
-class _CollectionSectionedContentState extends State<_CollectionSectionedContent> {
+class _CollectionSectionedContentState extends State<_CollectionSectionedContent> with GridItemTrackerMixin<AvesEntry, _CollectionSectionedContent> {
   CollectionLens get collection => widget.collection;
 
+  @override
   ScrollController get scrollController => widget.scrollController;
 
-  final ValueNotifier<double> _appBarHeightNotifier = ValueNotifier(0);
-  final GlobalKey _scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
+  @override
+  final ValueNotifier<double> appBarHeightNotifier = ValueNotifier(0);
+
+  @override
+  final GlobalKey scrollableKey = GlobalKey(debugLabel: 'thumbnail-collection-scrollable');
 
   @override
   Widget build(BuildContext context) {
     final scrollView = AnimationLimiter(
       child: _CollectionScrollView(
-        scrollableKey: _scrollableKey,
+        scrollableKey: scrollableKey,
         collection: collection,
         appBar: CollectionAppBar(
-          appBarHeightNotifier: _appBarHeightNotifier,
+          appBarHeightNotifier: appBarHeightNotifier,
           collection: collection,
         ),
-        appBarHeightNotifier: _appBarHeightNotifier,
+        appBarHeightNotifier: appBarHeightNotifier,
         isScrollingNotifier: widget.isScrollingNotifier,
         scrollController: scrollController,
       ),
     );
 
     final scaler = _CollectionScaler(
-      scrollableKey: _scrollableKey,
-      appBarHeightNotifier: _appBarHeightNotifier,
+      scrollableKey: scrollableKey,
+      appBarHeightNotifier: appBarHeightNotifier,
       child: scrollView,
     );
 
@@ -166,7 +169,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
       selectable: isMainMode,
       collection: collection,
       scrollController: scrollController,
-      appBarHeightNotifier: _appBarHeightNotifier,
+      appBarHeightNotifier: appBarHeightNotifier,
       child: scaler,
     );
 
@@ -190,7 +193,6 @@ class _CollectionScaler extends StatelessWidget {
     final tileSpacing = context.select<TileExtentController, double>((controller) => controller.spacing);
     return GridScaleGestureDetector<AvesEntry>(
       scrollableKey: scrollableKey,
-      appBarHeightNotifier: appBarHeightNotifier,
       gridBuilder: (center, extent, child) => CustomPaint(
         painter: GridPainter(
           center: center,
@@ -211,11 +213,6 @@ class _CollectionScaler extends StatelessWidget {
           highlightable: false,
         ),
       ),
-      getScaledItemTileRect: (context, entry) {
-        final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
-        return sectionedListLayout.getTileRect(entry) ?? Rect.zero;
-      },
-      onScaled: (entry) => context.read<HighlightInfo>().set(entry),
       child: child,
     );
   }
