@@ -92,7 +92,12 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
 
           return Container(
             color: hasEdgeContent ? kOverlayBackgroundColor : Colors.transparent,
-            padding: viewInsets + viewPadding.copyWith(top: 0),
+            padding: EdgeInsets.only(
+              left: max(viewInsets.left, viewPadding.left),
+              top: 0,
+              right: max(viewInsets.right, viewPadding.right),
+              bottom: max(viewInsets.bottom, viewPadding.bottom),
+            ),
             child: FutureBuilder<OverlayMetadata?>(
               future: _detailLoader,
               builder: (context, snapshot) {
