@@ -46,7 +46,7 @@ class CollectionAppBar extends StatefulWidget {
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
   final TextEditingController _searchFieldController = TextEditingController();
-  late EntrySetActionDelegate _actionDelegate;
+  final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   late Future<bool> _canAddShortcutsLoader;
 
@@ -59,9 +59,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _actionDelegate = EntrySetActionDelegate(
-      collection: collection,
-    );
     _browseToSelectAnimation = AnimationController(
       duration: Durations.iconAnimation,
       vsync: this,
