@@ -113,7 +113,7 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             final trackItem = _metadata!.item;
             final highlightItem = widget.highlightItem?.call(trackItem) ?? trackItem;
-            context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlight: highlightItem);
+            context.read<HighlightInfo>().trackItem(trackItem, animate: false, highlightItem: highlightItem);
             _applyingScale = false;
           });
         }

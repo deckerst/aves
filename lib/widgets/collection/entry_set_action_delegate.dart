@@ -168,7 +168,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
                 final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
                 final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
                 if (targetEntry != null) {
-                  highlightInfo.trackItem(targetEntry, animate: true, highlight: targetEntry);
+                  highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
                 }
               },
             ),

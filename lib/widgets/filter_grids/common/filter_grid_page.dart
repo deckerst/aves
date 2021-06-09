@@ -281,7 +281,7 @@ class _FilterSectionedContent<T extends CollectionFilter> extends StatefulWidget
   _FilterSectionedContentState createState() => _FilterSectionedContentState<T>();
 }
 
-class _FilterSectionedContentState<T extends CollectionFilter> extends State<_FilterSectionedContent<T>> with GridItemTrackerMixin<FilterGridItem<T>, _FilterSectionedContent<T>> {
+class _FilterSectionedContentState<T extends CollectionFilter> extends State<_FilterSectionedContent<T>> with WidgetsBindingObserver, GridItemTrackerMixin<FilterGridItem<T>, _FilterSectionedContent<T>> {
   Widget get appBar => widget.appBar;
 
   @override
@@ -332,7 +332,7 @@ class _FilterSectionedContentState<T extends CollectionFilter> extends State<_Fi
       final gridItem = visibleFilterSections.values.expand((list) => list).firstWhereOrNull((gridItem) => gridItem.filter == filter);
       if (gridItem != null) {
         await Future.delayed(Durations.highlightScrollInitDelay);
-        highlightInfo.trackItem(gridItem, animate: true, highlight: filter);
+        highlightInfo.trackItem(gridItem, highlightItem: filter);
       }
     }
   }

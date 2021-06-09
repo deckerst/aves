@@ -130,7 +130,7 @@ class _CollectionSectionedContent extends StatefulWidget {
   _CollectionSectionedContentState createState() => _CollectionSectionedContentState();
 }
 
-class _CollectionSectionedContentState extends State<_CollectionSectionedContent> with GridItemTrackerMixin<AvesEntry, _CollectionSectionedContent> {
+class _CollectionSectionedContentState extends State<_CollectionSectionedContent> with WidgetsBindingObserver, GridItemTrackerMixin<AvesEntry, _CollectionSectionedContent> {
   CollectionLens get collection => widget.collection;
 
   @override

@@ -1,15 +1,22 @@
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 class HighlightInfo extends ChangeNotifier {
   final EventBus eventBus = EventBus();
 
   void trackItem<T>(
     T item, {
-    required bool animate,
-    Object? highlight,
+    Alignment? alignment,
+    bool? animate,
+    Object? highlightItem,
   }) =>
-      eventBus.fire(TrackEvent<T>(item, animate, highlight));
+      eventBus.fire(TrackEvent<T>(
+        item,
+        alignment ?? Alignment.center,
+        animate ?? true,
+        highlightItem,
+      ));
 
   Object? _item;
 
@@ -36,8 +43,14 @@ class HighlightInfo extends ChangeNotifier {
 @immutable
 class TrackEvent<T> {
   final T item;
+  final Alignment alignment;
   final bool animate;
-  final Object? highlight;
+  final Object? highlightItem;
 
-  const TrackEvent(this.item, this.animate, this.highlight);
+  const TrackEvent(
+    this.item,
+    this.alignment,
+    this.animate,
+    this.highlightItem,
+  );
 }
