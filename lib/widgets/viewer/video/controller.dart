@@ -37,6 +37,8 @@ abstract class AvesVideoController {
 
   Stream<int> get positionStream;
 
+  ValueNotifier<double> get sarNotifier;
+
   Widget buildPlayerWidget(BuildContext context);
 }
 

@@ -1,9 +1,11 @@
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Minimap extends StatelessWidget {
   final AvesEntry entry;
@@ -28,16 +30,30 @@ class Minimap extends StatelessWidget {
             if (viewportSize == null) return const SizedBox.shrink();
             return AnimatedBuilder(
               animation: entry.imageChangeNotifier,
-              builder: (context, child) => CustomPaint(
-                painter: MinimapPainter(
-                  viewportSize: viewportSize,
-                  entrySize: entry.displaySize,
-                  viewCenterOffset: viewState.position,
-                  viewScale: viewState.scale!,
-                  minimapBorderColor: Colors.white30,
-                ),
-                size: size,
-              ),
+              builder: (context, child) {
+                Widget _builder(Size displaySize) => CustomPaint(
+                      painter: MinimapPainter(
+                        viewportSize: viewportSize,
+                        entrySize: displaySize,
+                        viewCenterOffset: viewState.position,
+                        viewScale: viewState.scale!,
+                        minimapBorderColor: Colors.white30,
+                      ),
+                      size: size,
+                    );
+
+                if (entry.isVideo) {
+                  final videoController = context.read<VideoConductor>().getController(entry);
+                  if (videoController == null) return const SizedBox();
+                  return ValueListenableBuilder<double>(
+                    valueListenable: videoController.sarNotifier,
+                    builder: (context, sar, child) {
+                      return _builder(entry.videoDisplaySize(sar));
+                    },
+                  );
+                }
+                return _builder(entry.displaySize);
+              },
             );
           }),
     );

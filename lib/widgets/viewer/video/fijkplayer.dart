@@ -9,11 +9,11 @@ import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
   late FijkPlayer _instance;
@@ -25,8 +25,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final ValueNotifier<StreamSummary?> _selectedVideoStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary?> _selectedAudioStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary?> _selectedTextStream = ValueNotifier(null);
-  final ValueNotifier<Tuple2<int, int>> _sar = ValueNotifier(const Tuple2(1, 1));
   Timer? _initialPlayTimer;
+
+  @override
+  final ValueNotifier<double> sarNotifier = ValueNotifier(1);
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
 
@@ -59,7 +61,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   Future<void> _init({int startMillis = 0}) async {
-    _sar.value = const Tuple2(1, 1);
+    sarNotifier.value = 1;
     _applyOptions(startMillis);
 
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
@@ -165,7 +167,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       if (streamInfo != null) {
         final num = streamInfo[Keys.sarNum] ?? 0;
         final den = streamInfo[Keys.sarDen] ?? 0;
-        _sar.value = Tuple2(num != 0 ? num : 1, den != 0 ? den : 1);
+        sarNotifier.value = (num != 0 ? num : 1) / (den != 0 ? den : 1);
       }
     }
   }
@@ -232,15 +234,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
-    return ValueListenableBuilder<Tuple2<int, int>>(
-        valueListenable: _sar,
+    return ValueListenableBuilder<double>(
+        valueListenable: sarNotifier,
         builder: (context, sar, child) {
-          final sarNum = sar.item1;
-          final sarDen = sar.item2;
           // derive DAR (Display Aspect Ratio) from SAR (Storage Aspect Ratio), if any
           // e.g. 960x536 (~16:9) with SAR 4:3 should be displayed as ~2.39:1
-          final dar = entry.displayAspectRatio * sarNum / sarDen;
-          // TODO TLAD notify SAR to make the magnifier and minimap use the rendering DAR instead of entry DAR
+          final dar = entry.displayAspectRatio * sar;
           return FijkView(
             player: _instance,
             fit: FijkFit(
