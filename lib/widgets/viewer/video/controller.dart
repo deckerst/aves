@@ -33,9 +33,11 @@ abstract class AvesVideoController {
 
   int get currentPosition;
 
-  double get progress => (currentPosition ?? 0).toDouble() / duration;
+  double get progress => currentPosition.toDouble() / duration;
 
   Stream<int> get positionStream;
+
+  ValueNotifier<double> get sarNotifier;
 
   Widget buildPlayerWidget(BuildContext context);
 }

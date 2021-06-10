@@ -15,10 +15,10 @@ class CollectionSectionHeader extends StatelessWidget {
   final double height;
 
   const CollectionSectionHeader({
-    Key key,
-    @required this.collection,
-    @required this.sectionKey,
-    @required this.height,
+    Key? key,
+    required this.collection,
+    required this.sectionKey,
+    required this.height,
   }) : super(key: key);
 
   @override
@@ -29,10 +29,10 @@ class CollectionSectionHeader extends StatelessWidget {
             height: height,
             child: header,
           )
-        : SizedBox.shrink();
+        : const SizedBox.shrink();
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget? _buildHeader(BuildContext context) {
     switch (collection.sortFactor) {
       case EntrySortFactor.date:
         switch (collection.groupFactor) {
@@ -60,7 +60,7 @@ class CollectionSectionHeader extends StatelessWidget {
     return AlbumSectionHeader(
       key: ValueKey(sectionKey),
       directory: directory,
-      albumName: source.getAlbumDisplayName(context, directory),
+      albumName: directory != null ? source.getAlbumDisplayName(context, directory) : null,
     );
   }
 

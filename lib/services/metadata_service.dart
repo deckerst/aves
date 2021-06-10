@@ -10,15 +10,15 @@ abstract class MetadataService {
   // returns Map<Map<Key, Value>> (map of directories, each directory being a map of metadata label and value description)
   Future<Map> getAllMetadata(AvesEntry entry);
 
-  Future<CatalogMetadata> getCatalogMetadata(AvesEntry entry, {bool background = false});
+  Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false});
 
-  Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry);
+  Future<OverlayMetadata?> getOverlayMetadata(AvesEntry entry);
 
-  Future<MultiPageInfo> getMultiPageInfo(AvesEntry entry);
+  Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry);
 
-  Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry);
+  Future<PanoramaInfo?> getPanoramaInfo(AvesEntry entry);
 
-  Future<String> getContentResolverProp(AvesEntry entry, String prop);
+  Future<String?> getContentResolverProp(AvesEntry entry, String prop);
 }
 
 class PlatformMetadataService implements MetadataService {
@@ -26,7 +26,7 @@ class PlatformMetadataService implements MetadataService {
 
   @override
   Future<Map> getAllMetadata(AvesEntry entry) async {
-    if (entry.isSvg) return null;
+    if (entry.isSvg) return {};
 
     try {
       final result = await platform.invokeMethod('getAllMetadata', <String, dynamic>{
@@ -34,7 +34,7 @@ class PlatformMetadataService implements MetadataService {
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
       });
-      return result as Map;
+      if (result != null) return result as Map;
     } on PlatformException catch (e) {
       debugPrint('getAllMetadata failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -42,10 +42,10 @@ class PlatformMetadataService implements MetadataService {
   }
 
   @override
-  Future<CatalogMetadata> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
+  Future<CatalogMetadata?> getCatalogMetadata(AvesEntry entry, {bool background = false}) async {
     if (entry.isSvg) return null;
 
-    Future<CatalogMetadata> call() async {
+    Future<CatalogMetadata?> call() async {
       try {
         // returns map with:
         // 'mimeType': MIME type as reported by metadata extractors, not Media Store (string)
@@ -80,7 +80,7 @@ class PlatformMetadataService implements MetadataService {
   }
 
   @override
-  Future<OverlayMetadata> getOverlayMetadata(AvesEntry entry) async {
+  Future<OverlayMetadata?> getOverlayMetadata(AvesEntry entry) async {
     if (entry.isSvg) return null;
 
     try {
@@ -98,7 +98,7 @@ class PlatformMetadataService implements MetadataService {
   }
 
   @override
-  Future<MultiPageInfo> getMultiPageInfo(AvesEntry entry) async {
+  Future<MultiPageInfo?> getMultiPageInfo(AvesEntry entry) async {
     try {
       final result = await platform.invokeMethod('getMultiPageInfo', <String, dynamic>{
         'mimeType': entry.mimeType,
@@ -120,7 +120,7 @@ class PlatformMetadataService implements MetadataService {
   }
 
   @override
-  Future<PanoramaInfo> getPanoramaInfo(AvesEntry entry) async {
+  Future<PanoramaInfo?> getPanoramaInfo(AvesEntry entry) async {
     try {
       // returns map with values for:
       // 'croppedAreaLeft' (int), 'croppedAreaTop' (int), 'croppedAreaWidth' (int), 'croppedAreaHeight' (int),
@@ -138,7 +138,7 @@ class PlatformMetadataService implements MetadataService {
   }
 
   @override
-  Future<String> getContentResolverProp(AvesEntry entry, String prop) async {
+  Future<String?> getContentResolverProp(AvesEntry entry, String prop) async {
     try {
       return await platform.invokeMethod('getContentResolverProp', <String, dynamic>{
         'mimeType': entry.mimeType,

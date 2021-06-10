@@ -7,7 +7,6 @@ import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/utils/math_utils.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/viewer/visual/entry_page_view.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -21,9 +20,9 @@ class RasterImageView extends StatefulWidget {
   final ImageErrorWidgetBuilder errorBuilder;
 
   const RasterImageView({
-    @required this.entry,
-    @required this.viewStateNotifier,
-    @required this.errorBuilder,
+    required this.entry,
+    required this.viewStateNotifier,
+    required this.errorBuilder,
   });
 
   @override
@@ -31,13 +30,13 @@ class RasterImageView extends StatefulWidget {
 }
 
 class _RasterImageViewState extends State<RasterImageView> {
-  Size _displaySize;
+  late Size _displaySize;
   bool _isTilingInitialized = false;
-  int _maxSampleSize;
-  double _tileSide;
-  Matrix4 _tileTransform;
-  ImageStream _fullImageStream;
-  ImageStreamListener _fullImageListener;
+  late int _maxSampleSize;
+  late double _tileSide;
+  Matrix4? _tileTransform;
+  ImageStream? _fullImageStream;
+  late ImageStreamListener _fullImageListener;
   final ValueNotifier<bool> _fullImageLoaded = ValueNotifier(false);
 
   AvesEntry get entry => widget.entry;
@@ -48,7 +47,7 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   ViewState get viewState => viewStateNotifier.value;
 
-  ImageProvider get thumbnailProvider => entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName));
+  ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
   ImageProvider get fullImageProvider {
     if (entry.useTiles) {
@@ -91,7 +90,7 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   void _registerFullImage() {
     _fullImageStream = fullImageProvider.resolve(ImageConfiguration.empty);
-    _fullImageStream.addListener(_fullImageListener);
+    _fullImageStream!.addListener(_fullImageListener);
   }
 
   void _unregisterFullImage() {
@@ -106,18 +105,16 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   @override
   Widget build(BuildContext context) {
-    if (viewStateNotifier == null) return SizedBox.shrink();
-
     final useTiles = entry.useTiles;
     return ValueListenableBuilder<ViewState>(
       valueListenable: viewStateNotifier,
       builder: (context, viewState, child) {
         final viewportSize = viewState.viewportSize;
         final viewportSized = viewportSize?.isEmpty == false;
-        if (viewportSized && useTiles && !_isTilingInitialized) _initTiling(viewportSize);
+        if (viewportSized && useTiles && !_isTilingInitialized) _initTiling(viewportSize!);
 
         return SizedBox.fromSize(
-          size: _displaySize * viewState.scale,
+          size: _displaySize * viewState.scale!,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -129,7 +126,7 @@ class _RasterImageViewState extends State<RasterImageView> {
                   image: fullImageProvider,
                   gaplessPlayback: true,
                   errorBuilder: widget.errorBuilder,
-                  width: (_displaySize * viewState.scale).width,
+                  width: (_displaySize * viewState.scale!).width,
                   fit: BoxFit.contain,
                   filterQuality: FilterQuality.medium,
                 ),
@@ -161,10 +158,10 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 
   Widget _buildLoading() {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<bool>(
       valueListenable: _fullImageLoaded,
       builder: (context, fullImageLoaded, child) {
-        if (fullImageLoaded) return SizedBox.shrink();
+        if (fullImageLoaded) return const SizedBox.shrink();
 
         return Center(
           child: AspectRatio(
@@ -181,13 +178,11 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 
   Widget _buildBackground() {
-    final viewportSize = viewState.viewportSize;
-    assert(viewportSize != null);
-
-    final viewSize = _displaySize * viewState.scale;
+    final viewportSize = viewState.viewportSize!;
+    final viewSize = _displaySize * viewState.scale!;
     final decorationOffset = ((viewSize - viewportSize) as Offset) / 2 - viewState.position;
     // deflate as a quick way to prevent background bleed
-    final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - Offset(.5, .5)) as Size;
+    final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - const Offset(.5, .5)) as Size;
 
     Widget child;
     final background = settings.rasterBackground;
@@ -195,10 +190,10 @@ class _RasterImageViewState extends State<RasterImageView> {
       final side = viewportSize.shortestSide;
       final checkSize = side / ((side / EntryPageView.decorationCheckSize).round());
       final offset = ((decorationSize - viewportSize) as Offset) / 2;
-      child = ValueListenableBuilder(
+      child = ValueListenableBuilder<bool>(
         valueListenable: _fullImageLoaded,
         builder: (context, fullImageLoaded, child) {
-          if (!fullImageLoaded) return SizedBox.shrink();
+          if (!fullImageLoaded) return const SizedBox.shrink();
 
           return CustomPaint(
             painter: CheckeredPainter(
@@ -230,7 +225,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     final displayWidth = _displaySize.width.round();
     final displayHeight = _displaySize.height.round();
     final viewRect = _getViewRect(displayWidth, displayHeight);
-    final scale = viewState.scale;
+    final scale = viewState.scale!;
 
     // for the largest sample size (matching the initial scale), the whole image is in view
     // so we subsample the whole image without tiling
@@ -271,9 +266,9 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 
   Rect _getViewRect(int displayWidth, int displayHeight) {
-    final scale = viewState.scale;
+    final scale = viewState.scale!;
     final centerOffset = viewState.position;
-    final viewportSize = viewState.viewportSize;
+    final viewportSize = viewState.viewportSize!;
     final viewOrigin = Offset(
       ((displayWidth * scale - viewportSize.width) / 2 - centerOffset.dx),
       ((displayHeight * scale - viewportSize.height) / 2 - centerOffset.dy),
@@ -281,14 +276,14 @@ class _RasterImageViewState extends State<RasterImageView> {
     return viewOrigin & viewportSize;
   }
 
-  Tuple2<Rect, Rectangle<int>> _getTileRects({
-    @required int x,
-    @required int y,
-    @required int regionSide,
-    @required int displayWidth,
-    @required int displayHeight,
-    @required double scale,
-    @required Rect viewRect,
+  Tuple2<Rect, Rectangle<int>>? _getTileRects({
+    required int x,
+    required int y,
+    required int regionSide,
+    required int displayWidth,
+    required int displayHeight,
+    required double scale,
+    required Rect viewRect,
   }) {
     final nextX = x + regionSide;
     final nextY = y + regionSide;
@@ -303,8 +298,8 @@ class _RasterImageViewState extends State<RasterImageView> {
     if (_tileTransform != null) {
       // apply EXIF orientation
       final regionRectDouble = Rect.fromLTWH(x.toDouble(), y.toDouble(), thisRegionWidth.toDouble(), thisRegionHeight.toDouble());
-      final tl = MatrixUtils.transformPoint(_tileTransform, regionRectDouble.topLeft);
-      final br = MatrixUtils.transformPoint(_tileTransform, regionRectDouble.bottomRight);
+      final tl = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.topLeft);
+      final br = MatrixUtils.transformPoint(_tileTransform!, regionRectDouble.bottomRight);
       regionRect = Rectangle<int>.fromPoints(
         Point<int>(tl.dx.round(), tl.dy.round()),
         Point<int>(br.dx.round(), br.dy.round()),
@@ -330,14 +325,14 @@ class RegionTile extends StatefulWidget {
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
   final Rect tileRect;
-  final Rectangle<int> regionRect;
+  final Rectangle<int>? regionRect;
   final int sampleSize;
 
   const RegionTile({
-    @required this.entry,
-    @required this.tileRect,
+    required this.entry,
+    required this.tileRect,
     this.regionRect,
-    @required this.sampleSize,
+    required this.sampleSize,
   });
 
   @override
@@ -354,7 +349,7 @@ class RegionTile extends StatefulWidget {
 }
 
 class _RegionTileState extends State<RegionTile> {
-  RegionProvider _provider;
+  late RegionProvider _provider;
 
   AvesEntry get entry => widget.entry;
 
@@ -388,15 +383,13 @@ class _RegionTileState extends State<RegionTile> {
   }
 
   void _initProvider() {
-    if (!entry.canDecode) return;
-
     _provider = entry.getRegion(
       sampleSize: widget.sampleSize,
       region: widget.regionRect,
     );
   }
 
-  void _pauseProvider() => _provider?.pause();
+  void _pauseProvider() => _provider.pause();
 
   @override
   Widget build(BuildContext context) {

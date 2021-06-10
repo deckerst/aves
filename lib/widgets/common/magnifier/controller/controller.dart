@@ -12,9 +12,9 @@ class MagnifierController {
   final StreamController<ScaleBoundaries> _scaleBoundariesStreamController = StreamController.broadcast();
   final StreamController<ScaleStateChange> _scaleStateChangeStreamController = StreamController.broadcast();
 
-  MagnifierState _currentState, initial, previousState;
-  ScaleBoundaries _scaleBoundaries;
-  ScaleStateChange _currentScaleState, previousScaleState;
+  late MagnifierState _currentState, initial, previousState;
+  ScaleBoundaries? _scaleBoundaries;
+  late ScaleStateChange _currentScaleState, previousScaleState;
 
   MagnifierController({
     Offset initialPosition = Offset.zero,
@@ -25,10 +25,12 @@ class MagnifierController {
       source: ChangeSource.internal,
     );
     previousState = initial;
+    _currentState = initial;
     _setState(initial);
 
-    final _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: ChangeSource.internal);
+    const _initialScaleState = ScaleStateChange(state: ScaleState.initial, source: ChangeSource.internal);
     previousScaleState = _initialScaleState;
+    _currentScaleState = _initialScaleState;
     _setScaleState(_initialScaleState);
   }
 
@@ -42,9 +44,9 @@ class MagnifierController {
 
   Offset get position => currentState.position;
 
-  double get scale => currentState.scale;
+  double? get scale => currentState.scale;
 
-  ScaleBoundaries get scaleBoundaries => _scaleBoundaries;
+  ScaleBoundaries get scaleBoundaries => _scaleBoundaries!;
 
   ScaleStateChange get scaleState => _currentScaleState;
 
@@ -60,9 +62,9 @@ class MagnifierController {
   }
 
   void update({
-    Offset position,
-    double scale,
-    @required ChangeSource source,
+    Offset? position,
+    double? scale,
+    required ChangeSource source,
   }) {
     position = position ?? this.position;
     scale = scale ?? this.scale;
@@ -76,7 +78,7 @@ class MagnifierController {
     ));
   }
 
-  void setScaleState(ScaleState newValue, ChangeSource source, {Offset childFocalPoint}) {
+  void setScaleState(ScaleState newValue, ChangeSource source, {Offset? childFocalPoint}) {
     if (_currentScaleState.state == newValue) return;
 
     previousScaleState = _currentScaleState;
@@ -109,18 +111,18 @@ class MagnifierController {
     _scaleStateChangeStreamController.sink.add(_currentScaleState);
   }
 
-  double getScaleForScaleState(ScaleState scaleState) {
-    double _clamp(double scale, ScaleBoundaries boundaries) => scale.clamp(boundaries.minScale, boundaries.maxScale);
+  double? getScaleForScaleState(ScaleState scaleState) {
+    double _clamp(double scale) => scale.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
 
     switch (scaleState) {
       case ScaleState.initial:
       case ScaleState.zoomedIn:
       case ScaleState.zoomedOut:
-        return _clamp(scaleBoundaries.initialScale, scaleBoundaries);
+        return _clamp(scaleBoundaries.initialScale);
       case ScaleState.covering:
-        return _clamp(ScaleLevel.scaleForCovering(scaleBoundaries.viewportSize, scaleBoundaries.childSize), scaleBoundaries);
+        return _clamp(ScaleLevel.scaleForCovering(scaleBoundaries.viewportSize, scaleBoundaries.childSize));
       case ScaleState.originalSize:
-        return _clamp(1.0, scaleBoundaries);
+        return _clamp(1.0);
       default:
         return null;
     }

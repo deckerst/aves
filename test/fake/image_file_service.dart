@@ -7,14 +7,14 @@ import 'media_store_service.dart';
 
 class FakeImageFileService extends Fake implements ImageFileService {
   @override
-  Future<Map> rename(AvesEntry entry, String newName) {
+  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName) {
     final contentId = FakeMediaStoreService.nextContentId;
     return SynchronousFuture({
       'uri': 'content://media/external/images/media/$contentId',
       'contentId': contentId,
       'path': '${entry.directory}/$newName',
       'displayName': newName,
-      'title': newName.substring(0, newName.length - entry.extension.length),
+      'title': newName.substring(0, newName.length - entry.extension!.length),
       'dateModifiedSecs': FakeMediaStoreService.dateSecs,
     });
   }

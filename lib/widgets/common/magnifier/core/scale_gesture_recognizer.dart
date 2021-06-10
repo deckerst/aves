@@ -9,23 +9,23 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   final CornerHitDetector hitDetector;
   final List<Axis> validateAxis;
   final double touchSlopFactor;
-  final ValueNotifier<TapDownDetails> doubleTapDetails;
+  final ValueNotifier<TapDownDetails?> doubleTapDetails;
 
   MagnifierGestureRecognizer({
-    Object debugOwner,
-    PointerDeviceKind kind,
-    this.hitDetector,
-    this.validateAxis,
+    Object? debugOwner,
+    PointerDeviceKind? kind,
+    required this.hitDetector,
+    required this.validateAxis,
     this.touchSlopFactor = 2,
-    this.doubleTapDetails,
+    required this.doubleTapDetails,
   }) : super(debugOwner: debugOwner, kind: kind);
 
   Map<int, Offset> _pointerLocations = <int, Offset>{};
 
-  Offset _initialFocalPoint;
-  Offset _currentFocalPoint;
-  double _initialSpan;
-  double _currentSpan;
+  Offset? _initialFocalPoint;
+  Offset? _currentFocalPoint;
+  double? _initialSpan;
+  double? _currentSpan;
 
   bool ready = true;
 
@@ -48,7 +48,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
 
   @override
   void handleEvent(PointerEvent event) {
-    if (validateAxis != null && validateAxis.isNotEmpty) {
+    if (validateAxis.isNotEmpty) {
       var didChangeConfiguration = false;
       if (event is PointerMoveEvent) {
         if (!event.synthesized) {
@@ -82,7 +82,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
     // Compute the focal point
     var focalPoint = Offset.zero;
     for (final pointer in _pointerLocations.keys) {
-      focalPoint += _pointerLocations[pointer];
+      focalPoint += _pointerLocations[pointer]!;
     }
     _currentFocalPoint = count > 0 ? focalPoint / count.toDouble() : Offset.zero;
 
@@ -91,7 +91,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
     // vertical coordinates, respectively.
     var totalDeviation = 0.0;
     for (final pointer in _pointerLocations.keys) {
-      totalDeviation += (_currentFocalPoint - _pointerLocations[pointer]).distance;
+      totalDeviation += (_currentFocalPoint! - _pointerLocations[pointer]!).distance;
     }
     _currentSpan = count > 0 ? totalDeviation / count : 0.0;
   }
@@ -106,7 +106,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
       return;
     }
 
-    final move = _initialFocalPoint - _currentFocalPoint;
+    final move = _initialFocalPoint! - _currentFocalPoint!;
     var shouldMove = false;
     if (validateAxis.length == 2) {
       // the image is the descendant of gesture detector(s) handling drag in both directions
@@ -128,10 +128,10 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
       shouldMove = validateAxis.contains(Axis.vertical) ? hitDetector.shouldMoveY(move) : hitDetector.shouldMoveX(move);
     }
 
-    final doubleTap = doubleTapDetails?.value != null;
+    final doubleTap = doubleTapDetails.value != null;
     if (shouldMove || doubleTap) {
-      final spanDelta = (_currentSpan - _initialSpan).abs();
-      final focalPointDelta = (_currentFocalPoint - _initialFocalPoint).distance;
+      final spanDelta = (_currentSpan! - _initialSpan!).abs();
+      final focalPointDelta = (_currentFocalPoint! - _initialFocalPoint!).distance;
       // warning: do not compare `focalPointDelta` to `kPanSlop`
       // `ScaleGestureRecognizer` uses `kPanSlop`, but `HorizontalDragGestureRecognizer` uses `kTouchSlop`
       // and the magnifier recognizer may compete with the `HorizontalDragGestureRecognizer` from a containing `PageView`

@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 class ViewState {
   final Offset position;
-  final double scale;
-  final Size viewportSize;
+  final double? scale;
+  final Size? viewportSize;
 
   static const ViewState zero = ViewState(Offset.zero, 0, null);
 

@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class LabeledCheckbox extends StatefulWidget {
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool?> onChanged;
   final String text;
 
   const LabeledCheckbox({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
-    @required this.text,
+    Key? key,
+    required this.value,
+    required this.onChanged,
+    required this.text,
   }) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class LabeledCheckbox extends StatefulWidget {
 }
 
 class _LabeledCheckboxState extends State<LabeledCheckbox> {
-  TapGestureRecognizer _tapRecognizer;
+  late TapGestureRecognizer _tapRecognizer;
 
   @override
   void initState() {

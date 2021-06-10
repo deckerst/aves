@@ -14,7 +14,7 @@ class AlbumFilter extends CollectionFilter {
   static final Map<String, Color> _appColors = {};
 
   final String album;
-  final String displayName;
+  final String? displayName;
 
   const AlbumFilter(this.album, this.displayName);
 
@@ -41,10 +41,10 @@ class AlbumFilter extends CollectionFilter {
   String getTooltip(BuildContext context) => album;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) {
     return IconUtils.getAlbumIcon(
           context: context,
-          album: album,
+          albumPath: album,
           size: size,
           embossed: embossed,
         ) ??
@@ -56,21 +56,20 @@ class AlbumFilter extends CollectionFilter {
     // do not use async/await and rely on `SynchronousFuture`
     // to prevent rebuilding of the `FutureBuilder` listening on this future
     if (androidFileUtils.getAlbumType(album) == AlbumType.app) {
-      if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]);
+      if (_appColors.containsKey(album)) return SynchronousFuture(_appColors[album]!);
 
-      return PaletteGenerator.fromImageProvider(
-        AppIconImage(
-          packageName: androidFileUtils.getAlbumAppPackageName(album),
-          size: 24,
-        ),
-      ).then((palette) {
-        final color = palette.dominantColor?.color ?? super.color(context);
-        _appColors[album] = color;
-        return color;
-      });
-    } else {
-      return super.color(context);
+      final packageName = androidFileUtils.getAlbumAppPackageName(album);
+      if (packageName != null) {
+        return PaletteGenerator.fromImageProvider(
+          AppIconImage(packageName: packageName, size: 24),
+        ).then((palette) async {
+          final color = palette.dominantColor?.color ?? (await super.color(context));
+          _appColors[album] = color;
+          return color;
+        });
+      }
     }
+    return super.color(context);
   }
 
   @override

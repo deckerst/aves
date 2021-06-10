@@ -12,8 +12,8 @@ class SearchPage extends StatefulWidget {
   final Animation<double> animation;
 
   const SearchPage({
-    @required this.delegate,
-    @required this.animation,
+    required this.delegate,
+    required this.animation,
   });
 
   @override
@@ -89,19 +89,21 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    Widget body;
+    Widget? body;
     switch (widget.delegate.currentBody) {
       case SearchBody.suggestions:
         body = KeyedSubtree(
-          key: ValueKey<SearchBody>(SearchBody.suggestions),
+          key: const ValueKey<SearchBody>(SearchBody.suggestions),
           child: widget.delegate.buildSuggestions(context),
         );
         break;
       case SearchBody.results:
         body = KeyedSubtree(
-          key: ValueKey<SearchBody>(SearchBody.results),
+          key: const ValueKey<SearchBody>(SearchBody.results),
           child: widget.delegate.buildResults(context),
         );
+        break;
+      case null:
         break;
     }
     return Scaffold(

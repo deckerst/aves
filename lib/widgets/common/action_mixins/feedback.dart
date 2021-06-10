@@ -6,27 +6,28 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 mixin FeedbackMixin {
   void dismissFeedback(BuildContext context) => ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-  void showFeedback(BuildContext context, String message) {
-    showFeedbackWithMessenger(ScaffoldMessenger.of(context), message);
+  void showFeedback(BuildContext context, String message, [SnackBarAction? action]) {
+    showFeedbackWithMessenger(ScaffoldMessenger.of(context), message, action);
   }
 
   // provide the messenger if feedback happens as the widget is disposed
-  void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message) {
+  void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
     messenger.showSnackBar(SnackBar(
       content: Text(message),
-      duration: Durations.opToastDisplay,
+      action: action,
+      duration: action != null ? Durations.opToastActionDisplay : Durations.opToastDisplay,
     ));
   }
 
   // report overlay for multiple operations
 
   void showOpReport<T>({
-    @required BuildContext context,
-    @required Stream<T> opStream,
-    @required int itemCount,
-    void Function(Set<T> processed) onDone,
+    required BuildContext context,
+    required Stream<T> opStream,
+    required int itemCount,
+    void Function(Set<T> processed)? onDone,
   }) {
-    OverlayEntry _opReportOverlayEntry;
+    late OverlayEntry _opReportOverlayEntry;
     _opReportOverlayEntry = OverlayEntry(
       builder: (context) => ReportOverlay<T>(
         opStream: opStream,
@@ -37,7 +38,7 @@ mixin FeedbackMixin {
         },
       ),
     );
-    Overlay.of(context).insert(_opReportOverlayEntry);
+    Overlay.of(context)!.insert(_opReportOverlayEntry);
   }
 }
 
@@ -47,9 +48,9 @@ class ReportOverlay<T> extends StatefulWidget {
   final void Function(Set<T> processed) onDone;
 
   const ReportOverlay({
-    @required this.opStream,
-    @required this.itemCount,
-    @required this.onDone,
+    required this.opStream,
+    required this.itemCount,
+    required this.onDone,
   });
 
   @override
@@ -58,8 +59,8 @@ class ReportOverlay<T> extends StatefulWidget {
 
 class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerProviderStateMixin {
   final processed = <T>{};
-  AnimationController _animationController;
-  Animation<double> _animation;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   Stream<T> get opStream => widget.opStream;
 
@@ -103,7 +104,7 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
             return FadeTransition(
               opacity: _animation,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: RadialGradient(
                     colors: [
                       Colors.black,

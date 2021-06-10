@@ -4,10 +4,11 @@ import 'package:flutter/services.dart';
 class ViewerService {
   static const platform = MethodChannel('deckers.thibault/aves/viewer');
 
-  static Future<Map> getIntentData() async {
+  static Future<Map<String, dynamic>> getIntentData() async {
     try {
       // returns nullable map with 'action' and possibly 'uri' 'mimeType'
-      return await platform.invokeMethod('getIntentData') as Map;
+      final result = await platform.invokeMethod('getIntentData');
+      if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
       debugPrint('getIntentData failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }

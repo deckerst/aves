@@ -19,10 +19,15 @@ mixin SizeAwareMixin {
     String destinationAlbum,
     MoveType moveType,
   ) async {
+    // assume we have enough space if we cannot find the volume or its remaining free space
     final destinationVolume = androidFileUtils.getStorageVolume(destinationAlbum);
+    if (destinationVolume == null) return true;
+
     final free = await storageService.getFreeSpace(destinationVolume);
-    int needed;
-    int sumSize(sum, entry) => sum + entry.sizeBytes;
+    if (free == null) return true;
+
+    late int needed;
+    int sumSize(sum, entry) => sum + entry.sizeBytes ?? 0;
     switch (moveType) {
       case MoveType.copy:
       case MoveType.export:
@@ -30,11 +35,11 @@ mixin SizeAwareMixin {
         break;
       case MoveType.move:
         // when moving, we only need space for the entries that are not already on the destination volume
-        final byVolume = groupBy<AvesEntry, StorageVolume>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path));
+        final byVolume = Map.fromEntries(groupBy<AvesEntry, StorageVolume?>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path)).entries.where((kv) => kv.key != null).cast<MapEntry<StorageVolume, List<AvesEntry>>>());
         final otherVolumes = byVolume.keys.where((volume) => volume != destinationVolume);
-        final fromOtherVolumes = otherVolumes.fold<int>(0, (sum, volume) => sum + byVolume[volume].fold(0, sumSize));
+        final fromOtherVolumes = otherVolumes.fold<int>(0, (sum, volume) => sum + byVolume[volume]!.fold(0, sumSize));
         // and we need at least as much space as the largest entry because individual entries are copied then deleted
-        final largestSingle = selection.fold<int>(0, (largest, entry) => max(largest, entry.sizeBytes));
+        final largestSingle = selection.fold<int>(0, (largest, entry) => max(largest, entry.sizeBytes ?? 0));
         needed = max(fromOtherVolumes, largestSingle);
         break;
     }

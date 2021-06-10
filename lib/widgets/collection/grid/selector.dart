@@ -19,10 +19,10 @@ class GridSelectionGestureDetector extends StatefulWidget {
 
   const GridSelectionGestureDetector({
     this.selectable = true,
-    @required this.collection,
-    @required this.scrollController,
-    @required this.appBarHeightNotifier,
-    @required this.child,
+    required this.collection,
+    required this.scrollController,
+    required this.appBarHeightNotifier,
+    required this.child,
   });
 
   @override
@@ -30,16 +30,16 @@ class GridSelectionGestureDetector extends StatefulWidget {
 }
 
 class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetector> {
-  bool _pressing = false, _selecting;
-  int _fromIndex, _lastToIndex;
-  Offset _localPosition;
-  EdgeInsets _scrollableInsets;
-  double _scrollSpeedFactor;
-  Timer _updateTimer;
+  bool _pressing = false, _selecting = false;
+  late int _fromIndex, _lastToIndex;
+  late Offset _localPosition;
+  late EdgeInsets _scrollableInsets;
+  late double _scrollSpeedFactor;
+  Timer? _updateTimer;
 
   CollectionLens get collection => widget.collection;
 
-  List<AvesEntry> get entries => collection.sortedEntries;
+  List<AvesEntry > get entries => collection.sortedEntries;
 
   ScrollController get scrollController => widget.scrollController;
 
@@ -102,7 +102,9 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
     }
 
     final toEntry = _getEntryAt(_localPosition);
-    _toggleSelectionToIndex(entries.indexOf(toEntry));
+    if (toEntry != null) {
+      _toggleSelectionToIndex(entries.indexOf(toEntry));
+    }
   }
 
   void _setScrollSpeed(double speedFactor) {
@@ -131,7 +133,7 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
     }
   }
 
-  AvesEntry _getEntryAt(Offset localPosition) {
+  AvesEntry? _getEntryAt(Offset localPosition) {
     // as of Flutter v1.22.5, `hitTest` on the `ScrollView` render object works fine when it is static,
     // but when it is scrolling (through controller animation), result is incomplete and children are missing,
     // so we use custom layout computation instead to find the entry.

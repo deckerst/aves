@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 class NavTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final Widget trailing;
+  final Widget? trailing;
   final bool topLevel;
   final String routeName;
   final WidgetBuilder pageBuilder;
 
   const NavTile({
-    @required this.icon,
-    @required this.title,
+    required this.icon,
+    required this.title,
     this.trailing,
     this.topLevel = true,
-    @required this.routeName,
-    @required this.pageBuilder,
+    required this.routeName,
+    required this.pageBuilder,
   });
 
   @override
@@ -32,9 +32,9 @@ class NavTile extends StatelessWidget {
             ? Builder(
                 builder: (context) => DefaultTextStyle.merge(
                   style: TextStyle(
-                    color: IconTheme.of(context).color.withOpacity(.6),
+                    color: IconTheme.of(context).color!.withOpacity(.6),
                   ),
-                  child: trailing,
+                  child: trailing!,
                 ),
               )
             : null,

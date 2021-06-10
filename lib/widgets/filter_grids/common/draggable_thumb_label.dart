@@ -11,8 +11,8 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
   final double offsetY;
 
   const FilterDraggableThumbLabel({
-    @required this.sortFactor,
-    @required this.offsetY,
+    required this.sortFactor,
+    required this.offsetY,
   });
 
   @override
@@ -25,17 +25,15 @@ class FilterDraggableThumbLabel<T extends CollectionFilter> extends StatelessWid
             return [
               context.l10n.itemCount(context.read<CollectionSource>().count(filterGridItem.filter)),
             ];
-            break;
           case ChipSortFactor.date:
             return [
-              DraggableThumbLabel.formatMonthThumbLabel(context, filterGridItem.entry.bestDate),
+              DraggableThumbLabel.formatMonthThumbLabel(context, filterGridItem.entry?.bestDate),
             ];
           case ChipSortFactor.name:
             return [
               filterGridItem.filter.getLabel(context),
             ];
         }
-        return [];
       },
     );
   }

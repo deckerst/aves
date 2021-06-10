@@ -2,23 +2,22 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CollectionNavTile extends StatelessWidget {
-  final Widget leading;
+  final Widget? leading;
   final String title;
-  final Widget trailing;
+  final Widget? trailing;
   final bool dense;
-  final CollectionFilter filter;
+  final CollectionFilter? filter;
 
   const CollectionNavTile({
-    @required this.leading,
-    @required this.title,
+    required this.leading,
+    required this.title,
     this.trailing,
-    bool dense,
-    @required this.filter,
+    bool? dense,
+    required this.filter,
   }) : dense = dense ?? false;
 
   @override
@@ -41,7 +40,7 @@ class CollectionNavTile extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
+        settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
           source: context.read<CollectionSource>(),
           filters: [filter],

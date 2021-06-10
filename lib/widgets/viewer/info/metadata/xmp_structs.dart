@@ -12,15 +12,18 @@ import 'package:flutter/material.dart';
 class XmpStructArrayCard extends StatefulWidget {
   final String title;
   final List<Map<String, String>> structs = [];
-  final Map<String, InfoLinkHandler> Function(int index) linkifier;
+  final Map<String, InfoLinkHandler> Function(int index)? linkifier;
 
   XmpStructArrayCard({
-    @required this.title,
-    @required Map<int, Map<String, String>> structByIndex,
+    required this.title,
+    required Map<int, Map<String, String>> structByIndex,
     this.linkifier,
   }) {
-    structs.length = structByIndex.keys.fold(0, max);
-    structByIndex.keys.forEach((index) => structs[index - 1] = structByIndex[index]);
+    final length = structByIndex.keys.fold(0, max);
+    structs.length = length;
+    for (var i = 0; i < length; i++) {
+      structs[i] = structByIndex[i + 1] ?? {};
+    }
   }
 
   @override
@@ -28,7 +31,7 @@ class XmpStructArrayCard extends StatefulWidget {
 }
 
 class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
-  int _index;
+  late int _index;
 
   List<Map<String, String>> get structs => widget.structs;
 
@@ -54,7 +57,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 8, top: 8, right: 8),
+            padding: const EdgeInsets.only(left: 8, top: 8, right: 8),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -67,13 +70,13 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(AIcons.previous),
+                  icon: const Icon(AIcons.previous),
                   onPressed: _index > 0 ? () => setIndex(_index - 1) : null,
                   tooltip: context.l10n.previousTooltip,
                 ),
                 IconButton(
                   visualDensity: VisualDensity.compact,
-                  icon: Icon(AIcons.next),
+                  icon: const Icon(AIcons.next),
                   onPressed: _index < structs.length - 1 ? () => setIndex(_index + 1) : null,
                   tooltip: context.l10n.nextTooltip,
                 ),
@@ -88,9 +91,9 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               // add padding at this level (instead of the column level)
               // so that the crossfader can animate the content size
               // without clipping the text
-              padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
-                structs[_index] ?? {},
+                structs[_index],
                 maxValueLength: Constants.infoGroupMaxValueLength,
                 linkHandlers: widget.linkifier?.call(_index + 1),
               ),
@@ -105,13 +108,13 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
 class XmpStructCard extends StatelessWidget {
   final String title;
   final Map<String, String> struct;
-  final Map<String, InfoLinkHandler> Function() linkifier;
+  final Map<String, InfoLinkHandler> Function()? linkifier;
 
   static const cardMargin = EdgeInsets.symmetric(vertical: 8, horizontal: 0);
 
   const XmpStructCard({
-    @required this.title,
-    @required this.struct,
+    required this.title,
+    required this.struct,
     this.linkifier,
   });
 
@@ -120,7 +123,7 @@ class XmpStructCard extends StatelessWidget {
     return Card(
       margin: cardMargin,
       child: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

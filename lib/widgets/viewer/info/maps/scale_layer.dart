@@ -11,7 +11,7 @@ class ScaleLayerOptions extends LayerOptions {
   final Widget Function(double width, String distance) builder;
 
   ScaleLayerOptions({
-    Key key,
+    Key? key,
     this.builder = defaultBuilder,
     rebuild,
   }) : super(key: key, rebuild: rebuild);
@@ -27,12 +27,12 @@ class ScaleLayerOptions extends LayerOptions {
 class ScaleLayerWidget extends StatelessWidget {
   final ScaleLayerOptions options;
 
-  ScaleLayerWidget({@required this.options}) : super(key: options.key);
+  ScaleLayerWidget({required this.options}) : super(key: options.key);
 
   @override
   Widget build(BuildContext context) {
     final mapState = MapState.maybeOf(context);
-    return mapState != null ? ScaleLayer(options, mapState, mapState.onMoved) : SizedBox();
+    return mapState != null ? ScaleLayer(options, mapState, mapState.onMoved) : const SizedBox();
   }
 }
 
@@ -86,7 +86,7 @@ class ScaleLayer extends StatelessWidget {
         final targetPoint = util.calculateEndingGlobalCoordinates(center, 90, distance);
         final end = map.project(targetPoint);
         final displayDistance = distance > 999 ? '${(distance / 1000).toStringAsFixed(0)} km' : '${distance.toStringAsFixed(0)} m';
-        final double width = (end.x - start.x);
+        final width = end.x - (start.x as double);
 
         return scaleLayerOpts.builder(width, displayDistance);
       },
@@ -104,22 +104,22 @@ class ScaleBar extends StatelessWidget {
   static const double barThickness = 1;
 
   const ScaleBar({
-    @required this.distance,
-    @required this.width,
+    required this.distance,
+    required this.width,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: AlignmentDirectional.bottomStart,
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           OutlinedText(
             text: distance,
-            style: TextStyle(
+            style: const TextStyle(
               color: fillColor,
               fontSize: 11,
             ),
@@ -129,13 +129,13 @@ class ScaleBar extends StatelessWidget {
           Container(
             height: barThickness + outlineWidth * 2,
             width: width,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: fillColor,
-              border: Border.all(
+              border: Border.fromBorderSide(BorderSide(
                 color: outlineColor,
                 width: outlineWidth,
-              ),
-              borderRadius: BorderRadius.circular(8),
+              )),
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
           ),
         ],

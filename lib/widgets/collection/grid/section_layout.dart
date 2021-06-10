@@ -3,23 +3,24 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/widgets/collection/grid/headers/any.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesEntry> {
   final CollectionLens collection;
 
   const SectionedEntryListLayoutProvider({
-    @required this.collection,
-    @required double scrollableWidth,
-    @required int columnCount,
-    @required double tileExtent,
-    @required Widget Function(AvesEntry entry) tileBuilder,
-    @required Duration tileAnimationDelay,
-    @required Widget child,
+    required this.collection,
+    required double scrollableWidth,
+    required int columnCount,
+    required double spacing,
+    required double tileExtent,
+    required Widget Function(AvesEntry entry) tileBuilder,
+    required Duration tileAnimationDelay,
+    required Widget child,
   }) : super(
           scrollableWidth: scrollableWidth,
           columnCount: columnCount,
+          spacing: spacing,
           tileExtent: tileExtent,
           tileBuilder: tileBuilder,
           tileAnimationDelay: tileAnimationDelay,

@@ -18,15 +18,15 @@ class AboutPage extends StatelessWidget {
         child: CustomScrollView(
           slivers: [
             SliverPadding(
-              padding: EdgeInsets.only(top: 16),
+              padding: const EdgeInsets.only(top: 16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
                     AppReference(),
-                    Divider(),
+                    const Divider(),
                     AboutUpdate(),
                     AboutCredits(),
-                    Divider(),
+                    const Divider(),
                   ],
                 ),
               ),

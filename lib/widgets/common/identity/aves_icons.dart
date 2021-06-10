@@ -14,8 +14,8 @@ class VideoIcon extends StatelessWidget {
   final AvesEntry entry;
 
   const VideoIcon({
-    Key key,
-    this.entry,
+    Key? key,
+    required this.entry,
   }) : super(key: key);
 
   @override
@@ -31,7 +31,7 @@ class VideoIcon extends StatelessWidget {
     if (showDuration) {
       child = DefaultTextStyle(
         style: TextStyle(
-          color: Colors.grey[200],
+          color: Colors.grey.shade200,
           fontSize: thumbnailTheme.fontSize,
         ),
         child: child,
@@ -42,7 +42,7 @@ class VideoIcon extends StatelessWidget {
 }
 
 class AnimatedImageIcon extends StatelessWidget {
-  const AnimatedImageIcon({Key key}) : super(key: key);
+  const AnimatedImageIcon({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class AnimatedImageIcon extends StatelessWidget {
 }
 
 class GeotiffIcon extends StatelessWidget {
-  const GeotiffIcon({Key key}) : super(key: key);
+  const GeotiffIcon({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class GeotiffIcon extends StatelessWidget {
 }
 
 class SphericalImageIcon extends StatelessWidget {
-  const SphericalImageIcon({Key key}) : super(key: key);
+  const SphericalImageIcon({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class SphericalImageIcon extends StatelessWidget {
 }
 
 class GpsIcon extends StatelessWidget {
-  const GpsIcon({Key key}) : super(key: key);
+  const GpsIcon({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class GpsIcon extends StatelessWidget {
 }
 
 class RawIcon extends StatelessWidget {
-  const RawIcon({Key key}) : super(key: key);
+  const RawIcon({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +106,8 @@ class MultiPageIcon extends StatelessWidget {
   final AvesEntry entry;
 
   const MultiPageIcon({
-    Key key,
-    this.entry,
+    Key? key,
+    required this.entry,
   }) : super(key: key);
 
   @override
@@ -123,13 +123,13 @@ class MultiPageIcon extends StatelessWidget {
 class OverlayIcon extends StatelessWidget {
   final IconData icon;
   final double size;
-  final String text;
+  final String? text;
   final double iconScale;
 
   const OverlayIcon({
-    Key key,
-    @required this.icon,
-    @required this.size,
+    Key? key,
+    required this.icon,
+    required this.size,
     this.iconScale = 1,
     this.text,
   }) : super(key: key);
@@ -150,11 +150,11 @@ class OverlayIcon extends StatelessWidget {
     );
 
     return Container(
-      margin: EdgeInsets.all(1),
+      margin: const EdgeInsets.all(1),
       padding: text != null ? EdgeInsets.only(right: size / 4) : null,
       decoration: BoxDecoration(
-        color: Color(0xBB000000),
-        borderRadius: BorderRadius.circular(size),
+        color: const Color(0xBB000000),
+        borderRadius: BorderRadius.all(Radius.circular(size)),
       ),
       child: text == null
           ? iconBox
@@ -163,8 +163,8 @@ class OverlayIcon extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 iconBox,
-                SizedBox(width: 2),
-                Text(text),
+                const SizedBox(width: 2),
+                Text(text!),
               ],
             ),
     );
@@ -172,10 +172,10 @@ class OverlayIcon extends StatelessWidget {
 }
 
 class IconUtils {
-  static Widget getAlbumIcon({
-    @required BuildContext context,
-    @required String album,
-    double size,
+  static Widget? getAlbumIcon({
+    required BuildContext context,
+    required String albumPath,
+    double? size,
     bool embossed = false,
   }) {
     size ??= IconTheme.of(context).size;
@@ -187,7 +187,7 @@ class IconUtils {
             data: context.read<MediaQueryData>().copyWith(textScaleFactor: 1.0),
             child: DecoratedIcon(
               icon,
-              shadows: [Constants.embossShadow],
+              shadows: Constants.embossShadows,
               size: size,
             ),
           )
@@ -195,7 +195,7 @@ class IconUtils {
             icon,
             size: size,
           );
-    switch (androidFileUtils.getAlbumType(album)) {
+    switch (androidFileUtils.getAlbumType(albumPath)) {
       case AlbumType.camera:
         return buildIcon(AIcons.cameraAlbum);
       case AlbumType.screenshots:
@@ -206,8 +206,8 @@ class IconUtils {
       case AlbumType.app:
         return Image(
           image: AppIconImage(
-            packageName: androidFileUtils.getAlbumAppPackageName(album),
-            size: size,
+            packageName: androidFileUtils.getAlbumAppPackageName(albumPath)!,
+            size: size!,
           ),
           width: size,
           height: size,

@@ -14,8 +14,8 @@ class TypeFilter extends CollectionFilter {
   static const _sphericalVideo = 'spherical_video'; // subset of videos
 
   final String itemType;
-  EntryFilter _test;
-  IconData _icon;
+  late EntryFilter _test;
+  IconData? /*late*/ _icon;
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);

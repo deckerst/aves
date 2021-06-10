@@ -9,8 +9,8 @@ class EntryBackgroundSelector extends StatefulWidget {
   final ValueSetter<EntryBackground> setter;
 
   const EntryBackgroundSelector({
-    @required this.getter,
-    @required this.setter,
+    required this.getter,
+    required this.setter,
   });
 
   @override
@@ -25,8 +25,10 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
         items: _buildItems(context),
         value: widget.getter(),
         onChanged: (selected) {
-          widget.setter(selected);
-          setState(() {});
+          if (selected != null) {
+            widget.setter(selected);
+            setState(() {});
+          }
         },
       ),
     );
@@ -40,10 +42,10 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
       EntryBackground.checkered,
       EntryBackground.transparent,
     ].map((selected) {
-      Widget child;
+      Widget? child;
       switch (selected) {
         case EntryBackground.transparent:
-          child = Icon(
+          child = const Icon(
             Icons.clear,
             size: 20,
             color: Colors.white30,
@@ -68,7 +70,7 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
           width: radius * 2,
           decoration: BoxDecoration(
             color: selected.isColor ? selected.color : null,
-            border: AvesCircleBorder.build(context),
+            border: AvesBorder.border,
             shape: BoxShape.circle,
           ),
           child: child,

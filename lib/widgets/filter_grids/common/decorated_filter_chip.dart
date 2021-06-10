@@ -24,22 +24,24 @@ import 'package:provider/provider.dart';
 
 class DecoratedFilterChip extends StatelessWidget {
   final CollectionFilter filter;
-  final double extent;
-  final AvesEntry coverEntry;
+  final double extent, thumbnailExtent;
+  final AvesEntry? coverEntry;
   final bool pinned, highlightable;
-  final FilterCallback onTap;
-  final OffsetFilterCallback onLongPress;
+  final FilterCallback? onTap;
+  final OffsetFilterCallback? onLongPress;
 
   const DecoratedFilterChip({
-    Key key,
-    @required this.filter,
-    @required this.extent,
+    Key? key,
+    required this.filter,
+    required this.extent,
+    double? thumbnailExtent,
     this.coverEntry,
     this.pinned = false,
     this.highlightable = true,
     this.onTap,
     this.onLongPress,
-  }) : super(key: key);
+  })  : thumbnailExtent = thumbnailExtent ?? extent,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class DecoratedFilterChip extends StatelessWidget {
             {
               final album = (filter as AlbumFilter).album;
               return StreamBuilder<AlbumSummaryInvalidatedEvent>(
-                stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories.contains(album)),
+                stream: source.eventBus.on<AlbumSummaryInvalidatedEvent>().where((event) => event.directories == null || event.directories!.contains(album)),
                 builder: (context, snapshot) => _buildChip(source),
               );
             }
@@ -58,7 +60,7 @@ class DecoratedFilterChip extends StatelessWidget {
             {
               final countryCode = (filter as LocationFilter).countryCode;
               return StreamBuilder<CountrySummaryInvalidatedEvent>(
-                stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes.contains(countryCode)),
+                stream: source.eventBus.on<CountrySummaryInvalidatedEvent>().where((event) => event.countryCodes == null || event.countryCodes!.contains(countryCode)),
                 builder: (context, snapshot) => _buildChip(source),
               );
             }
@@ -66,16 +68,18 @@ class DecoratedFilterChip extends StatelessWidget {
             {
               final tag = (filter as TagFilter).tag;
               return StreamBuilder<TagSummaryInvalidatedEvent>(
-                stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags.contains(tag)),
+                stream: source.eventBus.on<TagSummaryInvalidatedEvent>().where((event) => event.tags == null || event.tags!.contains(tag)),
                 builder: (context, snapshot) => _buildChip(source),
               );
             }
           default:
-            return SizedBox();
+            return const SizedBox();
         }
       },
     );
   }
+
+  static Radius radius(double extent) => Radius.circular(min<double>(AvesFilterChip.defaultRadius, extent / 4));
 
   Widget _buildChip(CollectionSource source) {
     final entry = coverEntry ?? source.coverEntry(filter);
@@ -88,11 +92,10 @@ class DecoratedFilterChip extends StatelessWidget {
               )
             : RasterImageThumbnail(
                 entry: entry,
-                extent: extent,
+                extent: thumbnailExtent,
               );
-    final radius = min<double>(AvesFilterChip.defaultRadius, extent / 4);
     final titlePadding = min<double>(4.0, extent / 32);
-    final borderRadius = BorderRadius.circular(radius);
+    final borderRadius = BorderRadius.all(radius(extent));
     Widget child = AvesFilterChip(
       filter: filter,
       showGenericIcon: false,
@@ -140,7 +143,7 @@ class DecoratedFilterChip extends StatelessWidget {
             child: DecoratedIcon(
               AIcons.pin,
               color: FilterGridPage.detailColor,
-              shadows: [Constants.embossShadow],
+              shadows: Constants.embossShadows,
               size: iconSize,
             ),
           ),
@@ -151,7 +154,7 @@ class DecoratedFilterChip extends StatelessWidget {
             child: DecoratedIcon(
               AIcons.removableStorage,
               color: FilterGridPage.detailColor,
-              shadows: [Constants.embossShadow],
+              shadows: Constants.embossShadows,
               size: iconSize,
             ),
           ),

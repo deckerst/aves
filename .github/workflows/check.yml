@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: subosito/flutter-action@v1
         with:
-          channel: beta
-          flutter-version: '2.2.0-10.1.pre'
+          channel: stable
+          flutter-version: '2.2.1'
 
       - name: Clone the repository.
         uses: actions/checkout@v2
@@ -31,4 +31,4 @@ jobs:
         run: flutter analyze
 
       - name: Unit tests.
-        run: flutter test
+        run: flutter test --no-sound-null-safety

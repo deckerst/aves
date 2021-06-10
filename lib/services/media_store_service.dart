@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:aves/model/entry.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class MediaStoreService {
   Future<List<int>> checkObsoleteContentIds(List<int> knownContentIds);
 
-  Future<List<int>> checkObsoletePaths(Map<int, String> knownPathById);
+  Future<List<int>> checkObsoletePaths(Map<int, String?> knownPathById);
 
   // knownEntries: map of contentId -> dateModifiedSecs
   Stream<AvesEntry> getEntries(Map<int, int> knownEntries);
@@ -32,7 +33,7 @@ class PlatformMediaStoreService implements MediaStoreService {
   }
 
   @override
-  Future<List<int>> checkObsoletePaths(Map<int, String> knownPathById) async {
+  Future<List<int>> checkObsoletePaths(Map<int, String?> knownPathById) async {
     try {
       final result = await platform.invokeMethod('checkObsoletePaths', <String, dynamic>{
         'knownPathById': knownPathById,

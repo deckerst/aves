@@ -10,14 +10,14 @@ import 'package:flutter/material.dart';
 class XmpDirTile extends StatefulWidget {
   final AvesEntry entry;
   final SplayTreeMap<String, String> tags;
-  final ValueNotifier<String> expandedNotifier;
+  final ValueNotifier<String?>? expandedNotifier;
   final bool initiallyExpanded;
 
   const XmpDirTile({
-    @required this.entry,
-    @required this.tags,
-    @required this.expandedNotifier,
-    @required this.initiallyExpanded,
+    required this.entry,
+    required this.tags,
+    required this.expandedNotifier,
+    required this.initiallyExpanded,
   });
 
   @override
@@ -29,7 +29,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
 
   @override
   Widget build(BuildContext context) {
-    final sections = groupBy(widget.tags.entries, (kv) {
+    final sections = groupBy<MapEntry<String, String>, String>(widget.tags.entries, (kv) {
       final fullKey = kv.key;
       final i = fullKey.indexOf(XMP.propNamespaceSeparator);
       final namespace = i == -1 ? '' : fullKey.substring(0, i);
@@ -42,7 +42,7 @@ class _XmpDirTileState extends State<XmpDirTile> {
       initiallyExpanded: widget.initiallyExpanded,
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: sections.expand((section) => section.buildNamespaceSection()).toList(),

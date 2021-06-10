@@ -9,7 +9,7 @@ class SourceViewerPage extends StatefulWidget {
   final Future<String> Function() loader;
 
   const SourceViewerPage({
-    @required this.loader,
+    required this.loader,
   });
 
   @override
@@ -17,7 +17,7 @@ class SourceViewerPage extends StatefulWidget {
 }
 
 class _SourceViewerPageState extends State<SourceViewerPage> {
-  Future<String> _loader;
+  late Future<String> _loader;
 
   @override
   void initState() {
@@ -36,21 +36,21 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
           future: _loader,
           builder: (context, snapshot) {
             if (snapshot.hasError) return Text(snapshot.error.toString());
-            if (!snapshot.hasData) return SizedBox.shrink();
+            if (!snapshot.hasData) return const SizedBox.shrink();
 
-            final source = snapshot.data;
+            final source = snapshot.data!;
             final highlightView = AvesHighlightView(
               source,
               language: 'xml',
               theme: darculaTheme,
-              padding: EdgeInsets.all(8),
-              textStyle: TextStyle(
+              padding: const EdgeInsets.all(8),
+              textStyle: const TextStyle(
                 fontSize: 12,
               ),
               tabSize: 4,
             );
             return Container(
-              constraints: BoxConstraints.expand(),
+              constraints: const BoxConstraints.expand(),
               child: Scrollbar(
                 child: SingleChildScrollView(
                   child: SingleChildScrollView(

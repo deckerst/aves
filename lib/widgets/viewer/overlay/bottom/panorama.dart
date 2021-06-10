@@ -11,16 +11,16 @@ class PanoramaOverlay extends StatelessWidget {
   final Animation<double> scale;
 
   const PanoramaOverlay({
-    Key key,
-    @required this.entry,
-    @required this.scale,
+    Key? key,
+    required this.entry,
+    required this.scale,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Spacer(),
+        const Spacer(),
         OverlayTextButton(
           scale: scale,
           buttonLabel: context.l10n.viewerOpenPanoramaButtonLabel,
@@ -30,7 +30,7 @@ class PanoramaOverlay extends StatelessWidget {
               unawaited(Navigator.push(
                 context,
                 MaterialPageRoute(
-                  settings: RouteSettings(name: PanoramaPage.routeName),
+                  settings: const RouteSettings(name: PanoramaPage.routeName),
                   builder: (context) => PanoramaPage(
                     entry: entry,
                     info: info,

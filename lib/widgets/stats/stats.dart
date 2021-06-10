@@ -16,6 +16,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -27,20 +28,20 @@ class StatsPage extends StatelessWidget {
   static const routeName = '/collection/stats';
 
   final CollectionSource source;
-  final CollectionLens parentCollection;
+  final CollectionLens? parentCollection;
   final Map<String, int> entryCountPerCountry = {}, entryCountPerPlace = {}, entryCountPerTag = {};
 
-  Set<AvesEntry> get entries => parentCollection?.sortedEntries?.toSet() ?? source.visibleEntries;
+  Set<AvesEntry> get entries => parentCollection?.sortedEntries.toSet() ?? source.visibleEntries;
 
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
-    @required this.source,
+    required this.source,
     this.parentCollection,
-  }) : assert(source != null) {
+  }) {
     entries.forEach((entry) {
       if (entry.hasAddress) {
-        final address = entry.addressDetails;
+        final address = entry.addressDetails!;
         var country = address.countryName;
         if (country != null && country.isNotEmpty) {
           country += '${LocationFilter.locationSeparator}${address.countryCode}';
@@ -85,7 +86,7 @@ class StatsPage extends StatelessWidget {
       final textScaleFactor = MediaQuery.textScaleFactorOf(context);
       final lineHeight = 16 * textScaleFactor;
       final locationIndicator = Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             LinearPercentIndicator(
@@ -94,15 +95,15 @@ class StatsPage extends StatelessWidget {
               backgroundColor: Colors.white24,
               progressColor: Theme.of(context).accentColor,
               animation: true,
-              leading: Icon(AIcons.location),
+              leading: const Icon(AIcons.location),
               // right padding to match leading, so that inside label is aligned with outside label below
-              padding: EdgeInsets.symmetric(horizontal: lineHeight) + EdgeInsets.only(right: 24),
+              padding: EdgeInsets.symmetric(horizontal: lineHeight) + const EdgeInsets.only(right: 24),
               center: Text(
                 NumberFormat.percentPattern().format(withGpsPercent),
-                style: TextStyle(shadows: [Constants.embossShadow]),
+                style: const TextStyle(shadows: Constants.embossShadows),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(context.l10n.statsWithGps(withGpsCount)),
           ],
         ),
@@ -129,8 +130,8 @@ class StatsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMimeDonut(BuildContext context, String Function(num) label, Map<String, num> byMimeTypes) {
-    if (byMimeTypes.isEmpty) return SizedBox.shrink();
+  Widget _buildMimeDonut(BuildContext context, String Function(int) label, Map<String, int> byMimeTypes) {
+    if (byMimeTypes.isEmpty) return const SizedBox.shrink();
 
     final sum = byMimeTypes.values.fold<int>(0, (prev, v) => prev + v);
 
@@ -191,12 +192,12 @@ class StatsPage extends StatelessWidget {
                           WidgetSpan(
                             alignment: PlaceholderAlignment.middle,
                             child: Padding(
-                              padding: EdgeInsetsDirectional.only(end: 8),
+                              padding: const EdgeInsetsDirectional.only(end: 8),
                               child: Icon(AIcons.disc, color: d.color),
                             ),
                           ),
                           TextSpan(text: '${d.displayText}   '),
-                          TextSpan(text: '${d.entryCount}', style: TextStyle(color: Colors.white70)),
+                          TextSpan(text: '${d.entryCount}', style: const TextStyle(color: Colors.white70)),
                         ],
                       ),
                       overflow: TextOverflow.fade,
@@ -233,7 +234,7 @@ class StatsPage extends StatelessWidget {
 
     return [
       Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Text(
           title,
           style: Constants.titleTextStyle,
@@ -257,11 +258,11 @@ class StatsPage extends StatelessWidget {
   }
 
   void _applyToParentCollectionPage(BuildContext context, CollectionFilter filter) {
-    parentCollection.addFilter(filter);
+    parentCollection!.addFilter(filter);
     // we post closing the search page after applying the filter selection
     // so that hero animation target is ready in the `FilterBar`,
     // even when the target is a child of an `AnimatedList`
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       Navigator.pop(context);
     });
   }
@@ -270,7 +271,7 @@ class StatsPage extends StatelessWidget {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: CollectionPage.routeName),
+        settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) => CollectionPage(CollectionLens(
           source: source,
           filters: [filter],
@@ -287,8 +288,8 @@ class EntryByMimeDatum {
   final int entryCount;
 
   EntryByMimeDatum({
-    @required this.mimeType,
-    @required this.entryCount,
+    required this.mimeType,
+    required this.entryCount,
   }) : displayText = MimeUtils.displayType(mimeType);
 
   Color get color => stringToColor(displayText);

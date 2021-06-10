@@ -9,14 +9,14 @@ typedef TextBuilder<T> = String Function(T value);
 class AvesSelectionDialog<T> extends StatefulWidget {
   final T initialValue;
   final Map<T, String> options;
-  final TextBuilder<T> optionSubtitleBuilder;
+  final TextBuilder<T>? optionSubtitleBuilder;
   final String title;
 
   const AvesSelectionDialog({
-    @required this.initialValue,
-    @required this.options,
+    required this.initialValue,
+    required this.options,
     this.optionSubtitleBuilder,
-    @required this.title,
+    required this.title,
   });
 
   @override
@@ -24,7 +24,7 @@ class AvesSelectionDialog<T> extends StatefulWidget {
 }
 
 class _AvesSelectionDialogState<T> extends State<AvesSelectionDialog<T>> {
-  T _selectedValue;
+  late T _selectedValue;
 
   @override
   void initState() {

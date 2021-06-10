@@ -1,6 +1,8 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
+import 'package:collection/collection.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:fijkplayer/fijkplayer.dart';
 
 class VideoConductor {
@@ -13,7 +15,7 @@ class VideoConductor {
   }
 
   Future<void> dispose() async {
-    await Future.forEach(_controllers, (controller) => controller.dispose());
+    await Future.forEach<AvesVideoController>(_controllers, (controller) => controller.dispose());
     _controllers.clear();
   }
 
@@ -31,9 +33,9 @@ class VideoConductor {
     return controller;
   }
 
-  AvesVideoController getController(AvesEntry entry) {
-    return _controllers.firstWhere((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId, orElse: () => null);
+  AvesVideoController? getController(AvesEntry entry) {
+    return _controllers.firstWhereOrNull((c) => c.entry.uri == entry.uri && c.entry.pageId == entry.pageId);
   }
 
-  Future<void> pauseAll() => Future.forEach(_controllers, (controller) => controller.pause());
+  Future<void> pauseAll() => Future.forEach<AvesVideoController>(_controllers, (controller) => controller.pause());
 }

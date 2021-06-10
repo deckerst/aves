@@ -22,6 +22,7 @@ import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
 import 'package:aves/widgets/filter_grids/countries_page.dart';
 import 'package:aves/widgets/filter_grids/tags_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -83,8 +84,8 @@ class ChipActionDelegate {
 
   void _showCoverSelectionDialog(BuildContext context, CollectionFilter filter) async {
     final contentId = covers.coverContentId(filter);
-    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhere((entry) => entry.contentId == contentId, orElse: () => null);
-    final coverSelection = await showDialog<Tuple2<bool, AvesEntry>>(
+    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
+    final coverSelection = await showDialog<Tuple2<bool, AvesEntry?>>(
       context: context,
       builder: (context) => CoverSelectionDialog(
         filter: filter,

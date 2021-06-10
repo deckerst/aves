@@ -14,11 +14,11 @@ import 'package:tuple/tuple.dart';
 
 class CoverSelectionDialog extends StatefulWidget {
   final CollectionFilter filter;
-  final AvesEntry customEntry;
+  final AvesEntry? customEntry;
 
   const CoverSelectionDialog({
-    @required this.filter,
-    @required this.customEntry,
+    required this.filter,
+    required this.customEntry,
   });
 
   @override
@@ -26,8 +26,8 @@ class CoverSelectionDialog extends StatefulWidget {
 }
 
 class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
-  bool _isCustom;
-  AvesEntry _customEntry, _recentEntry;
+  late bool _isCustom;
+  AvesEntry? _customEntry, _recentEntry;
 
   CollectionFilter get filter => widget.filter;
 
@@ -59,10 +59,11 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                     overflow: TextOverflow.fade,
                     maxLines: 1,
                   );
-                  return RadioListTile(
+                  return RadioListTile<bool>(
                     value: isCustom,
                     groupValue: _isCustom,
                     onChanged: (v) {
+                      if (v == null) return;
                       if (v && _customEntry == null) {
                         _pickEntry();
                         return;
@@ -73,11 +74,11 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                     title: isCustom
                         ? Row(children: [
                             title,
-                            Spacer(),
+                            const Spacer(),
                             IconButton(
                               onPressed: _isCustom ? _pickEntry : null,
                               tooltip: 'Change',
-                              icon: Icon(AIcons.setCover),
+                              icon: const Icon(AIcons.setCover),
                             ),
                           ])
                         : title,
@@ -86,7 +87,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               ),
               Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: DecoratedFilterChip(
                   filter: filter,
                   extent: extent,
@@ -101,7 +102,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
                 child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
               ),
               TextButton(
-                onPressed: () => Navigator.pop(context, Tuple2<bool, AvesEntry>(_isCustom, _customEntry)),
+                onPressed: () => Navigator.pop(context, Tuple2<bool, AvesEntry?>(_isCustom, _customEntry)),
                 child: Text(l10n.applyButtonLabel),
               ),
             ],
@@ -115,7 +116,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
     final entry = await Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: ItemPickDialog.routeName),
+        settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
           CollectionLens(
             source: context.read<CollectionSource>(),

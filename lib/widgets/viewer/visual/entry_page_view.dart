@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/entry_images.dart';
 import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/collection_page.dart';
+import 'package:aves/widgets/collection/thumbnail/raster.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
@@ -30,15 +29,15 @@ import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
-  final Size viewportSize;
-  final VoidCallback onDisposed;
+  final Size? viewportSize;
+  final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
 
   const EntryPageView({
-    Key key,
-    this.mainEntry,
-    this.pageEntry,
+    Key? key,
+    required this.mainEntry,
+    required this.pageEntry,
     this.viewportSize,
     this.onDisposed,
   }) : super(key: key);
@@ -48,7 +47,7 @@ class EntryPageView extends StatefulWidget {
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
-  MagnifierController _magnifierController;
+  late MagnifierController _magnifierController;
   final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
 
@@ -56,7 +55,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   AvesEntry get entry => widget.pageEntry;
 
-  Size get viewportSize => widget.viewportSize;
+  Size? get viewportSize => widget.viewportSize;
 
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
@@ -96,7 +95,7 @@ class _EntryPageViewState extends State<EntryPageView> {
               minScale: minScale,
               maxScale: maxScale,
               initialScale: initialScale,
-              viewportSize: viewportSize,
+              viewportSize: viewportSize!,
               childSize: entry.displaySize,
             ).initialScale,
             viewportSize,
@@ -109,7 +108,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   void _unregisterWidget() {
-    _magnifierController?.dispose();
+    _magnifierController.dispose();
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
@@ -120,7 +119,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     final child = AnimatedBuilder(
       animation: entry.imageChangeNotifier,
       builder: (context, child) {
-        Widget child;
+        Widget? child;
         if (entry.isSvg) {
           child = _buildSvgView();
         } else if (!entry.displaySize.isEmpty) {
@@ -138,11 +137,11 @@ class _EntryPageViewState extends State<EntryPageView> {
       },
     );
 
-    return Consumer<HeroInfo>(
+    return Consumer<HeroInfo?>(
       builder: (context, info, child) => Hero(
-        tag: info?.entry == mainEntry ? hashValues(info.collectionId, mainEntry) : hashCode,
+        tag: info != null && info.entry == mainEntry ? hashValues(info.collectionId, mainEntry) : hashCode,
         transitionOnUserGestures: true,
-        child: child,
+        child: child!,
       ),
       child: child,
     );
@@ -167,7 +166,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
 
     var child = _buildMagnifier(
-      maxScale: ScaleLevel(factor: double.infinity),
+      maxScale: const ScaleLevel(factor: double.infinity),
       scaleStateCycle: _vectorScaleStateCycle,
       child: SvgPicture(
         UriPicture(
@@ -190,16 +189,21 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   Widget _buildVideoView() {
     final videoController = context.read<VideoConductor>().getController(entry);
-    if (videoController == null) return SizedBox();
+    if (videoController == null) return const SizedBox();
     return Stack(
       fit: StackFit.expand,
       children: [
-        _buildMagnifier(
-          child: VideoView(
-            entry: entry,
-            controller: videoController,
-          ),
-        ),
+        ValueListenableBuilder<double>(
+            valueListenable: videoController.sarNotifier,
+            builder: (context, sar, child) {
+              return _buildMagnifier(
+                displaySize: entry.videoDisplaySize(sar),
+                child: VideoView(
+                  entry: entry,
+                  controller: videoController,
+                ),
+              );
+            }),
         // fade out image to ease transition with the player
         StreamBuilder<VideoStatus>(
           stream: videoController.statusStream,
@@ -213,9 +217,11 @@ class _EntryPageViewState extends State<EntryPageView> {
                 duration: Durations.viewerVideoPlayerTransition,
                 child: GestureDetector(
                   onTap: _onTap,
-                  child: Image(
-                    image: entry.getBestThumbnail(settings.getTileExtent(CollectionPage.routeName)),
+                  child: RasterImageThumbnail(
+                    entry: entry,
+                    extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
                     fit: BoxFit.contain,
+                    showLoadingBackground: false,
                   ),
                 ),
               ),
@@ -230,13 +236,14 @@ class _EntryPageViewState extends State<EntryPageView> {
     ScaleLevel maxScale = maxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
-    @required Widget child,
+    Size? displaySize,
+    required Widget child,
   }) {
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
       key: ValueKey('${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: _magnifierController,
-      childSize: entry.displaySize,
+      childSize: displaySize ?? entry.displaySize,
       minScale: minScale,
       maxScale: maxScale,
       initialScale: initialScale,

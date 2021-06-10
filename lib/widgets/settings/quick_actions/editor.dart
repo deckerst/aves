@@ -24,7 +24,7 @@ class QuickActionsTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            settings: RouteSettings(name: QuickActionEditorPage.routeName),
+            settings: const RouteSettings(name: QuickActionEditorPage.routeName),
             builder: (context) => QuickActionEditorPage(),
           ),
         );
@@ -42,10 +42,10 @@ class QuickActionEditorPage extends StatefulWidget {
 
 class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'quick-actions-animated-list');
-  Timer _targetLeavingTimer;
-  List<EntryAction> _quickActions;
-  final ValueNotifier<EntryAction> _draggedQuickAction = ValueNotifier(null);
-  final ValueNotifier<EntryAction> _draggedAvailableAction = ValueNotifier(null);
+  Timer? _targetLeavingTimer;
+  late List<EntryAction> _quickActions;
+  final ValueNotifier<EntryAction?> _draggedQuickAction = ValueNotifier(null);
+  final ValueNotifier<EntryAction?> _draggedAvailableAction = ValueNotifier(null);
   final ValueNotifier<bool> _quickActionHighlight = ValueNotifier(false);
   final ValueNotifier<bool> _availableActionHighlight = ValueNotifier(false);
   final AChangeNotifier _quickActionsChangeNotifier = AChangeNotifier();
@@ -71,7 +71,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
   void _onQuickActionTargetLeave() {
     _stopLeavingTimer();
     final action = _draggedAvailableAction.value;
-    _targetLeavingTimer = Timer(Durations.quickActionListAnimation + Duration(milliseconds: 50), () {
+    _targetLeavingTimer = Timer(Durations.quickActionListAnimation + const Duration(milliseconds: 50), () {
       _removeQuickAction(action);
       _quickActionHighlight.value = false;
     });
@@ -111,18 +111,18 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
             child: ListView(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Row(
                     children: [
-                      Icon(AIcons.info),
-                      SizedBox(width: 16),
+                      const Icon(AIcons.info),
+                      const SizedBox(width: 16),
                       Expanded(child: Text(context.l10n.settingsViewerQuickActionEditorBanner)),
                     ],
                   ),
                 ),
-                Divider(),
+                const Divider(),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     context.l10n.settingsViewerQuickActionEditorDisplayedButtons,
                     style: Constants.titleTextStyle,
@@ -132,7 +132,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                   valueListenable: _quickActionHighlight,
                   builder: (context, highlight, child) => ActionPanel(
                     highlight: highlight,
-                    child: child,
+                    child: child!,
                   ),
                   child: Container(
                     height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
@@ -161,7 +161,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index, animation) {
-                              if (index >= _quickActions.length) return null;
+                              if (index >= _quickActions.length) return const SizedBox();
                               final action = _quickActions[index];
                               return QuickActionButton(
                                 placement: QuickActionPlacement.action,
@@ -186,14 +186,14 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                 )
-                              : SizedBox(),
+                              : const SizedBox(),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     context.l10n.settingsViewerQuickActionEditorAvailableButtons,
                     style: Constants.titleTextStyle,
@@ -203,7 +203,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                   valueListenable: _availableActionHighlight,
                   builder: (context, highlight, child) => ActionPanel(
                     highlight: highlight,
-                    child: child,
+                    child: child!,
                   ),
                   child: AvailableActionPanel(
                     quickActions: _quickActions,
@@ -224,14 +224,13 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
 
   void _stopLeavingTimer() => _targetLeavingTimer?.cancel();
 
-  bool _insertQuickAction(EntryAction action, QuickActionPlacement placement, EntryAction overAction) {
-    if (action == null) return false;
+  bool _insertQuickAction(EntryAction action, QuickActionPlacement placement, EntryAction? overAction) {
     _stopLeavingTimer();
     if (_reordering) return false;
 
     final currentIndex = _quickActions.indexOf(action);
     final contained = currentIndex != -1;
-    int targetIndex;
+    int? targetIndex;
     switch (placement) {
       case QuickActionPlacement.header:
         targetIndex = 0;
@@ -240,7 +239,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
         targetIndex = _quickActions.length - (contained ? 1 : 0);
         break;
       case QuickActionPlacement.action:
-        targetIndex = _quickActions.indexOf(overAction);
+        targetIndex = _quickActions.indexOf(overAction!);
         break;
     }
     if (currentIndex == targetIndex) return false;
@@ -248,7 +247,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
     _reordering = true;
     _removeQuickAction(action);
     _quickActions.insert(targetIndex, action);
-    _animatedListKey.currentState.insertItem(
+    _animatedListKey.currentState!.insertItem(
       targetIndex,
       duration: Durations.quickActionListAnimation,
     );
@@ -257,12 +256,12 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
     return true;
   }
 
-  bool _removeQuickAction(EntryAction action) {
-    if (!_quickActions.contains(action)) return false;
+  bool _removeQuickAction(EntryAction? action) {
+    if (action == null || !_quickActions.contains(action)) return false;
 
     final index = _quickActions.indexOf(action);
     _quickActions.removeAt(index);
-    _animatedListKey.currentState.removeItem(
+    _animatedListKey.currentState!.removeItem(
       index,
       (context, animation) => DraggedPlaceholder(child: _buildQuickActionButton(action, animation)),
       duration: Durations.quickActionListAnimation,
@@ -279,7 +278,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
         axis: Axis.horizontal,
         sizeFactor: animation,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
               icon: Icon(action.getIcon()),
@@ -295,9 +294,9 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
       builder: (context, child) {
         final dragged = _draggedQuickAction.value == action || _draggedAvailableAction.value == action;
         if (dragged) {
-          child = DraggedPlaceholder(child: child);
+          child = DraggedPlaceholder(child: child!);
         }
-        return child;
+        return child!;
       },
       child: child,
     );

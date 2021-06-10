@@ -35,9 +35,9 @@ class CollectionAppBar extends StatefulWidget {
   final CollectionLens collection;
 
   const CollectionAppBar({
-    Key key,
-    @required this.appBarHeightNotifier,
-    @required this.collection,
+    Key? key,
+    required this.appBarHeightNotifier,
+    required this.collection,
   }) : super(key: key);
 
   @override
@@ -46,9 +46,9 @@ class CollectionAppBar extends StatefulWidget {
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
   final TextEditingController _searchFieldController = TextEditingController();
-  EntrySetActionDelegate _actionDelegate;
-  AnimationController _browseToSelectAnimation;
-  Future<bool> _canAddShortcutsLoader;
+  final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
+  late AnimationController _browseToSelectAnimation;
+  late Future<bool> _canAddShortcutsLoader;
 
   CollectionLens get collection => widget.collection;
 
@@ -59,16 +59,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _actionDelegate = EntrySetActionDelegate(
-      collection: collection,
-    );
     _browseToSelectAnimation = AnimationController(
       duration: Durations.iconAnimation,
       vsync: this,
     );
     _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeight());
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _updateHeight());
   }
 
   @override
@@ -127,8 +124,8 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   Widget _buildAppBarLeading() {
-    VoidCallback onPressed;
-    String tooltip;
+    VoidCallback? onPressed;
+    String? tooltip;
     if (collection.isBrowsing) {
       onPressed = Scaffold.of(context).openDrawer;
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
@@ -137,7 +134,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(
-      key: Key('appbar-leading-button'),
+      key: const Key('appbar-leading-button'),
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
         progress: _browseToSelectAnimation,
@@ -147,7 +144,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  Widget _buildAppBarTitle() {
+  Widget? _buildAppBarTitle() {
     if (collection.isBrowsing) {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
       Widget title = Text(appMode.isPicking ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
@@ -197,19 +194,19 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         builder: (context, snapshot) {
           final canAddShortcuts = snapshot.data ?? false;
           return PopupMenuButton<CollectionAction>(
-            key: Key('appbar-menu-button'),
+            key: const Key('appbar-menu-button'),
             itemBuilder: (context) {
               final isNotEmpty = !collection.isEmpty;
               final hasSelection = collection.selection.isNotEmpty;
               return [
                 PopupMenuItem(
-                  key: Key('menu-sort'),
+                  key: const Key('menu-sort'),
                   value: CollectionAction.sort,
                   child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
                 ),
                 if (collection.sortFactor == EntrySortFactor.date)
                   PopupMenuItem(
-                    key: Key('menu-group'),
+                    key: const Key('menu-group'),
                     value: CollectionAction.group,
                     child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
@@ -231,7 +228,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     ),
                 ],
                 if (collection.isSelecting) ...[
-                  PopupMenuDivider(),
+                  const PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.copy,
                     enabled: hasSelection,
@@ -247,7 +244,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     enabled: hasSelection,
                     child: MenuRow(text: context.l10n.collectionActionRefreshMetadata),
                   ),
-                  PopupMenuDivider(),
+                  const PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.selectAll,
                     enabled: collection.selection.length < collection.entryCount,
@@ -359,17 +356,18 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       final sortedFilters = List<CollectionFilter>.from(filters)..sort();
       defaultName = sortedFilters.first.getLabel(context);
     }
-    final result = await showDialog<Tuple2<AvesEntry, String>>(
+    final result = await showDialog<Tuple2<AvesEntry?, String>>(
       context: context,
       builder: (context) => AddShortcutDialog(
         collection: collection,
-        defaultName: defaultName,
+        defaultName: defaultName ?? '',
       ),
     );
+    if (result == null) return;
+
     final coverEntry = result.item1;
     final name = result.item2;
-
-    if (name == null || name.isEmpty) return;
+    if (name.isEmpty) return;
 
     unawaited(AppShortcutService.pin(name, coverEntry, filters));
   }
@@ -389,7 +387,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: StatsPage.routeName),
+        settings: const RouteSettings(name: StatsPage.routeName),
         builder: (context) => StatsPage(
           source: source,
           parentCollection: collection,

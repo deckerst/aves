@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class HighlightTitle extends StatelessWidget {
   final String title;
-  final Color color;
+  final Color? color;
   final double fontSize;
   final bool enabled, selectable;
   final bool showHighlight;
@@ -18,14 +18,14 @@ class HighlightTitle extends StatelessWidget {
     this.enabled = true,
     this.selectable = false,
     this.showHighlight = true,
-  }) : assert(title != null);
+  });
 
   static const disabledColor = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
     final style = TextStyle(
-      shadows: [
+      shadows: const [
         Shadow(
           color: Colors.black,
           offset: Offset(1, 1),
@@ -34,7 +34,7 @@ class HighlightTitle extends StatelessWidget {
       ],
       fontSize: fontSize,
       letterSpacing: 1.0,
-      fontFeatures: [FontFeature.enable('smcp')],
+      fontFeatures: const [FontFeature.enable('smcp')],
     );
 
     return Align(
@@ -45,7 +45,7 @@ class HighlightTitle extends StatelessWidget {
                 color: enabled ? color ?? stringToColor(title) : disabledColor,
               )
             : null,
-        margin: EdgeInsets.symmetric(vertical: 4.0),
+        margin: const EdgeInsets.symmetric(vertical: 4.0),
         child: selectable
             ? SelectableText(
                 title,

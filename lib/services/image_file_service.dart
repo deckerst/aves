@@ -7,28 +7,30 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/service_policy.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class ImageFileService {
-  Future<AvesEntry> getEntry(String uri, String mimeType);
+  Future<AvesEntry?> getEntry(String uri, String? mimeType);
 
   Future<Uint8List> getSvg(
     String uri,
     String mimeType, {
-    int expectedContentLength,
-    BytesReceivedCallback onBytesReceived,
+    int? expectedContentLength,
+    BytesReceivedCallback? onBytesReceived,
   });
 
   Future<Uint8List> getImage(
     String uri,
     String mimeType,
-    int rotationDegrees,
+    int? rotationDegrees,
     bool isFlipped, {
-    int pageId,
-    int expectedContentLength,
-    BytesReceivedCallback onBytesReceived,
+    int? pageId,
+    int? expectedContentLength,
+    BytesReceivedCallback? onBytesReceived,
   });
 
   // `rect`: region to decode, with coordinates in reference to `imageSize`
@@ -40,21 +42,21 @@ abstract class ImageFileService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int pageId,
-    Object taskKey,
-    int priority,
+    int? pageId,
+    Object? taskKey,
+    int? priority,
   });
 
   Future<Uint8List> getThumbnail({
-    @required String uri,
-    @required String mimeType,
-    @required int rotationDegrees,
-    @required int pageId,
-    @required bool isFlipped,
-    @required int dateModifiedSecs,
-    @required double extent,
-    Object taskKey,
-    int priority,
+    required String uri,
+    required String mimeType,
+    required int rotationDegrees,
+    required int? pageId,
+    required bool isFlipped,
+    required int? dateModifiedSecs,
+    required double extent,
+    Object? taskKey,
+    int? priority,
   });
 
   Future<void> clearSizedThumbnailDiskCache();
@@ -63,27 +65,27 @@ abstract class ImageFileService {
 
   bool cancelThumbnail(Object taskKey);
 
-  Future<T> resumeLoading<T>(Object taskKey);
+  Future<T>? resumeLoading<T>(Object taskKey);
 
   Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries);
 
   Stream<MoveOpEvent> move(
     Iterable<AvesEntry> entries, {
-    @required bool copy,
-    @required String destinationAlbum,
+    required bool copy,
+    required String destinationAlbum,
   });
 
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    @required String mimeType,
-    @required String destinationAlbum,
+    required String mimeType,
+    required String destinationAlbum,
   });
 
-  Future<Map> rename(AvesEntry entry, String newName);
+  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName);
 
-  Future<Map> rotate(AvesEntry entry, {@required bool clockwise});
+  Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise});
 
-  Future<Map> flip(AvesEntry entry);
+  Future<Map<String, dynamic>> flip(AvesEntry entry);
 }
 
 class PlatformImageFileService implements ImageFileService {
@@ -108,7 +110,7 @@ class PlatformImageFileService implements ImageFileService {
   }
 
   @override
-  Future<AvesEntry> getEntry(String uri, String mimeType) async {
+  Future<AvesEntry?> getEntry(String uri, String? mimeType) async {
     try {
       final result = await platform.invokeMethod('getEntry', <String, dynamic>{
         'uri': uri,
@@ -125,8 +127,8 @@ class PlatformImageFileService implements ImageFileService {
   Future<Uint8List> getSvg(
     String uri,
     String mimeType, {
-    int expectedContentLength,
-    BytesReceivedCallback onBytesReceived,
+    int? expectedContentLength,
+    BytesReceivedCallback? onBytesReceived,
   }) =>
       getImage(
         uri,
@@ -141,11 +143,11 @@ class PlatformImageFileService implements ImageFileService {
   Future<Uint8List> getImage(
     String uri,
     String mimeType,
-    int rotationDegrees,
+    int? rotationDegrees,
     bool isFlipped, {
-    int pageId,
-    int expectedContentLength,
-    BytesReceivedCallback onBytesReceived,
+    int? pageId,
+    int? expectedContentLength,
+    BytesReceivedCallback? onBytesReceived,
   }) {
     try {
       final completer = Completer<Uint8List>.sync();
@@ -155,7 +157,7 @@ class PlatformImageFileService implements ImageFileService {
         'uri': uri,
         'mimeType': mimeType,
         'rotationDegrees': rotationDegrees ?? 0,
-        'isFlipped': isFlipped ?? false,
+        'isFlipped': isFlipped,
         'pageId': pageId,
       }).listen(
         (data) {
@@ -182,7 +184,7 @@ class PlatformImageFileService implements ImageFileService {
     } on PlatformException catch (e) {
       debugPrint('getImage failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return Future.sync(() => null);
+    return Future.sync(() => Uint8List(0));
   }
 
   @override
@@ -194,9 +196,9 @@ class PlatformImageFileService implements ImageFileService {
     int sampleSize,
     Rectangle<int> regionRect,
     Size imageSize, {
-    int pageId,
-    Object taskKey,
-    int priority,
+    int? pageId,
+    Object? taskKey,
+    int? priority,
   }) {
     return servicePolicy.call(
       () async {
@@ -213,11 +215,11 @@ class PlatformImageFileService implements ImageFileService {
             'imageWidth': imageSize.width.toInt(),
             'imageHeight': imageSize.height.toInt(),
           });
-          return result as Uint8List;
+          if (result != null) return result as Uint8List;
         } on PlatformException catch (e) {
           debugPrint('getRegion failed with code=${e.code}, exception=${e.message}, details=${e.details}');
         }
-        return null;
+        return Uint8List(0);
       },
       priority: priority ?? ServiceCallPriority.getRegion,
       key: taskKey,
@@ -226,18 +228,18 @@ class PlatformImageFileService implements ImageFileService {
 
   @override
   Future<Uint8List> getThumbnail({
-    @required String uri,
-    @required String mimeType,
-    @required int rotationDegrees,
-    @required int pageId,
-    @required bool isFlipped,
-    @required int dateModifiedSecs,
-    @required double extent,
-    Object taskKey,
-    int priority,
+    required String uri,
+    required String mimeType,
+    required int rotationDegrees,
+    required int? pageId,
+    required bool isFlipped,
+    required int? dateModifiedSecs,
+    required double extent,
+    Object? taskKey,
+    int? priority,
   }) {
     if (mimeType == MimeTypes.svg) {
-      return Future.sync(() => null);
+      return Future.sync(() => Uint8List(0));
     }
     return servicePolicy.call(
       () async {
@@ -253,11 +255,11 @@ class PlatformImageFileService implements ImageFileService {
             'pageId': pageId,
             'defaultSizeDip': thumbnailDefaultSize,
           });
-          return result as Uint8List;
+          if (result != null) return result as Uint8List;
         } on PlatformException catch (e) {
           debugPrint('getThumbnail failed with code=${e.code}, exception=${e.message}, details=${e.details}');
         }
-        return null;
+        return Uint8List(0);
       },
       priority: priority ?? (extent == 0 ? ServiceCallPriority.getFastThumbnail : ServiceCallPriority.getSizedThumbnail),
       key: taskKey,
@@ -280,7 +282,7 @@ class PlatformImageFileService implements ImageFileService {
   bool cancelThumbnail(Object taskKey) => servicePolicy.pause(taskKey, [ServiceCallPriority.getFastThumbnail, ServiceCallPriority.getSizedThumbnail]);
 
   @override
-  Future<T> resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
+  Future<T>? resumeLoading<T>(Object taskKey) => servicePolicy.resume<T>(taskKey);
 
   @override
   Stream<ImageOpEvent> delete(Iterable<AvesEntry> entries) {
@@ -298,8 +300,8 @@ class PlatformImageFileService implements ImageFileService {
   @override
   Stream<MoveOpEvent> move(
     Iterable<AvesEntry> entries, {
-    @required bool copy,
-    @required String destinationAlbum,
+    required bool copy,
+    required String destinationAlbum,
   }) {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
@@ -317,8 +319,8 @@ class PlatformImageFileService implements ImageFileService {
   @override
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
-    @required String mimeType,
-    @required String destinationAlbum,
+    required String mimeType,
+    required String destinationAlbum,
   }) {
     try {
       return _opStreamChannel.receiveBroadcastStream(<String, dynamic>{
@@ -334,14 +336,14 @@ class PlatformImageFileService implements ImageFileService {
   }
 
   @override
-  Future<Map> rename(AvesEntry entry, String newName) async {
+  Future<Map<String, dynamic>> rename(AvesEntry entry, String newName) async {
     try {
       // returns map with: 'contentId' 'path' 'title' 'uri' (all optional)
       final result = await platform.invokeMethod('rename', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'newName': newName,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
       debugPrint('rename failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -349,14 +351,14 @@ class PlatformImageFileService implements ImageFileService {
   }
 
   @override
-  Future<Map> rotate(AvesEntry entry, {@required bool clockwise}) async {
+  Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise}) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('rotate', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
         'clockwise': clockwise,
-      }) as Map;
-      return result;
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
       debugPrint('rotate failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -364,13 +366,13 @@ class PlatformImageFileService implements ImageFileService {
   }
 
   @override
-  Future<Map> flip(AvesEntry entry) async {
+  Future<Map<String, dynamic>> flip(AvesEntry entry) async {
     try {
       // returns map with: 'rotationDegrees' 'isFlipped'
       final result = await platform.invokeMethod('flip', <String, dynamic>{
         'entry': _toPlatformEntryMap(entry),
-      }) as Map;
-      return result;
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
     } on PlatformException catch (e) {
       debugPrint('flip failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -379,18 +381,18 @@ class PlatformImageFileService implements ImageFileService {
 }
 
 // cf flutter/foundation `consolidateHttpClientResponseBytes`
-typedef BytesReceivedCallback = void Function(int cumulative, int total);
+typedef BytesReceivedCallback = void Function(int cumulative, int? total);
 
 // cf flutter/foundation `consolidateHttpClientResponseBytes`
 class _OutputBuffer extends ByteConversionSinkBase {
-  List<List<int>> _chunks = <List<int>>[];
+  List<List<int>>? _chunks = <List<int>>[];
   int _contentLength = 0;
-  Uint8List _bytes;
+  Uint8List? _bytes;
 
   @override
   void add(List<int> chunk) {
     assert(_bytes == null);
-    _chunks.add(chunk);
+    _chunks!.add(chunk);
     _contentLength += chunk.length;
   }
 
@@ -402,8 +404,8 @@ class _OutputBuffer extends ByteConversionSinkBase {
     }
     _bytes = Uint8List(_contentLength);
     var offset = 0;
-    for (final chunk in _chunks) {
-      _bytes.setRange(offset, offset + chunk.length, chunk);
+    for (final chunk in _chunks!) {
+      _bytes!.setRange(offset, offset + chunk.length, chunk);
       offset += chunk.length;
     }
     _chunks = null;
@@ -411,6 +413,6 @@ class _OutputBuffer extends ByteConversionSinkBase {
 
   Uint8List get bytes {
     assert(_bytes != null);
-    return _bytes;
+    return _bytes!;
   }
 }

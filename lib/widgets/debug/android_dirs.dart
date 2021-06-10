@@ -11,7 +11,7 @@ class DebugAndroidDirSection extends StatefulWidget {
 }
 
 class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with AutomaticKeepAliveClientMixin {
-  Future<Map> _loader;
+  late Future<Map> _loader;
 
   @override
   void initState() {
@@ -27,13 +27,13 @@ class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with Au
       title: 'Android Dirs',
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: FutureBuilder<Map>(
             future: _loader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
-              if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-              final data = SplayTreeMap.of(snapshot.data.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+              final data = SplayTreeMap.of(snapshot.data!.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));
               return InfoRowGroup(data);
             },
           ),
