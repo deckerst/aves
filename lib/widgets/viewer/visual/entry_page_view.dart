@@ -193,12 +193,17 @@ class _EntryPageViewState extends State<EntryPageView> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        _buildMagnifier(
-          child: VideoView(
-            entry: entry,
-            controller: videoController,
-          ),
-        ),
+        ValueListenableBuilder<double>(
+            valueListenable: videoController.sarNotifier,
+            builder: (context, sar, child) {
+              return _buildMagnifier(
+                displaySize: entry.videoDisplaySize(sar),
+                child: VideoView(
+                  entry: entry,
+                  controller: videoController,
+                ),
+              );
+            }),
         // fade out image to ease transition with the player
         StreamBuilder<VideoStatus>(
           stream: videoController.statusStream,
@@ -231,13 +236,14 @@ class _EntryPageViewState extends State<EntryPageView> {
     ScaleLevel maxScale = maxScale,
     ScaleStateCycle scaleStateCycle = defaultScaleStateCycle,
     bool applyScale = true,
+    Size? displaySize,
     required Widget child,
   }) {
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
       key: ValueKey('${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: _magnifierController,
-      childSize: entry.displaySize,
+      childSize: displaySize ?? entry.displaySize,
       minScale: minScale,
       maxScale: maxScale,
       initialScale: initialScale,

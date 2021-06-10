@@ -289,6 +289,18 @@ class AvesEntry {
     return isRotated ? Size(h, w) : Size(w, h);
   }
 
+  Size videoDisplaySize(double sar) {
+    final size = displaySize;
+    if (sar != 1) {
+      final dar = displayAspectRatio * sar;
+      final w = size.width;
+      final h = size.height;
+      if (w >= h) return Size(w, w / dar);
+      if (h > w) return Size(h * dar, h);
+    }
+    return size;
+  }
+
   int get megaPixels => (width * height / 1000000).round();
 
   DateTime? _bestDate;
