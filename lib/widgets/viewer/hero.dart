@@ -5,8 +5,8 @@ class HeroInfo {
   // hero tag should include a collection identifier, so that it animates
   // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
   // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
-  final int collectionId;
-  final AvesEntry entry;
+  final int? collectionId;
+  final AvesEntry? entry;
 
   const HeroInfo(this.collectionId, this.entry);
 

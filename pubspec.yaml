@@ -1,23 +1,14 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.4.1+45
+version: 1.4.2+46
 publish_to: none
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0 <3.0.0'
 
-# TODO TLAD switch to Flutter stable when possible, currently on dev/beta because of the following mess:
-# printing >=5.0.1 depends on pdf ^3.0.1, pdf >=3.0.1 depends on crypto ^3.0.0 and archive ^3.1.0
-# but `flutter_driver` (shipped with Flutter) dependencies are too old in stable v2.0.1
-# bump `crypto` and others - 2021/02/05 https://github.com/flutter/flutter/commit/bc1cf4945841ba5874f5262b8146d52750e7c11f
-# bump `archive` from 3.0.0 to 3.1.2 - 2021/03/04 https://github.com/flutter/flutter/commit/ddcb8d7d6d3fcedc906b2f1bf26b73c018d3dc28
-
-# not null safe, as of 2021/04/28
+# not null safe, as of 2021/06/07
 # `charts_flutter` - https://github.com/google/charts/issues/579
-# `fijkplayer` - https://github.com/befovy/fijkplayer/issues/381
-# `flutter_map` - https://github.com/fleaflet/flutter_map/issues/829
-# `streams_channel` - unmaintained? - no issue/PR
 
 dependencies:
   flutter:
@@ -26,7 +17,7 @@ dependencies:
     sdk: flutter
   charts_flutter:
   collection:
-  connectivity:
+  connectivity_plus:
   country_code:
   decorated_icon:
   event_bus:
@@ -42,9 +33,6 @@ dependencies:
   firebase_crashlytics:
   flutter_highlight:
   flutter_map:
-    git:
-      url: git://github.com/fleaflet/flutter_map.git
-      ref: issues/829-nullsafety
   flutter_markdown:
   flutter_staggered_animations:
   flutter_svg:
@@ -56,7 +44,7 @@ dependencies:
   latlong2:
   material_design_icons_flutter:
   overlay_support:
-  package_info:
+  package_info_plus:
   palette_generator:
 # TODO TLAD upgrade panorama when this is fixed: https://github.com/zesage/panorama/issues/25 (bug in v0.4.1)
   panorama: 0.4.0
@@ -69,6 +57,8 @@ dependencies:
   shared_preferences:
   sqflite:
   streams_channel:
+    git:
+      url: git://github.com/deckerst/aves_streams_channel.git
   tuple:
   url_launcher:
   version:

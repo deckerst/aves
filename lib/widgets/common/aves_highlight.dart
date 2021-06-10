@@ -14,7 +14,7 @@ class AvesHighlightView extends StatelessWidget {
   /// It is recommended to give it a value for performance
   ///
   /// [All available languages](https://github.com/pd4d10/highlight/tree/master/highlight/lib/languages)
-  final String language;
+  final String? language;
 
   /// Highlight theme
   ///
@@ -22,12 +22,12 @@ class AvesHighlightView extends StatelessWidget {
   final Map<String, TextStyle> theme;
 
   /// Padding
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// Text styles
   ///
   /// Specify text styles such as font family and font size
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   AvesHighlightView(
     String input, {
@@ -45,16 +45,16 @@ class AvesHighlightView extends StatelessWidget {
 
     void _traverse(Node node) {
       if (node.value != null) {
-        currentSpans.add(node.className == null ? TextSpan(text: node.value) : TextSpan(text: node.value, style: theme[node.className]));
+        currentSpans.add(node.className == null ? TextSpan(text: node.value) : TextSpan(text: node.value, style: theme[node.className!]));
       } else if (node.children != null) {
         final tmp = <TextSpan>[];
-        currentSpans.add(TextSpan(children: tmp, style: theme[node.className]));
+        currentSpans.add(TextSpan(children: tmp, style: theme[node.className!]));
         stack.add(currentSpans);
         currentSpans = tmp;
 
-        node.children.forEach((n) {
+        node.children!.forEach((n) {
           _traverse(n);
-          if (n == node.children.last) {
+          if (n == node.children!.last) {
             currentSpans = stack.isEmpty ? spans : stack.removeLast();
           }
         });
@@ -93,7 +93,7 @@ class AvesHighlightView extends StatelessWidget {
       child: SelectableText.rich(
         TextSpan(
           style: _textStyle,
-          children: _convert(highlight.parse(source, language: language).nodes),
+          children: _convert(highlight.parse(source, language: language).nodes!),
         ),
       ),
     );

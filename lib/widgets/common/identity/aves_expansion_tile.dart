@@ -4,27 +4,27 @@ import 'package:flutter/material.dart';
 
 class AvesExpansionTile extends StatelessWidget {
   final String value;
-  final Widget leading;
+  final Widget? leading;
   final String title;
-  final Color color;
-  final ValueNotifier<String> expandedNotifier;
+  final Color? color;
+  final ValueNotifier<String?>? expandedNotifier;
   final bool initiallyExpanded, showHighlight;
   final List<Widget> children;
 
   const AvesExpansionTile({
-    String value,
+    String? value,
     this.leading,
-    @required this.title,
+    required this.title,
     this.color,
     this.expandedNotifier,
     this.initiallyExpanded = false,
     this.showHighlight = true,
-    @required this.children,
-  }): value = value ?? title;
+    required this.children,
+  }) : value = value ?? title;
 
   @override
   Widget build(BuildContext context) {
-    final enabled = children?.isNotEmpty == true;
+    final enabled = children.isNotEmpty == true;
     Widget titleChild = HighlightTitle(
       title,
       color: color,
@@ -34,8 +34,8 @@ class AvesExpansionTile extends StatelessWidget {
     if (leading != null) {
       titleChild = Row(
         children: [
-          leading,
-          SizedBox(width: 8),
+          leading!,
+          const SizedBox(width: 8),
           Expanded(child: titleChild),
         ],
       );
@@ -52,15 +52,15 @@ class AvesExpansionTile extends StatelessWidget {
         title: titleChild,
         expandable: enabled,
         initiallyExpanded: initiallyExpanded,
-        finalPadding: EdgeInsets.symmetric(vertical: 6.0),
-        baseColor: Colors.grey[900],
+        finalPadding: const EdgeInsets.symmetric(vertical: 6.0),
+        baseColor: Colors.grey.shade900,
         expandedColor: Colors.grey[850],
         shadowColor: Theme.of(context).shadowColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Divider(thickness: 1, height: 1),
-            SizedBox(height: 4),
+            const Divider(thickness: 1, height: 1),
+            const SizedBox(height: 4),
             if (enabled) ...children,
           ],
         ),

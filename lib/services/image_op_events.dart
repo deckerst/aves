@@ -7,8 +7,8 @@ class ImageOpEvent {
   final String uri;
 
   const ImageOpEvent({
-    this.success,
-    this.uri,
+    required this.success,
+    required this.uri,
   });
 
   factory ImageOpEvent.fromMap(Map map) {
@@ -34,7 +34,7 @@ class ImageOpEvent {
 class MoveOpEvent extends ImageOpEvent {
   final Map newFields;
 
-  const MoveOpEvent({bool success, String uri, this.newFields})
+  const MoveOpEvent({required bool success, required String uri, required this.newFields})
       : super(
           success: success,
           uri: uri,
@@ -44,7 +44,7 @@ class MoveOpEvent extends ImageOpEvent {
     return MoveOpEvent(
       success: map['success'] ?? false,
       uri: map['uri'],
-      newFields: map['newFields'],
+      newFields: map['newFields'] ?? {},
     );
   }
 
@@ -53,9 +53,9 @@ class MoveOpEvent extends ImageOpEvent {
 }
 
 class ExportOpEvent extends MoveOpEvent {
-  final int pageId;
+  final int? pageId;
 
-  const ExportOpEvent({bool success, String uri, this.pageId, Map newFields})
+  const ExportOpEvent({required bool success, required String uri, this.pageId, required Map newFields})
       : super(
           success: success,
           uri: uri,
@@ -67,7 +67,7 @@ class ExportOpEvent extends MoveOpEvent {
       success: map['success'] ?? false,
       uri: map['uri'],
       pageId: map['pageId'],
-      newFields: map['newFields'],
+      newFields: map['newFields'] ?? {},
     );
   }
 

@@ -11,15 +11,15 @@ import 'package:provider/provider.dart';
 
 class SectionHeader extends StatelessWidget {
   final SectionKey sectionKey;
-  final Widget leading, trailing;
+  final Widget? leading, trailing;
   final String title;
   final bool selectable;
 
   const SectionHeader({
-    Key key,
-    @required this.sectionKey,
+    Key? key,
+    required this.sectionKey,
     this.leading,
-    @required this.title,
+    required this.title,
     this.trailing,
     this.selectable = true,
   }) : super(key: key);
@@ -35,7 +35,7 @@ class SectionHeader extends StatelessWidget {
     return Container(
       alignment: AlignmentDirectional.centerStart,
       padding: padding,
-      constraints: BoxConstraints(minHeight: leadingDimension),
+      constraints: const BoxConstraints(minHeight: leadingDimension),
       child: GestureDetector(
         onTap: selectable ? () => _toggleSectionSelection(context) : null,
         child: Text.rich(
@@ -78,7 +78,7 @@ class SectionHeader extends StatelessWidget {
 
   void _toggleSectionSelection(BuildContext context) {
     final collection = context.read<CollectionLens>();
-    final sectionEntries = collection.sections[sectionKey];
+    final sectionEntries = collection.sections[sectionKey]!;
     final selected = collection.isSelected(sectionEntries);
     if (selected) {
       collection.removeFromSelection(sectionEntries);
@@ -89,9 +89,9 @@ class SectionHeader extends StatelessWidget {
 
   // TODO TLAD cache header extent computation?
   static double getPreferredHeight({
-    @required BuildContext context,
-    @required double maxWidth,
-    @required String title,
+    required BuildContext context,
+    required double maxWidth,
+    required String title,
     bool hasLeading = false,
     bool hasTrailing = false,
   }) {
@@ -124,15 +124,15 @@ class SectionHeader extends StatelessWidget {
 class _SectionSelectableLeading extends StatelessWidget {
   final bool selectable;
   final SectionKey sectionKey;
-  final WidgetBuilder browsingBuilder;
-  final VoidCallback onPressed;
+  final WidgetBuilder? browsingBuilder;
+  final VoidCallback? onPressed;
 
   const _SectionSelectableLeading({
-    Key key,
+    Key? key,
     this.selectable = true,
-    @required this.sectionKey,
-    @required this.browsingBuilder,
-    @required this.onPressed,
+    required this.sectionKey,
+    required this.browsingBuilder,
+    required this.onPressed,
   }) : super(key: key);
 
   static const leadingDimension = SectionHeader.leadingDimension;
@@ -149,7 +149,7 @@ class _SectionSelectableLeading extends StatelessWidget {
             ? AnimatedBuilder(
                 animation: collection.selectionChangeNotifier,
                 builder: (context, child) {
-                  final sectionEntries = collection.sections[sectionKey];
+                  final sectionEntries = collection.sections[sectionKey]!;
                   final selected = collection.isSelected(sectionEntries);
                   final child = TooltipTheme(
                     key: ValueKey(selected),
@@ -158,12 +158,12 @@ class _SectionSelectableLeading extends StatelessWidget {
                     ),
                     child: IconButton(
                       iconSize: 26,
-                      padding: EdgeInsets.only(top: 1),
+                      padding: const EdgeInsets.only(top: 1),
                       alignment: AlignmentDirectional.topStart,
                       icon: Icon(selected ? AIcons.selected : AIcons.unselected),
                       onPressed: onPressed,
                       tooltip: selected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-                      constraints: BoxConstraints(
+                      constraints: const BoxConstraints(
                         minHeight: leadingDimension,
                         minWidth: leadingDimension,
                       ),
@@ -208,5 +208,5 @@ class _SectionSelectableLeading extends StatelessWidget {
     );
   }
 
-  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? SizedBox(height: leadingDimension);
+  Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
 }

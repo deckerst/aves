@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
   DirectMaterialPageRoute({
-    RouteSettings settings,
-    @required WidgetBuilder builder,
+    RouteSettings? settings,
+    required WidgetBuilder builder,
   }) : super(
           settings: settings,
           transitionDuration: Duration.zero,
@@ -18,8 +18,8 @@ class DirectMaterialPageRoute<T> extends PageRouteBuilder<T> {
 
 class TransparentMaterialPageRoute<T> extends PageRouteBuilder<T> {
   TransparentMaterialPageRoute({
-    RouteSettings settings,
-    @required RoutePageBuilder pageBuilder,
+    RouteSettings? settings,
+    required RoutePageBuilder pageBuilder,
   }) : super(settings: settings, pageBuilder: pageBuilder);
 
   @override

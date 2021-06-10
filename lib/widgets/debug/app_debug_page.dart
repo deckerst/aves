@@ -28,18 +28,18 @@ class _AppDebugPageState extends State<AppDebugPage> {
 
   Set<AvesEntry> get visibleEntries => source.visibleEntries;
 
-  static OverlayEntry _taskQueueOverlayEntry;
+  static OverlayEntry? _taskQueueOverlayEntry;
 
   @override
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Debug'),
+          title: const Text('Debug'),
         ),
         body: SafeArea(
           child: ListView(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             children: [
               _buildGeneralTabView(),
               DebugAndroidAppSection(),
@@ -65,7 +65,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
     return AvesExpansionTile(
       title: 'General',
       children: [
-        Padding(
+        const Padding(
           padding: EdgeInsets.all(8),
           child: Text('Time dilation'),
         ),
@@ -85,17 +85,17 @@ class _AppDebugPageState extends State<AppDebugPage> {
               _taskQueueOverlayEntry = OverlayEntry(
                 builder: (context) => DebugTaskQueueOverlay(),
               );
-              Overlay.of(context).insert(_taskQueueOverlayEntry);
+              Overlay.of(context)!.insert(_taskQueueOverlayEntry!);
             } else {
               _taskQueueOverlayEntry = null;
             }
             setState(() {});
           },
-          title: Text('Show tasks overlay'),
+          title: const Text('Show tasks overlay'),
         ),
-        Divider(),
+        const Divider(),
         Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(
             {
               'All entries': '${source.allEntries.length}',

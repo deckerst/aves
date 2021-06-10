@@ -14,7 +14,7 @@ class AndroidAppService {
       final result = await platform.invokeMethod('getPackages');
       final packages = (result as List).cast<Map>().map((map) => Package.fromMap(map)).toSet();
       // additional info for known directories
-      final kakaoTalk = packages.firstWhere((package) => package.packageName == 'com.kakao.talk', orElse: () => null);
+      final kakaoTalk = packages.firstWhereOrNull((package) => package.packageName == 'com.kakao.talk');
       if (kakaoTalk != null) {
         kakaoTalk.ownedDirs.add('KakaoTalkDownload');
       }
@@ -31,19 +31,20 @@ class AndroidAppService {
         'packageName': packageName,
         'sizeDip': size,
       });
-      return result as Uint8List;
+      if (result != null) return result as Uint8List;
     } on PlatformException catch (e) {
       debugPrint('getAppIcon failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
-    return null;
+    return Uint8List(0);
   }
 
   static Future<bool> edit(String uri, String mimeType) async {
     try {
-      return await platform.invokeMethod('edit', <String, dynamic>{
+      final result = await platform.invokeMethod('edit', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
+      if (result != null) return result as bool;
     } on PlatformException catch (e) {
       debugPrint('edit failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -52,10 +53,11 @@ class AndroidAppService {
 
   static Future<bool> open(String uri, String mimeType) async {
     try {
-      return await platform.invokeMethod('open', <String, dynamic>{
+      final result = await platform.invokeMethod('open', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
+      if (result != null) return result as bool;
     } on PlatformException catch (e) {
       debugPrint('open failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -64,9 +66,10 @@ class AndroidAppService {
 
   static Future<bool> openMap(String geoUri) async {
     try {
-      return await platform.invokeMethod('openMap', <String, dynamic>{
+      final result = await platform.invokeMethod('openMap', <String, dynamic>{
         'geoUri': geoUri,
       });
+      if (result != null) return result as bool;
     } on PlatformException catch (e) {
       debugPrint('openMap failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -75,10 +78,11 @@ class AndroidAppService {
 
   static Future<bool> setAs(String uri, String mimeType) async {
     try {
-      return await platform.invokeMethod('setAs', <String, dynamic>{
+      final result = await platform.invokeMethod('setAs', <String, dynamic>{
         'uri': uri,
         'mimeType': mimeType,
       });
+      if (result != null) return result as bool;
     } on PlatformException catch (e) {
       debugPrint('setAs failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -90,9 +94,10 @@ class AndroidAppService {
     // e.g. Google Lens declares receiving "image/jpeg" only, but it can actually handle more formats
     final urisByMimeType = groupBy<AvesEntry, String>(entries, (e) => e.mimeTypeAnySubtype).map((k, v) => MapEntry(k, v.map((e) => e.uri).toList()));
     try {
-      return await platform.invokeMethod('share', <String, dynamic>{
+      final result = await platform.invokeMethod('share', <String, dynamic>{
         'urisByMimeType': urisByMimeType,
       });
+      if (result != null) return result as bool;
     } on PlatformException catch (e) {
       debugPrint('shareEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
@@ -101,11 +106,12 @@ class AndroidAppService {
 
   static Future<bool> shareSingle(String uri, String mimeType) async {
     try {
-      return await platform.invokeMethod('share', <String, dynamic>{
+      final result = await platform.invokeMethod('share', <String, dynamic>{
         'urisByMimeType': {
           mimeType: [uri]
         },
       });
+      if (result != null) return result as bool;
     } on PlatformException catch (e) {
       debugPrint('shareSingle failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }

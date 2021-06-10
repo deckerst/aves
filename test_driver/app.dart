@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:ui';
 
 import 'package:aves/main.dart' as app;
@@ -15,7 +16,9 @@ void main() {
   // scan files copied from test assets
   // we do it via the app instead of broadcasting via ADB
   // because `MEDIA_SCANNER_SCAN_FILE` intent got deprecated in API 29
-  PlatformStorageService().scanFile(p.join(targetPicturesDir, 'ipse.jpg'), 'image/jpeg');
+  final storageService = PlatformStorageService();
+  storageService.scanFile(p.join(targetPicturesDir, 'aves_logo.svg'), 'image/svg+xml');
+  storageService.scanFile(p.join(targetPicturesDir, 'ipse.jpg'), 'image/jpeg');
 
   configureAndLaunch();
 }
@@ -24,7 +27,8 @@ Future<void> configureAndLaunch() async {
   await settings.init();
   settings.keepScreenOn = KeepScreenOn.always;
   settings.hasAcceptedTerms = false;
-  settings.locale = Locale('en');
+  settings.locale = const Locale('en');
+  settings.homePage = HomePageSetting.collection;
 
   app.main();
 }

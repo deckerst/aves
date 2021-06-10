@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 String get adb {
   final env = Platform.environment;
   // e.g. C:\Users\<username>\AppData\Local\Android\Sdk
-  final sdkDir = env['ANDROID_SDK_ROOT'] ?? env['ANDROID_SDK'];
+  final sdkDir = env['ANDROID_SDK_ROOT'] ?? env['ANDROID_SDK']!;
   return p.join(sdkDir, 'platform-tools', Platform.isWindows ? 'adb.exe' : 'adb');
 }
 
@@ -40,7 +40,7 @@ Future<void> copyContent(String sourceDir, String targetDir) async {
 
 // only works in debug mode
 Future<void> grantPermissions(String packageName, Iterable<String> permissions) async {
-  await Future.forEach(permissions, (permission) => runAdb(['shell', 'pm', 'grant', packageName, permission]));
+  await Future.forEach<String>(permissions, (permission) => runAdb(['shell', 'pm', 'grant', packageName, permission]));
 }
 
 Future<void> pressDeviceBackButton() => runAdb(['shell', 'input', 'keyevent', 'KEYCODE_BACK']);

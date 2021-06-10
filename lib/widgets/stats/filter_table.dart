@@ -14,10 +14,10 @@ class FilterTable extends StatelessWidget {
   final FilterCallback onFilterSelection;
 
   const FilterTable({
-    @required this.totalEntryCount,
-    @required this.entryCountMap,
-    @required this.filterBuilder,
-    @required this.onFilterSelection,
+    required this.totalEntryCount,
+    required this.entryCountMap,
+    required this.filterBuilder,
+    required this.onFilterSelection,
   });
 
   static const chipWidth = AvesFilterChip.maxChipWidth;
@@ -36,7 +36,7 @@ class FilterTable extends StatelessWidget {
     final lineHeight = 16 * textScaleFactor;
 
     return Padding(
-      padding: EdgeInsetsDirectional.only(start: AvesFilterChip.outlineWidth / 2 + 6, end: 8),
+      padding: const EdgeInsetsDirectional.only(start: AvesFilterChip.outlineWidth / 2 + 6, end: 8),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final showPercentIndicator = constraints.maxWidth - (chipWidth + countWidth) > percentIndicatorMinWidth;
@@ -52,7 +52,7 @@ class FilterTable extends StatelessWidget {
                     // the `Table` `border` property paints on the cells and does not add margins,
                     // so we define margins here instead, but they should be symmetric
                     // to keep all cells vertically aligned on the center/middle
-                    margin: EdgeInsets.symmetric(vertical: 4),
+                    margin: const EdgeInsets.symmetric(vertical: 4),
                     alignment: AlignmentDirectional.centerStart,
                     child: AvesFilterChip(
                       filter: filter,
@@ -69,20 +69,20 @@ class FilterTable extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: lineHeight),
                       center: Text(
                         NumberFormat.percentPattern().format(percent),
-                        style: TextStyle(shadows: [Constants.embossShadow]),
+                        style: const TextStyle(shadows: Constants.embossShadows),
                       ),
                     ),
                   Text(
                     '$count',
-                    style: TextStyle(color: Colors.white70),
+                    style: const TextStyle(color: Colors.white70),
                     textAlign: TextAlign.end,
                   ),
                 ],
               );
             }).toList(),
             columnWidths: {
-              0: MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(chipWidth)),
-              2: MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(countWidth)),
+              0: const MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(chipWidth)),
+              2: const MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(countWidth)),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           );

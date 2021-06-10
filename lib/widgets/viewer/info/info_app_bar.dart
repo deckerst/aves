@@ -12,17 +12,17 @@ class InfoAppBar extends StatelessWidget {
   final VoidCallback onBackPressed;
 
   const InfoAppBar({
-    @required this.entry,
-    @required this.metadataNotifier,
-    @required this.onBackPressed,
+    required this.entry,
+    required this.metadataNotifier,
+    required this.onBackPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       leading: IconButton(
-        key: Key('back-button'),
-        icon: Icon(AIcons.goUp),
+        key: const Key('back-button'),
+        icon: const Icon(AIcons.goUp),
         onPressed: onBackPressed,
         tooltip: context.l10n.viewerInfoBackToViewerTooltip,
       ),
@@ -32,7 +32,7 @@ class InfoAppBar extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          icon: Icon(AIcons.search),
+          icon: const Icon(AIcons.search),
           onPressed: () => _goToSearch(context),
           tooltip: MaterialLocalizations.of(context).searchFieldLabel,
         ),

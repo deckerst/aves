@@ -1,21 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.4.32'
+    ext.kotlin_version = '1.5.10'
     repositories {
         google()
         mavenCentral()
-        // TODO TLAD remove jcenter (migrating to mavenCentral) when this is fixed: https://youtrack.jetbrains.com/issue/IDEA-261387
-        jcenter {
-            content {
-                includeModule("org.jetbrains.trove4j", "trove4j")
-            }
-        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.5'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
+        classpath 'com.google.gms:google-services:4.3.8'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.0'
     }
 }
 
@@ -23,12 +17,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        // TODO TLAD remove jcenter (migrating to mavenCentral) when this is fixed: https://youtrack.jetbrains.com/issue/IDEA-261387
-        jcenter {
-            content {
-                includeModule("org.jetbrains.trove4j", "trove4j")
-            }
-        }
     }
 //    gradle.projectsEvaluated {
 //        tasks.withType(JavaCompile) {
@@ -40,8 +28,6 @@ allprojects {
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(':app')
 }
 

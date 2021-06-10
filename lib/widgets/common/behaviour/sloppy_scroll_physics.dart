@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 class SloppyScrollPhysics extends ScrollPhysics {
   const SloppyScrollPhysics({
     this.touchSlopFactor = 1,
-    ScrollPhysics parent,
+    ScrollPhysics? parent,
   }) : super(parent: parent);
 
   // in [0, 1]
@@ -13,7 +13,7 @@ class SloppyScrollPhysics extends ScrollPhysics {
   final double touchSlopFactor;
 
   @override
-  SloppyScrollPhysics applyTo(ScrollPhysics ancestor) {
+  SloppyScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return SloppyScrollPhysics(
       touchSlopFactor: touchSlopFactor,
       parent: buildParent(ancestor),

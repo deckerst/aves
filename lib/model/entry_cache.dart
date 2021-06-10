@@ -1,19 +1,29 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 
 class EntryCache {
+  // ordered descending
+  static final thumbnailRequestExtents = <double>[];
+
+  static void markThumbnailExtent(double extent) {
+    if (!thumbnailRequestExtents.contains(extent)) {
+      thumbnailRequestExtents
+        ..add(extent)
+        ..sort((a, b) => b.compareTo(a));
+    }
+  }
+
   static Future<void> evict(
     String uri,
     String mimeType,
-    int dateModifiedSecs,
+    int? dateModifiedSecs,
     int oldRotationDegrees,
     bool oldIsFlipped,
   ) async {
     // TODO TLAD provide pageId parameter for multi page items, if someday image editing features are added for them
-    int pageId;
+    int? pageId;
 
     // evict fullscreen image
     await UriImage(
@@ -29,20 +39,18 @@ class EntryCache {
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
-      dateModifiedSecs: dateModifiedSecs,
+      dateModifiedSecs: dateModifiedSecs ?? 0,
       rotationDegrees: oldRotationDegrees,
       isFlipped: oldIsFlipped,
     )).evict();
 
-    // evict higher quality thumbnails (with powers of 2 from 32 to 1024 as specified extents)
-    final extents = List.generate(6, (index) => pow(2, index + 5).toDouble());
     await Future.forEach<double>(
-        extents,
+        thumbnailRequestExtents,
         (extent) => ThumbnailProvider(ThumbnailProviderKey(
               uri: uri,
               mimeType: mimeType,
               pageId: pageId,
-              dateModifiedSecs: dateModifiedSecs,
+              dateModifiedSecs: dateModifiedSecs ?? 0,
               rotationDegrees: oldRotationDegrees,
               isFlipped: oldIsFlipped,
               extent: extent,

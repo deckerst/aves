@@ -8,7 +8,7 @@ import 'constants.dart';
 import 'utils/adb_utils.dart';
 import 'utils/driver_extension.dart';
 
-FlutterDriver driver;
+late FlutterDriver driver;
 
 void main() {
   group('[Aves app]', () {
@@ -26,7 +26,7 @@ void main() {
 
     tearDownAll(() async {
       await removeDirectory(targetPicturesDir);
-      unawaited(driver?.close());
+      unawaited(driver.close());
     });
 
     agreeToTerms();
@@ -37,29 +37,30 @@ void main() {
     selectFirstAlbum();
     searchAlbum();
     showViewer();
+    goToNextImage();
     toggleOverlay();
     zoom();
     showInfoMetadata();
     scrollOffImage();
 
     test('contemplation', () async {
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
     });
-  }, timeout: Timeout(Duration(seconds: 30)));
+  }, timeout: const Timeout(Duration(seconds: 30)));
 }
 
 void agreeToTerms() {
   test('[welcome] agree to terms', () async {
-    await driver.scroll(find.text('Terms of Service'), 0, -300, Duration(milliseconds: 500));
+    await driver.scroll(find.text('Terms of Service'), 0, -300, const Duration(milliseconds: 500));
 
     await driver.tap(find.byValueKey('agree-checkbox'));
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     await driver.tap(find.byValueKey('continue-button'));
     await driver.waitUntilNoTransientCallbacks();
 
     // wait for collection loading
-    await driver.waitForCondition(NoPendingPlatformMessages());
+    await driver.waitForCondition(const NoPendingPlatformMessages());
   });
 }
 
@@ -68,7 +69,7 @@ void visitAbout() {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('About-tile'));
+    await driver.tap(find.byValueKey('drawer-about-button'));
     await driver.waitUntilNoTransientCallbacks();
 
     await pressDeviceBackButton();
@@ -77,11 +78,11 @@ void visitAbout() {
 }
 
 void visitSettings() {
-  test('[collection] visit about page', () async {
+  test('[collection] visit settings page', () async {
     await driver.tap(find.byValueKey('appbar-leading-button'));
     await driver.waitUntilNoTransientCallbacks();
 
-    await driver.tap(find.byValueKey('Settings-tile'));
+    await driver.tap(find.byValueKey('drawer-settings-button'));
     await driver.waitUntilNoTransientCallbacks();
 
     await pressDeviceBackButton();
@@ -124,7 +125,7 @@ void selectFirstAlbum() {
     await driver.waitUntilNoTransientCallbacks();
 
     // wait for collection loading
-    await driver.waitForCondition(NoPendingPlatformMessages());
+    await driver.waitForCondition(const NoPendingPlatformMessages());
 
     await driver.tap(find.descendant(
       of: find.byValueKey('filter-grid-page'),
@@ -154,9 +155,21 @@ void searchAlbum() {
 
 void showViewer() {
   test('[collection] show viewer', () async {
-    await driver.tap(find.byType('DecoratedThumbnail'));
+    await driver.tap(find.descendant(
+      of: find.byValueKey('collection-grid'),
+      matching: find.byType('DecoratedThumbnail'),
+      firstMatchOnly: true,
+    ));
     await driver.waitUntilNoTransientCallbacks();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
+  });
+}
+
+void goToNextImage() {
+  test('[viewer] show next image', () async {
+    final horizontalPageView = find.byValueKey('horizontal-pageview');
+    await driver.scroll(horizontalPageView, -600, 0, const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(seconds: 2));
   });
 }
 
@@ -166,11 +179,11 @@ void toggleOverlay() {
 
     print('* hide overlay');
     await driver.tap(imageView);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     print('* show overlay');
     await driver.tap(imageView);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
   });
 }
 
@@ -179,13 +192,13 @@ void zoom() {
     final imageView = find.byValueKey('imageview');
 
     await driver.doubleTap(imageView);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     await driver.doubleTap(imageView);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     await driver.doubleTap(imageView);
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
   });
 }
 
@@ -194,12 +207,12 @@ void showInfoMetadata() {
     final verticalPageView = find.byValueKey('vertical-pageview');
 
     print('* scroll down to info');
-    await driver.scroll(verticalPageView, 0, -600, Duration(milliseconds: 400));
-    await Future.delayed(Duration(seconds: 2));
+    await driver.scroll(verticalPageView, 0, -600, const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(seconds: 2));
 
     print('* scroll down to metadata details');
-    await driver.scroll(verticalPageView, 0, -800, Duration(milliseconds: 600));
-    await Future.delayed(Duration(seconds: 1));
+    await driver.scroll(verticalPageView, 0, -800, const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(seconds: 1));
 
     print('* toggle GPS metadata');
     final gpsTile = find.descendant(
@@ -212,8 +225,8 @@ void showInfoMetadata() {
     await driver.waitUntilNoTransientCallbacks();
 
     print('* scroll up to show app bar');
-    await driver.scroll(verticalPageView, 0, 100, Duration(milliseconds: 400));
-    await Future.delayed(Duration(seconds: 1));
+    await driver.scroll(verticalPageView, 0, 100, const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(seconds: 1));
 
     print('* back to image');
     await driver.tap(find.byValueKey('back-button'));
@@ -223,7 +236,7 @@ void showInfoMetadata() {
 
 void scrollOffImage() {
   test('[viewer] scroll off', () async {
-    await driver.scroll(find.byValueKey('imageview'), 0, 800, Duration(milliseconds: 600));
-    await Future.delayed(Duration(seconds: 1));
+    await driver.scroll(find.byValueKey('imageview'), 0, 800, const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(seconds: 1));
   });
 }

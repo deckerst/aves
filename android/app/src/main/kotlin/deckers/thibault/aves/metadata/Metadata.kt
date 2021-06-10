@@ -127,16 +127,7 @@ object Metadata {
                     Log.d(LOG_TAG, "use a preview for uri=$uri mimeType=$mimeType size=$sizeBytes")
                     var previewFile = previewFiles[uri]
                     if (previewFile == null) {
-                        previewFile = File.createTempFile("aves", null, context.cacheDir).apply {
-                            deleteOnExit()
-                            outputStream().use { output ->
-                                StorageUtils.openInputStream(context, uri)?.use { input ->
-                                    val b = ByteArray(previewSize)
-                                    input.read(b, 0, previewSize)
-                                    output.write(b)
-                                }
-                            }
-                        }
+                        previewFile = createPreviewFile(context, uri)
                         previewFiles[uri] = previewFile
                     }
                     Uri.fromFile(previewFile)
@@ -144,6 +135,19 @@ object Metadata {
             }
             // *probably* safe
             else -> uri
+        }
+    }
+
+    fun createPreviewFile(context: Context, uri: Uri): File {
+        return File.createTempFile("aves", null, context.cacheDir).apply {
+            deleteOnExit()
+            outputStream().use { output ->
+                StorageUtils.openInputStream(context, uri)?.use { input ->
+                    val b = ByteArray(previewSize)
+                    input.read(b, 0, previewSize)
+                    output.write(b)
+                }
+            }
         }
     }
 

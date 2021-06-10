@@ -7,8 +7,8 @@ import '../pan/corner_hit_detector.dart';
 
 class MagnifierGestureDetector extends StatefulWidget {
   const MagnifierGestureDetector({
-    Key key,
-    this.hitDetector,
+    Key? key,
+    required this.hitDetector,
     this.onScaleStart,
     this.onScaleUpdate,
     this.onScaleEnd,
@@ -20,31 +20,26 @@ class MagnifierGestureDetector extends StatefulWidget {
   }) : super(key: key);
 
   final CornerHitDetector hitDetector;
-  final void Function(ScaleStartDetails details, bool doubleTap) onScaleStart;
-  final GestureScaleUpdateCallback onScaleUpdate;
-  final GestureScaleEndCallback onScaleEnd;
+  final void Function(ScaleStartDetails details, bool doubleTap)? onScaleStart;
+  final GestureScaleUpdateCallback? onScaleUpdate;
+  final GestureScaleEndCallback? onScaleEnd;
 
-  final GestureTapDownCallback onTapDown;
-  final GestureTapUpCallback onTapUp;
-  final GestureTapDownCallback onDoubleTap;
+  final GestureTapDownCallback? onTapDown;
+  final GestureTapUpCallback? onTapUp;
+  final GestureTapDownCallback? onDoubleTap;
 
-  final HitTestBehavior behavior;
-  final Widget child;
+  final HitTestBehavior? behavior;
+  final Widget? child;
 
   @override
   _MagnifierGestureDetectorState createState() => _MagnifierGestureDetectorState();
 }
 
 class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
-  final ValueNotifier<TapDownDetails> doubleTapDetails = ValueNotifier(null);
+  final ValueNotifier<TapDownDetails?> doubleTapDetails = ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
-    final scope = MagnifierGestureDetectorScope.of(context);
-
-    final axis = scope?.axis;
-    final touchSlopFactor = scope?.touchSlopFactor;
-
     final gestures = <Type, GestureRecognizerFactory>{};
 
     if (widget.onTapDown != null || widget.onTapUp != null) {
@@ -58,30 +53,35 @@ class _MagnifierGestureDetectorState extends State<MagnifierGestureDetector> {
       );
     }
 
-    gestures[MagnifierGestureRecognizer] = GestureRecognizerFactoryWithHandlers<MagnifierGestureRecognizer>(
-      () => MagnifierGestureRecognizer(
-        hitDetector: widget.hitDetector,
-        debugOwner: this,
-        validateAxis: axis,
-        touchSlopFactor: touchSlopFactor,
-        doubleTapDetails: doubleTapDetails,
-      ),
-      (instance) {
-        instance.onStart = (details) => widget.onScaleStart(details, doubleTapDetails.value != null);
-        instance.onUpdate = widget.onScaleUpdate;
-        instance.onEnd = widget.onScaleEnd;
-      },
-    );
+    final scope = MagnifierGestureDetectorScope.of(context);
+    if (scope != null) {
+      gestures[MagnifierGestureRecognizer] = GestureRecognizerFactoryWithHandlers<MagnifierGestureRecognizer>(
+        () => MagnifierGestureRecognizer(
+          hitDetector: widget.hitDetector,
+          debugOwner: this,
+          validateAxis: scope.axis,
+          touchSlopFactor: scope.touchSlopFactor,
+          doubleTapDetails: doubleTapDetails,
+        ),
+        (instance) {
+          instance.onStart = widget.onScaleStart != null ? (details) => widget.onScaleStart!(details, doubleTapDetails.value != null) : null;
+          instance.onUpdate = widget.onScaleUpdate;
+          instance.onEnd = widget.onScaleEnd;
+        },
+      );
+    }
 
     gestures[DoubleTapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
       () => DoubleTapGestureRecognizer(debugOwner: this),
       (instance) {
         instance.onDoubleTapCancel = () => doubleTapDetails.value = null;
         instance.onDoubleTapDown = (details) => doubleTapDetails.value = details;
-        instance.onDoubleTap = () {
-          widget.onDoubleTap(doubleTapDetails.value);
-          doubleTapDetails.value = null;
-        };
+        instance.onDoubleTap = widget.onDoubleTap != null
+            ? () {
+                widget.onDoubleTap!(doubleTapDetails.value!);
+                doubleTapDetails.value = null;
+              }
+            : null;
       },
     );
 

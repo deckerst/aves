@@ -11,12 +11,12 @@ import 'package:provider/provider.dart';
 class VectorImageThumbnail extends StatelessWidget {
   final AvesEntry entry;
   final double extent;
-  final Object heroTag;
+  final Object? heroTag;
 
   const VectorImageThumbnail({
-    Key key,
-    @required this.entry,
-    @required this.extent,
+    Key? key,
+    required this.entry,
+    required this.extent,
     this.heroTag,
   }) : super(key: key);
 
@@ -31,7 +31,7 @@ class VectorImageThumbnail extends StatelessWidget {
             builder: (context, constraints) {
               final availableSize = constraints.biggest;
               final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
-              final offset = fitSize / 2 - availableSize / 2;
+              final offset = (fitSize / 2 - availableSize / 2) as Offset;
               final child = CustomPaint(
                 painter: CheckeredPainter(checkSize: extent / 8, offset: offset),
                 child: SvgPicture(
@@ -66,7 +66,7 @@ class VectorImageThumbnail extends StatelessWidget {
     );
     return heroTag != null
         ? Hero(
-            tag: heroTag,
+            tag: heroTag!,
             transitionOnUserGestures: true,
             child: child,
           )

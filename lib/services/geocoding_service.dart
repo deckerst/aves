@@ -29,7 +29,7 @@ class GeocodingService {
 
 @immutable
 class Address {
-  final String addressLine, adminArea, countryCode, countryName, featureName, locality, postalCode, subAdminArea, subLocality, subThoroughfare, thoroughfare;
+  final String? addressLine, adminArea, countryCode, countryName, featureName, locality, postalCode, subAdminArea, subLocality, subThoroughfare, thoroughfare;
 
   const Address({
     this.addressLine,

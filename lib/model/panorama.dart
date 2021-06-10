@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class PanoramaInfo {
-  final Rect croppedAreaRect;
-  final Size fullPanoSize;
-  final String projectionType;
+  final Rect? croppedAreaRect;
+  final Size? fullPanoSize;
+  final String? projectionType;
 
   PanoramaInfo({
     this.croppedAreaRect,
@@ -13,13 +13,13 @@ class PanoramaInfo {
   });
 
   factory PanoramaInfo.fromMap(Map map) {
-    var cLeft = map['croppedAreaLeft'] as int;
-    var cTop = map['croppedAreaTop'] as int;
-    final cWidth = map['croppedAreaWidth'] as int;
-    final cHeight = map['croppedAreaHeight'] as int;
-    var fWidth = map['fullPanoWidth'] as int;
-    var fHeight = map['fullPanoHeight'] as int;
-    final projectionType = map['projectionType'] as String;
+    var cLeft = map['croppedAreaLeft'] as int?;
+    var cTop = map['croppedAreaTop'] as int?;
+    final cWidth = map['croppedAreaWidth'] as int?;
+    final cHeight = map['croppedAreaHeight'] as int?;
+    var fWidth = map['fullPanoWidth'] as int?;
+    var fHeight = map['fullPanoHeight'] as int?;
+    final projectionType = map['projectionType'] as String?;
 
     // handle missing `fullPanoHeight` (e.g. Samsung camera app panorama mode)
     if (fHeight == null && cWidth != null && cHeight != null) {
@@ -31,12 +31,12 @@ class PanoramaInfo {
       cLeft = 0;
     }
 
-    Rect croppedAreaRect;
+    Rect? croppedAreaRect;
     if (cLeft != null && cTop != null && cWidth != null && cHeight != null) {
       croppedAreaRect = Rect.fromLTWH(cLeft.toDouble(), cTop.toDouble(), cWidth.toDouble(), cHeight.toDouble());
     }
 
-    Size fullPanoSize;
+    Size? fullPanoSize;
     if (fWidth != null && fHeight != null) {
       fullPanoSize = Size(fWidth.toDouble(), fHeight.toDouble());
     }

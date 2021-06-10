@@ -13,13 +13,13 @@ class InteractiveThumbnail extends StatelessWidget {
   final CollectionLens collection;
   final AvesEntry entry;
   final double tileExtent;
-  final ValueNotifier<bool> isScrollingNotifier;
+  final ValueNotifier<bool>? isScrollingNotifier;
 
   const InteractiveThumbnail({
-    Key key,
-    this.collection,
-    @required this.entry,
-    @required this.tileExtent,
+    Key? key,
+    required this.collection,
+    required this.entry,
+    required this.tileExtent,
     this.isScrollingNotifier,
   }) : super(key: key);
 
@@ -51,7 +51,7 @@ class InteractiveThumbnail extends StatelessWidget {
         metaData: ScalerMetadata(entry),
         child: DecoratedThumbnail(
           entry: entry,
-          extent: tileExtent,
+          tileExtent: tileExtent,
           collection: collection,
           // when the user is scrolling faster than we can retrieve the thumbnails,
           // the retrieval task queue can pile up for thumbnails that got disposed
@@ -66,7 +66,7 @@ class InteractiveThumbnail extends StatelessWidget {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        settings: RouteSettings(name: EntryViewerPage.routeName),
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (c, a, sa) {
           final viewerCollection = CollectionLens(
             source: collection.source,
@@ -76,6 +76,7 @@ class InteractiveThumbnail extends StatelessWidget {
             id: collection.id,
             listenToSource: false,
           );
+          assert(viewerCollection.sortedEntries.contains(entry));
           return EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,

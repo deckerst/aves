@@ -16,21 +16,21 @@ class ViewerDebugPage extends StatelessWidget {
 
   final AvesEntry entry;
 
-  const ViewerDebugPage({@required this.entry});
+  const ViewerDebugPage({required this.entry});
 
   @override
   Widget build(BuildContext context) {
     final tabs = <Tuple2<Tab, Widget>>[
-      Tuple2(Tab(text: 'Entry'), _buildEntryTabView()),
-      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) Tuple2(Tab(text: 'DB'), DbTab(entry: entry)),
-      Tuple2(Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
-      Tuple2(Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
+      Tuple2(const Tab(text: 'Entry'), _buildEntryTabView()),
+      if (context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value != AppMode.view)) Tuple2(const Tab(text: 'DB'), DbTab(entry: entry)),
+      Tuple2(const Tab(icon: Icon(AIcons.android)), MetadataTab(entry: entry)),
+      Tuple2(const Tab(icon: Icon(AIcons.image)), _buildThumbnailsTabView()),
     ];
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Debug'),
+          title: const Text('Debug'),
           bottom: TabBar(
             tabs: tabs.map((t) => t.item1).toList(),
           ),
@@ -45,7 +45,7 @@ class ViewerDebugPage extends StatelessWidget {
   }
 
   Widget _buildEntryTabView() {
-    String toDateValue(int time, {int factor = 1}) {
+    String toDateValue(int? time, {int factor = 1}) {
       var value = '$time';
       if (time != null && time > 0) {
         value += ' (${DateTime.fromMillisecondsSinceEpoch(time * factor)})';
@@ -54,7 +54,7 @@ class ViewerDebugPage extends StatelessWidget {
     }
 
     return ListView(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       children: [
         InfoRowGroup({
           'uri': '${entry.uri}',
@@ -66,13 +66,13 @@ class ViewerDebugPage extends StatelessWidget {
           'sourceMimeType': '${entry.sourceMimeType}',
           'mimeType': '${entry.mimeType}',
         }),
-        Divider(),
+        const Divider(),
         InfoRowGroup({
           'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
           'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
           'bestDate': '${entry.bestDate}',
         }),
-        Divider(),
+        const Divider(),
         InfoRowGroup({
           'width': '${entry.width}',
           'height': '${entry.height}',
@@ -83,12 +83,12 @@ class ViewerDebugPage extends StatelessWidget {
           'displayAspectRatio': '${entry.displayAspectRatio}',
           'displaySize': '${entry.displaySize}',
         }),
-        Divider(),
+        const Divider(),
         InfoRowGroup({
           'durationMillis': '${entry.durationMillis}',
           'durationText': '${entry.durationText}',
         }),
-        Divider(),
+        const Divider(),
         InfoRowGroup({
           'sizeBytes': '${entry.sizeBytes}',
           'isFavourite': '${entry.isFavourite}',
@@ -104,7 +104,7 @@ class ViewerDebugPage extends StatelessWidget {
           'canRotateAndFlip': '${entry.canRotateAndFlip}',
           'xmpSubjects': '${entry.xmpSubjects}',
         }),
-        Divider(),
+        const Divider(),
         InfoRowGroup({
           'hasGps': '${entry.hasGps}',
           'hasAddress': '${entry.hasAddress}',
@@ -117,37 +117,36 @@ class ViewerDebugPage extends StatelessWidget {
   }
 
   Widget _buildThumbnailsTabView() {
-    const extent = 128.0;
+    final children = <Widget>[];
+    if (entry.isSvg) {
+      const extent = 128.0;
+      children.addAll([
+        const Text('SVG ($extent)'),
+        SvgPicture(
+          UriPicture(
+            uri: entry.uri,
+            mimeType: entry.mimeType,
+          ),
+          width: extent,
+          height: extent,
+        )
+      ]);
+    } else {
+      children.addAll(
+        entry.cachedThumbnails.expand((provider) => [
+              Text('Raster (${provider.key.extent})'),
+              Center(
+                child: Image(
+                  image: provider,
+                ),
+              ),
+              const SizedBox(height: 16),
+            ]),
+      );
+    }
     return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        if (entry.isSvg) ...[
-          Text('SVG ($extent)'),
-          SvgPicture(
-            UriPicture(
-              uri: entry.uri,
-              mimeType: entry.mimeType,
-            ),
-            width: extent,
-            height: extent,
-          )
-        ],
-        if (!entry.isSvg) ...[
-          Text('Raster (fast)'),
-          Center(
-            child: Image(
-              image: entry.getThumbnail(),
-            ),
-          ),
-          SizedBox(height: 16),
-          Text('Raster ($extent)'),
-          Center(
-            child: Image(
-              image: entry.getThumbnail(extent: extent),
-            ),
-          ),
-        ],
-      ],
+      padding: const EdgeInsets.all(16),
+      children: children,
     );
   }
 }

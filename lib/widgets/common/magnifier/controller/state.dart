@@ -6,13 +6,13 @@ import 'package:flutter/widgets.dart';
 @immutable
 class MagnifierState {
   const MagnifierState({
-    @required this.position,
-    @required this.scale,
-    @required this.source,
+    required this.position,
+    required this.scale,
+    required this.source,
   });
 
   final Offset position;
-  final double scale;
+  final double? scale;
   final ChangeSource source;
 
   @override

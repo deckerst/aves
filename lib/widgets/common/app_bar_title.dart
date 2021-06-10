@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class InteractiveAppBarTitle extends StatelessWidget {
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
   final Widget child;
 
   const InteractiveAppBarTitle({
     this.onTap,
-    @required this.child,
+    required this.child,
   });
 
   @override
@@ -17,7 +17,7 @@ class InteractiveAppBarTitle extends StatelessWidget {
       // so that we can also detect taps around the title `Text`
       child: Container(
         alignment: AlignmentDirectional.centerStart,
-        padding: EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
+        padding: const EdgeInsets.symmetric(horizontal: NavigationToolbar.kMiddleSpacing),
         color: Colors.transparent,
         height: kToolbarHeight,
         child: child,

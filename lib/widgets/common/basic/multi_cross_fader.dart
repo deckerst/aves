@@ -7,11 +7,11 @@ class MultiCrossFader extends StatefulWidget {
   final Widget child;
 
   const MultiCrossFader({
-    @required this.duration,
+    required this.duration,
     this.fadeCurve = Curves.linear,
     this.sizeCurve = Curves.linear,
     this.alignment = Alignment.topCenter,
-    @required this.child,
+    required this.child,
   });
 
   @override
@@ -19,14 +19,14 @@ class MultiCrossFader extends StatefulWidget {
 }
 
 class _MultiCrossFaderState extends State<MultiCrossFader> {
-  Widget _first, _second;
+  late Widget _first, _second;
   CrossFadeState _fadeState = CrossFadeState.showFirst;
 
   @override
   void initState() {
     super.initState();
     _first = widget.child;
-    _second = SizedBox();
+    _second = const SizedBox();
   }
 
   @override

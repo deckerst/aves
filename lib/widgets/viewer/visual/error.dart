@@ -12,8 +12,8 @@ class ErrorView extends StatefulWidget {
   final VoidCallback onTap;
 
   const ErrorView({
-    @required this.entry,
-    @required this.onTap,
+    required this.entry,
+    required this.onTap,
   });
 
   @override
@@ -21,20 +21,20 @@ class ErrorView extends StatefulWidget {
 }
 
 class _ErrorViewState extends State<ErrorView> {
-  Future<bool> _exists;
+  late Future<bool> _exists;
 
   AvesEntry get entry => widget.entry;
 
   @override
   void initState() {
     super.initState();
-    _exists = entry.path != null ? File(entry.path).exists() : SynchronousFuture(true);
+    _exists = entry.path != null ? File(entry.path!).exists() : SynchronousFuture(true);
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => widget.onTap?.call(),
+      onTap: () => widget.onTap(),
       // use container to expand constraints, so that the user can tap anywhere
       child: Container(
         // opaque to cover potential lower quality layer below
@@ -42,8 +42,8 @@ class _ErrorViewState extends State<ErrorView> {
         child: FutureBuilder<bool>(
             future: _exists,
             builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) return SizedBox();
-              final exists = snapshot.data;
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox();
+              final exists = snapshot.data!;
               return EmptyContent(
                 icon: exists ? AIcons.error : AIcons.broken,
                 text: exists ? context.l10n.viewerErrorUnknown : context.l10n.viewerErrorDoesNotExist,

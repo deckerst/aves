@@ -38,7 +38,7 @@ class _ItemPickDialogState extends State<ItemPickDialog> {
               bottom: false,
               child: ChangeNotifierProvider<CollectionLens>.value(
                 value: collection,
-                child: CollectionGrid(
+                child: const CollectionGrid(
                   settingsRouteKey: CollectionPage.routeName,
                 ),
               ),

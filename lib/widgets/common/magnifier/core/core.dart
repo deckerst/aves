@@ -12,12 +12,12 @@ import 'package:flutter/widgets.dart';
 /// to user gestures, updates to the controller state and mounts the entire Layout
 class MagnifierCore extends StatefulWidget {
   const MagnifierCore({
-    Key key,
-    @required this.child,
-    @required this.onTap,
-    @required this.controller,
-    @required this.scaleStateCycle,
-    @required this.applyScale,
+    Key? key,
+    required this.child,
+    required this.onTap,
+    required this.controller,
+    required this.scaleStateCycle,
+    required this.applyScale,
     this.panInertia = .2,
   }) : super(key: key);
 
@@ -26,7 +26,7 @@ class MagnifierCore extends StatefulWidget {
   final MagnifierController controller;
   final ScaleStateCycle scaleStateCycle;
 
-  final MagnifierTapCallback onTap;
+  final MagnifierTapCallback? onTap;
 
   final bool applyScale;
   final double panInertia;
@@ -38,18 +38,18 @@ class MagnifierCore extends StatefulWidget {
 }
 
 class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateMixin, MagnifierControllerDelegate, CornerHitDetector {
-  Offset _startFocalPoint, _lastViewportFocalPosition;
-  double _startScale, _quickScaleLastY, _quickScaleLastDistance;
-  bool _doubleTap, _quickScaleMoved;
+  Offset? _startFocalPoint, _lastViewportFocalPosition;
+  double? _startScale, _quickScaleLastY, _quickScaleLastDistance;
+  late bool _doubleTap, _quickScaleMoved;
   DateTime _lastScaleGestureDate = DateTime.now();
 
-  AnimationController _scaleAnimationController;
-  Animation<double> _scaleAnimation;
+  late AnimationController _scaleAnimationController;
+  late Animation<double> _scaleAnimation;
 
-  AnimationController _positionAnimationController;
-  Animation<Offset> _positionAnimation;
+  late AnimationController _positionAnimationController;
+  late Animation<Offset> _positionAnimation;
 
-  ScaleBoundaries cachedScaleBoundaries;
+  ScaleBoundaries? cachedScaleBoundaries;
 
   void handleScaleAnimation() {
     setScale(_scaleAnimation.value, ChangeSource.animation);
@@ -65,7 +65,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     _lastViewportFocalPosition = _startFocalPoint;
     _doubleTap = doubleTap;
     _quickScaleLastDistance = null;
-    _quickScaleLastY = _startFocalPoint.dy;
+    _quickScaleLastY = _startFocalPoint!.dy;
     _quickScaleMoved = false;
 
     _scaleAnimationController.stop();
@@ -78,21 +78,21 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
       // quick scale, aka one finger zoom
       // magic numbers from `davemorrissey/subsampling-scale-image-view`
       final focalPointY = details.focalPoint.dy;
-      final distance = (focalPointY - _startFocalPoint.dy).abs() * 2 + 20;
+      final distance = (focalPointY - _startFocalPoint!.dy).abs() * 2 + 20;
       _quickScaleLastDistance ??= distance;
-      final spanDiff = (1 - (distance / _quickScaleLastDistance)).abs() * .5;
+      final spanDiff = (1 - (distance / _quickScaleLastDistance!)).abs() * .5;
       _quickScaleMoved |= spanDiff > .03;
-      final factor = _quickScaleMoved ? (focalPointY > _quickScaleLastY ? (1 + spanDiff) : (1 - spanDiff)) : 1;
+      final factor = _quickScaleMoved ? (focalPointY > _quickScaleLastY! ? (1 + spanDiff) : (1 - spanDiff)) : 1;
       _quickScaleLastDistance = distance;
       _quickScaleLastY = focalPointY;
-      newScale = scale * factor;
+      newScale = scale! * factor;
     } else {
-      newScale = _startScale * details.scale;
+      newScale = _startScale! * details.scale;
     }
-    final scaleFocalPoint = _doubleTap ? _startFocalPoint : details.focalPoint;
+    final scaleFocalPoint = _doubleTap ? _startFocalPoint! : details.focalPoint;
 
-    final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition;
-    final scalePositionDelta = scaleBoundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale / newScale - 1);
+    final panPositionDelta = scaleFocalPoint - _lastViewportFocalPosition!;
+    final scalePositionDelta = scaleBoundaries.viewportToStatePosition(controller, scaleFocalPoint) * (scale! / newScale - 1);
     final newPosition = position + panPositionDelta + scalePositionDelta;
 
     updateScaleStateFromNewScale(newScale, ChangeSource.gesture);
@@ -107,7 +107,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
   void onScaleEnd(ScaleEndDetails details) {
     final _position = controller.position;
-    final _scale = controller.scale;
+    final _scale = controller.scale!;
     final maxScale = scaleBoundaries.maxScale;
     final minScale = scaleBoundaries.minScale;
 
@@ -145,14 +145,14 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
   }
 
   Duration _getAnimationDurationForVelocity({
-    Cubic curve,
-    Tween<Offset> tween,
-    Offset targetPixelPerSecond,
+    required Cubic curve,
+    required Tween<Offset> tween,
+    required Offset targetPixelPerSecond,
   }) {
     assert(targetPixelPerSecond != Offset.zero);
     // find initial animation velocity over the first 20% of the specified curve
     const t = 0.2;
-    final animationVelocity = (tween.end - tween.begin).distance * curve.transform(t) / t;
+    final animationVelocity = (tween.end! - tween.begin!).distance * curve.transform(t) / t;
     final gestureVelocity = targetPixelPerSecond.distance;
     return Duration(milliseconds: (animationVelocity / gestureVelocity * 1000).round());
   }
@@ -162,16 +162,16 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
 
     final viewportTapPosition = details.localPosition;
     final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
-    widget.onTap.call(context, details, controller.currentState, childTapPosition);
+    widget.onTap!.call(context, details, controller.currentState, childTapPosition);
   }
 
   void onDoubleTap(TapDownDetails details) {
-    final viewportTapPosition = details?.localPosition;
+    final viewportTapPosition = details.localPosition;
     final childTapPosition = scaleBoundaries.viewportToChildPosition(controller, viewportTapPosition);
     nextScaleState(ChangeSource.gesture, childFocalPoint: childTapPosition);
   }
 
-  void animateScale(double from, double to) {
+  void animateScale(double? from, double? to) {
     _scaleAnimation = Tween<double>(
       begin: from,
       end: to,
@@ -215,7 +215,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
     cachedScaleBoundaries = widget.controller.scaleBoundaries;
   }
 
-  void animateOnScaleStateUpdate(double prevScale, double nextScale, Offset nextPosition) {
+  void animateOnScaleStateUpdate(double? prevScale, double? nextScale, Offset nextPosition) {
     animateScale(prevScale, nextScale);
     animatePosition(controller.position, nextPosition);
   }
@@ -242,7 +242,7 @@ class _MagnifierCoreState extends State<MagnifierCore> with TickerProviderStateM
         builder: (context, snapshot) {
           if (!snapshot.hasData) return Container();
 
-          final magnifierState = snapshot.data;
+          final magnifierState = snapshot.data!;
           final position = magnifierState.position;
           final applyScale = widget.applyScale;
 
@@ -302,7 +302,7 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return applyScale ? BoxConstraints.tight(subjectSize) : BoxConstraints();
+    return applyScale ? BoxConstraints.tight(subjectSize) : const BoxConstraints();
   }
 
   @override

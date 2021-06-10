@@ -5,7 +5,8 @@ import 'package:aves/image_providers/region_provider.dart';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/image_providers/uri_image_provider.dart';
 import 'package:aves/model/entry.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aves/model/entry_cache.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 extension ExtraAvesEntry on AvesEntry {
@@ -14,11 +15,7 @@ extension ExtraAvesEntry on AvesEntry {
   }
 
   ThumbnailProviderKey _getThumbnailProviderKey(double extent) {
-    // we standardize the thumbnail loading dimension by taking the nearest larger power of 2
-    // so that there are less variants of the thumbnails to load and cache
-    // it increases the chance of cache hit when loading similarly sized columns (e.g. on orientation change)
-    final requestExtent = extent == 0 ? .0 : pow(2, (log(extent) / log(2)).ceil()).toDouble();
-
+    EntryCache.markThumbnailExtent(extent);
     return ThumbnailProviderKey(
       uri: uri,
       mimeType: mimeType,
@@ -26,15 +23,15 @@ extension ExtraAvesEntry on AvesEntry {
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       dateModifiedSecs: dateModifiedSecs ?? -1,
-      extent: requestExtent,
+      extent: extent,
     );
   }
 
-  RegionProvider getRegion({@required int sampleSize, Rectangle<int> region}) {
+  RegionProvider getRegion({required int sampleSize, Rectangle<int>? region}) {
     return RegionProvider(_getRegionProviderKey(sampleSize, region));
   }
 
-  RegionProviderKey _getRegionProviderKey(int sampleSize, Rectangle<int> region) {
+  RegionProviderKey _getRegionProviderKey(int sampleSize, Rectangle<int>? region) {
     return RegionProviderKey(
       uri: uri,
       mimeType: mimeType,
@@ -56,12 +53,12 @@ extension ExtraAvesEntry on AvesEntry {
         expectedContentLength: sizeBytes,
       );
 
-  bool _isReady(Object providerKey) => imageCache.statusForKey(providerKey).keepAlive;
+  bool _isReady(Object providerKey) => imageCache!.statusForKey(providerKey).keepAlive;
 
-  ImageProvider getBestThumbnail(double extent) {
-    final sizedThumbnailKey = _getThumbnailProviderKey(extent);
-    if (_isReady(sizedThumbnailKey)) return ThumbnailProvider(sizedThumbnailKey);
+  List<ThumbnailProvider> get cachedThumbnails => EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).where(_isReady).map((key) => ThumbnailProvider(key)).toList();
 
-    return getThumbnail();
+  ThumbnailProvider get bestCachedThumbnail {
+    final sizedThumbnailKey = EntryCache.thumbnailRequestExtents.map(_getThumbnailProviderKey).firstWhereOrNull(_isReady);
+    return sizedThumbnailKey != null ? ThumbnailProvider(sizedThumbnailKey) : getThumbnail();
   }
 }

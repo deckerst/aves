@@ -14,26 +14,25 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BasicSection extends StatelessWidget {
   final AvesEntry entry;
-  final CollectionLens collection;
-  final ValueNotifier<bool> visibleNotifier;
+  final CollectionLens? collection;
   final FilterCallback onFilter;
 
   const BasicSection({
-    Key key,
-    @required this.entry,
+    Key? key,
+    required this.entry,
     this.collection,
-    @required this.visibleNotifier,
-    @required this.onFilter,
+    required this.onFilter,
   }) : super(key: key);
 
   int get megaPixels => entry.megaPixels;
 
-  bool get showMegaPixels => entry.isPhoto && megaPixels != null && megaPixels > 0;
+  bool get showMegaPixels => entry.isPhoto && megaPixels > 0;
 
   String get rasterResolutionText => '${entry.resolutionText}${showMegaPixels ? ' • $megaPixels MP' : ''}';
 
@@ -48,7 +47,7 @@ class BasicSection extends StatelessWidget {
     // TODO TLAD line break on all characters for the following fields when this is fixed: https://github.com/flutter/flutter/issues/61081
     // inserting ZWSP (\u200B) between characters does help, but it messes with width and height computation (another Flutter issue)
     final title = entry.bestTitle ?? infoUnknown;
-    final uri = entry.uri ?? infoUnknown;
+    final uri = entry.uri;
     final path = entry.path;
 
     return Column(
@@ -59,13 +58,12 @@ class BasicSection extends StatelessWidget {
           l10n.viewerInfoLabelDate: dateText,
           if (entry.isVideo) ..._buildVideoRows(context),
           if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
-          l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes) : infoUnknown,
+          l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown,
           l10n.viewerInfoLabelUri: uri,
           if (path != null) l10n.viewerInfoLabelPath: path,
         }),
         OwnerProp(
           entry: entry,
-          visibleNotifier: visibleNotifier,
         ),
         _buildChips(context),
       ],
@@ -83,7 +81,7 @@ class BasicSection extends StatelessWidget {
       if (entry.isImage && entry.is360) TypeFilter.panorama,
       if (entry.isVideo && entry.is360) TypeFilter.sphericalVideo,
       if (entry.isVideo && !entry.is360) MimeFilter.video,
-      if (album != null) AlbumFilter(album, collection?.source?.getAlbumDisplayName(context, album)),
+      if (album != null) AlbumFilter(album, collection?.source.getAlbumDisplayName(context, album)),
       ...tags.map((tag) => TagFilter(tag)),
     };
     return AnimatedBuilder(
@@ -93,9 +91,9 @@ class BasicSection extends StatelessWidget {
           ...filters,
           if (entry.isFavourite) FavouriteFilter.instance,
         ]..sort();
-        if (effectiveFilters.isEmpty) return SizedBox.shrink();
+        if (effectiveFilters.isEmpty) return const SizedBox.shrink();
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.symmetric(horizontal: AvesFilterChip.outlineWidth / 2) + const EdgeInsets.only(top: 8),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -120,11 +118,9 @@ class BasicSection extends StatelessWidget {
 
 class OwnerProp extends StatefulWidget {
   final AvesEntry entry;
-  final ValueNotifier<bool> visibleNotifier;
 
   const OwnerProp({
-    @required this.entry,
-    @required this.visibleNotifier,
+    required this.entry,
   });
 
   @override
@@ -132,53 +128,33 @@ class OwnerProp extends StatefulWidget {
 }
 
 class _OwnerPropState extends State<OwnerProp> {
-  final ValueNotifier<String> _loadedUri = ValueNotifier(null);
-  String _ownerPackage;
+  late Future<String?> _ownerPackageFuture;
 
   AvesEntry get entry => widget.entry;
-
-  bool get isVisible => widget.visibleNotifier.value;
 
   static const iconSize = 20.0;
 
   @override
   void initState() {
     super.initState();
-    _registerWidget(widget);
-    _getOwner();
-  }
-
-  @override
-  void didUpdateWidget(covariant OwnerProp oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _unregisterWidget(oldWidget);
-    _registerWidget(widget);
-    _getOwner();
-  }
-
-  @override
-  void dispose() {
-    _unregisterWidget(widget);
-    super.dispose();
-  }
-
-  void _registerWidget(OwnerProp widget) {
-    widget.visibleNotifier.addListener(_getOwner);
-  }
-
-  void _unregisterWidget(OwnerProp widget) {
-    widget.visibleNotifier.removeListener(_getOwner);
+    final isMediaContent = entry.uri.startsWith('content://media/external/');
+    if (isMediaContent) {
+      _ownerPackageFuture = metadataService.getContentResolverProp(entry, 'owner_package_name');
+    } else {
+      _ownerPackageFuture = SynchronousFuture(null);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable: _loadedUri,
-      builder: (context, uri, child) {
-        if (_ownerPackage == null) return SizedBox();
-        final appName = androidFileUtils.getCurrentAppName(_ownerPackage) ?? _ownerPackage;
+    return FutureBuilder<String?>(
+      future: _ownerPackageFuture,
+      builder: (context, snapshot) {
+        final ownerPackage = snapshot.data;
+        if (ownerPackage == null) return const SizedBox();
+        final appName = androidFileUtils.getCurrentAppName(ownerPackage) ?? ownerPackage;
         // as of Flutter v1.22.6, `SelectableText` cannot contain `WidgetSpan`
-        // so be use a basic `Text` instead
+        // so we use a basic `Text` instead
         return Text.rich(
           TextSpan(
             children: [
@@ -188,14 +164,14 @@ class _OwnerPropState extends State<OwnerProp> {
               ),
               // `com.android.shell` is the package reported
               // for images copied to the device by ADB for Test Driver
-              if (_ownerPackage != 'com.android.shell')
+              if (ownerPackage != 'com.android.shell')
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: Image(
                       image: AppIconImage(
-                        packageName: _ownerPackage,
+                        packageName: ownerPackage,
                         size: iconSize,
                       ),
                       width: iconSize,
@@ -212,18 +188,5 @@ class _OwnerPropState extends State<OwnerProp> {
         );
       },
     );
-  }
-
-  Future<void> _getOwner() async {
-    if (entry == null) return;
-    if (_loadedUri.value == entry.uri) return;
-    final isMediaContent = entry.uri.startsWith('content://media/external/');
-    if (isVisible && isMediaContent) {
-      _ownerPackage = await metadataService.getContentResolverProp(entry, 'owner_package_name');
-      _loadedUri.value = entry.uri;
-    } else {
-      _ownerPackage = null;
-      _loadedUri.value = null;
-    }
   }
 }

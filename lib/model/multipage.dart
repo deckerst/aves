@@ -1,6 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 class MultiPageInfo {
@@ -11,8 +12,8 @@ class MultiPageInfo {
   int get pageCount => _pages.length;
 
   MultiPageInfo({
-    @required this.mainEntry,
-    List<SinglePageInfo> pages,
+    required this.mainEntry,
+    required List<SinglePageInfo> pages,
   }) : _pages = pages {
     if (_pages.isNotEmpty) {
       _pages.sort();
@@ -31,15 +32,15 @@ class MultiPageInfo {
     );
   }
 
-  SinglePageInfo get defaultPage => _pages.firstWhere((page) => page.isDefault, orElse: () => null);
+  SinglePageInfo? get defaultPage => _pages.firstWhereOrNull((page) => page.isDefault);
 
-  SinglePageInfo getById(int pageId) => _pages.firstWhere((page) => page.pageId == pageId, orElse: () => null);
+  SinglePageInfo? getById(int? pageId) => _pages.firstWhereOrNull((page) => page.pageId == pageId);
 
-  SinglePageInfo getByIndex(int pageIndex) => _pages.firstWhere((page) => page.index == pageIndex, orElse: () => null);
+  SinglePageInfo? getByIndex(int? pageIndex) => _pages.firstWhereOrNull((page) => page.index == pageIndex);
 
-  AvesEntry getPageEntryByIndex(int pageIndex) => _getPageEntry(getByIndex(pageIndex));
+  AvesEntry getPageEntryByIndex(int? pageIndex) => _getPageEntry(getByIndex(pageIndex));
 
-  AvesEntry _getPageEntry(SinglePageInfo pageInfo) {
+  AvesEntry _getPageEntry(SinglePageInfo? pageInfo) {
     if (pageInfo != null) {
       return _pageEntries.putIfAbsent(pageInfo, () => _createPageEntry(pageInfo));
     } else {
@@ -52,20 +53,20 @@ class MultiPageInfo {
   List<AvesEntry> get exportEntries => _pages.map((pageInfo) => _createPageEntry(pageInfo, eraseDefaultPageId: false)).toList();
 
   Future<void> extractMotionPhotoVideo() async {
-    final videoPage = _pages.firstWhere((page) => page.isVideo, orElse: () => null);
+    final videoPage = _pages.firstWhereOrNull((page) => page.isVideo);
     if (videoPage != null && videoPage.uri == null) {
       final fields = await embeddedDataService.extractMotionPhotoVideo(mainEntry);
-      if (fields != null) {
+      if (fields.containsKey('uri')) {
         final pageIndex = _pages.indexOf(videoPage);
         _pages.removeAt(pageIndex);
         _pages.insert(
             pageIndex,
             videoPage.copyWith(
-              uri: fields['uri'] as String,
+              uri: fields['uri'] as String?,
               // the initial fake page may contain inaccurate values for the following fields
               // so we override them with values from the extracted standalone video
-              rotationDegrees: fields['sourceRotationDegrees'] as int,
-              durationMillis: fields['durationMillis'] as int,
+              rotationDegrees: fields['sourceRotationDegrees'] as int?,
+              durationMillis: fields['durationMillis'] as int?,
             ));
         _pageEntries.remove(videoPage);
       }
@@ -83,9 +84,9 @@ class MultiPageInfo {
       path: mainEntry.path,
       contentId: mainEntry.contentId,
       pageId: pageId,
-      sourceMimeType: pageInfo.mimeType ?? mainEntry.sourceMimeType,
-      width: pageInfo.width ?? mainEntry.width,
-      height: pageInfo.height ?? mainEntry.height,
+      sourceMimeType: pageInfo.mimeType,
+      width: pageInfo.width,
+      height: pageInfo.height,
       sourceRotationDegrees: pageInfo.rotationDegrees ?? mainEntry.sourceRotationDegrees,
       sizeBytes: mainEntry.sizeBytes,
       sourceTitle: mainEntry.sourceTitle,
@@ -108,26 +109,28 @@ class MultiPageInfo {
 class SinglePageInfo implements Comparable<SinglePageInfo> {
   final int index, pageId;
   final bool isDefault;
-  final String uri, mimeType;
-  final int width, height, rotationDegrees, durationMillis;
+  final String? uri;
+  final String mimeType;
+  final int width, height;
+  final int? rotationDegrees, durationMillis;
 
   const SinglePageInfo({
-    this.index,
-    this.pageId,
-    this.isDefault,
+    required this.index,
+    required this.pageId,
+    required this.isDefault,
     this.uri,
-    this.mimeType,
-    this.width,
-    this.height,
+    required this.mimeType,
+    required this.width,
+    required this.height,
     this.rotationDegrees,
     this.durationMillis,
   });
 
   SinglePageInfo copyWith({
-    bool isDefault,
-    String uri,
-    int rotationDegrees,
-    int durationMillis,
+    bool? isDefault,
+    String? uri,
+    int? rotationDegrees,
+    int? durationMillis,
   }) {
     return SinglePageInfo(
       index: index,
@@ -147,12 +150,12 @@ class SinglePageInfo implements Comparable<SinglePageInfo> {
     return SinglePageInfo(
       index: index,
       pageId: index,
-      isDefault: map['isDefault'] as bool ?? false,
+      isDefault: map['isDefault'] as bool? ?? false,
       mimeType: map['mimeType'] as String,
-      width: map['width'] as int ?? 0,
-      height: map['height'] as int ?? 0,
-      rotationDegrees: map['rotationDegrees'] as int,
-      durationMillis: map['durationMillis'] as int,
+      width: map['width'] as int? ?? 0,
+      height: map['height'] as int? ?? 0,
+      rotationDegrees: map['rotationDegrees'] as int?,
+      durationMillis: map['durationMillis'] as int?,
     );
   }
 

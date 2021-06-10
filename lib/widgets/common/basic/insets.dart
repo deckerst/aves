@@ -17,7 +17,7 @@ class BottomGestureAreaProtector extends StatelessWidget {
           right: 0,
           bottom: 0,
           height: systemGestureBottom,
-          child: AbsorbPointer(),
+          child: const AbsorbPointer(),
         );
       },
     );
@@ -27,7 +27,7 @@ class BottomGestureAreaProtector extends StatelessWidget {
 class GestureAreaProtectorStack extends StatelessWidget {
   final Widget child;
 
-  const GestureAreaProtectorStack({@required this.child});
+  const GestureAreaProtectorStack({required this.child});
 
   @override
   Widget build(BuildContext context) {

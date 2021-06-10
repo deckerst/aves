@@ -12,7 +12,7 @@ class ChipSectionKey extends SectionKey {
     this.title = '',
   });
 
-  Widget get leading => null;
+  Widget? get leading => null;
 
   @override
   bool operator ==(Object other) {
@@ -58,7 +58,6 @@ extension ExtraAlbumImportance on AlbumImportance {
       case AlbumImportance.regular:
         return context.l10n.albumTierRegular;
     }
-    return null;
   }
 
   IconData getIcon() {
@@ -72,15 +71,14 @@ extension ExtraAlbumImportance on AlbumImportance {
       case AlbumImportance.regular:
         return AIcons.album;
     }
-    return null;
   }
 }
 
 class StorageVolumeSectionKey extends ChipSectionKey {
-  final StorageVolume volume;
+  final StorageVolume? volume;
 
   StorageVolumeSectionKey(BuildContext context, this.volume) : super(title: volume?.getDescription(context) ?? context.l10n.sectionUnknown);
 
   @override
-  Widget get leading => (volume?.isRemovable ?? false) ? Icon(AIcons.removableStorage) : null;
+  Widget? get leading => (volume?.isRemovable ?? false) ? const Icon(AIcons.removableStorage) : null;
 }

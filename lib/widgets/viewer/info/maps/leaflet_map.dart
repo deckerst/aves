@@ -20,33 +20,32 @@ class EntryLeafletMap extends StatefulWidget {
   final WidgetBuilder markerBuilder;
 
   const EntryLeafletMap({
-    Key key,
-    this.latLng,
-    this.geoUri,
-    this.initialZoom,
-    this.style,
-    this.markerBuilder,
-    this.markerSize,
+    Key? key,
+    required this.latLng,
+    required this.geoUri,
+    required this.initialZoom,
+    required this.style,
+    required this.markerBuilder,
+    required this.markerSize,
   }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _EntryLeafletMapState();
 }
 
-class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderStateMixin {
   final MapController _mapController = MapController();
 
   @override
   void didUpdateWidget(covariant EntryLeafletMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.latLng != oldWidget.latLng && _mapController != null) {
+    if (widget.latLng != oldWidget.latLng) {
       _mapController.move(widget.latLng, settings.infoMapZoom);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -105,7 +104,7 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
       case EntryMapStyle.stamenWatercolor:
         return StamenWatercolorLayer();
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
@@ -117,22 +116,22 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
       case EntryMapStyle.stamenWatercolor:
         return _buildAttributionMarkdown(context.l10n.mapAttributionStamen);
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
   Widget _buildAttributionMarkdown(String data) {
     return Padding(
-      padding: EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.only(top: 4),
       child: MarkdownBody(
         data: data,
         selectable: true,
         styleSheet: MarkdownStyleSheet(
           a: TextStyle(color: Theme.of(context).accentColor),
-          p: TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
+          p: const TextStyle(color: Colors.white70, fontSize: InfoRowGroup.fontSize),
         ),
         onTapLink: (text, href, title) async {
-          if (await canLaunch(href)) {
+          if (href != null && await canLaunch(href)) {
             await launch(href);
           }
         },
@@ -141,8 +140,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
   }
 
   void _zoomBy(double amount) {
-    if (_mapController == null) return;
-
     final endZoom = (settings.infoMapZoom + amount).clamp(1.0, 16.0);
     settings.infoMapZoom = endZoom;
 
@@ -159,9 +156,6 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with AutomaticKeepAli
     });
     controller.forward();
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class OSMHotLayer extends StatelessWidget {

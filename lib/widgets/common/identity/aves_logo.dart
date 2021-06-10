@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class AvesLogo extends StatelessWidget {
   final double size;
 
-  const AvesLogo({@required this.size});
+  const AvesLogo({required this.size});
 
   @override
   Widget build(BuildContext context) {

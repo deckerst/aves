@@ -6,8 +6,8 @@ class FilterChipSectionHeader extends StatelessWidget {
   final ChipSectionKey sectionKey;
 
   const FilterChipSectionHeader({
-    Key key,
-    @required this.sectionKey,
+    Key? key,
+    required this.sectionKey,
   }) : super(key: key);
 
   @override

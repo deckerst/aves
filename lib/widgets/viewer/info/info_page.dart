@@ -15,15 +15,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class InfoPage extends StatefulWidget {
-  final CollectionLens collection;
-  final ValueNotifier<AvesEntry> entryNotifier;
-  final ValueNotifier<bool> visibleNotifier;
+  final CollectionLens? collection;
+  final ValueNotifier<AvesEntry?> entryNotifier;
+  final ValueNotifier<bool> isScrollingNotifier;
 
   const InfoPage({
-    Key key,
-    @required this.collection,
-    @required this.entryNotifier,
-    @required this.visibleNotifier,
+    Key? key,
+    required this.collection,
+    required this.entryNotifier,
+    required this.isScrollingNotifier,
   }) : super(key: key);
 
   @override
@@ -34,9 +34,9 @@ class _InfoPageState extends State<InfoPage> {
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
-  AvesEntry get entry => widget.entryNotifier.value;
+  AvesEntry? get entry => widget.entryNotifier.value;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _InfoPageState extends State<InfoPage> {
         body: GestureAreaProtectorStack(
           child: SafeArea(
             bottom: false,
-            child: NotificationListener(
+            child: NotificationListener<ScrollNotification>(
               onNotification: _handleTopScroll,
               child: NotificationListener<OpenTempEntryNotification>(
                 onNotification: (notification) {
@@ -55,19 +55,19 @@ class _InfoPageState extends State<InfoPage> {
                 child: Selector<MediaQueryData, double>(
                   selector: (c, mq) => mq.size.width,
                   builder: (c, mqWidth, child) {
-                    return ValueListenableBuilder<AvesEntry>(
+                    return ValueListenableBuilder<AvesEntry?>(
                       valueListenable: widget.entryNotifier,
                       builder: (context, entry, child) {
                         return entry != null
                             ? _InfoPageContent(
                                 collection: collection,
                                 entry: entry,
-                                visibleNotifier: widget.visibleNotifier,
+                                isScrollingNotifier: widget.isScrollingNotifier,
                                 scrollController: _scrollController,
                                 split: mqWidth > 600,
                                 goToViewer: _goToViewer,
                               )
-                            : SizedBox.shrink();
+                            : const SizedBox.shrink();
                       },
                     );
                   },
@@ -81,22 +81,20 @@ class _InfoPageState extends State<InfoPage> {
     );
   }
 
-  bool _handleTopScroll(Notification notification) {
-    if (notification is ScrollNotification) {
-      if (notification is ScrollStartNotification) {
-        final metrics = notification.metrics;
-        _scrollStartFromTop = metrics.pixels == metrics.minScrollExtent;
-      }
-      if (_scrollStartFromTop) {
-        if (notification is ScrollUpdateNotification) {
-          _scrollStartFromTop = notification.scrollDelta < 0;
-        } else if (notification is ScrollEndNotification) {
+  bool _handleTopScroll(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      final metrics = notification.metrics;
+      _scrollStartFromTop = metrics.pixels == metrics.minScrollExtent;
+    }
+    if (_scrollStartFromTop) {
+      if (notification is ScrollUpdateNotification) {
+        _scrollStartFromTop = notification.scrollDelta! < 0;
+      } else if (notification is ScrollEndNotification) {
+        _scrollStartFromTop = false;
+      } else if (notification is OverscrollNotification) {
+        if (notification.overscroll < 0) {
+          _goToViewer();
           _scrollStartFromTop = false;
-        } else if (notification is OverscrollNotification) {
-          if (notification.overscroll < 0) {
-            _goToViewer();
-            _scrollStartFromTop = false;
-          }
         }
       }
     }
@@ -116,7 +114,7 @@ class _InfoPageState extends State<InfoPage> {
     Navigator.push(
       context,
       TransparentMaterialPageRoute(
-        settings: RouteSettings(name: EntryViewerPage.routeName),
+        settings: const RouteSettings(name: EntryViewerPage.routeName),
         pageBuilder: (c, a, sa) => EntryViewerPage(
           initialEntry: tempEntry,
         ),
@@ -126,21 +124,21 @@ class _InfoPageState extends State<InfoPage> {
 }
 
 class _InfoPageContent extends StatefulWidget {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final AvesEntry entry;
-  final ValueNotifier<bool> visibleNotifier;
+  final ValueNotifier<bool> isScrollingNotifier;
   final ScrollController scrollController;
   final bool split;
   final VoidCallback goToViewer;
 
   const _InfoPageContent({
-    Key key,
-    @required this.collection,
-    @required this.entry,
-    @required this.visibleNotifier,
-    @required this.scrollController,
-    @required this.split,
-    @required this.goToViewer,
+    Key? key,
+    required this.collection,
+    required this.entry,
+    required this.isScrollingNotifier,
+    required this.scrollController,
+    required this.split,
+    required this.goToViewer,
   }) : super(key: key);
 
   @override
@@ -152,18 +150,15 @@ class _InfoPageContentState extends State<_InfoPageContent> {
 
   final ValueNotifier<Map<String, MetadataDirectory>> _metadataNotifier = ValueNotifier({});
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
   AvesEntry get entry => widget.entry;
-
-  ValueNotifier<bool> get visibleNotifier => widget.visibleNotifier;
 
   @override
   Widget build(BuildContext context) {
     final basicSection = BasicSection(
       entry: entry,
       collection: collection,
-      visibleNotifier: visibleNotifier,
       onFilter: _goToCollection,
     );
     final locationAtTop = widget.split && entry.hasGps;
@@ -171,7 +166,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
       collection: collection,
       entry: entry,
       showTitle: !locationAtTop,
-      visibleNotifier: visibleNotifier,
+      isScrollingNotifier: widget.isScrollingNotifier,
       onFilter: _goToCollection,
     );
     final basicAndLocationSliver = locationAtTop
@@ -180,7 +175,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: basicSection),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(child: locationSection),
               ],
             ),
@@ -196,7 +191,6 @@ class _InfoPageContentState extends State<_InfoPageContent> {
     final metadataSliver = MetadataSectionSliver(
       entry: entry,
       metadataNotifier: _metadataNotifier,
-      visibleNotifier: visibleNotifier,
     );
 
     return CustomScrollView(
@@ -208,11 +202,11 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           onBackPressed: widget.goToViewer,
         ),
         SliverPadding(
-          padding: horizontalPadding + EdgeInsets.only(top: 8),
+          padding: horizontalPadding + const EdgeInsets.only(top: 8),
           sliver: basicAndLocationSliver,
         ),
         SliverPadding(
-          padding: horizontalPadding + EdgeInsets.only(bottom: 8),
+          padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
           sliver: metadataSliver,
         ),
         BottomPaddingSliver(),

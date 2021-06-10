@@ -9,7 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 
 mixin AlbumMixin on SourceBase {
-  final Set<String> _directories = {};
+  final Set<String?> _directories = {};
 
   List<String> get rawAlbums => List.unmodifiable(_directories);
 
@@ -25,7 +25,7 @@ mixin AlbumMixin on SourceBase {
 
   void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
 
-  String getAlbumDisplayName(BuildContext context, String dirPath) {
+  String getAlbumDisplayName(BuildContext? context, String dirPath) {
     assert(!dirPath.endsWith(pContext.separator));
 
     if (context != null) {
@@ -41,15 +41,15 @@ mixin AlbumMixin on SourceBase {
 
     final relativeDir = dir.relativeDir;
     if (relativeDir.isEmpty) {
-      final volume = androidFileUtils.getStorageVolume(dirPath);
+      final volume = androidFileUtils.getStorageVolume(dirPath)!;
       return volume.getDescription(context);
     }
 
-    String unique(String dirPath, Set<String> others) {
+    String unique(String dirPath, Set<String?> others) {
       final parts = pContext.split(dirPath);
       for (var i = parts.length - 1; i > 0; i--) {
         final testName = pContext.joinAll(['', ...parts.skip(i)]);
-        if (others.every((item) => !item.endsWith(testName))) return testName;
+        if (others.every((item) => !item!.endsWith(testName))) return testName;
       }
       return dirPath;
     }
@@ -61,10 +61,10 @@ mixin AlbumMixin on SourceBase {
     }
 
     final volumePath = dir.volumePath;
-    String trimVolumePath(String path) => path.substring(dir.volumePath.length);
-    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path.startsWith(volumePath)).map(trimVolumePath).toSet();
+    String trimVolumePath(String? path) => path!.substring(dir.volumePath.length);
+    final otherAlbumsOnVolume = otherAlbumsOnDevice.where((path) => path!.startsWith(volumePath)).map(trimVolumePath).toSet();
     final uniqueNameInVolume = unique(trimVolumePath(dirPath), otherAlbumsOnVolume);
-    final volume = androidFileUtils.getStorageVolume(dirPath);
+    final volume = androidFileUtils.getStorageVolume(dirPath)!;
     if (volume.isPrimary) {
       return uniqueNameInVolume;
     } else {
@@ -72,7 +72,7 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  Map<String, AvesEntry> getAlbumEntries() {
+  Map<String, AvesEntry?> getAlbumEntries() {
     final entries = sortedEntriesByDate;
     final regularAlbums = <String>[], appAlbums = <String>[], specialAlbums = <String>[];
     for (final album in rawAlbums) {
@@ -90,7 +90,7 @@ mixin AlbumMixin on SourceBase {
     }
     return Map.fromEntries([...specialAlbums, ...appAlbums, ...regularAlbums].map((album) => MapEntry(
           album,
-          entries.firstWhere((entry) => entry.directory == album, orElse: () => null),
+          entries.firstWhereOrNull((entry) => entry.directory == album),
         )));
   }
 
@@ -100,14 +100,14 @@ mixin AlbumMixin on SourceBase {
     cleanEmptyAlbums();
   }
 
-  void addDirectories(Set<String> albums) {
+  void addDirectories(Set<String?> albums) {
     if (!_directories.containsAll(albums)) {
       _directories.addAll(albums);
       _notifyAlbumChange();
     }
   }
 
-  void cleanEmptyAlbums([Set<String> albums]) {
+  void cleanEmptyAlbums([Set<String?>? albums]) {
     final emptyAlbums = (albums ?? _directories).where(_isEmptyAlbum).toSet();
     if (emptyAlbums.isNotEmpty) {
       _directories.removeAll(emptyAlbums);
@@ -120,20 +120,20 @@ mixin AlbumMixin on SourceBase {
     }
   }
 
-  bool _isEmptyAlbum(String album) => !visibleEntries.any((entry) => entry.directory == album);
+  bool _isEmptyAlbum(String? album) => !visibleEntries.any((entry) => entry.directory == album);
 
   // filter summary
 
   // by directory
   final Map<String, int> _filterEntryCountMap = {};
-  final Map<String, AvesEntry> _filterRecentEntryMap = {};
+  final Map<String, AvesEntry?> _filterRecentEntryMap = {};
 
-  void invalidateAlbumFilterSummary({Set<AvesEntry> entries, Set<String> directories}) {
+  void invalidateAlbumFilterSummary({Set<AvesEntry>? entries, Set<String?>? directories}) {
     if (entries == null && directories == null) {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      directories ??= entries.map((entry) => entry.directory).toSet();
+      directories ??= entries!.map((entry) => entry.directory).toSet();
       directories.forEach(_filterEntryCountMap.remove);
       directories.forEach(_filterRecentEntryMap.remove);
     }
@@ -144,15 +144,15 @@ mixin AlbumMixin on SourceBase {
     return _filterEntryCountMap.putIfAbsent(filter.album, () => visibleEntries.where(filter.test).length);
   }
 
-  AvesEntry albumRecentEntry(AlbumFilter filter) {
-    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhere(filter.test, orElse: () => null));
+  AvesEntry? albumRecentEntry(AlbumFilter filter) {
+    return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
   }
 }
 
 class AlbumsChangedEvent {}
 
 class AlbumSummaryInvalidatedEvent {
-  final Set<String> directories;
+  final Set<String?>? directories;
 
   const AlbumSummaryInvalidatedEvent(this.directories);
 }

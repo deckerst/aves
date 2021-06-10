@@ -17,11 +17,13 @@ class ImageMarker extends StatelessWidget {
   static const double outerBorderWidth = 1.5;
   static const double innerBorderWidth = 2;
   static const outerBorderColor = Colors.white30;
-  static final innerBorderColor = Colors.grey[900];
+  static const innerBorderColor = Color(0xFF212121);
+  static const outerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim));
+  static const innerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim - outerBorderWidth));
 
   const ImageMarker({
-    @required this.entry,
-    @required this.extent,
+    required this.entry,
+    required this.extent,
     this.pointerSize = Size.zero,
   });
 
@@ -37,8 +39,21 @@ class ImageMarker extends StatelessWidget {
             extent: extent,
           );
 
-    final outerBorderRadius = BorderRadius.circular(outerBorderRadiusDim);
-    final innerBorderRadius = BorderRadius.circular(outerBorderRadiusDim - outerBorderWidth);
+    const outerDecoration = BoxDecoration(
+      border: Border.fromBorderSide(BorderSide(
+        color: outerBorderColor,
+        width: outerBorderWidth,
+      )),
+      borderRadius: outerBorderRadius,
+    );
+
+    const innerDecoration = BoxDecoration(
+      border: Border.fromBorderSide(BorderSide(
+        color: innerBorderColor,
+        width: innerBorderWidth,
+      )),
+      borderRadius: innerBorderRadius,
+    );
 
     return CustomPaint(
       foregroundPainter: MarkerPointerPainter(
@@ -50,21 +65,9 @@ class ImageMarker extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(bottom: pointerSize.height),
         child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: outerBorderColor,
-              width: outerBorderWidth,
-            ),
-            borderRadius: outerBorderRadius,
-          ),
+          decoration: outerDecoration,
           child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: innerBorderColor,
-                width: innerBorderWidth,
-              ),
-              borderRadius: innerBorderRadius,
-            ),
+            decoration: innerDecoration,
             position: DecorationPosition.foreground,
             child: ClipRRect(
               borderRadius: innerBorderRadius,
@@ -83,10 +86,10 @@ class MarkerPointerPainter extends CustomPainter {
   final Size size;
 
   const MarkerPointerPainter({
-    this.color,
-    this.outlineColor,
-    this.outlineWidth,
-    this.size,
+    required this.color,
+    required this.outlineColor,
+    required this.outlineWidth,
+    required this.size,
   });
 
   @override
@@ -127,10 +130,10 @@ class MarkerGeneratorWidget extends StatefulWidget {
   final Function(List<Uint8List> bitmaps) onComplete;
 
   const MarkerGeneratorWidget({
-    Key key,
-    @required this.markers,
+    Key? key,
+    required this.markers,
     this.delay = Duration.zero,
-    @required this.onComplete,
+    required this.onComplete,
   }) : super(key: key);
 
   @override
@@ -143,7 +146,7 @@ class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
       if (widget.delay > Duration.zero) {
         await Future.delayed(widget.delay);
       }
@@ -174,10 +177,10 @@ class _MarkerGeneratorWidgetState extends State<MarkerGeneratorWidget> {
   Future<List<Uint8List>> _getBitmaps(BuildContext context) async {
     final pixelRatio = context.read<MediaQueryData>().devicePixelRatio;
     return Future.wait(_globalKeys.map((key) async {
-      RenderRepaintBoundary boundary = key.currentContext.findRenderObject();
+      final boundary = key.currentContext!.findRenderObject() as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: pixelRatio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      return byteData.buffer.asUint8List();
+      return byteData != null ? byteData.buffer.asUint8List() : Uint8List(0);
     }));
   }
 }

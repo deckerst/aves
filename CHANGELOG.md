@@ -3,6 +3,26 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.2] - 2021-06-10
+### Added
+- Collection: snack bar action to show moved/copied/exported entries
+- Collection / Albums / Countries / Tags: when switching device orientation, keep items in view
+- Collection: when leaving entry from Viewer, make entry visible in collection
+- Viewer: fixed layout & minimap for videos with non-square pixels
+
+### Changed
+- upgraded Flutter to stable v2.2.1
+- migrated to unsound null safety
+- Collection / Viewer: improved performance, memory usage
+- Collection: thumbnail layout change
+
+### Removed
+- no support for Android KitKat (API 19), unsupported by Google Maps package
+
+### Fixed
+- fixed opening files shared via content URI with incorrect MIME type
+- refresh collection when entries modified in Viewer no longer match collection filters
+
 ## [v1.4.1] - 2021-04-29
 ### Added
 - Motion photo support

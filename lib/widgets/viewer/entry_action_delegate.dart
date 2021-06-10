@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/filters/album.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
 import 'package:aves/widgets/common/action_mixins/size_aware.dart';
@@ -16,25 +20,24 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
-import 'package:aves/widgets/viewer/debug_page.dart';
+import 'package:aves/widgets/viewer/debug/debug_page.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  final CollectionLens collection;
+  final CollectionLens? collection;
   final VoidCallback showInfo;
 
   EntryActionDelegate({
-    @required this.collection,
-    @required this.showInfo,
+    required this.collection,
+    required this.showInfo,
   });
-
-  bool get hasCollection => collection != null;
 
   void onActionSelected(BuildContext context, AvesEntry entry, EntryAction action) {
     switch (action) {
@@ -76,7 +79,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         });
         break;
       case EntryAction.openMap:
-        AndroidAppService.openMap(entry.geoUri).then((success) {
+        AndroidAppService.openMap(entry.geoUri!).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -106,7 +109,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
-  Future<void> _rotate(BuildContext context, AvesEntry entry, {@required bool clockwise}) async {
+  Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
     final success = await entry.rotate(clockwise: clockwise);
@@ -140,8 +143,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await entry.delete()) {
       showFeedback(context, context.l10n.genericFailureFeedback);
     } else {
-      if (hasCollection) {
-        await collection.source.removeEntries({entry.uri});
+      if (collection != null) {
+        await collection!.source.removeEntries({entry.uri});
       }
       EntryDeletedNotification(entry).dispatch(context);
     }
@@ -156,7 +159,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final destinationAlbum = await Navigator.push(
       context,
       MaterialPageRoute<String>(
-        settings: RouteSettings(name: AlbumPickPage.routeName),
+        settings: const RouteSettings(name: AlbumPickPage.routeName),
         builder: (context) => AlbumPickPage(source: source, moveType: MoveType.export),
       ),
     );
@@ -164,18 +167,18 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (destinationAlbum == null || destinationAlbum.isEmpty) return;
     if (!await checkStoragePermissionForAlbums(context, {destinationAlbum})) return;
 
-    if (!await checkStoragePermission(context, {entry})) return;
-
     if (!await checkFreeSpaceForMove(context, {entry}, destinationAlbum, MoveType.export)) return;
 
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
       final multiPageInfo = await metadataService.getMultiPageInfo(entry);
-      if (entry.isMotionPhoto) {
-        await multiPageInfo.extractMotionPhotoVideo();
-      }
-      if (multiPageInfo.pageCount > 1) {
-        selection.addAll(multiPageInfo.exportEntries);
+      if (multiPageInfo != null) {
+        if (entry.isMotionPhoto) {
+          await multiPageInfo.extractMotionPhotoVideo();
+        }
+        if (multiPageInfo.pageCount > 1) {
+          selection.addAll(multiPageInfo.exportEntries);
+        }
       }
     } else {
       selection.add(entry);
@@ -193,11 +196,51 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
+        final showAction = collection != null && movedCount > 0
+            ? SnackBarAction(
+                label: context.l10n.showButtonLabel,
+                onPressed: () async {
+                  final highlightInfo = context.read<HighlightInfo>();
+                  final targetCollection = CollectionLens(
+                    source: collection!.source,
+                    filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
+                    groupFactor: collection!.groupFactor,
+                    sortFactor: collection!.sortFactor,
+                  );
+                  unawaited(Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      settings: const RouteSettings(name: CollectionPage.routeName),
+                      builder: (context) {
+                        return CollectionPage(
+                          targetCollection,
+                        );
+                      },
+                    ),
+                    (route) => false,
+                  ));
+                  await Future.delayed(Durations.staggeredAnimationPageTarget + Durations.highlightScrollInitDelay);
+                  final newUris = movedOps.map((v) => v.newFields['uri'] as String?).toSet();
+                  final targetEntry = targetCollection.sortedEntries.firstWhereOrNull((entry) => newUris.contains(entry.uri));
+                  if (targetEntry != null) {
+                    highlightInfo.trackItem(targetEntry, highlightItem: targetEntry);
+                  }
+                },
+              )
+            : null;
         if (movedCount < selectionCount) {
           final count = selectionCount - movedCount;
-          showFeedback(context, context.l10n.collectionExportFailureFeedback(count));
+          showFeedback(
+            context,
+            context.l10n.collectionExportFailureFeedback(count),
+            showAction,
+          );
         } else {
-          showFeedback(context, context.l10n.genericSuccessFeedback);
+          showFeedback(
+            context,
+            context.l10n.genericSuccessFeedback,
+            showAction,
+          );
         }
       },
     );
@@ -225,7 +268,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: SourceViewerPage.routeName),
+        settings: const RouteSettings(name: SourceViewerPage.routeName),
         builder: (context) => SourceViewerPage(
           loader: () => imageFileService.getSvg(entry.uri, entry.mimeType).then(utf8.decode),
         ),
@@ -237,7 +280,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     Navigator.push(
       context,
       MaterialPageRoute(
-        settings: RouteSettings(name: ViewerDebugPage.routeName),
+        settings: const RouteSettings(name: ViewerDebugPage.routeName),
         builder: (context) => ViewerDebugPage(entry: entry),
       ),
     );

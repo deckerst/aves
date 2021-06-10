@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
 import 'package:aves/services/services.dart';
@@ -16,7 +17,7 @@ abstract class MetadataDb {
 
   Future<void> reset();
 
-  Future<void> removeIds(Set<int> contentIds, {@required bool metadataOnly});
+  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly});
 
   // entries
 
@@ -40,9 +41,9 @@ abstract class MetadataDb {
 
   Future<List<CatalogMetadata>> loadMetadataEntries();
 
-  Future<void> saveMetadata(Iterable<CatalogMetadata> metadataEntries);
+  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries);
 
-  Future<void> updateMetadataId(int oldId, CatalogMetadata metadata);
+  Future<void> updateMetadataId(int oldId, CatalogMetadata? metadata);
 
   // address
 
@@ -50,9 +51,9 @@ abstract class MetadataDb {
 
   Future<List<AddressDetails>> loadAddresses();
 
-  Future<void> saveAddresses(Iterable<AddressDetails> addresses);
+  Future<void> saveAddresses(Set<AddressDetails> addresses);
 
-  Future<void> updateAddressId(int oldId, AddressDetails address);
+  Future<void> updateAddressId(int oldId, AddressDetails? address);
 
   // favourites
 
@@ -76,11 +77,11 @@ abstract class MetadataDb {
 
   Future<void> updateCoverEntryId(int oldId, CoverRow row);
 
-  Future<void> removeCovers(Iterable<CoverRow> rows);
+  Future<void> removeCovers(Set<CollectionFilter> filters);
 }
 
 class SqfliteMetadataDb implements MetadataDb {
-  Future<Database> _database;
+  late Future<Database> _database;
 
   Future<String> get path async => pContext.join(await getDatabasesPath(), 'metadata.db');
 
@@ -150,8 +151,8 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<int> dbFileSize() async {
-    final file = File((await path));
-    return await file.exists() ? file.length() : 0;
+    final file = File(await path);
+    return await file.exists() ? await file.length() : 0;
   }
 
   @override
@@ -163,8 +164,8 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeIds(Set<int> contentIds, {@required bool metadataOnly}) async {
-    if (contentIds == null || contentIds.isEmpty) return;
+  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) async {
+    if (contentIds.isEmpty) return;
 
     final stopwatch = Stopwatch()..start();
     final db = await _database;
@@ -207,7 +208,7 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<void> saveEntries(Iterable<AvesEntry> entries) async {
-    if (entries == null || entries.isEmpty) return;
+    if (entries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
@@ -226,7 +227,6 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   void _batchInsertEntry(Batch batch, AvesEntry entry) {
-    if (entry == null) return;
     batch.insert(
       entryTable,
       entry.toMap(),
@@ -273,13 +273,13 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> saveMetadata(Iterable<CatalogMetadata> metadataEntries) async {
-    if (metadataEntries == null || metadataEntries.isEmpty) return;
+  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) async {
+    if (metadataEntries.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     try {
       final db = await _database;
       final batch = db.batch();
-      metadataEntries.where((metadata) => metadata != null).forEach((metadata) => _batchInsertMetadata(batch, metadata));
+      metadataEntries.forEach((metadata) => _batchInsertMetadata(batch, metadata));
       await batch.commit(noResult: true);
       debugPrint('$runtimeType saveMetadata complete in ${stopwatch.elapsed.inMilliseconds}ms for ${metadataEntries.length} entries');
     } catch (error, stack) {
@@ -288,7 +288,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> updateMetadataId(int oldId, CatalogMetadata metadata) async {
+  Future<void> updateMetadataId(int oldId, CatalogMetadata? metadata) async {
     final db = await _database;
     final batch = db.batch();
     batch.delete(dateTakenTable, where: 'contentId = ?', whereArgs: [oldId]);
@@ -297,7 +297,7 @@ class SqfliteMetadataDb implements MetadataDb {
     await batch.commit(noResult: true);
   }
 
-  void _batchInsertMetadata(Batch batch, CatalogMetadata metadata) {
+  void _batchInsertMetadata(Batch batch, CatalogMetadata? metadata) {
     if (metadata == null) return;
     if (metadata.dateMillis != 0) {
       batch.insert(
@@ -333,18 +333,18 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> saveAddresses(Iterable<AddressDetails> addresses) async {
-    if (addresses == null || addresses.isEmpty) return;
+  Future<void> saveAddresses(Set<AddressDetails> addresses) async {
+    if (addresses.isEmpty) return;
     final stopwatch = Stopwatch()..start();
     final db = await _database;
     final batch = db.batch();
-    addresses.where((address) => address != null).forEach((address) => _batchInsertAddress(batch, address));
+    addresses.forEach((address) => _batchInsertAddress(batch, address));
     await batch.commit(noResult: true);
     debugPrint('$runtimeType saveAddresses complete in ${stopwatch.elapsed.inMilliseconds}ms for ${addresses.length} entries');
   }
 
   @override
-  Future<void> updateAddressId(int oldId, AddressDetails address) async {
+  Future<void> updateAddressId(int oldId, AddressDetails? address) async {
     final db = await _database;
     final batch = db.batch();
     batch.delete(addressTable, where: 'contentId = ?', whereArgs: [oldId]);
@@ -352,7 +352,7 @@ class SqfliteMetadataDb implements MetadataDb {
     await batch.commit(noResult: true);
   }
 
-  void _batchInsertAddress(Batch batch, AddressDetails address) {
+  void _batchInsertAddress(Batch batch, AddressDetails? address) {
     if (address == null) return;
     batch.insert(
       addressTable,
@@ -380,10 +380,10 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<void> addFavourites(Iterable<FavouriteRow> rows) async {
-    if (rows == null || rows.isEmpty) return;
+    if (rows.isEmpty) return;
     final db = await _database;
     final batch = db.batch();
-    rows.where((row) => row != null).forEach((row) => _batchInsertFavourite(batch, row));
+    rows.forEach((row) => _batchInsertFavourite(batch, row));
     await batch.commit(noResult: true);
   }
 
@@ -397,7 +397,6 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   void _batchInsertFavourite(Batch batch, FavouriteRow row) {
-    if (row == null) return;
     batch.insert(
       favouriteTable,
       row.toMap(),
@@ -407,8 +406,8 @@ class SqfliteMetadataDb implements MetadataDb {
 
   @override
   Future<void> removeFavourites(Iterable<FavouriteRow> rows) async {
-    if (rows == null || rows.isEmpty) return;
-    final ids = rows.where((row) => row != null).map((row) => row.contentId);
+    if (rows.isEmpty) return;
+    final ids = rows.map((row) => row.contentId);
     if (ids.isEmpty) return;
 
     final db = await _database;
@@ -431,16 +430,16 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<Set<CoverRow>> loadCovers() async {
     final db = await _database;
     final maps = await db.query(coverTable);
-    final rows = maps.map((map) => CoverRow.fromMap(map)).toSet();
+    final rows = maps.map(CoverRow.fromMap).where((v) => v != null).cast<CoverRow>().toSet();
     return rows;
   }
 
   @override
   Future<void> addCovers(Iterable<CoverRow> rows) async {
-    if (rows == null || rows.isEmpty) return;
+    if (rows.isEmpty) return;
     final db = await _database;
     final batch = db.batch();
-    rows.where((row) => row != null).forEach((row) => _batchInsertCover(batch, row));
+    rows.forEach((row) => _batchInsertCover(batch, row));
     await batch.commit(noResult: true);
   }
 
@@ -454,7 +453,6 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   void _batchInsertCover(Batch batch, CoverRow row) {
-    if (row == null) return;
     batch.insert(
       coverTable,
       row.toMap(),
@@ -463,9 +461,7 @@ class SqfliteMetadataDb implements MetadataDb {
   }
 
   @override
-  Future<void> removeCovers(Iterable<CoverRow> rows) async {
-    if (rows == null || rows.isEmpty) return;
-    final filters = rows.where((row) => row != null).map((row) => row.filter);
+  Future<void> removeCovers(Set<CollectionFilter> filters) async {
     if (filters.isEmpty) return;
 
     final db = await _database;

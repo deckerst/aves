@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/magnifier/pan/scroll_physics.dart';
 import 'package:aves/widgets/viewer/entry_horizontal_pager.dart';
 import 'package:aves/widgets/viewer/info/info_page.dart';
@@ -11,22 +13,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class ViewerVerticalPageView extends StatefulWidget {
-  final CollectionLens collection;
-  final ValueNotifier<AvesEntry> entryNotifier;
+  final CollectionLens? collection;
+  final ValueNotifier<AvesEntry?> entryNotifier;
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
   final void Function(String uri) onViewDisposed;
 
   const ViewerVerticalPageView({
-    @required this.collection,
-    @required this.entryNotifier,
-    @required this.verticalPager,
-    @required this.horizontalPager,
-    @required this.onVerticalPageChanged,
-    @required this.onHorizontalPageChanged,
-    @required this.onImagePageRequested,
-    @required this.onViewDisposed,
+    required this.collection,
+    required this.entryNotifier,
+    required this.verticalPager,
+    required this.horizontalPager,
+    required this.onVerticalPageChanged,
+    required this.onHorizontalPageChanged,
+    required this.onImagePageRequested,
+    required this.onViewDisposed,
   });
 
   @override
@@ -35,14 +37,15 @@ class ViewerVerticalPageView extends StatefulWidget {
 
 class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   final ValueNotifier<Color> _backgroundColorNotifier = ValueNotifier(Colors.black);
-  final ValueNotifier<bool> _infoPageVisibleNotifier = ValueNotifier(false);
-  AvesEntry _oldEntry;
+  final ValueNotifier<bool> _isVerticallyScrollingNotifier = ValueNotifier(false);
+  Timer? _verticalScrollMonitoringTimer;
+  AvesEntry? _oldEntry;
 
-  CollectionLens get collection => widget.collection;
+  CollectionLens? get collection => widget.collection;
 
   bool get hasCollection => collection != null;
 
-  AvesEntry get entry => widget.entryNotifier.value;
+  AvesEntry? get entry => widget.entryNotifier.value;
 
   @override
   void initState() {
@@ -60,6 +63,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _stopScrollMonitoringTimer();
     super.dispose();
   }
 
@@ -72,35 +76,52 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
   void _unregisterWidget(ViewerVerticalPageView widget) {
     widget.verticalPager.removeListener(_onVerticalPageControllerChanged);
     widget.entryNotifier.removeListener(_onEntryChanged);
-    _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
+    _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
   }
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      // fake page for opacity transition between collection and viewer
-      SizedBox(),
-      hasCollection
-          ? MultiEntryScroller(
-              collection: collection,
-              pageController: widget.horizontalPager,
-              onPageChanged: widget.onHorizontalPageChanged,
-              onViewDisposed: widget.onViewDisposed,
-            )
-          : SingleEntryScroller(
-              entry: entry,
-            ),
-      NotificationListener(
-        onNotification: (notification) {
-          if (notification is BackUpNotification) widget.onImagePageRequested();
-          return false;
+    // fake page for opacity transition between collection and viewer
+    const transitionPage = SizedBox();
+
+    final imagePage = hasCollection
+        ? MultiEntryScroller(
+            collection: collection!,
+            pageController: widget.horizontalPager,
+            onPageChanged: widget.onHorizontalPageChanged,
+            onViewDisposed: widget.onViewDisposed,
+          )
+        : entry != null
+            ? SingleEntryScroller(
+                entry: entry!,
+              )
+            : const SizedBox();
+
+    final infoPage = NotificationListener<BackUpNotification>(
+      onNotification: (notification) {
+        widget.onImagePageRequested();
+        return true;
+      },
+      child: AnimatedBuilder(
+        animation: widget.verticalPager,
+        builder: (context, child) {
+          return Visibility(
+            visible: widget.verticalPager.page! > 1,
+            child: child!,
+          );
         },
         child: InfoPage(
           collection: collection,
           entryNotifier: widget.entryNotifier,
-          visibleNotifier: _infoPageVisibleNotifier,
+          isScrollingNotifier: _isVerticallyScrollingNotifier,
         ),
       ),
+    );
+
+    final pages = [
+      transitionPage,
+      imagePage,
+      infoPage,
     ];
     return ValueListenableBuilder<Color>(
       valueListenable: _backgroundColorNotifier,
@@ -109,35 +130,42 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
         child: child,
       ),
       child: PageView(
-        key: Key('vertical-pageview'),
+        key: const Key('vertical-pageview'),
         scrollDirection: Axis.vertical,
         controller: widget.verticalPager,
-        physics: MagnifierScrollerPhysics(parent: PageScrollPhysics()),
-        onPageChanged: (page) {
-          widget.onVerticalPageChanged(page);
-          _infoPageVisibleNotifier.value = page == pages.length - 1;
-        },
+        physics: const MagnifierScrollerPhysics(parent: PageScrollPhysics()),
+        onPageChanged: widget.onVerticalPageChanged,
         children: pages,
       ),
     );
   }
 
   void _onVerticalPageControllerChanged() {
-    final opacity = min(1.0, widget.verticalPager.page);
+    final opacity = min(1.0, widget.verticalPager.page!);
     _backgroundColorNotifier.value = _backgroundColorNotifier.value.withOpacity(opacity * opacity);
+
+    _isVerticallyScrollingNotifier.value = true;
+    _stopScrollMonitoringTimer();
+    _verticalScrollMonitoringTimer = Timer(Durations.infoScrollMonitoringTimerDelay, () {
+      _isVerticallyScrollingNotifier.value = false;
+    });
+  }
+
+  void _stopScrollMonitoringTimer() {
+    _verticalScrollMonitoringTimer?.cancel();
   }
 
   // when the entry changed (e.g. by scrolling through the PageView, or if the entry got deleted)
   void _onEntryChanged() {
-    _oldEntry?.imageChangeNotifier?.removeListener(_onImageChanged);
+    _oldEntry?.imageChangeNotifier.removeListener(_onImageChanged);
     _oldEntry = entry;
 
     if (entry != null) {
-      entry.imageChangeNotifier.addListener(_onImageChanged);
+      entry!.imageChangeNotifier.addListener(_onImageChanged);
       // make sure to locate the entry,
       // so that we can display the address instead of coordinates
       // even when initial collection locating has not reached this entry yet
-      entry.catalog(background: false).then((_) => entry.locate(background: false));
+      entry!.catalog(background: false).then((_) => entry!.locate(background: false));
     } else {
       Navigator.pop(context);
     }

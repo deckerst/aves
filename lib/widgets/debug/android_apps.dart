@@ -12,7 +12,7 @@ class DebugAndroidAppSection extends StatefulWidget {
 }
 
 class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with AutomaticKeepAliveClientMixin {
-  Future<Set<Package>> _loader;
+  late Future<Set<Package>> _loader;
 
   static const iconSize = 20.0;
 
@@ -30,15 +30,15 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
       title: 'Android Apps',
       children: [
         Padding(
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: FutureBuilder<Set<Package>>(
             future: _loader,
             builder: (context, snapshot) {
               if (snapshot.hasError) return Text(snapshot.error.toString());
-              if (snapshot.connectionState != ConnectionState.done) return SizedBox.shrink();
-              final packages = snapshot.data.toList()..sort((a, b) => compareAsciiUpperCase(a.packageName, b.packageName));
+              if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
+              final packages = snapshot.data!.toList()..sort((a, b) => compareAsciiUpperCase(a.packageName, b.packageName));
               final enabledTheme = IconTheme.of(context);
-              final disabledTheme = enabledTheme.merge(IconThemeData(opacity: .2));
+              final disabledTheme = enabledTheme.merge(const IconThemeData(opacity: .2));
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: packages.map((package) {
@@ -64,7 +64,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                           alignment: PlaceholderAlignment.middle,
                           child: IconTheme(
                             data: package.categoryLauncher ? enabledTheme : disabledTheme,
-                            child: Icon(
+                            child: const Icon(
                               Icons.launch_outlined,
                               size: iconSize,
                             ),
@@ -74,7 +74,7 @@ class _DebugAndroidAppSectionState extends State<DebugAndroidAppSection> with Au
                           alignment: PlaceholderAlignment.middle,
                           child: IconTheme(
                             data: package.isSystem ? enabledTheme : disabledTheme,
-                            child: Icon(
+                            child: const Icon(
                               Icons.android,
                               size: iconSize,
                             ),

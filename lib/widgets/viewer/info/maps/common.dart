@@ -15,11 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 class MapDecorator extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
-  static final BorderRadius mapBorderRadius = BorderRadius.circular(24); // to match button circles
+  static const mapBorderRadius = BorderRadius.all(Radius.circular(24)); // to match button circles
+  static const mapBackground = Color(0xFFDBD5D3);
+  static const mapLoadingGrid = Color(0xFFC4BEBB);
 
-  const MapDecorator({@required this.child});
+  const MapDecorator({this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +33,22 @@ class MapDecorator extends StatelessWidget {
       child: ClipRRect(
         borderRadius: mapBorderRadius,
         child: Container(
-          color: Colors.white70,
+          color: mapBackground,
           height: 200,
-          child: child,
+          child: Stack(
+            children: [
+              const GridPaper(
+                color: mapLoadingGrid,
+                interval: 10,
+                divisions: 1,
+                subdivisions: 1,
+                child: CustomPaint(
+                  size: Size.infinite,
+                ),
+              ),
+              if (child != null) child!,
+            ],
+          ),
         ),
       ),
     );
@@ -47,8 +62,8 @@ class MapButtonPanel extends StatelessWidget {
   static const double padding = 4;
 
   const MapButtonPanel({
-    @required this.geoUri,
-    @required this.zoomBy,
+    required this.geoUri,
+    required this.zoomBy,
   });
 
   @override
@@ -57,7 +72,7 @@ class MapButtonPanel extends StatelessWidget {
       child: Align(
         alignment: AlignmentDirectional.centerEnd,
         child: Padding(
-          padding: EdgeInsets.all(padding),
+          padding: const EdgeInsets.all(padding),
           child: TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
@@ -72,7 +87,7 @@ class MapButtonPanel extends StatelessWidget {
                   }),
                   tooltip: context.l10n.entryActionOpenMap,
                 ),
-                SizedBox(height: padding),
+                const SizedBox(height: padding),
                 MapOverlayButton(
                   icon: AIcons.layers,
                   onPressed: () async {
@@ -94,18 +109,17 @@ class MapButtonPanel extends StatelessWidget {
                     await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
                     if (style != null && style != settings.infoMapStyle) {
                       settings.infoMapStyle = style;
-                      MapStyleChangedNotification().dispatch(context);
                     }
                   },
                   tooltip: context.l10n.viewerInfoMapStyleTooltip,
                 ),
-                Spacer(),
+                const Spacer(),
                 MapOverlayButton(
                   icon: AIcons.zoomIn,
                   onPressed: () => zoomBy(1),
                   tooltip: context.l10n.viewerInfoMapZoomInTooltip,
                 ),
-                SizedBox(height: padding),
+                const SizedBox(height: padding),
                 MapOverlayButton(
                   icon: AIcons.zoomOut,
                   onPressed: () => zoomBy(-1),
@@ -126,9 +140,9 @@ class MapOverlayButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const MapOverlayButton({
-    @required this.icon,
-    @required this.tooltip,
-    @required this.onPressed,
+    required this.icon,
+    required this.tooltip,
+    required this.onPressed,
   });
 
   @override
@@ -139,7 +153,7 @@ class MapOverlayButton extends StatelessWidget {
         color: kOverlayBackgroundColor,
         child: Ink(
           decoration: BoxDecoration(
-            border: AvesCircleBorder.build(context),
+            border: AvesBorder.border,
             shape: BoxShape.circle,
           ),
           child: IconButton(
@@ -154,5 +168,3 @@ class MapOverlayButton extends StatelessWidget {
     );
   }
 }
-
-class MapStyleChangedNotification extends Notification {}

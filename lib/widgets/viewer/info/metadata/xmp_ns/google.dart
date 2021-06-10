@@ -2,6 +2,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
@@ -11,23 +12,26 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
 
   @override
   Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) {
-    return Map.fromEntries(dataProps.map((t) {
-      final dataPropPath = t.item1;
-      final mimePropPath = t.item2;
-      final dataProp = props.firstWhere((prop) => prop.path == dataPropPath, orElse: () => null);
-      final mimeProp = props.firstWhere((prop) => prop.path == mimePropPath, orElse: () => null);
-      return (dataProp != null && mimeProp != null)
-          ? MapEntry(
-              dataProp.displayKey,
-              InfoLinkHandler(
-                linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-                onTap: (context) => OpenEmbeddedDataNotification.xmp(
-                  propPath: dataProp.path,
-                  mimeType: mimeProp.value,
-                ).dispatch(context),
-              ))
-          : null;
-    }).where((e) => e != null));
+    return Map.fromEntries(dataProps
+        .map((t) {
+          final dataPropPath = t.item1;
+          final mimePropPath = t.item2;
+          final dataProp = props.firstWhereOrNull((prop) => prop.path == dataPropPath);
+          final mimeProp = props.firstWhereOrNull((prop) => prop.path == mimePropPath);
+          return (dataProp != null && mimeProp != null)
+              ? MapEntry(
+                  dataProp.displayKey,
+                  InfoLinkHandler(
+                    linkText: (context) => context.l10n.viewerInfoOpenLinkText,
+                    onTap: (context) => OpenEmbeddedDataNotification.xmp(
+                      propPath: dataProp.path,
+                      mimeType: mimeProp.value,
+                    ).dispatch(context),
+                  ))
+              : null;
+        })
+        .where((kv) => kv != null)
+        .cast<MapEntry<String, InfoLinkHandler>>());
   }
 }
 
@@ -37,7 +41,7 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
   XmpGAudioNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('$ns:Data', '$ns:Mime')];
+  List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
 
   @override
   String get displayTitle => 'Google Audio';
@@ -49,7 +53,7 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
   XmpGDepthNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [
+  List<Tuple2<String, String>> get dataProps => const [
         Tuple2('$ns:Data', '$ns:Mime'),
         Tuple2('$ns:Confidence', '$ns:ConfidenceMime'),
       ];
@@ -64,7 +68,7 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
   XmpGImageNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
-  List<Tuple2<String, String>> get dataProps => [Tuple2('$ns:Data', '$ns:Mime')];
+  List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
 
   @override
   String get displayTitle => 'Google Image';
@@ -75,7 +79,7 @@ class XmpGCameraNamespace extends XmpNamespace {
   static const videoOffsetKey = 'GCamera:MicroVideoOffset';
   static const videoDataKey = 'Data';
 
-  bool _isMotionPhoto;
+  late bool _isMotionPhoto;
 
   XmpGCameraNamespace(Map<String, String> rawProps) : super(ns, rawProps) {
     _isMotionPhoto = rawProps.keys.any((key) => key == videoOffsetKey);
@@ -85,7 +89,7 @@ class XmpGCameraNamespace extends XmpNamespace {
   Map<String, String> get buildProps {
     return _isMotionPhoto
         ? Map.fromEntries({
-            MapEntry(videoDataKey, '[skipped]'),
+            const MapEntry(videoDataKey, '[skipped]'),
             ...rawProps.entries,
           })
         : rawProps;

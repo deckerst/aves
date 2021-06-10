@@ -12,15 +12,15 @@ class Sweeper extends StatefulWidget {
   final Curve curve;
   final ValueNotifier<bool> toggledNotifier;
   final bool centerSweep;
-  final VoidCallback onSweepEnd;
+  final VoidCallback? onSweepEnd;
 
   const Sweeper({
-    Key key,
-    @required this.builder,
+    Key? key,
+    required this.builder,
     this.startAngle = -pi / 2,
     this.sweepAngle = pi / 4,
     this.curve = Curves.easeInOutCubic,
-    @required this.toggledNotifier,
+    required this.toggledNotifier,
     this.centerSweep = true,
     this.onSweepEnd,
   }) : super(key: key);
@@ -30,8 +30,8 @@ class Sweeper extends StatefulWidget {
 }
 
 class _SweeperState extends State<Sweeper> with SingleTickerProviderStateMixin {
-  AnimationController _angleAnimationController;
-  Animation<double> _angle;
+  late AnimationController _angleAnimationController;
+  late Animation<double> _angle;
   bool _isAppearing = false;
 
   bool get isToggled => widget.toggledNotifier.value;
@@ -129,7 +129,7 @@ class _SweepClipPath extends CustomClipper<Path> {
   final double startAngle;
   final double sweepAngle;
 
-  const _SweepClipPath({@required this.startAngle, @required this.sweepAngle});
+  const _SweepClipPath({required this.startAngle, required this.sweepAngle});
 
   @override
   Path getClip(Size size) {

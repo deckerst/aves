@@ -8,7 +8,7 @@ class TagFilter extends CollectionFilter {
   static const type = 'tag';
 
   final String tag;
-  EntryFilter _test;
+  late EntryFilter _test;
 
   TagFilter(this.tag) {
     if (tag.isEmpty) {
@@ -42,7 +42,7 @@ class TagFilter extends CollectionFilter {
   String getLabel(BuildContext context) => tag.isEmpty ? context.l10n.filterTagEmptyLabel : tag;
 
   @override
-  Widget iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => showGenericIcon ? Icon(tag.isEmpty ? AIcons.tagOff : AIcons.tag, size: size) : null;
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => showGenericIcon ? Icon(tag.isEmpty ? AIcons.tagOff : AIcons.tag, size: size) : null;
 
   @override
   String get category => type;

@@ -30,8 +30,8 @@ class AlbumPickPage extends StatefulWidget {
   final MoveType moveType;
 
   const AlbumPickPage({
-    @required this.source,
-    @required this.moveType,
+    required this.source,
+    required this.moveType,
   });
 
   @override
@@ -66,15 +66,15 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
             showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
             queryNotifier: _queryNotifier,
             applyQuery: (filters, query) {
-              if (query == null || query.isEmpty) return filters;
+              if (query.isEmpty) return filters;
               query = query.toUpperCase();
-              return filters.where((item) => item.filter.displayName.toUpperCase().contains(query)).toList();
+              return filters.where((item) => (item.filter.displayName ?? item.filter.album).toUpperCase().contains(query)).toList();
             },
             emptyBuilder: () => EmptyContent(
               icon: AIcons.album,
               text: context.l10n.albumEmpty,
             ),
-            onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter)?.album),
+            onTap: (filter) => Navigator.pop<String>(context, (filter as AlbumFilter).album),
           ),
         );
       },
@@ -91,10 +91,10 @@ class AlbumPickAppBar extends StatelessWidget {
   static const preferredHeight = kToolbarHeight + AlbumFilterBar.preferredHeight;
 
   const AlbumPickAppBar({
-    @required this.source,
-    @required this.moveType,
-    @required this.actionDelegate,
-    @required this.queryNotifier,
+    required this.source,
+    required this.moveType,
+    required this.actionDelegate,
+    required this.queryNotifier,
   });
 
   @override
@@ -108,12 +108,12 @@ class AlbumPickAppBar extends StatelessWidget {
         case MoveType.move:
           return context.l10n.albumPickPageTitleMove;
         default:
-          return null;
+          return moveType.toString();
       }
     }
 
     return SliverAppBar(
-      leading: BackButton(),
+      leading: const BackButton(),
       title: SourceStateAwareAppBarTitle(
         title: Text(title()),
         source: source,
@@ -123,7 +123,7 @@ class AlbumPickAppBar extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          icon: Icon(AIcons.createAlbum),
+          icon: const Icon(AIcons.createAlbum),
           onPressed: () async {
             final newAlbum = await showDialog<String>(
               context: context,
@@ -169,11 +169,11 @@ class AlbumFilterBar extends StatelessWidget implements PreferredSizeWidget {
   static const preferredHeight = kToolbarHeight;
 
   const AlbumFilterBar({
-    @required this.filterNotifier,
+    required this.filterNotifier,
   });
 
   @override
-  Size get preferredSize => Size.fromHeight(preferredHeight);
+  Size get preferredSize => const Size.fromHeight(preferredHeight);
 
   @override
   Widget build(BuildContext context) {

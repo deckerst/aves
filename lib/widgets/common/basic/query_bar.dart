@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 class QueryBar extends StatefulWidget {
   final ValueNotifier<String> filterNotifier;
 
-  const QueryBar({@required this.filterNotifier});
+  const QueryBar({required this.filterNotifier});
 
   @override
   _QueryBarState createState() => _QueryBarState();
@@ -17,7 +17,7 @@ class QueryBar extends StatefulWidget {
 
 class _QueryBarState extends State<QueryBar> {
   final Debouncer _debouncer = Debouncer(delay: Durations.searchDebounceDelay);
-  TextEditingController _controller;
+  late TextEditingController _controller;
 
   ValueNotifier<String> get filterNotifier => widget.filterNotifier;
 
@@ -30,7 +30,7 @@ class _QueryBarState extends State<QueryBar> {
   @override
   Widget build(BuildContext context) {
     final clearButton = IconButton(
-      icon: Icon(AIcons.clear),
+      icon: const Icon(AIcons.clear),
       onPressed: () {
         _controller.clear();
         filterNotifier.value = '';
@@ -45,7 +45,7 @@ class _QueryBarState extends State<QueryBar> {
           child: TextField(
             controller: _controller,
             decoration: InputDecoration(
-              icon: Padding(
+              icon: const Padding(
                 padding: EdgeInsetsDirectional.only(start: 16),
                 child: Icon(AIcons.search),
               ),
@@ -57,7 +57,7 @@ class _QueryBarState extends State<QueryBar> {
           ),
         ),
         ConstrainedBox(
-          constraints: BoxConstraints(minWidth: 16),
+          constraints: const BoxConstraints(minWidth: 16),
           child: ValueListenableBuilder<TextEditingValue>(
             valueListenable: _controller,
             builder: (context, value, child) => AnimatedSwitcher(
@@ -70,7 +70,7 @@ class _QueryBarState extends State<QueryBar> {
                   child: child,
                 ),
               ),
-              child: value.text.isNotEmpty ? clearButton : SizedBox.shrink(),
+              child: value.text.isNotEmpty ? clearButton : const SizedBox.shrink(),
             ),
           ),
         )

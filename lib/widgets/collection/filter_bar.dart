@@ -9,18 +9,18 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 
   final List<CollectionFilter> filters;
   final bool removable;
-  final FilterCallback onTap;
+  final FilterCallback? onTap;
 
   FilterBar({
-    Key key,
-    @required Set<CollectionFilter> filters,
-    @required this.removable,
+    Key? key,
+    required Set<CollectionFilter> filters,
+    required this.removable,
     this.onTap,
   })  : filters = List<CollectionFilter>.from(filters)..sort(),
         super(key: key);
 
   @override
-  final Size preferredSize = Size.fromHeight(preferredHeight);
+  final Size preferredSize = const Size.fromHeight(preferredHeight);
 
   @override
   _FilterBarState createState() => _FilterBarState();
@@ -28,9 +28,9 @@ class FilterBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _FilterBarState extends State<FilterBar> {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'filter-bar-animated-list');
-  CollectionFilter _userTappedFilter;
+  CollectionFilter? _userTappedFilter;
 
-  FilterCallback get onTap => widget.onTap;
+  FilterCallback? get onTap => widget.onTap;
 
   @override
   void didUpdateWidget(covariant FilterBar oldWidget) {
@@ -46,7 +46,7 @@ class _FilterBarState extends State<FilterBar> {
       // only animate item removal when triggered by a user interaction with the chip,
       // not from automatic chip replacement following chip selection
       final animate = _userTappedFilter == filter;
-      listState.removeItem(
+      listState!.removeItem(
         index,
         animate
             ? (context, animation) {
@@ -69,7 +69,7 @@ class _FilterBarState extends State<FilterBar> {
     });
     added.forEach((filter) {
       final index = current.indexOf(filter);
-      listState.insertItem(
+      listState!.insertItem(
         index,
         duration: Duration.zero,
       );
@@ -92,10 +92,10 @@ class _FilterBarState extends State<FilterBar> {
           key: _animatedListKey,
           initialItemCount: widget.filters.length,
           scrollDirection: Axis.horizontal,
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.only(left: 8),
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.only(left: 8),
           itemBuilder: (context, index, animation) {
-            if (index >= widget.filters.length) return null;
+            if (index >= widget.filters.length) return const SizedBox();
             return _buildChip(widget.filters.toList()[index]);
           },
         ),
@@ -105,7 +105,7 @@ class _FilterBarState extends State<FilterBar> {
 
   Padding _buildChip(CollectionFilter filter) {
     return Padding(
-      padding: EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.only(right: 8),
       child: Center(
         child: AvesFilterChip(
           key: ValueKey(filter),
@@ -115,7 +115,7 @@ class _FilterBarState extends State<FilterBar> {
           onTap: onTap != null
               ? (filter) {
                   _userTappedFilter = filter;
-                  onTap(filter);
+                  onTap!(filter);
                 }
               : null,
         ),

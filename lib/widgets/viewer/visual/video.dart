@@ -7,9 +7,9 @@ class VideoView extends StatefulWidget {
   final AvesVideoController controller;
 
   const VideoView({
-    Key key,
-    @required this.entry,
-    @required this.controller,
+    Key? key,
+    required this.entry,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -50,11 +50,10 @@ class _VideoViewState extends State<VideoView> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null) return SizedBox();
     return StreamBuilder<VideoStatus>(
         stream: controller.statusStream,
         builder: (context, snapshot) {
-          return controller.isReady ? controller.buildPlayerWidget(context) : SizedBox();
+          return controller.isReady ? controller.buildPlayerWidget(context) : const SizedBox();
         });
   }
 

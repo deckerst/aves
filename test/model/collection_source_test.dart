@@ -1,3 +1,4 @@
+// @dart=2.9
 import 'dart:async';
 
 import 'package:aves/model/availability.dart';
@@ -93,7 +94,7 @@ void main() {
     expect(source.rawAlbums.length, 1);
     expect(covers.count, 0);
 
-    final albumFilter = AlbumFilter(testAlbum, 'whatever');
+    const albumFilter = AlbumFilter(testAlbum, 'whatever');
     expect(albumFilter.test(image1), true);
     expect(covers.count, 0);
     expect(covers.coverContentId(albumFilter), null);
@@ -115,7 +116,7 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    final albumFilter = AlbumFilter(testAlbum, 'whatever');
+    const albumFilter = AlbumFilter(testAlbum, 'whatever');
     await covers.set(albumFilter, image1.contentId);
     await source.renameEntry(image1, 'image1b.jpg');
 
@@ -153,8 +154,8 @@ void main() {
     expect(source.rawAlbums.contains(sourceAlbum), true);
     expect(source.rawAlbums.contains(destinationAlbum), false);
 
-    final sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
-    final destinationAlbumFilter = AlbumFilter(destinationAlbum, 'whatever');
+    const sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    const destinationAlbumFilter = AlbumFilter(destinationAlbum, 'whatever');
     expect(sourceAlbumFilter.test(image1), true);
     expect(destinationAlbumFilter.test(image1), false);
 
@@ -204,7 +205,7 @@ void main() {
 
     final source = await _initSource();
     expect(source.rawAlbums.length, 1);
-    final sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    const sourceAlbumFilter = AlbumFilter(sourceAlbum, 'whatever');
     await covers.set(sourceAlbumFilter, image1.contentId);
 
     await source.updateAfterMove(
@@ -229,14 +230,14 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    var albumFilter = AlbumFilter(sourceAlbum, 'whatever');
+    var albumFilter = const AlbumFilter(sourceAlbum, 'whatever');
     await covers.set(albumFilter, image1.contentId);
     await source.renameAlbum(sourceAlbum, destinationAlbum, {
       image1
     }, {
       FakeMediaStoreService.moveOpEventFor(image1, sourceAlbum, destinationAlbum),
     });
-    albumFilter = AlbumFilter(destinationAlbum, 'whatever');
+    albumFilter = const AlbumFilter(destinationAlbum, 'whatever');
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);
@@ -273,7 +274,7 @@ void main() {
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
-          return Placeholder();
+          return const Placeholder();
         },
       ),
     );

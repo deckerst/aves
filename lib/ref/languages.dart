@@ -1,9 +1,10 @@
 class Language {
-  final String iso639_2, name, native;
+  final String iso639_2, name;
+  final String? native;
 
   const Language({
-    this.iso639_2,
-    this.name,
+    required this.iso639_2,
+    required this.name,
     this.native,
   });
 

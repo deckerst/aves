@@ -13,8 +13,8 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
   final double offsetY;
 
   const CollectionDraggableThumbLabel({
-    @required this.collection,
-    @required this.offsetY,
+    required this.collection,
+    required this.offsetY,
   });
 
   @override
@@ -28,7 +28,7 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
               case EntryGroupFactor.album:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),
-                  if (_hasMultipleSections(context)) context.read<CollectionSource>().getAlbumDisplayName(context, entry.directory),
+                  if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
                 ];
               case EntryGroupFactor.month:
               case EntryGroupFactor.none:
@@ -40,21 +40,23 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
                   DraggableThumbLabel.formatDayThumbLabel(context, entry.bestDate),
                 ];
             }
-            break;
           case EntrySortFactor.name:
             return [
-              if (_hasMultipleSections(context)) context.read<CollectionSource>().getAlbumDisplayName(context, entry.directory),
-              entry.bestTitle,
+              if (_showAlbumName(context, entry)) _getAlbumName(context, entry),
+              if (entry.bestTitle != null) entry.bestTitle!,
             ];
           case EntrySortFactor.size:
             return [
-              formatFilesize(entry.sizeBytes, round: 0),
+              if (entry.sizeBytes != null) formatFilesize(entry.sizeBytes!, round: 0),
             ];
         }
-        return [];
       },
     );
   }
 
   bool _hasMultipleSections(BuildContext context) => context.read<SectionedListLayout<AvesEntry>>().sections.length > 1;
+
+  bool _showAlbumName(BuildContext context, AvesEntry entry) => _hasMultipleSections(context) && entry.directory != null;
+
+  String _getAlbumName(BuildContext context, AvesEntry entry) => context.read<CollectionSource>().getAlbumDisplayName(context, entry.directory!);
 }

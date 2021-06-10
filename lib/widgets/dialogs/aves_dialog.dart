@@ -9,18 +9,18 @@ class AvesDialog extends AlertDialog {
   static const borderWidth = 1.0;
 
   AvesDialog({
-    @required BuildContext context,
-    String title,
-    ScrollController scrollController,
-    List<Widget> scrollableContent,
-    Widget content,
-    @required List<Widget> actions,
+    required BuildContext context,
+    String? title,
+    ScrollController? scrollController,
+    List<Widget>? scrollableContent,
+    Widget? content,
+    required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
         super(
           title: title != null
               ? Padding(
                   // padding to avoid transparent border overlapping
-                  padding: EdgeInsets.symmetric(horizontal: borderWidth),
+                  padding: const EdgeInsets.symmetric(horizontal: borderWidth),
                   child: DialogTitle(title: title),
                 )
               : null,
@@ -32,7 +32,7 @@ class AvesDialog extends AlertDialog {
           content: scrollableContent != null
               ? Container(
                   // padding to avoid transparent border overlapping
-                  padding: EdgeInsets.symmetric(horizontal: borderWidth),
+                  padding: const EdgeInsets.symmetric(horizontal: borderWidth),
                   // workaround because the dialog tries
                   // to size itself to the content intrinsic size,
                   // but the `ListView` viewport does not have one
@@ -51,12 +51,12 @@ class AvesDialog extends AlertDialog {
                   ),
                 )
               : content,
-          contentPadding: scrollableContent != null ? EdgeInsets.zero : EdgeInsets.fromLTRB(24, 20, 24, 0),
+          contentPadding: scrollableContent != null ? EdgeInsets.zero : const EdgeInsets.fromLTRB(24, 20, 24, 0),
           actions: actions,
-          actionsPadding: EdgeInsets.symmetric(horizontal: 8),
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 8),
           shape: RoundedRectangleBorder(
             side: Divider.createBorderSide(context, width: borderWidth),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
           ),
         );
 }
@@ -64,7 +64,7 @@ class AvesDialog extends AlertDialog {
 class DialogTitle extends StatelessWidget {
   final String title;
 
-  const DialogTitle({@required this.title});
+  const DialogTitle({required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class DialogTitle extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.normal,
           fontFeatures: [FontFeature.enable('smcp')],
         ),

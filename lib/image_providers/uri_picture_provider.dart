@@ -2,15 +2,13 @@ import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pedantic/pedantic.dart';
 
 class UriPicture extends PictureProvider<UriPicture> {
   const UriPicture({
-    @required this.uri,
-    @required this.mimeType,
-    ColorFilter colorFilter,
-  })  : assert(uri != null),
-        super(colorFilter);
+    required this.uri,
+    required this.mimeType,
+    ColorFilter? colorFilter,
+  }) : super(colorFilter);
 
   final String uri, mimeType;
 
@@ -20,25 +18,30 @@ class UriPicture extends PictureProvider<UriPicture> {
   }
 
   @override
-  PictureStreamCompleter load(UriPicture key, {PictureErrorListener onError}) {
+  PictureStreamCompleter load(UriPicture key, {PictureErrorListener? onError}) {
     return OneFramePictureStreamCompleter(_loadAsync(key, onError: onError), informationCollector: () sync* {
       yield DiagnosticsProperty<String>('uri', uri);
     });
   }
 
-  Future<PictureInfo> _loadAsync(UriPicture key, {PictureErrorListener onError}) async {
+  Future<PictureInfo?> _loadAsync(UriPicture key, {PictureErrorListener? onError}) async {
     assert(key == this);
 
     final data = await imageFileService.getSvg(uri, mimeType);
-    if (data == null || data.isEmpty) {
+    if (data.isEmpty) {
       return null;
     }
 
     final decoder = SvgPicture.svgByteDecoder;
     if (onError != null) {
-      final future = decoder(data, colorFilter, key.toString());
-      unawaited(future.catchError(onError));
-      return future;
+      return decoder(
+        data,
+        colorFilter,
+        key.toString(),
+      ).catchError((error, stack) async {
+        onError(error, stack);
+        return Future<PictureInfo>.error(error, stack);
+      });
     }
     return decoder(data, colorFilter, key.toString());
   }
