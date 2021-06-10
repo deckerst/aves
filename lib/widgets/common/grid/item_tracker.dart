@@ -42,12 +42,15 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
           animate: e.animate,
           highlightItem: e.highlightItem,
         )));
+    _lastOrientation = _windowOrientation;
     WidgetsBinding.instance!.addObserver(this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _lastSectionedListLayout = context.read<SectionedListLayout<T>>();
-      _lastScrollableSize = scrollableSize;
-      _lastOrientation = _windowOrientation;
-    });
+    _saveLayoutMetrics();
+  }
+
+  @override
+  void didUpdateWidget(covariant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _saveLayoutMetrics();
   }
 
   @override
@@ -99,8 +102,6 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
 
   @override
   void didChangeMetrics() {
-    // the timing of `didChangeMetrics` is unreliable w.r.t. `MediaQuery` update (and following app layout)
-    // most of the time, this is called before `MediaQuery` is updated, but not all the time
     final orientation = _windowOrientation;
     if (_lastOrientation != orientation) {
       _lastOrientation = orientation;
@@ -108,6 +109,21 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
     }
   }
 
+  Future<void> _saveLayoutMetrics() async {
+    // use a delay to obtain current layout metrics
+    // so that we can handle window orientation change beforehand with the previous metrics,
+    // regardless of the `MediaQuery`/`WidgetsBindingObserver` order uncertainty
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (mounted) {
+      _lastSectionedListLayout = context.read<SectionedListLayout<T>>();
+      _lastScrollableSize = scrollableSize;
+    }
+  }
+
+  // the order of `WidgetsBindingObserver` metrics change notification is unreliable
+  // w.r.t. the `MediaQuery` update, and consequentially to this widget update
+  // `WidgetsBindingObserver` is notified mostly before, sometimes after, the widget update
   void _onWindowOrientationChange() {
     final layout = _lastSectionedListLayout;
     final halfSize = _lastScrollableSize / 2;
@@ -123,12 +139,10 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
       }
     }
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      if (pivotItem != null) {
+    if (pivotItem != null) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         context.read<HighlightInfo>().trackItem(pivotItem, animate: false);
-      }
-      _lastSectionedListLayout = context.read<SectionedListLayout<T>>();
-      _lastScrollableSize = scrollableSize;
-    });
+      });
+    }
   }
 }

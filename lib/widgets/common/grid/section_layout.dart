@@ -217,6 +217,9 @@ class SectionedListLayout<T> {
 
     return section[index];
   }
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{sectionCount=${sections.length} columnCount=$columnCount, tileExtent=$tileExtent}';
 }
 
 class SectionLayout {
