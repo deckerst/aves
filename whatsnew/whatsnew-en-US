@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.4.1:
-- motion photo support
-- handle share intent
-- fixes to handle large MP4 and PSD files
+v1.4.2:
+- improved navigation usability
+- changed thumbnail layout
+- improved playing videos with non-square pixels
 Full changelog available on Github
