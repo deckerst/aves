@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:aves/model/highlight.dart';
 import 'package:aves/theme/durations.dart';
@@ -36,12 +37,7 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
   void initState() {
     super.initState();
     final highlightInfo = context.read<HighlightInfo>();
-    _subscriptions.add(highlightInfo.eventBus.on<TrackEvent<T>>().listen((e) => _trackItem(
-          e.item,
-          alignment: e.alignment,
-          animate: e.animate,
-          highlightItem: e.highlightItem,
-        )));
+    _subscriptions.add(highlightInfo.eventBus.on<TrackEvent<T>>().listen(_trackItem));
     _lastOrientation = _windowOrientation;
     WidgetsBinding.instance!.addObserver(this);
     _saveLayoutMetrics();
@@ -66,22 +62,21 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
   // `Scrollable.ensureVisible` only works on already rendered objects
   // `RenderViewport.showOnScreen` can find any `RenderSliver`, but not always a `RenderMetadata`
   // `RenderViewport.scrollOffsetOf` is a good alternative
-  Future<void> _trackItem(
-    T item, {
-    required Alignment alignment,
-    required bool animate,
-    required Object? highlightItem,
-  }) async {
+  Future<void> _trackItem(TrackEvent event) async {
     final sectionedListLayout = context.read<SectionedListLayout<T>>();
-    final tileRect = sectionedListLayout.getTileRect(item);
+    final tileRect = sectionedListLayout.getTileRect(event.item);
     if (tileRect == null) return;
+
+    final viewportRect = Rect.fromLTWH(0, scrollController.offset, scrollableSize.width, scrollableSize.height);
+    final itemVisibility = max(0, tileRect.intersect(viewportRect).height) / tileRect.height;
+    if (!event.predicate(itemVisibility)) return;
 
     // most of the time the app bar will be scrolled away after scaling,
     // so we compensate for it to center the focal point thumbnail
     final appBarHeight = appBarHeightNotifier.value;
-    final scrollOffset = appBarHeight + tileRect.top + (tileRect.height - scrollableSize.height) * ((alignment.y + 1) / 2);
+    final scrollOffset = appBarHeight + tileRect.top + (tileRect.height - scrollableSize.height) * ((event.alignment.y + 1) / 2);
 
-    if (animate) {
+    if (event.animate) {
       if (scrollOffset > 0) {
         await scrollController.animateTo(
           scrollOffset,
@@ -95,6 +90,7 @@ mixin GridItemTrackerMixin<T, U extends StatefulWidget> on State<U>, WidgetsBind
       await Future.delayed(Durations.highlightJumpDelay);
     }
 
+    final highlightItem = event.highlightItem;
     if (highlightItem != null) {
       context.read<HighlightInfo>().set(highlightItem);
     }

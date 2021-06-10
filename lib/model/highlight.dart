@@ -6,17 +6,22 @@ class HighlightInfo extends ChangeNotifier {
   final EventBus eventBus = EventBus();
 
   void trackItem<T>(
-    T item, {
+    T? item, {
+    TrackPredicate? predicate,
     Alignment? alignment,
     bool? animate,
     Object? highlightItem,
-  }) =>
+  }) {
+    if (item != null) {
       eventBus.fire(TrackEvent<T>(
         item,
+        predicate ?? (_) => true,
         alignment ?? Alignment.center,
         animate ?? true,
         highlightItem,
       ));
+    }
+  }
 
   Object? _item;
 
@@ -43,14 +48,20 @@ class HighlightInfo extends ChangeNotifier {
 @immutable
 class TrackEvent<T> {
   final T item;
+  final TrackPredicate predicate;
   final Alignment alignment;
   final bool animate;
   final Object? highlightItem;
 
   const TrackEvent(
     this.item,
+    this.predicate,
     this.alignment,
     this.animate,
     this.highlightItem,
   );
 }
+
+// `itemVisibility`: percent of the item tracked already visible in viewport
+// return whether to proceed with tracking
+typedef TrackPredicate = bool Function(double itemVisibility);

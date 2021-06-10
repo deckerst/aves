@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -62,6 +63,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   late EntryActionDelegate _actionDelegate;
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
+  bool _isEntryTracked = true;
 
   CollectionLens? get collection => widget.collection;
 
@@ -166,6 +168,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
           // back from info to image
           _goToVerticalPage(imagePage);
         } else {
+          if (!_isEntryTracked) _trackEntry();
           _popVisual();
         }
         return SynchronousFuture(false);
@@ -370,6 +373,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   }
 
   void _onVerticalPageControllerChange() {
+    if (!_isEntryTracked && _verticalPager.page?.floor() == transitionPage) {
+      _trackEntry();
+    }
     _verticalScrollNotifier.notifyListeners();
   }
 
@@ -451,6 +457,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     final newEntry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (_entryNotifier.value == newEntry) return;
     _entryNotifier.value = newEntry;
+    _isEntryTracked = false;
     await _pauseVideoControllers();
     await _initEntryControllers();
   }
@@ -475,6 +482,20 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     } else {
       // exit app when trying to pop a viewer page for a single entry
       SystemNavigator.pop();
+    }
+  }
+
+  // track item when returning to collection,
+  // if they are not fully visible already
+  void _trackEntry() {
+    _isEntryTracked = true;
+    final entry = _entryNotifier.value;
+    if (entry != null && hasCollection) {
+      context.read<HighlightInfo>().trackItem(
+            entry,
+            predicate: (v) => v < 1,
+            animate: false,
+          );
     }
   }
 
