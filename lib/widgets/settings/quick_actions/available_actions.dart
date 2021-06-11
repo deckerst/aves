@@ -1,42 +1,33 @@
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/quick_actions/common.dart';
-import 'package:flutter/material.dart';
+import 'package:aves/widgets/settings/quick_actions/action_button.dart';
+import 'package:aves/widgets/settings/quick_actions/placeholder.dart';
+import 'package:flutter/widgets.dart';
 
-class AvailableActionPanel extends StatelessWidget {
-  final List<EntryAction> quickActions;
+class AvailableActionPanel<T extends Object> extends StatelessWidget {
+  final List<T> allActions, quickActions;
   final Listenable quickActionsChangeNotifier;
   final ValueNotifier<bool> panelHighlight;
-  final ValueNotifier<EntryAction?> draggedQuickAction;
-  final ValueNotifier<EntryAction?> draggedAvailableAction;
-  final bool Function(EntryAction? action) removeQuickAction;
+  final ValueNotifier<T?> draggedQuickAction;
+  final ValueNotifier<T?> draggedAvailableAction;
+  final bool Function(T? action) removeQuickAction;
+  final IconData? Function(T action) actionIcon;
+  final String Function(BuildContext context, T action) actionText;
 
   const AvailableActionPanel({
+    required this.allActions,
     required this.quickActions,
     required this.quickActionsChangeNotifier,
     required this.panelHighlight,
     required this.draggedQuickAction,
     required this.draggedAvailableAction,
     required this.removeQuickAction,
+    required this.actionIcon,
+    required this.actionText,
   });
-
-  static const allActions = [
-    EntryAction.info,
-    EntryAction.toggleFavourite,
-    EntryAction.share,
-    EntryAction.delete,
-    EntryAction.rename,
-    EntryAction.export,
-    EntryAction.print,
-    EntryAction.viewSource,
-    EntryAction.flip,
-    EntryAction.rotateCCW,
-    EntryAction.rotateCW,
-  ];
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget<EntryAction>(
+    return DragTarget<T>(
       onWillAccept: (data) {
         if (draggedQuickAction.value != null) {
           _setPanelHighlight(true);
@@ -61,15 +52,12 @@ class AvailableActionPanel extends StatelessWidget {
               children: allActions.map((action) {
                 final dragged = action == draggedAvailableAction.value;
                 final enabled = dragged || !quickActions.contains(action);
-                Widget child = ActionButton(
-                  action: action,
-                  enabled: enabled,
-                );
+                var child = _buildActionButton(context, action, enabled: enabled);
                 if (dragged) {
                   child = DraggedPlaceholder(child: child);
                 }
                 if (enabled) {
-                  child = _buildDraggable(action, child);
+                  child = _buildDraggable(context, action, child);
                 }
                 return child;
               }).toList(),
@@ -80,14 +68,20 @@ class AvailableActionPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildDraggable(EntryAction action, Widget child) => LongPressDraggable<EntryAction>(
+  Widget _buildDraggable(
+    BuildContext context,
+    T action,
+    Widget child,
+  ) =>
+      LongPressDraggable<T>(
         data: action,
         maxSimultaneousDrags: 1,
         onDragStarted: () => _setDraggedAvailableAction(action),
         onDragEnd: (details) => _setDraggedAvailableAction(null),
         feedback: MediaQueryDataProvider(
-          child: ActionButton(
-            action: action,
+          child: _buildActionButton(
+            context,
+            action,
             showCaption: false,
           ),
         ),
@@ -95,9 +89,22 @@ class AvailableActionPanel extends StatelessWidget {
         child: child,
       );
 
-  void _setDraggedQuickAction(EntryAction? action) => draggedQuickAction.value = action;
+  Widget _buildActionButton(
+    BuildContext context,
+    T action, {
+    bool enabled = true,
+    bool showCaption = true,
+  }) =>
+      ActionButton(
+        text: actionText(context, action),
+        icon: actionIcon(action),
+        enabled: enabled,
+        showCaption: showCaption,
+      );
 
-  void _setDraggedAvailableAction(EntryAction? action) => draggedAvailableAction.value = action;
+  void _setDraggedQuickAction(T? action) => draggedQuickAction.value = action;
+
+  void _setDraggedAvailableAction(T? action) => draggedAvailableAction.value = action;
 
   void _setPanelHighlight(bool flag) => panelHighlight.value = flag;
 }

@@ -4,20 +4,24 @@ import 'package:flutter/widgets.dart';
 
 enum EntryAction {
   delete,
-  edit,
   export,
-  flip,
   info,
-  open,
-  openMap,
   print,
   rename,
-  rotateCCW,
-  rotateCW,
-  setAs,
   share,
   toggleFavourite,
+  // raster
+  rotateCCW,
+  rotateCW,
+  flip,
+  // vector
   viewSource,
+  // external
+  edit,
+  open,
+  openMap,
+  setAs,
+  // debug
   debug,
 }
 
@@ -55,7 +59,6 @@ class EntryActions {
 extension ExtraEntryAction on EntryAction {
   String getText(BuildContext context) {
     switch (this) {
-      // in app actions
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
         return context.l10n.entryActionAddFavourite;
@@ -67,19 +70,21 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionInfo;
       case EntryAction.rename:
         return context.l10n.entryActionRename;
+      case EntryAction.print:
+        return context.l10n.entryActionPrint;
+      case EntryAction.share:
+        return context.l10n.entryActionShare;
+      // raster
       case EntryAction.rotateCCW:
         return context.l10n.entryActionRotateCCW;
       case EntryAction.rotateCW:
         return context.l10n.entryActionRotateCW;
       case EntryAction.flip:
         return context.l10n.entryActionFlip;
-      case EntryAction.print:
-        return context.l10n.entryActionPrint;
-      case EntryAction.share:
-        return context.l10n.entryActionShare;
+      // vector
       case EntryAction.viewSource:
         return context.l10n.entryActionViewSource;
-      // external app actions
+      // external
       case EntryAction.edit:
         return context.l10n.entryActionEdit;
       case EntryAction.open:
@@ -88,6 +93,7 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionSetAs;
       case EntryAction.openMap:
         return context.l10n.entryActionOpenMap;
+      // debug
       case EntryAction.debug:
         return 'Debug';
     }
@@ -95,7 +101,6 @@ extension ExtraEntryAction on EntryAction {
 
   IconData? getIcon() {
     switch (this) {
-      // in app actions
       case EntryAction.toggleFavourite:
         // different data depending on toggle state
         return AIcons.favourite;
@@ -107,24 +112,27 @@ extension ExtraEntryAction on EntryAction {
         return AIcons.info;
       case EntryAction.rename:
         return AIcons.rename;
+      case EntryAction.print:
+        return AIcons.print;
+      case EntryAction.share:
+        return AIcons.share;
+      // raster
       case EntryAction.rotateCCW:
         return AIcons.rotateLeft;
       case EntryAction.rotateCW:
         return AIcons.rotateRight;
       case EntryAction.flip:
         return AIcons.flip;
-      case EntryAction.print:
-        return AIcons.print;
-      case EntryAction.share:
-        return AIcons.share;
+      // vector
       case EntryAction.viewSource:
         return AIcons.vector;
-      // external app actions
+      // external
       case EntryAction.edit:
       case EntryAction.open:
       case EntryAction.setAs:
       case EntryAction.openMap:
         return null;
+      // debug
       case EntryAction.debug:
         return AIcons.debug;
     }
