@@ -5,6 +5,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
@@ -123,7 +124,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
       );
       children.add(animate ? _buildAnimation(itemGridIndex, item) : item);
     }
-    return Wrap(
+    return _GridRow(
+      extent: tileExtent,
       spacing: spacing,
       children: children,
     );
@@ -273,4 +275,129 @@ class SectionLayout {
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{sectionKey=$sectionKey, firstIndex=$firstIndex, lastIndex=$lastIndex, minOffset=$minOffset, maxOffset=$maxOffset, headerExtent=$headerExtent, tileExtent=$tileExtent, spacing=$spacing}';
+}
+
+class _GridRow extends MultiChildRenderObjectWidget {
+  final double extent, spacing;
+
+  _GridRow({
+    Key? key,
+    required this.extent,
+    required this.spacing,
+    required List<Widget> children,
+  }) : super(key: key, children: children);
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return _RenderGridRow(
+      extent: extent,
+      spacing: spacing,
+    );
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderGridRow renderObject) {
+    renderObject.extent = extent;
+    renderObject.spacing = spacing;
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('extent', extent));
+    properties.add(DoubleProperty('spacing', spacing));
+  }
+}
+
+class _GridRowParentData extends ContainerBoxParentData<RenderBox> {}
+
+class _RenderGridRow extends RenderBox with ContainerRenderObjectMixin<RenderBox, _GridRowParentData>, RenderBoxContainerDefaultsMixin<RenderBox, _GridRowParentData> {
+  _RenderGridRow({
+    List<RenderBox>? children,
+    required double extent,
+    required double spacing,
+  })  : _extent = extent,
+        _spacing = spacing {
+    addAll(children);
+  }
+
+  double get extent => _extent;
+  double _extent;
+
+  set extent(double value) {
+    if (_extent == value) return;
+    _extent = value;
+    markNeedsLayout();
+  }
+
+  double get spacing => _spacing;
+  double _spacing;
+
+  set spacing(double value) {
+    if (_spacing == value) return;
+    _spacing = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _GridRowParentData) {
+      child.parentData = _GridRowParentData();
+    }
+  }
+
+  double get intrinsicWidth => extent * childCount + spacing * (childCount - 1);
+
+  @override
+  double computeMinIntrinsicWidth(double height) => intrinsicWidth;
+
+  @override
+  double computeMaxIntrinsicWidth(double height) => intrinsicWidth;
+
+  @override
+  double computeMinIntrinsicHeight(double width) => extent;
+
+  @override
+  double computeMaxIntrinsicHeight(double width) => extent;
+
+  @override
+  void performLayout() {
+    var child = firstChild;
+    if (child == null) {
+      size = constraints.smallest;
+      return;
+    }
+    size = Size(constraints.maxWidth, extent);
+    final childConstraints = BoxConstraints.tight(Size(extent, extent));
+    var offset = Offset.zero;
+    while (child != null) {
+      child.layout(childConstraints, parentUsesSize: false);
+      final childParentData = child.parentData! as _GridRowParentData;
+      childParentData.offset = offset;
+      offset += Offset(extent + spacing, 0);
+      child = childParentData.nextSibling;
+    }
+  }
+
+  @override
+  double? computeDistanceToActualBaseline(TextBaseline baseline) {
+    return defaultComputeDistanceToHighestActualBaseline(baseline);
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    return defaultHitTestChildren(result, position: position);
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    defaultPaint(context, offset);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('extent', extent));
+    properties.add(DoubleProperty('spacing', spacing));
+  }
 }
