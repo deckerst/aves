@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -47,6 +48,8 @@ class AIcons {
   static const IconData layers = Icons.layers_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
+  static const IconData play = Icons.play_arrow;
+  static const IconData pause = Icons.pause;
   static const IconData print = Icons.print_outlined;
   static const IconData rename = Icons.title_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
@@ -56,6 +59,7 @@ class AIcons {
   static const IconData setCover = MdiIcons.imageEditOutline;
   static const IconData share = Icons.share_outlined;
   static const IconData sort = Icons.sort_outlined;
+  static const IconData speed = Icons.speed_outlined;
   static const IconData stats = Icons.pie_chart_outlined;
   static const IconData zoomIn = Icons.add_outlined;
   static const IconData zoomOut = Icons.remove_outlined;
@@ -75,7 +79,7 @@ class AIcons {
   static const IconData geo = Icons.language_outlined;
   static const IconData motionPhoto = Icons.motion_photos_on_outlined;
   static const IconData multiPage = Icons.burst_mode_outlined;
-  static const IconData play = Icons.play_circle_outline;
+  static const IconData videoThumb = Icons.play_circle_outline;
   static const IconData threeSixty = Icons.threesixty_outlined;
   static const IconData selected = Icons.check_circle_outline;
   static const IconData unselected = Icons.radio_button_unchecked;

@@ -47,6 +47,10 @@
   "entryActionAddFavourite": "즐겨찾기에 추가",
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
 
+  "videoActionPause": "일시정지",
+  "videoActionPlay": "재생",
+  "videoActionSetSpeed": "재생 배속",
+
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
@@ -117,6 +121,8 @@
   "deleteAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "renameEntryDialogLabel": "이름",
+
+  "videoSpeedDialogLabel": "재생 배속",
 
   "genericSuccessFeedback": "정상 처리됐습니다",
   "genericFailureFeedback": "오류가 발생했습니다",
@@ -293,8 +299,6 @@
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
   "viewerOpenTooltip": "열기",
-  "viewerPauseTooltip": "일시정지",
-  "viewerPlayTooltip": "재생",
   "viewerErrorUnknown": "아이구!",
   "viewerErrorDoesNotExist": "파일이 존재하지 않습니다.",
 

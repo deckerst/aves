@@ -39,6 +39,14 @@ abstract class AvesVideoController {
 
   ValueNotifier<double> get sarNotifier;
 
+  double get speed;
+
+  double get minSpeed;
+
+  double get maxSpeed;
+
+  set speed(double speed);
+
   Widget buildPlayerWidget(BuildContext context);
 }
 
