@@ -1,19 +1,18 @@
-import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/quick_actions/common.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 enum QuickActionPlacement { header, action, footer }
 
-class QuickActionButton extends StatelessWidget {
+class QuickActionButton<T extends Object> extends StatelessWidget {
   final QuickActionPlacement placement;
-  final EntryAction? action;
+  final T? action;
   final ValueNotifier<bool> panelHighlight;
-  final ValueNotifier<EntryAction?> draggedQuickAction;
-  final ValueNotifier<EntryAction?> draggedAvailableAction;
-  final bool Function(EntryAction action, QuickActionPlacement placement, EntryAction? overAction) insertAction;
-  final bool Function(EntryAction action) removeAction;
+  final ValueNotifier<T?> draggedQuickAction;
+  final ValueNotifier<T?> draggedAvailableAction;
+  final bool Function(T action, QuickActionPlacement placement, T? overAction) insertAction;
+  final bool Function(T action) removeAction;
   final VoidCallback onTargetLeave;
+  final Widget Function(T action)? draggableFeedbackBuilder;
   final Widget? child;
 
   const QuickActionButton({
@@ -25,6 +24,7 @@ class QuickActionButton extends StatelessWidget {
     required this.insertAction,
     required this.removeAction,
     required this.onTargetLeave,
+    this.draggableFeedbackBuilder,
     this.child,
   });
 
@@ -38,8 +38,8 @@ class QuickActionButton extends StatelessWidget {
     return child;
   }
 
-  DragTarget<EntryAction> _buildDragTarget(Widget? child) {
-    return DragTarget<EntryAction>(
+  DragTarget<T> _buildDragTarget(Widget? child) {
+    return DragTarget<T>(
       onWillAccept: (data) {
         if (draggedQuickAction.value != null) {
           insertAction(draggedQuickAction.value!, placement, action);
@@ -56,7 +56,7 @@ class QuickActionButton extends StatelessWidget {
     );
   }
 
-  Widget _buildDraggable(Widget child, EntryAction action) => LongPressDraggable(
+  Widget _buildDraggable(Widget child, T action) => LongPressDraggable(
         data: action,
         maxSimultaneousDrags: 1,
         onDragStarted: () => _setDraggedQuickAction(action),
@@ -65,16 +65,13 @@ class QuickActionButton extends StatelessWidget {
         onDraggableCanceled: (velocity, offset) => _setDraggedQuickAction(null),
         onDragCompleted: () => _setDraggedQuickAction(null),
         feedback: MediaQueryDataProvider(
-          child: ActionButton(
-            action: action,
-            showCaption: false,
-          ),
+          child: draggableFeedbackBuilder!(action),
         ),
         childWhenDragging: child,
         child: child,
       );
 
-  void _setDraggedQuickAction(EntryAction? action) => draggedQuickAction.value = action;
+  void _setDraggedQuickAction(T? action) => draggedQuickAction.value = action;
 
   void _setPanelHighlight(bool flag) => panelHighlight.value = flag;
 }

@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [v1.4.2] - 2021-06-10
+## [v1.4.3] - 2021-06-12
 ### Added
 - Collection: snack bar action to show moved/copied/exported entries
 - Collection / Albums / Countries / Tags: when switching device orientation, keep items in view
@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - fixed opening files shared via content URI with incorrect MIME type
 - refresh collection when entries modified in Viewer no longer match collection filters
+
+## [v1.4.2] - 2021-06-10 [YANKED]
 
 ## [v1.4.1] - 2021-04-29
 ### Added

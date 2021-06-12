@@ -19,7 +19,7 @@ import 'package:aves/widgets/settings/access_grants.dart';
 import 'package:aves/widgets/settings/entry_background.dart';
 import 'package:aves/widgets/settings/hidden_filters.dart';
 import 'package:aves/widgets/settings/language.dart';
-import 'package:aves/widgets/settings/quick_actions/editor.dart';
+import 'package:aves/widgets/settings/entry_actions_editor.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -191,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
       expandedNotifier: _expandedNotifier,
       showHighlight: false,
       children: [
-        QuickActionsTile(),
+        QuickEntryActionsTile(),
         SwitchListTile(
           value: settings.showOverlayMinimap,
           onChanged: (v) => settings.showOverlayMinimap = v,
