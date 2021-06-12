@@ -1,51 +1,47 @@
 import 'dart:async';
 
-import 'package:aves/model/actions/entry_actions.dart';
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
+import 'package:aves/widgets/settings/quick_actions/action_button.dart';
+import 'package:aves/widgets/settings/quick_actions/action_panel.dart';
 import 'package:aves/widgets/settings/quick_actions/available_actions.dart';
-import 'package:aves/widgets/settings/quick_actions/common.dart';
+import 'package:aves/widgets/settings/quick_actions/placeholder.dart';
 import 'package:aves/widgets/settings/quick_actions/quick_actions.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class QuickActionsTile extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(context.l10n.settingsViewerQuickActionsTile),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            settings: const RouteSettings(name: QuickActionEditorPage.routeName),
-            builder: (context) => QuickActionEditorPage(),
-          ),
-        );
-      },
-    );
-  }
-}
+class QuickActionEditorPage<T extends Object> extends StatefulWidget {
+  final String bannerText;
+  final List<T> allAvailableActions;
+  final IconData? Function(T action) actionIcon;
+  final String Function(BuildContext context, T action) actionText;
+  final List<T> Function() load;
+  final void Function(List<T> actions) save;
 
-class QuickActionEditorPage extends StatefulWidget {
-  static const routeName = '/settings/quick_actions';
+  const QuickActionEditorPage({
+    required this.bannerText,
+    required this.allAvailableActions,
+    required this.actionIcon,
+    required this.actionText,
+    required this.load,
+    required this.save,
+  });
 
   @override
-  _QuickActionEditorPageState createState() => _QuickActionEditorPageState();
+  _QuickActionEditorPageState createState() => _QuickActionEditorPageState<T>();
 }
 
-class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
+class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEditorPage<T>> {
   final GlobalKey<AnimatedListState> _animatedListKey = GlobalKey(debugLabel: 'quick-actions-animated-list');
   Timer? _targetLeavingTimer;
-  late List<EntryAction> _quickActions;
-  final ValueNotifier<EntryAction?> _draggedQuickAction = ValueNotifier(null);
-  final ValueNotifier<EntryAction?> _draggedAvailableAction = ValueNotifier(null);
+  late List<T> _quickActions;
+  final ValueNotifier<T?> _draggedQuickAction = ValueNotifier(null);
+  final ValueNotifier<T?> _draggedAvailableAction = ValueNotifier(null);
   final ValueNotifier<bool> _quickActionHighlight = ValueNotifier(false);
   final ValueNotifier<bool> _availableActionHighlight = ValueNotifier(false);
   final AChangeNotifier _quickActionsChangeNotifier = AChangeNotifier();
@@ -59,7 +55,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
   @override
   void initState() {
     super.initState();
-    _quickActions = settings.viewerQuickActions.toList();
+    _quickActions = widget.load();
   }
 
   @override
@@ -79,7 +75,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final header = QuickActionButton(
+    final header = QuickActionButton<T>(
       placement: QuickActionPlacement.header,
       panelHighlight: _quickActionHighlight,
       draggedQuickAction: _draggedQuickAction,
@@ -88,7 +84,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
       removeAction: _removeQuickAction,
       onTargetLeave: _onQuickActionTargetLeave,
     );
-    final footer = QuickActionButton(
+    final footer = QuickActionButton<T>(
       placement: QuickActionPlacement.footer,
       panelHighlight: _quickActionHighlight,
       draggedQuickAction: _draggedQuickAction,
@@ -104,7 +100,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
         ),
         body: WillPopScope(
           onWillPop: () {
-            settings.viewerQuickActions = _quickActions;
+            widget.save(_quickActions);
             return SynchronousFuture(true);
           },
           child: SafeArea(
@@ -116,7 +112,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                     children: [
                       const Icon(AIcons.info),
                       const SizedBox(width: 16),
-                      Expanded(child: Text(context.l10n.settingsViewerQuickActionEditorBanner)),
+                      Expanded(child: Text(widget.bannerText)),
                     ],
                   ),
                 ),
@@ -163,7 +159,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                             itemBuilder: (context, index, animation) {
                               if (index >= _quickActions.length) return const SizedBox();
                               final action = _quickActions[index];
-                              return QuickActionButton(
+                              return QuickActionButton<T>(
                                 placement: QuickActionPlacement.action,
                                 action: action,
                                 panelHighlight: _quickActionHighlight,
@@ -172,6 +168,11 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                                 insertAction: _insertQuickAction,
                                 removeAction: _removeQuickAction,
                                 onTargetLeave: _onQuickActionTargetLeave,
+                                draggableFeedbackBuilder: (action) => ActionButton(
+                                  text: widget.actionText(context, action),
+                                  icon: widget.actionIcon(action),
+                                  showCaption: false,
+                                ),
                                 child: _buildQuickActionButton(action, animation),
                               );
                             },
@@ -205,13 +206,16 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
                     highlight: highlight,
                     child: child!,
                   ),
-                  child: AvailableActionPanel(
+                  child: AvailableActionPanel<T>(
+                    allActions: widget.allAvailableActions,
                     quickActions: _quickActions,
                     quickActionsChangeNotifier: _quickActionsChangeNotifier,
                     panelHighlight: _availableActionHighlight,
                     draggedQuickAction: _draggedQuickAction,
                     draggedAvailableAction: _draggedAvailableAction,
                     removeQuickAction: _removeQuickAction,
+                    actionIcon: widget.actionIcon,
+                    actionText: widget.actionText,
                   ),
                 ),
               ],
@@ -224,7 +228,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
 
   void _stopLeavingTimer() => _targetLeavingTimer?.cancel();
 
-  bool _insertQuickAction(EntryAction action, QuickActionPlacement placement, EntryAction? overAction) {
+  bool _insertQuickAction(T action, QuickActionPlacement placement, T? overAction) {
     _stopLeavingTimer();
     if (_reordering) return false;
 
@@ -256,7 +260,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
     return true;
   }
 
-  bool _removeQuickAction(EntryAction? action) {
+  bool _removeQuickAction(T? action) {
     if (action == null || !_quickActions.contains(action)) return false;
 
     final index = _quickActions.indexOf(action);
@@ -270,7 +274,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
     return true;
   }
 
-  Widget _buildQuickActionButton(EntryAction action, Animation<double> animation) {
+  Widget _buildQuickActionButton(T action, Animation<double> animation) {
     animation = animation.drive(CurveTween(curve: Curves.easeInOut));
     Widget child = FadeTransition(
       opacity: animation,
@@ -281,7 +285,7 @@ class _QuickActionEditorPageState extends State<QuickActionEditorPage> {
           padding: const EdgeInsets.symmetric(vertical: _QuickActionEditorPageState.quickActionVerticalPadding, horizontal: 4),
           child: OverlayButton(
             child: IconButton(
-              icon: Icon(action.getIcon()),
+              icon: Icon(widget.actionIcon(action)),
               onPressed: () {},
             ),
           ),

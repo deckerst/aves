@@ -1,7 +1,7 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.4.2+46
+version: 1.4.3+47
 publish_to: none
 
 environment:
