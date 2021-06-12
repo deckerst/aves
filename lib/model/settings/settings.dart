@@ -1,4 +1,5 @@
 import 'package:aves/model/actions/entry_actions.dart';
+import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:collection/collection.dart';
@@ -15,7 +16,7 @@ import 'enums.dart';
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
-  static SharedPreferences? /*late final*/ _prefs;
+  static SharedPreferences? _prefs;
 
   Settings._private();
 
@@ -49,6 +50,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const viewerQuickActionsKey = 'viewer_quick_actions';
+  static const videoQuickActionsKey = 'video_quick_actions';
 
   // video
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
@@ -75,6 +77,9 @@ class Settings extends ChangeNotifier {
   static const viewerQuickActionsDefault = [
     EntryAction.toggleFavourite,
     EntryAction.share,
+  ];
+  static const videoQuickActionsDefault = [
+    VideoAction.togglePlay,
   ];
 
   Future<void> init() async {
@@ -228,6 +233,10 @@ class Settings extends ChangeNotifier {
   List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
 
   set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+
+  List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, videoQuickActionsDefault, VideoAction.values);
+
+  set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
 
   // video
 

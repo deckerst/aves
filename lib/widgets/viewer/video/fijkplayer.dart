@@ -26,6 +26,16 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final ValueNotifier<StreamSummary?> _selectedAudioStream = ValueNotifier(null);
   final ValueNotifier<StreamSummary?> _selectedTextStream = ValueNotifier(null);
   Timer? _initialPlayTimer;
+  double _speed = 1;
+
+  // audio/video get out of sync with speed < .5
+  // the video stream plays at .5 but the audio is slowed as requested
+  @override
+  final double minSpeed = .5;
+
+  // android.media.AudioTrack fails with speed > 2
+  @override
+  final double maxSpeed = 2;
 
   @override
   final ValueNotifier<double> sarNotifier = ValueNotifier(1);
@@ -67,6 +77,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
     // so we introduce a small delay after the player is declared `prepared`, before playing
     await _instance.setDataSourceUntilPrepared(entry.uri);
+    if (speed != 1) {
+      _applySpeed();
+    }
     _initialPlayTimer = Timer(initialPlayDelay, play);
   }
 
@@ -83,7 +96,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     const accurateSeekEnabled = false;
 
     // playing with HW acceleration seems to skip the last frames of some videos
-    // so HW acceleration is always disabled for gif-like videos where the last frames may be significant
+    // so HW acceleration is always disabled for GIF-like videos where the last frames may be significant
     final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis! > gifLikeVideoDurationThreshold.inMilliseconds;
 
     // TODO TLAD HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
@@ -100,29 +113,42 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // in practice the flag seems ineffective, but harmless too
     options.setFormatOption('fflags', 'fastseek');
 
-    // `enable-accurate-seek`: enable accurate seek, default: 0, in [0, 1]
-    options.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
-
-    // `accurate-seek-timeout`: accurate seek timeout, default: 5000 ms, in [0, 5000]
+    // `accurate-seek-timeout`: accurate seek timeout
+    // default: 5000 ms, in [0, 5000]
     options.setPlayerOption('accurate-seek-timeout', 1000);
 
-    // `framedrop`: drop frames when cpu is too slow, default: 0, in [-1, 120]
-    options.setPlayerOption('framedrop', 5);
-
-    // `loop`: set number of times the playback shall be looped, default: 1, in [INT_MIN, INT_MAX]
-    options.setPlayerOption('loop', loopEnabled ? -1 : 1);
-
-    // `mediacodec-all-videos`: MediaCodec: enable all videos, default: 0, in [0, 1]
-    options.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
-
-    // `seek-at-start`: set offset of player should be seeked, default: 0, in [0, INT_MAX]
-    options.setPlayerOption('seek-at-start', startMillis);
-
-    // `cover-after-prepared`: show cover provided to `FijkView` when player is `prepared` without auto play, default: 0, in [0, 1]
+    // `cover-after-prepared`: show cover provided to `FijkView` when player is `prepared` without auto play
+    // default: 0, in [0, 1]
     options.setPlayerOption('cover-after-prepared', 0);
 
+    // `enable-accurate-seek`: enable accurate seek
+    // default: 0, in [0, 1]
+    options.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
+
+    // `framedrop`: drop frames when cpu is too slow
+    // default: 0, in [-1, 120]
+    options.setPlayerOption('framedrop', 5);
+
+    // `loop`: set number of times the playback shall be looped
+    // default: 1, in [INT_MIN, INT_MAX]
+    options.setPlayerOption('loop', loopEnabled ? -1 : 1);
+
+    // `mediacodec-all-videos`: MediaCodec: enable all videos
+    // default: 0, in [0, 1]
+    options.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
+
+    // `seek-at-start`: set offset of player should be seeked
+    // default: 0, in [0, INT_MAX]
+    options.setPlayerOption('seek-at-start', startMillis);
+
+    // `soundtouch`: enable SoundTouch
+    // default: 0, in [0, 1]
+    // slowed down videos with SoundTouch enabled have a weird wobbly audio
+    options.setPlayerOption('soundtouch', 0);
+
     // TODO TLAD try subs
-    // `subtitle`: decode subtitle stream, default: 0, in [0, 1]
+    // `subtitle`: decode subtitle stream
+    // default: 0, in [0, 1]
     // option.setPlayerOption('subtitle', 1);
 
     _instance.applyOptions(options);
@@ -231,6 +257,19 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Stream<int> get positionStream => _instance.onCurrentPosUpdate.map((pos) => pos.inMilliseconds);
+
+  @override
+  double get speed => _speed;
+
+  @override
+  set speed(double speed) {
+    if (speed <= 0 || _speed == speed) return;
+    _speed = speed;
+    _applySpeed();
+  }
+
+  // TODO TLAD setting speed fails when there is no audio stream or audio is disabled
+  void _applySpeed() => _instance.setSpeed(speed);
 
   @override
   Widget buildPlayerWidget(BuildContext context) {

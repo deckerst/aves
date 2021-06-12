@@ -23,7 +23,7 @@ class VideoIcon extends StatelessWidget {
     final thumbnailTheme = context.watch<ThumbnailThemeData>();
     final showDuration = thumbnailTheme.showVideoDuration;
     Widget child = OverlayIcon(
-      icon: entry.is360 ? AIcons.threeSixty : AIcons.play,
+      icon: entry.is360 ? AIcons.threeSixty : AIcons.videoThumb,
       size: thumbnailTheme.iconSize,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,

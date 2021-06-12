@@ -93,6 +93,13 @@
   "entryActionRemoveFavourite": "Remove from favourites",
   "@entryActionRemoveFavourite": {},
 
+  "videoActionPause": "Pause",
+  "@videoActionPause": {},
+  "videoActionPlay": "Play",
+  "@videoActionPlay": {},
+  "videoActionSetSpeed": "Playback speed",
+  "@videoActionSetSpeed": {},
+
   "filterFavouriteLabel": "Favourite",
   "@filterFavouriteLabel": {},
   "filterLocationEmptyLabel": "Unlocated",
@@ -262,6 +269,9 @@
 
   "renameEntryDialogLabel": "New name",
   "@renameEntryDialogLabel": {},
+
+  "videoSpeedDialogLabel": "Playback speed",
+  "@videoSpeedDialogLabel": {},
 
   "genericSuccessFeedback": "Done!",
   "@genericSuccessFeedback": {},
@@ -629,10 +639,6 @@
   "@viewerOpenPanoramaButtonLabel": {},
   "viewerOpenTooltip": "Open",
   "@viewerOpenTooltip": {},
-  "viewerPauseTooltip": "Pause",
-  "@viewerPauseTooltip": {},
-  "viewerPlayTooltip": "Play",
-  "@viewerPlayTooltip": {},
   "viewerErrorUnknown": "Oops!",
   "@viewerErrorUnknown": {},
   "viewerErrorDoesNotExist": "The file no longer exists.",
