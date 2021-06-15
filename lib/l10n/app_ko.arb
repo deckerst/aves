@@ -47,8 +47,11 @@
   "entryActionAddFavourite": "즐겨찾기에 추가",
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
 
+  "videoActionCaptureFrame": "프레임 캡처",
   "videoActionPause": "일시정지",
   "videoActionPlay": "재생",
+  "videoActionReplay10": "10초 뒤로 탐색",
+  "videoActionSelectStreams": "트랙 선택",
   "videoActionSetSpeed": "재생 배속",
 
   "filterFavouriteLabel": "즐겨찾기",
@@ -123,6 +126,13 @@
   "renameEntryDialogLabel": "이름",
 
   "videoSpeedDialogLabel": "재생 배속",
+
+  "videoStreamSelectionDialogVideo": "동영상",
+  "videoStreamSelectionDialogAudio": "오디오",
+  "videoStreamSelectionDialogText": "자막",
+  "videoStreamSelectionDialogOff": "해제",
+  "videoStreamSelectionDialogTrack": "트랙",
+  "videoStreamSelectionDialogNoSelection": "다른 트랙이 없습니다.",
 
   "genericSuccessFeedback": "정상 처리됐습니다",
   "genericFailureFeedback": "오류가 발생했습니다",

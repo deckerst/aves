@@ -199,8 +199,9 @@ class IconUtils {
       case AlbumType.camera:
         return buildIcon(AIcons.cameraAlbum);
       case AlbumType.screenshots:
-      case AlbumType.screenRecordings:
         return buildIcon(AIcons.screenshotAlbum);
+      case AlbumType.screenRecordings:
+        return buildIcon(AIcons.recordingAlbum);
       case AlbumType.download:
         return buildIcon(AIcons.downloadAlbum);
       case AlbumType.app:

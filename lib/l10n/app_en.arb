@@ -93,10 +93,16 @@
   "entryActionRemoveFavourite": "Remove from favourites",
   "@entryActionRemoveFavourite": {},
 
+  "videoActionCaptureFrame": "Capture frame",
+  "@videoActionCaptureFrame": {},
   "videoActionPause": "Pause",
   "@videoActionPause": {},
   "videoActionPlay": "Play",
   "@videoActionPlay": {},
+  "videoActionReplay10": "Seek backward 10 seconds",
+  "@videoActionReplay10": {},
+  "videoActionSelectStreams": "Select tracks",
+  "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Playback speed",
   "@videoActionSetSpeed": {},
 
@@ -272,6 +278,19 @@
 
   "videoSpeedDialogLabel": "Playback speed",
   "@videoSpeedDialogLabel": {},
+
+  "videoStreamSelectionDialogVideo": "Video",
+  "@videoStreamSelectionDialogVideo": {},
+  "videoStreamSelectionDialogAudio": "Audio",
+  "@videoStreamSelectionDialogAudio": {},
+  "videoStreamSelectionDialogText": "Subtitles",
+  "@videoStreamSelectionDialogText": {},
+  "videoStreamSelectionDialogOff": "Off",
+  "@videoStreamSelectionDialogOff": {},
+  "videoStreamSelectionDialogTrack": "Track",
+  "@videoStreamSelectionDialogTrack": {},
+  "videoStreamSelectionDialogNoSelection": "There are no other tracks.",
+  "@videoStreamSelectionDialogNoSelection": {},
 
   "genericSuccessFeedback": "Done!",
   "@genericSuccessFeedback": {},

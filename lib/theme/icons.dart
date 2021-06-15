@@ -33,6 +33,8 @@ class AIcons {
 
   // actions
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
+  static const IconData replay10 = Icons.replay_10_outlined;
+  static const IconData captureFrame = Icons.screenshot_outlined;
   static const IconData clear = Icons.clear_outlined;
   static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
@@ -61,6 +63,10 @@ class AIcons {
   static const IconData sort = Icons.sort_outlined;
   static const IconData speed = Icons.speed_outlined;
   static const IconData stats = Icons.pie_chart_outlined;
+  static const IconData streams = Icons.translate_outlined;
+  static const IconData streamVideo = Icons.movie_outlined;
+  static const IconData streamAudio = Icons.audiotrack_outlined;
+  static const IconData streamText = Icons.closed_caption_outlined;
   static const IconData zoomIn = Icons.add_outlined;
   static const IconData zoomOut = Icons.remove_outlined;
   static const IconData collapse = Icons.expand_less_outlined;
@@ -72,7 +78,8 @@ class AIcons {
   static const IconData album = Icons.photo_album_outlined;
   static const IconData cameraAlbum = Icons.photo_camera_outlined;
   static const IconData downloadAlbum = Icons.file_download;
-  static const IconData screenshotAlbum = Icons.smartphone_outlined;
+  static const IconData screenshotAlbum = Icons.screenshot_outlined;
+  static const IconData recordingAlbum = Icons.smartphone_outlined;
 
   // thumbnail overlay
   static const IconData animated = Icons.slideshow;

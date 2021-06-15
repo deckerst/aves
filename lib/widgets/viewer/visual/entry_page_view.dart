@@ -20,6 +20,7 @@ import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/widgets/viewer/visual/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:flutter/foundation.dart';
@@ -196,12 +197,19 @@ class _EntryPageViewState extends State<EntryPageView> {
         ValueListenableBuilder<double>(
             valueListenable: videoController.sarNotifier,
             builder: (context, sar, child) {
-              return _buildMagnifier(
-                displaySize: entry.videoDisplaySize(sar),
-                child: VideoView(
-                  entry: entry,
-                  controller: videoController,
-                ),
+              return Stack(
+                children: [
+                  _buildMagnifier(
+                    displaySize: entry.videoDisplaySize(sar),
+                    child: VideoView(
+                      entry: entry,
+                      controller: videoController,
+                    ),
+                  ),
+                  VideoSubtitles(
+                    controller: videoController,
+                  ),
+                ],
               );
             }),
         // fade out image to ease transition with the player

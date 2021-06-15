@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class StorageService {

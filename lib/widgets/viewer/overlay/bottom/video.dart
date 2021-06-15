@@ -12,6 +12,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
+import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
@@ -219,6 +220,9 @@ class _ButtonRow extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
+      case VideoAction.captureFrame:
+      case VideoAction.replay10:
+      case VideoAction.selectStreams:
       case VideoAction.setSpeed:
         child = IconButton(
           icon: Icon(action.getIcon()),
@@ -245,6 +249,9 @@ class _ButtonRow extends StatelessWidget {
           isMenuItem: true,
         );
         break;
+      case VideoAction.captureFrame:
+      case VideoAction.replay10:
+      case VideoAction.selectStreams:
       case VideoAction.setSpeed:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
         break;
@@ -263,6 +270,20 @@ class _ButtonRow extends StatelessWidget {
       case VideoAction.setSpeed:
         _showSpeedDialog(context);
         break;
+      case VideoAction.selectStreams:
+        _showStreamSelectionDialog(context);
+        break;
+      case VideoAction.captureFrame:
+        controller?.captureFrame();
+        break;
+      case VideoAction.replay10:
+        {
+          final _controller = controller;
+          if (_controller != null && _controller.isReady) {
+            _controller.seekTo(_controller.currentPosition - 10000);
+          }
+          break;
+        }
     }
   }
 
@@ -281,6 +302,25 @@ class _ButtonRow extends StatelessWidget {
     if (newSpeed == null) return;
 
     _controller.speed = newSpeed;
+  }
+
+  Future<void> _showStreamSelectionDialog(BuildContext context) async {
+    final _controller = controller;
+    if (_controller == null) return;
+
+    final selectedStreams = await showDialog<Map<StreamType, StreamSummary>>(
+      context: context,
+      builder: (context) => VideoStreamSelectionDialog(
+        streams: _controller.streams,
+      ),
+    );
+    if (selectedStreams == null || selectedStreams.isEmpty) return;
+
+    // TODO TLAD [video] get stream list & guess default selected streams, when the controller is not initialized yet
+    await Future.forEach<MapEntry<StreamType, StreamSummary>>(
+      selectedStreams.entries,
+      (kv) => _controller.selectStream(kv.key, kv.value),
+    );
   }
 
   Future<void> _togglePlayPause(BuildContext context) async {

@@ -1,9 +1,8 @@
 import 'dart:math';
 
+import 'package:aves/widgets/common/magnifier/pan/corner_hit_detector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-
-import '../pan/corner_hit_detector.dart';
 
 class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   final CornerHitDetector hitDetector;
