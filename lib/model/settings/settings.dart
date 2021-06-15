@@ -1,7 +1,9 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/screen_on.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,9 +11,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../source/enums.dart';
-import 'enums.dart';
 
 final Settings settings = Settings._private();
 
@@ -56,6 +55,7 @@ class Settings extends ChangeNotifier {
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
+  static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -251,6 +251,10 @@ class Settings extends ChangeNotifier {
   VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, VideoLoopMode.shortOnly, VideoLoopMode.values);
 
   set videoLoopMode(VideoLoopMode newValue) => setAndNotify(videoLoopModeKey, newValue.toString());
+
+  set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
+
+  bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, false);
 
   // info
 

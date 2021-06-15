@@ -5,6 +5,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/services/services.dart';
@@ -17,8 +18,6 @@ import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-
-import '../ref/mime_types.dart';
 
 class AvesEntry {
   String uri;

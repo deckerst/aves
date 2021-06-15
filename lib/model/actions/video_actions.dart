@@ -3,35 +3,53 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
 enum VideoAction {
-  togglePlay,
+  captureFrame,
+  replay10,
+  selectStreams,
   setSpeed,
+  togglePlay,
 }
 
 class VideoActions {
   static const all = [
+    VideoAction.replay10,
     VideoAction.togglePlay,
+    // VideoAction.captureFrame,
     VideoAction.setSpeed,
+    VideoAction.selectStreams,
   ];
 }
 
 extension ExtraVideoAction on VideoAction {
   String getText(BuildContext context) {
     switch (this) {
+      case VideoAction.captureFrame:
+        return context.l10n.videoActionCaptureFrame;
+      case VideoAction.replay10:
+        return context.l10n.videoActionReplay10;
+      case VideoAction.selectStreams:
+        return context.l10n.videoActionSelectStreams;
+      case VideoAction.setSpeed:
+        return context.l10n.videoActionSetSpeed;
       case VideoAction.togglePlay:
         // different data depending on toggle state
         return context.l10n.videoActionPlay;
-      case VideoAction.setSpeed:
-        return context.l10n.videoActionSetSpeed;
     }
   }
 
   IconData? getIcon() {
     switch (this) {
+      case VideoAction.captureFrame:
+        return AIcons.captureFrame;
+      case VideoAction.replay10:
+        return AIcons.replay10;
+      case VideoAction.selectStreams:
+        return AIcons.streams;
+      case VideoAction.setSpeed:
+        return AIcons.speed;
       case VideoAction.togglePlay:
         // different data depending on toggle state
         return AIcons.play;
-      case VideoAction.setSpeed:
-        return AIcons.speed;
     }
   }
 }
