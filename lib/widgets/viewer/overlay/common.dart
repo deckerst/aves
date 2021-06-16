@@ -34,8 +34,8 @@ class OverlayButton extends StatelessWidget {
     );
   }
 
-  // icon (24) + icon padding (8) + button padding (16) + border (2)
-  static double getSize(BuildContext context) => 50.0;
+  // icon (24) + icon padding (8) + button padding (16) + border (1 or 2)
+  static double getSize(BuildContext context) => 48.0 + AvesBorder.borderWidth * 2;
 }
 
 class OverlayTextButton extends StatelessWidget {
