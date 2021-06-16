@@ -590,6 +590,10 @@
   "@settingsVideoLoopModeTile": {},
   "settingsVideoLoopModeTitle": "Loop Mode",
   "@settingsVideoLoopModeTitle": {},
+  "settingsVideoQuickActionsTile": "Quick video actions",
+  "@settingsVideoQuickActionsTile": {},
+  "settingsVideoQuickActionEditorTitle": "Quick Video Actions",
+  "@settingsVideoQuickActionEditorTitle": {},
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},

@@ -6,6 +6,7 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/constants.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -18,6 +19,7 @@ import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class VideoControlOverlay extends StatefulWidget {
   final AvesEntry entry;
@@ -51,6 +53,9 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   bool get isPlaying => controller?.isPlaying ?? false;
 
+  static const double outerPadding = 8;
+  static const double innerPadding = 8;
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<VideoStatus>(
@@ -58,10 +63,11 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
         builder: (context, snapshot) {
           // do not use stream snapshot because it is obsolete when switching between videos
           final status = controller?.status ?? VideoStatus.idle;
-          List<Widget> children;
+          Widget child;
           if (status == VideoStatus.error) {
-            children = [
-              OverlayButton(
+            child = Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: OverlayButton(
                 scale: scale,
                 child: IconButton(
                   icon: const Icon(AIcons.openOutside),
@@ -69,32 +75,38 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                   tooltip: context.l10n.viewerOpenTooltip,
                 ),
               ),
-            ];
+            );
           } else {
-            final quickActions = settings.videoQuickActions;
-            final menuActions = VideoActions.all.where((action) => !quickActions.contains(action)).toList();
-            children = [
-              Expanded(
-                child: _buildProgressBar(),
-              ),
-              const SizedBox(width: 8),
-              _ButtonRow(
-                quickActions: quickActions,
-                menuActions: menuActions,
-                scale: scale,
-                controller: controller,
-              ),
-            ];
+            child = Selector<MediaQueryData, double>(
+              selector: (c, mq) => mq.size.width - mq.padding.horizontal,
+              builder: (c, mqWidth, child) {
+                final buttonWidth = OverlayButton.getSize(context);
+                final availableCount = ((mqWidth - outerPadding * 2) / (buttonWidth + innerPadding)).floor();
+                final quickActions = settings.videoQuickActions.take(availableCount - 1).toList();
+                final menuActions = VideoActions.all.where((action) => !quickActions.contains(action)).toList();
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _ButtonRow(
+                      quickActions: quickActions,
+                      menuActions: menuActions,
+                      scale: scale,
+                      controller: controller,
+                    ),
+                    const SizedBox(height: 8),
+                    _buildProgressBar(),
+                  ],
+                );
+              },
+            );
           }
 
           return TooltipTheme(
             data: TooltipTheme.of(context).copyWith(
               preferBelow: false,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: children,
-            ),
+            child: child,
           );
         });
   }
@@ -136,10 +148,16 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                         builder: (context, snapshot) {
                           // do not use stream snapshot because it is obsolete when switching between videos
                           final position = controller?.currentPosition.floor() ?? 0;
-                          return Text(formatFriendlyDuration(Duration(milliseconds: position)));
+                          return Text(
+                            formatFriendlyDuration(Duration(milliseconds: position)),
+                            style: const TextStyle(shadows: Constants.embossShadows),
+                          );
                         }),
                     const Spacer(),
-                    Text(entry.durationText),
+                    Text(
+                      entry.durationText,
+                      style: const TextStyle(shadows: Constants.embossShadows),
+                    ),
                   ],
                 ),
                 ClipRRect(
@@ -196,16 +214,20 @@ class _ButtonRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ...quickActions.map((action) => _buildOverlayButton(context, action)),
-        OverlayButton(
-          scale: scale,
-          child: PopupMenuButton<VideoAction>(
-            itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
-            onSelected: (action) {
-              // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
-            },
+        if (menuActions.isNotEmpty)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: padding),
+            child: OverlayButton(
+              scale: scale,
+              child: PopupMenuButton<VideoAction>(
+                itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
+                onSelected: (action) {
+                  // wait for the popup menu to hide before proceeding with the action
+                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+                },
+              ),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -232,7 +254,7 @@ class _ButtonRow extends StatelessWidget {
         break;
     }
     return Padding(
-      padding: const EdgeInsetsDirectional.only(end: padding),
+      padding: const EdgeInsetsDirectional.only(start: padding),
       child: OverlayButton(
         scale: scale,
         child: child,

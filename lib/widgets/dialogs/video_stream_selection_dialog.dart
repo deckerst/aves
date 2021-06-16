@@ -47,6 +47,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     final canSelect = canSelectVideo || canSelectAudio || canSelectText;
     return AvesDialog(
       context: context,
+      content: canSelect ? null : Text(context.l10n.videoStreamSelectionDialogNoSelection),
       scrollableContent: canSelect
           ? [
               if (canSelectVideo)
@@ -75,22 +76,17 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
                 ),
               const SizedBox(height: 8),
             ]
-          : [
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(16),
-                child: Text(context.l10n.videoStreamSelectionDialogNoSelection),
-              ),
-            ],
+          : null,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
-        TextButton(
-          onPressed: () => _submit(context),
-          child: Text(context.l10n.applyButtonLabel),
-        ),
+        if (canSelect)
+          TextButton(
+            onPressed: () => _submit(context),
+            child: Text(context.l10n.applyButtonLabel),
+          ),
       ],
     );
   }

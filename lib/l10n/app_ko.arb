@@ -278,6 +278,8 @@
   "settingsVideoEnableAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile": "반복 모드",
   "settingsVideoLoopModeTitle": "반복 모드",
+  "settingsVideoQuickActionsTile": "빠른 동영상 작업",
+  "settingsVideoQuickActionEditorTitle": "빠른 동영상 작업",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",
