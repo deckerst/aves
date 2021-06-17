@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
     final entry = await imageFileService.getEntry(uri, mimeType);
     if (entry != null) {
       // cataloguing is essential for coordinates and video rotation
-      await entry.catalog();
+      await entry.catalog(background: false, persist: false);
     }
     return entry;
   }

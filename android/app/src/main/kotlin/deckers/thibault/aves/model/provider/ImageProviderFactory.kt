@@ -7,11 +7,11 @@ import java.util.*
 
 object ImageProviderFactory {
     fun getProvider(uri: Uri): ImageProvider? {
-        return when (uri.scheme?.toLowerCase(Locale.ROOT)) {
+        return when (uri.scheme?.lowercase(Locale.ROOT)) {
             ContentResolver.SCHEME_CONTENT -> {
                 // a URI's authority is [userinfo@]host[:port]
                 // but we only want the host when comparing to Media Store's "authority"
-                return when (uri.host?.toLowerCase(Locale.ROOT)) {
+                return when (uri.host?.lowercase(Locale.ROOT)) {
                     MediaStore.AUTHORITY -> MediaStoreImageProvider()
                     else -> ContentImageProvider()
                 }

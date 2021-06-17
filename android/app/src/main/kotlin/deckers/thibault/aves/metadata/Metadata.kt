@@ -73,7 +73,7 @@ object Metadata {
         var timeZone: TimeZone? = null
         val timeZoneMatcher = VIDEO_TIMEZONE_PATTERN.matcher(dateString)
         if (timeZoneMatcher.find()) {
-            timeZone = TimeZone.getTimeZone("GMT${timeZoneMatcher.group().replace("Z".toRegex(), "")}")
+            timeZone = TimeZone.getTimeZone("GMT${timeZoneMatcher.group().replace("Z", "")}")
             dateString = timeZoneMatcher.replaceAll("")
         }
 
