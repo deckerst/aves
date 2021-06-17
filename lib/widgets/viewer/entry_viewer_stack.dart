@@ -154,13 +154,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
+      case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
         _pauseVideoControllers();
         break;
       case AppLifecycleState.resumed:
         availability.onResume();
-        break;
-      default:
         break;
     }
   }
