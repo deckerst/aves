@@ -224,6 +224,7 @@
   "albumDownload": "다운로드",
   "albumScreenshots": "스크린샷",
   "albumScreenRecordings": "화면 녹화 파일",
+  "albumVideoCaptures": "동영상 캡처",
 
   "albumPageTitle": "앨범",
   "albumEmpty": "앨범이 없습니다",

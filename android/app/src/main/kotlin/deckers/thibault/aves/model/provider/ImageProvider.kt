@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.commonsware.cwac.document.DocumentFileCompat
 import deckers.thibault.aves.decoder.MultiTrackImage
 import deckers.thibault.aves.decoder.TiffImage
+import deckers.thibault.aves.metadata.ExifInterfaceHelper
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.model.AvesEntry
 import deckers.thibault.aves.model.ExifOrientationOp
@@ -97,6 +98,7 @@ abstract class ImageProvider {
         }
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun exportSingleByTreeDocAndScan(
         context: Context,
         sourceEntry: AvesEntry,
@@ -109,9 +111,7 @@ abstract class ImageProvider {
         val pageId = sourceEntry.pageId
 
         var desiredNameWithoutExtension = if (sourceEntry.path != null) {
-            val sourcePath = sourceEntry.path
-            val sourceFile = File(sourcePath)
-            val sourceFileName = sourceFile.name
+            val sourceFileName = File(sourceEntry.path).name
             sourceFileName.replaceFirst("[.][^.]+$".toRegex(), "")
         } else {
             sourceUri.lastPathSegment!!
@@ -130,13 +130,11 @@ abstract class ImageProvider {
         // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
         // through a document URI, not a tree URI
         // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
-        @Suppress("BlockingMethodInNonBlockingContext")
         val destinationTreeFile = destinationDirDocFile.createFile(exportMimeType, desiredNameWithoutExtension)
         val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
 
         if (isVideo(sourceMimeType)) {
             val sourceDocFile = DocumentFileCompat.fromSingleUri(context, sourceUri)
-            @Suppress("BlockingMethodInNonBlockingContext")
             sourceDocFile.copyTo(destinationDocFile)
         } else {
             val model: Any = if (MimeTypes.isHeic(sourceMimeType) && pageId != null) {
@@ -159,14 +157,12 @@ abstract class ImageProvider {
                 .load(model)
                 .submit()
             try {
-                @Suppress("BlockingMethodInNonBlockingContext")
                 var bitmap = target.get()
                 if (MimeTypes.needRotationAfterGlide(sourceMimeType)) {
                     bitmap = BitmapUtils.applyExifOrientation(context, bitmap, sourceEntry.rotationDegrees, sourceEntry.isFlipped)
                 }
                 bitmap ?: throw Exception("failed to get image from uri=$sourceUri page=$pageId")
 
-                @Suppress("BlockingMethodInNonBlockingContext")
                 destinationDocFile.openOutputStream().use { output ->
                     if (exportMimeType == MimeTypes.BMP) {
                         BmpWriter.writeRGB24(bitmap, output)
@@ -199,6 +195,108 @@ abstract class ImageProvider {
         val destinationFullPath = destinationDir + fileName
 
         return scanNewPath(context, destinationFullPath, exportMimeType)
+    }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    suspend fun captureFrame(
+        context: Context,
+        desiredNameWithoutExtension: String,
+        exifFields: FieldMap,
+        bytes: ByteArray,
+        destinationDir: String,
+        callback: ImageOpCallback,
+    ) {
+        val destinationDirDocFile = createDirectoryIfAbsent(context, destinationDir)
+        if (destinationDirDocFile == null) {
+            callback.onFailure(Exception("failed to create directory at path=$destinationDir"))
+            return
+        }
+
+        val captureMimeType = MimeTypes.JPEG
+        val desiredFileName = desiredNameWithoutExtension + extensionFor(captureMimeType)
+        if (File(destinationDir, desiredFileName).exists()) {
+            callback.onFailure(Exception("file with name=$desiredFileName already exists in destination directory"))
+            return
+        }
+
+        // the file created from a `TreeDocumentFile` is also a `TreeDocumentFile`
+        // but in order to open an output stream to it, we need to use a `SingleDocumentFile`
+        // through a document URI, not a tree URI
+        // note that `DocumentFile.getParentFile()` returns null if we did not pick a tree first
+        val destinationTreeFile = destinationDirDocFile.createFile(captureMimeType, desiredNameWithoutExtension)
+        val destinationDocFile = DocumentFileCompat.fromSingleUri(context, destinationTreeFile.uri)
+
+        try {
+            if (exifFields.isEmpty()) {
+                destinationDocFile.openOutputStream().use { output ->
+                    output.write(bytes)
+                }
+            } else {
+                val editableFile = File.createTempFile("aves", null).apply {
+                    deleteOnExit()
+                    outputStream().use { output ->
+                        ByteArrayInputStream(bytes).use { imageInput ->
+                            imageInput.copyTo(output)
+                        }
+                    }
+                }
+
+                val exif = ExifInterface(editableFile)
+
+                val rotationDegrees = exifFields["rotationDegrees"] as Int?
+                if (rotationDegrees != null) {
+                    // when the orientation is not defined, it returns `undefined (0)` instead of the orientation default value `normal (1)`
+                    // in that case we explicitly set it to `normal` first
+                    // because ExifInterface fails to rotate an image with undefined orientation
+                    // as of androidx.exifinterface:exifinterface:1.3.0
+                    val currentOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+                    if (currentOrientation == ExifInterface.ORIENTATION_UNDEFINED) {
+                        exif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
+                    }
+                    exif.rotate(rotationDegrees)
+                }
+
+                val dateTimeMillis = (exifFields["dateTimeMillis"] as Number?)?.toLong()
+                if (dateTimeMillis != null) {
+                    val dateString = ExifInterfaceHelper.DATETIME_FORMAT.format(Date(dateTimeMillis))
+                    exif.setAttribute(ExifInterface.TAG_DATETIME, dateString)
+                    exif.setAttribute(ExifInterface.TAG_DATETIME_ORIGINAL, dateString)
+
+                    val offsetInMinutes = TimeZone.getDefault().getOffset(dateTimeMillis) / 60000
+                    val offsetSign = if (offsetInMinutes < 0) "-" else "+"
+                    val offsetHours = "${offsetInMinutes / 60}".padStart(2, '0')
+                    val offsetMinutes = "${offsetInMinutes % 60}".padStart(2, '0')
+                    val timeZoneString = "$offsetSign$offsetHours:$offsetMinutes"
+                    exif.setAttribute(ExifInterface.TAG_OFFSET_TIME, timeZoneString)
+                    exif.setAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL, timeZoneString)
+
+                    val sub = dateTimeMillis % 1000
+                    if (sub > 0) {
+                        val subString = sub.toString()
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME, subString)
+                        exif.setAttribute(ExifInterface.TAG_SUBSEC_TIME_ORIGINAL, subString)
+                    }
+                }
+
+                val latitude = (exifFields["latitude"] as Number?)?.toDouble()
+                val longitude = (exifFields["longitude"] as Number?)?.toDouble()
+                if (latitude != null && longitude != null) {
+                    exif.setLatLong(latitude, longitude)
+                }
+
+                exif.saveAttributes()
+
+                // copy the edited temporary file back to the original
+                DocumentFileCompat.fromFile(editableFile).copyTo(destinationDocFile)
+            }
+
+            val fileName = destinationDocFile.name
+            val destinationFullPath = destinationDir + fileName
+            val newFields = scanNewPath(context, destinationFullPath, captureMimeType)
+            callback.onSuccess(newFields)
+        } catch (e: Exception) {
+            callback.onFailure(e)
+        }
     }
 
     suspend fun rename(context: Context, oldPath: String, oldMediaUri: Uri, mimeType: String, newFilename: String, callback: ImageOpCallback) {

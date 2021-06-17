@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 final AndroidFileUtils androidFileUtils = AndroidFileUtils._private();
 
 class AndroidFileUtils {
-  late String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath;
+  late String primaryStorage, dcimPath, downloadPath, moviesPath, picturesPath, videoCapturesPath;
   Set<StorageVolume> storageVolumes = {};
   Set<Package> _packages = {};
   List<String> _potentialAppDirs = [];
@@ -28,6 +28,8 @@ class AndroidFileUtils {
     downloadPath = pContext.join(primaryStorage, 'Download');
     moviesPath = pContext.join(primaryStorage, 'Movies');
     picturesPath = pContext.join(primaryStorage, 'Pictures');
+    // from Aves
+    videoCapturesPath = pContext.join(dcimPath, 'Video Captures');
   }
 
   Future<void> initAppNames() async {
@@ -41,6 +43,8 @@ class AndroidFileUtils {
   bool isScreenshotsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(picturesPath)) && path.endsWith('Screenshots');
 
   bool isScreenRecordingsPath(String path) => (path.startsWith(dcimPath) || path.startsWith(moviesPath)) && (path.endsWith('Screen recordings') || path.endsWith('ScreenRecords'));
+
+  bool isVideoCapturesPath(String path) => path == videoCapturesPath;
 
   bool isDownloadPath(String path) => path == downloadPath;
 
@@ -59,6 +63,7 @@ class AndroidFileUtils {
     if (isDownloadPath(albumPath)) return AlbumType.download;
     if (isScreenRecordingsPath(albumPath)) return AlbumType.screenRecordings;
     if (isScreenshotsPath(albumPath)) return AlbumType.screenshots;
+    if (isVideoCapturesPath(albumPath)) return AlbumType.videoCaptures;
 
     final dir = pContext.split(albumPath).last;
     if (albumPath.startsWith(primaryStorage) && _potentialAppDirs.contains(dir)) return AlbumType.app;
@@ -78,7 +83,7 @@ class AndroidFileUtils {
   }
 }
 
-enum AlbumType { regular, app, camera, download, screenRecordings, screenshots }
+enum AlbumType { regular, app, camera, download, screenRecordings, screenshots, videoCaptures }
 
 class Package {
   final String packageName;

@@ -34,6 +34,7 @@ mixin AlbumMixin on SourceBase {
       if (type == AlbumType.download) return context.l10n.albumDownload;
       if (type == AlbumType.screenshots) return context.l10n.albumScreenshots;
       if (type == AlbumType.screenRecordings) return context.l10n.albumScreenRecordings;
+      if (type == AlbumType.videoCaptures) return context.l10n.albumVideoCaptures;
     }
 
     final dir = VolumeRelativeDirectory.fromPath(dirPath);

@@ -26,6 +26,7 @@ import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves/widgets/viewer/video_action_delegate.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -60,7 +61,8 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   late Animation<double> _topOverlayScale, _bottomOverlayScale;
   late Animation<Offset> _bottomOverlayOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
-  late EntryActionDelegate _actionDelegate;
+  late EntryActionDelegate _entryActionDelegate;
+  late VideoActionDelegate _videoActionDelegate;
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
@@ -108,9 +110,12 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
       curve: Curves.easeOutQuad,
     ));
     _overlayVisible.addListener(_onOverlayVisibleChange);
-    _actionDelegate = EntryActionDelegate(
+    _entryActionDelegate = EntryActionDelegate(
       collection: collection,
       showInfo: () => _goToVerticalPage(infoPage),
+    );
+    _videoActionDelegate = VideoActionDelegate(
+      collection: collection,
     );
     _initEntryControllers();
     _registerWidget(widget);
@@ -243,7 +248,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 }
               }
             }
-            _actionDelegate.onActionSelected(context, targetEntry, action);
+            _entryActionDelegate.onActionSelected(context, targetEntry, action);
           },
           viewStateNotifier: _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == mainEntry.uri)?.item2,
         );
@@ -290,6 +295,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 entry: pageEntry,
                 controller: videoController,
                 scale: _bottomOverlayScale,
+                onActionSelected: (action) {
+                  if (videoController != null) {
+                    _videoActionDelegate.onActionSelected(context, videoController, action);
+                  }
+                },
               ),
             );
           } else if (pageEntry.is360) {
@@ -414,7 +424,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
   void _onVerticalPageChanged(int page) {
     _currentVerticalPage.value = page;
     if (page == transitionPage) {
-      _actionDelegate.dismissFeedback(context);
+      _entryActionDelegate.dismissFeedback(context);
       _popVisual();
     } else if (page == infoPage) {
       // prevent hero when viewer is offscreen
