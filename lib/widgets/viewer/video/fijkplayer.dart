@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
@@ -339,11 +340,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   @override
-  Future<void> captureFrame() async {
-    final bytes = await _instance.takeSnapShot();
-    // TODO TLAD [video] export to DCIM/Videocaptures
-    debugPrint('captureFrame bytes=${bytes.length}');
-  }
+  Future<Uint8List> captureFrame() => _instance.takeSnapShot();
 
   @override
   Widget buildPlayerWidget(BuildContext context) {

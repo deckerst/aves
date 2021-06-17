@@ -1,4 +1,3 @@
-import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/basic/outlined_text.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +5,12 @@ import 'package:provider/provider.dart';
 
 class VideoSubtitles extends StatelessWidget {
   final AvesVideoController controller;
+  final bool debugMode;
 
   const VideoSubtitles({
     Key? key,
     required this.controller,
+    this.debugMode = false,
   }) : super(key: key);
 
   @override
@@ -17,34 +18,43 @@ class VideoSubtitles extends StatelessWidget {
     return Selector<MediaQueryData, Orientation>(
       selector: (c, mq) => mq.orientation,
       builder: (c, orientation, child) {
+        final y = orientation == Orientation.portrait ? .5 : .8;
         return Align(
-          alignment: Alignment(0, orientation == Orientation.portrait ? .5 : .8),
-          child: StreamBuilder<String?>(
-            stream: controller.timedTextStream,
-            builder: (context, snapshot) {
-              final text = snapshot.data;
-              return text != null ? SubtitleText(text: text) : const SizedBox();
-            },
-          ),
+          alignment: Alignment(0, debugMode ? -y : y),
+          child: child,
         );
       },
+      child: StreamBuilder<String?>(
+        stream: controller.timedTextStream,
+        builder: (context, snapshot) {
+          final text = snapshot.data;
+          return text != null
+              ? SubtitleText(
+                  text: text,
+                  debugMode: debugMode,
+                )
+              : const SizedBox();
+        },
+      ),
     );
   }
 }
 
 class SubtitleText extends StatelessWidget {
   final String text;
+  final bool debugMode;
 
   const SubtitleText({
     Key? key,
     required this.text,
+    this.debugMode = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     late final String displayText;
 
-    if (!settings.videoShowRawTimedText) {
+    if (debugMode) {
       displayText = text;
     } else {
       // TODO TLAD [video] process ASS tags, cf https://aegi.vmoe.info/docs/3.0/ASS_Tags/

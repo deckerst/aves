@@ -492,6 +492,8 @@
   "@albumScreenshots": {},
   "albumScreenRecordings": "Screen recordings",
   "@albumScreenRecordings": {},
+  "albumVideoCaptures": "Video Captures",
+  "@albumVideoCaptures": {},
 
   "albumPageTitle": "Albums",
   "@albumPageTitle": {},

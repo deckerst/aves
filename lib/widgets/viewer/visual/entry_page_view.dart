@@ -209,6 +209,11 @@ class _EntryPageViewState extends State<EntryPageView> {
                   VideoSubtitles(
                     controller: videoController,
                   ),
+                  if (settings.videoShowRawTimedText)
+                    VideoSubtitles(
+                      controller: videoController,
+                      debugMode: true,
+                    ),
                 ],
               );
             }),

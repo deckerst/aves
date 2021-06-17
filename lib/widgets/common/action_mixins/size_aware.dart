@@ -46,26 +46,49 @@ mixin SizeAwareMixin {
 
     final hasEnoughSpace = needed < free;
     if (!hasEnoughSpace) {
-      await showDialog(
-        context: context,
-        builder: (context) {
-          final neededSize = formatFilesize(needed);
-          final freeSize = formatFilesize(free);
-          final volume = destinationVolume.getDescription(context);
-          return AvesDialog(
-            context: context,
-            title: context.l10n.notEnoughSpaceDialogTitle,
-            content: Text(context.l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
-              ),
-            ],
-          );
-        },
-      );
+      await _showNotEnoughSpaceDialog(context, needed, free, destinationVolume);
     }
     return hasEnoughSpace;
+  }
+
+  Future<bool> checkFreeSpace(
+    BuildContext context,
+    int needed,
+    String destinationAlbum,
+  ) async {
+    // assume we have enough space if we cannot find the volume or its remaining free space
+    final destinationVolume = androidFileUtils.getStorageVolume(destinationAlbum);
+    if (destinationVolume == null) return true;
+
+    final free = await storageService.getFreeSpace(destinationVolume);
+    if (free == null) return true;
+
+    final hasEnoughSpace = needed < free;
+    if (!hasEnoughSpace) {
+      await _showNotEnoughSpaceDialog(context, needed, free, destinationVolume);
+    }
+    return hasEnoughSpace;
+  }
+
+  Future<void> _showNotEnoughSpaceDialog(BuildContext context, int needed, int free, StorageVolume destinationVolume) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        final neededSize = formatFilesize(needed);
+        final freeSize = formatFilesize(free);
+        final volume = destinationVolume.getDescription(context);
+        return AvesDialog(
+          context: context,
+          title: context.l10n.notEnoughSpaceDialogTitle,
+          content: Text(context.l10n.notEnoughSpaceDialogMessage(neededSize, freeSize, volume)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).okButtonLabel),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

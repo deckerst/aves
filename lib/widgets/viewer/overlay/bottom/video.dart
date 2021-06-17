@@ -12,10 +12,7 @@ import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
-import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
-import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
-import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -25,12 +22,14 @@ class VideoControlOverlay extends StatefulWidget {
   final AvesEntry entry;
   final AvesVideoController? controller;
   final Animation<double> scale;
+  final Function(VideoAction value) onActionSelected;
 
   const VideoControlOverlay({
     Key? key,
     required this.entry,
     required this.controller,
     required this.scale,
+    required this.onActionSelected,
   }) : super(key: key);
 
   @override
@@ -93,6 +92,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
                       menuActions: menuActions,
                       scale: scale,
                       controller: controller,
+                      onActionSelected: widget.onActionSelected,
                     ),
                     const SizedBox(height: 8),
                     _buildProgressBar(),
@@ -195,6 +195,7 @@ class _ButtonRow extends StatelessWidget {
   final List<VideoAction> quickActions, menuActions;
   final Animation<double> scale;
   final AvesVideoController? controller;
+  final Function(VideoAction value) onActionSelected;
 
   const _ButtonRow({
     Key? key,
@@ -202,6 +203,7 @@ class _ButtonRow extends StatelessWidget {
     required this.menuActions,
     required this.scale,
     required this.controller,
+    required this.onActionSelected,
   }) : super(key: key);
 
   static const double padding = 8;
@@ -223,7 +225,7 @@ class _ButtonRow extends StatelessWidget {
                 itemBuilder: (context) => menuActions.map((action) => _buildPopupMenuItem(context, action)).toList(),
                 onSelected: (action) {
                   // wait for the popup menu to hide before proceeding with the action
-                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
+                  Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
                 },
               ),
             ),
@@ -234,7 +236,7 @@ class _ButtonRow extends StatelessWidget {
 
   Widget _buildOverlayButton(BuildContext context, VideoAction action) {
     late Widget child;
-    void onPressed() => _onActionSelected(context, action);
+    void onPressed() => onActionSelected(action);
     switch (action) {
       case VideoAction.togglePlay:
         child = _PlayToggler(
@@ -282,81 +284,6 @@ class _ButtonRow extends StatelessWidget {
       value: action,
       child: child,
     );
-  }
-
-  void _onActionSelected(BuildContext context, VideoAction action) {
-    switch (action) {
-      case VideoAction.togglePlay:
-        _togglePlayPause(context);
-        break;
-      case VideoAction.setSpeed:
-        _showSpeedDialog(context);
-        break;
-      case VideoAction.selectStreams:
-        _showStreamSelectionDialog(context);
-        break;
-      case VideoAction.captureFrame:
-        controller?.captureFrame();
-        break;
-      case VideoAction.replay10:
-        {
-          final _controller = controller;
-          if (_controller != null && _controller.isReady) {
-            _controller.seekTo(_controller.currentPosition - 10000);
-          }
-          break;
-        }
-    }
-  }
-
-  Future<void> _showSpeedDialog(BuildContext context) async {
-    final _controller = controller;
-    if (_controller == null) return;
-
-    final newSpeed = await showDialog<double>(
-      context: context,
-      builder: (context) => VideoSpeedDialog(
-        current: _controller.speed,
-        min: _controller.minSpeed,
-        max: _controller.maxSpeed,
-      ),
-    );
-    if (newSpeed == null) return;
-
-    _controller.speed = newSpeed;
-  }
-
-  Future<void> _showStreamSelectionDialog(BuildContext context) async {
-    final _controller = controller;
-    if (_controller == null) return;
-
-    final selectedStreams = await showDialog<Map<StreamType, StreamSummary>>(
-      context: context,
-      builder: (context) => VideoStreamSelectionDialog(
-        streams: _controller.streams,
-      ),
-    );
-    if (selectedStreams == null || selectedStreams.isEmpty) return;
-
-    // TODO TLAD [video] get stream list & guess default selected streams, when the controller is not initialized yet
-    await Future.forEach<MapEntry<StreamType, StreamSummary>>(
-      selectedStreams.entries,
-      (kv) => _controller.selectStream(kv.key, kv.value),
-    );
-  }
-
-  Future<void> _togglePlayPause(BuildContext context) async {
-    final _controller = controller;
-    if (_controller == null) return;
-
-    if (isPlaying) {
-      await _controller.pause();
-    } else {
-      await _controller.play();
-      // hide overlay
-      await Future.delayed(Durations.iconAnimation);
-      ToggleOverlayNotification().dispatch(context);
-    }
   }
 }
 

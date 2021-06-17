@@ -196,16 +196,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final showAction = collection != null && movedCount > 0
+        final _collection = collection;
+        final showAction = _collection != null && movedCount > 0
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
                 onPressed: () async {
                   final highlightInfo = context.read<HighlightInfo>();
                   final targetCollection = CollectionLens(
-                    source: collection!.source,
+                    source: source,
                     filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                    groupFactor: collection!.groupFactor,
-                    sortFactor: collection!.sortFactor,
+                    groupFactor: _collection.groupFactor,
+                    sortFactor: _collection.sortFactor,
                   );
                   unawaited(Navigator.pushAndRemoveUntil(
                     context,

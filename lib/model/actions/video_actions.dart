@@ -14,7 +14,7 @@ class VideoActions {
   static const all = [
     VideoAction.replay10,
     VideoAction.togglePlay,
-    // VideoAction.captureFrame,
+    VideoAction.captureFrame,
     VideoAction.setSpeed,
     VideoAction.selectStreams,
   ];

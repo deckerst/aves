@@ -54,18 +54,18 @@ object StorageUtils {
     private fun getPathStepIterator(context: Context, anyPath: String, root: String?): Iterator<String?>? {
         val rootLength = (root ?: getVolumePath(context, anyPath))?.length ?: return null
 
-        var filename: String? = null
+        var fileName: String? = null
         var relativePath: String? = null
         val lastSeparatorIndex = anyPath.lastIndexOf(File.separator) + 1
         if (lastSeparatorIndex > rootLength) {
-            filename = anyPath.substring(lastSeparatorIndex)
+            fileName = anyPath.substring(lastSeparatorIndex)
             relativePath = anyPath.substring(rootLength, lastSeparatorIndex)
         }
         relativePath ?: return null
 
         val pathSteps = relativePath.split(File.separator).filter { it.isNotEmpty() }.toMutableList()
-        if (filename?.isNotEmpty() == true) {
-            pathSteps.add(filename)
+        if (fileName?.isNotEmpty() == true) {
+            pathSteps.add(fileName)
         }
         return pathSteps.iterator()
     }
@@ -187,7 +187,7 @@ object StorageUtils {
                         return "primary"
                     }
                     volume.uuid?.let { uuid ->
-                        return uuid.toUpperCase(Locale.ROOT)
+                        return uuid.uppercase(Locale.ROOT)
                     }
                 }
             }
@@ -199,7 +199,7 @@ object StorageUtils {
                 return "primary"
             }
             volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }?.let { uuid ->
-                return uuid.toUpperCase(Locale.ROOT)
+                return uuid.uppercase(Locale.ROOT)
             }
         }
 
@@ -434,11 +434,11 @@ object StorageUtils {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
     }
 
-    // `fullPath` should match "volumePath + relativeDir + filename"
+    // `fullPath` should match "volumePath + relativeDir + fileName"
     class PathSegments(context: Context, fullPath: String) {
         var volumePath: String? = null // `volumePath` with trailing "/"
         var relativeDir: String? = null // `relativeDir` with trailing "/"
-        private var filename: String? = null // null for directories
+        private var fileName: String? = null // null for directories
 
         init {
             volumePath = getVolumePath(context, fullPath)
@@ -446,7 +446,7 @@ object StorageUtils {
                 val lastSeparatorIndex = fullPath.lastIndexOf(File.separator) + 1
                 val volumePathLength = volumePath!!.length
                 if (lastSeparatorIndex > volumePathLength) {
-                    filename = fullPath.substring(lastSeparatorIndex)
+                    fileName = fullPath.substring(lastSeparatorIndex)
                     relativeDir = fullPath.substring(volumePathLength, lastSeparatorIndex)
                 }
             }

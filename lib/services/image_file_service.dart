@@ -80,6 +80,14 @@ abstract class ImageFileService {
     required String destinationAlbum,
   });
 
+  Future<Map<String, dynamic>> captureFrame(
+    AvesEntry entry, {
+    required String desiredName,
+    required Map<String, dynamic> exif,
+    required Uint8List bytes,
+    required String destinationAlbum,
+  });
+
   Future<Map<String, dynamic>> rename(AvesEntry entry, String newName);
 
   Future<Map<String, dynamic>> rotate(AvesEntry entry, {required bool clockwise});
@@ -332,6 +340,29 @@ class PlatformImageFileService implements ImageFileService {
       debugPrint('export failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       return Stream.error(e);
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>> captureFrame(
+    AvesEntry entry, {
+    required String desiredName,
+    required Map<String, dynamic> exif,
+    required Uint8List bytes,
+    required String destinationAlbum,
+  }) async {
+    try {
+      final result = await platform.invokeMethod('captureFrame', <String, dynamic>{
+        'uri': entry.uri,
+        'desiredName': desiredName,
+        'exif': exif,
+        'bytes': bytes,
+        'destinationPath': destinationAlbum,
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e) {
+      debugPrint('captureFrame failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:aves/model/entry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +57,7 @@ abstract class AvesVideoController {
 
   Map<StreamSummary, bool> get streams;
 
-  Future<void> captureFrame();
+  Future<Uint8List> captureFrame();
 
   Widget buildPlayerWidget(BuildContext context);
 }
