@@ -300,8 +300,17 @@ object StorageUtils {
                         Log.w(LOG_TAG, "failed to get document URI for mediaUri=$mediaUri", e)
                     }
                 }
+
                 // fallback for older APIs
-                return getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
+                val df = getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
+                if (df != null) return df
+
+                // try to strip user info, if any
+                if (mediaUri.userInfo != null) {
+                    val genericMediaUri = Uri.parse(mediaUri.toString().replaceFirst("${mediaUri.userInfo}@", ""))
+                    Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
+                    return getDocumentFile(context, anyPath, genericMediaUri)
+                }
             }
             // good old `File`
             return DocumentFileCompat.fromFile(File(anyPath))

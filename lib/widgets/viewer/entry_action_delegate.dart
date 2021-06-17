@@ -187,6 +187,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final selectionCount = selection.length;
     showOpReport<ExportOpEvent>(
       context: context,
+      // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
       opStream: imageFileService.export(
         selection,
         mimeType: MimeTypes.jpeg,

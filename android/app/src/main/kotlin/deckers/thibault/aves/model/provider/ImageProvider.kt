@@ -436,52 +436,58 @@ abstract class ImageProvider {
     protected suspend fun scanNewPath(context: Context, path: String, mimeType: String): FieldMap =
         suspendCoroutine { cont ->
             MediaScannerConnection.scanFile(context, arrayOf(path), arrayOf(mimeType)) { _, newUri: Uri? ->
-                var contentId: Long? = null
-                var contentUri: Uri? = null
-                if (newUri != null) {
-                    // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
-                    // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
-                    contentId = newUri.tryParseId()
-                    if (contentId != null) {
-                        if (isImage(mimeType)) {
-                            contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
-                        } else if (isVideo(mimeType)) {
-                            contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
+                fun scanUri(uri: Uri?): FieldMap? {
+                    uri ?: return null
+
+                    // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
+                    val projection = arrayOf(
+                        MediaStore.MediaColumns.DATE_MODIFIED,
+                        MediaStore.MediaColumns.DISPLAY_NAME,
+                        MediaStore.MediaColumns.TITLE,
+                    )
+                    try {
+                        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+                        if (cursor != null && cursor.moveToFirst()) {
+                            val newFields = HashMap<String, Any?>()
+                            newFields["uri"] = uri.toString()
+                            newFields["contentId"] = uri.tryParseId()
+                            newFields["path"] = path
+                            cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
+                            cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) newFields["displayName"] = cursor.getString(it) }
+                            cursor.getColumnIndex(MediaStore.MediaColumns.TITLE).let { if (it != -1) newFields["title"] = cursor.getString(it) }
+                            cursor.close()
+                            return newFields
                         }
+                    } catch (e: Exception) {
+                        Log.w(LOG_TAG, "failed to scan uri=$uri", e)
                     }
+                    return null
                 }
-                if (contentUri == null) {
-                    cont.resumeWithException(Exception("failed to get content URI of item at path=$path"))
+
+                if (newUri == null) {
+                    cont.resumeWithException(Exception("failed to get URI of item at path=$path"))
                     return@scanFile
                 }
 
-                val newFields = HashMap<String, Any?>()
-                // we retrieve updated fields as the renamed/moved file became a new entry in the Media Store
-                val projection = arrayOf(
-                    MediaStore.MediaColumns.DATE_MODIFIED,
-                    MediaStore.MediaColumns.DISPLAY_NAME,
-                    MediaStore.MediaColumns.TITLE,
-                )
-                try {
-                    val cursor = context.contentResolver.query(contentUri, projection, null, null, null)
-                    if (cursor != null && cursor.moveToFirst()) {
-                        newFields["uri"] = contentUri.toString()
-                        newFields["contentId"] = contentId
-                        newFields["path"] = path
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DATE_MODIFIED).let { if (it != -1) newFields["dateModifiedSecs"] = cursor.getInt(it) }
-                        cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME).let { if (it != -1) newFields["displayName"] = cursor.getString(it) }
-                        cursor.getColumnIndex(MediaStore.MediaColumns.TITLE).let { if (it != -1) newFields["title"] = cursor.getString(it) }
-                        cursor.close()
+                var contentUri: Uri? = null
+                // `newURI` is possibly a file media URI (e.g. "content://media/12a9-8b42/file/62872")
+                // but we need an image/video media URI (e.g. "content://media/external/images/media/62872")
+                val contentId = newUri.tryParseId()
+                if (contentId != null) {
+                    if (isImage(mimeType)) {
+                        contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentId)
+                    } else if (isVideo(mimeType)) {
+                        contentUri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentId)
                     }
-                } catch (e: Exception) {
-                    cont.resumeWithException(e)
-                    return@scanFile
                 }
 
-                if (newFields.isEmpty()) {
-                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
-                } else {
+                // prefer image/video content URI, fallback to original URI (possibly a file content URI)
+                val newFields = scanUri(contentUri) ?: scanUri(newUri)
+
+                if (newFields != null) {
                     cont.resume(newFields)
+                } else {
+                    cont.resumeWithException(Exception("failed to get item details from provider at contentUri=$contentUri (from newUri=$newUri)"))
                 }
             }
         }
