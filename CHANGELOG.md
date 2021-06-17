@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Video: speed control, track selection, frame capture
+- Video: embedded subtitle support
+- Settings: custom video quick actions
+
+### Changed
+- upgraded Flutter to stable v2.2.2
 
 ## [v1.4.3] - 2021-06-12
 ### Added
