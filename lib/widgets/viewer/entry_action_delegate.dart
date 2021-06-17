@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
@@ -105,14 +106,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _flip(BuildContext context, AvesEntry entry) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.flip();
+    final success = await entry.flip(persist: isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.rotate(clockwise: clockwise);
+    final success = await entry.rotate(clockwise: clockwise, persist: isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
@@ -257,7 +258,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await context.read<CollectionSource>().renameEntry(entry, newName);
+    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: isMainMode(context));
 
     if (success) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
@@ -265,6 +266,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, context.l10n.genericFailureFeedback);
     }
   }
+
+  bool isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry entry) {
     Navigator.push(

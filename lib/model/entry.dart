@@ -568,26 +568,26 @@ class AvesEntry {
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<bool> rotate({required bool clockwise}) async {
+  Future<bool> rotate({required bool clockwise, required bool persist}) async {
     final newFields = await imageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
-    await _applyNewFields(newFields, persist: true);
+    await _applyNewFields(newFields, persist: persist);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
-  Future<bool> flip() async {
+  Future<bool> flip({required bool persist}) async {
     final newFields = await imageFileService.flip(this);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
-    await _applyNewFields(newFields, persist: true);
+    await _applyNewFields(newFields, persist: persist);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }

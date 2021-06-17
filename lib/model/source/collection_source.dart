@@ -124,7 +124,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     updateTags();
   }
 
-  Future<void> _moveEntry(AvesEntry entry, Map newFields) async {
+  Future<void> _moveEntry(AvesEntry entry, Map newFields, {required bool persist}) async {
     final oldContentId = entry.contentId!;
     final newContentId = newFields['contentId'] as int?;
 
@@ -139,19 +139,21 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     entry.catalogMetadata = entry.catalogMetadata?.copyWith(contentId: newContentId);
     entry.addressDetails = entry.addressDetails?.copyWith(contentId: newContentId);
 
-    await metadataDb.updateEntryId(oldContentId, entry);
-    await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
-    await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
-    await favourites.moveEntry(oldContentId, entry);
-    await covers.moveEntry(oldContentId, entry);
+    if (persist) {
+      await metadataDb.updateEntryId(oldContentId, entry);
+      await metadataDb.updateMetadataId(oldContentId, entry.catalogMetadata);
+      await metadataDb.updateAddressId(oldContentId, entry.addressDetails);
+      await favourites.moveEntry(oldContentId, entry);
+      await covers.moveEntry(oldContentId, entry);
+    }
   }
 
-  Future<bool> renameEntry(AvesEntry entry, String newName) async {
+  Future<bool> renameEntry(AvesEntry entry, String newName, {required bool persist}) async {
     if (newName == entry.filenameWithoutExtension) return true;
     final newFields = await imageFileService.rename(entry, '$newName${entry.extension}');
     if (newFields.isEmpty) return false;
 
-    await _moveEntry(entry, newFields);
+    await _moveEntry(entry, newFields, persist: persist);
     entry.metadataChangeNotifier.notifyListeners();
     eventBus.fire(EntryMovedEvent({entry}));
     return true;
@@ -215,7 +217,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
           if (entry != null) {
             fromAlbums.add(entry.directory);
             movedEntries.add(entry);
-            await _moveEntry(entry, newFields);
+            await _moveEntry(entry, newFields, persist: true);
           }
         }
       });
