@@ -92,6 +92,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // FFmpeg options
     // cf https://github.com/Bilibili/ijkplayer/blob/master/ijkmedia/ijkplayer/ff_ffplay_options.h
     // cf https://www.jianshu.com/p/843c86a9e9ad
+    // cf https://www.jianshu.com/p/3649c073b346
 
     final options = FijkOption();
 
@@ -104,10 +105,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // so HW acceleration is always disabled for GIF-like videos where the last frames may be significant
     final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis! > gifLikeVideoDurationThreshold.inMilliseconds;
 
-    // TODO TLAD [video] HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
+    // TODO TLAD [video] flaky: HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
     if (hwAccelerationEnabled) {
       // when HW acceleration is enabled, videos with dimensions that do not fit 16x macroblocks need cropping
-      // TODO TLAD [video] not all formats/devices need this correction, e.g. 498x278 MP4 on S7, 408x244 WEBM on S10e do not
+      // TODO TLAD [video] flaky: not all formats/devices need this correction, e.g. 498x278 MP4 on S7, 408x244 WEBM on S10e do not
       final s = entry.displaySize % 16 * -1 % 16;
       _macroBlockCrop = Offset(s.width, s.height);
     }
@@ -290,7 +291,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _applySpeed();
   }
 
-  // TODO TLAD [video] setting speed fails when there is no audio stream or audio is disabled
+  // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
   void _applySpeed() => _instance.setSpeed(speed);
 
   ValueNotifier<StreamSummary?> selectedStreamNotifier(StreamType type) {
@@ -339,6 +340,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     return Map.fromEntries(_streams.map((stream) => MapEntry(stream, selectedIndices.contains(stream.index))));
   }
 
+  // TODO TLAD [video] bug: crash when video stream is not supported
   @override
   Future<Uint8List> captureFrame() => _instance.takeSnapShot();
 

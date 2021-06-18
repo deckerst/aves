@@ -20,7 +20,7 @@ import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
-import 'package:aves/widgets/viewer/visual/subtitle.dart';
+import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:flutter/foundation.dart';
@@ -208,10 +208,12 @@ class _EntryPageViewState extends State<EntryPageView> {
                   ),
                   VideoSubtitles(
                     controller: videoController,
+                    viewStateNotifier: _viewStateNotifier,
                   ),
                   if (settings.videoShowRawTimedText)
                     VideoSubtitles(
                       controller: videoController,
+                      viewStateNotifier: _viewStateNotifier,
                       debugMode: true,
                     ),
                 ],
