@@ -8,6 +8,7 @@ enum VideoAction {
   selectStreams,
   setSpeed,
   togglePlay,
+  // TODO TLAD [video] toggle mute
 }
 
 class VideoActions {
