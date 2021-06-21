@@ -43,15 +43,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
 
   final Set<AvesEntry> _rawEntries = {};
 
-  // TODO TLAD use `Set.unmodifiable()` when possible
-  Set<AvesEntry> get allEntries => Set.of(_rawEntries);
+  Set<AvesEntry> get allEntries => Set.unmodifiable(_rawEntries);
 
   Set<AvesEntry>? _visibleEntries;
 
   @override
   Set<AvesEntry> get visibleEntries {
-    // TODO TLAD use `Set.unmodifiable()` when possible
-    _visibleEntries ??= Set.of(_applyHiddenFilters(_rawEntries));
+    _visibleEntries ??= Set.unmodifiable(_applyHiddenFilters(_rawEntries));
     return _visibleEntries!;
   }
 
