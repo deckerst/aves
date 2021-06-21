@@ -1,8 +1,10 @@
 package deckers.thibault.aves.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -399,21 +401,24 @@ object StorageUtils {
         return ContentResolver.SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
-    fun getOriginalUri(uri: Uri): Uri {
+    fun getOriginalUri(context: Context, uri: Uri): Uri {
         // we get a permission denial if we require original from a provider other than the media store
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val path = uri.path
             path ?: return uri
             // from Android R, accessing the original URI for a file media content yields a `SecurityException`
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
-                return MediaStore.setRequireOriginal(uri)
+            if (path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
+                // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
+                if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    return MediaStore.setRequireOriginal(uri)
+                }
             }
         }
         return uri
     }
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
-        val effectiveUri = getOriginalUri(uri)
+        val effectiveUri = getOriginalUri(context, uri)
         return try {
             context.contentResolver.openInputStream(effectiveUri)
         } catch (e: FileNotFoundException) {
@@ -426,7 +431,7 @@ object StorageUtils {
     }
 
     fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
-        val effectiveUri = getOriginalUri(uri)
+        val effectiveUri = getOriginalUri(context, uri)
         return try {
             MediaMetadataRetriever().apply {
                 setDataSource(context, effectiveUri)

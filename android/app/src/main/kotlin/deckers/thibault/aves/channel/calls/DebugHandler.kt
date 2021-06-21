@@ -112,7 +112,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                     else -> uri
                 }
-                contentUri = StorageUtils.getOriginalUri(contentUri)
+                contentUri = StorageUtils.getOriginalUri(context, contentUri)
             }
         }
 
