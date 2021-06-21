@@ -4,7 +4,7 @@ import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
 import 'package:flutter/material.dart';
 
 class AssParser {
-  static final tagPattern = RegExp(r'('
+  static final tagPattern = RegExp(r'\*?('
       r'1a|2a|3a|4a'
       r'|1c|2c|3c|4c'
       r'|alpha|an|a'
@@ -31,8 +31,8 @@ class AssParser {
   // (<X>,<Y>)
   static final multiParamPattern = RegExp('\\((.*)\\)');
 
-  // e.g. m 50 0 b 100 0 100 100 50 100 b 0 100 0 0 50 0
-  static final pathPattern = RegExp(r'([mnlbspc])([\s\d]+)');
+  // e.g. m 937.5 472.67 b 937.5 472.67 937.25 501.25 960 501.5 960 501.5 937.5 500.33 937.5 529.83
+  static final pathPattern = RegExp(r'([mnlbspc])([.\s\d]+)');
 
   static const noBreakSpace = '\u00A0';
 
@@ -50,9 +50,10 @@ class AssParser {
     final matches = RegExp(r'{(.*?)}').allMatches(text);
     matches.forEach((m) {
       if (i != m.start) {
+        final spanText = extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i, m.start));
         spans.add(StyledSubtitleSpan(
           textSpan: TextSpan(
-            text: extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i, m.start)),
+            text: spanText,
             style: textStyle,
           ),
           extraStyle: extraStyle,
@@ -230,13 +231,14 @@ class AssParser {
                 // \p drawing paths
                 final scale = int.tryParse(param);
                 if (scale != null) {
-                  extraStyle = extraStyle.copyWith(
-                      drawingPaths: scale > 0
-                          ? _parsePaths(
-                              text.substring(m.end),
-                              scale,
-                            )
-                          : null);
+                  if (scale > 0) {
+                    final start = m.end;
+                    final end = text.indexOf('{', start);
+                    final commands = text.substring(start, end == -1 ? null : end);
+                    extraStyle = extraStyle.copyWith(drawingPaths: _parsePaths(commands, scale));
+                  } else {
+                    extraStyle = extraStyle.copyWith(drawingPaths: null);
+                  }
                 }
                 break;
               }
@@ -307,9 +309,10 @@ class AssParser {
       });
     });
     if (i != text.length) {
+      final spanText = extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i));
       spans.add(StyledSubtitleSpan(
         textSpan: TextSpan(
-          text: extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i)),
+          text: spanText,
           style: textStyle,
         ),
         extraStyle: extraStyle,
