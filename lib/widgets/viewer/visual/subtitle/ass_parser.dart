@@ -1,6 +1,7 @@
+import 'package:aves/widgets/viewer/visual/subtitle/line.dart';
+import 'package:aves/widgets/viewer/visual/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
 
 class AssParser {
   static final tagPattern = RegExp(r'('
@@ -27,26 +28,34 @@ class AssParser {
   // &H<bb><gg><rr>&
   static final colorPattern = RegExp('&H(..)(..)(..)&');
 
+  // (<X>,<Y>)
+  static final multiParamPattern = RegExp('\\((.*)\\)');
+
+  // e.g. m 50 0 b 100 0 100 100 50 100 b 0 100 0 0 50 0
+  static final pathPattern = RegExp(r'([mnlbspc])([\s\d]+)');
+
   static const noBreakSpace = '\u00A0';
 
-  // TODO TLAD [video] process ASS tags, cf https://aegi.vmoe.info/docs/3.0/ASS_Tags/
+  // Parse text with ASS format tags
+  // cf https://aegi.vmoe.info/docs/3.0/ASS_Tags/
   // e.g. `And I'm like, "We can't {\i1}not{\i0} see it."`
   // e.g. `{\fad(200,200)\blur3}lorem ipsum"`
   // e.g. `{\fnCrapFLTSB\an9\bord5\fs70\c&H403A2D&\3c&HE5E5E8&\pos(1868.286,27.429)}lorem ipsum"`
-  static List<Tuple2<TextSpan, SubtitleExtraStyle>> parseAss(String text, TextStyle baseStyle, double scale) {
-    final spans = <Tuple2<TextSpan, SubtitleExtraStyle>>[];
-    var extraStyle = const SubtitleExtraStyle();
+  static StyledSubtitleLine parse(String text, TextStyle baseStyle, double scale) {
+    final spans = <StyledSubtitleSpan>[];
+    var line = StyledSubtitleLine(spans: spans);
+    var extraStyle = const SubtitleStyle();
     var textStyle = baseStyle;
     var i = 0;
     final matches = RegExp(r'{(.*?)}').allMatches(text);
     matches.forEach((m) {
       if (i != m.start) {
-        spans.add(Tuple2(
-          TextSpan(
-            text: _replaceChars(text.substring(i, m.start)),
+        spans.add(StyledSubtitleSpan(
+          textSpan: TextSpan(
+            text: extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i, m.start)),
             style: textStyle,
           ),
-          extraStyle,
+          extraStyle: extraStyle,
         ));
       }
       i = m.end;
@@ -56,12 +65,6 @@ class AssParser {
         if (tag != null) {
           final param = tagWithParam.substring(tag.length);
           switch (tag) {
-            case 'r':
-              {
-                // \r: reset
-                textStyle = baseStyle;
-                break;
-              }
             case 'alpha':
               {
                 // \alpha: alpha of all components at once
@@ -79,41 +82,33 @@ class AssParser {
                 }
                 break;
               }
+            case 'a':
+              // \a: line alignment (legacy)
+              extraStyle = _copyWithAlignment(_parseLegacyAlignment(param), extraStyle);
+              break;
             case 'an':
-              {
-                // \an: alignment
-                var hAlign = TextAlign.center;
-                var vAlign = TextAlignVertical.bottom;
-                final alignment = _parseAlignment(param);
-                if (alignment != null) {
-                  if (alignment.x < 0) {
-                    hAlign = TextAlign.left;
-                  } else if (alignment.x > 0) {
-                    hAlign = TextAlign.right;
-                  }
-                  if (alignment.y < 0) {
-                    vAlign = TextAlignVertical.top;
-                  } else if (alignment.y == 0) {
-                    vAlign = TextAlignVertical.center;
-                  }
-                  extraStyle = extraStyle.copyWith(
-                    hAlign: hAlign,
-                    vAlign: vAlign,
-                  );
-                }
-                break;
-              }
+              // \an: line alignment
+              extraStyle = _copyWithAlignment(_parseNewAlignment(param), extraStyle);
+              break;
             case 'b':
               {
                 // \b: bold
-                textStyle = textStyle.copyWith(fontWeight: param == '1' ? FontWeight.bold : FontWeight.normal);
+                final weight = _parseFontWeight(param);
+                if (weight != null) textStyle = textStyle.copyWith(fontWeight: weight);
+                break;
+              }
+            case 'be':
+              {
+                // \be: blurs the edges of the text
+                final times = int.tryParse(param);
+                if (times != null) extraStyle = extraStyle.copyWith(edgeBlur: times == 0 ? 0 : 1);
                 break;
               }
             case 'blur':
               {
-                // \blur: blurs the edges of the text
+                // \blur: blurs the edges of the text (Gaussian kernel)
                 final strength = double.tryParse(param);
-                if (strength != null) extraStyle = extraStyle.copyWith(edgeBlur: strength);
+                if (strength != null) extraStyle = extraStyle.copyWith(edgeBlur: strength / 2);
                 break;
               }
             case 'bord':
@@ -160,6 +155,10 @@ class AssParser {
                 }
                 break;
               }
+            case 'clip':
+              // \clip: clip (within rectangle or path)
+              line = line.copyWith(clip: _parseClip(param));
+              break;
             case 'fax':
               {
                 final factor = double.tryParse(param);
@@ -175,24 +174,20 @@ class AssParser {
             case 'fn':
               {
                 final name = param;
-                // TODO TLAD [video] extract fonts from attachment streams, and load these fonts in Flutter
+                // TODO TLAD [subtitles] extract fonts from attachment streams, and load these fonts in Flutter
                 if (name.isNotEmpty) textStyle = textStyle.copyWith(fontFamily: name);
-                break;
-              }
-            case 'fs':
-              {
-                final size = int.tryParse(param);
-                if (size != null) textStyle = textStyle.copyWith(fontSize: size * scale);
                 break;
               }
             case 'frx':
               {
+                // \frx: text rotation (X axis)
                 final amount = double.tryParse(param);
                 if (amount != null) extraStyle = extraStyle.copyWith(rotationX: amount);
                 break;
               }
             case 'fry':
               {
+                // \fry: text rotation (Y axis)
                 final amount = double.tryParse(param);
                 if (amount != null) extraStyle = extraStyle.copyWith(rotationY: amount);
                 break;
@@ -200,28 +195,111 @@ class AssParser {
             case 'fr':
             case 'frz':
               {
+                // \frz: text rotation (Z axis)
                 final amount = double.tryParse(param);
                 if (amount != null) extraStyle = extraStyle.copyWith(rotationZ: amount);
                 break;
               }
+            case 'fs':
+              {
+                // \fs: font size
+                final size = int.tryParse(param);
+                if (size != null) textStyle = textStyle.copyWith(fontSize: size * scale);
+                break;
+              }
             case 'fscx':
               {
+                // \fscx: font scale (horizontal)
                 final scale = int.tryParse(param);
                 if (scale != null) extraStyle = extraStyle.copyWith(scaleX: scale.toDouble() / 100);
                 break;
               }
             case 'fscy':
               {
+                // \fscx: font scale (vertical)
                 final scale = int.tryParse(param);
                 if (scale != null) extraStyle = extraStyle.copyWith(scaleY: scale.toDouble() / 100);
                 break;
               }
             case 'i':
+              // \i: italics
+              textStyle = textStyle.copyWith(fontStyle: param == '1' ? FontStyle.italic : FontStyle.normal);
+              break;
+            case 'p':
               {
-                // \i: italics
-                textStyle = textStyle.copyWith(fontStyle: param == '1' ? FontStyle.italic : FontStyle.normal);
+                // \p drawing paths
+                final scale = int.tryParse(param);
+                if (scale != null) {
+                  extraStyle = extraStyle.copyWith(
+                      drawingPaths: scale > 0
+                          ? _parsePaths(
+                              text.substring(m.end),
+                              scale,
+                            )
+                          : null);
+                }
                 break;
               }
+            case 'pos':
+              {
+                // \pos: line position
+                final match = multiParamPattern.firstMatch(param);
+                if (match != null) {
+                  final g = match.group(1);
+                  if (g != null) {
+                    final params = g.split(',');
+                    if (params.length == 2) {
+                      final x = double.tryParse(params[0]);
+                      final y = double.tryParse(params[1]);
+                      if (x != null && y != null) {
+                        line = line.copyWith(position: Offset(x, y));
+                      }
+                    }
+                  }
+                }
+                break;
+              }
+            case 'r':
+              // \r: reset
+              textStyle = baseStyle;
+              break;
+            case 's':
+              // \s: strikeout
+              textStyle = textStyle.copyWith(decoration: param == '1' ? TextDecoration.lineThrough : TextDecoration.none);
+              break;
+            case 'u':
+              // \u: underline
+              textStyle = textStyle.copyWith(decoration: param == '1' ? TextDecoration.underline : TextDecoration.none);
+              break;
+            // TODO TLAD [subtitles] SHOULD support the following
+            case '1a':
+            case '3a':
+            case '4a':
+            case 'shad':
+            case 't': // \t: animated transform
+            case 'xshad':
+            case 'yshad':
+            // line props: \pos, \move, \clip, \iclip, \org, \fade and \fad
+            case 'iclip': // \iclip: clip (inverse)
+            case 'fad': // \fad: fade
+            case 'fade': // \fade: fade (complex)
+            case 'move': // \move: movement
+            case 'org': // \org: rotation origin
+            // TODO TLAD [subtitles] MAY support the following
+            case 'fe': // \fe: font encoding
+            case 'fsp': // \fsp: letter spacing
+            case 'pbo': // \pbo: baseline offset
+            case 'q': // \q: wrap style
+            // border size
+            case 'xbord':
+            case 'ybord':
+            // karaoke
+            case '2a':
+            case '2c':
+            case 'k':
+            case 'K':
+            case 'kf':
+            case 'ko':
             default:
               debugPrint('unhandled ASS tag=$tag');
           }
@@ -229,43 +307,39 @@ class AssParser {
       });
     });
     if (i != text.length) {
-      spans.add(Tuple2(
-        TextSpan(
-          text: _replaceChars(text.substring(i, text.length)),
+      spans.add(StyledSubtitleSpan(
+        textSpan: TextSpan(
+          text: extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i)),
           style: textStyle,
         ),
-        extraStyle,
+        extraStyle: extraStyle,
       ));
     }
-    return spans;
+    return line;
+  }
+
+  static SubtitleStyle _copyWithAlignment(Alignment? alignment, SubtitleStyle extraStyle) {
+    if (alignment == null) return extraStyle;
+
+    var hAlign = TextAlign.center;
+    var vAlign = TextAlignVertical.bottom;
+    if (alignment.x < 0) {
+      hAlign = TextAlign.left;
+    } else if (alignment.x > 0) {
+      hAlign = TextAlign.right;
+    }
+    if (alignment.y < 0) {
+      vAlign = TextAlignVertical.top;
+    } else if (alignment.y == 0) {
+      vAlign = TextAlignVertical.center;
+    }
+    return extraStyle.copyWith(
+      hAlign: hAlign,
+      vAlign: vAlign,
+    );
   }
 
   static String _replaceChars(String text) => text.replaceAll(r'\h', noBreakSpace).replaceAll(r'\N', '\n');
-
-  static Alignment? _parseAlignment(String param) {
-    switch (int.tryParse(param)) {
-      case 1:
-        return Alignment.bottomLeft;
-      case 2:
-        return Alignment.bottomCenter;
-      case 3:
-        return Alignment.bottomRight;
-      case 4:
-        return Alignment.centerLeft;
-      case 5:
-        return Alignment.center;
-      case 6:
-        return Alignment.centerRight;
-      case 7:
-        return Alignment.topLeft;
-      case 8:
-        return Alignment.topCenter;
-      case 9:
-        return Alignment.topRight;
-      default:
-        return null;
-    }
-  }
 
   static int? _parseAlpha(String param) {
     final match = alphaPattern.firstMatch(param);
@@ -291,5 +365,183 @@ class AssParser {
       }
     }
     return null;
+  }
+
+  static FontWeight? _parseFontWeight(String param) {
+    switch (int.tryParse(param)) {
+      case 0:
+        return FontWeight.normal;
+      case 1:
+        return FontWeight.bold;
+      case 100:
+        return FontWeight.w100;
+      case 200:
+        return FontWeight.w200;
+      case 300:
+        return FontWeight.w300;
+      case 400:
+        return FontWeight.w400;
+      case 500:
+        return FontWeight.w500;
+      case 600:
+        return FontWeight.w600;
+      case 700:
+        return FontWeight.w700;
+      case 800:
+        return FontWeight.w800;
+      case 900:
+        return FontWeight.w900;
+      default:
+        return null;
+    }
+  }
+
+  static Alignment? _parseNewAlignment(String param) {
+    switch (int.tryParse(param)) {
+      case 1:
+        return Alignment.bottomLeft;
+      case 2:
+        return Alignment.bottomCenter;
+      case 3:
+        return Alignment.bottomRight;
+      case 4:
+        return Alignment.centerLeft;
+      case 5:
+        return Alignment.center;
+      case 6:
+        return Alignment.centerRight;
+      case 7:
+        return Alignment.topLeft;
+      case 8:
+        return Alignment.topCenter;
+      case 9:
+        return Alignment.topRight;
+      default:
+        return null;
+    }
+  }
+
+  static Alignment? _parseLegacyAlignment(String param) {
+    switch (int.tryParse(param)) {
+      case 1:
+        return Alignment.bottomLeft;
+      case 2:
+        return Alignment.bottomCenter;
+      case 3:
+        return Alignment.bottomRight;
+      case 5:
+        return Alignment.topLeft;
+      case 6:
+        return Alignment.topCenter;
+      case 7:
+        return Alignment.topRight;
+      case 9:
+        return Alignment.centerLeft;
+      case 10:
+        return Alignment.center;
+      case 11:
+        return Alignment.centerRight;
+      default:
+        return null;
+    }
+  }
+
+  static List<Path> _parsePaths(String commands, int scale) {
+    final paths = <Path>[];
+    Path? path;
+    pathPattern.allMatches(commands).forEach((match) {
+      if (match.groupCount == 2) {
+        final command = match.group(1)!;
+        final params = match.group(2)!.trim().split(' ').map(double.tryParse).where((v) => v != null).cast<double>().map((v) => v / scale).toList();
+        switch (command) {
+          case 'b':
+            if (path != null) {
+              const bParamCount = 6;
+              final steps = (params.length / bParamCount).floor();
+              for (var i = 0; i < steps; i++) {
+                final points = params.skip(i * bParamCount).take(bParamCount).toList();
+                path!.cubicTo(points[0], points[1], points[2], points[3], points[4], points[5]);
+              }
+            }
+            break;
+          case 'c':
+            if (path != null) {
+              path!.close();
+            }
+            path = null;
+            break;
+          case 'l':
+            if (path != null) {
+              const lParamCount = 2;
+              final steps = (params.length / lParamCount).floor();
+              for (var i = 0; i < steps; i++) {
+                final points = params.skip(i * lParamCount).take(lParamCount).toList();
+                path!.lineTo(points[0], points[1]);
+              }
+            }
+            break;
+          case 'm':
+            if (params.length == 2) {
+              if (path != null) {
+                path!.close();
+              }
+              path = Path();
+              paths.add(path!);
+              path!.moveTo(params[0], params[1]);
+            }
+            break;
+          case 'n':
+            if (params.length == 2 && path != null) {
+              path!.moveTo(params[0], params[1]);
+            }
+            break;
+          case 's':
+          case 'p':
+            debugPrint('unhandled ASS drawing command=$command');
+            break;
+        }
+      }
+    });
+    if (path != null) {
+      path!.close();
+    }
+    return paths;
+  }
+
+  static List<Path>? _parseClip(String param) {
+    List<Path>? paths;
+    final match = multiParamPattern.firstMatch(param);
+    if (match != null) {
+      final g = match.group(1);
+      if (g != null) {
+        final params = g.split(',');
+        if (params.length == 4) {
+          final points = params.map(double.tryParse).where((v) => v != null).cast<double>().toList();
+          if (points.length == 4) {
+            paths = [
+              Path()
+                ..addRect(Rect.fromPoints(
+                  Offset(points[0], points[1]),
+                  Offset(points[2], points[3]),
+                ))
+            ];
+          }
+        } else {
+          int? scale;
+          String? commands;
+          if (params.length == 1) {
+            scale = 1;
+            commands = params[0];
+          } else if (params.length == 2) {
+            scale = int.tryParse(params[0]);
+            commands = params[1];
+          }
+          if (scale != null && commands != null) {
+            paths = _parsePaths(commands, scale);
+          }
+        }
+      }
+    }
+    return paths;
   }
 }

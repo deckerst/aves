@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class SubtitleExtraStyle with Diagnosticable {
+class SubtitleStyle with Diagnosticable {
   final TextAlign? hAlign;
   final TextAlignVertical? vAlign;
   final Color? borderColor;
   final double? borderWidth, edgeBlur, rotationX, rotationY, rotationZ, scaleX, scaleY, shearX, shearY;
-  final TransitionBuilder? builder;
+  final List<Path>? drawingPaths;
 
   bool get rotating => (rotationX ?? 0) > 0 || (rotationY ?? 0) > 0 || (rotationZ ?? 0) > 0;
 
@@ -15,7 +15,7 @@ class SubtitleExtraStyle with Diagnosticable {
 
   bool get shearing => (shearX ?? 0) > 0 || (shearY ?? 0) > 0;
 
-  const SubtitleExtraStyle({
+  const SubtitleStyle({
     this.hAlign,
     this.vAlign,
     this.borderColor,
@@ -28,10 +28,10 @@ class SubtitleExtraStyle with Diagnosticable {
     this.scaleY,
     this.shearX,
     this.shearY,
-    this.builder,
+    this.drawingPaths,
   });
 
-  SubtitleExtraStyle copyWith({
+  SubtitleStyle copyWith({
     TextAlign? hAlign,
     TextAlignVertical? vAlign,
     Color? borderColor,
@@ -44,9 +44,9 @@ class SubtitleExtraStyle with Diagnosticable {
     double? scaleY,
     double? shearX,
     double? shearY,
-    TransitionBuilder? builder,
+    List<Path>? drawingPaths,
   }) {
-    return SubtitleExtraStyle(
+    return SubtitleStyle(
       hAlign: hAlign ?? this.hAlign,
       vAlign: vAlign ?? this.vAlign,
       borderColor: borderColor ?? this.borderColor,
@@ -59,7 +59,7 @@ class SubtitleExtraStyle with Diagnosticable {
       scaleY: scaleY ?? this.scaleY,
       shearX: shearX ?? this.shearX,
       shearY: shearY ?? this.shearY,
-      builder: builder ?? this.builder,
+      drawingPaths: drawingPaths ?? this.drawingPaths,
     );
   }
 
@@ -78,13 +78,13 @@ class SubtitleExtraStyle with Diagnosticable {
     properties.add(DoubleProperty('scaleY', scaleY));
     properties.add(DoubleProperty('shearX', shearX));
     properties.add(DoubleProperty('shearY', shearY));
-    properties.add(DiagnosticsProperty<TransitionBuilder>('builder', builder));
+    properties.add(DiagnosticsProperty<List<Path>>('drawingPaths', drawingPaths));
   }
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is SubtitleExtraStyle && other.hAlign == hAlign && other.vAlign == vAlign && other.borderColor == borderColor && other.borderWidth == borderWidth && other.edgeBlur == edgeBlur && other.rotationX == rotationX && other.rotationY == rotationY && other.rotationZ == rotationZ && other.scaleX == scaleX && other.scaleY == scaleY && other.shearX == shearX && other.shearY == shearY && other.builder == builder;
+    return other is SubtitleStyle && other.hAlign == hAlign && other.vAlign == vAlign && other.borderColor == borderColor && other.borderWidth == borderWidth && other.edgeBlur == edgeBlur && other.rotationX == rotationX && other.rotationY == rotationY && other.rotationZ == rotationZ && other.scaleX == scaleX && other.scaleY == scaleY && other.shearX == shearX && other.shearY == shearY && other.drawingPaths == drawingPaths;
   }
 
   @override
@@ -101,6 +101,6 @@ class SubtitleExtraStyle with Diagnosticable {
         scaleY,
         shearX,
         shearY,
-        builder,
+        drawingPaths?.length,
       );
 }
