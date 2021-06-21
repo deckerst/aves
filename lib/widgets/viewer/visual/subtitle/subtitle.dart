@@ -73,11 +73,20 @@ class VideoSubtitles extends StatelessWidget {
                   if (text == null) return const SizedBox();
 
                   if (debugMode) {
-                    return Center(
-                      child: OutlinedText(
-                        textSpans: [TextSpan(text: text)],
-                        outlineWidth: 1,
-                        outlineColor: Colors.black,
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 100.0),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: OutlinedText(
+                          textSpans: [
+                            TextSpan(
+                              text: text,
+                              style: const TextStyle(fontSize: 14),
+                            )
+                          ],
+                          outlineWidth: 1,
+                          outlineColor: Colors.black,
+                        ),
                       ),
                     );
                   }
@@ -90,26 +99,45 @@ class VideoSubtitles extends StatelessWidget {
                   return Stack(
                     children: byExtraStyle.entries.map((kv) {
                       final extraStyle = kv.key;
-                      final spans = kv.value.map((v) => v.textSpan).toList();
+                      final spans = kv.value.map((v) {
+                        final span = v.textSpan;
+                        final style = span.style;
+                        return position != null && style != null
+                            ? TextSpan(
+                                text: span.text,
+                                style: style.copyWith(
+                                    shadows: style.shadows
+                                        ?.map((v) => Shadow(
+                                              color: v.color,
+                                              offset: v.offset * viewScale,
+                                              blurRadius: v.blurRadius * viewScale,
+                                            ))
+                                        .toList()),
+                              )
+                            : span;
+                      }).toList();
                       final drawingPaths = extraStyle.drawingPaths;
 
-                      final outlineColor = extraStyle.borderColor ?? Colors.black;
-                      var child = drawingPaths != null
-                          ? CustomPaint(
-                              painter: SubtitlePathPainter(
-                                paths: drawingPaths,
-                                scale: viewScale,
-                                fillColor: spans.firstOrNull?.style?.color ?? Colors.white,
-                                strokeColor: outlineColor,
-                              ),
-                            )
-                          : OutlinedText(
-                              textSpans: spans,
-                              outlineWidth: extraStyle.borderWidth ?? (extraStyle.edgeBlur != null ? 2 : 1),
-                              outlineColor: outlineColor,
-                              outlineBlurSigma: extraStyle.edgeBlur ?? 0,
-                              textAlign: extraStyle.hAlign ?? TextAlign.center,
-                            );
+                      Widget child;
+                      if (drawingPaths != null) {
+                        child = CustomPaint(
+                          painter: SubtitlePathPainter(
+                            paths: drawingPaths,
+                            scale: viewScale,
+                            fillColor: spans.firstOrNull?.style?.color ?? Colors.white,
+                            strokeColor: extraStyle.borderColor,
+                          ),
+                        );
+                      } else {
+                        final outlineWidth = extraStyle.borderWidth ?? (extraStyle.edgeBlur != null ? 2 : 1);
+                        child = OutlinedText(
+                          textSpans: spans,
+                          outlineWidth: outlineWidth * (position != null ? viewScale : 1),
+                          outlineColor: extraStyle.borderColor ?? Colors.black,
+                          outlineBlurSigma: extraStyle.edgeBlur ?? 0,
+                          textAlign: extraStyle.hAlign ?? TextAlign.center,
+                        );
+                      }
 
                       var transform = Matrix4.identity();
 
@@ -220,28 +248,34 @@ class VideoSubtitles extends StatelessWidget {
 class SubtitlePathPainter extends CustomPainter {
   final List<Path> paths;
   final double scale;
-  final Color fillColor, strokeColor;
+  final Paint? fillPaint, strokePaint;
 
-  const SubtitlePathPainter({
+  SubtitlePathPainter({
     required this.paths,
     required this.scale,
-    required this.fillColor,
-    required this.strokeColor,
-  });
+    required Color? fillColor,
+    required Color? strokeColor,
+  })  : fillPaint = fillColor != null
+            ? (Paint()
+              ..style = PaintingStyle.fill
+              ..color = fillColor)
+            : null,
+        strokePaint = strokeColor != null
+            ? (Paint()
+              ..style = PaintingStyle.stroke
+              ..color = strokeColor)
+            : null;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final fillPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = fillColor;
-    final strokePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = strokeColor;
-
     canvas.scale(scale, scale);
     paths.forEach((path) {
-      canvas.drawPath(path, fillPaint);
-      canvas.drawPath(path, strokePaint);
+      if (fillPaint != null) {
+        canvas.drawPath(path, fillPaint!);
+      }
+      if (strokePaint != null) {
+        canvas.drawPath(path, strokePaint!);
+      }
     });
   }
 

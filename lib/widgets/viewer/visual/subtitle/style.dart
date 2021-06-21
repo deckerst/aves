@@ -9,11 +9,11 @@ class SubtitleStyle with Diagnosticable {
   final double? borderWidth, edgeBlur, rotationX, rotationY, rotationZ, scaleX, scaleY, shearX, shearY;
   final List<Path>? drawingPaths;
 
-  bool get rotating => (rotationX ?? 0) > 0 || (rotationY ?? 0) > 0 || (rotationZ ?? 0) > 0;
+  bool get rotating => (rotationX ?? 0) != 0 || (rotationY ?? 0) != 0 || (rotationZ ?? 0) != 0;
 
-  bool get scaling => (scaleX ?? 0) > 0 || (scaleY ?? 0) > 0;
+  bool get scaling => (scaleX ?? 1) != 1 || (scaleY ?? 1) != 1;
 
-  bool get shearing => (shearX ?? 0) > 0 || (shearY ?? 0) > 0;
+  bool get shearing => (shearX ?? 0) != 0 || (shearY ?? 0) != 0;
 
   const SubtitleStyle({
     this.hAlign,
