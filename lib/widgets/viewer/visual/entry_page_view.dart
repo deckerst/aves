@@ -72,8 +72,8 @@ class _EntryPageViewState extends State<EntryPageView> {
   void didUpdateWidget(covariant EntryPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.pageEntry.displaySize != widget.pageEntry.displaySize) {
-      // do not reset the magnifier view state unless page dimensions change,
+    if (oldWidget.pageEntry.uri != widget.pageEntry.uri || oldWidget.pageEntry.displaySize != widget.pageEntry.displaySize) {
+      // do not reset the magnifier view state unless main entry or page entry dimensions change,
       // in effect locking the zoom & position when browsing entry pages of the same size
       _unregisterWidget();
       _registerWidget();
