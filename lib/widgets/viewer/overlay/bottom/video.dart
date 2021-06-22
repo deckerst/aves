@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -237,6 +238,21 @@ class _ButtonRow extends StatelessWidget {
   Widget _buildOverlayButton(BuildContext context, VideoAction action) {
     late Widget child;
     void onPressed() => onActionSelected(action);
+
+    ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
+      return ValueListenableBuilder<bool>(
+        valueListenable: enabledNotifier ?? ValueNotifier(false),
+        builder: (context, canDo, child) {
+          return IconButton(
+            icon: child!,
+            onPressed: canDo ? onPressed : null,
+            tooltip: action.getText(context),
+          );
+        },
+        child: Icon(action.getIcon()),
+      );
+    }
+
     switch (action) {
       case VideoAction.togglePlay:
         child = _PlayToggler(
@@ -245,20 +261,12 @@ class _ButtonRow extends StatelessWidget {
         );
         break;
       case VideoAction.captureFrame:
-        child = ValueListenableBuilder<bool>(
-          valueListenable: controller?.renderingVideoNotifier ?? ValueNotifier(false),
-          builder: (context, canDo, child) {
-            return IconButton(
-              icon: child!,
-              onPressed: canDo ? onPressed : null,
-              tooltip: action.getText(context),
-            );
-          },
-          child: Icon(action.getIcon()),
-        );
+        child = _buildFromListenable(controller?.renderingVideoNotifier);
+        break;
+      case VideoAction.selectStreams:
+        child = _buildFromListenable(controller?.canSelectStreamNotifier);
         break;
       case VideoAction.replay10:
-      case VideoAction.selectStreams:
       case VideoAction.setSpeed:
         child = IconButton(
           icon: Icon(action.getIcon()),
@@ -277,7 +285,21 @@ class _ButtonRow extends StatelessWidget {
   }
 
   PopupMenuEntry<VideoAction> _buildPopupMenuItem(BuildContext context, VideoAction action) {
-    var enabled = true;
+    late final enabled;
+    switch (action) {
+      case VideoAction.togglePlay:
+      case VideoAction.replay10:
+      case VideoAction.setSpeed:
+        enabled = true;
+        break;
+      case VideoAction.captureFrame:
+        enabled = controller?.renderingVideoNotifier.value ?? false;
+        break;
+      case VideoAction.selectStreams:
+        enabled = controller?.canSelectStreamNotifier.value ?? false;
+        break;
+    }
+
     Widget? child;
     switch (action) {
       case VideoAction.togglePlay:
@@ -287,15 +309,13 @@ class _ButtonRow extends StatelessWidget {
         );
         break;
       case VideoAction.captureFrame:
-        enabled = controller?.renderingVideoNotifier.value ?? false;
-        child = MenuRow(text: action.getText(context), icon: action.getIcon());
-        break;
       case VideoAction.replay10:
       case VideoAction.selectStreams:
       case VideoAction.setSpeed:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
         break;
     }
+
     return PopupMenuItem(
       value: action,
       enabled: enabled,

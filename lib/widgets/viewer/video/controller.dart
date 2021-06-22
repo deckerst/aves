@@ -27,8 +27,6 @@ abstract class AvesVideoController {
 
   Stream<VideoStatus> get statusStream;
 
-  ValueNotifier<bool> get renderingVideoNotifier;
-
   bool get isReady;
 
   bool get isPlaying => status == VideoStatus.playing;
@@ -42,6 +40,10 @@ abstract class AvesVideoController {
   Stream<int> get positionStream;
 
   Stream<String?> get timedTextStream;
+
+  ValueNotifier<bool> get renderingVideoNotifier;
+
+  ValueNotifier<bool> get canSelectStreamNotifier;
 
   ValueNotifier<double> get sarNotifier;
 
@@ -57,7 +59,7 @@ abstract class AvesVideoController {
 
   Future<StreamSummary?> getSelectedStream(StreamType type);
 
-  Map<StreamSummary, bool> get streams;
+  List<StreamSummary> get streams;
 
   Future<Uint8List> captureFrame();
 
