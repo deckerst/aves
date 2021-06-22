@@ -23,9 +23,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
   final List<StreamSummary> _streams = [];
-  final ValueNotifier<StreamSummary?> _selectedVideoStream = ValueNotifier(null);
-  final ValueNotifier<StreamSummary?> _selectedAudioStream = ValueNotifier(null);
-  final ValueNotifier<StreamSummary?> _selectedTextStream = ValueNotifier(null);
   Timer? _initialPlayTimer;
   double _speed = 1;
 
@@ -40,6 +37,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   final ValueNotifier<bool> renderingVideoNotifier = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
 
   @override
   final ValueNotifier<double> sarNotifier = ValueNotifier(1);
@@ -177,9 +177,11 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _instance.applyOptions(options);
   }
 
-  void _fetchSelectedStreams() async {
+  void _fetchStreams() async {
     final mediaInfo = await _instance.getInfo();
     if (!mediaInfo.containsKey(Keys.streams)) return;
+
+    var videoStreamCount = 0, audioStreamCount = 0, textStreamCount = 0;
 
     _streams.clear();
     final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
@@ -195,26 +197,25 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
           width: stream[Keys.width] as int?,
           height: stream[Keys.height] as int?,
         ));
+        switch (type) {
+          case StreamType.video:
+            videoStreamCount++;
+            break;
+          case StreamType.audio:
+            audioStreamCount++;
+            break;
+          case StreamType.text:
+            textStreamCount++;
+            break;
+        }
       }
     });
 
-    StreamSummary? _getSelectedStream(String selectedIndexKey) {
-      final indexString = mediaInfo[selectedIndexKey];
-      if (indexString != null) {
-        final index = int.tryParse(indexString);
-        if (index != null && index != -1) {
-          return _streams.firstWhereOrNull((stream) => stream.index == index);
-        }
-      }
-      return null;
-    }
+    canSelectStreamNotifier.value = videoStreamCount > 1 || audioStreamCount > 1 || textStreamCount > 0;
 
-    _selectedVideoStream.value = _getSelectedStream(Keys.selectedVideoStream);
-    _selectedAudioStream.value = _getSelectedStream(Keys.selectedAudioStream);
-    _selectedTextStream.value = _getSelectedStream(Keys.selectedTextStream);
-
-    if (_selectedVideoStream.value != null) {
-      final streamIndex = _selectedVideoStream.value!.index;
+    final selectedVideo = await getSelectedStream(StreamType.video);
+    if (selectedVideo != null) {
+      final streamIndex = selectedVideo.index;
       final streamInfo = allStreams.firstWhereOrNull((stream) => stream[Keys.index] == streamIndex);
       if (streamInfo != null) {
         final num = streamInfo[Keys.sarNum] ?? 0;
@@ -226,7 +227,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   void _onValueChanged() {
     if (_instance.state == FijkState.prepared && _streams.isEmpty) {
-      _fetchSelectedStreams();
+      _fetchStreams();
     }
     _valueStreamController.add(_instance.value);
   }
@@ -301,17 +302,6 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
   void _applySpeed() => _instance.setSpeed(speed);
 
-  ValueNotifier<StreamSummary?> selectedStreamNotifier(StreamType type) {
-    switch (type) {
-      case StreamType.video:
-        return _selectedVideoStream;
-      case StreamType.audio:
-        return _selectedAudioStream;
-      case StreamType.text:
-        return _selectedTextStream;
-    }
-  }
-
   // When a stream is selected, the video accelerates to catch up with it.
   // The duration of this acceleration phase depends on the player `min-frames` parameter.
   // Calling `seekTo` after stream de/selection is a workaround to:
@@ -325,11 +315,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
         final newIndex = selected.index;
         if (newIndex != null) {
           await _instance.selectTrack(newIndex);
-          selectedStreamNotifier(type).value = selected;
         }
       } else if (current != null) {
         await _instance.deselectTrack(current.index!);
-        selectedStreamNotifier(type).value = null;
       }
       await seekTo(currentPosition);
     }
@@ -342,10 +330,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   }
 
   @override
-  Map<StreamSummary, bool> get streams {
-    final selectedIndices = {_selectedVideoStream, _selectedAudioStream, _selectedTextStream}.map((v) => v.value?.index).toSet();
-    return Map.fromEntries(_streams.map((stream) => MapEntry(stream, selectedIndices.contains(stream.index))));
-  }
+  List<StreamSummary> get streams => _streams;
 
   @override
   Future<Uint8List> captureFrame() {

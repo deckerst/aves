@@ -120,17 +120,20 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   }
 
   Future<void> _showStreamSelectionDialog(BuildContext context, AvesVideoController controller) async {
-    final selectedStreams = await showDialog<Map<StreamType, StreamSummary>>(
+    final streams = controller.streams;
+    final currentSelectedStreams = await Future.wait(StreamType.values.map(controller.getSelectedStream));
+    final currentSelectedIndices = currentSelectedStreams.where((v) => v != null).cast<StreamSummary>().map((v) => v.index).toSet();
+
+    final userSelectedStreams = await showDialog<Map<StreamType, StreamSummary>>(
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
-        streams: controller.streams,
+        streams: Map.fromEntries(streams.map((stream) => MapEntry(stream, currentSelectedIndices.contains(stream.index)))),
       ),
     );
-    if (selectedStreams == null || selectedStreams.isEmpty) return;
+    if (userSelectedStreams == null || userSelectedStreams.isEmpty) return;
 
-    // TODO TLAD [video] get stream list & guess default selected streams, when the controller is not initialized yet
     await Future.forEach<MapEntry<StreamType, StreamSummary>>(
-      selectedStreams.entries,
+      userSelectedStreams.entries,
       (kv) => controller.selectStream(kv.key, kv.value),
     );
   }
