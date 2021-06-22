@@ -27,6 +27,8 @@ abstract class AvesVideoController {
 
   Stream<VideoStatus> get statusStream;
 
+  ValueNotifier<bool> get renderingVideoNotifier;
+
   bool get isReady;
 
   bool get isPlaying => status == VideoStatus.playing;

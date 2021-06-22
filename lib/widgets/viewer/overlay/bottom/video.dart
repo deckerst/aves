@@ -245,6 +245,18 @@ class _ButtonRow extends StatelessWidget {
         );
         break;
       case VideoAction.captureFrame:
+        child = ValueListenableBuilder<bool>(
+          valueListenable: controller?.renderingVideoNotifier ?? ValueNotifier(false),
+          builder: (context, canDo, child) {
+            return IconButton(
+              icon: child!,
+              onPressed: canDo ? onPressed : null,
+              tooltip: action.getText(context),
+            );
+          },
+          child: Icon(action.getIcon()),
+        );
+        break;
       case VideoAction.replay10:
       case VideoAction.selectStreams:
       case VideoAction.setSpeed:
@@ -265,6 +277,7 @@ class _ButtonRow extends StatelessWidget {
   }
 
   PopupMenuEntry<VideoAction> _buildPopupMenuItem(BuildContext context, VideoAction action) {
+    var enabled = true;
     Widget? child;
     switch (action) {
       case VideoAction.togglePlay:
@@ -274,6 +287,9 @@ class _ButtonRow extends StatelessWidget {
         );
         break;
       case VideoAction.captureFrame:
+        enabled = controller?.renderingVideoNotifier.value ?? false;
+        child = MenuRow(text: action.getText(context), icon: action.getIcon());
+        break;
       case VideoAction.replay10:
       case VideoAction.selectStreams:
       case VideoAction.setSpeed:
@@ -282,6 +298,7 @@ class _ButtonRow extends StatelessWidget {
     }
     return PopupMenuItem(
       value: action,
+      enabled: enabled,
       child: child,
     );
   }
