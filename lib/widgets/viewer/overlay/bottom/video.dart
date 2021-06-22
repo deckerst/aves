@@ -242,32 +242,32 @@ class _ButtonRow extends StatelessWidget {
     ValueListenableBuilder<bool> _buildFromListenable(ValueListenable<bool>? enabledNotifier) {
       return ValueListenableBuilder<bool>(
         valueListenable: enabledNotifier ?? ValueNotifier(false),
-        builder: (context, canDo, child) {
-          return IconButton(
-            icon: child!,
-            onPressed: canDo ? onPressed : null,
-            tooltip: action.getText(context),
-          );
-        },
+        builder: (context, canDo, child) => IconButton(
+          icon: child!,
+          onPressed: canDo ? onPressed : null,
+          tooltip: action.getText(context),
+        ),
         child: Icon(action.getIcon()),
       );
     }
 
     switch (action) {
+      case VideoAction.captureFrame:
+        child = _buildFromListenable(controller?.canCaptureFrameNotifier);
+        break;
+      case VideoAction.selectStreams:
+        child = _buildFromListenable(controller?.canSelectStreamNotifier);
+        break;
+      case VideoAction.setSpeed:
+        child = _buildFromListenable(controller?.canSetSpeedNotifier);
+        break;
       case VideoAction.togglePlay:
         child = _PlayToggler(
           controller: controller,
           onPressed: onPressed,
         );
         break;
-      case VideoAction.captureFrame:
-        child = _buildFromListenable(controller?.renderingVideoNotifier);
-        break;
-      case VideoAction.selectStreams:
-        child = _buildFromListenable(controller?.canSelectStreamNotifier);
-        break;
       case VideoAction.replay10:
-      case VideoAction.setSpeed:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
@@ -287,16 +287,18 @@ class _ButtonRow extends StatelessWidget {
   PopupMenuEntry<VideoAction> _buildPopupMenuItem(BuildContext context, VideoAction action) {
     late final enabled;
     switch (action) {
-      case VideoAction.togglePlay:
-      case VideoAction.replay10:
-      case VideoAction.setSpeed:
-        enabled = true;
-        break;
       case VideoAction.captureFrame:
-        enabled = controller?.renderingVideoNotifier.value ?? false;
+        enabled = controller?.canCaptureFrameNotifier.value ?? false;
         break;
       case VideoAction.selectStreams:
         enabled = controller?.canSelectStreamNotifier.value ?? false;
+        break;
+      case VideoAction.setSpeed:
+        enabled = controller?.canSetSpeedNotifier.value ?? false;
+        break;
+      case VideoAction.replay10:
+      case VideoAction.togglePlay:
+        enabled = true;
         break;
     }
 

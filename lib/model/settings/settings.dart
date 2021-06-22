@@ -79,6 +79,7 @@ class Settings extends ChangeNotifier {
     EntryAction.share,
   ];
   static const videoQuickActionsDefault = [
+    VideoAction.replay10,
     VideoAction.togglePlay,
   ];
 
