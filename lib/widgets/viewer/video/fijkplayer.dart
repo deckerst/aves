@@ -39,6 +39,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final double maxSpeed = 2;
 
   @override
+  final ValueNotifier<bool> renderingVideoNotifier = ValueNotifier(false);
+
+  @override
   final ValueNotifier<double> sarNotifier = ValueNotifier(1);
 
   Stream<FijkValue> get _valueStream => _valueStreamController.stream;
@@ -52,6 +55,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       _staticInitialized = true;
     }
     _instance = FijkPlayer();
+    _valueStream.firstWhere((value) => value.videoRenderStart).then(
+          (value) => renderingVideoNotifier.value = true,
+          onError: (error) {},
+        );
     _startListening();
   }
 
@@ -340,9 +347,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     return Map.fromEntries(_streams.map((stream) => MapEntry(stream, selectedIndices.contains(stream.index))));
   }
 
-  // TODO TLAD [video] bug: crash when video stream is not supported
   @override
-  Future<Uint8List> captureFrame() => _instance.takeSnapShot();
+  Future<Uint8List> captureFrame() {
+    if (!_instance.value.videoRenderStart) {
+      return Future.error('cannot capture frame when video is not rendered');
+    }
+    return _instance.takeSnapShot();
+  }
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
