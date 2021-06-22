@@ -102,19 +102,25 @@ class VideoSubtitles extends StatelessWidget {
                       final spans = kv.value.map((v) {
                         final span = v.textSpan;
                         final style = span.style;
-                        return position != null && style != null
-                            ? TextSpan(
-                                text: span.text,
-                                style: style.copyWith(
-                                    shadows: style.shadows
-                                        ?.map((v) => Shadow(
-                                              color: v.color,
-                                              offset: v.offset * viewScale,
-                                              blurRadius: v.blurRadius * viewScale,
-                                            ))
-                                        .toList()),
-                              )
-                            : span;
+                        if (position == null || style == null) return span;
+
+                        final letterSpacing = style.letterSpacing;
+                        final shadows = style.shadows;
+                        return TextSpan(
+                          text: span.text,
+                          style: style.copyWith(
+                            letterSpacing: letterSpacing != null ? letterSpacing * viewScale : null,
+                            shadows: shadows != null
+                                ? shadows
+                                    .map((v) => Shadow(
+                                          color: v.color,
+                                          offset: v.offset * viewScale,
+                                          blurRadius: v.blurRadius * viewScale,
+                                        ))
+                                    .toList()
+                                : null,
+                          ),
+                        );
                       }).toList();
                       final drawingPaths = extraStyle.drawingPaths;
 

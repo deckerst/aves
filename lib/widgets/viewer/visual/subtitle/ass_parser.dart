@@ -222,6 +222,13 @@ class AssParser {
                 if (scale != null) extraStyle = extraStyle.copyWith(scaleY: scale.toDouble() / 100);
                 break;
               }
+            case 'fsp':
+              {
+                // \fsp: letter spacing
+                final spacing = double.tryParse(param);
+                textStyle = textStyle.copyWith(letterSpacing: spacing);
+                break;
+              }
             case 'i':
               // \i: italics
               textStyle = textStyle.copyWith(fontStyle: param == '1' ? FontStyle.italic : FontStyle.normal);
@@ -289,7 +296,6 @@ class AssParser {
             case 'org': // \org: rotation origin
             // TODO TLAD [subtitles] MAY support the following
             case 'fe': // \fe: font encoding
-            case 'fsp': // \fsp: letter spacing
             case 'pbo': // \pbo: baseline offset
             case 'q': // \q: wrap style
             // border size
