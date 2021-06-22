@@ -41,7 +41,9 @@ abstract class AvesVideoController {
 
   Stream<String?> get timedTextStream;
 
-  ValueNotifier<bool> get renderingVideoNotifier;
+  ValueNotifier<bool> get canCaptureFrameNotifier;
+
+  ValueNotifier<bool> get canSetSpeedNotifier;
 
   ValueNotifier<bool> get canSelectStreamNotifier;
 

@@ -36,7 +36,10 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   final double maxSpeed = 2;
 
   @override
-  final ValueNotifier<bool> renderingVideoNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> canCaptureFrameNotifier = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> canSetSpeedNotifier = ValueNotifier(false);
 
   @override
   final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
@@ -56,9 +59,14 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     }
     _instance = FijkPlayer();
     _valueStream.firstWhere((value) => value.videoRenderStart).then(
-          (value) => renderingVideoNotifier.value = true,
+          (value) => canCaptureFrameNotifier.value = true,
           onError: (error) {},
         );
+    _valueStream.firstWhere((value) => value.audioRenderStart).then(
+          (value) => canSetSpeedNotifier.value = true,
+          onError: (error) {},
+        );
+
     _startListening();
   }
 
