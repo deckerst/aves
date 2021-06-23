@@ -4,7 +4,11 @@ import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
 import 'package:flutter/material.dart';
 
 class AssParser {
-  static final tagPattern = RegExp(r'\*?('
+  // the optional `*` before the tags seems to be used for inner overrides
+  // but specs for its usage are yet to be found
+  static final overridePattern = RegExp(r'{\*?(.*?)}');
+
+  static final tagPattern = RegExp(r'('
       r'1a|2a|3a|4a'
       r'|1c|2c|3c|4c'
       r'|alpha|an|a'
@@ -47,10 +51,10 @@ class AssParser {
     var extraStyle = const SubtitleStyle();
     var textStyle = baseStyle;
     var i = 0;
-    final matches = RegExp(r'{(.*?)}').allMatches(text);
-    matches.forEach((m) {
-      if (i != m.start) {
-        final spanText = extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i, m.start));
+    final overrideMatches = overridePattern.allMatches(text);
+    overrideMatches.forEach((overrideMatch) {
+      if (i != overrideMatch.start) {
+        final spanText = extraStyle.drawingPaths?.isNotEmpty == true ? null : _replaceChars(text.substring(i, overrideMatch.start));
         spans.add(StyledSubtitleSpan(
           textSpan: TextSpan(
             text: spanText,
@@ -59,8 +63,8 @@ class AssParser {
           extraStyle: extraStyle,
         ));
       }
-      i = m.end;
-      final tags = m.group(1);
+      i = overrideMatch.end;
+      final tags = overrideMatch.group(1);
       tags?.split('\\').where((v) => v.isNotEmpty).forEach((tagWithParam) {
         final tag = tagPattern.firstMatch(tagWithParam)?.group(1);
         if (tag != null) {
@@ -73,6 +77,39 @@ class AssParser {
                 if (a != null) {
                   textStyle = textStyle.copyWith(
                       color: textStyle.color?.withAlpha(a),
+                      shadows: textStyle.shadows
+                          ?.map((v) => Shadow(
+                                color: v.color.withAlpha(a),
+                                offset: v.offset,
+                                blurRadius: v.blurRadius,
+                              ))
+                          .toList());
+                  extraStyle = extraStyle.copyWith(
+                    borderColor: extraStyle.borderColor?.withAlpha(a),
+                  );
+                }
+                break;
+              }
+            case '1a':
+              {
+                // \1a: fill alpha
+                final a = _parseAlpha(param);
+                if (a != null) textStyle = textStyle.copyWith(color: textStyle.color?.withAlpha(a));
+                break;
+              }
+            case '3a':
+              {
+                // \3a: border alpha
+                final a = _parseAlpha(param);
+                if (a != null) extraStyle = extraStyle.copyWith(borderColor: extraStyle.borderColor?.withAlpha(a));
+                break;
+              }
+            case '4a':
+              {
+                // \4a: shadow alpha
+                final a = _parseAlpha(param);
+                if (a != null) {
+                  textStyle = textStyle.copyWith(
                       shadows: textStyle.shadows
                           ?.map((v) => Shadow(
                                 color: v.color.withAlpha(a),
@@ -163,13 +200,19 @@ class AssParser {
             case 'fax':
               {
                 final factor = double.tryParse(param);
-                if (factor != null) extraStyle = extraStyle.copyWith(shearX: factor);
+                // ignore subsequent shearing when line is positioned
+                if (factor != null && (line.position == null || extraStyle.shearX == null)) {
+                  extraStyle = extraStyle.copyWith(shearX: factor);
+                }
                 break;
               }
             case 'fay':
               {
                 final factor = double.tryParse(param);
-                if (factor != null) extraStyle = extraStyle.copyWith(shearY: factor);
+                // ignore subsequent shearing when line is positioned
+                if (factor != null && (line.position == null || extraStyle.shearY == null)) {
+                  extraStyle = extraStyle.copyWith(shearY: factor);
+                }
                 break;
               }
             case 'fn':
@@ -239,7 +282,7 @@ class AssParser {
                 final scale = int.tryParse(param);
                 if (scale != null) {
                   if (scale > 0) {
-                    final start = m.end;
+                    final start = overrideMatch.end;
                     final end = text.indexOf('{', start);
                     final commands = text.substring(start, end == -1 ? null : end);
                     extraStyle = extraStyle.copyWith(drawingPaths: _parsePaths(commands, scale));
@@ -281,9 +324,6 @@ class AssParser {
               textStyle = textStyle.copyWith(decoration: param == '1' ? TextDecoration.underline : TextDecoration.none);
               break;
             // TODO TLAD [subtitles] SHOULD support the following
-            case '1a':
-            case '3a':
-            case '4a':
             case 'shad':
             case 't': // \t: animated transform
             case 'xshad':
