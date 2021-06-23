@@ -167,6 +167,10 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
           value: current,
           onChanged: streams.length > 1 ? (newValue) => setState(() => setter(newValue)) : null,
           isExpanded: true,
+          // use a different shade to avoid having the same background
+          // on the dialog (using the theme `dialogBackgroundColor`)
+          // and on the dropdown (using the theme `canvasColor`)
+          dropdownColor: Colors.grey.shade800,
         ),
       ),
     ];
