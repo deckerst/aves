@@ -1,6 +1,6 @@
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/quick_actions/action_button.dart';
-import 'package:aves/widgets/settings/quick_actions/placeholder.dart';
+import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
+import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
 import 'package:flutter/widgets.dart';
 
 class AvailableActionPanel<T extends Object> extends StatelessWidget {

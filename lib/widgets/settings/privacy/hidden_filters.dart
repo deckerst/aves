@@ -1,3 +1,4 @@
+import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
@@ -52,16 +53,16 @@ class HiddenFilterPage extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Consumer<Settings>(
-                  builder: (context, settings, child) {
-                    final hiddenFilters = settings.hiddenFilters;
-                    final filterList = hiddenFilters.toList()..sort();
+                child: Selector<Settings, Set<CollectionFilter>>(
+                  selector: (context, s) => settings.hiddenFilters,
+                  builder: (context, hiddenFilters, child) {
                     if (hiddenFilters.isEmpty) {
                       return EmptyContent(
                         icon: AIcons.hide,
                         text: context.l10n.settingsHiddenFiltersEmpty,
                       );
                     }
+                    final filterList = hiddenFilters.toList()..sort();
                     return Wrap(
                       spacing: 8,
                       runSpacing: 8,

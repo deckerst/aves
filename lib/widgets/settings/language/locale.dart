@@ -7,10 +7,9 @@ import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class LanguageTile extends StatelessWidget {
+class LocaleTile extends StatelessWidget {
   static const _systemLocaleOption = Locale('system');
 
   @override

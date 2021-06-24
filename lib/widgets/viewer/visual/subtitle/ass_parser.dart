@@ -40,7 +40,7 @@ class AssParser {
 
   static const noBreakSpace = '\u00A0';
 
-  // Parse text with ASS format tags
+  // Parse text with ASS style overrides
   // cf https://aegi.vmoe.info/docs/3.0/ASS_Tags/
   // e.g. `And I'm like, "We can't {\i1}not{\i0} see it."`
   // e.g. `{\fad(200,200)\blur3}lorem ipsum"`

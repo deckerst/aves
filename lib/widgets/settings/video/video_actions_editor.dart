@@ -1,7 +1,7 @@
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/settings/quick_actions/editor_page.dart';
+import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
 class VideoActionsTile extends StatelessWidget {

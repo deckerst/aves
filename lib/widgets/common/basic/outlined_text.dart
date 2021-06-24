@@ -27,22 +27,23 @@ class OutlinedText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ImageFiltered(
-          imageFilter: outlineBlurSigma > 0
-              ? ImageFilter.blur(
-                  sigmaX: outlineBlurSigma,
-                  sigmaY: outlineBlurSigma,
-                )
-              : ImageFilter.matrix(
-                  Matrix4.identity().storage,
-                ),
-          child: Text.rich(
-            TextSpan(
-              children: textSpans.map(_toStrokeSpan).toList(),
+        if (outlineWidth > 0)
+          ImageFiltered(
+            imageFilter: outlineBlurSigma > 0
+                ? ImageFilter.blur(
+                    sigmaX: outlineBlurSigma,
+                    sigmaY: outlineBlurSigma,
+                  )
+                : ImageFilter.matrix(
+                    Matrix4.identity().storage,
+                  ),
+            child: Text.rich(
+              TextSpan(
+                children: textSpans.map(_toStrokeSpan).toList(),
+              ),
+              textAlign: textAlign,
             ),
-            textAlign: textAlign,
           ),
-        ),
         Text.rich(
           TextSpan(
             children: textSpans,
