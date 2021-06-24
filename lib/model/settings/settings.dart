@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,6 +57,13 @@ class Settings extends ChangeNotifier {
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
   static const videoShowRawTimedTextKey = 'video_show_raw_timed_text';
+
+  // subtitles
+  static const subtitleFontSizeKey = 'subtitle_font_size';
+  static const subtitleTextAlignmentKey = 'subtitle_text_alignment';
+  static const subtitleShowOutlineKey = 'subtitle_show_outline';
+  static const subtitleTextColorKey = 'subtitle_text_color';
+  static const subtitleBackgroundColorKey = 'subtitle_background_color';
 
   // info
   static const infoMapStyleKey = 'info_map_style';
@@ -241,21 +249,43 @@ class Settings extends ChangeNotifier {
 
   // video
 
-  set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
-
   bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, true);
 
-  set enableVideoAutoPlay(bool newValue) => setAndNotify(enableVideoAutoPlayKey, newValue);
+  set enableVideoHardwareAcceleration(bool newValue) => setAndNotify(enableVideoHardwareAccelerationKey, newValue);
 
   bool get enableVideoAutoPlay => getBoolOrDefault(enableVideoAutoPlayKey, false);
+
+  set enableVideoAutoPlay(bool newValue) => setAndNotify(enableVideoAutoPlayKey, newValue);
 
   VideoLoopMode get videoLoopMode => getEnumOrDefault(videoLoopModeKey, VideoLoopMode.shortOnly, VideoLoopMode.values);
 
   set videoLoopMode(VideoLoopMode newValue) => setAndNotify(videoLoopModeKey, newValue.toString());
 
+  bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, false);
+
   set videoShowRawTimedText(bool newValue) => setAndNotify(videoShowRawTimedTextKey, newValue);
 
-  bool get videoShowRawTimedText => getBoolOrDefault(videoShowRawTimedTextKey, false);
+  // subtitles
+
+  double get subtitleFontSize => _prefs!.getDouble(subtitleFontSizeKey) ?? 20;
+
+  set subtitleFontSize(double newValue) => setAndNotify(subtitleFontSizeKey, newValue);
+
+  TextAlign get subtitleTextAlignment => getEnumOrDefault(subtitleTextAlignmentKey, TextAlign.center, TextAlign.values);
+
+  set subtitleTextAlignment(TextAlign newValue) => setAndNotify(subtitleTextAlignmentKey, newValue.toString());
+
+  bool get subtitleShowOutline => getBoolOrDefault(subtitleShowOutlineKey, true);
+
+  set subtitleShowOutline(bool newValue) => setAndNotify(subtitleShowOutlineKey, newValue);
+
+  Color get subtitleTextColor => Color(_prefs!.getInt(subtitleTextColorKey) ?? Colors.white.value);
+
+  set subtitleTextColor(Color newValue) => setAndNotify(subtitleTextColorKey, newValue.value);
+
+  Color get subtitleBackgroundColor => Color(_prefs!.getInt(subtitleBackgroundColorKey) ?? Colors.transparent.value);
+
+  set subtitleBackgroundColor(Color newValue) => setAndNotify(subtitleBackgroundColorKey, newValue.value);
 
   // info
 
