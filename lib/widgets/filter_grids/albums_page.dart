@@ -26,6 +26,11 @@ class AlbumListPage extends StatelessWidget {
     final source = context.read<CollectionSource>();
     return Selector<Settings, Tuple3<AlbumChipGroupFactor, ChipSortFactor, Set<CollectionFilter>>>(
       selector: (context, s) => Tuple3(s.albumGroupFactor, s.albumSortFactor, s.pinnedFilters),
+      shouldRebuild: (t1, t2) {
+        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
+        const eq = DeepCollectionEquality();
+        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2) && eq.equals(t1.item3, t2.item3));
+      },
       builder: (context, s, child) {
         return AnimatedBuilder(
           animation: androidFileUtils.appNameChangeNotifier,

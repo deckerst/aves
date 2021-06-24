@@ -25,6 +25,11 @@ class TagListPage extends StatelessWidget {
     final source = context.read<CollectionSource>();
     return Selector<Settings, Tuple2<ChipSortFactor, Set<CollectionFilter>>>(
       selector: (context, s) => Tuple2(s.tagSortFactor, s.pinnedFilters),
+      shouldRebuild: (t1, t2) {
+        // `Selector` by default uses `DeepCollectionEquality`, which does not go deep in collections within `TupleN`
+        const eq = DeepCollectionEquality();
+        return !(eq.equals(t1.item1, t2.item1) && eq.equals(t1.item2, t2.item2));
+      },
       builder: (context, s, child) {
         return StreamBuilder(
           stream: source.eventBus.on<TagsChangedEvent>(),
