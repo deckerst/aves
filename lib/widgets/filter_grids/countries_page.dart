@@ -20,6 +20,8 @@ import 'package:tuple/tuple.dart';
 class CountryListPage extends StatelessWidget {
   static const routeName = '/countries';
 
+  const CountryListPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();

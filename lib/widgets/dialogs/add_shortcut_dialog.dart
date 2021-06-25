@@ -19,9 +19,10 @@ class AddShortcutDialog extends StatefulWidget {
   final String defaultName;
 
   const AddShortcutDialog({
+    Key? key,
     required this.collection,
     required this.defaultName,
-  });
+  }) : super(key: key);
 
   @override
   _AddShortcutDialogState createState() => _AddShortcutDialogState();
@@ -133,7 +134,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
-          CollectionLens(
+          collection: CollectionLens(
             source: collection.source,
             filters: filters,
           ),

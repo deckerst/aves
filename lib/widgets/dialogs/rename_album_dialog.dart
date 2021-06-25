@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 class RenameAlbumDialog extends StatefulWidget {
   final String album;
 
-  const RenameAlbumDialog(this.album);
+  const RenameAlbumDialog({
+    Key? key,
+    required this.album,
+  }) : super(key: key);
 
   @override
   _RenameAlbumDialogState createState() => _RenameAlbumDialogState();

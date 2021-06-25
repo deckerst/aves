@@ -12,7 +12,10 @@ import 'package:flutter/material.dart';
 class MetadataTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const MetadataTab({required this.entry});
+  const MetadataTab({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
 
   @override
   _MetadataTabState createState() => _MetadataTabState();
@@ -67,7 +70,7 @@ class _MetadataTabState extends State<MetadataTab> {
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
-                data,
+                info: data,
                 maxValueLength: Constants.infoGroupMaxValueLength,
               ),
             )

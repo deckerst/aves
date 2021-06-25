@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.yaml
+include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
@@ -12,23 +12,21 @@ analyzer:
 linter:
   rules:
     # from 'effective dart', excluded
+    avoid_classes_with_only_static_members: false # too strict
     avoid_function_literals_in_foreach_calls: false # benefit?
     lines_longer_than_80_chars: false # nope
-    avoid_classes_with_only_static_members: false # too strict
+    public_member_api_docs: false # this project is not a library
 
     # from 'effective dart', undecided
     prefer_relative_imports: false # check IDE support (auto import, file move)
-    public_member_api_docs: false # maybe?
 
     # from 'effective dart', included
     avoid_types_on_closure_parameters: true
-    constant_identifier_names: true
-    prefer_function_declarations_over_variables: true
     prefer_interpolation_to_compose_strings: true
-    unnecessary_brace_in_string_interps: true
     unnecessary_lambdas: true
 
-    # misc
-    prefer_const_constructors: true # should specify `const` as Dart does not build constants when using const constructors without it
-    prefer_const_constructors_in_immutables: true
-    prefer_const_declarations: true
+    # from 'pedantic', included
+    always_declare_return_types: true
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+    unawaited_futures: true

@@ -27,6 +27,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 class AvesApp extends StatefulWidget {
+  const AvesApp({Key? key}) : super(key: key);
+
   @override
   _AvesAppState createState() => _AvesAppState();
 }
@@ -88,7 +90,7 @@ class _AvesAppState extends State<AvesApp> {
                           darkTheme: Themes.darkTheme,
                           themeMode: ThemeMode.dark,
                           locale: settingsLocale,
-                          localizationsDelegates: [
+                          localizationsDelegates: const [
                             ...AppLocalizations.localizationsDelegates,
                           ],
                           supportedLocales: AppLocalizations.supportedLocales,

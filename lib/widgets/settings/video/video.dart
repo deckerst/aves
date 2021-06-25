@@ -39,7 +39,7 @@ class VideoSection extends StatelessWidget {
           onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility(MimeFilter.video, v),
           title: Text(context.l10n.settingsVideoShowVideos),
         ),
-      VideoActionsTile(),
+      const VideoActionsTile(),
       SwitchListTile(
         value: currentEnableVideoHardwareAcceleration,
         onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
@@ -67,7 +67,7 @@ class VideoSection extends StatelessWidget {
           }
         },
       ),
-      SubtitleThemeTile(),
+      const SubtitleThemeTile(),
     ];
 
     return standalonePage

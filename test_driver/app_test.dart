@@ -1,7 +1,8 @@
+// ignore_for_file: avoid_print
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:path/path.dart' as p;
-import 'package:pedantic/pedantic.dart';
 import 'package:test/test.dart';
 
 import 'constants.dart';

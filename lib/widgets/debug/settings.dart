@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DebugSettingsSection extends StatelessWidget {
+  const DebugSettingsSection({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Settings>(
@@ -36,21 +38,23 @@ class DebugSettingsSection extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-              child: InfoRowGroup({
-                'tileExtent - Collection': '${settings.getTileExtent(CollectionPage.routeName)}',
-                'tileExtent - Albums': '${settings.getTileExtent(AlbumListPage.routeName)}',
-                'tileExtent - Countries': '${settings.getTileExtent(CountryListPage.routeName)}',
-                'tileExtent - Tags': '${settings.getTileExtent(TagListPage.routeName)}',
-                'infoMapZoom': '${settings.infoMapZoom}',
-                'viewerQuickActions': '${settings.viewerQuickActions}',
-                'videoQuickActions': '${settings.videoQuickActions}',
-                'pinnedFilters': toMultiline(settings.pinnedFilters),
-                'hiddenFilters': toMultiline(settings.hiddenFilters),
-                'searchHistory': toMultiline(settings.searchHistory),
-                'lastVersionCheckDate': '${settings.lastVersionCheckDate}',
-                'locale': '${settings.locale}',
-                'systemLocale': '${WidgetsBinding.instance!.window.locale}',
-              }),
+              child: InfoRowGroup(
+                info: {
+                  'tileExtent - Collection': '${settings.getTileExtent(CollectionPage.routeName)}',
+                  'tileExtent - Albums': '${settings.getTileExtent(AlbumListPage.routeName)}',
+                  'tileExtent - Countries': '${settings.getTileExtent(CountryListPage.routeName)}',
+                  'tileExtent - Tags': '${settings.getTileExtent(TagListPage.routeName)}',
+                  'infoMapZoom': '${settings.infoMapZoom}',
+                  'viewerQuickActions': '${settings.viewerQuickActions}',
+                  'videoQuickActions': '${settings.videoQuickActions}',
+                  'pinnedFilters': toMultiline(settings.pinnedFilters),
+                  'hiddenFilters': toMultiline(settings.hiddenFilters),
+                  'searchHistory': toMultiline(settings.searchHistory),
+                  'lastVersionCheckDate': '${settings.lastVersionCheckDate}',
+                  'locale': '${settings.locale}',
+                  'systemLocale': '${WidgetsBinding.instance!.window.locale}',
+                },
+              ),
             ),
           ],
         );

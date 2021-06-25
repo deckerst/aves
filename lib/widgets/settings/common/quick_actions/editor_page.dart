@@ -24,6 +24,7 @@ class QuickActionEditorPage<T extends Object> extends StatefulWidget {
   final void Function(List<T> actions) save;
 
   const QuickActionEditorPage({
+    Key? key,
     required this.title,
     required this.bannerText,
     required this.allAvailableActions,
@@ -31,7 +32,7 @@ class QuickActionEditorPage<T extends Object> extends StatefulWidget {
     required this.actionText,
     required this.load,
     required this.save,
-  });
+  }) : super(key: key);
 
   @override
   _QuickActionEditorPageState createState() => _QuickActionEditorPageState<T>();
@@ -131,7 +132,7 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
                     highlight: highlight,
                     child: child!,
                   ),
-                  child: Container(
+                  child: SizedBox(
                     height: OverlayButton.getSize(context) + quickActionVerticalPadding * 2,
                     child: Stack(
                       children: [

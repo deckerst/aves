@@ -12,9 +12,10 @@ class ErrorView extends StatefulWidget {
   final VoidCallback onTap;
 
   const ErrorView({
+    Key? key,
     required this.entry,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   _ErrorViewState createState() => _ErrorViewState();

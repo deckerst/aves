@@ -15,11 +15,12 @@ class MultiEntryScroller extends StatefulWidget {
   final void Function(String uri) onViewDisposed;
 
   const MultiEntryScroller({
+    Key? key,
     required this.collection,
     required this.pageController,
     required this.onPageChanged,
     required this.onViewDisposed,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _MultiEntryScrollerState();
@@ -33,7 +34,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
     super.build(context);
 
     return MagnifierGestureDetectorScope(
-      axis: [Axis.horizontal, Axis.vertical],
+      axis: const [Axis.horizontal, Axis.vertical],
       child: PageView.builder(
         key: const Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
@@ -95,8 +96,9 @@ class SingleEntryScroller extends StatefulWidget {
   final AvesEntry entry;
 
   const SingleEntryScroller({
+    Key? key,
     required this.entry,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SingleEntryScrollerState();
@@ -130,7 +132,7 @@ class _SingleEntryScrollerState extends State<SingleEntryScroller> with Automati
     child ??= _buildViewer();
 
     return MagnifierGestureDetectorScope(
-      axis: [Axis.vertical],
+      axis: const [Axis.vertical],
       child: child,
     );
   }

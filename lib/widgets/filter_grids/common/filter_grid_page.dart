@@ -91,7 +91,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             ),
           ),
         ),
-        drawer: AppDrawer(),
+        drawer: const AppDrawer(),
         resizeToAvoidBottomInset: false,
       ),
     );
@@ -454,7 +454,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
             }),
-        BottomPaddingSliver(),
+        const BottomPaddingSliver(),
       ],
     );
   }

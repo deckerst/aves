@@ -19,6 +19,8 @@ import 'package:provider/provider.dart';
 class AppDebugPage extends StatefulWidget {
   static const routeName = '/debug';
 
+  const AppDebugPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _AppDebugPageState();
 }
@@ -42,14 +44,14 @@ class _AppDebugPageState extends State<AppDebugPage> {
             padding: const EdgeInsets.all(8),
             children: [
               _buildGeneralTabView(),
-              DebugAndroidAppSection(),
-              DebugAndroidDirSection(),
-              DebugAndroidEnvironmentSection(),
-              DebugCacheSection(),
-              DebugAppDatabaseSection(),
-              DebugFirebaseSection(),
-              DebugSettingsSection(),
-              DebugStorageSection(),
+              const DebugAndroidAppSection(),
+              const DebugAndroidDirSection(),
+              const DebugAndroidEnvironmentSection(),
+              const DebugCacheSection(),
+              const DebugAppDatabaseSection(),
+              const DebugFirebaseSection(),
+              const DebugSettingsSection(),
+              const DebugStorageSection(),
             ],
           ),
         ),
@@ -83,7 +85,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
             _taskQueueOverlayEntry?.remove();
             if (v) {
               _taskQueueOverlayEntry = OverlayEntry(
-                builder: (context) => DebugTaskQueueOverlay(),
+                builder: (context) => const DebugTaskQueueOverlay(),
               );
               Overlay.of(context)!.insert(_taskQueueOverlayEntry!);
             } else {
@@ -97,7 +99,7 @@ class _AppDebugPageState extends State<AppDebugPage> {
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
           child: InfoRowGroup(
-            {
+            info: {
               'All entries': '${source.allEntries.length}',
               'Visible entries': '${visibleEntries.length}',
               'Catalogued': '${catalogued.length}',

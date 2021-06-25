@@ -11,14 +11,15 @@ class HighlightTitle extends StatelessWidget {
   final bool enabled, selectable;
   final bool showHighlight;
 
-  const HighlightTitle(
-    this.title, {
+  const HighlightTitle({
+    Key? key,
+    required this.title,
     this.color,
     this.fontSize = 18,
     this.enabled = true,
     this.selectable = false,
     this.showHighlight = true,
-  });
+  }) : super(key: key);
 
   static const disabledColor = Colors.grey;
 

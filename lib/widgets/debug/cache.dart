@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DebugCacheSection extends StatefulWidget {
+  const DebugCacheSection({Key? key}) : super(key: key);
+
   @override
   _DebugCacheSectionState createState() => _DebugCacheSectionState();
 }

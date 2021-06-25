@@ -67,6 +67,7 @@ class RegionFetcher internal constructor(
         try {
             if (currentDecoderRef == null) {
                 val newDecoder = StorageUtils.openInputStream(context, uri)?.use { input ->
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     BitmapRegionDecoder.newInstance(input, false)
                 }
                 if (newDecoder == null) {

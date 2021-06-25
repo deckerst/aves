@@ -28,6 +28,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
+  const AppDrawer({Key? key}) : super(key: key);
+
   @override
   _AppDrawerState createState() => _AppDrawerState();
 }
@@ -141,7 +143,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 children: [
                   OutlinedButton.icon(
                     key: const Key('drawer-about-button'),
-                    onPressed: () => goTo(AboutPage.routeName, (_) => AboutPage()),
+                    onPressed: () => goTo(AboutPage.routeName, (_) => const AboutPage()),
                     icon: const Icon(AIcons.info),
                     label: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -177,7 +179,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   ),
                   OutlinedButton.icon(
                     key: const Key('drawer-settings-button'),
-                    onPressed: () => goTo(SettingsPage.routeName, (_) => SettingsPage()),
+                    onPressed: () => goTo(SettingsPage.routeName, (_) => const SettingsPage()),
                     icon: const Icon(AIcons.settings),
                     label: Text(context.l10n.settingsPageTitle),
                   ),
@@ -204,7 +206,7 @@ class _AppDrawerState extends State<AppDrawer> {
           return Column(
             children: [
               const Divider(),
-              ...specialAlbums.map((album) => AlbumTile(album)),
+              ...specialAlbums.map((album) => AlbumTile(album: album)),
             ],
           );
         });
@@ -238,7 +240,7 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, _) => Text('${source.rawAlbums.length}'),
         ),
         routeName: AlbumListPage.routeName,
-        pageBuilder: (_) => AlbumListPage(),
+        pageBuilder: (_) => const AlbumListPage(),
       );
 
   Widget get countryListTile => NavTile(
@@ -249,7 +251,7 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, _) => Text('${source.sortedCountries.length}'),
         ),
         routeName: CountryListPage.routeName,
-        pageBuilder: (_) => CountryListPage(),
+        pageBuilder: (_) => const CountryListPage(),
       );
 
   Widget get tagListTile => NavTile(
@@ -260,7 +262,7 @@ class _AppDrawerState extends State<AppDrawer> {
           builder: (context, _) => Text('${source.sortedTags.length}'),
         ),
         routeName: TagListPage.routeName,
-        pageBuilder: (_) => TagListPage(),
+        pageBuilder: (_) => const TagListPage(),
       );
 
   Widget get debugTile => NavTile(
@@ -268,6 +270,6 @@ class _AppDrawerState extends State<AppDrawer> {
         title: 'Debug',
         topLevel: false,
         routeName: AppDebugPage.routeName,
-        pageBuilder: (_) => AppDebugPage(),
+        pageBuilder: (_) => const AppDebugPage(),
       );
 }

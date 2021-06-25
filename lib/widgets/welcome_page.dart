@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage();
+  const WelcomePage({Key? key}) : super(key: key);
 
   @override
   _WelcomePageState createState() => _WelcomePageState();
@@ -92,7 +92,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 ],
               )
             ]),
-                const SizedBox(height: 16),
+      const SizedBox(height: 16),
     ];
   }
 
@@ -145,7 +145,7 @@ class _WelcomePageState extends State<WelcomePage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 checkboxes,
-    const Spacer(),
+                const Spacer(),
                 button,
               ],
             ),

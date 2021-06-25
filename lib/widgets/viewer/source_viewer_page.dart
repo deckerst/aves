@@ -9,8 +9,9 @@ class SourceViewerPage extends StatefulWidget {
   final Future<String> Function() loader;
 
   const SourceViewerPage({
+    Key? key,
     required this.loader,
-  });
+  }) : super(key: key);
 
   @override
   _SourceViewerPageState createState() => _SourceViewerPageState();
@@ -40,7 +41,7 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
 
             final source = snapshot.data!;
             final highlightView = AvesHighlightView(
-              source,
+              input: source,
               language: 'xml',
               theme: darculaTheme,
               padding: const EdgeInsets.all(8),

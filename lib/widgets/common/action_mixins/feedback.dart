@@ -50,10 +50,11 @@ class ReportOverlay<T> extends StatefulWidget {
   final void Function(Set<T> processed) onDone;
 
   const ReportOverlay({
+    Key? key,
     required this.opStream,
     required this.itemCount,
     required this.onDone,
-  });
+  }) : super(key: key);
 
   @override
   _ReportOverlayState createState() => _ReportOverlayState<T>();

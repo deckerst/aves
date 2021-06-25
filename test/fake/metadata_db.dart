@@ -9,19 +9,19 @@ import 'package:flutter_test/flutter_test.dart';
 
 class FakeMetadataDb extends Fake implements MetadataDb {
   @override
-  Future<void> init() => SynchronousFuture(true);
+  Future<void> init() => SynchronousFuture(null);
 
   @override
-  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) => SynchronousFuture(true);
+  Future<void> removeIds(Set<int> contentIds, {required bool metadataOnly}) => SynchronousFuture(null);
 
   @override
   Future<Set<AvesEntry>> loadEntries() => SynchronousFuture({});
 
   @override
-  Future<void> saveEntries(Iterable<AvesEntry> entries) => SynchronousFuture(true);
+  Future<void> saveEntries(Iterable<AvesEntry> entries) => SynchronousFuture(null);
 
   @override
-  Future<void> updateEntryId(int oldId, AvesEntry entry) => SynchronousFuture(true);
+  Future<void> updateEntryId(int oldId, AvesEntry entry) => SynchronousFuture(null);
 
   @override
   Future<List<DateMetadata>> loadDates() => SynchronousFuture([]);
@@ -30,38 +30,38 @@ class FakeMetadataDb extends Fake implements MetadataDb {
   Future<List<CatalogMetadata>> loadMetadataEntries() => SynchronousFuture([]);
 
   @override
-  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) => SynchronousFuture(true);
+  Future<void> saveMetadata(Set<CatalogMetadata> metadataEntries) => SynchronousFuture(null);
 
   @override
-  Future<void> updateMetadataId(int oldId, CatalogMetadata? metadata) => SynchronousFuture(true);
+  Future<void> updateMetadataId(int oldId, CatalogMetadata? metadata) => SynchronousFuture(null);
 
   @override
   Future<List<AddressDetails>> loadAddresses() => SynchronousFuture([]);
 
   @override
-  Future<void> updateAddressId(int oldId, AddressDetails? address) => SynchronousFuture(true);
+  Future<void> updateAddressId(int oldId, AddressDetails? address) => SynchronousFuture(null);
 
   @override
   Future<Set<FavouriteRow>> loadFavourites() => SynchronousFuture({});
 
   @override
-  Future<void> addFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(true);
+  Future<void> addFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
 
   @override
-  Future<void> updateFavouriteId(int oldId, FavouriteRow row) => SynchronousFuture(true);
+  Future<void> updateFavouriteId(int oldId, FavouriteRow row) => SynchronousFuture(null);
 
   @override
-  Future<void> removeFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(true);
+  Future<void> removeFavourites(Iterable<FavouriteRow> rows) => SynchronousFuture(null);
 
   @override
   Future<Set<CoverRow>> loadCovers() => SynchronousFuture({});
 
   @override
-  Future<void> addCovers(Iterable<CoverRow> rows) => SynchronousFuture(true);
+  Future<void> addCovers(Iterable<CoverRow> rows) => SynchronousFuture(null);
 
   @override
-  Future<void> updateCoverEntryId(int oldId, CoverRow row) => SynchronousFuture(true);
+  Future<void> updateCoverEntryId(int oldId, CoverRow row) => SynchronousFuture(null);
 
   @override
-  Future<void> removeCovers(Set<CollectionFilter> filters) => SynchronousFuture(true);
+  Future<void> removeCovers(Set<CollectionFilter> filters) => SynchronousFuture(null);
 }

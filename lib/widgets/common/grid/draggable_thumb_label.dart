@@ -9,9 +9,10 @@ class DraggableThumbLabel<T> extends StatelessWidget {
   final List<String> Function(BuildContext context, T item) lineBuilder;
 
   const DraggableThumbLabel({
+    Key? key,
     required this.offsetY,
     required this.lineBuilder,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

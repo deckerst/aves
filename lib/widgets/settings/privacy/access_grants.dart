@@ -5,6 +5,8 @@ import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:flutter/material.dart';
 
 class StorageAccessTile extends StatelessWidget {
+  const StorageAccessTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -14,7 +16,7 @@ class StorageAccessTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             settings: const RouteSettings(name: StorageAccessPage.routeName),
-            builder: (context) => StorageAccessPage(),
+            builder: (context) => const StorageAccessPage(),
           ),
         );
       },
@@ -24,6 +26,8 @@ class StorageAccessTile extends StatelessWidget {
 
 class StorageAccessPage extends StatefulWidget {
   static const routeName = '/settings/storage_access';
+
+  const StorageAccessPage({Key? key}) : super(key: key);
 
   @override
   _StorageAccessPageState createState() => _StorageAccessPageState();

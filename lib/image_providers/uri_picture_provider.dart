@@ -13,7 +13,7 @@ class UriPicture extends PictureProvider<UriPicture> {
   final String uri, mimeType;
 
   @override
-  Future<UriPicture> obtainKey(PictureConfiguration configuration) {
+  Future<UriPicture> obtainKey(PictureConfiguration picture) {
     return SynchronousFuture<UriPicture>(this);
   }
 

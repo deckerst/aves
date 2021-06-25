@@ -29,5 +29,5 @@ void main() {
     );
   }).sendPort);
 
-  runApp(AvesApp());
+  runApp(const AvesApp());
 }

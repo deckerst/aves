@@ -9,9 +9,10 @@ class EntryBackgroundSelector extends StatefulWidget {
   final ValueSetter<EntryBackground> setter;
 
   const EntryBackgroundSelector({
+    Key? key,
     required this.getter,
     required this.setter,
-  });
+  }) : super(key: key);
 
   @override
   _EntryBackgroundSelectorState createState() => _EntryBackgroundSelectorState();

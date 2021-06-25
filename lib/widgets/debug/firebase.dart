@@ -6,6 +6,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 class DebugFirebaseSection extends StatelessWidget {
+  const DebugFirebaseSection({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AvesExpansionTile(
@@ -32,10 +34,12 @@ class DebugFirebaseSection extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          child: InfoRowGroup({
-            'Firebase data collection enabled': '${Firebase.app().isAutomaticDataCollectionEnabled}',
-            'Crashlytics collection enabled': '${FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled}',
-          }),
+          child: InfoRowGroup(
+            info: {
+              'Firebase data collection enabled': '${Firebase.app().isAutomaticDataCollectionEnabled}',
+              'Crashlytics collection enabled': '${FirebaseCrashlytics.instance.isCrashlyticsCollectionEnabled}',
+            },
+          ),
         )
       ],
     );

@@ -96,7 +96,7 @@ class MagnifierGestureRecognizer extends ScaleGestureRecognizer {
   }
 
   void _decideIfWeAcceptEvent(PointerEvent event) {
-    if (!(event is PointerMoveEvent)) return;
+    if (event is! PointerMoveEvent) return;
 
     if (_pointerLocations.keys.length >= 2) {
       // when there are multiple pointers, we always accept the gesture to scale

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends SectionedListLayoutProvider<FilterGridItem<T>> {
   const SectionedFilterListLayoutProvider({
+    Key? key,
     required this.sections,
     required this.showHeaders,
     required double scrollableWidth,
@@ -17,6 +18,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
     required Duration tileAnimationDelay,
     required Widget child,
   }) : super(
+          key: key,
           scrollableWidth: scrollableWidth,
           columnCount: columnCount,
           spacing: spacing,

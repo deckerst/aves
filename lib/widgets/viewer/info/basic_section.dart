@@ -53,15 +53,17 @@ class BasicSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InfoRowGroup({
-          l10n.viewerInfoLabelTitle: title,
-          l10n.viewerInfoLabelDate: dateText,
-          if (entry.isVideo) ..._buildVideoRows(context),
-          if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
-          l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown,
-          l10n.viewerInfoLabelUri: uri,
-          if (path != null) l10n.viewerInfoLabelPath: path,
-        }),
+        InfoRowGroup(
+          info: {
+            l10n.viewerInfoLabelTitle: title,
+            l10n.viewerInfoLabelDate: dateText,
+            if (entry.isVideo) ..._buildVideoRows(context),
+            if (!entry.isSvg && entry.isSized) l10n.viewerInfoLabelResolution: rasterResolutionText,
+            l10n.viewerInfoLabelSize: entry.sizeBytes != null ? formatFilesize(entry.sizeBytes!) : infoUnknown,
+            l10n.viewerInfoLabelUri: uri,
+            if (path != null) l10n.viewerInfoLabelPath: path,
+          },
+        ),
         OwnerProp(
           entry: entry,
         ),
@@ -120,8 +122,9 @@ class OwnerProp extends StatefulWidget {
   final AvesEntry entry;
 
   const OwnerProp({
+    Key? key,
     required this.entry,
-  });
+  }) : super(key: key);
 
   @override
   _OwnerPropState createState() => _OwnerPropState();

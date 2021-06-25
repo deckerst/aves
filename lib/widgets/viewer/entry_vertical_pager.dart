@@ -21,6 +21,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   final void Function(String uri) onViewDisposed;
 
   const ViewerVerticalPageView({
+    Key? key,
     required this.collection,
     required this.entryNotifier,
     required this.verticalPager,
@@ -29,7 +30,7 @@ class ViewerVerticalPageView extends StatefulWidget {
     required this.onHorizontalPageChanged,
     required this.onImagePageRequested,
     required this.onViewDisposed,
-  });
+  }) : super(key: key);
 
   @override
   _ViewerVerticalPageViewState createState() => _ViewerVerticalPageViewState();

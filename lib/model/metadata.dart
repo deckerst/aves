@@ -139,11 +139,10 @@ class OverlayMetadata {
 
   OverlayMetadata({
     double? aperture,
-    String? exposureTime,
+    this.exposureTime,
     double? focalLength,
     int? iso,
   })  : aperture = aperture != null ? 'ƒ/${apertureFormat.format(aperture)}' : null,
-        exposureTime = exposureTime,
         focalLength = focalLength != null ? '${focalLengthFormat.format(focalLength)} mm' : null,
         iso = iso != null ? 'ISO$iso' : null;
 
