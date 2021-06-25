@@ -107,6 +107,8 @@
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Playback speed",
   "@videoActionSetSpeed": {},
+  "videoActionSettings": "Settings",
+  "@videoActionSettings": {},
 
   "filterFavouriteLabel": "Favourite",
   "@filterFavouriteLabel": {},
@@ -582,6 +584,8 @@
   "settingsViewerQuickActionEmpty": "No buttons",
   "@settingsViewerQuickActionEmpty": {},
 
+  "settingsVideoPageTitle": "Video Settings",
+  "@settingsVideoPageTitle": {},
   "settingsSectionVideo": "Video",
   "@settingsSectionVideo": {},
   "settingsVideoShowVideos": "Show videos",

@@ -54,6 +54,7 @@
   "videoActionSkip10": "10초 앞으로 탐색",
   "videoActionSelectStreams": "트랙 선택",
   "videoActionSetSpeed": "재생 배속",
+  "videoActionSettings": "설정",
 
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
@@ -274,6 +275,7 @@
   "settingsViewerQuickActionEditorAvailableButtons": "추가 가능한 버튼",
   "settingsViewerQuickActionEmpty": "버튼이 없습니다",
 
+  "settingsVideoPageTitle": "동영상 설정",
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
   "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
