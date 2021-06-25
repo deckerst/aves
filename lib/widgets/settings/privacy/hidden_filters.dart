@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HiddenFilterTile extends StatelessWidget {
+  const HiddenFilterTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -18,7 +20,7 @@ class HiddenFilterTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             settings: const RouteSettings(name: HiddenFilterPage.routeName),
-            builder: (context) => HiddenFilterPage(),
+            builder: (context) => const HiddenFilterPage(),
           ),
         );
       },
@@ -28,6 +30,8 @@ class HiddenFilterTile extends StatelessWidget {
 
 class HiddenFilterPage extends StatelessWidget {
   static const routeName = '/settings/hidden';
+
+  const HiddenFilterPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -252,7 +252,7 @@ void main() {
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Cleanthes', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Chrysippus', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Chrysippus', '1'),
-      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}', '1'),
+      FakeMediaStoreService.newImage(FakeStorageService.primaryPath, '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Seneca', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Seneca', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Cicero', '1'),

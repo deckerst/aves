@@ -36,9 +36,10 @@ class StatsPage extends StatelessWidget {
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
+    Key? key,
     required this.source,
     this.parentCollection,
-  }) {
+  }) : super(key: key) {
     entries.forEach((entry) {
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
@@ -158,7 +159,7 @@ class StatsPage extends StatelessWidget {
       final availableWidth = constraints.maxWidth;
       final dim = max(minWidth, availableWidth / (availableWidth > 4 * minWidth ? 4 : (availableWidth > 2 * minWidth ? 2 : 1)));
 
-      final donut = Container(
+      final donut = SizedBox(
         width: dim,
         height: dim,
         child: Stack(
@@ -272,10 +273,12 @@ class StatsPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(CollectionLens(
-          source: source,
-          filters: [filter],
-        )),
+        builder: (context) => CollectionPage(
+          collection: CollectionLens(
+            source: source,
+            filters: [filter],
+          ),
+        ),
       ),
       (route) => false,
     );

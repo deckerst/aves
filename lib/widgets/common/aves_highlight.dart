@@ -29,14 +29,16 @@ class AvesHighlightView extends StatelessWidget {
   /// Specify text styles such as font family and font size
   final TextStyle? textStyle;
 
-  AvesHighlightView(
-    String input, {
+  AvesHighlightView({
+    Key? key,
+    required String input,
     this.language,
     this.theme = const {},
     this.padding,
     this.textStyle,
     int tabSize = 8, // TODO: https://github.com/flutter/flutter/issues/50087
-  }) : source = input.replaceAll('\t', ' ' * tabSize);
+  })  : source = input.replaceAll('\t', ' ' * tabSize),
+        super(key: key);
 
   List<TextSpan> _convert(List<Node> nodes) {
     final spans = <TextSpan>[];

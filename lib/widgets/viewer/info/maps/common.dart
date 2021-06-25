@@ -21,7 +21,10 @@ class MapDecorator extends StatelessWidget {
   static const mapBackground = Color(0xFFDBD5D3);
   static const mapLoadingGrid = Color(0xFFC4BEBB);
 
-  const MapDecorator({this.child});
+  const MapDecorator({
+    Key? key,
+    this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +65,10 @@ class MapButtonPanel extends StatelessWidget {
   static const double padding = 4;
 
   const MapButtonPanel({
+    Key? key,
     required this.geoUri,
     required this.zoomBy,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -140,10 +144,11 @@ class MapOverlayButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const MapOverlayButton({
+    Key? key,
     required this.icon,
     required this.tooltip,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 class AboutPage extends StatelessWidget {
   static const routeName = '/about';
 
+  const AboutPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,17 +23,17 @@ class AboutPage extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
-                  [
+                  const [
                     AppReference(),
-                    const Divider(),
+                    Divider(),
                     AboutUpdate(),
                     AboutCredits(),
-                    const Divider(),
+                    Divider(),
                   ],
                 ),
               ),
             ),
-            Licenses(),
+            const Licenses(),
           ],
         ),
       ),

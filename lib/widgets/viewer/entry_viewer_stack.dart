@@ -210,7 +210,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 ),
                 _buildTopOverlay(),
                 _buildBottomOverlay(),
-                BottomGestureAreaProtector(),
+                const BottomGestureAreaProtector(),
               ],
             ),
           ),
@@ -399,7 +399,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) {
           return CollectionPage(
-            CollectionLens(
+            collection: CollectionLens(
               source: baseCollection.source,
               filters: baseCollection.filters,
               groupFactor: baseCollection.groupFactor,

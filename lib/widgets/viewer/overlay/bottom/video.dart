@@ -287,7 +287,7 @@ class _ButtonRow extends StatelessWidget {
   }
 
   PopupMenuEntry<VideoAction> _buildPopupMenuItem(BuildContext context, VideoAction action) {
-    late final enabled;
+    late final bool enabled;
     switch (action) {
       case VideoAction.captureFrame:
         enabled = controller?.canCaptureFrameNotifier.value ?? false;

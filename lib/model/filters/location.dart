@@ -62,7 +62,7 @@ class LocationFilter extends CollectionFilter {
     if (flag != null) {
       return Text(
         flag,
-        style: TextStyle(fontSize: size, shadows: []),
+        style: TextStyle(fontSize: size, shadows: const []),
         textScaleFactor: 1.0,
       );
     }

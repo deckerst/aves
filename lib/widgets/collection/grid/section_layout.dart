@@ -9,6 +9,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
   final CollectionLens collection;
 
   const SectionedEntryListLayoutProvider({
+    Key? key,
     required this.collection,
     required double scrollableWidth,
     required int columnCount,
@@ -18,6 +19,7 @@ class SectionedEntryListLayoutProvider extends SectionedListLayoutProvider<AvesE
     required Duration tileAnimationDelay,
     required Widget child,
   }) : super(
+          key: key,
           scrollableWidth: scrollableWidth,
           columnCount: columnCount,
           spacing: spacing,

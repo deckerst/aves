@@ -394,7 +394,7 @@ class AssParser {
     final match = alphaPattern.firstMatch(param);
     if (match != null) {
       final as = match.group(1);
-      final ai = int.tryParse('$as', radix: 16);
+      final ai = as != null ? int.tryParse(as, radix: 16) : null;
       if (ai != null) {
         return 0xFF - ai;
       }

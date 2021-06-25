@@ -13,6 +13,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 class SettingsPage extends StatefulWidget {
   static const routeName = '/settings';
 
+  const SettingsPage({Key? key}) : super(key: key);
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }

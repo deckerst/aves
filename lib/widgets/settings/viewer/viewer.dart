@@ -35,7 +35,7 @@ class ViewerSection extends StatelessWidget {
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
-        ViewerActionsTile(),
+        const ViewerActionsTile(),
         SwitchListTile(
           value: currentShowOverlayMinimap,
           onChanged: (v) => settings.showOverlayMinimap = v,

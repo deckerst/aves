@@ -8,6 +8,7 @@ import 'package:aves/services/services.dart';
 import 'package:aves/services/svg_metadata_service.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/utils/constants.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
@@ -20,7 +21,6 @@ import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:pedantic/pedantic.dart';
 
 class MetadataDirTile extends StatelessWidget with FeedbackMixin {
   final AvesEntry entry;
@@ -30,13 +30,14 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
   final bool initiallyExpanded, showThumbnails;
 
   const MetadataDirTile({
+    Key? key,
     required this.entry,
     required this.title,
     required this.dir,
     this.expandedDirectoryNotifier,
     this.initiallyExpanded = false,
     this.showThumbnails = true,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class MetadataDirTile extends StatelessWidget with FeedbackMixin {
           Padding(
             padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
             child: InfoRowGroup(
-              tags,
+              info: tags,
               maxValueLength: Constants.infoGroupMaxValueLength,
               linkHandlers: linkHandlers,
             ),

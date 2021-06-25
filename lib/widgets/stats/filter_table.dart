@@ -14,11 +14,12 @@ class FilterTable extends StatelessWidget {
   final FilterCallback onFilterSelection;
 
   const FilterTable({
+    Key? key,
     required this.totalEntryCount,
     required this.entryCountMap,
     required this.filterBuilder,
     required this.onFilterSelection,
-  });
+  }) : super(key: key);
 
   static const chipWidth = AvesFilterChip.maxChipWidth;
   static const countWidth = 32.0;
@@ -80,9 +81,9 @@ class FilterTable extends StatelessWidget {
                 ],
               );
             }).toList(),
-            columnWidths: {
-              0: const MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(chipWidth)),
-              2: const MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(countWidth)),
+            columnWidths: const {
+              0: MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(chipWidth)),
+              2: MaxColumnWidth(IntrinsicColumnWidth(), FixedColumnWidth(countWidth)),
             },
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           );

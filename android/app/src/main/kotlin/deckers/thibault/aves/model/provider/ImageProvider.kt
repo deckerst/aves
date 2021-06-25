@@ -39,7 +39,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 abstract class ImageProvider {
-    open fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
+    open fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         callback.onFailure(UnsupportedOperationException())
     }
 

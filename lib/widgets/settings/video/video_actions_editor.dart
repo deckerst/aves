@@ -5,6 +5,8 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
 class VideoActionsTile extends StatelessWidget {
+  const VideoActionsTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(

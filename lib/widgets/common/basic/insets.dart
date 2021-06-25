@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 // - a vertically scrollable body.
 // It will prevent the body from scrolling when a user swipe from bottom to use Android Q style navigation gestures.
 class BottomGestureAreaProtector extends StatelessWidget {
+  const BottomGestureAreaProtector({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Selector<MediaQueryData, double>(
@@ -27,20 +29,25 @@ class BottomGestureAreaProtector extends StatelessWidget {
 class GestureAreaProtectorStack extends StatelessWidget {
   final Widget child;
 
-  const GestureAreaProtectorStack({required this.child});
+  const GestureAreaProtectorStack({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         child,
-        BottomGestureAreaProtector(),
+        const BottomGestureAreaProtector(),
       ],
     );
   }
 }
 
 class BottomPaddingSliver extends StatelessWidget {
+  const BottomPaddingSliver({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(

@@ -129,6 +129,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             .load(model)
             .submit()
         try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             var bitmap = target.get()
             if (needRotationAfterGlide(mimeType)) {
                 bitmap = applyExifOrientation(activity, bitmap, rotationDegrees, isFlipped)
@@ -152,6 +153,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
             .load(VideoThumbnail(activity, uri))
             .submit()
         try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             val bitmap = target.get()
             if (bitmap != null) {
                 success(bitmap.getBytes(canHaveAlpha = false, recycle = false))

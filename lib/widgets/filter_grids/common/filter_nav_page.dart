@@ -37,6 +37,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final Widget Function() emptyBuilder;
 
   const FilterNavigationPage({
+    Key? key,
     required this.source,
     required this.title,
     required this.sortFactor,
@@ -47,7 +48,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     required this.chipActionsBuilder,
     required this.filterSections,
     required this.emptyBuilder,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +81,12 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
         context,
         MaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
-          builder: (context) => CollectionPage(CollectionLens(
-            source: source,
-            filters: [filter],
-          )),
+          builder: (context) => CollectionPage(
+            collection: CollectionLens(
+              source: source,
+              filters: [filter],
+            ),
+          ),
         ),
       ),
       onLongPress: isMainMode ? _showMenu as OffsetFilterCallback : null,
@@ -111,7 +114,7 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
 
   List<Widget> _buildActions(BuildContext context) {
     return [
-      CollectionSearchButton(source),
+      CollectionSearchButton(source: source),
       PopupMenuButton<ChipSetAction>(
         key: const Key('appbar-menu-button'),
         itemBuilder: (context) {

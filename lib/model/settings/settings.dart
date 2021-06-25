@@ -4,13 +4,13 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();

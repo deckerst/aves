@@ -18,6 +18,7 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   final Widget child;
 
   const SectionedListLayoutProvider({
+    Key? key,
     required this.scrollableWidth,
     required this.columnCount,
     required this.spacing,
@@ -25,7 +26,8 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
     required this.tileBuilder,
     required this.tileAnimationDelay,
     required this.child,
-  }) : assert(scrollableWidth != 0);
+  })  : assert(scrollableWidth != 0),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -70,7 +70,7 @@ class XmpNamespace {
     final content = [
       if (props.isNotEmpty)
         InfoRowGroup(
-          Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, formatValue(prop)))),
+          info: Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, formatValue(prop)))),
           maxValueLength: Constants.infoGroupMaxValueLength,
           linkHandlers: linkifyValues(props),
         ),
@@ -83,7 +83,7 @@ class XmpNamespace {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: HighlightTitle(
-                  displayTitle,
+                  title: displayTitle,
                   color: BrandColors.get(displayTitle),
                   selectable: true,
                 ),

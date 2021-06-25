@@ -13,10 +13,11 @@ class ErrorThumbnail extends StatefulWidget {
   final String tooltip;
 
   const ErrorThumbnail({
+    Key? key,
     required this.entry,
     required this.extent,
     required this.tooltip,
-  });
+  }) : super(key: key);
 
   @override
   _ErrorThumbnailState createState() => _ErrorThumbnailState();

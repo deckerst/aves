@@ -46,8 +46,8 @@ class PrivacySection extends StatelessWidget {
           },
           title: Text(context.l10n.settingsSaveSearchHistory),
         ),
-        HiddenFilterTile(),
-        StorageAccessTile(),
+        const HiddenFilterTile(),
+        const StorageAccessTile(),
       ],
     );
   }

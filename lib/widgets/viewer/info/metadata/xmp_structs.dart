@@ -15,10 +15,11 @@ class XmpStructArrayCard extends StatefulWidget {
   final Map<String, InfoLinkHandler> Function(int index)? linkifier;
 
   XmpStructArrayCard({
+    Key? key,
     required this.title,
     required Map<int, Map<String, String>> structByIndex,
     this.linkifier,
-  }) {
+  }) : super(key: key) {
     final length = structByIndex.keys.fold(0, max);
     structs.length = length;
     for (var i = 0; i < length; i++) {
@@ -63,7 +64,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               children: [
                 Flexible(
                   child: HighlightTitle(
-                    '${widget.title} ${_index + 1}',
+                    title: '${widget.title} ${_index + 1}',
                     color: Colors.transparent,
                     selectable: true,
                   ),
@@ -93,7 +94,7 @@ class _XmpStructArrayCardState extends State<XmpStructArrayCard> {
               // without clipping the text
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup(
-                structs[_index],
+                info: structs[_index],
                 maxValueLength: Constants.infoGroupMaxValueLength,
                 linkHandlers: widget.linkifier?.call(_index + 1),
               ),
@@ -113,10 +114,11 @@ class XmpStructCard extends StatelessWidget {
   static const cardMargin = EdgeInsets.symmetric(vertical: 8, horizontal: 0);
 
   const XmpStructCard({
+    Key? key,
     required this.title,
     required this.struct,
     this.linkifier,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,12 +130,12 @@ class XmpStructCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HighlightTitle(
-              title,
+              title: title,
               color: Colors.transparent,
               selectable: true,
             ),
             InfoRowGroup(
-              struct,
+              info: struct,
               maxValueLength: Constants.infoGroupMaxValueLength,
               linkHandlers: linkifier?.call(),
             ),

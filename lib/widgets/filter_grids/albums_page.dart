@@ -21,6 +21,8 @@ import 'package:tuple/tuple.dart';
 class AlbumListPage extends StatelessWidget {
   static const routeName = '/albums';
 
+  const AlbumListPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();

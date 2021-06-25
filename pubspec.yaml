@@ -50,7 +50,6 @@ dependencies:
 # TODO TLAD upgrade panorama when this is fixed: https://github.com/zesage/panorama/issues/25 (bug in v0.4.1)
   panorama: 0.4.0
   pdf:
-  pedantic:
   percent_indicator:
   permission_handler:
   printing:
@@ -70,6 +69,7 @@ dev_dependencies:
     sdk: flutter
   flutter_driver:
     sdk: flutter
+  flutter_lints:
   test:
 
 flutter:

@@ -6,10 +6,11 @@ class EmptyContent extends StatelessWidget {
   final AlignmentGeometry alignment;
 
   const EmptyContent({
+    Key? key,
     this.icon,
     required this.text,
     this.alignment = const FractionalOffset(.5, .35),
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

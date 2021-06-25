@@ -22,9 +22,10 @@ class MetadataSectionSliver extends StatefulWidget {
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
   const MetadataSectionSliver({
+    Key? key,
     required this.entry,
     required this.metadataNotifier,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _MetadataSectionSliverState();
@@ -100,7 +101,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
                       ),
                     ),
                     children: [
-                      const SectionRow(AIcons.info),
+                      const SectionRow(icon: AIcons.info),
                       ...metadata.entries.map((kv) => MetadataDirTile(
                             entry: entry,
                             title: kv.key,
@@ -262,9 +263,13 @@ class MetadataDirectory {
   static const mediaDirectory = 'Media'; // custom
   static const coverDirectory = 'Cover'; // custom
 
-  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String>? tags, this.color})
-      : allTags = allTags,
-        tags = tags ?? allTags;
+  const MetadataDirectory(
+    this.name,
+    this.parent,
+    this.allTags, {
+    SplayTreeMap<String, String>? tags,
+    this.color,
+  }) : tags = tags ?? allTags;
 
   MetadataDirectory filterKeys(bool Function(String key) testKey) {
     final filteredTags = SplayTreeMap.of(Map.fromEntries(allTags.entries.where((kv) => testKey(kv.key))));

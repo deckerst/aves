@@ -10,7 +10,10 @@ import 'aves_dialog.dart';
 class RenameEntryDialog extends StatefulWidget {
   final AvesEntry entry;
 
-  const RenameEntryDialog(this.entry);
+  const RenameEntryDialog({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
 
   @override
   _RenameEntryDialogState createState() => _RenameEntryDialogState();

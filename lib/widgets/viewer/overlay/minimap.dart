@@ -15,10 +15,11 @@ class Minimap extends StatelessWidget {
   static const defaultSize = Size(96, 96);
 
   const Minimap({
+    Key? key,
     required this.entry,
     required this.viewStateNotifier,
     this.size = defaultSize,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

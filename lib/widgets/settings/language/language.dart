@@ -36,7 +36,7 @@ class LanguageSection extends StatelessWidget {
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
-        LocaleTile(),
+        const LocaleTile(),
         ListTile(
           title: Text(context.l10n.settingsCoordinateFormatTile),
           subtitle: Text(currentCoordinateFormat.getName(context)),

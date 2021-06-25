@@ -8,6 +8,8 @@ import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
 
 class DebugAppDatabaseSection extends StatefulWidget {
+  const DebugAppDatabaseSection({Key? key}) : super(key: key);
+
   @override
   _DebugAppDatabaseSectionState createState() => _DebugAppDatabaseSectionState();
 }

@@ -209,7 +209,7 @@ class _InfoPageContentState extends State<_InfoPageContent> {
           padding: horizontalPadding + const EdgeInsets.only(bottom: 8),
           sliver: metadataSliver,
         ),
-        BottomPaddingSliver(),
+        const BottomPaddingSliver(),
       ],
     );
   }

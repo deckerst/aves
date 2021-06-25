@@ -324,8 +324,8 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
                 hasScrollBody: false,
                 child: _buildEmptyCollectionPlaceholder(collection),
               )
-            : SectionedListSliver<AvesEntry>(),
-        BottomPaddingSliver(),
+            : const SectionedListSliver<AvesEntry>(),
+        const BottomPaddingSliver(),
       ],
     );
   }

@@ -255,6 +255,12 @@ class Constants {
       sourceUrl: 'https://github.com/marcojakob/dart-event-bus',
     ),
     Dependency(
+      name: 'Flutter Lints',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_lints/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_lints',
+    ),
+    Dependency(
       name: 'Get It',
       license: 'MIT',
       licenseUrl: 'https://github.com/fluttercommunity/get_it/blob/master/LICENSE',
@@ -283,12 +289,6 @@ class Constants {
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/DavBfr/dart_pdf/blob/master/LICENSE',
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',
-    ),
-    Dependency(
-      name: 'Pedantic',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/dart-lang/pedantic/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/dart-lang/pedantic',
     ),
     Dependency(
       name: 'Tuple',
