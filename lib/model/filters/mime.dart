@@ -12,27 +12,28 @@ class MimeFilter extends CollectionFilter {
   final String mime;
   late EntryFilter _test;
   late String _label;
-  IconData? /*late*/ _icon;
+  late IconData _icon;
 
   static final image = MimeFilter(MimeTypes.anyImage);
   static final video = MimeFilter(MimeTypes.anyVideo);
 
   MimeFilter(this.mime) {
+    IconData? icon;
     var lowMime = mime.toLowerCase();
     if (lowMime.endsWith('/*')) {
       lowMime = lowMime.substring(0, lowMime.length - 2);
       _test = (entry) => entry.mimeType.startsWith(lowMime);
       _label = lowMime.toUpperCase();
       if (mime == MimeTypes.anyImage) {
-        _icon = AIcons.image;
+        icon = AIcons.image;
       } else if (mime == MimeTypes.anyVideo) {
-        _icon = AIcons.video;
+        icon = AIcons.video;
       }
     } else {
       _test = (entry) => entry.mimeType == lowMime;
       _label = MimeUtils.displayType(lowMime);
     }
-    _icon ??= AIcons.vector;
+    _icon = icon ?? AIcons.vector;
   }
 
   MimeFilter.fromMap(Map<String, dynamic> json)

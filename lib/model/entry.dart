@@ -5,6 +5,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:aves/services/services.dart';
@@ -17,8 +18,6 @@ import 'package:country_code/country_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-
-import '../ref/mime_types.dart';
 
 class AvesEntry {
   String uri;
@@ -419,7 +418,7 @@ class AvesEntry {
     addressDetails = null;
   }
 
-  Future<void> catalog({bool background = false}) async {
+  Future<void> catalog({bool background = false, bool persist = true}) async {
     if (isCatalogued) return;
     if (isSvg) {
       // vector image sizing is not essential, so we should not spend time for it during loading
@@ -429,7 +428,7 @@ class AvesEntry {
         await _applyNewFields({
           'width': size.width.round(),
           'height': size.height.round(),
-        });
+        }, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
@@ -539,7 +538,7 @@ class AvesEntry {
         _addressDetails?.locality,
       }.any((s) => s != null && s.toUpperCase().contains(query));
 
-  Future<void> _applyNewFields(Map newFields) async {
+  Future<void> _applyNewFields(Map newFields, {required bool persist}) async {
     final uri = newFields['uri'];
     if (uri is String) this.uri = uri;
     final path = newFields['path'];
@@ -561,32 +560,34 @@ class AvesEntry {
     final isFlipped = newFields['isFlipped'];
     if (isFlipped is bool) this.isFlipped = isFlipped;
 
-    await metadataDb.saveEntries({this});
-    if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
+    if (persist) {
+      await metadataDb.saveEntries({this});
+      if (catalogMetadata != null) await metadataDb.saveMetadata({catalogMetadata!});
+    }
 
     metadataChangeNotifier.notifyListeners();
   }
 
-  Future<bool> rotate({required bool clockwise}) async {
+  Future<bool> rotate({required bool clockwise, required bool persist}) async {
     final newFields = await imageFileService.rotate(this, clockwise: clockwise);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
-    await _applyNewFields(newFields);
+    await _applyNewFields(newFields, persist: persist);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }
 
-  Future<bool> flip() async {
+  Future<bool> flip({required bool persist}) async {
     final newFields = await imageFileService.flip(this);
     if (newFields.isEmpty) return false;
 
     final oldDateModifiedSecs = dateModifiedSecs;
     final oldRotationDegrees = rotationDegrees;
     final oldIsFlipped = isFlipped;
-    await _applyNewFields(newFields);
+    await _applyNewFields(newFields, persist: persist);
     await _onImageChanged(oldDateModifiedSecs, oldRotationDegrees, oldIsFlipped);
     return true;
   }

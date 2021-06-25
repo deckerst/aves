@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:aves/model/entry.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +39,31 @@ abstract class AvesVideoController {
 
   Stream<int> get positionStream;
 
+  Stream<String?> get timedTextStream;
+
+  ValueNotifier<bool> get canCaptureFrameNotifier;
+
+  ValueNotifier<bool> get canSetSpeedNotifier;
+
+  ValueNotifier<bool> get canSelectStreamNotifier;
+
   ValueNotifier<double> get sarNotifier;
+
+  double get speed;
+
+  double get minSpeed;
+
+  double get maxSpeed;
+
+  set speed(double speed);
+
+  Future<void> selectStream(StreamType type, StreamSummary? selected);
+
+  Future<StreamSummary?> getSelectedStream(StreamType type);
+
+  List<StreamSummary> get streams;
+
+  Future<Uint8List> captureFrame();
 
   Widget buildPlayerWidget(BuildContext context);
 }
@@ -49,4 +75,25 @@ enum VideoStatus {
   playing,
   completed,
   error,
+}
+
+enum StreamType { video, audio, text }
+
+class StreamSummary {
+  final StreamType type;
+  final int? index, width, height;
+  final String? codecName, language, title;
+
+  const StreamSummary({
+    required this.type,
+    required this.index,
+    required this.codecName,
+    required this.language,
+    required this.title,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  String toString() => '$runtimeType#${shortHash(this)}{type: type, index: $index, codecName: $codecName, language: $language, title: $title, width: $width, height: $height}';
 }

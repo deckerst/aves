@@ -1,6 +1,6 @@
 Thanks for using Aves!
-v1.4.3:
-- improved navigation usability
-- changed thumbnail layout
-- improved playing videos with non-square pixels
+v1.4.4:
+- video speed control, track selection, frame capture
+- support embedded subtitles in videos
+- custom video quick actions and subtitle theme
 Full changelog available on Github

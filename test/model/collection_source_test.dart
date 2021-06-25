@@ -118,7 +118,7 @@ void main() {
     await image1.toggleFavourite();
     const albumFilter = AlbumFilter(testAlbum, 'whatever');
     await covers.set(albumFilter, image1.contentId);
-    await source.renameEntry(image1, 'image1b.jpg');
+    await source.renameEntry(image1, 'image1b.jpg', persist: true);
 
     expect(favourites.count, 1);
     expect(image1.isFavourite, true);

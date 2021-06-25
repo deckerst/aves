@@ -29,6 +29,11 @@ class DebugSettingsSection extends StatelessWidget {
               onChanged: (v) => settings.hasAcceptedTerms = v,
               title: const Text('hasAcceptedTerms'),
             ),
+            SwitchListTile(
+              value: settings.videoShowRawTimedText,
+              onChanged: (v) => settings.videoShowRawTimedText = v,
+              title: const Text('videoShowRawTimedText'),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: InfoRowGroup({
@@ -38,6 +43,7 @@ class DebugSettingsSection extends StatelessWidget {
                 'tileExtent - Tags': '${settings.getTileExtent(TagListPage.routeName)}',
                 'infoMapZoom': '${settings.infoMapZoom}',
                 'viewerQuickActions': '${settings.viewerQuickActions}',
+                'videoQuickActions': '${settings.videoQuickActions}',
                 'pinnedFilters': toMultiline(settings.pinnedFilters),
                 'hiddenFilters': toMultiline(settings.hiddenFilters),
                 'searchHistory': toMultiline(settings.searchHistory),

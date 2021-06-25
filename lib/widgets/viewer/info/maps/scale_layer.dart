@@ -118,11 +118,15 @@ class ScaleBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           OutlinedText(
-            text: distance,
-            style: const TextStyle(
-              color: fillColor,
-              fontSize: 11,
-            ),
+            textSpans: [
+              TextSpan(
+                text: distance,
+                style: const TextStyle(
+                  color: fillColor,
+                  fontSize: 11,
+                ),
+              )
+            ],
             outlineWidth: outlineWidth * 2,
             outlineColor: outlineColor,
           ),

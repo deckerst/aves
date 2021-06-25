@@ -8,7 +8,7 @@ import java.util.*
 
 object MetadataExtractorHelper {
     const val PNG_TIME_DIR_NAME = "PNG-tIME"
-    val PNG_LAST_MODIFICATION_TIME_FORMAT = SimpleDateFormat("yyyy:MM:dd hh:mm:ss", Locale.ROOT)
+    val PNG_LAST_MODIFICATION_TIME_FORMAT = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
 
     // extensions
 

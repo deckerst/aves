@@ -18,7 +18,7 @@ import kotlin.math.roundToLong
 
 object ExifInterfaceHelper {
     private val LOG_TAG = LogUtils.createTag<ExifInterfaceHelper>()
-    private val DATETIME_FORMAT = SimpleDateFormat("yyyy:MM:dd hh:mm:ss", Locale.ROOT)
+    val DATETIME_FORMAT = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.ROOT)
 
     private const val precisionErrorTolerance = 1e-10
 

@@ -1,10 +1,10 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/settings/quick_actions/editor_page.dart';
+import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
-class QuickEntryActionsTile extends StatelessWidget {
+class ViewerActionsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -13,8 +13,8 @@ class QuickEntryActionsTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            settings: const RouteSettings(name: QuickEntryActionEditorPage.routeName),
-            builder: (context) => const QuickEntryActionEditorPage(),
+            settings: const RouteSettings(name: ViewerActionEditorPage.routeName),
+            builder: (context) => const ViewerActionEditorPage(),
           ),
         );
       },
@@ -22,10 +22,10 @@ class QuickEntryActionsTile extends StatelessWidget {
   }
 }
 
-class QuickEntryActionEditorPage extends StatelessWidget {
-  static const routeName = '/settings/quick_entry_actions';
+class ViewerActionEditorPage extends StatelessWidget {
+  static const routeName = '/settings/viewer_actions';
 
-  const QuickEntryActionEditorPage({Key? key}) : super(key: key);
+  const ViewerActionEditorPage({Key? key}) : super(key: key);
 
   static const allAvailableActions = [
     EntryAction.info,
@@ -44,6 +44,7 @@ class QuickEntryActionEditorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QuickActionEditorPage<EntryAction>(
+      title: context.l10n.settingsViewerQuickActionEditorTitle,
       bannerText: context.l10n.settingsViewerQuickActionEditorBanner,
       allAvailableActions: allAvailableActions,
       actionIcon: (action) => action.getIcon(),

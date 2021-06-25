@@ -1,7 +1,7 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.4.3+47
+version: 1.4.4+48
 publish_to: none
 
 environment:
@@ -31,6 +31,7 @@ dependencies:
   firebase_core:
   firebase_analytics:
   firebase_crashlytics:
+  flex_color_picker:
   flutter_highlight:
   flutter_map:
   flutter_markdown:

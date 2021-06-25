@@ -112,10 +112,20 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                     isVideo(mimeType) -> ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
                     else -> uri
                 }
-                contentUri = StorageUtils.getOriginalUri(contentUri)
+                contentUri = StorageUtils.getOriginalUri(context, contentUri)
             }
         }
 
+        // prefer image/video content URI, fallback to original URI (possibly a file content URI)
+        val metadataMap = getContentResolverMetadataForUri(contentUri) ?: getContentResolverMetadataForUri(uri)
+        if (metadataMap != null) {
+            result.success(metadataMap)
+        } else {
+            result.error("getContentResolverMetadata-null", "failed to get cursor for contentUri=$contentUri", null)
+        }
+    }
+
+    private fun getContentResolverMetadataForUri(contentUri: Uri): FieldMap? {
         val cursor = context.contentResolver.query(contentUri, null, null, null, null)
         if (cursor != null && cursor.moveToFirst()) {
             val metadataMap = HashMap<String, Any?>()
@@ -137,10 +147,9 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
                 }
             }
             cursor.close()
-            result.success(metadataMap)
-        } else {
-            result.error("getContentResolverMetadata-null", "failed to get cursor for contentUri=$contentUri", null)
+            return metadataMap
         }
+        return null
     }
 
     private fun getExifInterfaceMetadata(call: MethodCall, result: MethodChannel.Result) {
