@@ -101,6 +101,8 @@
   "@videoActionPlay": {},
   "videoActionReplay10": "Seek backward 10 seconds",
   "@videoActionReplay10": {},
+  "videoActionSkip10": "Seek forward 10 seconds",
+  "@videoActionSkip10": {},
   "videoActionSelectStreams": "Select tracks",
   "@videoActionSelectStreams": {},
   "videoActionSetSpeed": "Playback speed",
