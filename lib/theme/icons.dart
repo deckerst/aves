@@ -68,6 +68,7 @@ class AIcons {
   static const IconData streamVideo = Icons.movie_outlined;
   static const IconData streamAudio = Icons.audiotrack_outlined;
   static const IconData streamText = Icons.closed_caption_outlined;
+  static const IconData videoSettings = Icons.video_settings_outlined;
   static const IconData zoomIn = Icons.add_outlined;
   static const IconData zoomOut = Icons.remove_outlined;
   static const IconData collapse = Icons.expand_less_outlined;

@@ -269,6 +269,7 @@ class _ButtonRow extends StatelessWidget {
         break;
       case VideoAction.replay10:
       case VideoAction.skip10:
+      case VideoAction.settings:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
@@ -299,6 +300,7 @@ class _ButtonRow extends StatelessWidget {
         break;
       case VideoAction.replay10:
       case VideoAction.skip10:
+      case VideoAction.settings:
       case VideoAction.togglePlay:
         enabled = true;
         break;
@@ -317,6 +319,7 @@ class _ButtonRow extends StatelessWidget {
       case VideoAction.skip10:
       case VideoAction.selectStreams:
       case VideoAction.setSpeed:
+      case VideoAction.settings:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
         break;
     }

@@ -8,6 +8,7 @@ enum VideoAction {
   skip10,
   selectStreams,
   setSpeed,
+  settings,
   togglePlay,
   // TODO TLAD [video] toggle mute
 }
@@ -20,6 +21,7 @@ class VideoActions {
     VideoAction.selectStreams,
     VideoAction.replay10,
     VideoAction.skip10,
+    VideoAction.settings,
   ];
 }
 
@@ -36,6 +38,8 @@ extension ExtraVideoAction on VideoAction {
         return context.l10n.videoActionSelectStreams;
       case VideoAction.setSpeed:
         return context.l10n.videoActionSetSpeed;
+      case VideoAction.settings:
+        return context.l10n.videoActionSettings;
       case VideoAction.togglePlay:
         // different data depending on toggle state
         return context.l10n.videoActionPlay;
@@ -54,6 +58,8 @@ extension ExtraVideoAction on VideoAction {
         return AIcons.streams;
       case VideoAction.setSpeed:
         return AIcons.speed;
+      case VideoAction.settings:
+        return AIcons.videoSettings;
       case VideoAction.togglePlay:
         // different data depending on toggle state
         return AIcons.play;

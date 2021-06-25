@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
 import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
+import 'package:aves/widgets/settings/video/video.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       case VideoAction.setSpeed:
         _showSpeedDialog(context, controller);
+        break;
+      case VideoAction.settings:
+        _showSettings(context);
         break;
       case VideoAction.togglePlay:
         _togglePlayPause(context, controller);
@@ -153,6 +157,16 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (newSpeed == null) return;
 
     controller.speed = newSpeed;
+  }
+
+  void _showSettings(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: VideoSettingsPage.routeName),
+        builder: (context) => const VideoSettingsPage(),
+      ),
+    );
   }
 
   Future<void> _togglePlayPause(BuildContext context, AvesVideoController controller) async {
