@@ -9,6 +9,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/settings/common/tile_leading.dart';
+import 'package:aves/widgets/settings/video/subtitle_theme.dart';
 import 'package:aves/widgets/settings/video/video_actions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class VideoSection extends StatelessWidget {
           onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility(MimeFilter.video, v),
           title: Text(context.l10n.settingsVideoShowVideos),
         ),
+        VideoActionsTile(),
         SwitchListTile(
           value: currentEnableVideoHardwareAcceleration,
           onChanged: (v) => settings.enableVideoHardwareAcceleration = v,
@@ -69,7 +71,7 @@ class VideoSection extends StatelessWidget {
             }
           },
         ),
-        VideoActionsTile(),
+        SubtitleThemeTile(),
       ],
     );
   }

@@ -292,6 +292,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.6"
+  flex_color_picker:
+    dependency: "direct main"
+    description:
+      name: flex_color_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
   flutter:
     dependency: "direct main"
     description: flutter
