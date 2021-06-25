@@ -31,6 +31,7 @@ dependencies:
   firebase_core:
   firebase_analytics:
   firebase_crashlytics:
+  flex_color_picker:
   flutter_highlight:
   flutter_map:
   flutter_markdown:

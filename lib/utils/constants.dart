@@ -142,6 +142,99 @@ class Constants {
     ),
   ];
 
+  static const List<Dependency> flutterPackages = [
+    Dependency(
+      name: 'Charts',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/google/charts/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/google/charts',
+    ),
+    Dependency(
+      name: 'Decorated Icon',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/benPesso/flutter_decorated_icon/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
+    ),
+    Dependency(
+      name: 'Expansion Tile Card (Aves fork)',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/deckerst/expansion_tile_card/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/deckerst/expansion_tile_card',
+    ),
+    Dependency(
+      name: 'FlexColorPicker',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/rydmike/flex_color_picker/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/rydmike/flex_color_picker',
+    ),
+    Dependency(
+      name: 'Flutter Highlight',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/git-touch/highlight/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/git-touch/highlight',
+    ),
+    Dependency(
+      name: 'Flutter Map',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/fleaflet/flutter_map/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/fleaflet/flutter_map',
+    ),
+    Dependency(
+      name: 'Flutter Markdown',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_markdown/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_markdown',
+    ),
+    Dependency(
+      name: 'Flutter Staggered Animations',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/mobiten/flutter_staggered_animations/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
+    ),
+    Dependency(
+      name: 'Flutter SVG',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/dnfield/flutter_svg/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/dnfield/flutter_svg',
+    ),
+    Dependency(
+      name: 'Material Design Icons Flutter',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/ziofat/material_design_icons_flutter/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/ziofat/material_design_icons_flutter',
+    ),
+    Dependency(
+      name: 'Overlay Support',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/boyan01/overlay_support/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/boyan01/overlay_support',
+    ),
+    Dependency(
+      name: 'Palette Generator',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/palette_generator/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/palette_generator',
+    ),
+    Dependency(
+      name: 'Panorama',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/zesage/panorama/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/zesage/panorama',
+    ),
+    Dependency(
+      name: 'Percent Indicator',
+      license: 'BSD 2-Clause',
+      licenseUrl: 'https://github.com/diegoveloper/flutter_percent_indicator/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/diegoveloper/flutter_percent_indicator/',
+    ),
+    Dependency(
+      name: 'Provider',
+      license: 'MIT',
+      licenseUrl: 'https://github.com/rrousselGit/provider/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/rrousselGit/provider',
+    ),
+  ];
+
   static const List<Dependency> dartPackages = [
     Dependency(
       name: 'Collection',
@@ -214,93 +307,6 @@ class Constants {
       license: 'MIT',
       licenseUrl: 'https://github.com/renggli/dart-xml/blob/master/LICENSE',
       sourceUrl: 'https://github.com/renggli/dart-xml',
-    ),
-  ];
-
-  static const List<Dependency> flutterPackages = [
-    Dependency(
-      name: 'Charts',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/google/charts/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/google/charts',
-    ),
-    Dependency(
-      name: 'Decorated Icon',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/benPesso/flutter_decorated_icon/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/benPesso/flutter_decorated_icon',
-    ),
-    Dependency(
-      name: 'Expansion Tile Card (Aves fork)',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/deckerst/expansion_tile_card/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/deckerst/expansion_tile_card',
-    ),
-    Dependency(
-      name: 'Flutter Highlight',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/git-touch/highlight/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/git-touch/highlight',
-    ),
-    Dependency(
-      name: 'Flutter Map',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/fleaflet/flutter_map/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/fleaflet/flutter_map',
-    ),
-    Dependency(
-      name: 'Flutter Markdown',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_markdown/LICENSE',
-      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_markdown',
-    ),
-    Dependency(
-      name: 'Flutter Staggered Animations',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/mobiten/flutter_staggered_animations/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
-    ),
-    Dependency(
-      name: 'Flutter SVG',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/dnfield/flutter_svg/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/dnfield/flutter_svg',
-    ),
-    Dependency(
-      name: 'Material Design Icons Flutter',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/ziofat/material_design_icons_flutter/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/ziofat/material_design_icons_flutter',
-    ),
-    Dependency(
-      name: 'Overlay Support',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/boyan01/overlay_support/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/boyan01/overlay_support',
-    ),
-    Dependency(
-      name: 'Palette Generator',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/palette_generator/LICENSE',
-      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/palette_generator',
-    ),
-    Dependency(
-      name: 'Panorama',
-      license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/zesage/panorama/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/zesage/panorama',
-    ),
-    Dependency(
-      name: 'Percent Indicator',
-      license: 'BSD 2-Clause',
-      licenseUrl: 'https://github.com/diegoveloper/flutter_percent_indicator/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/diegoveloper/flutter_percent_indicator/',
-    ),
-    Dependency(
-      name: 'Provider',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/rrousselGit/provider/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/rrousselGit/provider',
     ),
   ];
 }

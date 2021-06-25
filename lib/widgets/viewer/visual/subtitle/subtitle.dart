@@ -16,13 +16,7 @@ class VideoSubtitles extends StatelessWidget {
   final ValueNotifier<ViewState> viewStateNotifier;
   final bool debugMode;
 
-  static const baseOutlineColor = Colors.black;
-  static const baseShadows = [
-    Shadow(
-      color: Colors.black54,
-      offset: Offset(1, 1),
-    ),
-  ];
+  static const baseShadowOffset = Offset(1, 1);
 
   const VideoSubtitles({
     Key? key,
@@ -39,6 +33,13 @@ class VideoSubtitles extends StatelessWidget {
         builder: (context, settings, child) {
           final baseTextAlign = settings.subtitleTextAlignment;
           final baseOutlineWidth = settings.subtitleShowOutline ? 1 : 0;
+          final baseOutlineColor = Colors.black.withOpacity(settings.subtitleTextColor.opacity);
+          final baseShadows = [
+            Shadow(
+              color: baseOutlineColor,
+              offset: baseShadowOffset,
+            ),
+          ];
           final baseStyle = TextStyle(
             color: settings.subtitleTextColor,
             backgroundColor: settings.subtitleBackgroundColor,
@@ -50,18 +51,6 @@ class VideoSubtitles extends StatelessWidget {
             selector: (c, mq) => mq.orientation,
             builder: (c, orientation, child) {
               final bottom = orientation == Orientation.portrait ? .5 : .8;
-              Alignment toVerticalAlignment(SubtitleStyle extraStyle) {
-                switch (extraStyle.vAlign) {
-                  case TextAlignVertical.top:
-                    return Alignment(0, -bottom);
-                  case TextAlignVertical.center:
-                    return Alignment.center;
-                  case TextAlignVertical.bottom:
-                  default:
-                    return Alignment(0, bottom);
-                }
-              }
-
               final viewportSize = context.read<MediaQueryData>().size;
 
               return ValueListenableBuilder<ViewState>(
@@ -132,6 +121,7 @@ class VideoSubtitles extends StatelessWidget {
                             );
                           }).toList();
                           final drawingPaths = extraStyle.drawingPaths;
+                          final textAlign = extraStyle.hAlign ?? (position != null ? TextAlign.center : baseTextAlign);
 
                           Widget child;
                           if (drawingPaths != null) {
@@ -150,7 +140,7 @@ class VideoSubtitles extends StatelessWidget {
                               outlineWidth: outlineWidth * (position != null ? viewScale : baseOutlineWidth),
                               outlineColor: extraStyle.borderColor ?? baseOutlineColor,
                               outlineBlurSigma: extraStyle.edgeBlur ?? 0,
-                              textAlign: extraStyle.hAlign ?? baseTextAlign,
+                              textAlign: textAlign,
                             );
                           }
 
@@ -166,7 +156,7 @@ class VideoSubtitles extends StatelessWidget {
                             final textHeight = para.getMaxIntrinsicHeight(double.infinity);
 
                             late double anchorOffsetX, anchorOffsetY;
-                            switch (extraStyle.hAlign ?? baseTextAlign) {
+                            switch (textAlign) {
                               case TextAlign.left:
                                 anchorOffsetX = 0;
                                 break;
@@ -174,9 +164,7 @@ class VideoSubtitles extends StatelessWidget {
                                 anchorOffsetX = -textWidth;
                                 break;
                               case TextAlign.center:
-                              case TextAlign.start:
-                              case TextAlign.end:
-                              case TextAlign.justify:
+                              default:
                                 anchorOffsetX = -textWidth / 2;
                                 break;
                             }
@@ -227,9 +215,38 @@ class VideoSubtitles extends StatelessWidget {
                           }
 
                           if (position == null) {
-                            child = Align(
-                              alignment: toVerticalAlignment(extraStyle),
-                              child: child,
+                            late double alignX;
+                            switch (textAlign) {
+                              case TextAlign.left:
+                                alignX = -1;
+                                break;
+                              case TextAlign.right:
+                                alignX = 1;
+                                break;
+                              case TextAlign.center:
+                              default:
+                                alignX = 0;
+                                break;
+                            }
+                            late double alignY;
+                            switch (extraStyle.vAlign) {
+                              case TextAlignVertical.top:
+                                alignY = -bottom;
+                                break;
+                              case TextAlignVertical.center:
+                                alignY = 0;
+                                break;
+                              case TextAlignVertical.bottom:
+                              default:
+                                alignY = bottom;
+                                break;
+                            }
+                            child = Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Align(
+                                alignment: Alignment(alignX, alignY),
+                                child: child,
+                              ),
                             );
                           }
 

@@ -52,7 +52,6 @@ class Durations {
   // settings animations
   static const quickActionListAnimation = Duration(milliseconds: 200);
   static const quickActionHighlightAnimation = Duration(milliseconds: 200);
-  static const themeChangeDuration = Duration(milliseconds: 400);
 
   // delays & refresh intervals
   static const opToastDisplay = Duration(seconds: 3);

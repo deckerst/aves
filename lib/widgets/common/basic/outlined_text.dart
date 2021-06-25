@@ -25,9 +25,17 @@ class OutlinedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO TLAD [subtitles] fix background area for mixed alphabetic-ideographic text
+    // as of Flutter v2.2.2, the area computed for `backgroundColor` has inconsistent height
+    // in case of mixed alphabetic-ideographic text. The painted boxes depends on the script.
+    // Possible workarounds would be to use metrics from:
+    // - `TextPainter.getBoxesForSelection`
+    // - `Paragraph.getBoxesForRange`
+    // and paint the background at the bottom of the `Stack`
+    final hasOutline = outlineWidth > 0;
     return Stack(
       children: [
-        if (outlineWidth > 0)
+        if (hasOutline)
           ImageFiltered(
             imageFilter: outlineBlurSigma > 0
                 ? ImageFilter.blur(
@@ -46,7 +54,7 @@ class OutlinedText extends StatelessWidget {
           ),
         Text.rich(
           TextSpan(
-            children: textSpans,
+            children: hasOutline ? textSpans.map(_toFillSpan).toList() : textSpans,
           ),
           textAlign: textAlign,
         ),
@@ -62,6 +70,14 @@ class OutlinedText extends StatelessWidget {
             ..style = PaintingStyle.stroke
             ..strokeWidth = outlineWidth
             ..color = outlineColor,
+        ),
+      );
+
+  TextSpan _toFillSpan(TextSpan span) => TextSpan(
+        text: span.text,
+        children: span.children,
+        style: (span.style ?? const TextStyle()).copyWith(
+          backgroundColor: Colors.transparent,
         ),
       );
 }
