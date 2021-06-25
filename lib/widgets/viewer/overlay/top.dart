@@ -25,7 +25,8 @@ class ViewerTopOverlay extends StatelessWidget {
   final bool canToggleFavourite;
   final ValueNotifier<ViewState>? viewStateNotifier;
 
-  static const double padding = 8;
+  static const double outerPadding = 8;
+  static const double innerPadding = 8;
 
   const ViewerTopOverlay({
     Key? key,
@@ -43,11 +44,12 @@ class ViewerTopOverlay extends StatelessWidget {
     return SafeArea(
       minimum: (viewInsets ?? EdgeInsets.zero) + (viewPadding ?? EdgeInsets.zero),
       child: Padding(
-        padding: const EdgeInsets.all(padding),
+        padding: const EdgeInsets.all(outerPadding),
         child: Selector<MediaQueryData, double>(
           selector: (c, mq) => mq.size.width - mq.padding.horizontal,
           builder: (c, mqWidth, child) {
-            final availableCount = (mqWidth / (OverlayButton.getSize(context) + padding)).floor() - 2;
+            final buttonWidth = OverlayButton.getSize(context);
+            final availableCount = ((mqWidth - outerPadding * 2 - buttonWidth) / (buttonWidth + innerPadding)).floor();
 
             Widget? child;
             if (mainEntry.isMultiPage) {
@@ -108,7 +110,7 @@ class ViewerTopOverlay extends StatelessWidget {
       }
     }
 
-    final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount).toList();
+    final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount - 1).toList();
     final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
     final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
     final buttonRow = _TopOverlayRow(
@@ -156,8 +158,6 @@ class _TopOverlayRow extends StatelessWidget {
     required this.pageEntry,
     required this.onActionSelected,
   }) : super(key: key);
-
-  static const double padding = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +228,7 @@ class _TopOverlayRow extends StatelessWidget {
     }
     return child != null
         ? Padding(
-            padding: const EdgeInsetsDirectional.only(end: padding),
+            padding: const EdgeInsetsDirectional.only(end: ViewerTopOverlay.innerPadding),
             child: OverlayButton(
               scale: scale,
               child: child,

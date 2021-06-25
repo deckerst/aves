@@ -252,7 +252,7 @@ class AppAdapterHandler(private val context: Context) : MethodCallHandler {
     }
 
     private fun getShareableUri(uri: Uri): Uri? {
-        return when (uri.scheme?.toLowerCase(Locale.ROOT)) {
+        return when (uri.scheme?.lowercase(Locale.ROOT)) {
             ContentResolver.SCHEME_FILE -> {
                 uri.path?.let { path ->
                     val authority = "${context.applicationContext.packageName}.fileprovider"

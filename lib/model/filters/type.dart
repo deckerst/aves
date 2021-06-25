@@ -15,7 +15,7 @@ class TypeFilter extends CollectionFilter {
 
   final String itemType;
   late EntryFilter _test;
-  IconData? /*late*/ _icon;
+  late IconData _icon;
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);

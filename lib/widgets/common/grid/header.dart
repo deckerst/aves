@@ -87,7 +87,7 @@ class SectionHeader extends StatelessWidget {
     }
   }
 
-  // TODO TLAD cache header extent computation?
+  // TODO TLAD [perf] cache header extent computation?
   static double getPreferredHeight({
     required BuildContext context,
     required double maxWidth,

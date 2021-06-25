@@ -9,6 +9,9 @@ class Themes {
   static final darkTheme = ThemeData(
     brightness: Brightness.dark,
     accentColor: _accentColor,
+    // canvas color is used as background for the drawer and popups
+    // when using a popup menu on a dialog, lighten the background via `PopupMenuTheme`
+    canvasColor: Colors.grey[850],
     scaffoldBackgroundColor: Colors.grey.shade900,
     dialogBackgroundColor: Colors.grey[850],
     toggleableActiveColor: _accentColor,

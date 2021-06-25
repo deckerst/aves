@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:flutter/material.dart';
-
-import '../dialogs/aves_dialog.dart';
 
 class RenameAlbumDialog extends StatefulWidget {
   final String album;

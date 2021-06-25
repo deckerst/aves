@@ -20,6 +20,7 @@ import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/widgets/viewer/visual/subtitle/subtitle.dart';
 import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:flutter/foundation.dart';
@@ -71,8 +72,8 @@ class _EntryPageViewState extends State<EntryPageView> {
   void didUpdateWidget(covariant EntryPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.pageEntry.displaySize != widget.pageEntry.displaySize) {
-      // do not reset the magnifier view state unless page dimensions change,
+    if (oldWidget.pageEntry.uri != widget.pageEntry.uri || oldWidget.pageEntry.displaySize != widget.pageEntry.displaySize) {
+      // do not reset the magnifier view state unless main entry or page entry dimensions change,
       // in effect locking the zoom & position when browsing entry pages of the same size
       _unregisterWidget();
       _registerWidget();
@@ -196,12 +197,26 @@ class _EntryPageViewState extends State<EntryPageView> {
         ValueListenableBuilder<double>(
             valueListenable: videoController.sarNotifier,
             builder: (context, sar, child) {
-              return _buildMagnifier(
-                displaySize: entry.videoDisplaySize(sar),
-                child: VideoView(
-                  entry: entry,
-                  controller: videoController,
-                ),
+              return Stack(
+                children: [
+                  _buildMagnifier(
+                    displaySize: entry.videoDisplaySize(sar),
+                    child: VideoView(
+                      entry: entry,
+                      controller: videoController,
+                    ),
+                  ),
+                  VideoSubtitles(
+                    controller: videoController,
+                    viewStateNotifier: _viewStateNotifier,
+                  ),
+                  if (settings.videoShowRawTimedText)
+                    VideoSubtitles(
+                      controller: videoController,
+                      viewStateNotifier: _viewStateNotifier,
+                      debugMode: true,
+                    ),
+                ],
               );
             }),
         // fade out image to ease transition with the player

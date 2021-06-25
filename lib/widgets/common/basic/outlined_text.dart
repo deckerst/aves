@@ -1,78 +1,83 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
-typedef OutlinedWidgetBuilder = Widget Function(BuildContext context, bool isShadow);
-
 class OutlinedText extends StatelessWidget {
-  final OutlinedWidgetBuilder? leadingBuilder, trailingBuilder;
-  final String text;
-  final TextStyle style;
+  final List<TextSpan> textSpans;
   final double outlineWidth;
   final Color outlineColor;
+  final double outlineBlurSigma;
+  final TextAlign? textAlign;
 
   static const widgetSpanAlignment = PlaceholderAlignment.middle;
 
   const OutlinedText({
     Key? key,
-    this.leadingBuilder,
-    required this.text,
-    this.trailingBuilder,
-    required this.style,
+    required this.textSpans,
     double? outlineWidth,
     Color? outlineColor,
+    double? outlineBlurSigma,
+    this.textAlign,
   })  : outlineWidth = outlineWidth ?? 1,
         outlineColor = outlineColor ?? Colors.black,
+        outlineBlurSigma = outlineBlurSigma ?? 0,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // TODO TLAD [subtitles] fix background area for mixed alphabetic-ideographic text
+    // as of Flutter v2.2.2, the area computed for `backgroundColor` has inconsistent height
+    // in case of mixed alphabetic-ideographic text. The painted boxes depends on the script.
+    // Possible workarounds would be to use metrics from:
+    // - `TextPainter.getBoxesForSelection`
+    // - `Paragraph.getBoxesForRange`
+    // and paint the background at the bottom of the `Stack`
+    final hasOutline = outlineWidth > 0;
     return Stack(
       children: [
+        if (hasOutline)
+          ImageFiltered(
+            imageFilter: outlineBlurSigma > 0
+                ? ImageFilter.blur(
+                    sigmaX: outlineBlurSigma,
+                    sigmaY: outlineBlurSigma,
+                  )
+                : ImageFilter.matrix(
+                    Matrix4.identity().storage,
+                  ),
+            child: Text.rich(
+              TextSpan(
+                children: textSpans.map(_toStrokeSpan).toList(),
+              ),
+              textAlign: textAlign,
+            ),
+          ),
         Text.rich(
           TextSpan(
-            children: [
-              if (leadingBuilder != null)
-                WidgetSpan(
-                  alignment: widgetSpanAlignment,
-                  child: leadingBuilder!(context, true),
-                ),
-              TextSpan(
-                text: text,
-                style: style.copyWith(
-                  foreground: Paint()
-                    ..style = PaintingStyle.stroke
-                    ..strokeWidth = outlineWidth
-                    ..color = outlineColor,
-                ),
-              ),
-              if (trailingBuilder != null)
-                WidgetSpan(
-                  alignment: widgetSpanAlignment,
-                  child: trailingBuilder!(context, true),
-                ),
-            ],
+            children: hasOutline ? textSpans.map(_toFillSpan).toList() : textSpans,
           ),
-        ),
-        Text.rich(
-          TextSpan(
-            children: [
-              if (leadingBuilder != null)
-                WidgetSpan(
-                  alignment: widgetSpanAlignment,
-                  child: leadingBuilder!(context, false),
-                ),
-              TextSpan(
-                text: text,
-                style: style,
-              ),
-              if (trailingBuilder != null)
-                WidgetSpan(
-                  alignment: widgetSpanAlignment,
-                  child: trailingBuilder!(context, false),
-                ),
-            ],
-          ),
+          textAlign: textAlign,
         ),
       ],
     );
   }
+
+  TextSpan _toStrokeSpan(TextSpan span) => TextSpan(
+        text: span.text,
+        children: span.children,
+        style: (span.style ?? const TextStyle()).copyWith(
+          foreground: Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = outlineWidth
+            ..color = outlineColor,
+        ),
+      );
+
+  TextSpan _toFillSpan(TextSpan span) => TextSpan(
+        text: span.text,
+        children: span.children,
+        style: (span.style ?? const TextStyle()).copyWith(
+          backgroundColor: Colors.transparent,
+        ),
+      );
 }

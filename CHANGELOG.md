@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.4] - 2021-06-25
+### Added
+- Video: speed control, track selection, frame capture
+- Video: embedded subtitle support
+- Settings: custom video quick actions
+- Settings: subtitle theme
+
+### Changed
+- upgraded Flutter to stable v2.2.2
+
+### Fixed
+- fixed opening SVGs from other apps
+- stop video playback when leaving the app in some cases
+- fixed crash when ACCESS_MEDIA_LOCATION permission is revoked
+
 ## [v1.4.3] - 2021-06-12
 ### Added
 - Collection: snack bar action to show moved/copied/exported entries

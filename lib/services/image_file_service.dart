@@ -10,7 +10,6 @@ import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:streams_channel/streams_channel.dart';
 
 abstract class ImageFileService {
@@ -78,6 +77,14 @@ abstract class ImageFileService {
   Stream<ExportOpEvent> export(
     Iterable<AvesEntry> entries, {
     required String mimeType,
+    required String destinationAlbum,
+  });
+
+  Future<Map<String, dynamic>> captureFrame(
+    AvesEntry entry, {
+    required String desiredName,
+    required Map<String, dynamic> exif,
+    required Uint8List bytes,
     required String destinationAlbum,
   });
 
@@ -333,6 +340,29 @@ class PlatformImageFileService implements ImageFileService {
       debugPrint('export failed with code=${e.code}, exception=${e.message}, details=${e.details}');
       return Stream.error(e);
     }
+  }
+
+  @override
+  Future<Map<String, dynamic>> captureFrame(
+    AvesEntry entry, {
+    required String desiredName,
+    required Map<String, dynamic> exif,
+    required Uint8List bytes,
+    required String destinationAlbum,
+  }) async {
+    try {
+      final result = await platform.invokeMethod('captureFrame', <String, dynamic>{
+        'uri': entry.uri,
+        'desiredName': desiredName,
+        'exif': exif,
+        'bytes': bytes,
+        'destinationPath': destinationAlbum,
+      });
+      if (result != null) return (result as Map).cast<String, dynamic>();
+    } on PlatformException catch (e) {
+      debugPrint('captureFrame failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return {};
   }
 
   @override

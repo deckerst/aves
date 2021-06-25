@@ -47,6 +47,15 @@
   "entryActionAddFavourite": "즐겨찾기에 추가",
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
 
+  "videoActionCaptureFrame": "프레임 캡처",
+  "videoActionPause": "일시정지",
+  "videoActionPlay": "재생",
+  "videoActionReplay10": "10초 뒤로 탐색",
+  "videoActionSkip10": "10초 앞으로 탐색",
+  "videoActionSelectStreams": "트랙 선택",
+  "videoActionSetSpeed": "재생 배속",
+  "videoActionSettings": "설정",
+
   "filterFavouriteLabel": "즐겨찾기",
   "filterLocationEmptyLabel": "장소 없음",
   "filterTagEmptyLabel": "태그 없음",
@@ -117,6 +126,15 @@
   "deleteAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "renameEntryDialogLabel": "이름",
+
+  "videoSpeedDialogLabel": "재생 배속",
+
+  "videoStreamSelectionDialogVideo": "동영상",
+  "videoStreamSelectionDialogAudio": "오디오",
+  "videoStreamSelectionDialogText": "자막",
+  "videoStreamSelectionDialogOff": "해제",
+  "videoStreamSelectionDialogTrack": "트랙",
+  "videoStreamSelectionDialogNoSelection": "다른 트랙이 없습니다.",
 
   "genericSuccessFeedback": "정상 처리됐습니다",
   "genericFailureFeedback": "오류가 발생했습니다",
@@ -208,6 +226,7 @@
   "albumDownload": "다운로드",
   "albumScreenshots": "스크린샷",
   "albumScreenRecordings": "화면 녹화 파일",
+  "albumVideoCaptures": "동영상 캡처",
 
   "albumPageTitle": "앨범",
   "albumEmpty": "앨범이 없습니다",
@@ -256,12 +275,30 @@
   "settingsViewerQuickActionEditorAvailableButtons": "추가 가능한 버튼",
   "settingsViewerQuickActionEmpty": "버튼이 없습니다",
 
+  "settingsVideoPageTitle": "동영상 설정",
   "settingsSectionVideo": "동영상",
   "settingsVideoShowVideos": "미디어에 동영상 표시",
   "settingsVideoEnableHardwareAcceleration": "하드웨어 가속",
   "settingsVideoEnableAutoPlay": "자동 재생",
   "settingsVideoLoopModeTile": "반복 모드",
   "settingsVideoLoopModeTitle": "반복 모드",
+  "settingsVideoQuickActionsTile": "빠른 동영상 작업",
+  "settingsVideoQuickActionEditorTitle": "빠른 동영상 작업",
+
+  "settingsSubtitleThemeTile": "자막",
+  "settingsSubtitleThemeTitle": "자막",
+  "settingsSubtitleThemeSample": "샘플입니다.",
+  "settingsSubtitleThemeTextAlignmentTile": "정렬",
+  "settingsSubtitleThemeTextAlignmentTitle": "정렬",
+  "settingsSubtitleThemeTextSize": "글자 크기",
+  "settingsSubtitleThemeShowOutline": "윤곽 및 그림자 표시",
+  "settingsSubtitleThemeTextColor": "글자 색상",
+  "settingsSubtitleThemeTextOpacity": "글자 투명도",
+  "settingsSubtitleThemeBackgroundColor": "배경 색상",
+  "settingsSubtitleThemeBackgroundOpacity": "배경 투명도",
+  "settingsSubtitleThemeTextAlignmentLeft":  "왼쪽",
+  "settingsSubtitleThemeTextAlignmentCenter": "가운데",
+  "settingsSubtitleThemeTextAlignmentRight":  "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableAnalytics": "진단 데이터 보내기",
@@ -293,8 +330,6 @@
 
   "viewerOpenPanoramaButtonLabel": "파노라마 열기",
   "viewerOpenTooltip": "열기",
-  "viewerPauseTooltip": "일시정지",
-  "viewerPlayTooltip": "재생",
   "viewerErrorUnknown": "아이구!",
   "viewerErrorDoesNotExist": "파일이 존재하지 않습니다.",
 

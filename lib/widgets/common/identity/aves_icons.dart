@@ -23,7 +23,7 @@ class VideoIcon extends StatelessWidget {
     final thumbnailTheme = context.watch<ThumbnailThemeData>();
     final showDuration = thumbnailTheme.showVideoDuration;
     Widget child = OverlayIcon(
-      icon: entry.is360 ? AIcons.threeSixty : AIcons.play,
+      icon: entry.is360 ? AIcons.threeSixty : AIcons.videoThumb,
       size: thumbnailTheme.iconSize,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
@@ -199,8 +199,10 @@ class IconUtils {
       case AlbumType.camera:
         return buildIcon(AIcons.cameraAlbum);
       case AlbumType.screenshots:
-      case AlbumType.screenRecordings:
+      case AlbumType.videoCaptures:
         return buildIcon(AIcons.screenshotAlbum);
+      case AlbumType.screenRecordings:
+        return buildIcon(AIcons.recordingAlbum);
       case AlbumType.download:
         return buildIcon(AIcons.downloadAlbum);
       case AlbumType.app:

@@ -6,17 +6,17 @@ import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/settings/quick_actions/action_button.dart';
-import 'package:aves/widgets/settings/quick_actions/action_panel.dart';
-import 'package:aves/widgets/settings/quick_actions/available_actions.dart';
-import 'package:aves/widgets/settings/quick_actions/placeholder.dart';
-import 'package:aves/widgets/settings/quick_actions/quick_actions.dart';
+import 'package:aves/widgets/settings/common/quick_actions/action_button.dart';
+import 'package:aves/widgets/settings/common/quick_actions/action_panel.dart';
+import 'package:aves/widgets/settings/common/quick_actions/available_actions.dart';
+import 'package:aves/widgets/settings/common/quick_actions/placeholder.dart';
+import 'package:aves/widgets/settings/common/quick_actions/quick_actions.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class QuickActionEditorPage<T extends Object> extends StatefulWidget {
-  final String bannerText;
+  final String title, bannerText;
   final List<T> allAvailableActions;
   final IconData? Function(T action) actionIcon;
   final String Function(BuildContext context, T action) actionText;
@@ -24,6 +24,7 @@ class QuickActionEditorPage<T extends Object> extends StatefulWidget {
   final void Function(List<T> actions) save;
 
   const QuickActionEditorPage({
+    required this.title,
     required this.bannerText,
     required this.allAvailableActions,
     required this.actionIcon,
@@ -96,7 +97,7 @@ class _QuickActionEditorPageState<T extends Object> extends State<QuickActionEdi
     return MediaQueryDataProvider(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(context.l10n.settingsViewerQuickActionEditorTitle),
+          title: Text(widget.title),
         ),
         body: WillPopScope(
           onWillPop: () {

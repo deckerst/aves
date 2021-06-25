@@ -1,8 +1,10 @@
 package deckers.thibault.aves.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Build
@@ -54,18 +56,18 @@ object StorageUtils {
     private fun getPathStepIterator(context: Context, anyPath: String, root: String?): Iterator<String?>? {
         val rootLength = (root ?: getVolumePath(context, anyPath))?.length ?: return null
 
-        var filename: String? = null
+        var fileName: String? = null
         var relativePath: String? = null
         val lastSeparatorIndex = anyPath.lastIndexOf(File.separator) + 1
         if (lastSeparatorIndex > rootLength) {
-            filename = anyPath.substring(lastSeparatorIndex)
+            fileName = anyPath.substring(lastSeparatorIndex)
             relativePath = anyPath.substring(rootLength, lastSeparatorIndex)
         }
         relativePath ?: return null
 
         val pathSteps = relativePath.split(File.separator).filter { it.isNotEmpty() }.toMutableList()
-        if (filename?.isNotEmpty() == true) {
-            pathSteps.add(filename)
+        if (fileName?.isNotEmpty() == true) {
+            pathSteps.add(fileName)
         }
         return pathSteps.iterator()
     }
@@ -187,7 +189,7 @@ object StorageUtils {
                         return "primary"
                     }
                     volume.uuid?.let { uuid ->
-                        return uuid.toUpperCase(Locale.ROOT)
+                        return uuid.uppercase(Locale.ROOT)
                     }
                 }
             }
@@ -199,7 +201,7 @@ object StorageUtils {
                 return "primary"
             }
             volumePath.split(File.separator).lastOrNull { it.isNotEmpty() }?.let { uuid ->
-                return uuid.toUpperCase(Locale.ROOT)
+                return uuid.uppercase(Locale.ROOT)
             }
         }
 
@@ -300,8 +302,17 @@ object StorageUtils {
                         Log.w(LOG_TAG, "failed to get document URI for mediaUri=$mediaUri", e)
                     }
                 }
+
                 // fallback for older APIs
-                return getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
+                val df = getVolumePath(context, anyPath)?.let { convertDirPathToTreeUri(context, it) }?.let { getDocumentFileFromVolumeTree(context, it, anyPath) }
+                if (df != null) return df
+
+                // try to strip user info, if any
+                if (mediaUri.userInfo != null) {
+                    val genericMediaUri = Uri.parse(mediaUri.toString().replaceFirst("${mediaUri.userInfo}@", ""))
+                    Log.d(LOG_TAG, "retry getDocumentFile for mediaUri=$mediaUri without userInfo: $genericMediaUri")
+                    return getDocumentFile(context, anyPath, genericMediaUri)
+                }
             }
             // good old `File`
             return DocumentFileCompat.fromFile(File(anyPath))
@@ -390,21 +401,24 @@ object StorageUtils {
         return ContentResolver.SCHEME_CONTENT.equals(uri.scheme, ignoreCase = true) && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)
     }
 
-    fun getOriginalUri(uri: Uri): Uri {
+    fun getOriginalUri(context: Context, uri: Uri): Uri {
         // we get a permission denial if we require original from a provider other than the media store
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isMediaStoreContentUri(uri)) {
             val path = uri.path
             path ?: return uri
             // from Android R, accessing the original URI for a file media content yields a `SecurityException`
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R || path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
-                return MediaStore.setRequireOriginal(uri)
+            if (path.startsWith("/external/images/") || path.startsWith("/external/video/")) {
+                // "Caller must hold ACCESS_MEDIA_LOCATION permission to access original"
+                if (context.checkSelfPermission(Manifest.permission.ACCESS_MEDIA_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    return MediaStore.setRequireOriginal(uri)
+                }
             }
         }
         return uri
     }
 
     fun openInputStream(context: Context, uri: Uri): InputStream? {
-        val effectiveUri = getOriginalUri(uri)
+        val effectiveUri = getOriginalUri(context, uri)
         return try {
             context.contentResolver.openInputStream(effectiveUri)
         } catch (e: FileNotFoundException) {
@@ -417,7 +431,7 @@ object StorageUtils {
     }
 
     fun openMetadataRetriever(context: Context, uri: Uri): MediaMetadataRetriever? {
-        val effectiveUri = getOriginalUri(uri)
+        val effectiveUri = getOriginalUri(context, uri)
         return try {
             MediaMetadataRetriever().apply {
                 setDataSource(context, effectiveUri)
@@ -434,11 +448,11 @@ object StorageUtils {
         return if (dirPath.endsWith(File.separator)) dirPath else dirPath + File.separator
     }
 
-    // `fullPath` should match "volumePath + relativeDir + filename"
+    // `fullPath` should match "volumePath + relativeDir + fileName"
     class PathSegments(context: Context, fullPath: String) {
         var volumePath: String? = null // `volumePath` with trailing "/"
         var relativeDir: String? = null // `relativeDir` with trailing "/"
-        private var filename: String? = null // null for directories
+        private var fileName: String? = null // null for directories
 
         init {
             volumePath = getVolumePath(context, fullPath)
@@ -446,7 +460,7 @@ object StorageUtils {
                 val lastSeparatorIndex = fullPath.lastIndexOf(File.separator) + 1
                 val volumePathLength = volumePath!!.length
                 if (lastSeparatorIndex > volumePathLength) {
-                    filename = fullPath.substring(lastSeparatorIndex)
+                    fileName = fullPath.substring(lastSeparatorIndex)
                     relativeDir = fullPath.substring(volumePathLength, lastSeparatorIndex)
                 }
             }

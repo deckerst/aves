@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aves/theme/durations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -100,7 +102,10 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
       child: StreamBuilder<T>(
           stream: opStream,
           builder: (context, snapshot) {
-            final percent = processed.length.toDouble() / widget.itemCount;
+            final processedCount = processed.length.toDouble();
+            final total = widget.itemCount;
+            assert(processedCount <= total);
+            final percent = min(1.0, processedCount / total);
             return FadeTransition(
               opacity: _animation,
               child: Container(

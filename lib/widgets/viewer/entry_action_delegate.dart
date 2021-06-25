@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aves/app_mode.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
@@ -105,14 +106,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _flip(BuildContext context, AvesEntry entry) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.flip();
+    final success = await entry.flip(persist: isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
   Future<void> _rotate(BuildContext context, AvesEntry entry, {required bool clockwise}) async {
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await entry.rotate(clockwise: clockwise);
+    final success = await entry.rotate(clockwise: clockwise, persist: isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
   }
 
@@ -187,6 +188,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     final selectionCount = selection.length;
     showOpReport<ExportOpEvent>(
       context: context,
+      // TODO TLAD [SVG] export separately from raster images (sending bytes, like frame captures)
       opStream: imageFileService.export(
         selection,
         mimeType: MimeTypes.jpeg,
@@ -196,16 +198,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final showAction = collection != null && movedCount > 0
+        final _collection = collection;
+        final showAction = _collection != null && movedCount > 0
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
                 onPressed: () async {
                   final highlightInfo = context.read<HighlightInfo>();
                   final targetCollection = CollectionLens(
-                    source: collection!.source,
+                    source: source,
                     filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                    groupFactor: collection!.groupFactor,
-                    sortFactor: collection!.sortFactor,
+                    groupFactor: _collection.groupFactor,
+                    sortFactor: _collection.sortFactor,
                   );
                   unawaited(Navigator.pushAndRemoveUntil(
                     context,
@@ -255,7 +258,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     if (!await checkStoragePermission(context, {entry})) return;
 
-    final success = await context.read<CollectionSource>().renameEntry(entry, newName);
+    final success = await context.read<CollectionSource>().renameEntry(entry, newName, persist: isMainMode(context));
 
     if (success) {
       showFeedback(context, context.l10n.genericSuccessFeedback);
@@ -263,6 +266,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       showFeedback(context, context.l10n.genericFailureFeedback);
     }
   }
+
+  bool isMainMode(BuildContext context) => context.read<ValueNotifier<AppMode>>().value == AppMode.main;
 
   void _goToSourceViewer(BuildContext context, AvesEntry entry) {
     Navigator.push(

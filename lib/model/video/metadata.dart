@@ -12,7 +12,6 @@ import 'package:aves/utils/string_utils.dart';
 import 'package:aves/utils/time_utils.dart';
 import 'package:aves/widgets/viewer/video/fijkplayer.dart';
 import 'package:collection/collection.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 

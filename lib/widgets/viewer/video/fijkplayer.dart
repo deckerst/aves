@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:aves/model/entry.dart';
@@ -9,23 +11,38 @@ import 'package:aves/model/video/metadata.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
-
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class IjkPlayerAvesVideoController extends AvesVideoController {
+  static bool _staticInitialized = false;
   late FijkPlayer _instance;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
   final List<StreamSummary> _streams = [];
-  final ValueNotifier<StreamSummary?> _selectedVideoStream = ValueNotifier(null);
-  final ValueNotifier<StreamSummary?> _selectedAudioStream = ValueNotifier(null);
-  final ValueNotifier<StreamSummary?> _selectedTextStream = ValueNotifier(null);
   Timer? _initialPlayTimer;
+  double _speed = 1;
+
+  // audio/video get out of sync with speed < .5
+  // the video stream plays at .5 but the audio is slowed as requested
+  @override
+  final double minSpeed = .5;
+
+  // android.media.AudioTrack fails with speed > 2
+  @override
+  final double maxSpeed = 2;
+
+  @override
+  final ValueNotifier<bool> canCaptureFrameNotifier = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> canSetSpeedNotifier = ValueNotifier(false);
+
+  @override
+  final ValueNotifier<bool> canSelectStreamNotifier = ValueNotifier(false);
 
   @override
   final ValueNotifier<double> sarNotifier = ValueNotifier(1);
@@ -36,7 +53,20 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   static const gifLikeVideoDurationThreshold = Duration(seconds: 10);
 
   IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
+    if (!_staticInitialized) {
+      FijkLog.setLevel(FijkLogLevel.Warn);
+      _staticInitialized = true;
+    }
     _instance = FijkPlayer();
+    _valueStream.firstWhere((value) => value.videoRenderStart).then(
+          (value) => canCaptureFrameNotifier.value = true,
+          onError: (error) {},
+        );
+    _valueStream.firstWhere((value) => value.audioRenderStart).then(
+          (value) => canSetSpeedNotifier.value = true,
+          onError: (error) {},
+        );
+
     _startListening();
   }
 
@@ -67,6 +97,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // calling `setDataSource()` with `autoPlay` starts as soon as possible, but often yields initial artifacts
     // so we introduce a small delay after the player is declared `prepared`, before playing
     await _instance.setDataSourceUntilPrepared(entry.uri);
+    if (speed != 1) {
+      _applySpeed();
+    }
     _initialPlayTimer = Timer(initialPlayDelay, play);
   }
 
@@ -74,6 +107,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // FFmpeg options
     // cf https://github.com/Bilibili/ijkplayer/blob/master/ijkmedia/ijkplayer/ff_ffplay_options.h
     // cf https://www.jianshu.com/p/843c86a9e9ad
+    // cf https://www.jianshu.com/p/3649c073b346
 
     final options = FijkOption();
 
@@ -83,13 +117,13 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     const accurateSeekEnabled = false;
 
     // playing with HW acceleration seems to skip the last frames of some videos
-    // so HW acceleration is always disabled for gif-like videos where the last frames may be significant
+    // so HW acceleration is always disabled for GIF-like videos where the last frames may be significant
     final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis! > gifLikeVideoDurationThreshold.inMilliseconds;
 
-    // TODO TLAD HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
+    // TODO TLAD [video] flaky: HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
     if (hwAccelerationEnabled) {
       // when HW acceleration is enabled, videos with dimensions that do not fit 16x macroblocks need cropping
-      // TODO TLAD not all formats/devices need this correction, e.g. 498x278 MP4 on S7, 408x244 WEBM on S10e do not
+      // TODO TLAD [video] flaky: not all formats/devices need this correction, e.g. 498x278 MP4 on S7, 408x244 WEBM on S10e do not
       final s = entry.displaySize % 16 * -1 % 16;
       _macroBlockCrop = Offset(s.width, s.height);
     }
@@ -100,37 +134,62 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     // in practice the flag seems ineffective, but harmless too
     options.setFormatOption('fflags', 'fastseek');
 
-    // `enable-accurate-seek`: enable accurate seek, default: 0, in [0, 1]
-    options.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
+    // `enable-snapshot`: enable snapshot interface
+    // default: 0, in [0, 1]
+    // cf https://fijkplayer.befovy.com/docs/zh/host-option.html
+    // there is a performance cost, and it should be set up before playing
+    options.setHostOption('enable-snapshot', 1);
 
-    // `accurate-seek-timeout`: accurate seek timeout, default: 5000 ms, in [0, 5000]
+    // `accurate-seek-timeout`: accurate seek timeout
+    // default: 5000 ms, in [0, 5000]
     options.setPlayerOption('accurate-seek-timeout', 1000);
 
-    // `framedrop`: drop frames when cpu is too slow, default: 0, in [-1, 120]
-    options.setPlayerOption('framedrop', 5);
-
-    // `loop`: set number of times the playback shall be looped, default: 1, in [INT_MIN, INT_MAX]
-    options.setPlayerOption('loop', loopEnabled ? -1 : 1);
-
-    // `mediacodec-all-videos`: MediaCodec: enable all videos, default: 0, in [0, 1]
-    options.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
-
-    // `seek-at-start`: set offset of player should be seeked, default: 0, in [0, INT_MAX]
-    options.setPlayerOption('seek-at-start', startMillis);
-
-    // `cover-after-prepared`: show cover provided to `FijkView` when player is `prepared` without auto play, default: 0, in [0, 1]
+    // `cover-after-prepared`: show cover provided to `FijkView` when player is `prepared` without auto play
+    // default: 0, in [0, 1]
     options.setPlayerOption('cover-after-prepared', 0);
 
-    // TODO TLAD try subs
-    // `subtitle`: decode subtitle stream, default: 0, in [0, 1]
-    // option.setPlayerOption('subtitle', 1);
+    // `enable-accurate-seek`: enable accurate seek
+    // default: 0, in [0, 1]
+    options.setPlayerOption('enable-accurate-seek', accurateSeekEnabled ? 1 : 0);
+
+    // `min-frames`: minimal frames to stop pre-reading
+    // default: 50000, in [2, 50000]
+    // a comment in `IjkMediaPlayer.java` recommends setting this to 25 when de/selecting streams
+    options.setPlayerOption('min-frames', 25);
+
+    // `framedrop`: drop frames when cpu is too slow
+    // default: 0, in [-1, 120]
+    options.setPlayerOption('framedrop', 5);
+
+    // `loop`: set number of times the playback shall be looped
+    // default: 1, in [INT_MIN, INT_MAX]
+    options.setPlayerOption('loop', loopEnabled ? -1 : 1);
+
+    // `mediacodec-all-videos`: MediaCodec: enable all videos
+    // default: 0, in [0, 1]
+    options.setPlayerOption('mediacodec-all-videos', hwAccelerationEnabled ? 1 : 0);
+
+    // `seek-at-start`: set offset of player should be seeked
+    // default: 0, in [0, INT_MAX]
+    options.setPlayerOption('seek-at-start', startMillis);
+
+    // `soundtouch`: enable SoundTouch
+    // default: 0, in [0, 1]
+    // slowed down videos with SoundTouch enabled have a weird wobbly audio
+    options.setPlayerOption('soundtouch', 0);
+
+    // `subtitle`: decode subtitle stream
+    // default: 0, in [0, 1]
+    options.setPlayerOption('subtitle', 1);
 
     _instance.applyOptions(options);
   }
 
-  void _fetchSelectedStreams() async {
+  void _fetchStreams() async {
     final mediaInfo = await _instance.getInfo();
     if (!mediaInfo.containsKey(Keys.streams)) return;
+
+    var videoStreamCount = 0, audioStreamCount = 0, textStreamCount = 0;
 
     _streams.clear();
     final allStreams = (mediaInfo[Keys.streams] as List).cast<Map>();
@@ -140,29 +199,31 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
         _streams.add(StreamSummary(
           type: type,
           index: stream[Keys.index],
+          codecName: stream[Keys.codecName],
           language: stream[Keys.language],
           title: stream[Keys.title],
+          width: stream[Keys.width] as int?,
+          height: stream[Keys.height] as int?,
         ));
+        switch (type) {
+          case StreamType.video:
+            videoStreamCount++;
+            break;
+          case StreamType.audio:
+            audioStreamCount++;
+            break;
+          case StreamType.text:
+            textStreamCount++;
+            break;
+        }
       }
     });
 
-    StreamSummary? _getSelectedStream(String selectedIndexKey) {
-      final indexString = mediaInfo[selectedIndexKey];
-      if (indexString != null) {
-        final index = int.tryParse(indexString);
-        if (index != null && index != -1) {
-          return _streams.firstWhereOrNull((stream) => stream.index == index);
-        }
-      }
-      return null;
-    }
+    canSelectStreamNotifier.value = videoStreamCount > 1 || audioStreamCount > 1 || textStreamCount > 0;
 
-    _selectedVideoStream.value = _getSelectedStream(Keys.selectedVideoStream);
-    _selectedAudioStream.value = _getSelectedStream(Keys.selectedAudioStream);
-    _selectedTextStream.value = _getSelectedStream(Keys.selectedTextStream);
-
-    if (_selectedVideoStream.value != null) {
-      final streamIndex = _selectedVideoStream.value!.index;
+    final selectedVideo = await getSelectedStream(StreamType.video);
+    if (selectedVideo != null) {
+      final streamIndex = selectedVideo.index;
       final streamInfo = allStreams.firstWhereOrNull((stream) => stream[Keys.index] == streamIndex);
       if (streamInfo != null) {
         final num = streamInfo[Keys.sarNum] ?? 0;
@@ -174,7 +235,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   void _onValueChanged() {
     if (_instance.state == FijkState.prepared && _streams.isEmpty) {
-      _fetchSelectedStreams();
+      _fetchStreams();
     }
     _valueStreamController.add(_instance.value);
   }
@@ -198,6 +259,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Future<void> seekTo(int targetMillis) async {
+    targetMillis = max(0, targetMillis);
     if (isReady) {
       await _instance.seekTo(targetMillis);
     } else {
@@ -231,6 +293,60 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   @override
   Stream<int> get positionStream => _instance.onCurrentPosUpdate.map((pos) => pos.inMilliseconds);
+
+  @override
+  Stream<String?> get timedTextStream => _instance.onTimedText;
+
+  @override
+  double get speed => _speed;
+
+  @override
+  set speed(double speed) {
+    if (speed <= 0 || _speed == speed) return;
+    _speed = speed;
+    _applySpeed();
+  }
+
+  // TODO TLAD [video] bug: setting speed fails when there is no audio stream or audio is disabled
+  void _applySpeed() => _instance.setSpeed(speed);
+
+  // When a stream is selected, the video accelerates to catch up with it.
+  // The duration of this acceleration phase depends on the player `min-frames` parameter.
+  // Calling `seekTo` after stream de/selection is a workaround to:
+  // 1) prevent video stream acceleration to catch up with audio
+  // 2) apply timed text stream
+  @override
+  Future<void> selectStream(StreamType type, StreamSummary? selected) async {
+    final current = await getSelectedStream(type);
+    if (current != selected) {
+      if (selected != null) {
+        final newIndex = selected.index;
+        if (newIndex != null) {
+          await _instance.selectTrack(newIndex);
+        }
+      } else if (current != null) {
+        await _instance.deselectTrack(current.index!);
+      }
+      await seekTo(currentPosition);
+    }
+  }
+
+  @override
+  Future<StreamSummary?> getSelectedStream(StreamType type) async {
+    final currentIndex = await _instance.getSelectedTrack(type.code);
+    return currentIndex != -1 ? _streams.firstWhereOrNull((v) => v.index == currentIndex) : null;
+  }
+
+  @override
+  List<StreamSummary> get streams => _streams;
+
+  @override
+  Future<Uint8List> captureFrame() {
+    if (!_instance.value.videoRenderStart) {
+      return Future.error('cannot capture frame when video is not rendered');
+    }
+    return _instance.takeSnapShot();
+  }
 
   @override
   Widget buildPlayerWidget(BuildContext context) {
@@ -318,8 +434,6 @@ extension ExtraFijkPlayer on FijkPlayer {
   }
 }
 
-enum StreamType { video, audio, text }
-
 extension ExtraStreamType on StreamType {
   static StreamType? fromTypeString(String? type) {
     switch (type) {
@@ -334,20 +448,20 @@ extension ExtraStreamType on StreamType {
         return null;
     }
   }
-}
 
-class StreamSummary {
-  final StreamType type;
-  final int? index;
-  final String? language, title;
-
-  const StreamSummary({
-    required this.type,
-    required this.index,
-    required this.language,
-    required this.title,
-  });
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{type: type, index: $index, language: $language, title: $title}';
+  int get code {
+    // codes from ijkplayer ITrackInfo.java
+    switch (this) {
+      case StreamType.video:
+        return 1;
+      case StreamType.audio:
+        return 2;
+      case StreamType.text:
+        // TIMEDTEXT = 3, SUBTITLE = 4
+        return 3;
+      default:
+        // METADATA = 5, UNKNOWN = 0
+        return 0;
+    }
+  }
 }
