@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 enum VideoAction {
   captureFrame,
   replay10,
+  skip10,
   selectStreams,
   setSpeed,
   togglePlay,
@@ -13,11 +14,12 @@ enum VideoAction {
 
 class VideoActions {
   static const all = [
-    VideoAction.replay10,
     VideoAction.togglePlay,
     VideoAction.captureFrame,
     VideoAction.setSpeed,
     VideoAction.selectStreams,
+    VideoAction.replay10,
+    VideoAction.skip10,
   ];
 }
 
@@ -28,6 +30,8 @@ extension ExtraVideoAction on VideoAction {
         return context.l10n.videoActionCaptureFrame;
       case VideoAction.replay10:
         return context.l10n.videoActionReplay10;
+      case VideoAction.skip10:
+        return context.l10n.videoActionSkip10;
       case VideoAction.selectStreams:
         return context.l10n.videoActionSelectStreams;
       case VideoAction.setSpeed:
@@ -44,6 +48,8 @@ extension ExtraVideoAction on VideoAction {
         return AIcons.captureFrame;
       case VideoAction.replay10:
         return AIcons.replay10;
+      case VideoAction.skip10:
+        return AIcons.skip10;
       case VideoAction.selectStreams:
         return AIcons.streams;
       case VideoAction.setSpeed:

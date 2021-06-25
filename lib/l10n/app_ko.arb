@@ -51,6 +51,7 @@
   "videoActionPause": "일시정지",
   "videoActionPlay": "재생",
   "videoActionReplay10": "10초 뒤로 탐색",
+  "videoActionSkip10": "10초 앞으로 탐색",
   "videoActionSelectStreams": "트랙 선택",
   "videoActionSetSpeed": "재생 배속",
 

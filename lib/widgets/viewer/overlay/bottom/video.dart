@@ -268,6 +268,7 @@ class _ButtonRow extends StatelessWidget {
         );
         break;
       case VideoAction.replay10:
+      case VideoAction.skip10:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
@@ -297,6 +298,7 @@ class _ButtonRow extends StatelessWidget {
         enabled = controller?.canSetSpeedNotifier.value ?? false;
         break;
       case VideoAction.replay10:
+      case VideoAction.skip10:
       case VideoAction.togglePlay:
         enabled = true;
         break;
@@ -312,6 +314,7 @@ class _ButtonRow extends StatelessWidget {
         break;
       case VideoAction.captureFrame:
       case VideoAction.replay10:
+      case VideoAction.skip10:
       case VideoAction.selectStreams:
       case VideoAction.setSpeed:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());

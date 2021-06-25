@@ -35,6 +35,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case VideoAction.replay10:
         if (controller.isReady) controller.seekTo(controller.currentPosition - 10000);
         break;
+      case VideoAction.skip10:
+        if (controller.isReady) controller.seekTo(controller.currentPosition + 10000);
+        break;
       case VideoAction.selectStreams:
         _showStreamSelectionDialog(context, controller);
         break;

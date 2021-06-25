@@ -34,6 +34,7 @@ class AIcons {
   // actions
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
+  static const IconData skip10 = Icons.forward_10_outlined;
   static const IconData captureFrame = Icons.screenshot_outlined;
   static const IconData clear = Icons.clear_outlined;
   static const IconData createAlbum = Icons.add_circle_outline;
