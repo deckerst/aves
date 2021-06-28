@@ -118,7 +118,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // playing with HW acceleration seems to skip the last frames of some videos
     // so HW acceleration is always disabled for GIF-like videos where the last frames may be significant
-    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis! > gifLikeVideoDurationThreshold.inMilliseconds;
+    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && (entry.durationMillis ?? 0) > gifLikeVideoDurationThreshold.inMilliseconds;
 
     // TODO TLAD [video] flaky: HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
     if (hwAccelerationEnabled) {
@@ -285,7 +285,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   int get duration {
     final controllerDuration = _instance.value.duration.inMilliseconds;
     // use expected duration when controller duration is not set yet
-    return (controllerDuration == 0) ? entry.durationMillis! : controllerDuration;
+    return controllerDuration == 0 ? (entry.durationMillis ?? 0) : controllerDuration;
   }
 
   @override

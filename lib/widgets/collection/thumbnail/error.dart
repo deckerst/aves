@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
@@ -51,14 +52,17 @@ class _ErrorThumbnailState extends State<ErrorThumbnail> {
               message: exists ? widget.tooltip : context.l10n.viewerErrorDoesNotExist,
               preferBelow: false,
               child: exists
-                  ? Text(
-                      MimeUtils.displayType(entry.mimeType),
-                      style: TextStyle(
-                        color: color,
-                        fontSize: extent / 5,
-                      ),
-                      textAlign: TextAlign.center,
-                    )
+                  ? LayoutBuilder(builder: (context, constraints) {
+                      final fontSize = min(extent, constraints.biggest.width) / 5;
+                      return Text(
+                        MimeUtils.displayType(entry.mimeType),
+                        style: TextStyle(
+                          color: color,
+                          fontSize: fontSize,
+                        ),
+                        textAlign: TextAlign.center,
+                      );
+                    })
                   : Icon(
                       AIcons.broken,
                       size: extent / 2,
