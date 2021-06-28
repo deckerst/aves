@@ -15,8 +15,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -140,7 +138,6 @@ class _AvesAppState extends State<AvesApp> {
     await settings.init();
     await settings.initFirebase();
     _navigatorObservers = [
-      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
       CrashlyticsRouteTracker(),
     ];
   }

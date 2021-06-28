@@ -9,9 +9,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/utils/math_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 class MediaStoreSource extends CollectionSource {
@@ -109,20 +107,10 @@ class MediaStoreSource extends CollectionSource {
         await locateEntries();
         stateNotifier.value = SourceState.ready;
 
-        _reportCollectionDimensions();
         debugPrint('$runtimeType refresh done, elapsed=${stopwatch.elapsed}');
       },
       onError: (error) => debugPrint('$runtimeType stream error=$error'),
     );
-  }
-
-  void _reportCollectionDimensions() {
-    if (!settings.isCrashlyticsEnabled) return;
-    final analytics = FirebaseAnalytics();
-    analytics.setUserProperty(name: 'local_item_count', value: (ceilBy(allEntries.length, 3)).toString());
-    analytics.setUserProperty(name: 'album_count', value: (ceilBy(rawAlbums.length, 1)).toString());
-    analytics.setUserProperty(name: 'tag_count', value: (ceilBy(sortedTags.length, 1)).toString());
-    analytics.setUserProperty(name: 'country_count', value: (ceilBy(sortedCountries.length, 1)).toString());
   }
 
   // returns URIs to retry later. They could be URIs that are:

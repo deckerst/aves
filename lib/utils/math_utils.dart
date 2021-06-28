@@ -10,9 +10,3 @@ double toRadians(num degrees) => degrees * _piOver180;
 int highestPowerOf2(num x) => x < 1 ? 0 : pow(2, (log(x) / _log2).floor()) as int;
 
 double roundToPrecision(final double value, {required final int decimals}) => (value * pow(10, decimals)).round() / pow(10, decimals);
-
-// e.g. x=12345, precision=3 should return 13000
-int ceilBy(num x, int precision) {
-  final factor = pow(10, precision);
-  return (x / factor).ceil() * (factor as int);
-}

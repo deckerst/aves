@@ -6,7 +6,6 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -100,11 +99,6 @@ class Settings extends ChangeNotifier {
   Future<void> initFirebase() async {
     await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
-    await FirebaseAnalytics().setAnalyticsCollectionEnabled(isCrashlyticsEnabled);
-    // enable analytics debug mode:
-    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app deckers.thibault.aves.debug
-    // disable analytics debug mode:
-    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app .none.
   }
 
   Future<void> reset() {

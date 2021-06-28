@@ -29,7 +29,6 @@ dependencies:
       url: git://github.com/deckerst/fijkplayer.git
       ref: aves
   firebase_core:
-  firebase_analytics:
   firebase_crashlytics:
   flex_color_picker:
   flutter_highlight:
