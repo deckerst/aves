@@ -33,11 +33,6 @@ abstract class SectionedListLayoutProvider<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProxyProvider0<SectionedListLayout<T>>(
       update: (context, _) => _updateLayouts(context),
-      updateShouldNotify: (previous, current) {
-        final previousLayouts = previous.sectionLayouts;
-        final currentLayouts = current.sectionLayouts;
-        return previousLayouts.length != currentLayouts.length || !previousLayouts.every(currentLayouts.contains);
-      },
       child: child,
     );
   }

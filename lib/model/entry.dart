@@ -34,7 +34,7 @@ class AvesEntry {
   // `dateModifiedSecs` can be missing in viewer mode
   int? _dateModifiedSecs;
   final int? sourceDateTakenMillis;
-  int? durationMillis;
+  int? _durationMillis;
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
   AddressDetails? _addressDetails;
@@ -63,11 +63,12 @@ class AvesEntry {
     required String? sourceTitle,
     required int? dateModifiedSecs,
     required this.sourceDateTakenMillis,
-    required this.durationMillis,
+    required int? durationMillis,
   }) {
     this.path = path;
     this.sourceTitle = sourceTitle;
     this.dateModifiedSecs = dateModifiedSecs;
+    this.durationMillis = durationMillis;
   }
 
   bool get canDecode => !undecodable.contains(mimeType);
@@ -351,6 +352,13 @@ class AvesEntry {
   DateTime? get dayTaken {
     final d = bestDate;
     return d == null ? null : DateTime(d.year, d.month, d.day);
+  }
+
+  int? get durationMillis => _durationMillis;
+
+  set durationMillis(int? durationMillis) {
+    _durationMillis = durationMillis;
+    _durationText = null;
   }
 
   String? _durationText;

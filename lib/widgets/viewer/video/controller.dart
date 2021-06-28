@@ -35,7 +35,10 @@ abstract class AvesVideoController {
 
   int get currentPosition;
 
-  double get progress => currentPosition.toDouble() / duration;
+  double get progress {
+    final _duration = duration;
+    return _duration != 0 ? currentPosition.toDouble() / _duration : 0;
+  }
 
   Stream<int> get positionStream;
 
