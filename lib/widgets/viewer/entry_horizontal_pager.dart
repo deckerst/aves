@@ -29,6 +29,8 @@ class MultiEntryScroller extends StatefulWidget {
 class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticKeepAliveClientMixin {
   List<AvesEntry> get entries => widget.collection.sortedEntries;
 
+  PageController get pageController => widget.pageController;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -38,7 +40,7 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
       child: PageView.builder(
         key: const Key('horizontal-pageview'),
         scrollDirection: Axis.horizontal,
-        controller: widget.pageController,
+        controller: pageController,
         physics: const MagnifierScrollerPhysics(parent: BouncingScrollPhysics()),
         onPageChanged: widget.onPageChanged,
         itemBuilder: (context, index) {
@@ -63,6 +65,23 @@ class _MultiEntryScrollerState extends State<MultiEntryScroller> with AutomaticK
             }
           }
           child ??= _buildViewer(entry);
+
+          child = AnimatedBuilder(
+            animation: pageController,
+            builder: (context, child) {
+              // parallax scrolling
+              double dx = 0;
+              if (pageController.hasClients && pageController.position.haveDimensions) {
+                final delta = pageController.page! - index;
+                dx = delta * pageController.position.viewportDimension / 2;
+              }
+              return Transform.translate(
+                offset: Offset(dx, 0),
+                child: child,
+              );
+            },
+            child: child,
+          );
 
           return ClipRect(
             child: child,
