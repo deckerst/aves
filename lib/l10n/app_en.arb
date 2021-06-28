@@ -3,8 +3,8 @@
   "@appName": {},
   "welcomeMessage": "Welcome to Aves",
   "@welcomeMessage": {},
-  "welcomeAnalyticsToggle": "Allow anonymous analytics and crash reporting (optional)",
-  "@welcomeAnalyticsToggle": {},
+  "welcomeCrashReportToggle": "Allow anonymous crash reporting (optional)",
+  "@welcomeCrashReportToggle": {},
   "welcomeTermsToggle": "I agree to the terms and conditions",
   "@welcomeTermsToggle": {},
   "itemCount": "{count, plural, =1{1 item} other{{count} items}}",
@@ -634,8 +634,8 @@
 
   "settingsSectionPrivacy": "Privacy",
   "@settingsSectionPrivacy": {},
-  "settingsEnableAnalytics": "Allow anonymous analytics and crash reporting",
-  "@settingsEnableAnalytics": {},
+  "settingsEnableCrashReport": "Allow anonymous crash reporting",
+  "@settingsEnableCrashReport": {},
   "settingsSaveSearchHistory": "Save search history",
   "@settingsSaveSearchHistory": {},
 

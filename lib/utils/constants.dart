@@ -75,7 +75,7 @@ class Constants {
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/connectivity_plus',
     ),
     Dependency(
-      name: 'FlutterFire (Core, Analytics, Crashlytics)',
+      name: 'FlutterFire (Core, Crashlytics)',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/FirebaseExtended/flutterfire/blob/master/LICENSE',
       sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',

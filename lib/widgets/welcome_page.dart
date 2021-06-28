@@ -105,7 +105,7 @@ class _WelcomePageState extends State<WelcomePage> {
           onChanged: (v) {
             if (v != null) setState(() => settings.isCrashlyticsEnabled = v);
           },
-          text: context.l10n.welcomeAnalyticsToggle,
+          text: context.l10n.welcomeCrashReportToggle,
         ),
         LabeledCheckbox(
           key: const Key('agree-checkbox'),

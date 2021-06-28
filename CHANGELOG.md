@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Removed
+- Analytics: removed Firebase Analytics (kept Firebase Crashlytics)
 
 ## [v1.4.4] - 2021-06-25
 ### Added

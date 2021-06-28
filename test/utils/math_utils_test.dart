@@ -25,12 +25,4 @@ void main() {
     expect(roundToPrecision(1.2345678, decimals: 3), 1.235);
     expect(roundToPrecision(0, decimals: 3), 0);
   });
-
-  test('rounding up to a given precision before the decimal', () {
-    expect(ceilBy(12345.678, 3), 13000);
-    expect(ceilBy(42, 3), 1000);
-    expect(ceilBy(0, 3), 0);
-    expect(ceilBy(-42, 3), 0);
-    expect(ceilBy(-12345.678, 3), -12000);
-  });
 }
