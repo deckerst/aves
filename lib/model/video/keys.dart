@@ -38,6 +38,7 @@ class Keys {
   static const selectedAudioStream = 'audio';
   static const selectedTextStream = 'timedtext';
   static const selectedVideoStream = 'video';
+  static const sourceOshash = 'source_oshash';
   static const startMicros = 'start_us';
   static const statisticsTags = '_statistics_tags';
   static const statisticsWritingApp = '_statistics_writing_app';

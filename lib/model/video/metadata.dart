@@ -44,6 +44,31 @@ class VideoMetadataFormatter {
     return info;
   }
 
+  static Future<Map<String, int>> getCatalogMetadata(AvesEntry entry) async {
+    final mediaInfo = await getVideoMetadata(entry);
+    final fields = <String, int>{};
+
+    final streams = mediaInfo[Keys.streams];
+    if (streams is List) {
+      final allStreamInfo = streams.cast<Map>();
+      final sizedStream = allStreamInfo.firstWhereOrNull((stream) => stream.containsKey(Keys.width) && stream.containsKey(Keys.height));
+      if (sizedStream != null) {
+        final width = sizedStream[Keys.width];
+        final height = sizedStream[Keys.height];
+        if (width is int && height is int) {
+          fields['width'] = width;
+          fields['height'] = height;
+        }
+      }
+    }
+
+    final durationMicros = mediaInfo[Keys.durationMicros];
+    if (durationMicros is num) {
+      fields['durationMillis'] = (durationMicros / 1000).round();
+    }
+    return fields;
+  }
+
   // pattern to extract optional language code suffix, e.g. 'location-eng'
   static final keyWithLanguagePattern = RegExp(r'^(.*)-([a-z]{3})$');
 
@@ -197,6 +222,9 @@ class VideoMetadataFormatter {
               final sarDen = info[Keys.sarDen];
               // skip common square pixels (1:1)
               if (sarNum != sarDen) save('SAR', '$sarNum:$sarDen');
+              break;
+            case Keys.sourceOshash:
+              save('Source OSHash', value);
               break;
             case Keys.startMicros:
               if (value != 0) save('Start', formatPreciseDuration(Duration(microseconds: value)));

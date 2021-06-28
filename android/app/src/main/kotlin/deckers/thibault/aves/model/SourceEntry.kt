@@ -100,7 +100,7 @@ class SourceEntry {
     private val hasDuration: Boolean
         get() = durationMillis ?: 0 > 0
 
-    private val isVideo: Boolean
+    val isVideo: Boolean
         get() = MimeTypes.isVideo(sourceMimeType)
 
     val isSvg: Boolean
