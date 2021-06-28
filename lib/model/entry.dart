@@ -5,6 +5,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -33,7 +34,7 @@ class AvesEntry {
   // `dateModifiedSecs` can be missing in viewer mode
   int? _dateModifiedSecs;
   final int? sourceDateTakenMillis;
-  final int? durationMillis;
+  int? durationMillis;
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
   AddressDetails? _addressDetails;
@@ -432,6 +433,11 @@ class AvesEntry {
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
+      if (isVideo && (!isSized || durationMillis == 0)) {
+        // exotic video that is not sized during loading
+        final fields = await VideoMetadataFormatter.getCatalogMetadata(this);
+        await _applyNewFields(fields, persist: persist);
+      }
       catalogMetadata = await metadataService.getCatalogMetadata(this, background: background);
     }
   }
@@ -552,6 +558,8 @@ class AvesEntry {
     if (width is int) this.width = width;
     final height = newFields['height'];
     if (height is int) this.height = height;
+    final durationMillis = newFields['durationMillis'];
+    if (durationMillis is int) this.durationMillis = durationMillis;
 
     final dateModifiedSecs = newFields['dateModifiedSecs'];
     if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;
