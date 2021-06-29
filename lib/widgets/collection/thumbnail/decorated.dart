@@ -1,8 +1,7 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:aves/widgets/collection/thumbnail/overlay.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
-import 'package:aves/widgets/collection/thumbnail/vector.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
 
@@ -35,18 +34,12 @@ class DecoratedThumbnail extends StatelessWidget {
     // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
     final heroTag = hashValues(collection?.id, entry);
     final isSvg = entry.isSvg;
-    var child = isSvg
-        ? VectorImageThumbnail(
-            entry: entry,
-            extent: imageExtent,
-            heroTag: heroTag,
-          )
-        : RasterImageThumbnail(
-            entry: entry,
-            extent: imageExtent,
-            cancellableNotifier: cancellableNotifier,
-            heroTag: heroTag,
-          );
+    Widget child = ThumbnailImage(
+      entry: entry,
+      extent: imageExtent,
+      cancellableNotifier: cancellableNotifier,
+      heroTag: heroTag,
+    );
 
     child = Stack(
       alignment: isSvg ? Alignment.center : AlignmentDirectional.bottomStart,

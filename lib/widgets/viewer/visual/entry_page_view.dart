@@ -6,7 +6,7 @@ import 'package:aves/model/settings/entry_background.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
+import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:aves/widgets/common/magnifier/controller/controller.dart';
 import 'package:aves/widgets/common/magnifier/controller/state.dart';
 import 'package:aves/widgets/common/magnifier/magnifier.dart';
@@ -232,7 +232,7 @@ class _EntryPageViewState extends State<EntryPageView> {
                 duration: Durations.viewerVideoPlayerTransition,
                 child: GestureDetector(
                   onTap: _onTap,
-                  child: RasterImageThumbnail(
+                  child: ThumbnailImage(
                     entry: entry,
                     extent: context.select<MediaQueryData, double>((mq) => mq.size.shortestSide),
                     fit: BoxFit.contain,

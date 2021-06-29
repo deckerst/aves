@@ -59,7 +59,7 @@ object MimeTypes {
     // returns whether the specified MIME type represents
     // a raster image format that allows an alpha channel
     fun canHaveAlpha(mimeType: String?) = when (mimeType) {
-        BMP, GIF, ICO, PNG, TIFF, WEBP -> true
+        BMP, GIF, ICO, PNG, SVG, TIFF, WEBP -> true
         else -> false
     }
 

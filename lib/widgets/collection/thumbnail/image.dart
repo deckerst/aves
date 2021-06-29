@@ -4,41 +4,46 @@ import 'dart:ui';
 import 'package:aves/image_providers/thumbnail_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
+import 'package:aves/model/settings/entry_background.dart';
+import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class RasterImageThumbnail extends StatefulWidget {
+class ThumbnailImage extends StatefulWidget {
   final AvesEntry entry;
   final double extent;
-  final BoxFit fit;
+  final BoxFit? fit;
   final bool showLoadingBackground;
   final ValueNotifier<bool>? cancellableNotifier;
   final Object? heroTag;
 
-  const RasterImageThumbnail({
+  const ThumbnailImage({
     Key? key,
     required this.entry,
     required this.extent,
-    this.fit = BoxFit.cover,
+    this.fit,
     this.showLoadingBackground = true,
     this.cancellableNotifier,
     this.heroTag,
   }) : super(key: key);
 
   @override
-  _RasterImageThumbnailState createState() => _RasterImageThumbnailState();
+  _ThumbnailImageState createState() => _ThumbnailImageState();
 }
 
-class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
+class _ThumbnailImageState extends State<ThumbnailImage> {
   final _providers = <_ConditionalImageProvider>[];
   _ProviderStream? _currentProviderStream;
   ImageInfo? _lastImageInfo;
   Object? _lastException;
   late final ImageStreamListener _streamListener;
-  late DisposableBuildContext<State<RasterImageThumbnail>> _scrollAwareContext;
+  late DisposableBuildContext<State<ThumbnailImage>> _scrollAwareContext;
 
   AvesEntry get entry => widget.entry;
 
@@ -48,12 +53,12 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
   void initState() {
     super.initState();
     _streamListener = ImageStreamListener(_onImageLoad, onError: _onError);
-    _scrollAwareContext = DisposableBuildContext<State<RasterImageThumbnail>>(this);
+    _scrollAwareContext = DisposableBuildContext<State<ThumbnailImage>>(this);
     _registerWidget(widget);
   }
 
   @override
-  void didUpdateWidget(covariant RasterImageThumbnail oldWidget) {
+  void didUpdateWidget(covariant ThumbnailImage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != entry) {
       _unregisterWidget(oldWidget);
@@ -68,12 +73,12 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     super.dispose();
   }
 
-  void _registerWidget(RasterImageThumbnail widget) {
+  void _registerWidget(ThumbnailImage widget) {
     widget.entry.imageChangeNotifier.addListener(_onImageChanged);
     _initProvider();
   }
 
-  void _unregisterWidget(RasterImageThumbnail widget) {
+  void _unregisterWidget(ThumbnailImage widget) {
     widget.entry.imageChangeNotifier.removeListener(_onImageChanged);
     _pauseProvider();
     _currentProviderStream?.stopListening();
@@ -87,12 +92,13 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     _lastException = null;
     _providers.clear();
     _providers.addAll([
-      _ConditionalImageProvider(
-        ScrollAwareImageProvider(
-          context: _scrollAwareContext,
-          imageProvider: entry.getThumbnail(),
+      if (!entry.isSvg)
+        _ConditionalImageProvider(
+          ScrollAwareImageProvider(
+            context: _scrollAwareContext,
+            imageProvider: entry.getThumbnail(),
+          ),
         ),
-      ),
       _ConditionalImageProvider(
         ScrollAwareImageProvider(
           context: _scrollAwareContext,
@@ -152,14 +158,14 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     }
   }
 
-  Color? _backgroundColor;
+  Color? _loadingBackgroundColor;
 
-  Color get backgroundColor {
-    if (_backgroundColor == null) {
+  Color get loadingBackgroundColor {
+    if (_loadingBackgroundColor == null) {
       final rgb = 0x30 + entry.uri.hashCode % 0x20;
-      _backgroundColor = Color.fromARGB(0xFF, rgb, rgb, rgb);
+      _loadingBackgroundColor = Color.fromARGB(0xFF, rgb, rgb, rgb);
     }
-    return _backgroundColor!;
+    return _loadingBackgroundColor!;
   }
 
   @override
@@ -173,21 +179,54 @@ class _RasterImageThumbnailState extends State<RasterImageThumbnail> {
     // use `RawImage` instead of `Image`, using `ImageInfo` to check dimensions
     // and have more control when chaining image providers
 
+    final fit = widget.fit ?? (entry.isSvg ? BoxFit.contain : BoxFit.cover);
     final imageInfo = _lastImageInfo;
     final image = imageInfo == null
         ? Container(
-            color: widget.showLoadingBackground ? backgroundColor : Colors.transparent,
+            color: widget.showLoadingBackground ? loadingBackgroundColor : Colors.transparent,
             width: extent,
             height: extent,
           )
-        : RawImage(
-            image: imageInfo.image,
-            debugImageLabel: imageInfo.debugLabel,
-            width: extent,
-            height: extent,
-            scale: imageInfo.scale,
-            fit: widget.fit,
-          );
+        : Selector<Settings, EntryBackground>(
+            selector: (context, s) => entry.isSvg ? s.vectorBackground : s.rasterBackground,
+            builder: (context, background, child) {
+              final backgroundColor = background.isColor ? background.color : null;
+
+              if (background == EntryBackground.checkered) {
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    final availableSize = constraints.biggest;
+                    final fitSize = applyBoxFit(fit, entry.displaySize, availableSize).destination;
+                    final offset = (fitSize / 2 - availableSize / 2) as Offset;
+                    final child = CustomPaint(
+                      painter: CheckeredPainter(checkSize: extent / 8, offset: offset),
+                      child: RawImage(
+                        image: imageInfo.image,
+                        debugImageLabel: imageInfo.debugLabel,
+                        width: fitSize.width,
+                        height: fitSize.height,
+                        scale: imageInfo.scale,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                    // the thumbnail is centered for correct decoration sizing
+                    // when constraints are tight during hero animation
+                    return constraints.isTight ? Center(child: child) : child;
+                  },
+                );
+              }
+
+              return RawImage(
+                image: imageInfo.image,
+                debugImageLabel: imageInfo.debugLabel,
+                width: extent,
+                height: extent,
+                scale: imageInfo.scale,
+                color: backgroundColor,
+                colorBlendMode: BlendMode.dstOver,
+                fit: fit,
+              );
+            });
 
     return widget.heroTag != null
         ? Hero(
