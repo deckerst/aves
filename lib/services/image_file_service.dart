@@ -4,7 +4,6 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
@@ -245,9 +244,6 @@ class PlatformImageFileService implements ImageFileService {
     Object? taskKey,
     int? priority,
   }) {
-    if (mimeType == MimeTypes.svg) {
-      return Future.sync(() => Uint8List(0));
-    }
     return servicePolicy.call(
       () async {
         try {

@@ -2,8 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
-import 'package:aves/widgets/collection/thumbnail/vector.dart';
+import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -30,15 +29,10 @@ class ImageMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thumbnail = entry.isSvg
-        ? VectorImageThumbnail(
-            entry: entry,
-            extent: extent,
-          )
-        : RasterImageThumbnail(
-            entry: entry,
-            extent: extent,
-          );
+    final thumbnail = ThumbnailImage(
+      entry: entry,
+      extent: extent,
+    );
 
     const outerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(

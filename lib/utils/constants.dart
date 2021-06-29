@@ -42,6 +42,12 @@ class Constants {
       sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/exifinterface/exifinterface',
     ),
     Dependency(
+      name: 'AndroidSVG',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/BigBadaboom/androidsvg/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/BigBadaboom/androidsvg',
+    ),
+    Dependency(
       name: 'Android-TiffBitmapFactory (Aves fork)',
       license: 'MIT',
       licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
