@@ -35,7 +35,6 @@ dependencies:
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:
-  flutter_svg:
   get_it:
   github:
   google_api_availability:

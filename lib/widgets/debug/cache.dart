@@ -2,7 +2,6 @@ import 'package:aves/services/services.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/identity/aves_expansion_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class DebugCacheSection extends StatefulWidget {
   const DebugCacheSection({Key? key}) : super(key: key);
@@ -32,22 +31,6 @@ class _DebugCacheSectionState extends State<DebugCacheSection> with AutomaticKee
                   ElevatedButton(
                     onPressed: () {
                       imageCache!.clear();
-
-                      setState(() {});
-                    },
-                    child: const Text('Clear'),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text('SVG cache: ${PictureProvider.cache.count} items'),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      PictureProvider.cache.clear();
 
                       setState(() {});
                     },
