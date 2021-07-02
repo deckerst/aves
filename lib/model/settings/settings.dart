@@ -297,7 +297,7 @@ class Settings extends ChangeNotifier {
 
   // rendering
 
-  EntryBackground get rasterBackground => getEnumOrDefault(rasterBackgroundKey, EntryBackground.transparent, EntryBackground.values);
+  EntryBackground get rasterBackground => getEnumOrDefault(rasterBackgroundKey, EntryBackground.white, EntryBackground.values);
 
   set rasterBackground(EntryBackground newValue) => setAndNotify(rasterBackgroundKey, newValue.toString());
 

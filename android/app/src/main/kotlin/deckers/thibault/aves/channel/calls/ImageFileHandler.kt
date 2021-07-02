@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safe
 import deckers.thibault.aves.channel.calls.Coresult.Companion.safesus
 import deckers.thibault.aves.channel.calls.fetchers.RegionFetcher
+import deckers.thibault.aves.channel.calls.fetchers.SvgRegionFetcher
 import deckers.thibault.aves.channel.calls.fetchers.ThumbnailFetcher
 import deckers.thibault.aves.channel.calls.fetchers.TiffRegionFetcher
 import deckers.thibault.aves.model.ExifOrientationOp
@@ -113,6 +114,13 @@ class ImageFileHandler(private val activity: Activity) : MethodCallHandler {
 
         val regionRect = Rect(x, y, x + width, y + height)
         when (mimeType) {
+            MimeTypes.SVG -> SvgRegionFetcher(activity).fetch(
+                uri = uri,
+                regionRect = regionRect,
+                imageWidth = imageWidth,
+                imageHeight = imageHeight,
+                result = result,
+            )
             MimeTypes.TIFF -> TiffRegionFetcher(activity).fetch(
                 uri = uri,
                 page = pageId ?: 0,

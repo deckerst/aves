@@ -20,7 +20,7 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
   ImageStreamCompleter load(RegionProviderKey key, DecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
-      scale: key.scale,
+      scale: 1.0,
       informationCollector: () sync* {
         yield ErrorDescription('uri=${key.uri}, pageId=${key.pageId}, mimeType=${key.mimeType}, region=${key.region}');
       },
@@ -71,7 +71,6 @@ class RegionProviderKey {
   final bool isFlipped;
   final Rectangle<int> region;
   final Size imageSize;
-  final double scale;
 
   const RegionProviderKey({
     required this.uri,
@@ -82,13 +81,12 @@ class RegionProviderKey {
     required this.sampleSize,
     required this.region,
     required this.imageSize,
-    this.scale = 1.0,
   });
 
   @override
   bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.pageId == pageId && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.region == region && other.imageSize == imageSize && other.scale == scale;
+    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.pageId == pageId && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.region == region && other.imageSize == imageSize;
   }
 
   @override
@@ -101,9 +99,8 @@ class RegionProviderKey {
         sampleSize,
         region,
         imageSize,
-        scale,
       );
 
   @override
-  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, region=$region, imageSize=$imageSize, scale=$scale}';
+  String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, region=$region, imageSize=$imageSize}';
 }
