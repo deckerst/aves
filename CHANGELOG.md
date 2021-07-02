@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Video: added OGV support
+
+### Changed
+- improved SVG support with a different rendering engine
+- changed logo
+- upgraded flutter to stable v2.2.3
+
 ### Removed
 - Analytics: removed Firebase Analytics (kept Firebase Crashlytics)
 

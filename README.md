@@ -2,7 +2,7 @@
 ![Build badge][Build badge]
 
 <br />
-<img src="https://raw.githubusercontent.com/deckerst/aves/develop/assets/aves_logo.svg" alt='Aves logo' width="200" />
+<img src="https://raw.githubusercontent.com/deckerst/aves/develop/aves_logo.svg" alt='Aves logo' width="200" />
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt='Get it on Google Play' width="200">](https://play.google.com/store/apps/details?id=deckers.thibault.aves&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
 
