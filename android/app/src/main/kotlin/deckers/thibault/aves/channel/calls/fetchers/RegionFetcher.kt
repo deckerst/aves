@@ -124,9 +124,9 @@ class RegionFetcher internal constructor(
             Glide.with(context).clear(target)
         }
     }
-}
 
-private data class LastDecoderRef(
-    val uri: Uri,
-    val decoder: BitmapRegionDecoder,
-)
+    private data class LastDecoderRef(
+        val uri: Uri,
+        val decoder: BitmapRegionDecoder,
+    )
+}

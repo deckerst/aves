@@ -32,6 +32,7 @@ class RasterImageView extends StatefulWidget {
 
 class _RasterImageViewState extends State<RasterImageView> {
   late Size _displaySize;
+  late bool _useTiles;
   bool _isTilingInitialized = false;
   late int _maxSampleSize;
   late double _tileSide;
@@ -44,16 +45,19 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   ValueNotifier<ViewState> get viewStateNotifier => widget.viewStateNotifier;
 
-  bool get useBackground => entry.canHaveAlpha && settings.rasterBackground != EntryBackground.transparent;
-
   ViewState get viewState => viewStateNotifier.value;
 
   ImageProvider get thumbnailProvider => entry.bestCachedThumbnail;
 
+  Rectangle<int> get fullImageRegion => Rectangle<int>(0, 0, entry.width, entry.height);
+
   ImageProvider get fullImageProvider {
-    if (entry.useTiles) {
+    if (_useTiles) {
       assert(_isTilingInitialized);
-      return entry.getRegion(sampleSize: _maxSampleSize);
+      return entry.getRegion(
+        sampleSize: _maxSampleSize,
+        region: fullImageRegion,
+      );
     } else {
       return entry.uriImage;
     }
@@ -66,8 +70,9 @@ class _RasterImageViewState extends State<RasterImageView> {
   void initState() {
     super.initState();
     _displaySize = entry.displaySize;
+    _useTiles = entry.useTiles;
     _fullImageListener = ImageStreamListener(_onFullImageCompleted);
-    if (!entry.useTiles) _registerFullImage();
+    if (!_useTiles) _registerFullImage();
   }
 
   @override
@@ -106,23 +111,23 @@ class _RasterImageViewState extends State<RasterImageView> {
 
   @override
   Widget build(BuildContext context) {
-    final useTiles = entry.useTiles;
     return ValueListenableBuilder<ViewState>(
       valueListenable: viewStateNotifier,
       builder: (context, viewState, child) {
         final viewportSize = viewState.viewportSize;
         final viewportSized = viewportSize?.isEmpty == false;
-        if (viewportSized && useTiles && !_isTilingInitialized) _initTiling(viewportSize!);
+        if (viewportSized && _useTiles && !_isTilingInitialized) _initTiling(viewportSize!);
 
         return SizedBox.fromSize(
           size: _displaySize * viewState.scale!,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              if (useBackground && viewportSized) _buildBackground(),
+              if (entry.canHaveAlpha && viewportSized) _buildBackground(),
               _buildLoading(),
-              if (useTiles) ..._getTiles(),
-              if (!useTiles)
+              if (_useTiles)
+                ..._getTiles()
+              else
                 Image(
                   image: fullImageProvider,
                   gaplessPlayback: true,
@@ -230,9 +235,10 @@ class _RasterImageViewState extends State<RasterImageView> {
 
     // for the largest sample size (matching the initial scale), the whole image is in view
     // so we subsample the whole image without tiling
-    final fullImageRegionTile = RegionTile(
+    final fullImageRegionTile = _RegionTile(
       entry: entry,
       tileRect: Rect.fromLTWH(0, 0, displayWidth * scale, displayHeight * scale),
+      regionRect: fullImageRegion,
       sampleSize: _maxSampleSize,
     );
     final tiles = [fullImageRegionTile];
@@ -253,7 +259,7 @@ class _RasterImageViewState extends State<RasterImageView> {
             viewRect: viewRect,
           );
           if (rects != null) {
-            tiles.add(RegionTile(
+            tiles.add(_RegionTile(
               entry: entry,
               tileRect: rects.item1,
               regionRect: rects.item2,
@@ -320,20 +326,20 @@ class _RasterImageViewState extends State<RasterImageView> {
   }
 }
 
-class RegionTile extends StatefulWidget {
+class _RegionTile extends StatefulWidget {
   final AvesEntry entry;
 
   // `tileRect` uses Flutter view coordinates
   // `regionRect` uses the raw image pixel coordinates
   final Rect tileRect;
-  final Rectangle<int>? regionRect;
+  final Rectangle<int> regionRect;
   final int sampleSize;
 
-  const RegionTile({
+  const _RegionTile({
     Key? key,
     required this.entry,
     required this.tileRect,
-    this.regionRect,
+    required this.regionRect,
     required this.sampleSize,
   }) : super(key: key);
 
@@ -350,7 +356,7 @@ class RegionTile extends StatefulWidget {
   }
 }
 
-class _RegionTileState extends State<RegionTile> {
+class _RegionTileState extends State<_RegionTile> {
   late RegionProvider _provider;
 
   AvesEntry get entry => widget.entry;
@@ -362,7 +368,7 @@ class _RegionTileState extends State<RegionTile> {
   }
 
   @override
-  void didUpdateWidget(covariant RegionTile oldWidget) {
+  void didUpdateWidget(covariant _RegionTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.entry != widget.entry || oldWidget.tileRect != widget.tileRect || oldWidget.sampleSize != widget.sampleSize || oldWidget.sampleSize != widget.sampleSize) {
       _unregisterWidget(oldWidget);
@@ -376,11 +382,11 @@ class _RegionTileState extends State<RegionTile> {
     super.dispose();
   }
 
-  void _registerWidget(RegionTile widget) {
+  void _registerWidget(_RegionTile widget) {
     _initProvider();
   }
 
-  void _unregisterWidget(RegionTile widget) {
+  void _unregisterWidget(_RegionTile widget) {
     _pauseProvider();
   }
 

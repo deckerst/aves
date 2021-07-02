@@ -1,9 +1,6 @@
 import 'dart:async';
 
-import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
-import 'package:aves/model/settings/entry_background.dart';
-import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/image.dart';
@@ -25,7 +22,6 @@ import 'package:aves/widgets/viewer/visual/vector.dart';
 import 'package:aves/widgets/viewer/visual/video.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
@@ -163,28 +159,19 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   Widget _buildSvgView() {
-    final background = settings.vectorBackground;
-    final colorFilter = background.isColor ? ColorFilter.mode(background.color, BlendMode.dstOver) : null;
-
     var child = _buildMagnifier(
-      maxScale: const ScaleLevel(factor: double.infinity),
+      maxScale: const ScaleLevel(factor: 25),
       scaleStateCycle: _vectorScaleStateCycle,
-      child: SvgPicture(
-        UriPicture(
-          uri: entry.uri,
-          mimeType: entry.mimeType,
-          colorFilter: colorFilter,
+      applyScale: false,
+      child: VectorImageView(
+        entry: entry,
+        viewStateNotifier: _viewStateNotifier,
+        errorBuilder: (context, error, stackTrace) => ErrorView(
+          entry: entry,
+          onTap: _onTap,
         ),
       ),
     );
-
-    if (background == EntryBackground.checkered) {
-      child = VectorViewCheckeredBackground(
-        displaySize: entry.displaySize,
-        viewStateNotifier: _viewStateNotifier,
-        child: child,
-      );
-    }
     return child;
   }
 

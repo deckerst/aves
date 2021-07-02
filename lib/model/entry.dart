@@ -435,8 +435,8 @@ class AvesEntry {
       final size = await SvgMetadataService.getSize(this);
       if (size != null) {
         await _applyNewFields({
-          'width': size.width.round(),
-          'height': size.height.round(),
+          'width': size.width.ceil(),
+          'height': size.height.ceil(),
         }, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);

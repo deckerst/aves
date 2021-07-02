@@ -18,6 +18,7 @@ import com.bumptech.glide.module.LibraryGlideModule
 import com.bumptech.glide.signature.ObjectKey
 import com.caverock.androidsvg.SVG
 import com.caverock.androidsvg.SVGParseException
+import deckers.thibault.aves.metadata.SvgHelper.normalizeSize
 import deckers.thibault.aves.utils.StorageUtils
 import kotlin.math.ceil
 
@@ -52,11 +53,20 @@ internal class SvgFetcher(val model: SvgThumbnail, val width: Int, val height: I
         StorageUtils.openInputStream(context, uri)?.use { input ->
             try {
                 SVG.getFromInputStream(input)?.let { svg ->
-                    val svgWidth = svg.documentWidth
-                    val svgHeight = svg.documentHeight
+                    svg.normalizeSize()
+                    val viewBox = svg.documentViewBox
+                    val svgWidth = viewBox.width()
+                    val svgHeight = viewBox.height()
 
-                    val bitmapWidth = if (svgWidth > 0) ceil(svgWidth).toInt() else width
-                    val bitmapHeight = if (svgHeight > 0) ceil(svgHeight).toInt() else height
+                    val bitmapWidth: Int
+                    val bitmapHeight: Int
+                    if (width / height > svgWidth / svgHeight) {
+                        bitmapWidth = ceil(svgWidth * height / svgHeight).toInt()
+                        bitmapHeight = height;
+                    } else {
+                        bitmapWidth = width
+                        bitmapHeight = ceil(svgHeight * width / svgWidth).toInt()
+                    }
                     val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
 
                     val canvas = Canvas(bitmap)

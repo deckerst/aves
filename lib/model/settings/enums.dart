@@ -1,6 +1,6 @@
 enum CoordinateFormat { dms, decimal }
 
-enum EntryBackground { black, white, transparent, checkered }
+enum EntryBackground { black, white, checkered }
 
 enum HomePageSetting { collection, albums }
 
