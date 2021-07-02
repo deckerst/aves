@@ -198,12 +198,6 @@ class Constants {
       sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
     ),
     Dependency(
-      name: 'Flutter SVG',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/dnfield/flutter_svg/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/dnfield/flutter_svg',
-    ),
-    Dependency(
       name: 'Material Design Icons Flutter',
       license: 'MIT',
       licenseUrl: 'https://github.com/ziofat/material_design_icons_flutter/blob/master/LICENSE',
