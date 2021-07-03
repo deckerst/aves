@@ -12,6 +12,7 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/services/window_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -84,6 +85,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
+      case EntryAction.rotateScreen:
+        _rotateScreen(context);
+        break;
       case EntryAction.setAs:
         AndroidAppService.setAs(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
@@ -115,6 +119,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final success = await entry.rotate(clockwise: clockwise, persist: isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
+  }
+
+  Future<void> _rotateScreen(BuildContext context) async {
+    switch (context.read<MediaQueryData>().orientation) {
+      case Orientation.landscape:
+        await WindowService.requestOrientation(Orientation.portrait);
+        break;
+      case Orientation.portrait:
+        await WindowService.requestOrientation(Orientation.landscape);
+        break;
+    }
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AvesEntry entry) async {

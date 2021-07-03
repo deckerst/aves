@@ -4,20 +4,26 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/window_service.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
+  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settingschange');
+
   static SharedPreferences? _prefs;
 
-  Settings._private();
+  Settings._private() {
+    _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
+  }
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
@@ -84,6 +90,7 @@ class Settings extends ChangeNotifier {
   static const viewerQuickActionsDefault = [
     EntryAction.toggleFavourite,
     EntryAction.share,
+    EntryAction.rotateScreen,
   ];
   static const videoQuickActionsDefault = [
     VideoAction.replay10,
@@ -92,6 +99,7 @@ class Settings extends ChangeNotifier {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    _isRotationLocked = await WindowService.isRotationLocked();
   }
 
   // Crashlytics initialization is separated from the main settings initialization
@@ -364,4 +372,30 @@ class Settings extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // platform settings
+
+  void _onPlatformSettingsChange(Map? fields) {
+    fields?.forEach((key, value) {
+      switch (key) {
+        // cf Android `Settings.System.ACCELEROMETER_ROTATION`
+        case 'accelerometer_rotation':
+          if (value is int) {
+            final newValue = value == 0;
+            if (_isRotationLocked != newValue) {
+              _isRotationLocked = newValue;
+              if (!_isRotationLocked) {
+                WindowService.requestOrientation();
+              }
+              notifyListeners();
+            }
+          }
+          break;
+      }
+    });
+  }
+
+  bool _isRotationLocked = false;
+
+  bool get isRotationLocked => _isRotationLocked;
 }

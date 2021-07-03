@@ -22,7 +22,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private lateinit var contentStreamHandler: ContentChangeStreamHandler
+    private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
+    private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
     private lateinit var intentDataMap: MutableMap<String, Any?>
 
@@ -50,8 +51,11 @@ class MainActivity : FlutterActivity() {
         StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory { args -> StorageAccessStreamHandler(this, args) }
 
         // Media Store change monitoring
-        contentStreamHandler = ContentChangeStreamHandler(this).apply {
-            EventChannel(messenger, ContentChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
+            EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        settingsChangeStreamHandler = SettingsChangeStreamHandler(this).apply {
+            EventChannel(messenger, SettingsChangeStreamHandler.CHANNEL).setStreamHandler(this)
         }
 
         // intent handling
@@ -75,7 +79,8 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
-        contentStreamHandler.dispose()
+        mediaStoreChangeStreamHandler.dispose()
+        settingsChangeStreamHandler.dispose()
         super.onDestroy()
     }
 

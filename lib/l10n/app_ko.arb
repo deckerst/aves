@@ -44,6 +44,7 @@
   "entryActionOpen": "다른 앱에서 열기…",
   "entryActionSetAs": "다음 용도로 사용…",
   "entryActionOpenMap": "지도에서 보기…",
+  "entryActionRotateScreen": "화면 회전",
   "entryActionAddFavourite": "즐겨찾기에 추가",
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
 
