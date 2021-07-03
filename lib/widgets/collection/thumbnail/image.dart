@@ -12,6 +12,7 @@ import 'package:aves/widgets/collection/thumbnail/error.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/checkered_decoration.dart';
 import 'package:aves/widgets/common/fx/transition_image.dart';
+import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -243,11 +244,28 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
         : image;
   }
 
-  Widget _buildError(BuildContext context, Object error, StackTrace? stackTrace) => ErrorThumbnail(
-        entry: entry,
-        extent: extent,
-        tooltip: error.toString(),
-      );
+  Widget _buildError(BuildContext context, Object error, StackTrace? stackTrace) {
+    final child = ErrorThumbnail(
+      entry: entry,
+      extent: extent,
+      tooltip: error.toString(),
+    );
+    return widget.heroTag != null
+        ? Hero(
+            tag: widget.heroTag!,
+            flightShuttleBuilder: (flight, animation, direction, fromHero, toHero) {
+              return MediaQueryDataProvider(
+                child: DefaultTextStyle(
+                  style: DefaultTextStyle.of(toHero).style,
+                  child: toHero.widget,
+                ),
+              );
+            },
+            transitionOnUserGestures: true,
+            child: child,
+          )
+        : child;
+  }
 
   // when the entry image itself changed (e.g. after rotation)
   void _onImageChanged() async {
