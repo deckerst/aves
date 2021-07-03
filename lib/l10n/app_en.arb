@@ -88,6 +88,8 @@
   "@entryActionSetAs": {},
   "entryActionOpenMap": "Show on map…",
   "@entryActionOpenMap": {},
+  "entryActionRotateScreen": "Rotate screen",
+  "@entryActionRotateScreen": {},
   "entryActionAddFavourite": "Add to favourites",
   "@entryActionAddFavourite": {},
   "entryActionRemoveFavourite": "Remove from favourites",

@@ -99,6 +99,8 @@ class ViewerTopOverlay extends StatelessWidget {
           return targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
+        case EntryAction.rotateScreen:
+          return settings.isRotationLocked;
         case EntryAction.share:
         case EntryAction.info:
         case EntryAction.open:
@@ -110,17 +112,22 @@ class ViewerTopOverlay extends StatelessWidget {
       }
     }
 
-    final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount - 1).toList();
-    final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
-    final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
-    final buttonRow = _TopOverlayRow(
-      quickActions: quickActions,
-      inAppActions: inAppActions,
-      externalAppActions: externalAppActions,
-      scale: scale,
-      mainEntry: mainEntry,
-      pageEntry: pageEntry,
-      onActionSelected: onActionSelected,
+    final buttonRow = Selector<Settings, bool>(
+      selector: (context, s) => s.isRotationLocked,
+      builder: (context, s, child) {
+        final quickActions = settings.viewerQuickActions.where(_canDo).take(availableCount - 1).toList();
+        final inAppActions = EntryActions.inApp.where((action) => !quickActions.contains(action)).where(_canDo).toList();
+        final externalAppActions = EntryActions.externalApp.where(_canDo).toList();
+        return _TopOverlayRow(
+          quickActions: quickActions,
+          inAppActions: inAppActions,
+          externalAppActions: externalAppActions,
+          scale: scale,
+          mainEntry: mainEntry,
+          pageEntry: pageEntry!,
+          onActionSelected: onActionSelected,
+        );
+      },
     );
 
     return settings.showOverlayMinimap && viewStateNotifier != null
@@ -212,6 +219,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
       case EntryAction.share:
+      case EntryAction.rotateScreen:
       case EntryAction.viewSource:
         child = IconButton(
           icon: Icon(action.getIcon()),
@@ -256,6 +264,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.rotateCCW:
       case EntryAction.rotateCW:
       case EntryAction.share:
+      case EntryAction.rotateScreen:
       case EntryAction.viewSource:
       case EntryAction.debug:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());

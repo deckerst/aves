@@ -56,6 +56,7 @@ class AIcons {
   static const IconData rename = Icons.title_outlined;
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
+  static const IconData rotateScreen = Icons.screen_rotation_outlined;
   static const IconData search = Icons.search_outlined;
   static const IconData select = Icons.select_all_outlined;
   static const IconData setCover = MdiIcons.imageEditOutline;

@@ -22,7 +22,7 @@ class ThumbnailsSection extends StatelessWidget {
     final currentShowThumbnailRaw = context.select<Settings, bool>((s) => s.showThumbnailRaw);
     final currentShowThumbnailVideoDuration = context.select<Settings, bool>((s) => s.showThumbnailVideoDuration);
 
-    final iconSize = IconTheme.of(context).size! * MediaQuery.of(context).textScaleFactor;
+    final iconSize = IconTheme.of(context).size! * MediaQuery.textScaleFactorOf(context);
     double opacityFor(bool enabled) => enabled ? 1 : .2;
 
     return AvesExpansionTile(

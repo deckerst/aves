@@ -511,6 +511,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _onLeave() {
     _showSystemUI();
+    WindowService.requestOrientation();
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       WindowService.keepScreenOn(false);
     }

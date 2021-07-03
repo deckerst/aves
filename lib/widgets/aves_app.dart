@@ -35,13 +35,13 @@ class _AvesAppState extends State<AvesApp> {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
-  final Debouncer _contentChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
+  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
   final Set<String> changedUris = {};
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final EventChannel _contentChangeChannel = const EventChannel('deckers.thibault/aves/contentchange');
+  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/mediastorechange');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
@@ -52,7 +52,7 @@ class _AvesAppState extends State<AvesApp> {
     super.initState();
     initPlatformServices();
     _appSetup = _setup();
-    _contentChangeChannel.receiveBroadcastStream().listen((event) => _onContentChange(event as String?));
+    _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
   }
 
@@ -155,16 +155,16 @@ class _AvesAppState extends State<AvesApp> {
     ));
   }
 
-  void _onContentChange(String? uri) {
+  void _onMediaStoreChange(String? uri) {
     if (uri != null) changedUris.add(uri);
     if (changedUris.isNotEmpty) {
-      _contentChangeDebouncer(() async {
+      _mediaStoreChangeDebouncer(() async {
         final todo = changedUris.toSet();
         changedUris.clear();
         final tempUris = await _mediaStoreSource.refreshUris(todo);
         if (tempUris.isNotEmpty) {
           changedUris.addAll(tempUris);
-          _onContentChange(null);
+          _onMediaStoreChange(null);
         }
       });
     }
