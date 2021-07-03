@@ -2,10 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-class WindowService {
+abstract class WindowService {
+  Future<void> keepScreenOn(bool on);
+
+  Future<bool> isRotationLocked();
+
+  Future<void> requestOrientation([Orientation? orientation]);
+}
+
+class PlatformWindowService implements WindowService {
   static const platform = MethodChannel('deckers.thibault/aves/window');
 
-  static Future<void> keepScreenOn(bool on) async {
+  @override
+  Future<void> keepScreenOn(bool on) async {
     try {
       await platform.invokeMethod('keepScreenOn', <String, dynamic>{
         'on': on,
@@ -15,7 +24,8 @@ class WindowService {
     }
   }
 
-  static Future<bool> isRotationLocked() async {
+  @override
+  Future<bool> isRotationLocked() async {
     try {
       final result = await platform.invokeMethod('isRotationLocked');
       if (result != null) return result as bool;
@@ -25,7 +35,8 @@ class WindowService {
     return false;
   }
 
-  static Future<void> requestOrientation([Orientation? orientation]) async {
+  @override
+  Future<void> requestOrientation([Orientation? orientation]) async {
     // cf Android `ActivityInfo.ScreenOrientation`
     late final int orientationCode;
     switch (orientation) {

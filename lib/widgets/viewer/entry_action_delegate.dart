@@ -12,7 +12,6 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/services/window_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -124,10 +123,10 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _rotateScreen(BuildContext context) async {
     switch (context.read<MediaQueryData>().orientation) {
       case Orientation.landscape:
-        await WindowService.requestOrientation(Orientation.portrait);
+        await windowService.requestOrientation(Orientation.portrait);
         break;
       case Orientation.portrait:
-        await WindowService.requestOrientation(Orientation.landscape);
+        await windowService.requestOrientation(Orientation.landscape);
         break;
     }
   }

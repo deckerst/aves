@@ -15,6 +15,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/time_service.dart';
+import 'package:aves/services/window_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +28,7 @@ import '../fake/metadata_db.dart';
 import '../fake/metadata_service.dart';
 import '../fake/storage_service.dart';
 import '../fake/time_service.dart';
+import '../fake/window_service.dart';
 
 void main() {
   const testAlbum = '${FakeStorageService.primaryPath}Pictures/test';
@@ -44,6 +46,7 @@ void main() {
     getIt.registerLazySingleton<MetadataService>(() => FakeMetadataService());
     getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
     getIt.registerLazySingleton<TimeService>(() => FakeTimeService());
+    getIt.registerLazySingleton<WindowService>(() => FakeWindowService());
 
     await settings.init();
   });
