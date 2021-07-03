@@ -29,9 +29,16 @@ class ImageMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thumbnail = ThumbnailImage(
+    Widget child = ThumbnailImage(
       entry: entry,
       extent: extent,
+    );
+
+    // need to be sized for the Google Maps marker generator
+    child = SizedBox(
+      width: extent,
+      height: extent,
+      child: child,
     );
 
     const outerDecoration = BoxDecoration(
@@ -66,7 +73,7 @@ class ImageMarker extends StatelessWidget {
             position: DecorationPosition.foreground,
             child: ClipRRect(
               borderRadius: innerBorderRadius,
-              child: thumbnail,
+              child: child,
             ),
           ),
         ),
