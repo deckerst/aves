@@ -6,6 +6,7 @@ import 'package:aves/services/media_store_service.dart';
 import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/time_service.dart';
+import 'package:aves/services/window_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:path/path.dart' as p;
 
@@ -21,6 +22,7 @@ final MediaStoreService mediaStoreService = getIt<MediaStoreService>();
 final MetadataService metadataService = getIt<MetadataService>();
 final StorageService storageService = getIt<StorageService>();
 final TimeService timeService = getIt<TimeService>();
+final WindowService windowService = getIt<WindowService>();
 
 void initPlatformServices() {
   getIt.registerLazySingleton<p.Context>(() => p.Context());
@@ -33,4 +35,5 @@ void initPlatformServices() {
   getIt.registerLazySingleton<MetadataService>(() => PlatformMetadataService());
   getIt.registerLazySingleton<StorageService>(() => PlatformStorageService());
   getIt.registerLazySingleton<TimeService>(() => PlatformTimeService());
+  getIt.registerLazySingleton<WindowService>(() => PlatformWindowService());
 }

@@ -4,7 +4,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/services/window_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -99,7 +99,7 @@ class Settings extends ChangeNotifier {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
-    _isRotationLocked = await WindowService.isRotationLocked();
+    _isRotationLocked = await windowService.isRotationLocked();
   }
 
   // Crashlytics initialization is separated from the main settings initialization
@@ -385,7 +385,7 @@ class Settings extends ChangeNotifier {
             if (_isRotationLocked != newValue) {
               _isRotationLocked = newValue;
               if (!_isRotationLocked) {
-                WindowService.requestOrientation();
+                windowService.requestOrientation();
               }
               notifyListeners();
             }

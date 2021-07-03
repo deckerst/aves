@@ -9,7 +9,6 @@ import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/services/window_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -122,7 +121,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     WidgetsBinding.instance!.addObserver(this);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      WindowService.keepScreenOn(true);
+      windowService.keepScreenOn(true);
     }
   }
 
@@ -511,9 +510,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _onLeave() {
     _showSystemUI();
-    WindowService.requestOrientation();
+    windowService.requestOrientation();
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      WindowService.keepScreenOn(false);
+      windowService.keepScreenOn(false);
     }
   }
 
