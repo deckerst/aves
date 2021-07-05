@@ -189,9 +189,7 @@ class Settings extends ChangeNotifier {
 
   double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
-  // do not notify, as tile extents are only used internally by `TileExtentController`
-  // and should not trigger rebuilding by change notification
-  void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue, notify: false);
+  void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
 
   // collection
 
@@ -362,7 +360,7 @@ class Settings extends ChangeNotifier {
     return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).where((v) => v != null).cast<T>().toList() ?? defaultValue;
   }
 
-  void setAndNotify(String key, dynamic newValue, {bool notify = true}) {
+  void setAndNotify(String key, dynamic newValue) {
     var oldValue = _prefs!.get(key);
     if (newValue == null) {
       _prefs!.remove(key);
@@ -382,7 +380,7 @@ class Settings extends ChangeNotifier {
       oldValue = _prefs!.getBool(key);
       _prefs!.setBool(key, newValue);
     }
-    if (oldValue != newValue && notify) {
+    if (oldValue != newValue) {
       notifyListeners();
     }
   }

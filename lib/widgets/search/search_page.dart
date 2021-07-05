@@ -37,12 +37,12 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   void dispose() {
-    super.dispose();
     widget.delegate.queryTextController.removeListener(_onQueryChanged);
     widget.animation.removeStatusListener(_onAnimationStatusChanged);
     widget.delegate.currentBodyNotifier.removeListener(_onSearchBodyChanged);
     widget.delegate.focusNode = null;
     _focusNode.dispose();
+    super.dispose();
   }
 
   void _onAnimationStatusChanged(AnimationStatus status) {
