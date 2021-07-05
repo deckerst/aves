@@ -65,7 +65,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
       ..forEach((sub) => sub.cancel())
       ..clear();
     favourites.removeListener(_onFavouritesChanged);
-    settings.addListener(_onSettingsChanged);
+    settings.removeListener(_onSettingsChanged);
     super.dispose();
   }
 
