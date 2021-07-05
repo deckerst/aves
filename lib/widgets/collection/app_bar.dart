@@ -321,7 +321,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionGroupFactor = value;
-          collection.group(value);
         }
         break;
       case CollectionAction.sort:
@@ -341,7 +340,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionSortFactor = value;
-          collection.sort(value);
         }
         break;
     }

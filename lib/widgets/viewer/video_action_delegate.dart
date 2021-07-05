@@ -96,8 +96,6 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                 final targetCollection = CollectionLens(
                   source: source,
                   filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                  groupFactor: _collection.groupFactor,
-                  sortFactor: _collection.sortFactor,
                 );
                 unawaited(Navigator.pushAndRemoveUntil(
                   context,

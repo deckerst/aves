@@ -148,8 +148,6 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
                   targetCollection = CollectionLens(
                     source: collection.source,
                     filters: collection.filters,
-                    groupFactor: collection.groupFactor,
-                    sortFactor: collection.sortFactor,
                   )..addFilter(filter);
                   unawaited(Navigator.pushReplacement(
                     context,
