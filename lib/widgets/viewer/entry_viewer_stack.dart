@@ -401,8 +401,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
             collection: CollectionLens(
               source: baseCollection.source,
               filters: baseCollection.filters,
-              groupFactor: baseCollection.groupFactor,
-              sortFactor: baseCollection.sortFactor,
             )..addFilter(filter),
           );
         },

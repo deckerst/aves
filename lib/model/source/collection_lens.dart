@@ -35,27 +35,27 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   CollectionLens({
     required this.source,
     Iterable<CollectionFilter?>? filters,
-    EntryGroupFactor? groupFactor,
-    EntrySortFactor? sortFactor,
     this.id,
     this.listenToSource = true,
   })  : filters = (filters ?? {}).where((f) => f != null).cast<CollectionFilter>().toSet(),
-        groupFactor = groupFactor ?? settings.collectionGroupFactor,
-        sortFactor = sortFactor ?? settings.collectionSortFactor {
+        groupFactor = settings.collectionGroupFactor,
+        sortFactor = settings.collectionSortFactor {
     id ??= hashCode;
     if (listenToSource) {
-      _subscriptions.add(source.eventBus.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
-      _subscriptions.add(source.eventBus.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
-      _subscriptions.add(source.eventBus.on<EntryMovedEvent>().listen((e) => _refresh()));
-      _subscriptions.add(source.eventBus.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
-      _subscriptions.add(source.eventBus.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
-      _subscriptions.add(source.eventBus.on<AddressMetadataChangedEvent>().listen((e) {
+      final sourceEvents = source.eventBus;
+      _subscriptions.add(sourceEvents.on<EntryAddedEvent>().listen((e) => onEntryAdded(e.entries)));
+      _subscriptions.add(sourceEvents.on<EntryRemovedEvent>().listen((e) => onEntryRemoved(e.entries)));
+      _subscriptions.add(sourceEvents.on<EntryMovedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<FilterVisibilityChangedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<CatalogMetadataChangedEvent>().listen((e) => _refresh()));
+      _subscriptions.add(sourceEvents.on<AddressMetadataChangedEvent>().listen((e) {
         if (this.filters.any((filter) => filter is LocationFilter)) {
           _refresh();
         }
       }));
-      favourites.addListener(onFavouritesChanged);
+      favourites.addListener(_onFavouritesChanged);
     }
+    settings.addListener(_onSettingsChanged);
     _refresh();
   }
 
@@ -64,7 +64,8 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _subscriptions
       ..forEach((sub) => sub.cancel())
       ..clear();
-    favourites.removeListener(onFavouritesChanged);
+    favourites.removeListener(_onFavouritesChanged);
+    settings.addListener(_onSettingsChanged);
     super.dispose();
   }
 
@@ -110,19 +111,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
   void onFilterChanged() {
     _refresh();
     filterChangeNotifier.notifyListeners();
-  }
-
-  void sort(EntrySortFactor sortFactor) {
-    this.sortFactor = sortFactor;
-    _applySort();
-    _applyGroup();
-    sortGroupChangeNotifier.notifyListeners();
-  }
-
-  void group(EntryGroupFactor groupFactor) {
-    this.groupFactor = groupFactor;
-    _applyGroup();
-    sortGroupChangeNotifier.notifyListeners();
   }
 
   void _applyFilters() {
@@ -187,9 +175,29 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _applyGroup();
   }
 
-  void onFavouritesChanged() {
+  void _onFavouritesChanged() {
     if (filters.any((filter) => filter is FavouriteFilter)) {
       _refresh();
+    }
+  }
+
+  void _onSettingsChanged() {
+    final newSortFactor = settings.collectionSortFactor;
+    final newGroupFactor = settings.collectionGroupFactor;
+
+    final needSort = sortFactor != newSortFactor;
+    final needGroup = needSort || groupFactor != newGroupFactor;
+
+    if (needSort) {
+      sortFactor = newSortFactor;
+      _applySort();
+    }
+    if (needGroup) {
+      groupFactor = newGroupFactor;
+      _applyGroup();
+    }
+    if (needSort || needGroup) {
+      sortGroupChangeNotifier.notifyListeners();
     }
   }
 
