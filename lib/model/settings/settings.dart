@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -24,6 +26,14 @@ class Settings extends ChangeNotifier {
   Settings._private() {
     _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
   }
+
+  static const Set<String> internalKeys = {
+    hasAcceptedTermsKey,
+    catalogTimeZoneKey,
+    videoShowRawTimedTextKey,
+    searchHistoryKey,
+    lastVersionCheckDateKey,
+  };
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
@@ -109,8 +119,12 @@ class Settings extends ChangeNotifier {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
   }
 
-  Future<void> reset() {
-    return _prefs!.clear();
+  Future<void> reset({required bool includeInternalKeys}) async {
+    if (includeInternalKeys) {
+      await _prefs!.clear();
+    } else {
+      await Future.forEach(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+    }
   }
 
   // app
@@ -398,4 +412,98 @@ class Settings extends ChangeNotifier {
   bool _isRotationLocked = false;
 
   bool get isRotationLocked => _isRotationLocked;
+
+  // import/export
+
+  String toJson() => jsonEncode(Map.fromEntries(
+        _prefs!.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, _prefs!.get(k))),
+      ));
+
+  Future<void> fromJson(String jsonString) async {
+    final jsonMap = jsonDecode(jsonString);
+    if (jsonMap is Map<String, dynamic>) {
+      // clear to restore defaults
+      await reset(includeInternalKeys: false);
+
+      // apply user modifications
+      jsonMap.forEach((key, value) {
+        if (key.startsWith(tileExtentPrefixKey)) {
+          if (value is double) {
+            _prefs!.setDouble(key, value);
+          } else {
+            debugPrint('failed to import key=$key, value=$value is not a double');
+          }
+        } else {
+          switch (key) {
+            case subtitleTextColorKey:
+            case subtitleBackgroundColorKey:
+              if (value is int) {
+                _prefs!.setInt(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not an int');
+              }
+              break;
+            case subtitleFontSizeKey:
+            case infoMapZoomKey:
+              if (value is double) {
+                _prefs!.setDouble(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a double');
+              }
+              break;
+            case isCrashlyticsEnabledKey:
+            case mustBackTwiceToExitKey:
+            case showThumbnailLocationKey:
+            case showThumbnailRawKey:
+            case showThumbnailVideoDurationKey:
+            case showOverlayMinimapKey:
+            case showOverlayInfoKey:
+            case showOverlayShootingDetailsKey:
+            case enableVideoHardwareAccelerationKey:
+            case enableVideoAutoPlayKey:
+            case subtitleShowOutlineKey:
+            case saveSearchHistoryKey:
+              if (value is bool) {
+                _prefs!.setBool(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a bool');
+              }
+              break;
+            case localeKey:
+            case keepScreenOnKey:
+            case homePageKey:
+            case collectionGroupFactorKey:
+            case collectionSortFactorKey:
+            case albumGroupFactorKey:
+            case albumSortFactorKey:
+            case countrySortFactorKey:
+            case tagSortFactorKey:
+            case videoLoopModeKey:
+            case subtitleTextAlignmentKey:
+            case infoMapStyleKey:
+            case coordinateFormatKey:
+            case rasterBackgroundKey:
+            case vectorBackgroundKey:
+              if (value is String) {
+                _prefs!.setString(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a string');
+              }
+              break;
+            case pinnedFiltersKey:
+            case hiddenFiltersKey:
+            case viewerQuickActionsKey:
+            case videoQuickActionsKey:
+              if (value is List) {
+                _prefs!.setStringList(key, value.cast<String>());
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a list');
+              }
+              break;
+          }
+        }
+      });
+      notifyListeners();
+    }
+  }
 }

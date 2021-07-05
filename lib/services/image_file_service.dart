@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/image_op_events.dart';
+import 'package:aves/services/output_buffer.dart';
 import 'package:aves/services/service_policy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -96,8 +96,8 @@ abstract class ImageFileService {
 
 class PlatformImageFileService implements ImageFileService {
   static const platform = MethodChannel('deckers.thibault/aves/image');
-  static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/imagebytestream');
-  static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/imageopstream');
+  static final StreamsChannel _byteStreamChannel = StreamsChannel('deckers.thibault/aves/image_byte_stream');
+  static final StreamsChannel _opStreamChannel = StreamsChannel('deckers.thibault/aves/image_op_stream');
   static const double thumbnailDefaultSize = 64.0;
 
   static Map<String, dynamic> _toPlatformEntryMap(AvesEntry entry) {
@@ -157,7 +157,7 @@ class PlatformImageFileService implements ImageFileService {
   }) {
     try {
       final completer = Completer<Uint8List>.sync();
-      final sink = _OutputBuffer();
+      final sink = OutputBuffer();
       var bytesReceived = 0;
       _byteStreamChannel.receiveBroadcastStream(<String, dynamic>{
         'uri': uri,
@@ -403,42 +403,5 @@ class PlatformImageFileService implements ImageFileService {
       debugPrint('flip failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
     return {};
-  }
-}
-
-// cf flutter/foundation `consolidateHttpClientResponseBytes`
-typedef BytesReceivedCallback = void Function(int cumulative, int? total);
-
-// cf flutter/foundation `consolidateHttpClientResponseBytes`
-class _OutputBuffer extends ByteConversionSinkBase {
-  List<List<int>>? _chunks = <List<int>>[];
-  int _contentLength = 0;
-  Uint8List? _bytes;
-
-  @override
-  void add(List<int> chunk) {
-    assert(_bytes == null);
-    _chunks!.add(chunk);
-    _contentLength += chunk.length;
-  }
-
-  @override
-  void close() {
-    if (_bytes != null) {
-      // We've already been closed; this is a no-op
-      return;
-    }
-    _bytes = Uint8List(_contentLength);
-    var offset = 0;
-    for (final chunk in _chunks!) {
-      _bytes!.setRange(offset, offset + chunk.length, chunk);
-      offset += chunk.length;
-    }
-    _chunks = null;
-  }
-
-  Uint8List get bytes {
-    assert(_bytes != null);
-    return _bytes!;
   }
 }

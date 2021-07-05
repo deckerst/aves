@@ -538,6 +538,11 @@
   "settingsSystemDefault": "System",
   "@settingsSystemDefault": {},
 
+  "settingsActionExport": "Export",
+  "@settingsActionExport": {},
+  "settingsActionImport": "Import",
+  "@settingsActionImport": {},
+
   "settingsSectionNavigation": "Navigation",
   "@settingsSectionNavigation": {},
   "settingsHome": "Home",
