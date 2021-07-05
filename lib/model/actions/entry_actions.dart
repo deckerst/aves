@@ -113,7 +113,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.delete:
         return AIcons.delete;
       case EntryAction.export:
-        return AIcons.export;
+        return AIcons.saveAs;
       case EntryAction.info:
         return AIcons.info;
       case EntryAction.rename:

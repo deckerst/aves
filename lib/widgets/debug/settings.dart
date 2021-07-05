@@ -22,8 +22,15 @@ class DebugSettingsSection extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: ElevatedButton(
-                onPressed: () => settings.reset(),
-                child: const Text('Reset'),
+                onPressed: () => settings.reset(includeInternalKeys: true),
+                child: const Text('Reset (all store)'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: ElevatedButton(
+                onPressed: () => settings.reset(includeInternalKeys: false),
+                child: const Text('Reset (user preferences)'),
               ),
             ),
             SwitchListTile(

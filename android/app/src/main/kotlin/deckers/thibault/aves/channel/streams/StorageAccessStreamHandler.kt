@@ -1,25 +1,35 @@
 package deckers.thibault.aves.channel.streams
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.PendingResultHandler
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.PermissionManager.requestVolumeAccess
+import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.FileOutputStream
 
 // starting activity to give access with the native dialog
 // breaks the regular `MethodChannel` so we use a stream channel instead
 class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?) : EventChannel.StreamHandler {
     private lateinit var eventSink: EventSink
     private lateinit var handler: Handler
-    private var path: String? = null
+
+    private var op: String? = null
+    private lateinit var args: Map<*, *>
 
     init {
         if (arguments is Map<*, *>) {
-            path = arguments["path"] as String?
+            op = arguments["op"] as String?
+            args = arguments
         }
     }
 
@@ -27,6 +37,16 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         this.eventSink = eventSink
         handler = Handler(Looper.getMainLooper())
 
+        when (op) {
+            "requestVolumeAccess" -> requestVolumeAccess()
+            "createFile" -> GlobalScope.launch(Dispatchers.IO) { createFile() }
+            "openFile" -> GlobalScope.launch(Dispatchers.IO) { openFile() }
+            else -> endOfStream()
+        }
+    }
+
+    private fun requestVolumeAccess() {
+        val path = args["path"] as String?
         if (path == null) {
             error("requestVolumeAccess-args", "failed because of missing arguments", null)
             return
@@ -37,12 +57,80 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             return
         }
 
-        requestVolumeAccess(activity, path!!, { success(true) }, { success(false) })
+        PermissionManager.requestVolumeAccess(activity, path, {
+            success(true)
+            endOfStream()
+        }, {
+            success(false)
+            endOfStream()
+        })
+    }
+
+    private fun createFile() {
+        val name = args["name"] as String?
+        val mimeType = args["mimeType"] as String?
+        val bytes = args["bytes"] as ByteArray?
+        if (name == null || mimeType == null || bytes == null) {
+            error("createFile-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = mimeType
+            putExtra(Intent.EXTRA_TITLE, name)
+        }
+        MainActivity.pendingResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingResultHandler(null, { uri ->
+            try {
+                activity.contentResolver.openOutputStream(uri)?.use { output ->
+                    output as FileOutputStream
+                    // truncate is necessary when overwriting a longer file
+                    output.channel.truncate(0)
+                    output.write(bytes)
+                }
+                success(true)
+            } catch (e: Exception) {
+                error("createFile-write", "failed to write file at uri=$uri", e.message)
+            }
+            endOfStream()
+        }, {
+            success(null)
+            endOfStream()
+        })
+        activity.startActivityForResult(intent, MainActivity.CREATE_FILE_REQUEST)
+    }
+
+
+    private fun openFile() {
+        val mimeType = args["mimeType"] as String?
+        if (mimeType == null) {
+            error("openFile-args", "failed because of missing arguments", null)
+            return
+        }
+
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = mimeType
+        }
+        MainActivity.pendingResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingResultHandler(null, { uri ->
+            activity.contentResolver.openInputStream(uri)?.use { input ->
+                val buffer = ByteArray(BUFFER_SIZE)
+                var len: Int
+                while (input.read(buffer).also { len = it } != -1) {
+                    success(buffer.copyOf(len))
+                }
+                endOfStream()
+            }
+        }, {
+            success(ByteArray(0))
+            endOfStream()
+        })
+        activity.startActivityForResult(intent, MainActivity.OPEN_FILE_REQUEST)
     }
 
     override fun onCancel(arguments: Any?) {}
 
-    private fun success(result: Boolean) {
+    private fun success(result: Any?) {
         handler.post {
             try {
                 eventSink.success(result)
@@ -50,7 +138,6 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
                 Log.w(LOG_TAG, "failed to use event sink", e)
             }
         }
-        endOfStream()
     }
 
     @Suppress("SameParameterValue")
@@ -62,6 +149,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
                 Log.w(LOG_TAG, "failed to use event sink", e)
             }
         }
+        endOfStream()
     }
 
     private fun endOfStream() {
@@ -76,6 +164,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<StorageAccessStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/storageaccessstream"
+        const val CHANNEL = "deckers.thibault/aves/storage_access_stream"
+        private const val BUFFER_SIZE = 2 shl 17 // 256kB
     }
 }

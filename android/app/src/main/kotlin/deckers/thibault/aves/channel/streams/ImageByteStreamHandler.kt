@@ -187,12 +187,12 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageByteStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/imagebytestream"
+        const val CHANNEL = "deckers.thibault/aves/image_byte_stream"
 
-        const val BUFFER_SIZE = 2 shl 17 // 256kB
+        private const val BUFFER_SIZE = 2 shl 17 // 256kB
 
         // request a fresh image with the highest quality format
-        val glideOptions = RequestOptions()
+        private val glideOptions = RequestOptions()
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.NONE)
             .skipMemoryCache(true)

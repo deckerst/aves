@@ -177,6 +177,6 @@ class ImageOpStreamHandler(private val activity: Activity, private val arguments
 
     companion object {
         private val LOG_TAG = LogUtils.createTag<ImageOpStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/imageopstream"
+        const val CHANNEL = "deckers.thibault/aves/image_op_stream"
     }
 }

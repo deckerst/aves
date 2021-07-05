@@ -250,6 +250,9 @@
   "settingsPageTitle": "설정",
   "settingsSystemDefault": "시스템",
 
+  "settingsActionExport": "내보내기",
+  "settingsActionImport": "가져오기",
+
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",

@@ -44,6 +44,8 @@ class MimeTypes {
   static const mp2t = 'video/mp2t'; // .m2ts
   static const mp4 = 'video/mp4';
 
+  static const json = 'application/json';
+
   // groups
 
   // formats that support transparency

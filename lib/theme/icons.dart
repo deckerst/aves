@@ -39,13 +39,14 @@ class AIcons {
   static const IconData createAlbum = Icons.add_circle_outline;
   static const IconData debug = Icons.whatshot_outlined;
   static const IconData delete = Icons.delete_outlined;
-  static const IconData export = Icons.save_alt_outlined;
+  static const IconData export = MdiIcons.fileExportOutline;
   static const IconData flip = Icons.flip_outlined;
   static const IconData favourite = Icons.favorite_border;
   static const IconData favouriteActive = Icons.favorite;
   static const IconData goUp = Icons.arrow_upward_outlined;
   static const IconData group = Icons.group_work_outlined;
   static const IconData hide = Icons.visibility_off_outlined;
+  static const IconData import = MdiIcons.fileImportOutline;
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
@@ -57,6 +58,7 @@ class AIcons {
   static const IconData rotateLeft = Icons.rotate_left_outlined;
   static const IconData rotateRight = Icons.rotate_right_outlined;
   static const IconData rotateScreen = Icons.screen_rotation_outlined;
+  static const IconData saveAs = Icons.save_alt_outlined;
   static const IconData search = Icons.search_outlined;
   static const IconData select = Icons.select_all_outlined;
   static const IconData setCover = MdiIcons.imageEditOutline;
