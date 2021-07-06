@@ -46,14 +46,6 @@ class AvesLogoPainter extends CustomPainter {
     path0.relativeArcToPoint(Offset(dim * -2.697, dim * 6.512), radius: Radius.circular(dim * 3.815), rotation: 112.5, clockwise: false);
     path0.close();
 
-    canvas.drawPath(path0, strokePaint);
-    canvas.drawPath(
-      path0,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = const Color(0xff3f51b5),
-    );
-
     Path path1 = Path();
     path1.moveTo(dim * 36.36, dim * 65.907);
     path1.lineTo(dim * 36.36, dim * 94.65);
@@ -63,14 +55,6 @@ class AvesLogoPainter extends CustomPainter {
     path1.lineTo(dim * 42.532, dim * 63.35);
     path1.relativeArcToPoint(Offset(dim * -6.172, dim * 2.557), radius: Radius.circular(dim * 3.616), rotation: 157.5, clockwise: false);
     path1.close();
-
-    canvas.drawPath(path1, strokePaint);
-    canvas.drawPath(
-      path1,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = const Color(0xff4caf50),
-    );
 
     Path path2 = Path();
     path2.moveTo(dim * 79.653, dim * 40.078);
@@ -82,14 +66,6 @@ class AvesLogoPainter extends CustomPainter {
     path2.relativeArcToPoint(Offset(dim * 6.172, dim * -2.556), radius: Radius.circular(dim * 3.616), rotation: 157.5, clockwise: false);
     path2.close();
 
-    canvas.drawPath(path2, strokePaint);
-    canvas.drawPath(
-      path2,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = const Color(0xffffc107),
-    );
-
     Path path3 = Path();
     path3.moveTo(dim * 96.613, dim * 16.867);
     path3.relativeLineTo(dim * -7.528, dim * -7.528);
@@ -100,12 +76,37 @@ class AvesLogoPainter extends CustomPainter {
     path3.relativeArcToPoint(Offset(dim * 1.917, dim * -4.63), radius: Radius.circular(dim * 2.712), rotation: 112.5, clockwise: false);
     path3.close();
 
-    canvas.drawPath(path3, strokePaint);
+
+
+    canvas.drawPath(
+      path0,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xff3f51b5),
+    );
+    canvas.drawPath(
+      path1,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xff4caf50),
+    );
+    canvas.drawPath(
+      path2,
+      Paint()
+        ..style = PaintingStyle.fill
+        ..color = const Color(0xffffc107),
+    );
     canvas.drawPath(
         path3,
         Paint()
           ..style = PaintingStyle.fill
           ..color = const Color(0xffff5722));
+
+    // stroke should be painted over fill
+    canvas.drawPath(path0, strokePaint);
+    canvas.drawPath(path1, strokePaint);
+    canvas.drawPath(path2, strokePaint);
+    canvas.drawPath(path3, strokePaint);
   }
 
   @override
