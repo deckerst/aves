@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/video/channel_layouts.dart';
-import 'package:aves/model/video/h264.dart';
+import 'package:aves/model/video/codecs.dart';
 import 'package:aves/model/video/keys.dart';
+import 'package:aves/model/video/profiles/aac.dart';
+import 'package:aves/model/video/profiles/h264.dart';
+import 'package:aves/model/video/profiles/hevc.dart';
 import 'package:aves/ref/languages.dart';
 import 'package:aves/ref/mp4.dart';
 import 'package:aves/utils/file_utils.dart';
@@ -20,16 +23,19 @@ class VideoMetadataFormatter {
   static final _durationPattern = RegExp(r'(\d+):(\d+):(\d+)(.\d+)');
   static final _locationPattern = RegExp(r'([+-][.0-9]+)');
   static final Map<String, String> _codecNames = {
-    'ac3': 'AC-3',
-    'eac3': 'E-AC-3',
-    'h264': 'AVC (H.264)',
-    'hdmv_pgs_subtitle': 'PGS',
-    'hevc': 'HEVC (H.265)',
-    'matroska': 'Matroska',
-    'mpeg4': 'MPEG-4 Visual',
-    'mpegts': 'MPEG-TS',
-    'subrip': 'SubRip',
-    'webm': 'WebM',
+    Codecs.ac3: 'AC-3',
+    Codecs.eac3: 'E-AC-3',
+    Codecs.h264: 'AVC (H.264)',
+    Codecs.hevc: 'HEVC (H.265)',
+    Codecs.matroska: 'Matroska',
+    Codecs.mpeg4: 'MPEG-4 Visual',
+    Codecs.mpts: 'MPEG-TS',
+    Codecs.opus: 'Opus',
+    Codecs.pgs: 'PGS',
+    Codecs.subrip: 'SubRip',
+    Codecs.theora: 'Theora',
+    Codecs.vorbis: 'Vorbis',
+    Codecs.webm: 'WebM',
   };
 
   static Future<Map> getVideoMetadata(AvesEntry entry) async {
@@ -153,15 +159,36 @@ class VideoMetadataFormatter {
               }
               break;
             case Keys.codecProfileId:
-              if (codec == 'h264') {
+              {
                 final profile = int.tryParse(value);
-                final levelString = info[Keys.codecLevel];
-                if (profile != null && profile != 0 && levelString != null) {
-                  final level = int.tryParse(levelString) ?? 0;
-                  save('Codec Profile', H264.formatProfile(profile, level));
+                if (profile != null) {
+                  String? profileString;
+                  switch (codec) {
+                    case Codecs.h264:
+                    case Codecs.hevc:
+                      {
+                        final levelString = info[Keys.codecLevel];
+                        if (levelString != null) {
+                          final level = int.tryParse(levelString) ?? 0;
+                          if (codec == Codecs.h264) {
+                            profileString = H264.formatProfile(profile, level);
+                          } else {
+                            profileString = Hevc.formatProfile(profile, level);
+                          }
+                        }
+                        break;
+                      }
+                    case Codecs.aac:
+                      profileString = AAC.formatProfile(profile);
+                      break;
+                    default:
+                      profileString = profile.toString();
+                      break;
+                  }
+                  save('Codec Profile', profileString);
                 }
+                break;
               }
-              break;
             case Keys.compatibleBrands:
               final formattedBrands = RegExp(r'.{4}').allMatches(value).map((m) {
                 final brand = m.group(0)!;

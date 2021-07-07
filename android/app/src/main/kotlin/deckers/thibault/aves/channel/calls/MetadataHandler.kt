@@ -102,7 +102,7 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     val metadata = ImageMetadataReader.readMetadata(input)
                     foundExif = metadata.containsDirectoryOfType(ExifDirectoryBase::class.java)
                     foundXmp = metadata.containsDirectoryOfType(XmpDirectory::class.java)
-
+                    val uuidDirCount = HashMap<String, Int>()
                     for (dir in metadata.directories.filter {
                         it.tagCount > 0
                                 && it !is FileTypeDirectory
@@ -110,6 +110,16 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                     }) {
                         // directory name
                         var dirName = dir.name
+                        if (dir is Mp4UuidBoxDirectory) {
+                            val uuid = dir.getString(Mp4UuidBoxDirectory.TAG_UUID).substringBefore('-')
+                            dirName += " $uuid"
+
+                            val count = uuidDirCount[uuid] ?: 0
+                            uuidDirCount[uuid] = count + 1
+                            if (count > 0) {
+                                dirName += " ($count)"
+                            }
+                        }
 
                         // exclude directories known to be redundant with info derived on the Dart side
                         // they are excluded by name instead of runtime type because excluding `Mp4Directory`
@@ -168,10 +178,20 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                         }
 
                         if (dir is Mp4UuidBoxDirectory) {
-                            if (dir.getString(Mp4UuidBoxDirectory.TAG_UUID) == GSpherical.SPHERICAL_VIDEO_V1_UUID) {
-                                val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
-                                metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
-                                metadataMap.remove(dirName)
+                            when (dir.getString(Mp4UuidBoxDirectory.TAG_UUID)) {
+                                GSpherical.SPHERICAL_VIDEO_V1_UUID -> {
+                                    val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
+                                    metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
+                                    metadataMap.remove(dirName)
+                                }
+                                SonyVideoMetadata.USMT_UUID -> {
+                                    val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
+                                    val fields = SonyVideoMetadata.parseUsmt(bytes)
+                                    if (fields.isNotEmpty()) {
+                                        dirMap.remove("Data")
+                                        dirMap.putAll(fields)
+                                    }
+                                }
                             }
                         }
                     }

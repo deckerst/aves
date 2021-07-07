@@ -41,6 +41,7 @@ class MimeTypes {
   static const anyVideo = 'video/*';
 
   static const avi = 'video/avi';
+  static const mov = 'video/quicktime';
   static const mp2t = 'video/mp2t'; // .m2ts
   static const mp4 = 'video/mp4';
 
