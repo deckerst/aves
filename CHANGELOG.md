@@ -2,13 +2,19 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [v1.4.5] - 2021-07-08
 ### Added
-- Video: added OGV support
+- Video: added OGV/Theora/Vorbis support
+- Viewer: action to rotate screen when device has locked rotation
+- Settings: import/export
 
 ### Changed
 - improved SVG support with a different rendering engine
 - changed logo
 - upgraded flutter to stable v2.2.3
+- migrated to sound null safety
+- viewer: parallax effect when scrolling
 
 ### Removed
 - Analytics: removed Firebase Analytics (kept Firebase Crashlytics)
