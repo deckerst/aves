@@ -265,8 +265,7 @@
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
   "settingsSectionViewer": "뷰어",
-  "settingsRasterImageBackground": "래스터 그래픽스 배경",
-  "settingsVectorImageBackground": "벡터 그래픽스 배경",
+  "settingsImageBackground": "사진 배경",
   "settingsViewerShowMinimap": "미니맵 표시",
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",

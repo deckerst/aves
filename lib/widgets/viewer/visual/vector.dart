@@ -159,7 +159,7 @@ class _VectorImageViewState extends State<VectorImageView> {
     final displayHeight = _displaySize.height;
     final viewRect = _getViewRect(displayWidth, displayHeight);
     final viewScale = viewState.scale!;
-    final background = settings.vectorBackground;
+    final background = settings.imageBackground;
 
     Color? backgroundColor;
     _BackgroundFrameBuilder? backgroundFrameBuilder;

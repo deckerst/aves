@@ -189,7 +189,7 @@ class _ThumbnailImageState extends State<ThumbnailImage> {
             height: extent,
           )
         : Selector<Settings, EntryBackground>(
-            selector: (context, s) => entry.isSvg ? s.vectorBackground : s.rasterBackground,
+            selector: (context, s) => s.imageBackground,
             builder: (context, background, child) {
               final backgroundColor = background.isColor ? background.color : null;
 
