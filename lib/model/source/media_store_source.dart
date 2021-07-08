@@ -121,22 +121,19 @@ class MediaStoreSource extends CollectionSource {
   Future<Set<String>> refreshUris(Set<String> changedUris) async {
     if (!_initialized || !isMonitoring) return changedUris;
 
-    final uriByContentId = Map.fromEntries(changedUris
-        .map((uri) {
-          final pathSegments = Uri.parse(uri).pathSegments;
-          // e.g. URI `content://media/` has no path segment
-          if (pathSegments.isEmpty) return null;
-          final idString = pathSegments.last;
-          final contentId = int.tryParse(idString);
-          if (contentId == null) return null;
-          return MapEntry(contentId, uri);
-        })
-        .where((kv) => kv != null)
-        .cast<MapEntry<int, String>>());
+    final uriByContentId = Map.fromEntries(changedUris.map((uri) {
+      final pathSegments = Uri.parse(uri).pathSegments;
+      // e.g. URI `content://media/` has no path segment
+      if (pathSegments.isEmpty) return null;
+      final idString = pathSegments.last;
+      final contentId = int.tryParse(idString);
+      if (contentId == null) return null;
+      return MapEntry(contentId, uri);
+    }).whereNotNull());
 
     // clean up obsolete entries
     final obsoleteContentIds = (await mediaStoreService.checkObsoleteContentIds(uriByContentId.keys.toList())).toSet();
-    final obsoleteUris = obsoleteContentIds.map((contentId) => uriByContentId[contentId]).where((v) => v != null).cast<String>().toSet();
+    final obsoleteUris = obsoleteContentIds.map((contentId) => uriByContentId[contentId]).whereNotNull().toSet();
     await removeEntries(obsoleteUris);
     obsoleteContentIds.forEach(uriByContentId.remove);
 
@@ -183,8 +180,8 @@ class MediaStoreSource extends CollectionSource {
 
   @override
   Future<void> refreshMetadata(Set<AvesEntry> entries) {
-    final contentIds = entries.map((entry) => entry.contentId).toSet();
-    metadataDb.removeIds(contentIds as Set<int>, metadataOnly: true);
+    final contentIds = entries.map((entry) => entry.contentId).whereNotNull().toSet();
+    metadataDb.removeIds(contentIds, metadataOnly: true);
     return refresh();
   }
 }

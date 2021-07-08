@@ -68,7 +68,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final source = collection.source;
     final selection = collection.selection;
 
-    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet();
+    final selectionDirs = selection.map((e) => e.directory).whereNotNull().toSet();
     if (moveType == MoveType.move) {
       // check whether moving is possible given OS restrictions,
       // before asking to pick a destination album
@@ -178,7 +178,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     final source = collection.source;
     final selection = collection.selection;
-    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet();
+    final selectionDirs = selection.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = selection.length;
 
     final confirmed = await showDialog<bool>(

@@ -1,6 +1,7 @@
 import 'package:aves/widgets/viewer/visual/subtitle/line.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/span.dart';
 import 'package:aves/widgets/viewer/visual/subtitle/style.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class AssParser {
@@ -501,7 +502,7 @@ class AssParser {
     pathPattern.allMatches(commands).forEach((match) {
       if (match.groupCount == 2) {
         final command = match.group(1)!;
-        final params = match.group(2)!.trim().split(' ').map(double.tryParse).where((v) => v != null).cast<double>().map((v) => v / scale).toList();
+        final params = match.group(2)!.trim().split(' ').map(double.tryParse).whereNotNull().map((v) => v / scale).toList();
         switch (command) {
           case 'b':
             if (path != null) {
@@ -565,7 +566,7 @@ class AssParser {
       if (g != null) {
         final params = g.split(',');
         if (params.length == 4) {
-          final points = params.map(double.tryParse).where((v) => v != null).cast<double>().toList();
+          final points = params.map(double.tryParse).whereNotNull().toList();
           if (points.length == 4) {
             paths = [
               Path()

@@ -59,12 +59,12 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       _staticInitialized = true;
     }
     _instance = FijkPlayer();
-    _valueStream.firstWhere((value) => value.videoRenderStart).then(
-          (value) => canCaptureFrameNotifier.value = true,
+    _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
+          (started) => canCaptureFrameNotifier.value = started,
           onError: (error) {},
         );
-    _valueStream.firstWhere((value) => value.audioRenderStart).then(
-          (value) => canSetSpeedNotifier.value = true,
+    _valueStream.map((value) => value.audioRenderStart).firstWhere((v) => v, orElse: () => false).then(
+          (started) => canSetSpeedNotifier.value = started,
           onError: (error) {},
         );
     _startListening();

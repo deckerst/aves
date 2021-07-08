@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:async';
 
 import 'package:aves/model/availability.dart';
@@ -137,7 +136,7 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    final albumFilter = AlbumFilter(image1.directory, 'whatever');
+    final albumFilter = AlbumFilter(image1.directory!, 'whatever');
     await covers.set(albumFilter, image1.contentId);
     await source.removeEntries({image1.uri});
 

@@ -16,7 +16,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -166,7 +165,7 @@ class StatsPage extends StatelessWidget {
           children: [
             charts.PieChart(
               series,
-              defaultRenderer: charts.ArcRendererConfig(
+              defaultRenderer: charts.ArcRendererConfig<String>(
                 arcWidth: 16,
               ),
             ),

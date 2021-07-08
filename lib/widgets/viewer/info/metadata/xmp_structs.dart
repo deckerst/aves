@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 
 class XmpStructArrayCard extends StatefulWidget {
   final String title;
-  final List<Map<String, String>> structs = [];
+  late final List<Map<String, String>> structs;
   final Map<String, InfoLinkHandler> Function(int index)? linkifier;
 
   XmpStructArrayCard({
@@ -21,10 +21,7 @@ class XmpStructArrayCard extends StatefulWidget {
     this.linkifier,
   }) : super(key: key) {
     final length = structByIndex.keys.fold(0, max);
-    structs.length = length;
-    for (var i = 0; i < length; i++) {
-      structs[i] = structByIndex[i + 1] ?? {};
-    }
+    structs = [for (var i = 0; i < length; i++) structByIndex[i + 1] ?? {}];
   }
 
   @override

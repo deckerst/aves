@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:isolate';
 
 import 'package:aves/widgets/aves_app.dart';

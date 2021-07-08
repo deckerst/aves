@@ -230,11 +230,11 @@ class Settings extends ChangeNotifier {
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
-  Set<CollectionFilter> get pinnedFilters => (_prefs!.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toSet();
+  Set<CollectionFilter> get pinnedFilters => (_prefs!.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
-  Set<CollectionFilter> get hiddenFilters => (_prefs!.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toSet();
+  Set<CollectionFilter> get hiddenFilters => (_prefs!.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -326,7 +326,7 @@ class Settings extends ChangeNotifier {
 
   set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
 
-  List<CollectionFilter> get searchHistory => (_prefs!.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toList();
+  List<CollectionFilter> get searchHistory => (_prefs!.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -351,8 +351,8 @@ class Settings extends ChangeNotifier {
     return defaultValue;
   }
 
-  List<T> getEnumListOrDefault<T>(String key, List<T> defaultValue, Iterable<T> values) {
-    return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).where((v) => v != null).cast<T>().toList() ?? defaultValue;
+  List<T> getEnumListOrDefault<T extends Object>(String key, List<T> defaultValue, Iterable<T> values) {
+    return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).whereNotNull().toList() ?? defaultValue;
   }
 
   void setAndNotify(String key, dynamic newValue) {

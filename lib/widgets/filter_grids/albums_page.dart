@@ -101,12 +101,13 @@ class AlbumListPage extends StatelessWidget {
               return specialKey;
           }
         });
-        sections = Map.fromEntries({
+
+        sections = {
           // group ordering
-          specialKey: sections[specialKey],
-          appsKey: sections[appsKey],
-          regularKey: sections[regularKey],
-        }.entries.where((kv) => kv.value != null).cast<MapEntry<ChipSectionKey, List<FilterGridItem<AlbumFilter>>>>());
+          if (sections.containsKey(specialKey)) specialKey: sections[specialKey]!,
+          if (sections.containsKey(appsKey)) appsKey: sections[appsKey]!,
+          if (sections.containsKey(regularKey)) regularKey: sections[regularKey]!,
+        };
         break;
       case AlbumChipGroupFactor.volume:
         sections = groupBy<FilterGridItem<AlbumFilter>, ChipSectionKey>(unpinnedMapEntries, (kv) {
