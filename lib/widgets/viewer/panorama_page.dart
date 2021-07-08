@@ -20,9 +20,10 @@ class PanoramaPage extends StatefulWidget {
   final PanoramaInfo info;
 
   const PanoramaPage({
+    Key? key,
     required this.entry,
     required this.info,
-  });
+  }) : super(key: key);
 
   @override
   _PanoramaPageState createState() => _PanoramaPageState();
@@ -112,7 +113,7 @@ class _PanoramaPageState extends State<PanoramaPage> {
                   ),
                 ),
               ),
-              BottomGestureAreaProtector(),
+              const BottomGestureAreaProtector(),
             ],
           ),
           resizeToAvoidBottomInset: false,

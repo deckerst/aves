@@ -42,6 +42,12 @@ class Constants {
       sourceUrl: 'https://android.googlesource.com/platform/frameworks/support/+/androidx-main/exifinterface/exifinterface',
     ),
     Dependency(
+      name: 'AndroidSVG',
+      license: 'Apache 2.0',
+      licenseUrl: 'https://github.com/BigBadaboom/androidsvg/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/BigBadaboom/androidsvg',
+    ),
+    Dependency(
       name: 'Android-TiffBitmapFactory (Aves fork)',
       license: 'MIT',
       licenseUrl: 'https://github.com/deckerst/Android-TiffBitmapFactory/blob/master/license.txt',
@@ -75,7 +81,7 @@ class Constants {
       sourceUrl: 'https://github.com/fluttercommunity/plus_plugins/tree/main/packages/connectivity_plus',
     ),
     Dependency(
-      name: 'FlutterFire (Core, Analytics, Crashlytics)',
+      name: 'FlutterFire (Core, Crashlytics)',
       license: 'BSD 3-Clause',
       licenseUrl: 'https://github.com/FirebaseExtended/flutterfire/blob/master/LICENSE',
       sourceUrl: 'https://github.com/FirebaseExtended/flutterfire',
@@ -192,12 +198,6 @@ class Constants {
       sourceUrl: 'https://github.com/mobiten/flutter_staggered_animations',
     ),
     Dependency(
-      name: 'Flutter SVG',
-      license: 'MIT',
-      licenseUrl: 'https://github.com/dnfield/flutter_svg/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/dnfield/flutter_svg',
-    ),
-    Dependency(
       name: 'Material Design Icons Flutter',
       license: 'MIT',
       licenseUrl: 'https://github.com/ziofat/material_design_icons_flutter/blob/master/LICENSE',
@@ -255,6 +255,12 @@ class Constants {
       sourceUrl: 'https://github.com/marcojakob/dart-event-bus',
     ),
     Dependency(
+      name: 'Flutter Lints',
+      license: 'BSD 3-Clause',
+      licenseUrl: 'https://github.com/flutter/packages/blob/master/packages/flutter_lints/LICENSE',
+      sourceUrl: 'https://github.com/flutter/packages/tree/master/packages/flutter_lints',
+    ),
+    Dependency(
       name: 'Get It',
       license: 'MIT',
       licenseUrl: 'https://github.com/fluttercommunity/get_it/blob/master/LICENSE',
@@ -283,12 +289,6 @@ class Constants {
       license: 'Apache 2.0',
       licenseUrl: 'https://github.com/DavBfr/dart_pdf/blob/master/LICENSE',
       sourceUrl: 'https://github.com/DavBfr/dart_pdf',
-    ),
-    Dependency(
-      name: 'Pedantic',
-      license: 'BSD 3-Clause',
-      licenseUrl: 'https://github.com/dart-lang/pedantic/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/dart-lang/pedantic',
     ),
     Dependency(
       name: 'Tuple',

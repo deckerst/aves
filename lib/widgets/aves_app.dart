@@ -15,8 +15,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/highlight_info_provider.dart';
 import 'package:aves/widgets/home_page.dart';
 import 'package:aves/widgets/welcome_page.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -27,6 +25,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 
 class AvesApp extends StatefulWidget {
+  const AvesApp({Key? key}) : super(key: key);
+
   @override
   _AvesAppState createState() => _AvesAppState();
 }
@@ -35,13 +35,13 @@ class _AvesAppState extends State<AvesApp> {
   final ValueNotifier<AppMode> appModeNotifier = ValueNotifier(AppMode.main);
   late Future<void> _appSetup;
   final _mediaStoreSource = MediaStoreSource();
-  final Debouncer _contentChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
+  final Debouncer _mediaStoreChangeDebouncer = Debouncer(delay: Durations.contentChangeDebounceDelay);
   final Set<String> changedUris = {};
 
   // observers are not registered when using the same list object with different items
   // the list itself needs to be reassigned
   List<NavigatorObserver> _navigatorObservers = [];
-  final EventChannel _contentChangeChannel = const EventChannel('deckers.thibault/aves/contentchange');
+  final EventChannel _mediaStoreChangeChannel = const EventChannel('deckers.thibault/aves/mediastorechange');
   final EventChannel _newIntentChannel = const EventChannel('deckers.thibault/aves/intent');
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey(debugLabel: 'app-navigator');
 
@@ -52,7 +52,7 @@ class _AvesAppState extends State<AvesApp> {
     super.initState();
     initPlatformServices();
     _appSetup = _setup();
-    _contentChangeChannel.receiveBroadcastStream().listen((event) => _onContentChange(event as String?));
+    _mediaStoreChangeChannel.receiveBroadcastStream().listen((event) => _onMediaStoreChange(event as String?));
     _newIntentChannel.receiveBroadcastStream().listen((event) => _onNewIntent(event as Map?));
   }
 
@@ -88,7 +88,7 @@ class _AvesAppState extends State<AvesApp> {
                           darkTheme: Themes.darkTheme,
                           themeMode: ThemeMode.dark,
                           locale: settingsLocale,
-                          localizationsDelegates: [
+                          localizationsDelegates: const [
                             ...AppLocalizations.localizationsDelegates,
                           ],
                           supportedLocales: AppLocalizations.supportedLocales,
@@ -138,7 +138,6 @@ class _AvesAppState extends State<AvesApp> {
     await settings.init();
     await settings.initFirebase();
     _navigatorObservers = [
-      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics()),
       CrashlyticsRouteTracker(),
     ];
   }
@@ -156,16 +155,16 @@ class _AvesAppState extends State<AvesApp> {
     ));
   }
 
-  void _onContentChange(String? uri) {
+  void _onMediaStoreChange(String? uri) {
     if (uri != null) changedUris.add(uri);
     if (changedUris.isNotEmpty) {
-      _contentChangeDebouncer(() async {
+      _mediaStoreChangeDebouncer(() async {
         final todo = changedUris.toSet();
         changedUris.clear();
         final tempUris = await _mediaStoreSource.refreshUris(todo);
         if (tempUris.isNotEmpty) {
           changedUris.addAll(tempUris);
-          _onContentChange(null);
+          _onMediaStoreChange(null);
         }
       });
     }

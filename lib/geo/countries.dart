@@ -37,15 +37,10 @@ class CountryTopology {
     final numericMap = await numericCodeMap(positions);
     if (numericMap == null) return {};
 
-    final codeMapEntries = numericMap.entries
-        .map((kv) {
-          final code = _countryOfNumeric(kv.key);
-          return MapEntry(code, kv.value);
-        })
-        .where((kv) => kv.key != null)
-        .cast<MapEntry<CountryCode, Set<LatLng>>>();
-
-    return Map.fromEntries(codeMapEntries);
+    return Map.fromEntries(numericMap.entries.map((kv) {
+      final code = _countryOfNumeric(kv.key);
+      return code != null ? MapEntry(code, kv.value) : null;
+    }).whereNotNull());
   }
 
   // returns a map of the given positions by the ISO 3166-1 numeric code of the country containing them

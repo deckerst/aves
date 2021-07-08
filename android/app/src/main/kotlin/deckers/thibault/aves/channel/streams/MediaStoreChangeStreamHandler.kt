@@ -11,7 +11,7 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 
-class ContentChangeStreamHandler(private val context: Context) : EventChannel.StreamHandler {
+class MediaStoreChangeStreamHandler(private val context: Context) : EventChannel.StreamHandler {
     // cannot use `lateinit` because we cannot guarantee
     // its initialization in `onListen` at the right time
     private var eventSink: EventSink? = null
@@ -58,7 +58,7 @@ class ContentChangeStreamHandler(private val context: Context) : EventChannel.St
     }
 
     companion object {
-        private val LOG_TAG = LogUtils.createTag<ContentChangeStreamHandler>()
-        const val CHANNEL = "deckers.thibault/aves/contentchange"
+        private val LOG_TAG = LogUtils.createTag<MediaStoreChangeStreamHandler>()
+        const val CHANNEL = "deckers.thibault/aves/mediastorechange"
     }
 }

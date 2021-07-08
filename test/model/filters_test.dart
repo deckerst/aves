@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/filters.dart';
@@ -11,7 +10,7 @@ import 'package:test/test.dart';
 
 void main() {
   test('Filter serialization', () {
-    CollectionFilter jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
+    CollectionFilter? jsonRoundTrip(filter) => CollectionFilter.fromJson(filter.toJson());
 
     const album = AlbumFilter('path/to/album', 'album');
     expect(album, jsonRoundTrip(album));

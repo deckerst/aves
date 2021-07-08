@@ -7,6 +7,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 class Licenses extends StatefulWidget {
+  const Licenses({Key? key}) : super(key: key);
+
   @override
   _LicensesState createState() => _LicensesState();
 }
@@ -46,25 +48,25 @@ class _LicensesState extends State<Licenses> {
               title: context.l10n.aboutLicensesAndroidLibraries,
               color: BrandColors.android,
               expandedNotifier: _expandedNotifier,
-              children: _platform.map((package) => LicenseRow(package)).toList(),
+              children: _platform.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPlugins,
               color: BrandColors.flutter,
               expandedNotifier: _expandedNotifier,
-              children: _flutterPlugins.map((package) => LicenseRow(package)).toList(),
+              children: _flutterPlugins.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesFlutterPackages,
               color: BrandColors.flutter,
               expandedNotifier: _expandedNotifier,
-              children: _flutterPackages.map((package) => LicenseRow(package)).toList(),
+              children: _flutterPackages.map((package) => LicenseRow(package: package)).toList(),
             ),
             AvesExpansionTile(
               title: context.l10n.aboutLicensesDartPackages,
               color: BrandColors.flutter,
               expandedNotifier: _expandedNotifier,
-              children: _dartPackages.map((package) => LicenseRow(package)).toList(),
+              children: _dartPackages.map((package) => LicenseRow(package: package)).toList(),
             ),
             Center(
               child: TextButton(
@@ -113,7 +115,10 @@ class _LicensesState extends State<Licenses> {
 class LicenseRow extends StatelessWidget {
   final Dependency package;
 
-  const LicenseRow(this.package);
+  const LicenseRow({
+    Key? key,
+    required this.package,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

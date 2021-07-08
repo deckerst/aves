@@ -9,6 +9,7 @@ import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/filter_grids/albums_page.dart';
@@ -18,7 +19,6 @@ import 'package:aves/widgets/viewer/entry_viewer_page.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +28,10 @@ class HomePage extends StatefulWidget {
   // untyped map as it is coming from the platform
   final Map? intentData;
 
-  const HomePage({this.intentData});
+  const HomePage({
+    Key? key,
+    this.intentData,
+  }) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -147,7 +150,7 @@ class _HomePageState extends State<HomePage> {
       case AlbumListPage.routeName:
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: AlbumListPage.routeName),
-          builder: (_) => AlbumListPage(),
+          builder: (_) => const AlbumListPage(),
         );
       case SearchPage.routeName:
         return SearchPageRoute(
@@ -158,7 +161,7 @@ class _HomePageState extends State<HomePage> {
         return DirectMaterialPageRoute(
           settings: const RouteSettings(name: CollectionPage.routeName),
           builder: (_) => CollectionPage(
-            CollectionLens(
+            collection: CollectionLens(
               source: source,
               filters: filters,
             ),

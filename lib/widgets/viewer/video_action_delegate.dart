@@ -7,6 +7,7 @@ import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -18,7 +19,6 @@ import 'package:aves/widgets/settings/video/video.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
@@ -96,18 +96,14 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                 final targetCollection = CollectionLens(
                   source: source,
                   filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                  groupFactor: _collection.groupFactor,
-                  sortFactor: _collection.sortFactor,
                 );
                 unawaited(Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     settings: const RouteSettings(name: CollectionPage.routeName),
-                    builder: (context) {
-                      return CollectionPage(
-                        targetCollection,
-                      );
-                    },
+                    builder: (context) => CollectionPage(
+                      collection: targetCollection,
+                    ),
                   ),
                   (route) => false,
                 ));
@@ -129,9 +125,9 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _showStreamSelectionDialog(BuildContext context, AvesVideoController controller) async {
     final streams = controller.streams;
     final currentSelectedStreams = await Future.wait(StreamType.values.map(controller.getSelectedStream));
-    final currentSelectedIndices = currentSelectedStreams.where((v) => v != null).cast<StreamSummary>().map((v) => v.index).toSet();
+    final currentSelectedIndices = currentSelectedStreams.whereNotNull().map((v) => v.index).toSet();
 
-    final userSelectedStreams = await showDialog<Map<StreamType, StreamSummary>>(
+    final userSelectedStreams = await showDialog<Map<StreamType, StreamSummary?>>(
       context: context,
       builder: (context) => VideoStreamSelectionDialog(
         streams: Map.fromEntries(streams.map((stream) => MapEntry(stream, currentSelectedIndices.contains(stream.index)))),
@@ -139,7 +135,7 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     );
     if (userSelectedStreams == null || userSelectedStreams.isEmpty) return;
 
-    await Future.forEach<MapEntry<StreamType, StreamSummary>>(
+    await Future.forEach<MapEntry<StreamType, StreamSummary?>>(
       userSelectedStreams.entries,
       (kv) => controller.selectStream(kv.key, kv.value),
     );

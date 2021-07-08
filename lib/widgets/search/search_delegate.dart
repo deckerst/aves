@@ -19,6 +19,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/search/expandable_filter_row.dart';
 import 'package:aves/widgets/search/search_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -100,7 +101,7 @@ class CollectionSearchDelegate {
                         filters: [
                           queryFilter,
                           ...visibleTypeFilters,
-                        ].where((f) => f != null && containQuery(f.getLabel(context))).cast<CollectionFilter>().toList(),
+                        ].whereNotNull().where((f) => containQuery(f.getLabel(context))).toList(),
                         // usually perform hero animation only on tapped chips,
                         // but we also need to animate the query chip when it is selected by submitting the search query
                         heroTypeBuilder: (filter) => filter == queryFilter ? HeroType.always : HeroType.onTap,
@@ -243,10 +244,12 @@ class CollectionSearchDelegate {
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(CollectionLens(
-          source: source,
-          filters: [filter],
-        )),
+        builder: (context) => CollectionPage(
+          collection: CollectionLens(
+            source: source,
+            filters: [filter],
+          ),
+        ),
       ),
       (route) => false,
     );

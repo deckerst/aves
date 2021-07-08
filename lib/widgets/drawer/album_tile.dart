@@ -10,7 +10,10 @@ import 'package:provider/provider.dart';
 class AlbumTile extends StatelessWidget {
   final String album;
 
-  const AlbumTile(this.album);
+  const AlbumTile({
+    Key? key,
+    required this.album,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

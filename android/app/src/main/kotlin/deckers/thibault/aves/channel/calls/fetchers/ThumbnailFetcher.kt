@@ -13,11 +13,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import deckers.thibault.aves.decoder.MultiTrackImage
+import deckers.thibault.aves.decoder.SvgThumbnail
 import deckers.thibault.aves.decoder.TiffImage
 import deckers.thibault.aves.decoder.VideoThumbnail
 import deckers.thibault.aves.utils.BitmapUtils.applyExifOrientation
 import deckers.thibault.aves.utils.BitmapUtils.getBytes
 import deckers.thibault.aves.utils.MimeTypes
+import deckers.thibault.aves.utils.MimeTypes.SVG
 import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
@@ -41,9 +43,10 @@ class ThumbnailFetcher internal constructor(
     private val uri: Uri = Uri.parse(uri)
     private val width: Int = if (width?.takeIf { it > 0 } != null) width else defaultSize
     private val height: Int = if (height?.takeIf { it > 0 } != null) height else defaultSize
+    private val svgFetch = mimeType == SVG
     private val tiffFetch = mimeType == MimeTypes.TIFF
     private val multiTrackFetch = isHeic(mimeType) && pageId != null
-    private val customFetch = tiffFetch || multiTrackFetch
+    private val customFetch = svgFetch || tiffFetch || multiTrackFetch
 
     suspend fun fetch() {
         var bitmap: Bitmap? = null
@@ -124,6 +127,7 @@ class ThumbnailFetcher internal constructor(
                 .submit(width, height)
         } else {
             val model: Any = when {
+                svgFetch -> SvgThumbnail(context, uri)
                 tiffFetch -> TiffImage(context, uri, pageId)
                 multiTrackFetch -> MultiTrackImage(context, uri, pageId)
                 else -> uri

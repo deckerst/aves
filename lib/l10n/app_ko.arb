@@ -1,7 +1,7 @@
 {
   "appName": "아베스",
   "welcomeMessage": "아베스 사용을 환영합니다",
-  "welcomeAnalyticsToggle": "진단 데이터를 보내는 것에 동의합니다 (선택)",
+  "welcomeCrashReportToggle": "오류 보고서를 보내는 것에 동의합니다 (선택)",
   "welcomeTermsToggle": "이용약관에 동의합니다",
   "itemCount": "{count, plural, other{{count}개}}",
 
@@ -44,6 +44,7 @@
   "entryActionOpen": "다른 앱에서 열기…",
   "entryActionSetAs": "다음 용도로 사용…",
   "entryActionOpenMap": "지도에서 보기…",
+  "entryActionRotateScreen": "화면 회전",
   "entryActionAddFavourite": "즐겨찾기에 추가",
   "entryActionRemoveFavourite": "즐겨찾기에서 삭제",
 
@@ -249,6 +250,9 @@
   "settingsPageTitle": "설정",
   "settingsSystemDefault": "시스템",
 
+  "settingsActionExport": "내보내기",
+  "settingsActionImport": "가져오기",
+
   "settingsSectionNavigation": "탐색",
   "settingsHome": "홈",
   "settingsKeepScreenOnTile": "화면 자동 꺼짐 방지",
@@ -261,8 +265,7 @@
   "settingsThumbnailShowVideoDuration": "동영상 길이 표시",
 
   "settingsSectionViewer": "뷰어",
-  "settingsRasterImageBackground": "래스터 그래픽스 배경",
-  "settingsVectorImageBackground": "벡터 그래픽스 배경",
+  "settingsImageBackground": "사진 배경",
   "settingsViewerShowMinimap": "미니맵 표시",
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
@@ -301,7 +304,7 @@
   "settingsSubtitleThemeTextAlignmentRight":  "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
-  "settingsEnableAnalytics": "진단 데이터 보내기",
+  "settingsEnableCrashReport": "오류 보고서 보내기",
   "settingsSaveSearchHistory": "검색기록",
 
   "settingsHiddenFiltersTile": "숨겨진 필터",

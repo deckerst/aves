@@ -12,7 +12,10 @@ class ItemPickDialog extends StatefulWidget {
 
   final CollectionLens collection;
 
-  const ItemPickDialog(this.collection);
+  const ItemPickDialog({
+    Key? key,
+    required this.collection,
+  }) : super(key: key);
 
   @override
   _ItemPickDialogState createState() => _ItemPickDialogState();

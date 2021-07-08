@@ -5,6 +5,7 @@ import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:aves/utils/file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
@@ -35,7 +36,7 @@ mixin SizeAwareMixin {
         break;
       case MoveType.move:
         // when moving, we only need space for the entries that are not already on the destination volume
-        final byVolume = Map.fromEntries(groupBy<AvesEntry, StorageVolume?>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path)).entries.where((kv) => kv.key != null).cast<MapEntry<StorageVolume, List<AvesEntry>>>());
+        final byVolume = groupBy<AvesEntry, StorageVolume?>(selection, (entry) => androidFileUtils.getStorageVolume(entry.path)).whereNotNullKey();
         final otherVolumes = byVolume.keys.where((volume) => volume != destinationVolume);
         final fromOtherVolumes = otherVolumes.fold<int>(0, (sum, volume) => sum + byVolume[volume]!.fold(0, sumSize));
         // and we need at least as much space as the largest entry because individual entries are copied then deleted

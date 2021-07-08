@@ -113,7 +113,7 @@ class Package {
         currentLabel,
         englishLabel,
         ...ownedDirs,
-      ].where((dir) => dir != null).cast<String>().toSet();
+      ].whereNotNull().toSet();
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{packageName=$packageName, categoryLauncher=$categoryLauncher, isSystem=$isSystem, currentLabel=$currentLabel, englishLabel=$englishLabel, ownedDirs=$ownedDirs}';

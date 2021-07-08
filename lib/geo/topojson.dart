@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 // cf https://github.com/topojson/topojson-specification
@@ -57,16 +58,11 @@ class Topology extends TopologyJsonObject {
   final Transform? transform;
 
   Topology.parse(Map<String, dynamic> data)
-      : objects = Map.fromEntries((data['objects'] as Map)
-            .cast<String, dynamic>()
-            .entries
-            .map((kv) {
-              final name = kv.key;
-              final geometry = Geometry.build(kv.value);
-              return geometry != null ? MapEntry(name, geometry) : null;
-            })
-            .where((kv) => kv != null)
-            .cast<MapEntry<String, Geometry>>()),
+      : objects = Map.fromEntries((data['objects'] as Map).cast<String, dynamic>().entries.map((kv) {
+          final name = kv.key;
+          final geometry = Geometry.build(kv.value);
+          return geometry != null ? MapEntry(name, geometry) : null;
+        }).whereNotNull()),
         arcs = (data['arcs'] as List).cast<List>().map((arc) => arc.cast<List>().map((position) => position.cast<num>()).toList()).toList(),
         transform = data.containsKey('transform') ? Transform.parse((data['transform'] as Map).cast<String, dynamic>()) : null,
         super.parse(data);
@@ -244,7 +240,7 @@ class GeometryCollection extends Geometry {
   final List<Geometry> geometries;
 
   GeometryCollection.parse(Map<String, dynamic> data)
-      : geometries = (data['geometries'] as List).cast<Map<String, dynamic>>().map(Geometry.build).where((geometry) => geometry != null).cast<Geometry>().toList(),
+      : geometries = (data['geometries'] as List).cast<Map<String, dynamic>>().map(Geometry.build).whereNotNull().toList(),
         super.parse(data);
 
   @override

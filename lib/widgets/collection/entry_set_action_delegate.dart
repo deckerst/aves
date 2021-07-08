@@ -11,6 +11,7 @@ import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -21,7 +22,6 @@ import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
@@ -68,7 +68,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final source = collection.source;
     final selection = collection.selection;
 
-    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet();
+    final selectionDirs = selection.map((e) => e.directory).whereNotNull().toSet();
     if (moveType == MoveType.move) {
       // check whether moving is possible given OS restrictions,
       // before asking to pick a destination album
@@ -148,18 +148,14 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
                   targetCollection = CollectionLens(
                     source: collection.source,
                     filters: collection.filters,
-                    groupFactor: collection.groupFactor,
-                    sortFactor: collection.sortFactor,
                   )..addFilter(filter);
                   unawaited(Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) {
-                        return CollectionPage(
-                          targetCollection,
-                        );
-                      },
+                      builder: (context) => CollectionPage(
+                        collection: targetCollection,
+                      ),
                     ),
                   ));
                   await Future.delayed(Durations.staggeredAnimationPageTarget);
@@ -182,7 +178,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     final collection = context.read<CollectionLens>();
     final source = collection.source;
     final selection = collection.selection;
-    final selectionDirs = selection.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet();
+    final selectionDirs = selection.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = selection.length;
 
     final confirmed = await showDialog<bool>(

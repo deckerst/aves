@@ -12,8 +12,9 @@ class VideoStreamSelectionDialog extends StatefulWidget {
   final Map<StreamSummary, bool> streams;
 
   const VideoStreamSelectionDialog({
+    Key? key,
     required this.streams,
-  });
+  }) : super(key: key);
 
   @override
   _VideoStreamSelectionDialogState createState() => _VideoStreamSelectionDialogState();
@@ -31,7 +32,7 @@ class _VideoStreamSelectionDialogState extends State<VideoStreamSelectionDialog>
     // check width/height to exclude image streams (that are included among video streams)
     _videoStreams = (byType[StreamType.video] ?? []).where((v) => v.width != null && v.height != null).toList();
     _audioStreams = (byType[StreamType.audio] ?? []);
-    _textStreams = (byType[StreamType.text] ?? [])..insert(0, null);
+    _textStreams = [null, ...byType[StreamType.text] ?? []];
 
     final streamEntries = widget.streams.entries;
     _currentVideo = streamEntries.firstWhereOrNull((kv) => kv.key.type == StreamType.video && kv.value)?.key;

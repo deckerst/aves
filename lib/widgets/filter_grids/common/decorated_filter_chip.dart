@@ -13,8 +13,7 @@ import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
-import 'package:aves/widgets/collection/thumbnail/vector.dart';
+import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/overlay.dart';
@@ -85,15 +84,10 @@ class DecoratedFilterChip extends StatelessWidget {
     final entry = coverEntry ?? source.coverEntry(filter);
     final backgroundImage = entry == null
         ? Container(color: Colors.white)
-        : entry.isSvg
-            ? VectorImageThumbnail(
-                entry: entry,
-                extent: extent,
-              )
-            : RasterImageThumbnail(
-                entry: entry,
-                extent: thumbnailExtent,
-              );
+        : ThumbnailImage(
+            entry: entry,
+            extent: thumbnailExtent,
+          );
     final titlePadding = min<double>(4.0, extent / 32);
     final borderRadius = BorderRadius.all(radius(extent));
     Widget child = AvesFilterChip(

@@ -3,15 +3,15 @@ package deckers.thibault.aves.metadata
 object TiffTags {
     // XPosition
     // Tag = 286 (011E.H)
-    const val TAG_X_POSITION = 0x011e
+    private const val TAG_X_POSITION = 0x011e
 
     // YPosition
     // Tag = 287 (011F.H)
-    const val TAG_Y_POSITION = 0x011f
+    private const val TAG_Y_POSITION = 0x011f
 
     // ColorMap
     // Tag = 320 (0140.H)
-    const val TAG_COLOR_MAP = 0x0140
+    private const val TAG_COLOR_MAP = 0x0140
 
     // ExtraSamples
     // Tag = 338 (0152.H)
@@ -19,7 +19,7 @@ object TiffTags {
     // EXTRASAMPLE_UNSPECIFIED	0 // unspecified data
     // EXTRASAMPLE_ASSOCALPHA	1 // associated alpha data
     // EXTRASAMPLE_UNASSALPHA	2 // unassociated alpha data
-    const val TAG_EXTRA_SAMPLES = 0x0152
+    private const val TAG_EXTRA_SAMPLES = 0x0152
 
     // SampleFormat
     // Tag = 339 (0153.H)
@@ -30,7 +30,7 @@ object TiffTags {
     // SAMPLEFORMAT_VOID		    4 // untyped data
     // SAMPLEFORMAT_COMPLEXINT	    5 // complex signed int
     // SAMPLEFORMAT_COMPLEXIEEEFP	6 // complex ieee floating
-    const val TAG_SAMPLE_FORMAT = 0x0153
+    private const val TAG_SAMPLE_FORMAT = 0x0153
 
     /*
     SGI
@@ -40,7 +40,7 @@ object TiffTags {
     // Matteing
     // Tag = 32995 (80E3.H)
     // obsoleted by the 6.0 ExtraSamples (338)
-    const val TAG_MATTEING = 0x80e3
+    private const val TAG_MATTEING = 0x80e3
 
     /*
     GeoTIFF
@@ -74,13 +74,13 @@ object TiffTags {
     // Tag = 34736 (87BO.H)
     // Type = DOUBLE
     // Count = variable
-    const val TAG_GEO_DOUBLE_PARAMS = 0x87b0
+    private const val TAG_GEO_DOUBLE_PARAMS = 0x87b0
 
     // GeoAsciiParamsTag (optional)
     // Tag = 34737 (87B1.H)
     // Type = ASCII
     // Count = variable
-    const val TAG_GEO_ASCII_PARAMS = 0x87b1
+    private const val TAG_GEO_ASCII_PARAMS = 0x87b1
 
     /*
     Photoshop
@@ -91,7 +91,7 @@ object TiffTags {
     // ImageSourceData
     // Tag = 37724 (935C.H)
     // Type = UNDEFINED
-    const val TAG_IMAGE_SOURCE_DATA = 0x935c
+    private const val TAG_IMAGE_SOURCE_DATA = 0x935c
 
     /*
     DNG
@@ -102,13 +102,13 @@ object TiffTags {
     // Tag = 50735 (C62F.H)
     // Type = ASCII
     // Count = variable
-    const val TAG_CAMERA_SERIAL_NUMBER = 0xc62f
+    private const val TAG_CAMERA_SERIAL_NUMBER = 0xc62f
 
     // OriginalRawFileName (optional)
     // Tag = 50827 (C68B.H)
     // Type = ASCII or BYTE
     // Count = variable
-    const val TAG_ORIGINAL_RAW_FILE_NAME = 0xc68b
+    private const val TAG_ORIGINAL_RAW_FILE_NAME = 0xc68b
 
     private val geotiffTags = listOf(
         TAG_GEO_ASCII_PARAMS,

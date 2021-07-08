@@ -26,22 +26,24 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   static CollectionFilter? fromJson(String jsonString) {
     final jsonMap = jsonDecode(jsonString);
-    final type = jsonMap['type'];
-    switch (type) {
-      case AlbumFilter.type:
-        return AlbumFilter.fromMap(jsonMap);
-      case FavouriteFilter.type:
-        return FavouriteFilter.instance;
-      case LocationFilter.type:
-        return LocationFilter.fromMap(jsonMap);
-      case TypeFilter.type:
-        return TypeFilter.fromMap(jsonMap);
-      case MimeFilter.type:
-        return MimeFilter.fromMap(jsonMap);
-      case QueryFilter.type:
-        return QueryFilter.fromMap(jsonMap);
-      case TagFilter.type:
-        return TagFilter.fromMap(jsonMap);
+    if (jsonMap is Map<String, dynamic>) {
+      final type = jsonMap['type'];
+      switch (type) {
+        case AlbumFilter.type:
+          return AlbumFilter.fromMap(jsonMap);
+        case FavouriteFilter.type:
+          return FavouriteFilter.instance;
+        case LocationFilter.type:
+          return LocationFilter.fromMap(jsonMap);
+        case TypeFilter.type:
+          return TypeFilter.fromMap(jsonMap);
+        case MimeFilter.type:
+          return MimeFilter.fromMap(jsonMap);
+        case QueryFilter.type:
+          return QueryFilter.fromMap(jsonMap);
+        case TagFilter.type:
+          return TagFilter.fromMap(jsonMap);
+      }
     }
     debugPrint('failed to parse filter from json=$jsonString');
     return null;

@@ -1,6 +1,7 @@
 Thanks for using Aves!
-v1.4.4:
-- video speed control, track selection, frame capture
-- support embedded subtitles in videos
-- custom video quick actions and subtitle theme
+v1.4.5:
+- improved SVG support
+- OGV/Theora/Vorbis video support
+- viewer action to rotate screen
+- import/export settings
 Full changelog available on Github

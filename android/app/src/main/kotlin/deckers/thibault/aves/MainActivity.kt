@@ -15,14 +15,15 @@ import deckers.thibault.aves.channel.calls.*
 import deckers.thibault.aves.channel.streams.*
 import deckers.thibault.aves.model.provider.MediaStoreImageProvider
 import deckers.thibault.aves.utils.LogUtils
-import deckers.thibault.aves.utils.PermissionManager
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.util.concurrent.ConcurrentHashMap
 
 class MainActivity : FlutterActivity() {
-    private lateinit var contentStreamHandler: ContentChangeStreamHandler
+    private lateinit var mediaStoreChangeStreamHandler: MediaStoreChangeStreamHandler
+    private lateinit var settingsChangeStreamHandler: SettingsChangeStreamHandler
     private lateinit var intentStreamHandler: IntentStreamHandler
     private lateinit var intentDataMap: MutableMap<String, Any?>
 
@@ -50,8 +51,11 @@ class MainActivity : FlutterActivity() {
         StreamsChannel(messenger, StorageAccessStreamHandler.CHANNEL).setStreamHandlerFactory { args -> StorageAccessStreamHandler(this, args) }
 
         // Media Store change monitoring
-        contentStreamHandler = ContentChangeStreamHandler(this).apply {
-            EventChannel(messenger, ContentChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        mediaStoreChangeStreamHandler = MediaStoreChangeStreamHandler(this).apply {
+            EventChannel(messenger, MediaStoreChangeStreamHandler.CHANNEL).setStreamHandler(this)
+        }
+        settingsChangeStreamHandler = SettingsChangeStreamHandler(this).apply {
+            EventChannel(messenger, SettingsChangeStreamHandler.CHANNEL).setStreamHandler(this)
         }
 
         // intent handling
@@ -75,7 +79,8 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
-        contentStreamHandler.dispose()
+        mediaStoreChangeStreamHandler.dispose()
+        settingsChangeStreamHandler.dispose()
         super.onDestroy()
     }
 
@@ -87,10 +92,10 @@ class MainActivity : FlutterActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            VOLUME_ACCESS_REQUEST -> {
+            DOCUMENT_TREE_ACCESS_REQUEST -> {
                 val treeUri = data?.data
                 if (resultCode != RESULT_OK || treeUri == null) {
-                    PermissionManager.onPermissionResult(requestCode, null)
+                    onPermissionResult(requestCode, null)
                     return
                 }
 
@@ -101,13 +106,16 @@ class MainActivity : FlutterActivity() {
                 contentResolver.takePersistableUriPermission(treeUri, takeFlags)
 
                 // resume pending action
-                PermissionManager.onPermissionResult(requestCode, treeUri)
+                onPermissionResult(requestCode, treeUri)
             }
             DELETE_PERMISSION_REQUEST -> {
                 // delete permission may be requested on Android 10+ only
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
                 }
+            }
+            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST -> {
+                onPermissionResult(requestCode, data?.data)
             }
         }
     }
@@ -184,7 +192,26 @@ class MainActivity : FlutterActivity() {
     companion object {
         private val LOG_TAG = LogUtils.createTag<MainActivity>()
         const val VIEWER_CHANNEL = "deckers.thibault/aves/viewer"
-        const val VOLUME_ACCESS_REQUEST = 1
+        const val DOCUMENT_TREE_ACCESS_REQUEST = 1
         const val DELETE_PERMISSION_REQUEST = 2
+        const val CREATE_FILE_REQUEST = 3
+        const val OPEN_FILE_REQUEST = 4
+
+        // permission request code to pending runnable
+        val pendingResultHandlers = ConcurrentHashMap<Int, PendingResultHandler>()
+
+        fun onPermissionResult(requestCode: Int, uri: Uri?) {
+            Log.d(LOG_TAG, "onPermissionResult with requestCode=$requestCode, uri=$uri")
+            val handler = pendingResultHandlers.remove(requestCode) ?: return
+            if (uri != null) {
+                handler.onGranted(uri)
+            } else {
+                handler.onDenied()
+            }
+        }
     }
 }
+
+// onGranted: user selected a directory/file (with no guarantee that it matches the requested `path`)
+// onDenied: user cancelled
+data class PendingResultHandler(val path: String?, val onGranted: (uri: Uri) -> Unit, val onDenied: () -> Unit)

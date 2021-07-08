@@ -2,8 +2,7 @@ import 'package:aves/model/covers.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
-import 'package:aves/widgets/collection/thumbnail/vector.dart';
+import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
@@ -19,9 +18,10 @@ class AddShortcutDialog extends StatefulWidget {
   final String defaultName;
 
   const AddShortcutDialog({
+    Key? key,
     required this.collection,
     required this.defaultName,
-  });
+  }) : super(key: key);
 
   @override
   _AddShortcutDialogState createState() => _AddShortcutDialogState();
@@ -41,8 +41,8 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     super.initState();
     final entries = collection.sortedEntries;
     if (entries.isNotEmpty) {
-      final coverEntries = filters.map(covers.coverContentId).where((id) => id != null).map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).where((entry) => entry != null);
-      _coverEntry = coverEntries.isNotEmpty ? coverEntries.first : entries.first;
+      final coverEntries = filters.map(covers.coverContentId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).whereNotNull();
+      _coverEntry = coverEntries.firstOrNull ?? entries.first;
     }
     _nameController.text = widget.defaultName;
     _validate();
@@ -113,15 +113,10 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
         child: SizedBox(
           width: extent,
           height: extent,
-          child: entry.isSvg
-              ? VectorImageThumbnail(
-                  entry: entry,
-                  extent: extent,
-                )
-              : RasterImageThumbnail(
-                  entry: entry,
-                  extent: extent,
-                ),
+          child: ThumbnailImage(
+            entry: entry,
+            extent: extent,
+          ),
         ),
       ),
     );
@@ -133,7 +128,7 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
-          CollectionLens(
+          collection: CollectionLens(
             source: collection.source,
             filters: filters,
           ),

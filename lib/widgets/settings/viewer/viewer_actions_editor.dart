@@ -5,6 +5,8 @@ import 'package:aves/widgets/settings/common/quick_actions/editor_page.dart';
 import 'package:flutter/material.dart';
 
 class ViewerActionsTile extends StatelessWidget {
+  const ViewerActionsTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -35,6 +37,7 @@ class ViewerActionEditorPage extends StatelessWidget {
     EntryAction.rename,
     EntryAction.export,
     EntryAction.print,
+    EntryAction.rotateScreen,
     EntryAction.viewSource,
     EntryAction.flip,
     EntryAction.rotateCCW,

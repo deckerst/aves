@@ -22,9 +22,10 @@ class MetadataSectionSliver extends StatefulWidget {
   final ValueNotifier<Map<String, MetadataDirectory>> metadataNotifier;
 
   const MetadataSectionSliver({
+    Key? key,
     required this.entry,
     required this.metadataNotifier,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _MetadataSectionSliverState();
@@ -100,7 +101,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
                       ),
                     ),
                     children: [
-                      const SectionRow(AIcons.info),
+                      const SectionRow(icon: AIcons.info),
                       ...metadata.entries.map((kv) => MetadataDirTile(
                             entry: entry,
                             title: kv.key,
@@ -225,7 +226,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
           final rawTags = formatCount.map((key, value) {
             final count = value.length;
             // remove duplicate names, so number of displayed names may not match displayed count
-            final names = value.where((v) => v != null).cast<String>().toSet().toList()..sort(compareAsciiUpperCase);
+            final names = value.whereNotNull().toSet().toList()..sort(compareAsciiUpperCase);
             return MapEntry(key, '$count items: ${names.join(', ')}');
           });
           directories.add(MetadataDirectory('Attachments', null, _toSortedTags(rawTags)));
@@ -236,15 +237,12 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   SplayTreeMap<String, String> _toSortedTags(Map rawTags) {
-    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries
-        .map((tagKV) {
-          var value = (tagKV.value as String? ?? '').trim();
-          if (value.isEmpty) return null;
-          final tagName = tagKV.key as String;
-          return MapEntry(tagName, value);
-        })
-        .where((kv) => kv != null)
-        .cast<MapEntry<String, String>>()));
+    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
+      var value = (tagKV.value as String? ?? '').trim();
+      if (value.isEmpty) return null;
+      final tagName = tagKV.key as String;
+      return MapEntry(tagName, value);
+    }).whereNotNull()));
     return tags;
   }
 }
@@ -262,9 +260,13 @@ class MetadataDirectory {
   static const mediaDirectory = 'Media'; // custom
   static const coverDirectory = 'Cover'; // custom
 
-  const MetadataDirectory(this.name, this.parent, SplayTreeMap<String, String> allTags, {SplayTreeMap<String, String>? tags, this.color})
-      : allTags = allTags,
-        tags = tags ?? allTags;
+  const MetadataDirectory(
+    this.name,
+    this.parent,
+    this.allTags, {
+    SplayTreeMap<String, String>? tags,
+    this.color,
+  }) : tags = tags ?? allTags;
 
   MetadataDirectory filterKeys(bool Function(String key) testKey) {
     final filteredTags = SplayTreeMap.of(Map.fromEntries(allTags.entries.where((kv) => testKey(kv.key))));

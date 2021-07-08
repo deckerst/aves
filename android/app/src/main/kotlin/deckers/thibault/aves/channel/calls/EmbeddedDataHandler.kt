@@ -64,6 +64,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
         if (isSupportedByExifInterface(mimeType)) {
             try {
                 Metadata.openSafeInputStream(context, uri, mimeType, sizeBytes)?.use { input ->
+                    @Suppress("BlockingMethodInNonBlockingContext")
                     val exif = ExifInterface(input)
                     val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                     exif.thumbnailBitmap?.let { bitmap ->

@@ -39,6 +39,8 @@ class ScaleLayerWidget extends StatelessWidget {
 class ScaleLayer extends StatelessWidget {
   final ScaleLayerOptions scaleLayerOpts;
   final MapState map;
+
+  // ignore: prefer_void_to_null
   final Stream<Null> stream;
   final scale = [
     25000000,
@@ -70,6 +72,7 @@ class ScaleLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: prefer_void_to_null
     return StreamBuilder<Null>(
       stream: stream,
       builder: (context, snapshot) {
@@ -104,9 +107,10 @@ class ScaleBar extends StatelessWidget {
   static const double barThickness = 1;
 
   const ScaleBar({
+    Key? key,
     required this.distance,
     required this.width,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 class DbTab extends StatefulWidget {
   final AvesEntry entry;
 
-  const DbTab({required this.entry});
+  const DbTab({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
 
   @override
   _DbTabState createState() => _DbTabState();
@@ -53,9 +56,11 @@ class _DbTabState extends State<DbTab> {
               children: [
                 Text('DB date:${data == null ? ' no row' : ''}'),
                 if (data != null)
-                  InfoRowGroup({
-                    'dateMillis': '${data.dateMillis}',
-                  }),
+                  InfoRowGroup(
+                    info: {
+                      'dateMillis': '${data.dateMillis}',
+                    },
+                  ),
               ],
             );
           },
@@ -72,19 +77,21 @@ class _DbTabState extends State<DbTab> {
               children: [
                 Text('DB entry:${data == null ? ' no row' : ''}'),
                 if (data != null)
-                  InfoRowGroup({
-                    'uri': '${data.uri}',
-                    'path': '${data.path}',
-                    'sourceMimeType': '${data.sourceMimeType}',
-                    'width': '${data.width}',
-                    'height': '${data.height}',
-                    'sourceRotationDegrees': '${data.sourceRotationDegrees}',
-                    'sizeBytes': '${data.sizeBytes}',
-                    'sourceTitle': '${data.sourceTitle}',
-                    'dateModifiedSecs': '${data.dateModifiedSecs}',
-                    'sourceDateTakenMillis': '${data.sourceDateTakenMillis}',
-                    'durationMillis': '${data.durationMillis}',
-                  }),
+                  InfoRowGroup(
+                    info: {
+                      'uri': data.uri,
+                      'path': data.path ?? '',
+                      'sourceMimeType': data.sourceMimeType,
+                      'width': '${data.width}',
+                      'height': '${data.height}',
+                      'sourceRotationDegrees': '${data.sourceRotationDegrees}',
+                      'sizeBytes': '${data.sizeBytes}',
+                      'sourceTitle': data.sourceTitle ?? '',
+                      'dateModifiedSecs': '${data.dateModifiedSecs}',
+                      'sourceDateTakenMillis': '${data.sourceDateTakenMillis}',
+                      'durationMillis': '${data.durationMillis}',
+                    },
+                  ),
               ],
             );
           },
@@ -101,17 +108,19 @@ class _DbTabState extends State<DbTab> {
               children: [
                 Text('DB metadata:${data == null ? ' no row' : ''}'),
                 if (data != null)
-                  InfoRowGroup({
-                    'mimeType': '${data.mimeType}',
-                    'dateMillis': '${data.dateMillis}',
-                    'isAnimated': '${data.isAnimated}',
-                    'isFlipped': '${data.isFlipped}',
-                    'rotationDegrees': '${data.rotationDegrees}',
-                    'latitude': '${data.latitude}',
-                    'longitude': '${data.longitude}',
-                    'xmpSubjects': '${data.xmpSubjects}',
-                    'xmpTitleDescription': '${data.xmpTitleDescription}',
-                  }),
+                  InfoRowGroup(
+                    info: {
+                      'mimeType': data.mimeType ?? '',
+                      'dateMillis': '${data.dateMillis}',
+                      'isAnimated': '${data.isAnimated}',
+                      'isFlipped': '${data.isFlipped}',
+                      'rotationDegrees': '${data.rotationDegrees}',
+                      'latitude': '${data.latitude}',
+                      'longitude': '${data.longitude}',
+                      'xmpSubjects': data.xmpSubjects ?? '',
+                      'xmpTitleDescription': data.xmpTitleDescription ?? '',
+                    },
+                  ),
               ],
             );
           },
@@ -128,12 +137,14 @@ class _DbTabState extends State<DbTab> {
               children: [
                 Text('DB address:${data == null ? ' no row' : ''}'),
                 if (data != null)
-                  InfoRowGroup({
-                    'countryCode': '${data.countryCode}',
-                    'countryName': '${data.countryName}',
-                    'adminArea': '${data.adminArea}',
-                    'locality': '${data.locality}',
-                  }),
+                  InfoRowGroup(
+                    info: {
+                      'countryCode': data.countryCode ?? '',
+                      'countryName': data.countryName ?? '',
+                      'adminArea': data.adminArea ?? '',
+                      'locality': data.locality ?? '',
+                    },
+                  ),
               ],
             );
           },

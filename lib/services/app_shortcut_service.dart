@@ -12,7 +12,7 @@ class AppShortcutService {
   // this ability will not change over the lifetime of the app
   static bool? _canPin;
 
-  static Future<bool > canPin() async {
+  static Future<bool> canPin() async {
     if (_canPin != null) {
       return SynchronousFuture(_canPin!);
     }

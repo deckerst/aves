@@ -71,8 +71,6 @@ class InteractiveThumbnail extends StatelessWidget {
           final viewerCollection = CollectionLens(
             source: collection.source,
             filters: collection.filters,
-            groupFactor: collection.groupFactor,
-            sortFactor: collection.sortFactor,
             id: collection.id,
             listenToSource: false,
           );

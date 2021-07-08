@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 // cf https://github.com/flutter/flutter/issues/49027
 // adapted from `RenderSliverFixedExtentBoxAdaptor`
 class SectionedListSliver<T> extends StatelessWidget {
+  const SectionedListSliver({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final sectionLayouts = context.watch<SectionedListLayout<T>>().sectionLayouts;

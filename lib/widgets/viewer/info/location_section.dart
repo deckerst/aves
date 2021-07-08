@@ -106,7 +106,7 @@ class _LocationSectionState extends State<LocationSection> with TickerProviderSt
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.showTitle) const SectionRow(AIcons.location),
+        if (widget.showTitle) const SectionRow(icon: AIcons.location),
         FutureBuilder<bool>(
           future: availability.isConnected,
           builder: (context, snapshot) {
@@ -221,10 +221,12 @@ class _AddressInfoGroupState extends State<_AddressInfoGroup> {
         final fullAddress = !snapshot.hasError && snapshot.connectionState == ConnectionState.done ? snapshot.data : null;
         final address = fullAddress ?? entry.shortAddress;
         final l10n = context.l10n;
-        return InfoRowGroup({
-          l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(entry.latLng!),
-          if (address.isNotEmpty) l10n.viewerInfoLabelAddress: address,
-        });
+        return InfoRowGroup(
+          info: {
+            l10n.viewerInfoLabelCoordinates: settings.coordinateFormat.format(entry.latLng!),
+            if (address.isNotEmpty) l10n.viewerInfoLabelAddress: address,
+          },
+        );
       },
     );
   }

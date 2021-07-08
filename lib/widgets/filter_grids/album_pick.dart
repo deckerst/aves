@@ -30,9 +30,10 @@ class AlbumPickPage extends StatefulWidget {
   final MoveType moveType;
 
   const AlbumPickPage({
+    Key? key,
     required this.source,
     required this.moveType,
-  });
+  }) : super(key: key);
 
   @override
   _AlbumPickPageState createState() => _AlbumPickPageState();
@@ -91,11 +92,12 @@ class AlbumPickAppBar extends StatelessWidget {
   static const preferredHeight = kToolbarHeight + AlbumFilterBar.preferredHeight;
 
   const AlbumPickAppBar({
+    Key? key,
     required this.source,
     required this.moveType,
     required this.actionDelegate,
     required this.queryNotifier,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +129,7 @@ class AlbumPickAppBar extends StatelessWidget {
           onPressed: () async {
             final newAlbum = await showDialog<String>(
               context: context,
-              builder: (context) => CreateAlbumDialog(),
+              builder: (context) => const CreateAlbumDialog(),
             );
             if (newAlbum != null && newAlbum.isNotEmpty) {
               Navigator.pop<String>(context, newAlbum);
@@ -169,8 +171,9 @@ class AlbumFilterBar extends StatelessWidget implements PreferredSizeWidget {
   static const preferredHeight = kToolbarHeight;
 
   const AlbumFilterBar({
+    Key? key,
     required this.filterNotifier,
-  });
+  }) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(preferredHeight);

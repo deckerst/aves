@@ -13,11 +13,12 @@ class AvesSelectionDialog<T> extends StatefulWidget {
   final String title;
 
   const AvesSelectionDialog({
+    Key? key,
     required this.initialValue,
     required this.options,
     this.optionSubtitleBuilder,
     required this.title,
-  });
+  }) : super(key: key);
 
   @override
   _AvesSelectionDialogState<T> createState() => _AvesSelectionDialogState<T>();

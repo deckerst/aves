@@ -20,6 +20,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   late FijkPlayer _instance;
   final List<StreamSubscription> _subscriptions = [];
   final StreamController<FijkValue> _valueStreamController = StreamController.broadcast();
+  final StreamController<String?> _timedTextStreamController = StreamController.broadcast();
   final AChangeNotifier _completedNotifier = AChangeNotifier();
   Offset _macroBlockCrop = Offset.zero;
   final List<StreamSummary> _streams = [];
@@ -58,15 +59,14 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
       _staticInitialized = true;
     }
     _instance = FijkPlayer();
-    _valueStream.firstWhere((value) => value.videoRenderStart).then(
-          (value) => canCaptureFrameNotifier.value = true,
+    _valueStream.map((value) => value.videoRenderStart).firstWhere((v) => v, orElse: () => false).then(
+          (started) => canCaptureFrameNotifier.value = started,
           onError: (error) {},
         );
-    _valueStream.firstWhere((value) => value.audioRenderStart).then(
-          (value) => canSetSpeedNotifier.value = true,
+    _valueStream.map((value) => value.audioRenderStart).firstWhere((v) => v, orElse: () => false).then(
+          (started) => canSetSpeedNotifier.value = started,
           onError: (error) {},
         );
-
     _startListening();
   }
 
@@ -75,12 +75,14 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     _initialPlayTimer?.cancel();
     _stopListening();
     await _valueStreamController.close();
+    await _timedTextStreamController.close();
     await _instance.release();
   }
 
   void _startListening() {
     _instance.addListener(_onValueChanged);
     _subscriptions.add(_valueStream.where((value) => value.state == FijkState.completed).listen((_) => _completedNotifier.notifyListeners()));
+    _subscriptions.add(_instance.onTimedText.listen(_timedTextStreamController.add));
   }
 
   void _stopListening() {
@@ -118,7 +120,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // playing with HW acceleration seems to skip the last frames of some videos
     // so HW acceleration is always disabled for GIF-like videos where the last frames may be significant
-    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && entry.durationMillis! > gifLikeVideoDurationThreshold.inMilliseconds;
+    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && (entry.durationMillis ?? 0) > gifLikeVideoDurationThreshold.inMilliseconds;
 
     // TODO TLAD [video] flaky: HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
     if (hwAccelerationEnabled) {
@@ -285,7 +287,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   int get duration {
     final controllerDuration = _instance.value.duration.inMilliseconds;
     // use expected duration when controller duration is not set yet
-    return (controllerDuration == 0) ? entry.durationMillis! : controllerDuration;
+    return controllerDuration == 0 ? (entry.durationMillis ?? 0) : controllerDuration;
   }
 
   @override
@@ -295,7 +297,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
   Stream<int> get positionStream => _instance.onCurrentPosUpdate.map((pos) => pos.inMilliseconds);
 
   @override
-  Stream<String?> get timedTextStream => _instance.onTimedText;
+  Stream<String?> get timedTextStream => _timedTextStreamController.stream;
 
   @override
   double get speed => _speed;
@@ -326,6 +328,9 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
         }
       } else if (current != null) {
         await _instance.deselectTrack(current.index!);
+      }
+      if (type == StreamType.text) {
+        _timedTextStreamController.add(null);
       }
       await seekTo(currentPosition);
     }

@@ -24,12 +24,13 @@ class GridScaleGestureDetector<T> extends StatefulWidget {
   final Widget child;
 
   const GridScaleGestureDetector({
+    Key? key,
     required this.scrollableKey,
     required this.gridBuilder,
     required this.scaledBuilder,
     this.highlightItem,
     required this.child,
-  });
+  }) : super(key: key);
 
   @override
   _GridScaleGestureDetectorState createState() => _GridScaleGestureDetectorState<T>();
@@ -140,12 +141,13 @@ class ScaleOverlay extends StatefulWidget {
   final Widget Function(Offset center, double extent, Widget child) gridBuilder;
 
   const ScaleOverlay({
+    Key? key,
     required this.builder,
     required this.center,
     required this.viewportWidth,
     required this.scaledExtentNotifier,
     required this.gridBuilder,
-  });
+  }) : super(key: key);
 
   @override
   _ScaleOverlayState createState() => _ScaleOverlayState();
@@ -175,7 +177,7 @@ class _ScaleOverlayState extends State<ScaleOverlay> {
                     gradient: RadialGradient(
                       center: FractionalOffset.fromOffsetAndSize(center, context.select<MediaQueryData, Size>((mq) => mq.size)),
                       radius: 1,
-                      colors: [
+                      colors: const [
                         Colors.black,
                         Colors.black54,
                       ],

@@ -91,7 +91,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
             ),
           ),
         ),
-        drawer: AppDrawer(),
+        drawer: const AppDrawer(),
         resizeToAvoidBottomInset: false,
       ),
     );
@@ -132,6 +132,12 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
 
 class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> {
   TileExtentController? _tileExtentController;
+
+  @override
+  void dispose() {
+    _tileExtentController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -454,7 +460,7 @@ class _FilterScrollView<T extends CollectionFilter> extends StatelessWidget {
                     )
                   : SectionedListSliver<FilterGridItem<T>>();
             }),
-        BottomPaddingSliver(),
+        const BottomPaddingSliver(),
       ],
     );
   }

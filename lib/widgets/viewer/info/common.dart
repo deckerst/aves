@@ -8,7 +8,10 @@ import 'package:flutter/rendering.dart';
 class SectionRow extends StatelessWidget {
   final IconData icon;
 
-  const SectionRow(this.icon);
+  const SectionRow({
+    Key? key,
+    required this.icon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class SectionRow extends StatelessWidget {
 }
 
 class InfoRowGroup extends StatefulWidget {
-  final Map<String, String> keyValues;
+  final Map<String, String> info;
   final int maxValueLength;
   final Map<String, InfoLinkHandler>? linkHandlers;
 
@@ -49,11 +52,12 @@ class InfoRowGroup extends StatefulWidget {
   static final keyStyle = baseStyle.copyWith(color: Colors.white70, height: 2.0);
   static final linkStyle = baseStyle.copyWith(color: linkColor, decoration: TextDecoration.underline);
 
-  const InfoRowGroup(
-    this.keyValues, {
+  const InfoRowGroup({
+    Key? key,
+    required this.info,
     this.maxValueLength = 0,
     this.linkHandlers,
-  });
+  }) : super(key: key);
 
   @override
   _InfoRowGroupState createState() => _InfoRowGroupState();
@@ -62,7 +66,7 @@ class InfoRowGroup extends StatefulWidget {
 class _InfoRowGroupState extends State<InfoRowGroup> {
   final List<String> _expandedKeys = [];
 
-  Map<String, String> get keyValues => widget.keyValues;
+  Map<String, String> get keyValues => widget.info;
 
   int get maxValueLength => widget.maxValueLength;
 
@@ -74,7 +78,7 @@ class _InfoRowGroupState extends State<InfoRowGroup> {
 
     // compute the size of keys and space in order to align values
     final textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: '$key', style: InfoRowGroup.keyStyle), textScaleFactor))));
+    final keySizes = Map.fromEntries(keyValues.keys.map((key) => MapEntry(key, _getSpanWidth(TextSpan(text: key, style: InfoRowGroup.keyStyle), textScaleFactor))));
     final baseSpaceWidth = _getSpanWidth(TextSpan(text: '\u200A' * 100, style: InfoRowGroup.baseStyle), textScaleFactor);
 
     final lastKey = keyValues.keys.last;

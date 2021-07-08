@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SubtitleThemeTile extends StatelessWidget {
+  const SubtitleThemeTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -17,7 +19,7 @@ class SubtitleThemeTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             settings: const RouteSettings(name: SubtitleThemePage.routeName),
-            builder: (context) => SubtitleThemePage(),
+            builder: (context) => const SubtitleThemePage(),
           ),
         );
       },
@@ -29,6 +31,8 @@ class SubtitleThemePage extends StatelessWidget {
   static const routeName = '/settings/subtitle_theme';
 
   static const textAlignOptions = [TextAlign.left, TextAlign.center, TextAlign.right];
+
+  const SubtitleThemePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -18,12 +18,13 @@ class GridSelectionGestureDetector extends StatefulWidget {
   final Widget child;
 
   const GridSelectionGestureDetector({
+    Key? key,
     this.selectable = true,
     required this.collection,
     required this.scrollController,
     required this.appBarHeightNotifier,
     required this.child,
-  });
+  }) : super(key: key);
 
   @override
   _GridSelectionGestureDetectorState createState() => _GridSelectionGestureDetectorState();
@@ -39,7 +40,7 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
 
   CollectionLens get collection => widget.collection;
 
-  List<AvesEntry > get entries => collection.sortedEntries;
+  List<AvesEntry> get entries => collection.sortedEntries;
 
   ScrollController get scrollController => widget.scrollController;
 

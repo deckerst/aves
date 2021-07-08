@@ -11,13 +11,14 @@ class NavTile extends StatelessWidget {
   final WidgetBuilder pageBuilder;
 
   const NavTile({
+    Key? key,
     required this.icon,
     required this.title,
     this.trailing,
     this.topLevel = true,
     required this.routeName,
     required this.pageBuilder,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

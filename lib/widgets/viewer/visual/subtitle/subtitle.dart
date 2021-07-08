@@ -108,15 +108,13 @@ class VideoSubtitles extends StatelessWidget {
                               text: span.text,
                               style: style.copyWith(
                                 letterSpacing: letterSpacing != null ? letterSpacing * viewScale : null,
-                                shadows: shadows != null
-                                    ? shadows
-                                        .map((v) => Shadow(
-                                              color: v.color,
-                                              offset: v.offset * viewScale,
-                                              blurRadius: v.blurRadius * viewScale,
-                                            ))
-                                        .toList()
-                                    : null,
+                                shadows: shadows
+                                    ?.map((v) => Shadow(
+                                          color: v.color,
+                                          offset: v.offset * viewScale,
+                                          blurRadius: v.blurRadius * viewScale,
+                                        ))
+                                    .toList(),
                               ),
                             );
                           }).toList();

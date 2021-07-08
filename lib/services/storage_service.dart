@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:typed_data';
 
+import 'package:aves/services/output_buffer.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -26,11 +28,16 @@ abstract class StorageService {
 
   // returns media URI
   Future<Uri?> scanFile(String path, String mimeType);
+
+  // return whether operation succeeded (`null` if user cancelled)
+  Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
+
+  Future<Uint8List> openFile(String mimeType);
 }
 
 class PlatformStorageService implements StorageService {
   static const platform = MethodChannel('deckers.thibault/aves/storage');
-  static final StreamsChannel storageAccessChannel = StreamsChannel('deckers.thibault/aves/storageaccessstream');
+  static final StreamsChannel storageAccessChannel = StreamsChannel('deckers.thibault/aves/storage_access_stream');
 
   @override
   Future<Set<StorageVolume>> getStorageVolumes() async {
@@ -113,9 +120,10 @@ class PlatformStorageService implements StorageService {
     try {
       final completer = Completer<bool>();
       storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'requestVolumeAccess',
         'path': volumePath,
       }).listen(
-        (data) => completer.complete(data as bool?),
+        (data) => completer.complete(data as bool),
         onError: completer.completeError,
         onDone: () {
           if (!completer.isCompleted) completer.complete(false);
@@ -157,5 +165,56 @@ class PlatformStorageService implements StorageService {
       debugPrint('scanFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return null;
+  }
+
+  @override
+  Future<bool?> createFile(String name, String mimeType, Uint8List bytes) async {
+    try {
+      final completer = Completer<bool>();
+      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'createFile',
+        'name': name,
+        'mimeType': mimeType,
+        'bytes': bytes,
+      }).listen(
+        (data) => completer.complete(data as bool?),
+        onError: completer.completeError,
+        onDone: () {
+          if (!completer.isCompleted) completer.complete(false);
+        },
+        cancelOnError: true,
+      );
+      return completer.future;
+    } on PlatformException catch (e) {
+      debugPrint('createFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return false;
+  }
+
+  @override
+  Future<Uint8List> openFile(String mimeType) async {
+    try {
+      final completer = Completer<Uint8List>.sync();
+      final sink = OutputBuffer();
+      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'openFile',
+        'mimeType': mimeType,
+      }).listen(
+        (data) {
+          final chunk = data as Uint8List;
+          sink.add(chunk);
+        },
+        onError: completer.completeError,
+        onDone: () {
+          sink.close();
+          completer.complete(sink.bytes);
+        },
+        cancelOnError: true,
+      );
+      return completer.future;
+    } on PlatformException catch (e) {
+      debugPrint('openFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return Uint8List(0);
   }
 }

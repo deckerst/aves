@@ -9,7 +9,6 @@ import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/services.dart';
-import 'package:aves/services/window_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
@@ -122,7 +121,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
     WidgetsBinding.instance!.addObserver(this);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      WindowService.keepScreenOn(true);
+      windowService.keepScreenOn(true);
     }
   }
 
@@ -210,7 +209,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
                 ),
                 _buildTopOverlay(),
                 _buildBottomOverlay(),
-                BottomGestureAreaProtector(),
+                const BottomGestureAreaProtector(),
               ],
             ),
           ),
@@ -399,11 +398,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
         settings: const RouteSettings(name: CollectionPage.routeName),
         builder: (context) {
           return CollectionPage(
-            CollectionLens(
+            collection: CollectionLens(
               source: baseCollection.source,
               filters: baseCollection.filters,
-              groupFactor: baseCollection.groupFactor,
-              sortFactor: baseCollection.sortFactor,
             )..addFilter(filter),
           );
         },
@@ -511,8 +508,9 @@ class _EntryViewerStackState extends State<EntryViewerStack> with SingleTickerPr
 
   void _onLeave() {
     _showSystemUI();
+    windowService.requestOrientation();
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      WindowService.keepScreenOn(false);
+      windowService.keepScreenOn(false);
     }
   }
 

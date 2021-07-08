@@ -103,10 +103,11 @@ class SectionHeader extends StatelessWidget {
           // as of Flutter v1.22.3, `RenderParagraph` fails to lay out `WidgetSpan` offscreen
           // so we use a hair space times a magic number to match width
           TextSpan(
+            // 23 hair spaces match a width of 40.0
             text: '\u200A' * (hasLeading ? 23 : 1),
             // force a higher first line to match leading icon/selector dimension
             style: TextStyle(height: 2.3 * textScaleFactor),
-          ), // 23 hair spaces match a width of 40.0
+          ),
           if (hasTrailing) TextSpan(text: '\u200A' * 17),
           TextSpan(
             text: title,

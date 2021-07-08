@@ -8,10 +8,11 @@ import 'package:flutter/widgets.dart';
 /// such as [PageView], [Dismissible], [BottomSheet].
 class MagnifierGestureDetectorScope extends InheritedWidget {
   const MagnifierGestureDetectorScope({
+    Key? key,
     required this.axis,
     this.touchSlopFactor = .8,
     required Widget child,
-  }) : super(child: child);
+  }) : super(key: key, child: child);
 
   static MagnifierGestureDetectorScope? of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<MagnifierGestureDetectorScope>();

@@ -49,6 +49,12 @@ class _CollectionGridState extends State<CollectionGrid> {
   TileExtentController? _tileExtentController;
 
   @override
+  void dispose() {
+    _tileExtentController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _tileExtentController ??= TileExtentController(
       settingsRouteKey: widget.settingsRouteKey ?? context.currentRouteName!,
@@ -324,8 +330,8 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
                 hasScrollBody: false,
                 child: _buildEmptyCollectionPlaceholder(collection),
               )
-            : SectionedListSliver<AvesEntry>(),
-        BottomPaddingSliver(),
+            : const SectionedListSliver<AvesEntry>(),
+        const BottomPaddingSliver(),
       ],
     );
   }

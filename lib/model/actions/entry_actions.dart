@@ -21,6 +21,8 @@ enum EntryAction {
   open,
   openMap,
   setAs,
+  // platform
+  rotateScreen,
   // debug
   debug,
 }
@@ -40,6 +42,7 @@ class EntryActions {
     EntryAction.export,
     EntryAction.print,
     EntryAction.viewSource,
+    EntryAction.rotateScreen,
   ];
 
   static const externalApp = [
@@ -93,6 +96,9 @@ extension ExtraEntryAction on EntryAction {
         return context.l10n.entryActionSetAs;
       case EntryAction.openMap:
         return context.l10n.entryActionOpenMap;
+      // platform
+      case EntryAction.rotateScreen:
+        return context.l10n.entryActionRotateScreen;
       // debug
       case EntryAction.debug:
         return 'Debug';
@@ -107,7 +113,7 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.delete:
         return AIcons.delete;
       case EntryAction.export:
-        return AIcons.export;
+        return AIcons.saveAs;
       case EntryAction.info:
         return AIcons.info;
       case EntryAction.rename:
@@ -132,6 +138,9 @@ extension ExtraEntryAction on EntryAction {
       case EntryAction.setAs:
       case EntryAction.openMap:
         return null;
+      // platform
+      case EntryAction.rotateScreen:
+        return AIcons.rotateScreen;
       // debug
       case EntryAction.debug:
         return AIcons.debug;

@@ -26,12 +26,9 @@ class SvgMetadataService {
       String? getAttribute(String attributeName) => root.attributes.firstWhereOrNull((a) => a.name.qualified == attributeName)?.value;
       double? tryParseWithoutUnit(String? s) => s == null ? null : double.tryParse(s.replaceAll(RegExp(r'[a-z%]'), ''));
 
-      final width = tryParseWithoutUnit(getAttribute('width'));
-      final height = tryParseWithoutUnit(getAttribute('height'));
-      if (width != null && height != null) {
-        return Size(width, height);
-      }
+      // prefer the viewbox over the viewport to determine size
 
+      // viewbox
       final viewBox = getAttribute('viewBox');
       if (viewBox != null) {
         final parts = viewBox.split(RegExp(r'[\s,]+'));
@@ -42,6 +39,13 @@ class SvgMetadataService {
             return Size(vbWidth, vbHeight);
           }
         }
+      }
+
+      // viewport
+      final width = tryParseWithoutUnit(getAttribute('width'));
+      final height = tryParseWithoutUnit(getAttribute('height'));
+      if (width != null && height != null) {
+        return Size(width, height);
       }
     } catch (error, stack) {
       debugPrint('failed to parse XML from SVG with error=$error\n$stack');
@@ -67,7 +71,10 @@ class SvgMetadataService {
 
       final docDir = Map.fromEntries([
         ...root.attributes.where((a) => _attributes.contains(a.name.qualified)).map((a) => MapEntry(formatKey(a.name.qualified), a.value)),
-        ..._textElements.map((name) => MapEntry(formatKey(name), root.getElement(name)?.text)).where((kv) => kv.value != null).cast<MapEntry<String, String >>(),
+        ..._textElements.map((name) {
+          final value = root.getElement(name)?.text;
+          return value != null ? MapEntry(formatKey(name), value) : null;
+        }).whereNotNull(),
       ]);
 
       final metadata = root.getElement(_metadataElement);

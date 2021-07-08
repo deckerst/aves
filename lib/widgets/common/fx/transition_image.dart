@@ -15,11 +15,12 @@ class TransitionImage extends StatefulWidget {
   final bool gaplessPlayback = false;
 
   const TransitionImage({
+    Key? key,
     required this.image,
     required this.animation,
     this.width,
     this.height,
-  });
+  }) : super(key: key);
 
   @override
   _TransitionImageState createState() => _TransitionImageState();

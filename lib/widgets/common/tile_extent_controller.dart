@@ -10,6 +10,7 @@ class TileExtentController {
   final double spacing, extentMin, extentMax;
   final ValueNotifier<double> extentNotifier = ValueNotifier(0);
 
+  late double userPreferredExtent;
   Size _viewportSize = Size.zero;
 
   Size get viewportSize => _viewportSize;
@@ -21,7 +22,20 @@ class TileExtentController {
     required this.extentMin,
     this.extentMax = 300,
     required this.spacing,
-  });
+  }) {
+    userPreferredExtent = settings.getTileExtent(settingsRouteKey);
+    settings.addListener(_onSettingsChanged);
+  }
+
+  void dispose() {
+    settings.removeListener(_onSettingsChanged);
+  }
+
+  void _onSettingsChanged() {
+    if (userPreferredExtent != settings.getTileExtent(settingsRouteKey)) {
+      _update();
+    }
+  }
 
   void setViewportSize(Size viewportSize) {
     // sanitize screen size (useful when reloading while screen is off, reporting a 0,0 size)
@@ -35,22 +49,18 @@ class TileExtentController {
     }
   }
 
-  double setUserPreferredExtent(double userPreferredExtent) => _update(userPreferredExtent: userPreferredExtent);
+  double setUserPreferredExtent(double extent) => _update(userPreferredExtent: extent.roundToDouble());
 
-  double _update({double userPreferredExtent = 0}) {
-    final oldUserPreferredExtent = settings.getTileExtent(settingsRouteKey);
-    final currentExtent = extentNotifier.value;
-    final targetExtent = userPreferredExtent > 0
-        ? userPreferredExtent
-        : oldUserPreferredExtent > 0
-            ? oldUserPreferredExtent
-            : currentExtent;
+  double _update({double? userPreferredExtent}) {
+    final preferredExtent = userPreferredExtent ?? settings.getTileExtent(settingsRouteKey);
+    final targetExtent = preferredExtent > 0 ? preferredExtent : extentNotifier.value;
 
     final columnCount = _effectiveColumnCountForExtent(targetExtent);
     final newExtent = _extentForColumnCount(columnCount);
 
-    if (userPreferredExtent > 0 || oldUserPreferredExtent == 0) {
-      settings.setTileExtent(settingsRouteKey, newExtent);
+    if (this.userPreferredExtent != preferredExtent) {
+      this.userPreferredExtent = preferredExtent;
+      settings.setTileExtent(settingsRouteKey, preferredExtent);
     }
     if (extentNotifier.value != newExtent) {
       extentNotifier.value = newExtent;

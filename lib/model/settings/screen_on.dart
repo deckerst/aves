@@ -1,4 +1,4 @@
-import 'package:aves/services/window_service.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/widgets.dart';
 
@@ -19,6 +19,6 @@ extension ExtraKeepScreenOn on KeepScreenOn {
   }
 
   void apply() {
-    WindowService.keepScreenOn(this == KeepScreenOn.always);
+    windowService.keepScreenOn(this == KeepScreenOn.always);
   }
 }

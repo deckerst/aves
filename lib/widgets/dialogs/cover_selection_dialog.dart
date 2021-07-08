@@ -17,9 +17,10 @@ class CoverSelectionDialog extends StatefulWidget {
   final AvesEntry? customEntry;
 
   const CoverSelectionDialog({
+    Key? key,
     required this.filter,
     required this.customEntry,
-  });
+  }) : super(key: key);
 
   @override
   _CoverSelectionDialogState createState() => _CoverSelectionDialogState();
@@ -118,7 +119,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
       MaterialPageRoute(
         settings: const RouteSettings(name: ItemPickDialog.routeName),
         builder: (context) => ItemPickDialog(
-          CollectionLens(
+          collection: CollectionLens(
             source: context.read<CollectionSource>(),
             filters: [filter],
           ),

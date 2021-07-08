@@ -1,4 +1,3 @@
-// @dart=2.9
 import 'dart:async';
 
 import 'package:aves/model/availability.dart';
@@ -15,6 +14,7 @@ import 'package:aves/services/metadata_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/storage_service.dart';
 import 'package:aves/services/time_service.dart';
+import 'package:aves/services/window_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +27,7 @@ import '../fake/metadata_db.dart';
 import '../fake/metadata_service.dart';
 import '../fake/storage_service.dart';
 import '../fake/time_service.dart';
+import '../fake/window_service.dart';
 
 void main() {
   const testAlbum = '${FakeStorageService.primaryPath}Pictures/test';
@@ -44,6 +45,7 @@ void main() {
     getIt.registerLazySingleton<MetadataService>(() => FakeMetadataService());
     getIt.registerLazySingleton<StorageService>(() => FakeStorageService());
     getIt.registerLazySingleton<TimeService>(() => FakeTimeService());
+    getIt.registerLazySingleton<WindowService>(() => FakeWindowService());
 
     await settings.init();
   });
@@ -134,7 +136,7 @@ void main() {
 
     final source = await _initSource();
     await image1.toggleFavourite();
-    final albumFilter = AlbumFilter(image1.directory, 'whatever');
+    final albumFilter = AlbumFilter(image1.directory!, 'whatever');
     await covers.set(albumFilter, image1.contentId);
     await source.removeEntries({image1.uri});
 
@@ -252,7 +254,7 @@ void main() {
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Cleanthes', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Chrysippus', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Chrysippus', '1'),
-      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}', '1'),
+      FakeMediaStoreService.newImage(FakeStorageService.primaryPath, '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Seneca', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Seneca', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Cicero', '1'),

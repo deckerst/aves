@@ -2,8 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:aves/model/entry.dart';
-import 'package:aves/widgets/collection/thumbnail/raster.dart';
-import 'package:aves/widgets/collection/thumbnail/vector.dart';
+import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -22,22 +21,25 @@ class ImageMarker extends StatelessWidget {
   static const innerBorderRadius = BorderRadius.all(Radius.circular(outerBorderRadiusDim - outerBorderWidth));
 
   const ImageMarker({
+    Key? key,
     required this.entry,
     required this.extent,
     this.pointerSize = Size.zero,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final thumbnail = entry.isSvg
-        ? VectorImageThumbnail(
-            entry: entry,
-            extent: extent,
-          )
-        : RasterImageThumbnail(
-            entry: entry,
-            extent: extent,
-          );
+    Widget child = ThumbnailImage(
+      entry: entry,
+      extent: extent,
+    );
+
+    // need to be sized for the Google Maps marker generator
+    child = SizedBox(
+      width: extent,
+      height: extent,
+      child: child,
+    );
 
     const outerDecoration = BoxDecoration(
       border: Border.fromBorderSide(BorderSide(
@@ -71,7 +73,7 @@ class ImageMarker extends StatelessWidget {
             position: DecorationPosition.foreground,
             child: ClipRRect(
               borderRadius: innerBorderRadius,
-              child: thumbnail,
+              child: child,
             ),
           ),
         ),

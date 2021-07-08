@@ -1,12 +1,16 @@
+import 'package:aves/ref/mime_types.dart';
+
 class MimeUtils {
   static String displayType(String mime) {
     switch (mime) {
-      case 'image/x-icon':
-        return 'ICO';
-      case 'image/x-jg':
+      case MimeTypes.art:
         return 'ART';
-      case 'image/vnd.adobe.photoshop':
-      case 'image/x-photoshop':
+      case MimeTypes.ico:
+        return 'ICO';
+      case MimeTypes.mov:
+        return 'MOV';
+      case MimeTypes.psdVnd:
+      case MimeTypes.psdX:
         return 'PSD';
       default:
         final patterns = [
