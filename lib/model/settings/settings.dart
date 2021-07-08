@@ -86,8 +86,7 @@ class Settings extends ChangeNotifier {
   static const coordinateFormatKey = 'coordinates_format';
 
   // rendering
-  static const rasterBackgroundKey = 'raster_background';
-  static const vectorBackgroundKey = 'vector_background';
+  static const imageBackgroundKey = 'image_background';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -317,13 +316,9 @@ class Settings extends ChangeNotifier {
 
   // rendering
 
-  EntryBackground get rasterBackground => getEnumOrDefault(rasterBackgroundKey, EntryBackground.white, EntryBackground.values);
+  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, EntryBackground.white, EntryBackground.values);
 
-  set rasterBackground(EntryBackground newValue) => setAndNotify(rasterBackgroundKey, newValue.toString());
-
-  EntryBackground get vectorBackground => getEnumOrDefault(vectorBackgroundKey, EntryBackground.white, EntryBackground.values);
-
-  set vectorBackground(EntryBackground newValue) => setAndNotify(vectorBackgroundKey, newValue.toString());
+  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
 
   // search
 
@@ -480,8 +475,7 @@ class Settings extends ChangeNotifier {
             case subtitleTextAlignmentKey:
             case infoMapStyleKey:
             case coordinateFormatKey:
-            case rasterBackgroundKey:
-            case vectorBackgroundKey:
+            case imageBackgroundKey:
               if (value is String) {
                 _prefs!.setString(key, value);
               } else {

@@ -565,10 +565,8 @@
 
   "settingsSectionViewer": "Viewer",
   "@settingsSectionViewer": {},
-  "settingsRasterImageBackground": "Raster image background",
-  "@settingsRasterImageBackground": {},
-  "settingsVectorImageBackground": "Vector image background",
-  "@settingsVectorImageBackground": {},
+  "settingsImageBackground": "Image background",
+  "@settingsImageBackground": {},
   "settingsViewerShowMinimap": "Show minimap",
   "@settingsViewerShowMinimap": {},
   "settingsViewerShowInformation": "Show information",

@@ -185,7 +185,7 @@ class VideoMetadataFormatter {
                       profileString = profile.toString();
                       break;
                   }
-                  save('Codec Profile', profileString);
+                  save('Format Profile', profileString);
                 }
                 break;
               }

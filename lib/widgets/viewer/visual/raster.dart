@@ -191,7 +191,7 @@ class _RasterImageViewState extends State<RasterImageView> {
     final decorationSize = (applyBoxFit(BoxFit.none, viewSize, viewportSize).source - const Offset(.5, .5)) as Size;
 
     Widget child;
-    final background = settings.rasterBackground;
+    final background = settings.imageBackground;
     if (background == EntryBackground.checkered) {
       final side = viewportSize.shortestSide;
       final checkSize = side / ((side / EntryPageView.decorationCheckSize).round());
