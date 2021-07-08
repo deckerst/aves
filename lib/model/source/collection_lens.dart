@@ -37,7 +37,7 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     Iterable<CollectionFilter?>? filters,
     this.id,
     this.listenToSource = true,
-  })  : filters = (filters ?? {}).where((f) => f != null).cast<CollectionFilter>().toSet(),
+  })  : filters = (filters ?? {}).whereNotNull().toSet(),
         groupFactor = settings.collectionGroupFactor,
         sortFactor = settings.collectionSortFactor {
     id ??= hashCode;

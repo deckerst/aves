@@ -226,7 +226,7 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
           final rawTags = formatCount.map((key, value) {
             final count = value.length;
             // remove duplicate names, so number of displayed names may not match displayed count
-            final names = value.where((v) => v != null).cast<String>().toSet().toList()..sort(compareAsciiUpperCase);
+            final names = value.whereNotNull().toSet().toList()..sort(compareAsciiUpperCase);
             return MapEntry(key, '$count items: ${names.join(', ')}');
           });
           directories.add(MetadataDirectory('Attachments', null, _toSortedTags(rawTags)));
@@ -237,15 +237,12 @@ class _MetadataSectionSliverState extends State<MetadataSectionSliver> {
   }
 
   SplayTreeMap<String, String> _toSortedTags(Map rawTags) {
-    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries
-        .map((tagKV) {
-          var value = (tagKV.value as String? ?? '').trim();
-          if (value.isEmpty) return null;
-          final tagName = tagKV.key as String;
-          return MapEntry(tagName, value);
-        })
-        .where((kv) => kv != null)
-        .cast<MapEntry<String, String>>()));
+    final tags = SplayTreeMap.of(Map.fromEntries(rawTags.entries.map((tagKV) {
+      var value = (tagKV.value as String? ?? '').trim();
+      if (value.isEmpty) return null;
+      final tagName = tagKV.key as String;
+      return MapEntry(tagName, value);
+    }).whereNotNull()));
     return tags;
   }
 }

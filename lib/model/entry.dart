@@ -541,7 +541,7 @@ class AvesEntry {
       _addressDetails?.countryName,
       _addressDetails?.adminArea,
       _addressDetails?.locality,
-    }.where((part) => part != null && part.isNotEmpty).join(', ');
+    }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
   }
 
   bool search(String query) => {

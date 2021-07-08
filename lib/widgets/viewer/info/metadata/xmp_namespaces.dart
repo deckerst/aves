@@ -62,8 +62,7 @@ class XmpNamespace {
           final prop = XmpProp(kv.key, kv.value);
           return extractData(prop) ? null : prop;
         })
-        .where((v) => v != null)
-        .cast<XmpProp>()
+        .whereNotNull()
         .toList()
           ..sort((a, b) => compareAsciiUpperCaseNatural(a.displayKey, b.displayKey));
 

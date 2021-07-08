@@ -41,8 +41,8 @@ class _AddShortcutDialogState extends State<AddShortcutDialog> {
     super.initState();
     final entries = collection.sortedEntries;
     if (entries.isNotEmpty) {
-      final coverEntries = filters.map(covers.coverContentId).where((id) => id != null).map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).where((entry) => entry != null);
-      _coverEntry = coverEntries.isNotEmpty ? coverEntries.first : entries.first;
+      final coverEntries = filters.map(covers.coverContentId).whereNotNull().map((id) => entries.firstWhereOrNull((entry) => entry.contentId == id)).whereNotNull();
+      _coverEntry = coverEntries.firstOrNull ?? entries.first;
     }
     _nameController.text = widget.defaultName;
     _validate();
