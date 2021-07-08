@@ -20,6 +20,8 @@ class SourceViewerPage extends StatefulWidget {
 class _SourceViewerPageState extends State<SourceViewerPage> {
   late Future<String> _loader;
 
+  static const maxCodeSize = 2 << 16; // 128kB
+
   @override
   void initState() {
     super.initState();
@@ -39,24 +41,22 @@ class _SourceViewerPageState extends State<SourceViewerPage> {
             if (snapshot.hasError) return Text(snapshot.error.toString());
             if (!snapshot.hasData) return const SizedBox.shrink();
 
-            final source = snapshot.data!;
-            final highlightView = AvesHighlightView(
-              input: source,
-              language: 'xml',
-              theme: darculaTheme,
-              padding: const EdgeInsets.all(8),
-              textStyle: const TextStyle(
-                fontSize: 12,
-              ),
-              tabSize: 4,
-            );
+            final data = snapshot.data!;
+            final source = data.length < maxCodeSize ? data : '${data.substring(0, maxCodeSize)}\n\n*** TRUNCATED ***';
+
             return Container(
               constraints: const BoxConstraints.expand(),
               child: Scrollbar(
                 child: SingleChildScrollView(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: highlightView,
+                  child: AvesHighlightView(
+                    input: source,
+                    language: 'xml',
+                    theme: darculaTheme,
+                    padding: const EdgeInsets.all(8),
+                    textStyle: const TextStyle(
+                      fontSize: 10,
+                    ),
+                    tabSize: 4,
                   ),
                 ),
               ),
