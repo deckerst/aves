@@ -16,7 +16,6 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/stats/filter_table.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -36,9 +35,10 @@ class StatsPage extends StatelessWidget {
   static const mimeDonutMinWidth = 124.0;
 
   StatsPage({
+    Key? key,
     required this.source,
     this.parentCollection,
-  }) {
+  }) : super(key: key) {
     entries.forEach((entry) {
       if (entry.hasAddress) {
         final address = entry.addressDetails!;
@@ -158,14 +158,14 @@ class StatsPage extends StatelessWidget {
       final availableWidth = constraints.maxWidth;
       final dim = max(minWidth, availableWidth / (availableWidth > 4 * minWidth ? 4 : (availableWidth > 2 * minWidth ? 2 : 1)));
 
-      final donut = Container(
+      final donut = SizedBox(
         width: dim,
         height: dim,
         child: Stack(
           children: [
             charts.PieChart(
               series,
-              defaultRenderer: charts.ArcRendererConfig(
+              defaultRenderer: charts.ArcRendererConfig<String>(
                 arcWidth: 16,
               ),
             ),
@@ -272,10 +272,12 @@ class StatsPage extends StatelessWidget {
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(CollectionLens(
-          source: source,
-          filters: [filter],
-        )),
+        builder: (context) => CollectionPage(
+          collection: CollectionLens(
+            source: source,
+            filters: [filter],
+          ),
+        ),
       ),
       (route) => false,
     );

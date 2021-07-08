@@ -23,8 +23,7 @@ class ViewerSection extends StatelessWidget {
     final currentShowOverlayMinimap = context.select<Settings, bool>((s) => s.showOverlayMinimap);
     final currentShowOverlayInfo = context.select<Settings, bool>((s) => s.showOverlayInfo);
     final currentShowOverlayShootingDetails = context.select<Settings, bool>((s) => s.showOverlayShootingDetails);
-    final currentRasterBackground = context.select<Settings, EntryBackground>((s) => s.rasterBackground);
-    final currentVectorBackground = context.select<Settings, EntryBackground>((s) => s.vectorBackground);
+    final currentImageBackground = context.select<Settings, EntryBackground>((s) => s.imageBackground);
 
     return AvesExpansionTile(
       leading: SettingsTileLeading(
@@ -35,7 +34,7 @@ class ViewerSection extends StatelessWidget {
       expandedNotifier: expandedNotifier,
       showHighlight: false,
       children: [
-        ViewerActionsTile(),
+        const ViewerActionsTile(),
         SwitchListTile(
           value: currentShowOverlayMinimap,
           onChanged: (v) => settings.showOverlayMinimap = v,
@@ -53,17 +52,10 @@ class ViewerSection extends StatelessWidget {
           title: Text(context.l10n.settingsViewerShowShootingDetails),
         ),
         ListTile(
-          title: Text(context.l10n.settingsRasterImageBackground),
+          title: Text(context.l10n.settingsImageBackground),
           trailing: EntryBackgroundSelector(
-            getter: () => currentRasterBackground,
-            setter: (value) => settings.rasterBackground = value,
-          ),
-        ),
-        ListTile(
-          title: Text(context.l10n.settingsVectorImageBackground),
-          trailing: EntryBackgroundSelector(
-            getter: () => currentVectorBackground,
-            setter: (value) => settings.vectorBackground = value,
+            getter: () => currentImageBackground,
+            setter: (value) => settings.imageBackground = value,
           ),
         ),
       ],

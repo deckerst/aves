@@ -132,8 +132,8 @@ mixin LocationMixin on SourceBase {
   }
 
   void updateLocations() {
-    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).cast<AddressDetails>().toList();
-    final updatedPlaces = locations.map((address) => address.place).where((s) => s != null && s.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase as int Function(String?, String?)?);
+    final locations = visibleEntries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails).whereNotNull().toList();
+    final updatedPlaces = locations.map((address) => address.place).whereNotNull().where((v) => v.isNotEmpty).toSet().toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedPlaces, sortedPlaces)) {
       sortedPlaces = List.unmodifiable(updatedPlaces);
       eventBus.fire(PlacesChangedEvent());
@@ -142,7 +142,10 @@ mixin LocationMixin on SourceBase {
     // the same country code could be found with different country names
     // e.g. if the locale changed between geocoding calls
     // so we merge countries by code, keeping only one name for each code
-    final countriesByCode = Map.fromEntries(locations.map((address) => MapEntry(address.countryCode, address.countryName)).where((kv) => kv.key != null && kv.key!.isNotEmpty));
+    final countriesByCode = Map.fromEntries(locations.map((address) {
+      final code = address.countryCode;
+      return code?.isNotEmpty == true ? MapEntry(code, address.countryName) : null;
+    }).whereNotNull());
     final updatedCountries = countriesByCode.entries.map((kv) => '${kv.value}${LocationFilter.locationSeparator}${kv.key}').toList()..sort(compareAsciiUpperCase);
     if (!listEquals(updatedCountries, sortedCountries)) {
       sortedCountries = List.unmodifiable(updatedCountries);
@@ -163,7 +166,7 @@ mixin LocationMixin on SourceBase {
       _filterEntryCountMap.clear();
       _filterRecentEntryMap.clear();
     } else {
-      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails!.countryCode).where((v) => v != null).cast<String>().toSet();
+      countryCodes = entries.where((entry) => entry.hasAddress).map((entry) => entry.addressDetails?.countryCode).whereNotNull().toSet();
       countryCodes.forEach(_filterEntryCountMap.remove);
     }
     eventBus.fire(CountrySummaryInvalidatedEvent(countryCodes));

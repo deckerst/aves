@@ -26,7 +26,7 @@ class ServicePolicy {
     Object? key,
   }) {
     Completer<T> completer;
-    _Task<T > task;
+    _Task<T> task;
     key ??= platformCall.hashCode;
     final toResume = _paused.remove(key);
     if (toResume != null) {
@@ -57,7 +57,7 @@ class ServicePolicy {
     final toResume = _paused.remove(key);
     if (toResume != null) {
       final priority = toResume.item1;
-      final task = toResume.item2 as _Task<T >;
+      final task = toResume.item2 as _Task<T>;
       _getQueue(priority)[key] = task;
       _pickNext();
       return task.completer.future;

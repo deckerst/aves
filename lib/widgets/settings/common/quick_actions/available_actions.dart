@@ -14,6 +14,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
   final String Function(BuildContext context, T action) actionText;
 
   const AvailableActionPanel({
+    Key? key,
     required this.allActions,
     required this.quickActions,
     required this.quickActionsChangeNotifier,
@@ -23,7 +24,7 @@ class AvailableActionPanel<T extends Object> extends StatelessWidget {
     required this.removeQuickAction,
     required this.actionIcon,
     required this.actionText,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

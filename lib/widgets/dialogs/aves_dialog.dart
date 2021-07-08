@@ -9,6 +9,7 @@ class AvesDialog extends AlertDialog {
   static const borderWidth = 1.0;
 
   AvesDialog({
+    Key? key,
     required BuildContext context,
     String? title,
     ScrollController? scrollController,
@@ -17,6 +18,7 @@ class AvesDialog extends AlertDialog {
     required List<Widget> actions,
   })  : assert((scrollableContent != null) ^ (content != null)),
         super(
+          key: key,
           title: title != null
               ? Padding(
                   // padding to avoid transparent border overlapping
@@ -64,7 +66,10 @@ class AvesDialog extends AlertDialog {
 class DialogTitle extends StatelessWidget {
   final String title;
 
-  const DialogTitle({required this.title});
+  const DialogTitle({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

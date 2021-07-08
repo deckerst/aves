@@ -21,8 +21,8 @@ class CheckeredPainter extends CustomPainter {
     final dx = offset.dx % (checkSize * 2);
     final dy = offset.dy % (checkSize * 2);
 
-    final xMax = size.width / checkSize;
-    final yMax = size.height / checkSize;
+    final xMax = (size.width / checkSize).ceil();
+    final yMax = (size.height / checkSize).ceil();
     for (var x = -2; x < xMax; x++) {
       for (var y = -2; y < yMax; y++) {
         if ((x + y) % 2 == 0) {

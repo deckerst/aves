@@ -8,7 +8,11 @@ class CollectionSearchButton extends StatelessWidget {
   final CollectionSource source;
   final CollectionLens? parentCollection;
 
-  const CollectionSearchButton(this.source, {this.parentCollection});
+  const CollectionSearchButton({
+    Key? key,
+    required this.source,
+    this.parentCollection,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

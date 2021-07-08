@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HiddenFilterTile extends StatelessWidget {
+  const HiddenFilterTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -18,7 +20,7 @@ class HiddenFilterTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             settings: const RouteSettings(name: HiddenFilterPage.routeName),
-            builder: (context) => HiddenFilterPage(),
+            builder: (context) => const HiddenFilterPage(),
           ),
         );
       },
@@ -29,6 +31,8 @@ class HiddenFilterTile extends StatelessWidget {
 class HiddenFilterPage extends StatelessWidget {
   static const routeName = '/settings/hidden';
 
+  const HiddenFilterPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,51 +40,70 @@ class HiddenFilterPage extends StatelessWidget {
         title: Text(context.l10n.settingsHiddenFiltersTitle),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Row(
+        child: Selector<Settings, Set<CollectionFilter>>(
+          selector: (context, s) => settings.hiddenFilters,
+          builder: (context, hiddenFilters, child) {
+            if (hiddenFilters.isEmpty) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(AIcons.info),
-                  const SizedBox(width: 16),
-                  Expanded(child: Text(context.l10n.settingsHiddenFiltersBanner)),
-                ],
-              ),
-            ),
-            const Divider(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Selector<Settings, Set<CollectionFilter>>(
-                  selector: (context, s) => settings.hiddenFilters,
-                  builder: (context, hiddenFilters, child) {
-                    if (hiddenFilters.isEmpty) {
-                      return EmptyContent(
+                  const _Header(),
+                  const Divider(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: EmptyContent(
                         icon: AIcons.hide,
                         text: context.l10n.settingsHiddenFiltersEmpty,
-                      );
-                    }
-                    final filterList = hiddenFilters.toList()..sort();
-                    return Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: filterList
-                          .map((filter) => AvesFilterChip(
-                                filter: filter,
-                                removable: true,
-                                onTap: (filter) => context.read<CollectionSource>().changeFilterVisibility(filter, true),
-                                onLongPress: null,
-                              ))
-                          .toList(),
-                    );
-                  },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            final filterList = hiddenFilters.toList()..sort();
+            return ListView(
+              children: [
+                const _Header(),
+                const Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: filterList
+                        .map((filter) => AvesFilterChip(
+                              filter: filter,
+                              removable: true,
+                              onTap: (filter) => context.read<CollectionSource>().changeFilterVisibility(filter, true),
+                              onLongPress: null,
+                            ))
+                        .toList(),
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         ),
+      ),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Row(
+        children: [
+          const Icon(AIcons.info),
+          const SizedBox(width: 16),
+          Expanded(child: Text(context.l10n.settingsHiddenFiltersBanner)),
+        ],
       ),
     );
   }

@@ -34,7 +34,7 @@ class PrivacySection extends StatelessWidget {
         SwitchListTile(
           value: currentIsCrashlyticsEnabled,
           onChanged: (v) => settings.isCrashlyticsEnabled = v,
-          title: Text(context.l10n.settingsEnableAnalytics),
+          title: Text(context.l10n.settingsEnableCrashReport),
         ),
         SwitchListTile(
           value: currentSaveSearchHistory,
@@ -46,8 +46,8 @@ class PrivacySection extends StatelessWidget {
           },
           title: Text(context.l10n.settingsSaveSearchHistory),
         ),
-        HiddenFilterTile(),
-        StorageAccessTile(),
+        const HiddenFilterTile(),
+        const StorageAccessTile(),
       ],
     );
   }

@@ -13,12 +13,14 @@ class CollectionNavTile extends StatelessWidget {
   final CollectionFilter? filter;
 
   const CollectionNavTile({
+    Key? key,
     required this.leading,
     required this.title,
     this.trailing,
     bool? dense,
     required this.filter,
-  }) : dense = dense ?? false;
+  })  : dense = dense ?? false,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +43,12 @@ class CollectionNavTile extends StatelessWidget {
       context,
       MaterialPageRoute(
         settings: const RouteSettings(name: CollectionPage.routeName),
-        builder: (context) => CollectionPage(CollectionLens(
-          source: context.read<CollectionSource>(),
-          filters: [filter],
-        )),
+        builder: (context) => CollectionPage(
+          collection: CollectionLens(
+            source: context.read<CollectionSource>(),
+            filters: [filter],
+          ),
+        ),
       ),
       (route) => false,
     );

@@ -9,7 +9,10 @@ import 'package:flutter/widgets.dart';
 class QueryBar extends StatefulWidget {
   final ValueNotifier<String> filterNotifier;
 
-  const QueryBar({required this.filterNotifier});
+  const QueryBar({
+    Key? key,
+    required this.filterNotifier,
+  }) : super(key: key);
 
   @override
   _QueryBarState createState() => _QueryBarState();

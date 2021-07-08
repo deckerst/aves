@@ -10,10 +10,11 @@ class ThumbnailTheme extends StatelessWidget {
   final Widget child;
 
   const ThumbnailTheme({
+    Key? key,
     required this.extent,
     this.showLocation,
     required this.child,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

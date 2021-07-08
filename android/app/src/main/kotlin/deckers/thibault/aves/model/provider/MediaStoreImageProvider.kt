@@ -38,7 +38,7 @@ class MediaStoreImageProvider : ImageProvider() {
         fetchFrom(context, isModified, handleNewEntry, VIDEO_CONTENT_URI, VIDEO_PROJECTION)
     }
 
-    override fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
         val id = uri.tryParseId()
         val onSuccess = fun(entry: FieldMap) {
             entry["uri"] = uri.toString()
@@ -46,11 +46,11 @@ class MediaStoreImageProvider : ImageProvider() {
         }
         val alwaysValid = { _: Int, _: Int -> true }
         if (id != null) {
-            if (mimeType == null || isImage(mimeType)) {
+            if (sourceMimeType == null || isImage(sourceMimeType)) {
                 val contentUri = ContentUris.withAppendedId(IMAGE_CONTENT_URI, id)
                 if (fetchFrom(context, alwaysValid, onSuccess, contentUri, IMAGE_PROJECTION)) return
             }
-            if (mimeType == null || isVideo(mimeType)) {
+            if (sourceMimeType == null || isVideo(sourceMimeType)) {
                 val contentUri = ContentUris.withAppendedId(VIDEO_CONTENT_URI, id)
                 if (fetchFrom(context, alwaysValid, onSuccess, contentUri, VIDEO_PROJECTION)) return
             }
@@ -58,7 +58,7 @@ class MediaStoreImageProvider : ImageProvider() {
         // the uri can be a file media URI (e.g. "content://0@media/external/file/30050")
         // without an equivalent image/video if it is shared from a file browser
         // but the file is not publicly visible
-        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = mimeType)) return
+        if (fetchFrom(context, alwaysValid, onSuccess, uri, BASE_PROJECTION, fileMimeType = sourceMimeType)) return
 
         callback.onFailure(Exception("failed to fetch entry at uri=$uri"))
     }

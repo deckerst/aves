@@ -13,7 +13,10 @@ class CollectionPage extends StatefulWidget {
 
   final CollectionLens collection;
 
-  const CollectionPage(this.collection);
+  const CollectionPage({
+    Key? key,
+    required this.collection,
+  }) : super(key: key);
 
   @override
   _CollectionPageState createState() => _CollectionPageState();
@@ -54,7 +57,7 @@ class _CollectionPageState extends State<CollectionPage> {
             ),
           ),
         ),
-        drawer: AppDrawer(),
+        drawer: const AppDrawer(),
         resizeToAvoidBottomInset: false,
       ),
     );

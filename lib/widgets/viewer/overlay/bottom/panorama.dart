@@ -4,7 +4,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/panorama_page.dart';
 import 'package:flutter/material.dart';
-import 'package:pedantic/pedantic.dart';
+import 'package:aves/utils/pedantic.dart';
 
 class PanoramaOverlay extends StatelessWidget {
   final AvesEntry entry;

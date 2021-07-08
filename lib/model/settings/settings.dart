@@ -1,24 +1,39 @@
+import 'dart:convert';
+
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/services.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final Settings settings = Settings._private();
 
 class Settings extends ChangeNotifier {
+  final EventChannel _platformSettingsChangeChannel = const EventChannel('deckers.thibault/aves/settingschange');
+
   static SharedPreferences? _prefs;
 
-  Settings._private();
+  Settings._private() {
+    _platformSettingsChangeChannel.receiveBroadcastStream().listen((event) => _onPlatformSettingsChange(event as Map?));
+  }
+
+  static const Set<String> internalKeys = {
+    hasAcceptedTermsKey,
+    catalogTimeZoneKey,
+    videoShowRawTimedTextKey,
+    searchHistoryKey,
+    lastVersionCheckDateKey,
+  };
 
   // app
   static const hasAcceptedTermsKey = 'has_accepted_terms';
@@ -71,8 +86,7 @@ class Settings extends ChangeNotifier {
   static const coordinateFormatKey = 'coordinates_format';
 
   // rendering
-  static const rasterBackgroundKey = 'raster_background';
-  static const vectorBackgroundKey = 'vector_background';
+  static const imageBackgroundKey = 'image_background';
 
   // search
   static const saveSearchHistoryKey = 'save_search_history';
@@ -85,6 +99,7 @@ class Settings extends ChangeNotifier {
   static const viewerQuickActionsDefault = [
     EntryAction.toggleFavourite,
     EntryAction.share,
+    EntryAction.rotateScreen,
   ];
   static const videoQuickActionsDefault = [
     VideoAction.replay10,
@@ -93,6 +108,7 @@ class Settings extends ChangeNotifier {
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    _isRotationLocked = await windowService.isRotationLocked();
   }
 
   // Crashlytics initialization is separated from the main settings initialization
@@ -100,15 +116,14 @@ class Settings extends ChangeNotifier {
   Future<void> initFirebase() async {
     await Firebase.app().setAutomaticDataCollectionEnabled(isCrashlyticsEnabled);
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(isCrashlyticsEnabled);
-    await FirebaseAnalytics().setAnalyticsCollectionEnabled(isCrashlyticsEnabled);
-    // enable analytics debug mode:
-    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app deckers.thibault.aves.debug
-    // disable analytics debug mode:
-    // # %ANDROID_SDK%/platform-tools/adb shell setprop debug.firebase.analytics.app .none.
   }
 
-  Future<void> reset() {
-    return _prefs!.clear();
+  Future<void> reset({required bool includeInternalKeys}) async {
+    if (includeInternalKeys) {
+      await _prefs!.clear();
+    } else {
+      await Future.forEach(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+    }
   }
 
   // app
@@ -173,9 +188,7 @@ class Settings extends ChangeNotifier {
 
   double getTileExtent(String routeName) => _prefs!.getDouble(tileExtentPrefixKey + routeName) ?? 0;
 
-  // do not notify, as tile extents are only used internally by `TileExtentController`
-  // and should not trigger rebuilding by change notification
-  void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue, notify: false);
+  void setTileExtent(String routeName, double newValue) => setAndNotify(tileExtentPrefixKey + routeName, newValue);
 
   // collection
 
@@ -217,11 +230,11 @@ class Settings extends ChangeNotifier {
 
   set tagSortFactor(ChipSortFactor newValue) => setAndNotify(tagSortFactorKey, newValue.toString());
 
-  Set<CollectionFilter> get pinnedFilters => (_prefs!.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toSet();
+  Set<CollectionFilter> get pinnedFilters => (_prefs!.getStringList(pinnedFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set pinnedFilters(Set<CollectionFilter> newValue) => setAndNotify(pinnedFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
-  Set<CollectionFilter> get hiddenFilters => (_prefs!.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toSet();
+  Set<CollectionFilter> get hiddenFilters => (_prefs!.getStringList(hiddenFiltersKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toSet();
 
   set hiddenFilters(Set<CollectionFilter> newValue) => setAndNotify(hiddenFiltersKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -303,13 +316,9 @@ class Settings extends ChangeNotifier {
 
   // rendering
 
-  EntryBackground get rasterBackground => getEnumOrDefault(rasterBackgroundKey, EntryBackground.transparent, EntryBackground.values);
+  EntryBackground get imageBackground => getEnumOrDefault(imageBackgroundKey, EntryBackground.white, EntryBackground.values);
 
-  set rasterBackground(EntryBackground newValue) => setAndNotify(rasterBackgroundKey, newValue.toString());
-
-  EntryBackground get vectorBackground => getEnumOrDefault(vectorBackgroundKey, EntryBackground.white, EntryBackground.values);
-
-  set vectorBackground(EntryBackground newValue) => setAndNotify(vectorBackgroundKey, newValue.toString());
+  set imageBackground(EntryBackground newValue) => setAndNotify(imageBackgroundKey, newValue.toString());
 
   // search
 
@@ -317,7 +326,7 @@ class Settings extends ChangeNotifier {
 
   set saveSearchHistory(bool newValue) => setAndNotify(saveSearchHistoryKey, newValue);
 
-  List<CollectionFilter> get searchHistory => (_prefs!.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).where((v) => v != null).cast<CollectionFilter>().toList();
+  List<CollectionFilter> get searchHistory => (_prefs!.getStringList(searchHistoryKey) ?? []).map(CollectionFilter.fromJson).whereNotNull().toList();
 
   set searchHistory(List<CollectionFilter> newValue) => setAndNotify(searchHistoryKey, newValue.map((filter) => filter.toJson()).toList());
 
@@ -342,11 +351,11 @@ class Settings extends ChangeNotifier {
     return defaultValue;
   }
 
-  List<T> getEnumListOrDefault<T>(String key, List<T> defaultValue, Iterable<T> values) {
-    return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).where((v) => v != null).cast<T>().toList() ?? defaultValue;
+  List<T> getEnumListOrDefault<T extends Object>(String key, List<T> defaultValue, Iterable<T> values) {
+    return _prefs!.getStringList(key)?.map((s) => values.firstWhereOrNull((v) => v.toString() == s)).whereNotNull().toList() ?? defaultValue;
   }
 
-  void setAndNotify(String key, dynamic newValue, {bool notify = true}) {
+  void setAndNotify(String key, dynamic newValue) {
     var oldValue = _prefs!.get(key);
     if (newValue == null) {
       _prefs!.remove(key);
@@ -366,7 +375,126 @@ class Settings extends ChangeNotifier {
       oldValue = _prefs!.getBool(key);
       _prefs!.setBool(key, newValue);
     }
-    if (oldValue != newValue && notify) {
+    if (oldValue != newValue) {
+      notifyListeners();
+    }
+  }
+
+  // platform settings
+
+  void _onPlatformSettingsChange(Map? fields) {
+    fields?.forEach((key, value) {
+      switch (key) {
+        // cf Android `Settings.System.ACCELEROMETER_ROTATION`
+        case 'accelerometer_rotation':
+          if (value is int) {
+            final newValue = value == 0;
+            if (_isRotationLocked != newValue) {
+              _isRotationLocked = newValue;
+              if (!_isRotationLocked) {
+                windowService.requestOrientation();
+              }
+              notifyListeners();
+            }
+          }
+          break;
+      }
+    });
+  }
+
+  bool _isRotationLocked = false;
+
+  bool get isRotationLocked => _isRotationLocked;
+
+  // import/export
+
+  String toJson() => jsonEncode(Map.fromEntries(
+        _prefs!.getKeys().whereNot(internalKeys.contains).map((k) => MapEntry(k, _prefs!.get(k))),
+      ));
+
+  Future<void> fromJson(String jsonString) async {
+    final jsonMap = jsonDecode(jsonString);
+    if (jsonMap is Map<String, dynamic>) {
+      // clear to restore defaults
+      await reset(includeInternalKeys: false);
+
+      // apply user modifications
+      jsonMap.forEach((key, value) {
+        if (key.startsWith(tileExtentPrefixKey)) {
+          if (value is double) {
+            _prefs!.setDouble(key, value);
+          } else {
+            debugPrint('failed to import key=$key, value=$value is not a double');
+          }
+        } else {
+          switch (key) {
+            case subtitleTextColorKey:
+            case subtitleBackgroundColorKey:
+              if (value is int) {
+                _prefs!.setInt(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not an int');
+              }
+              break;
+            case subtitleFontSizeKey:
+            case infoMapZoomKey:
+              if (value is double) {
+                _prefs!.setDouble(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a double');
+              }
+              break;
+            case isCrashlyticsEnabledKey:
+            case mustBackTwiceToExitKey:
+            case showThumbnailLocationKey:
+            case showThumbnailRawKey:
+            case showThumbnailVideoDurationKey:
+            case showOverlayMinimapKey:
+            case showOverlayInfoKey:
+            case showOverlayShootingDetailsKey:
+            case enableVideoHardwareAccelerationKey:
+            case enableVideoAutoPlayKey:
+            case subtitleShowOutlineKey:
+            case saveSearchHistoryKey:
+              if (value is bool) {
+                _prefs!.setBool(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a bool');
+              }
+              break;
+            case localeKey:
+            case keepScreenOnKey:
+            case homePageKey:
+            case collectionGroupFactorKey:
+            case collectionSortFactorKey:
+            case albumGroupFactorKey:
+            case albumSortFactorKey:
+            case countrySortFactorKey:
+            case tagSortFactorKey:
+            case videoLoopModeKey:
+            case subtitleTextAlignmentKey:
+            case infoMapStyleKey:
+            case coordinateFormatKey:
+            case imageBackgroundKey:
+              if (value is String) {
+                _prefs!.setString(key, value);
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a string');
+              }
+              break;
+            case pinnedFiltersKey:
+            case hiddenFiltersKey:
+            case viewerQuickActionsKey:
+            case videoQuickActionsKey:
+              if (value is List) {
+                _prefs!.setStringList(key, value.cast<String>());
+              } else {
+                debugPrint('failed to import key=$key, value=$value is not a list');
+              }
+              break;
+          }
+        }
+      });
       notifyListeners();
     }
   }

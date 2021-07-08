@@ -6,6 +6,8 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class DebugAndroidDirSection extends StatefulWidget {
+  const DebugAndroidDirSection({Key? key}) : super(key: key);
+
   @override
   _DebugAndroidDirSectionState createState() => _DebugAndroidDirSectionState();
 }
@@ -34,7 +36,7 @@ class _DebugAndroidDirSectionState extends State<DebugAndroidDirSection> with Au
               if (snapshot.hasError) return Text(snapshot.error.toString());
               if (snapshot.connectionState != ConnectionState.done) return const SizedBox.shrink();
               final data = SplayTreeMap.of(snapshot.data!.map((k, v) => MapEntry(k.toString(), v?.toString() ?? 'null')));
-              return InfoRowGroup(data);
+              return InfoRowGroup(info: data);
             },
           ),
         ),

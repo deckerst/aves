@@ -65,7 +65,7 @@ internal class ContentImageProvider : ImageProvider() {
         }
 
         val entry = SourceEntry(map).fillPreCatalogMetadata(context)
-        if (entry.isSized || entry.isSvg) {
+        if (entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
             callback.onFailure(Exception("entry has no size"))

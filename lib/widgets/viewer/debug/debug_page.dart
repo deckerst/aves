@@ -1,5 +1,4 @@
 import 'package:aves/app_mode.dart';
-import 'package:aves/image_providers/uri_picture_provider.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/entry_images.dart';
 import 'package:aves/theme/icons.dart';
@@ -7,7 +6,6 @@ import 'package:aves/widgets/viewer/debug/db.dart';
 import 'package:aves/widgets/viewer/debug/metadata.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -16,7 +14,10 @@ class ViewerDebugPage extends StatelessWidget {
 
   final AvesEntry entry;
 
-  const ViewerDebugPage({required this.entry});
+  const ViewerDebugPage({
+    Key? key,
+    required this.entry,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,97 +57,103 @@ class ViewerDebugPage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        InfoRowGroup({
-          'uri': '${entry.uri}',
-          'contentId': '${entry.contentId}',
-          'path': '${entry.path}',
-          'directory': '${entry.directory}',
-          'filenameWithoutExtension': '${entry.filenameWithoutExtension}',
-          'sourceTitle': '${entry.sourceTitle}',
-          'sourceMimeType': '${entry.sourceMimeType}',
-          'mimeType': '${entry.mimeType}',
-        }),
+        InfoRowGroup(
+          info: {
+            'uri': entry.uri,
+            'contentId': '${entry.contentId}',
+            'path': entry.path ?? '',
+            'directory': entry.directory ?? '',
+            'filenameWithoutExtension': entry.filenameWithoutExtension ?? '',
+            'sourceTitle': entry.sourceTitle ?? '',
+            'sourceMimeType': entry.sourceMimeType,
+            'mimeType': entry.mimeType,
+          },
+        ),
         const Divider(),
-        InfoRowGroup({
-          'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
-          'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
-          'bestDate': '${entry.bestDate}',
-        }),
+        InfoRowGroup(
+          info: {
+            'dateModifiedSecs': toDateValue(entry.dateModifiedSecs, factor: 1000),
+            'sourceDateTakenMillis': toDateValue(entry.sourceDateTakenMillis),
+            'bestDate': '${entry.bestDate}',
+          },
+        ),
         const Divider(),
-        InfoRowGroup({
-          'width': '${entry.width}',
-          'height': '${entry.height}',
-          'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
-          'rotationDegrees': '${entry.rotationDegrees}',
-          'isRotated': '${entry.isRotated}',
-          'isFlipped': '${entry.isFlipped}',
-          'displayAspectRatio': '${entry.displayAspectRatio}',
-          'displaySize': '${entry.displaySize}',
-        }),
+        InfoRowGroup(
+          info: {
+            'width': '${entry.width}',
+            'height': '${entry.height}',
+            'sourceRotationDegrees': '${entry.sourceRotationDegrees}',
+            'rotationDegrees': '${entry.rotationDegrees}',
+            'isRotated': '${entry.isRotated}',
+            'isFlipped': '${entry.isFlipped}',
+            'displayAspectRatio': '${entry.displayAspectRatio}',
+            'displaySize': '${entry.displaySize}',
+          },
+        ),
         const Divider(),
-        InfoRowGroup({
-          'durationMillis': '${entry.durationMillis}',
-          'durationText': '${entry.durationText}',
-        }),
+        InfoRowGroup(
+          info: {
+            'durationMillis': '${entry.durationMillis}',
+            'durationText': entry.durationText,
+          },
+        ),
         const Divider(),
-        InfoRowGroup({
-          'sizeBytes': '${entry.sizeBytes}',
-          'isFavourite': '${entry.isFavourite}',
-          'isSvg': '${entry.isSvg}',
-          'isPhoto': '${entry.isPhoto}',
-          'isVideo': '${entry.isVideo}',
-          'isCatalogued': '${entry.isCatalogued}',
-          'isAnimated': '${entry.isAnimated}',
-          'isGeotiff': '${entry.isGeotiff}',
-          'is360': '${entry.is360}',
-          'canEdit': '${entry.canEdit}',
-          'canEditExif': '${entry.canEditExif}',
-          'canRotateAndFlip': '${entry.canRotateAndFlip}',
-          'xmpSubjects': '${entry.xmpSubjects}',
-        }),
+        InfoRowGroup(
+          info: {
+            'sizeBytes': '${entry.sizeBytes}',
+            'isFavourite': '${entry.isFavourite}',
+            'isSvg': '${entry.isSvg}',
+            'isPhoto': '${entry.isPhoto}',
+            'isVideo': '${entry.isVideo}',
+            'isCatalogued': '${entry.isCatalogued}',
+            'isAnimated': '${entry.isAnimated}',
+            'isGeotiff': '${entry.isGeotiff}',
+            'is360': '${entry.is360}',
+            'canEdit': '${entry.canEdit}',
+            'canEditExif': '${entry.canEditExif}',
+            'canRotateAndFlip': '${entry.canRotateAndFlip}',
+            'xmpSubjects': '${entry.xmpSubjects}',
+          },
+        ),
         const Divider(),
-        InfoRowGroup({
-          'hasGps': '${entry.hasGps}',
-          'hasAddress': '${entry.hasAddress}',
-          'hasFineAddress': '${entry.hasFineAddress}',
-          'latLng': '${entry.latLng}',
-          'geoUri': '${entry.geoUri}',
-        }),
+        InfoRowGroup(
+          info: {
+            'hasGps': '${entry.hasGps}',
+            'hasAddress': '${entry.hasAddress}',
+            'hasFineAddress': '${entry.hasFineAddress}',
+            'latLng': '${entry.latLng}',
+            'geoUri': entry.geoUri ?? '',
+          },
+        ),
       ],
     );
   }
 
   Widget _buildThumbnailsTabView() {
-    final children = <Widget>[];
-    if (entry.isSvg) {
-      const extent = 128.0;
-      children.addAll([
-        const Text('SVG ($extent)'),
-        SvgPicture(
-          UriPicture(
-            uri: entry.uri,
-            mimeType: entry.mimeType,
-          ),
-          width: extent,
-          height: extent,
-        )
-      ]);
-    } else {
-      children.addAll(
-        entry.cachedThumbnails.expand((provider) => [
-              Text('Raster (${provider.key.extent})'),
-              Center(
-                child: Image(
-                  image: provider,
-                ),
-              ),
-              const SizedBox(height: 16),
-            ]),
-      );
-    }
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: children,
+      children: entry.cachedThumbnails
+          .expand((provider) => [
+                Text('Extent: ${provider.key.extent}'),
+                Center(
+                  child: Image(
+                    image: provider,
+                    frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                      return Container(
+                        foregroundDecoration: const BoxDecoration(
+                          border: Border.fromBorderSide(BorderSide(
+                            color: Colors.amber,
+                            width: .1,
+                          )),
+                        ),
+                        child: child,
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ])
+          .toList(),
     );
   }
 }

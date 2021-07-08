@@ -1,14 +1,11 @@
 name: aves
 description: A visual media gallery and metadata explorer app.
 repository: https://github.com/deckerst/aves
-version: 1.4.4+48
+version: 1.4.5+49
 publish_to: none
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
-
-# not null safe, as of 2021/06/07
-# `charts_flutter` - https://github.com/google/charts/issues/579
 
 dependencies:
   flutter:
@@ -29,28 +26,26 @@ dependencies:
       url: git://github.com/deckerst/fijkplayer.git
       ref: aves
   firebase_core:
-  firebase_analytics:
   firebase_crashlytics:
   flex_color_picker:
   flutter_highlight:
   flutter_map:
   flutter_markdown:
   flutter_staggered_animations:
-  flutter_svg:
   get_it:
   github:
   google_api_availability:
   google_maps_flutter:
   intl:
   latlong2:
-  material_design_icons_flutter:
+# TODO TLAD as of 2021/07/08, MDI package null safe version is pre-release
+  material_design_icons_flutter: '>=5.0.5955-rc.1'
   overlay_support:
   package_info_plus:
   palette_generator:
 # TODO TLAD upgrade panorama when this is fixed: https://github.com/zesage/panorama/issues/25 (bug in v0.4.1)
   panorama: 0.4.0
   pdf:
-  pedantic:
   percent_indicator:
   permission_handler:
   printing:
@@ -70,6 +65,7 @@ dev_dependencies:
     sdk: flutter
   flutter_driver:
     sdk: flutter
+  flutter_lints:
   test:
 
 flutter:

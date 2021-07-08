@@ -6,6 +6,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class AboutCredits extends StatelessWidget {
+  const AboutCredits({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Padding(

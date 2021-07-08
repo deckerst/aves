@@ -20,6 +20,8 @@ import 'package:tuple/tuple.dart';
 class TagListPage extends StatelessWidget {
   static const routeName = '/tags';
 
+  const TagListPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final source = context.read<CollectionSource>();

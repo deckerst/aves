@@ -5,7 +5,10 @@ import 'package:provider/provider.dart';
 class HighlightInfoProvider extends StatelessWidget {
   final Widget child;
 
-  const HighlightInfoProvider({required this.child});
+  const HighlightInfoProvider({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

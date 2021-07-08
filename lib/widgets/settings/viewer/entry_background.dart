@@ -9,9 +9,10 @@ class EntryBackgroundSelector extends StatefulWidget {
   final ValueSetter<EntryBackground> setter;
 
   const EntryBackgroundSelector({
+    Key? key,
     required this.getter,
     required this.setter,
-  });
+  }) : super(key: key);
 
   @override
   _EntryBackgroundSelectorState createState() => _EntryBackgroundSelectorState();
@@ -40,29 +41,7 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
       EntryBackground.white,
       EntryBackground.black,
       EntryBackground.checkered,
-      EntryBackground.transparent,
     ].map((selected) {
-      Widget? child;
-      switch (selected) {
-        case EntryBackground.transparent:
-          child = const Icon(
-            Icons.clear,
-            size: 20,
-            color: Colors.white30,
-          );
-          break;
-        case EntryBackground.checkered:
-          child = ClipOval(
-            child: CustomPaint(
-              painter: CheckeredPainter(
-                checkSize: radius,
-              ),
-            ),
-          );
-          break;
-        default:
-          break;
-      }
       return DropdownMenuItem<EntryBackground>(
         value: selected,
         child: Container(
@@ -73,7 +52,15 @@ class _EntryBackgroundSelectorState extends State<EntryBackgroundSelector> {
             border: AvesBorder.border,
             shape: BoxShape.circle,
           ),
-          child: child,
+          child: selected == EntryBackground.checkered
+              ? ClipOval(
+                  child: CustomPaint(
+                    painter: CheckeredPainter(
+                      checkSize: radius,
+                    ),
+                  ),
+                )
+              : null,
         ),
       );
     }).toList();

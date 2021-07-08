@@ -9,22 +9,19 @@ import android.os.Environment
 import android.os.storage.StorageManager
 import android.util.Log
 import androidx.annotation.RequiresApi
-import deckers.thibault.aves.MainActivity.Companion.VOLUME_ACCESS_REQUEST
+import deckers.thibault.aves.MainActivity
+import deckers.thibault.aves.PendingResultHandler
 import deckers.thibault.aves.utils.StorageUtils.PathSegments
 import java.io.File
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.ArrayList
 
 object PermissionManager {
     private val LOG_TAG = LogUtils.createTag<PermissionManager>()
 
-    // permission request code to pending runnable
-    private val pendingPermissionMap = ConcurrentHashMap<Int, PendingPermissionHandler>()
-
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun requestVolumeAccess(activity: Activity, path: String, onGranted: () -> Unit, onDenied: () -> Unit) {
-        Log.i(LOG_TAG, "request user to select and grant access permission to volume=$path")
+    fun requestVolumeAccess(activity: Activity, path: String, onGranted: (uri: Uri) -> Unit, onDenied: () -> Unit) {
+        Log.i(LOG_TAG, "request user to select and grant access permission to path=$path")
 
         var intent: Intent? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -38,18 +35,12 @@ object PermissionManager {
         }
 
         if (intent.resolveActivity(activity.packageManager) != null) {
-            pendingPermissionMap[VOLUME_ACCESS_REQUEST] = PendingPermissionHandler(path, onGranted, onDenied)
-            activity.startActivityForResult(intent, VOLUME_ACCESS_REQUEST, null)
+            MainActivity.pendingResultHandlers[MainActivity.DOCUMENT_TREE_ACCESS_REQUEST] = PendingResultHandler(path, onGranted, onDenied)
+            activity.startActivityForResult(intent, MainActivity.DOCUMENT_TREE_ACCESS_REQUEST)
         } else {
             Log.e(LOG_TAG, "failed to resolve activity for intent=$intent")
             onDenied()
         }
-    }
-
-    fun onPermissionResult(requestCode: Int, treeUri: Uri?) {
-        Log.d(LOG_TAG, "onPermissionResult with requestCode=$requestCode, treeUri=$treeUri")
-        val handler = pendingPermissionMap.remove(requestCode) ?: return
-        (if (treeUri != null) handler.onGranted else handler.onDenied)()
     }
 
     fun getGrantedDirForPath(context: Context, anyPath: String): String? {
@@ -167,8 +158,4 @@ object PermissionManager {
         }
         return accessibleDirs
     }
-
-    // onGranted: user gave access to a directory, with no guarantee that it matches the specified `path`
-    // onDenied: user cancelled
-    internal data class PendingPermissionHandler(val path: String, val onGranted: () -> Unit, val onDenied: () -> Unit)
 }

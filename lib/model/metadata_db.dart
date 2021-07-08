@@ -7,6 +7,7 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/metadata_db_upgrade.dart';
 import 'package:aves/services/services.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -430,7 +431,7 @@ class SqfliteMetadataDb implements MetadataDb {
   Future<Set<CoverRow>> loadCovers() async {
     final db = await _database;
     final maps = await db.query(coverTable);
-    final rows = maps.map(CoverRow.fromMap).where((v) => v != null).cast<CoverRow>().toSet();
+    final rows = maps.map(CoverRow.fromMap).whereNotNull().toSet();
     return rows;
   }
 

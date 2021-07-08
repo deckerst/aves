@@ -98,11 +98,11 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
   Widget _buildMapLayer() {
     switch (widget.style) {
       case EntryMapStyle.osmHot:
-        return OSMHotLayer();
+        return const OSMHotLayer();
       case EntryMapStyle.stamenToner:
-        return StamenTonerLayer();
+        return const StamenTonerLayer();
       case EntryMapStyle.stamenWatercolor:
-        return StamenWatercolorLayer();
+        return const StamenWatercolorLayer();
       default:
         return const SizedBox.shrink();
     }
@@ -159,6 +159,8 @@ class _EntryLeafletMapState extends State<EntryLeafletMap> with TickerProviderSt
 }
 
 class OSMHotLayer extends StatelessWidget {
+  const OSMHotLayer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TileLayerWidget(
@@ -172,6 +174,8 @@ class OSMHotLayer extends StatelessWidget {
 }
 
 class StamenTonerLayer extends StatelessWidget {
+  const StamenTonerLayer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TileLayerWidget(
@@ -185,6 +189,8 @@ class StamenTonerLayer extends StatelessWidget {
 }
 
 class StamenWatercolorLayer extends StatelessWidget {
+  const StamenWatercolorLayer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TileLayerWidget(

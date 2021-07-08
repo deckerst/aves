@@ -6,6 +6,8 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:flutter/material.dart';
 
 class AboutUpdate extends StatefulWidget {
+  const AboutUpdate({Key? key}) : super(key: key);
+
   @override
   _AboutUpdateState createState() => _AboutUpdateState();
 }

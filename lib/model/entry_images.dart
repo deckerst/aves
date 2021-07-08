@@ -27,21 +27,22 @@ extension ExtraAvesEntry on AvesEntry {
     );
   }
 
-  RegionProvider getRegion({required int sampleSize, Rectangle<int>? region}) {
-    return RegionProvider(_getRegionProviderKey(sampleSize, region));
-  }
-
-  RegionProviderKey _getRegionProviderKey(int sampleSize, Rectangle<int>? region) {
-    return RegionProviderKey(
+  RegionProvider getRegion({int sampleSize = 1, double scale = 1, required Rectangle<num> region}) {
+    return RegionProvider(RegionProviderKey(
       uri: uri,
       mimeType: mimeType,
       pageId: pageId,
       rotationDegrees: rotationDegrees,
       isFlipped: isFlipped,
       sampleSize: sampleSize,
-      region: region ?? Rectangle<int>(0, 0, width, height),
-      imageSize: Size(width.toDouble(), height.toDouble()),
-    );
+      region: Rectangle(
+        (region.left * scale).round(),
+        (region.top * scale).round(),
+        (region.width * scale).round(),
+        (region.height * scale).round(),
+      ),
+      imageSize: Size((width * scale).toDouble(), (height * scale).toDouble()),
+    ));
   }
 
   UriImage get uriImage => UriImage(

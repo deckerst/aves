@@ -12,6 +12,7 @@ import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/app_shortcut_service.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/entry_set_action_delegate.dart';
 import 'package:aves/widgets/collection/filter_bar.dart';
 import 'package:aves/widgets/common/app_bar_subtitle.dart';
@@ -26,7 +27,6 @@ import 'package:aves/widgets/stats/stats.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
@@ -175,7 +175,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     return [
       if (collection.isBrowsing && appMode.canSearch)
         CollectionSearchButton(
-          source,
+          source: source,
           parentCollection: collection,
         ),
       if (collection.isSelecting)
@@ -321,7 +321,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionGroupFactor = value;
-          collection.group(value);
         }
         break;
       case CollectionAction.sort:
@@ -341,7 +340,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
           settings.collectionSortFactor = value;
-          collection.sort(value);
         }
         break;
     }
@@ -349,7 +347,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   Future<void> _showShortcutDialog(BuildContext context) async {
     final filters = collection.filters;
-    var defaultName;
+    String? defaultName;
     if (filters.isNotEmpty) {
       // we compute the default name beforehand
       // because some filter labels need localization

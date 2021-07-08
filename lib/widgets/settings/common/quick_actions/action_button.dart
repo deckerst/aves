@@ -7,11 +7,12 @@ class ActionButton extends StatelessWidget {
   final bool enabled, showCaption;
 
   const ActionButton({
+    Key? key,
     required this.text,
     required this.icon,
     this.enabled = true,
     this.showCaption = true,
-  });
+  }) : super(key: key);
 
   static const padding = 8.0;
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 mixin PermissionAwareMixin {
   Future<bool> checkStoragePermission(BuildContext context, Set<AvesEntry> entries) {
-    return checkStoragePermissionForAlbums(context, entries.where((e) => e.path != null).map((e) => e.directory).cast<String>().toSet());
+    return checkStoragePermissionForAlbums(context, entries.map((e) => e.directory).whereNotNull().toSet());
   }
 
   Future<bool> checkStoragePermissionForAlbums(BuildContext context, Set<String> albumPaths) async {

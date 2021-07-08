@@ -13,6 +13,7 @@ import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
 import 'package:aves/widgets/common/action_mixins/feedback.dart';
 import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
@@ -28,7 +29,6 @@ import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:pedantic/pedantic.dart';
 import 'package:provider/provider.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
@@ -84,6 +84,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
+      case EntryAction.rotateScreen:
+        _rotateScreen(context);
+        break;
       case EntryAction.setAs:
         AndroidAppService.setAs(entry.uri, entry.mimeType).then((success) {
           if (!success) showNoMatchingAppDialog(context);
@@ -115,6 +118,17 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final success = await entry.rotate(clockwise: clockwise, persist: isMainMode(context));
     if (!success) showFeedback(context, context.l10n.genericFailureFeedback);
+  }
+
+  Future<void> _rotateScreen(BuildContext context) async {
+    switch (context.read<MediaQueryData>().orientation) {
+      case Orientation.landscape:
+        await windowService.requestOrientation(Orientation.portrait);
+        break;
+      case Orientation.portrait:
+        await windowService.requestOrientation(Orientation.landscape);
+        break;
+    }
   }
 
   Future<void> _showDeleteDialog(BuildContext context, AvesEntry entry) async {
@@ -207,18 +221,14 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
                   final targetCollection = CollectionLens(
                     source: source,
                     filters: {AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum))},
-                    groupFactor: _collection.groupFactor,
-                    sortFactor: _collection.sortFactor,
                   );
                   unawaited(Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       settings: const RouteSettings(name: CollectionPage.routeName),
-                      builder: (context) {
-                        return CollectionPage(
-                          targetCollection,
-                        );
-                      },
+                      builder: (context) => CollectionPage(
+                        collection: targetCollection,
+                      ),
                     ),
                     (route) => false,
                   ));
@@ -252,7 +262,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
   Future<void> _showRenameDialog(BuildContext context, AvesEntry entry) async {
     final newName = await showDialog<String>(
       context: context,
-      builder: (context) => RenameEntryDialog(entry),
+      builder: (context) => RenameEntryDialog(entry: entry),
     );
     if (newName == null || newName.isEmpty) return;
 

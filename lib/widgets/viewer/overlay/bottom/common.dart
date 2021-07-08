@@ -230,7 +230,7 @@ class _BottomOverlayContent extends AnimatedWidget {
               padding: const EdgeInsets.only(top: _interRowPadding),
               child: Row(
                 children: [
-                  Container(
+                  SizedBox(
                       width: subRowWidth,
                       child: _DateRow(
                         entry: pageEntry,
@@ -292,7 +292,7 @@ class _BottomOverlayContent extends AnimatedWidget {
           child: child,
         ),
         child: hasShootingDetails
-            ? Container(
+            ? SizedBox(
                 width: subRowWidth,
                 child: _ShootingRow(details!),
               )

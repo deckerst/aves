@@ -13,12 +13,13 @@ class ExpandableFilterRow extends StatelessWidget {
   final FilterCallback onTap;
 
   const ExpandableFilterRow({
+    Key? key,
     this.title,
     required this.filters,
     required this.expandedNotifier,
     this.heroTypeBuilder,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   static const double horizontalPadding = 8;
   static const double verticalPadding = 8;

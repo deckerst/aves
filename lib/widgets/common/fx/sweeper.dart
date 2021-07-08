@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
+import 'package:aves/utils/pedantic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:pedantic/pedantic.dart';
 
 class Sweeper extends StatefulWidget {
   final WidgetBuilder builder;

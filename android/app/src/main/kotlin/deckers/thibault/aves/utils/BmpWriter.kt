@@ -11,7 +11,7 @@ object BmpWriter {
     private val pad = ByteArray(3)
 
     // file header
-    private val bfType = byteArrayOf('B'.toByte(), 'M'.toByte())
+    private val bfType = byteArrayOf('B'.code.toByte(), 'M'.code.toByte())
     private val bfReserved1 = intToWord(0)
     private val bfReserved2 = intToWord(0)
     private val bfOffBits = intToDWord(FILE_HEADER_SIZE + INFO_HEADER_SIZE)

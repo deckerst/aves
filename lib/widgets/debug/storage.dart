@@ -6,6 +6,8 @@ import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:flutter/material.dart';
 
 class DebugStorageSection extends StatefulWidget {
+  const DebugStorageSection({Key? key}) : super(key: key);
+
   @override
   _DebugStorageSectionState createState() => _DebugStorageSectionState();
 }
@@ -38,13 +40,15 @@ class _DebugStorageSectionState extends State<DebugStorageSection> with Automati
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: InfoRowGroup({
-                'description': '${v.getDescription(context)}',
-                'isPrimary': '${v.isPrimary}',
-                'isRemovable': '${v.isRemovable}',
-                'state': '${v.state}',
-                if (freeSpace != null) 'freeSpace': formatFilesize(freeSpace),
-              }),
+              child: InfoRowGroup(
+                info: {
+                  'description': v.getDescription(context),
+                  'isPrimary': '${v.isPrimary}',
+                  'isRemovable': '${v.isRemovable}',
+                  'state': v.state,
+                  if (freeSpace != null) 'freeSpace': formatFilesize(freeSpace),
+                },
+              ),
             ),
             const Divider(),
           ];

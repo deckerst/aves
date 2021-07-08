@@ -19,6 +19,7 @@ class TiffRegionFetcher internal constructor(
         result: MethodChannel.Result,
     ) {
         try {
+            @Suppress("BlockingMethodInNonBlockingContext")
             val fd = context.contentResolver.openFileDescriptor(uri, "r")?.detachFd()
             if (fd == null) {
                 result.error("getRegion-tiff-fd", "failed to get file descriptor for uri=$uri", null)

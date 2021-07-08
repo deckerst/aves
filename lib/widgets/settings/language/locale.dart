@@ -12,12 +12,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class LocaleTile extends StatelessWidget {
   static const _systemLocaleOption = Locale('system');
 
+  const LocaleTile({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final current = settings.locale;
     return ListTile(
       title: Text(context.l10n.settingsLanguage),
-      subtitle: Text('${current == null ? context.l10n.settingsSystemDefault : _getLocaleName(current)}'),
+      subtitle: Text(current == null ? context.l10n.settingsSystemDefault : _getLocaleName(current)),
       onTap: () async {
         final value = await showDialog<Locale>(
           context: context,

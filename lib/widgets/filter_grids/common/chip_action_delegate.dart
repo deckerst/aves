@@ -43,13 +43,13 @@ class ChipActionDelegate {
         _showCoverSelectionDialog(context, filter);
         break;
       case ChipAction.goToAlbumPage:
-        _goTo(context, filter, AlbumListPage.routeName, (context) => AlbumListPage());
+        _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
         break;
       case ChipAction.goToCountryPage:
-        _goTo(context, filter, CountryListPage.routeName, (context) => CountryListPage());
+        _goTo(context, filter, CountryListPage.routeName, (context) => const CountryListPage());
         break;
       case ChipAction.goToTagPage:
-        _goTo(context, filter, TagListPage.routeName, (context) => TagListPage());
+        _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
         break;
       default:
         break;
@@ -207,7 +207,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
 
     final newName = await showDialog<String>(
       context: context,
-      builder: (context) => RenameAlbumDialog(album),
+      builder: (context) => RenameAlbumDialog(album: album),
     );
     if (newName == null || newName.isEmpty) return;
 

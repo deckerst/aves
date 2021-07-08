@@ -5,6 +5,7 @@ import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
 import 'package:aves/services/geocoding_service.dart';
 import 'package:aves/services/service_policy.dart';
@@ -33,7 +34,7 @@ class AvesEntry {
   // `dateModifiedSecs` can be missing in viewer mode
   int? _dateModifiedSecs;
   final int? sourceDateTakenMillis;
-  final int? durationMillis;
+  int? _durationMillis;
   int? _catalogDateMillis;
   CatalogMetadata? _catalogMetadata;
   AddressDetails? _addressDetails;
@@ -62,11 +63,12 @@ class AvesEntry {
     required String? sourceTitle,
     required int? dateModifiedSecs,
     required this.sourceDateTakenMillis,
-    required this.durationMillis,
+    required int? durationMillis,
   }) {
     this.path = path;
     this.sourceTitle = sourceTitle;
     this.dateModifiedSecs = dateModifiedSecs;
+    this.durationMillis = durationMillis;
   }
 
   bool get canDecode => !undecodable.contains(mimeType);
@@ -352,6 +354,13 @@ class AvesEntry {
     return d == null ? null : DateTime(d.year, d.month, d.day);
   }
 
+  int? get durationMillis => _durationMillis;
+
+  set durationMillis(int? durationMillis) {
+    _durationMillis = durationMillis;
+    _durationText = null;
+  }
+
   String? _durationText;
 
   String get durationText {
@@ -426,12 +435,17 @@ class AvesEntry {
       final size = await SvgMetadataService.getSize(this);
       if (size != null) {
         await _applyNewFields({
-          'width': size.width.round(),
-          'height': size.height.round(),
+          'width': size.width.ceil(),
+          'height': size.height.ceil(),
         }, persist: persist);
       }
       catalogMetadata = CatalogMetadata(contentId: contentId);
     } else {
+      if (isVideo && (!isSized || durationMillis == 0)) {
+        // exotic video that is not sized during loading
+        final fields = await VideoMetadataFormatter.getCatalogMetadata(this);
+        await _applyNewFields(fields, persist: persist);
+      }
       catalogMetadata = await metadataService.getCatalogMetadata(this, background: background);
     }
   }
@@ -527,7 +541,7 @@ class AvesEntry {
       _addressDetails?.countryName,
       _addressDetails?.adminArea,
       _addressDetails?.locality,
-    }.where((part) => part != null && part.isNotEmpty).join(', ');
+    }.whereNotNull().where((v) => v.isNotEmpty).join(', ');
   }
 
   bool search(String query) => {
@@ -552,6 +566,8 @@ class AvesEntry {
     if (width is int) this.width = width;
     final height = newFields['height'];
     if (height is int) this.height = height;
+    final durationMillis = newFields['durationMillis'];
+    if (durationMillis is int) this.durationMillis = durationMillis;
 
     final dateModifiedSecs = newFields['dateModifiedSecs'];
     if (dateModifiedSecs is int) this.dateModifiedSecs = dateModifiedSecs;

@@ -6,13 +6,13 @@ import deckers.thibault.aves.model.SourceEntry
 import java.io.File
 
 internal class FileImageProvider : ImageProvider() {
-    override fun fetchSingle(context: Context, uri: Uri, mimeType: String?, callback: ImageOpCallback) {
-        if (mimeType == null) {
+    override fun fetchSingle(context: Context, uri: Uri, sourceMimeType: String?, callback: ImageOpCallback) {
+        if (sourceMimeType == null) {
             callback.onFailure(Exception("MIME type is null for uri=$uri"))
             return
         }
 
-        val entry = SourceEntry(uri, mimeType)
+        val entry = SourceEntry(uri, sourceMimeType)
 
         val path = uri.path
         if (path != null) {
@@ -27,7 +27,7 @@ internal class FileImageProvider : ImageProvider() {
         }
         entry.fillPreCatalogMetadata(context)
 
-        if (entry.isSized || entry.isSvg) {
+        if (entry.isSized || entry.isSvg || entry.isVideo) {
             callback.onSuccess(entry.toMap())
         } else {
             callback.onFailure(Exception("entry has no size"))

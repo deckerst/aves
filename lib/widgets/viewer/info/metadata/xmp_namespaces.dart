@@ -62,15 +62,14 @@ class XmpNamespace {
           final prop = XmpProp(kv.key, kv.value);
           return extractData(prop) ? null : prop;
         })
-        .where((v) => v != null)
-        .cast<XmpProp>()
+        .whereNotNull()
         .toList()
           ..sort((a, b) => compareAsciiUpperCaseNatural(a.displayKey, b.displayKey));
 
     final content = [
       if (props.isNotEmpty)
         InfoRowGroup(
-          Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, formatValue(prop)))),
+          info: Map.fromEntries(props.map((prop) => MapEntry(prop.displayKey, formatValue(prop)))),
           maxValueLength: Constants.infoGroupMaxValueLength,
           linkHandlers: linkifyValues(props),
         ),
@@ -83,7 +82,7 @@ class XmpNamespace {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: HighlightTitle(
-                  displayTitle,
+                  title: displayTitle,
                   color: BrandColors.get(displayTitle),
                   selectable: true,
                 ),
