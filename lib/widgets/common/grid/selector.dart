@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:aves/model/entry.dart';
-import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/utils/math_utils.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/section_layout.dart';
@@ -10,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-class GridSelectionGestureDetector extends StatefulWidget {
+class GridSelectionGestureDetector<T> extends StatefulWidget {
   final bool selectable;
-  final CollectionLens collection;
+  final List<T> entries;
   final ScrollController scrollController;
   final ValueNotifier<double> appBarHeightNotifier;
   final Widget child;
@@ -20,17 +19,17 @@ class GridSelectionGestureDetector extends StatefulWidget {
   const GridSelectionGestureDetector({
     Key? key,
     this.selectable = true,
-    required this.collection,
+    required this.entries,
     required this.scrollController,
     required this.appBarHeightNotifier,
     required this.child,
   }) : super(key: key);
 
   @override
-  _GridSelectionGestureDetectorState createState() => _GridSelectionGestureDetectorState();
+  _GridSelectionGestureDetectorState createState() => _GridSelectionGestureDetectorState<T>();
 }
 
-class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetector> {
+class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDetector<T>> {
   bool _pressing = false, _selecting = false;
   late int _fromIndex, _lastToIndex;
   late Offset _localPosition;
@@ -38,9 +37,7 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
   late double _scrollSpeedFactor;
   Timer? _updateTimer;
 
-  CollectionLens get collection => widget.collection;
-
-  List<AvesEntry> get entries => collection.sortedEntries;
+  List<T> get entries => widget.entries;
 
   ScrollController get scrollController => widget.scrollController;
 
@@ -58,8 +55,9 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
               final fromEntry = _getEntryAt(details.localPosition);
               if (fromEntry == null) return;
 
-              collection.toggleSelection(fromEntry);
-              _selecting = collection.isSelected([fromEntry]);
+              final selection = context.read<Selection<T>>();
+              selection.toggleSelection(fromEntry);
+              _selecting = selection.isSelected([fromEntry]);
               _fromIndex = entries.indexOf(fromEntry);
               _lastToIndex = _fromIndex;
               _scrollableInsets = EdgeInsets.only(
@@ -134,41 +132,42 @@ class _GridSelectionGestureDetectorState extends State<GridSelectionGestureDetec
     }
   }
 
-  AvesEntry? _getEntryAt(Offset localPosition) {
+  T? _getEntryAt(Offset localPosition) {
     // as of Flutter v1.22.5, `hitTest` on the `ScrollView` render object works fine when it is static,
     // but when it is scrolling (through controller animation), result is incomplete and children are missing,
     // so we use custom layout computation instead to find the entry.
     final offset = Offset(0, scrollController.offset - appBarHeight) + localPosition;
-    final sectionedListLayout = context.read<SectionedListLayout<AvesEntry>>();
+    final sectionedListLayout = context.read<SectionedListLayout<T>>();
     return sectionedListLayout.getItemAt(offset);
   }
 
   void _toggleSelectionToIndex(int toIndex) {
     if (toIndex == -1) return;
 
+    final selection = context.read<Selection<T>>();
     if (_selecting) {
       if (toIndex <= _fromIndex) {
         if (toIndex < _lastToIndex) {
-          collection.addToSelection(entries.getRange(toIndex, min(_fromIndex, _lastToIndex)));
+          selection.addToSelection(entries.getRange(toIndex, min(_fromIndex, _lastToIndex)));
           if (_fromIndex < _lastToIndex) {
-            collection.removeFromSelection(entries.getRange(_fromIndex + 1, _lastToIndex + 1));
+            selection.removeFromSelection(entries.getRange(_fromIndex + 1, _lastToIndex + 1));
           }
         } else if (_lastToIndex < toIndex) {
-          collection.removeFromSelection(entries.getRange(_lastToIndex, toIndex));
+          selection.removeFromSelection(entries.getRange(_lastToIndex, toIndex));
         }
       } else if (_fromIndex < toIndex) {
         if (_lastToIndex < toIndex) {
-          collection.addToSelection(entries.getRange(max(_fromIndex, _lastToIndex), toIndex + 1));
+          selection.addToSelection(entries.getRange(max(_fromIndex, _lastToIndex), toIndex + 1));
           if (_lastToIndex < _fromIndex) {
-            collection.removeFromSelection(entries.getRange(_lastToIndex, _fromIndex));
+            selection.removeFromSelection(entries.getRange(_lastToIndex, _fromIndex));
           }
         } else if (toIndex < _lastToIndex) {
-          collection.removeFromSelection(entries.getRange(toIndex + 1, _lastToIndex + 1));
+          selection.removeFromSelection(entries.getRange(toIndex + 1, _lastToIndex + 1));
         }
       }
       _lastToIndex = toIndex;
     } else {
-      collection.removeFromSelection(entries.getRange(min(_fromIndex, toIndex), max(_fromIndex, toIndex) + 1));
+      selection.removeFromSelection(entries.getRange(min(_fromIndex, toIndex), max(_fromIndex, toIndex) + 1));
     }
   }
 }

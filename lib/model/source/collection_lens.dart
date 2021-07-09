@@ -18,7 +18,7 @@ import 'package:flutter/foundation.dart';
 
 import 'enums.dart';
 
-class CollectionLens with ChangeNotifier, CollectionActivityMixin {
+class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
   EntryGroupFactor groupFactor;
@@ -213,55 +213,6 @@ class CollectionLens with ChangeNotifier, CollectionActivityMixin {
     _sortedEntries?.removeWhere(entries.contains);
     sections.forEach((key, sectionEntries) => sectionEntries.removeWhere(entries.contains));
     sections = Map.unmodifiable(Map.fromEntries(sections.entries.where((kv) => kv.value.isNotEmpty)));
-    selection.removeAll(entries);
     notifyListeners();
-  }
-}
-
-mixin CollectionActivityMixin {
-  final ValueNotifier<Activity> _activityNotifier = ValueNotifier(Activity.browse);
-
-  ValueNotifier<Activity> get activityNotifier => _activityNotifier;
-
-  bool get isBrowsing => _activityNotifier.value == Activity.browse;
-
-  bool get isSelecting => _activityNotifier.value == Activity.select;
-
-  void browse() {
-    clearSelection();
-    _activityNotifier.value = Activity.browse;
-  }
-
-  void select() => _activityNotifier.value = Activity.select;
-
-  // selection
-
-  final AChangeNotifier selectionChangeNotifier = AChangeNotifier();
-
-  final Set<AvesEntry> _selection = {};
-
-  Set<AvesEntry> get selection => _selection;
-
-  bool isSelected(Iterable<AvesEntry> entries) => entries.every(selection.contains);
-
-  void addToSelection(Iterable<AvesEntry> entries) {
-    _selection.addAll(entries);
-    selectionChangeNotifier.notifyListeners();
-  }
-
-  void removeFromSelection(Iterable<AvesEntry> entries) {
-    _selection.removeAll(entries);
-    selectionChangeNotifier.notifyListeners();
-  }
-
-  void clearSelection() {
-    _selection.clear();
-    selectionChangeNotifier.notifyListeners();
-  }
-
-  void toggleSelection(AvesEntry entry) {
-    if (_selection.isEmpty) select();
-    if (!_selection.remove(entry)) _selection.add(entry);
-    selectionChangeNotifier.notifyListeners();
   }
 }
