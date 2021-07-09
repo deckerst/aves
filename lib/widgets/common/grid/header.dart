@@ -1,5 +1,6 @@
+import 'package:aves/model/entry.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/enums.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -79,11 +80,12 @@ class SectionHeader extends StatelessWidget {
   void _toggleSectionSelection(BuildContext context) {
     final collection = context.read<CollectionLens>();
     final sectionEntries = collection.sections[sectionKey]!;
-    final selected = collection.isSelected(sectionEntries);
-    if (selected) {
-      collection.removeFromSelection(sectionEntries);
+    final selection = context.read<Selection<AvesEntry>>();
+    final isSelected = selection.isSelected(sectionEntries);
+    if (isSelected) {
+      selection.removeFromSelection(sectionEntries);
     } else {
-      collection.addToSelection(sectionEntries);
+      selection.addToSelection(sectionEntries);
     }
   }
 
@@ -142,72 +144,82 @@ class _SectionSelectableLeading extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!selectable) return _buildBrowsing(context);
 
-    final collection = context.watch<CollectionLens>();
-    return ValueListenableBuilder<Activity>(
-      valueListenable: collection.activityNotifier,
-      builder: (context, activity, child) {
-        final child = collection.isSelecting
-            ? AnimatedBuilder(
-                animation: collection.selectionChangeNotifier,
-                builder: (context, child) {
-                  final sectionEntries = collection.sections[sectionKey]!;
-                  final selected = collection.isSelected(sectionEntries);
-                  final child = TooltipTheme(
-                    key: ValueKey(selected),
-                    data: TooltipTheme.of(context).copyWith(
-                      preferBelow: false,
-                    ),
-                    child: IconButton(
-                      iconSize: 26,
-                      padding: const EdgeInsets.only(top: 1),
-                      alignment: AlignmentDirectional.topStart,
-                      icon: Icon(selected ? AIcons.selected : AIcons.unselected),
-                      onPressed: onPressed,
-                      tooltip: selected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
-                      constraints: const BoxConstraints(
-                        minHeight: leadingDimension,
-                        minWidth: leadingDimension,
-                      ),
-                    ),
-                  );
-                  return AnimatedSwitcher(
-                    duration: Durations.sectionHeaderAnimation,
-                    switchInCurve: Curves.easeOutBack,
-                    switchOutCurve: Curves.easeOutBack,
-                    transitionBuilder: (child, animation) => ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
-                    child: child,
-                  );
-                },
-              )
-            : _buildBrowsing(context);
-        return AnimatedSwitcher(
-          duration: Durations.sectionHeaderAnimation,
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.easeInOut,
-          transitionBuilder: (child, animation) {
-            Widget transition = ScaleTransition(
-              scale: animation,
-              child: child,
-            );
-            if (browsingBuilder == null) {
-              // when switching with a header that has no icon,
-              // we also transition the size for a smooth push to the text
-              transition = SizeTransition(
-                axis: Axis.horizontal,
-                sizeFactor: animation,
-                child: transition,
-              );
-            }
-            return transition;
-          },
+    final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
+    final Widget child = isSelecting
+        ? _SectionSelectingLeading(
+            sectionKey: sectionKey,
+            onPressed: onPressed,
+          )
+        : _buildBrowsing(context);
+
+    return AnimatedSwitcher(
+      duration: Durations.sectionHeaderAnimation,
+      switchInCurve: Curves.easeInOut,
+      switchOutCurve: Curves.easeInOut,
+      transitionBuilder: (child, animation) {
+        Widget transition = ScaleTransition(
+          scale: animation,
           child: child,
         );
+        if (browsingBuilder == null) {
+          // when switching with a header that has no icon,
+          // we also transition the size for a smooth push to the text
+          transition = SizeTransition(
+            axis: Axis.horizontal,
+            sizeFactor: animation,
+            child: transition,
+          );
+        }
+        return transition;
       },
+      child: child,
     );
   }
 
   Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
+}
+
+class _SectionSelectingLeading extends StatelessWidget {
+  final SectionKey sectionKey;
+  final VoidCallback? onPressed;
+
+  const _SectionSelectingLeading({
+    Key? key,
+    required this.sectionKey,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final sectionEntries = context.watch<CollectionLens>().sections[sectionKey]!;
+    final selection = context.watch<Selection<AvesEntry>>();
+    final isSelected = selection.isSelected(sectionEntries);
+    return AnimatedSwitcher(
+      duration: Durations.sectionHeaderAnimation,
+      switchInCurve: Curves.easeOutBack,
+      switchOutCurve: Curves.easeOutBack,
+      transitionBuilder: (child, animation) => ScaleTransition(
+        scale: animation,
+        child: child,
+      ),
+      child: TooltipTheme(
+        key: ValueKey(isSelected),
+        data: TooltipTheme.of(context).copyWith(
+          preferBelow: false,
+        ),
+        child: IconButton(
+          iconSize: 26,
+          padding: const EdgeInsets.only(top: 1),
+          alignment: AlignmentDirectional.topStart,
+          icon: Icon(isSelected ? AIcons.selected : AIcons.unselected),
+          onPressed: onPressed,
+          tooltip: isSelected ? context.l10n.collectionDeselectSectionTooltip : context.l10n.collectionSelectSectionTooltip,
+          constraints: const BoxConstraints(
+            minHeight: SectionHeader.leadingDimension,
+            minWidth: SectionHeader.leadingDimension,
+          ),
+        ),
+      ),
+    );
+  }
 }

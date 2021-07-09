@@ -2,8 +2,7 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/source/collection_lens.dart';
-import 'package:aves/model/source/enums.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/thumbnail/theme.dart';
@@ -59,47 +58,41 @@ class ThumbnailSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final collection = context.watch<CollectionLens>();
-    return ValueListenableBuilder<Activity>(
-      valueListenable: collection.activityNotifier,
-      builder: (context, activity, child) {
-        final child = collection.isSelecting
-            ? AnimatedBuilder(
-                animation: collection.selectionChangeNotifier,
-                builder: (context, child) {
-                  final selected = collection.isSelected([entry]);
-                  var child = collection.isSelecting
-                      ? OverlayIcon(
-                          key: ValueKey(selected),
-                          icon: selected ? AIcons.selected : AIcons.unselected,
-                          size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
-                        )
-                      : const SizedBox.shrink();
-                  child = AnimatedSwitcher(
-                    duration: duration,
-                    switchInCurve: Curves.easeOutBack,
-                    switchOutCurve: Curves.easeOutBack,
-                    transitionBuilder: (child, animation) => ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
-                    child: child,
-                  );
-                  child = AnimatedContainer(
-                    duration: duration,
-                    alignment: AlignmentDirectional.topEnd,
-                    color: selected ? Colors.black54 : Colors.transparent,
-                    child: child,
-                  );
-                  return child;
-                },
-              )
-            : const SizedBox.shrink();
-        return AnimatedSwitcher(
-          duration: duration,
-          child: child,
-        );
-      },
+    final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
+    final child = isSelecting
+        ? Selector<Selection<AvesEntry>, bool>(
+            selector: (context, selection) => selection.isSelected([entry]),
+            builder: (context, isSelected, child) {
+              var child = isSelecting
+                  ? OverlayIcon(
+                      key: ValueKey(isSelected),
+                      icon: isSelected ? AIcons.selected : AIcons.unselected,
+                      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+                    )
+                  : const SizedBox.shrink();
+              child = AnimatedSwitcher(
+                duration: duration,
+                switchInCurve: Curves.easeOutBack,
+                switchOutCurve: Curves.easeOutBack,
+                transitionBuilder: (child, animation) => ScaleTransition(
+                  scale: animation,
+                  child: child,
+                ),
+                child: child,
+              );
+              child = AnimatedContainer(
+                duration: duration,
+                alignment: AlignmentDirectional.topEnd,
+                color: isSelected ? Colors.black54 : Colors.transparent,
+                child: child,
+              );
+              return child;
+            },
+          )
+        : const SizedBox.shrink();
+    return AnimatedSwitcher(
+      duration: duration,
+      child: child,
     );
   }
 }

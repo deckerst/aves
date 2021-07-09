@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
@@ -31,8 +33,8 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _showDeleteDialog(context);
         break;
       case EntryAction.share:
-        final collection = context.read<CollectionLens>();
-        AndroidAppService.shareEntries(collection.selection).then((success) {
+        final selection = context.read<Selection<AvesEntry>>().selection;
+        AndroidAppService.shareEntries(selection).then((success) {
           if (!success) showNoMatchingAppDialog(context);
         });
         break;
@@ -59,16 +61,18 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
   void _refreshMetadata(BuildContext context) {
     final collection = context.read<CollectionLens>();
-    collection.source.refreshMetadata(collection.selection);
-    collection.browse();
+    final selection = context.read<Selection<AvesEntry>>();
+    collection.source.refreshMetadata(selection.selection);
+    selection.browse();
   }
 
   Future<void> _moveSelection(BuildContext context, {required MoveType moveType}) async {
     final collection = context.read<CollectionLens>();
     final source = collection.source;
-    final selection = collection.selection;
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = selection.selection;
 
-    final selectionDirs = selection.map((e) => e.directory).whereNotNull().toSet();
+    final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
     if (moveType == MoveType.move) {
       // check whether moving is possible given OS restrictions,
       // before asking to pick a destination album
@@ -95,11 +99,11 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
 
     if (moveType == MoveType.move && !await checkStoragePermissionForAlbums(context, selectionDirs)) return;
 
-    if (!await checkFreeSpaceForMove(context, selection, destinationAlbum, moveType)) return;
+    if (!await checkFreeSpaceForMove(context, selectedItems, destinationAlbum, moveType)) return;
 
     // do not directly use selection when moving and post-processing items
     // as source monitoring may remove obsolete items from the original selection
-    final todoEntries = selection.toSet();
+    final todoEntries = selectedItems.toSet();
 
     final copy = moveType == MoveType.copy;
     final todoCount = todoEntries.length;
@@ -118,7 +122,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
           destinationAlbum: destinationAlbum,
           movedOps: movedOps,
         );
-        collection.browse();
+        selection.browse();
         source.resumeMonitoring();
 
         // cleanup
@@ -177,9 +181,10 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   Future<void> _showDeleteDialog(BuildContext context) async {
     final collection = context.read<CollectionLens>();
     final source = collection.source;
-    final selection = collection.selection;
-    final selectionDirs = selection.map((e) => e.directory).whereNotNull().toSet();
-    final todoCount = selection.length;
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = selection.selection;
+    final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
+    final todoCount = selectedItems.length;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -207,12 +212,12 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
       context: context,
-      opStream: imageFileService.delete(selection),
+      opStream: imageFileService.delete(selectedItems),
       itemCount: todoCount,
       onDone: (processed) async {
         final deletedUris = processed.where((event) => event.success).map((event) => event.uri).toSet();
         await source.removeEntries(deletedUris);
-        collection.browse();
+        selection.browse();
         source.resumeMonitoring();
 
         final deletedCount = deletedUris.length;

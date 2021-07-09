@@ -12,7 +12,6 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/app_bar.dart';
 import 'package:aves/widgets/collection/draggable_thumb_label.dart';
 import 'package:aves/widgets/collection/grid/section_layout.dart';
-import 'package:aves/widgets/collection/grid/selector.dart';
 import 'package:aves/widgets/collection/grid/thumbnail.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
 import 'package:aves/widgets/collection/thumbnail/theme.dart';
@@ -22,6 +21,7 @@ import 'package:aves/widgets/common/behaviour/sloppy_scroll_physics.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/extensions/media_query.dart';
 import 'package:aves/widgets/common/grid/item_tracker.dart';
+import 'package:aves/widgets/common/grid/selector.dart';
 import 'package:aves/widgets/common/grid/sliver.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
 import 'package:aves/widgets/common/identity/scroll_thumb.dart';
@@ -173,7 +173,7 @@ class _CollectionSectionedContentState extends State<_CollectionSectionedContent
     final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
     final selector = GridSelectionGestureDetector(
       selectable: isMainMode,
-      collection: collection,
+      entries: collection.sortedEntries,
       scrollController: scrollController,
       appBarHeightNotifier: appBarHeightNotifier,
       child: scaler,
