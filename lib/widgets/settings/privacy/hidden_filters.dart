@@ -76,7 +76,7 @@ class HiddenFilterPage extends StatelessWidget {
                         .map((filter) => AvesFilterChip(
                               filter: filter,
                               removable: true,
-                              onTap: (filter) => context.read<CollectionSource>().changeFilterVisibility(filter, true),
+                              onTap: (filter) => context.read<CollectionSource>().changeFilterVisibility({filter}, true),
                               onLongPress: null,
                             ))
                         .toList(),

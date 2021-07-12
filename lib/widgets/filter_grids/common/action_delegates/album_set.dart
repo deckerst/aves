@@ -1,143 +1,112 @@
 import 'dart:io';
 
-import 'package:aves/model/actions/chip_actions.dart';
+import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
-import 'package:aves/model/covers.dart';
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
-import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/model/source/enums.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
+import 'package:aves/theme/durations.dart';
 import 'package:aves/utils/android_file_utils.dart';
-import 'package:aves/widgets/common/action_mixins/feedback.dart';
-import 'package:aves/widgets/common/action_mixins/permission_aware.dart';
-import 'package:aves/widgets/common/action_mixins/size_aware.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
-import 'package:aves/widgets/dialogs/cover_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
-import 'package:aves/widgets/filter_grids/albums_page.dart';
-import 'package:aves/widgets/filter_grids/countries_page.dart';
-import 'package:aves/widgets/filter_grids/tags_page.dart';
-import 'package:collection/collection.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
-class ChipActionDelegate {
-  void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
-    switch (action) {
-      case ChipAction.pin:
-        settings.pinnedFilters = settings.pinnedFilters..add(filter);
-        break;
-      case ChipAction.unpin:
-        settings.pinnedFilters = settings.pinnedFilters..remove(filter);
-        break;
-      case ChipAction.hide:
-        _hide(context, filter);
-        break;
-      case ChipAction.setCover:
-        _showCoverSelectionDialog(context, filter);
-        break;
-      case ChipAction.goToAlbumPage:
-        _goTo(context, filter, AlbumListPage.routeName, (context) => const AlbumListPage());
-        break;
-      case ChipAction.goToCountryPage:
-        _goTo(context, filter, CountryListPage.routeName, (context) => const CountryListPage());
-        break;
-      case ChipAction.goToTagPage:
-        _goTo(context, filter, TagListPage.routeName, (context) => const TagListPage());
-        break;
-      default:
-        break;
-    }
-  }
+class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
+  final Iterable<FilterGridItem<AlbumFilter>> _items;
 
-  Future<void> _hide(BuildContext context, CollectionFilter filter) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AvesDialog(
-          context: context,
-          content: Text(context.l10n.hideFilterConfirmationDialogMessage),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: Text(context.l10n.hideButtonLabel),
-            ),
-          ],
-        );
-      },
-    );
-    if (confirmed == null || !confirmed) return;
+  AlbumChipSetActionDelegate(Iterable<FilterGridItem<AlbumFilter>> items) : _items = items;
 
-    final source = context.read<CollectionSource>();
-    source.changeFilterVisibility(filter, false);
-  }
-
-  void _showCoverSelectionDialog(BuildContext context, CollectionFilter filter) async {
-    final contentId = covers.coverContentId(filter);
-    final customEntry = context.read<CollectionSource>().visibleEntries.firstWhereOrNull((entry) => entry.contentId == contentId);
-    final coverSelection = await showDialog<Tuple2<bool, AvesEntry?>>(
-      context: context,
-      builder: (context) => CoverSelectionDialog(
-        filter: filter,
-        customEntry: customEntry,
-      ),
-    );
-    if (coverSelection == null) return;
-
-    final isCustom = coverSelection.item1;
-    await covers.set(filter, isCustom ? coverSelection.item2?.contentId : null);
-  }
-
-  void _goTo(
-    BuildContext context,
-    CollectionFilter filter,
-    String routeName,
-    WidgetBuilder pageBuilder,
-  ) {
-    context.read<HighlightInfo>().set(filter);
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        settings: RouteSettings(name: routeName),
-        builder: pageBuilder,
-      ),
-      (route) => false,
-    );
-  }
-}
-
-class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
   @override
-  void onActionSelected(BuildContext context, CollectionFilter filter, ChipAction action) {
-    super.onActionSelected(context, filter, action);
+  Iterable<FilterGridItem<AlbumFilter>> get allItems => _items;
+
+  @override
+  ChipSortFactor get sortFactor => settings.albumSortFactor;
+
+  @override
+  set sortFactor(ChipSortFactor factor) => settings.albumSortFactor = factor;
+
+  @override
+  bool isValid(Set<AlbumFilter> filters, ChipSetAction action) {
     switch (action) {
-      case ChipAction.delete:
-        _showDeleteDialog(context, filter as AlbumFilter);
+      case ChipSetAction.delete:
+      case ChipSetAction.rename:
+        return true;
+      default:
+        return super.isValid(filters, action);
+    }
+  }
+
+  @override
+  bool canApply(Set<AlbumFilter> filters, ChipSetAction action) {
+    switch (action) {
+      case ChipSetAction.rename:
+        {
+          if (filters.length != 1) return false;
+          // do not allow renaming volume root
+          final dir = VolumeRelativeDirectory.fromPath(filters.first.album);
+          return dir != null && dir.relativeDir.isNotEmpty;
+        }
+      default:
+        return super.canApply(filters, action);
+    }
+  }
+
+  @override
+  void onActionSelected(BuildContext context, Set<AlbumFilter> filters, ChipSetAction action) {
+    switch (action) {
+      // general
+      case ChipSetAction.group:
+        _showGroupDialog(context);
         break;
-      case ChipAction.rename:
-        _showRenameDialog(context, filter as AlbumFilter);
+      // single/multiple filters
+      case ChipSetAction.delete:
+        _showDeleteDialog(context, filters);
+        break;
+      // single filter
+      case ChipSetAction.rename:
+        _showRenameDialog(context, filters.first);
         break;
       default:
         break;
     }
+    super.onActionSelected(context, filters, action);
   }
 
-  Future<void> _showDeleteDialog(BuildContext context, AlbumFilter filter) async {
+  Future<void> _showGroupDialog(BuildContext context) async {
+    final factor = await showDialog<AlbumChipGroupFactor>(
+      context: context,
+      builder: (context) => AvesSelectionDialog<AlbumChipGroupFactor>(
+        initialValue: settings.albumGroupFactor,
+        options: {
+          AlbumChipGroupFactor.importance: context.l10n.albumGroupTier,
+          AlbumChipGroupFactor.volume: context.l10n.albumGroupVolume,
+          AlbumChipGroupFactor.none: context.l10n.albumGroupNone,
+        },
+        title: context.l10n.albumGroupTitle,
+      ),
+    );
+    // wait for the dialog to hide as applying the change may block the UI
+    await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
+    if (factor != null) {
+      settings.albumGroupFactor = factor;
+    }
+  }
+
+  Future<void> _showDeleteDialog(BuildContext context, Set<AlbumFilter> filters) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
-    final album = filter.album;
-    final todoEntries = source.visibleEntries.where(filter.test).toSet();
+    final albums = filters.map((v) => v.album).toSet();
+    final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoCount = todoEntries.length;
 
     final confirmed = await showDialog<bool>(
@@ -145,7 +114,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
       builder: (context) {
         return AvesDialog(
           context: context,
-          content: Text(l10n.deleteAlbumConfirmationDialogMessage(todoCount)),
+          content: Text(filters.length == 1 ? l10n.deleteSingleAlbumConfirmationDialogMessage(todoCount) : l10n.deleteMultiAlbumConfirmationDialogMessage(todoCount)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -161,7 +130,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
     );
     if (confirmed == null || !confirmed) return;
 
-    if (!await checkStoragePermissionForAlbums(context, {album})) return;
+    if (!await checkStoragePermissionForAlbums(context, albums)) return;
 
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
@@ -180,7 +149,7 @@ class AlbumChipActionDelegate extends ChipActionDelegate with FeedbackMixin, Per
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories({album});
+        await storageService.deleteEmptyDirectories(albums);
       },
     );
   }

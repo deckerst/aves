@@ -1,3 +1,4 @@
+import 'package:aves/model/entry.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/icons.dart';
@@ -33,7 +34,7 @@ class AlbumSectionHeader extends StatelessWidget {
         );
       }
     }
-    return SectionHeader(
+    return SectionHeader<AvesEntry>(
       sectionKey: EntryAlbumSectionKey(directory),
       leading: albumIcon,
       title: albumName ?? context.l10n.sectionUnknown,

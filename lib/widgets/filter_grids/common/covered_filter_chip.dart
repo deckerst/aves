@@ -16,29 +16,25 @@ import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/collection/thumbnail/image.dart';
 import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
-import 'package:aves/widgets/filter_grids/common/overlay.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DecoratedFilterChip extends StatelessWidget {
-  final CollectionFilter filter;
+class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
+  final T filter;
   final double extent, thumbnailExtent;
   final AvesEntry? coverEntry;
-  final bool pinned, highlightable;
+  final bool pinned;
   final FilterCallback? onTap;
-  final OffsetFilterCallback? onLongPress;
 
-  const DecoratedFilterChip({
+  const CoveredFilterChip({
     Key? key,
     required this.filter,
     required this.extent,
     double? thumbnailExtent,
     this.coverEntry,
     this.pinned = false,
-    this.highlightable = true,
     this.onTap,
-    this.onLongPress,
   })  : thumbnailExtent = thumbnailExtent ?? extent,
         super(key: key);
 
@@ -89,41 +85,23 @@ class DecoratedFilterChip extends StatelessWidget {
             extent: thumbnailExtent,
           );
     final titlePadding = min<double>(4.0, extent / 32);
-    final borderRadius = BorderRadius.all(radius(extent));
-    Widget child = AvesFilterChip(
-      filter: filter,
-      showGenericIcon: false,
-      background: backgroundImage,
-      details: _buildDetails(source, filter),
-      borderRadius: borderRadius,
-      padding: titlePadding,
-      onTap: onTap,
-      onLongPress: onLongPress,
-    );
-
-    child = Stack(
-      fit: StackFit.passthrough,
-      children: [
-        child,
-        if (highlightable)
-          ChipHighlightOverlay(
-            filter: filter,
-            extent: extent,
-            borderRadius: borderRadius,
-          ),
-      ],
-    );
-
-    child = SizedBox(
+    return SizedBox(
       width: extent,
       height: extent,
-      child: child,
+      child: AvesFilterChip(
+        filter: filter,
+        showGenericIcon: false,
+        background: backgroundImage,
+        details: _buildDetails(source, filter),
+        borderRadius: BorderRadius.all(radius(extent)),
+        padding: titlePadding,
+        onTap: onTap,
+        onLongPress: null,
+      ),
     );
-
-    return child;
   }
 
-  Widget _buildDetails(CollectionSource source, CollectionFilter filter) {
+  Widget _buildDetails(CollectionSource source, T filter) {
     final padding = min<double>(8.0, extent / 16);
     final iconSize = min<double>(14.0, extent / 8);
     final fontSize = min<double>(14.0, extent / 6);

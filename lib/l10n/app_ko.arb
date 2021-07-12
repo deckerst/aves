@@ -124,7 +124,8 @@
   "renameAlbumDialogLabel": "앨범 이름",
   "renameAlbumDialogLabelAlreadyExistsHelper": "사용 중인 이름입니다",
 
-  "deleteAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "renameEntryDialogLabel": "이름",
 
@@ -299,9 +300,9 @@
   "settingsSubtitleThemeTextOpacity": "글자 투명도",
   "settingsSubtitleThemeBackgroundColor": "배경 색상",
   "settingsSubtitleThemeBackgroundOpacity": "배경 투명도",
-  "settingsSubtitleThemeTextAlignmentLeft":  "왼쪽",
+  "settingsSubtitleThemeTextAlignmentLeft": "왼쪽",
   "settingsSubtitleThemeTextAlignmentCenter": "가운데",
-  "settingsSubtitleThemeTextAlignmentRight":  "오른쪽",
+  "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableCrashReport": "오류 보고서 보내기",

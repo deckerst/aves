@@ -46,7 +46,6 @@ class CollectionAppBar extends StatefulWidget {
 }
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
-  final TextEditingController _searchFieldController = TextEditingController();
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   late Future<bool> _canAddShortcutsLoader;
@@ -83,7 +82,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     _unregisterWidget(widget);
     _isSelectingNotifier.removeListener(_onActivityChange);
     _browseToSelectAnimation.dispose();
-    _searchFieldController.dispose();
     super.dispose();
   }
 
@@ -271,7 +269,6 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       _browseToSelectAnimation.forward();
     } else {
       _browseToSelectAnimation.reverse();
-      _searchFieldController.clear();
     }
   }
 
@@ -370,13 +367,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _goToSearch() {
     Navigator.push(
-        context,
-        SearchPageRoute(
-          delegate: CollectionSearchDelegate(
-            source: collection.source,
-            parentCollection: collection,
-          ),
-        ));
+      context,
+      SearchPageRoute(
+        delegate: CollectionSearchDelegate(
+          source: collection.source,
+          parentCollection: collection,
+        ),
+      ),
+    );
   }
 
   void _goToStats() {

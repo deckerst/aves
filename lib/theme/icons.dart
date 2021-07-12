@@ -50,6 +50,7 @@ class AIcons {
   static const IconData layers = Icons.layers_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
+  static const IconData unpin = MdiIcons.pinOffOutline;
   static const IconData play = Icons.play_arrow;
   static const IconData pause = Icons.pause;
   static const IconData print = Icons.print_outlined;
