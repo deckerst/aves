@@ -1,4 +1,3 @@
-import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -9,8 +8,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/album_set.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:collection/collection.dart';
@@ -38,32 +36,22 @@ class AlbumListPage extends StatelessWidget {
           animation: androidFileUtils.appNameChangeNotifier,
           builder: (context, child) => StreamBuilder(
             stream: source.eventBus.on<AlbumsChangedEvent>(),
-            builder: (context, snapshot) => FilterNavigationPage<AlbumFilter>(
-              source: source,
-              title: context.l10n.albumPageTitle,
-              sortFactor: settings.albumSortFactor,
-              groupable: true,
-              showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
-              chipSetActionDelegate: AlbumChipSetActionDelegate(),
-              chipActionDelegate: AlbumChipActionDelegate(),
-              chipActionsBuilder: (filter) {
-                final dir = VolumeRelativeDirectory.fromPath(filter.album);
-                // do not allow renaming volume root
-                final canRename = dir != null && dir.relativeDir.isNotEmpty;
-                return [
-                  settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
-                  ChipAction.setCover,
-                  if (canRename) ChipAction.rename,
-                  ChipAction.delete,
-                  ChipAction.hide,
-                ];
-              },
-              filterSections: getAlbumEntries(context, source),
-              emptyBuilder: () => EmptyContent(
-                icon: AIcons.album,
-                text: context.l10n.albumEmpty,
-              ),
-            ),
+            builder: (context, snapshot) {
+              final gridItems = getAlbumGridItems(context, source);
+              return FilterNavigationPage<AlbumFilter>(
+                source: source,
+                title: context.l10n.albumPageTitle,
+                sortFactor: settings.albumSortFactor,
+                groupable: true,
+                showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
+                actionDelegate: AlbumChipSetActionDelegate(gridItems),
+                filterSections: groupToSections(context, gridItems),
+                emptyBuilder: () => EmptyContent(
+                  icon: AIcons.album,
+                  text: context.l10n.albumEmpty,
+                ),
+              );
+            },
           ),
         );
       },
@@ -72,14 +60,13 @@ class AlbumListPage extends StatelessWidget {
 
   // common with album selection page to move/copy entries
 
-  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> getAlbumEntries(BuildContext context, CollectionSource source) {
+  static List<FilterGridItem<AlbumFilter>> getAlbumGridItems(BuildContext context, CollectionSource source) {
     final filters = source.rawAlbums.map((album) => AlbumFilter(album, source.getAlbumDisplayName(context, album))).toSet();
 
-    final sorted = FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
-    return _group(context, sorted);
+    return FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> _group(BuildContext context, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> groupToSections(BuildContext context, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<AlbumFilter>();
     final byPin = groupBy<FilterGridItem<AlbumFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
     final pinnedMapEntries = byPin[true] ?? [];

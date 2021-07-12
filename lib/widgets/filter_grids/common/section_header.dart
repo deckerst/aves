@@ -2,7 +2,7 @@ import 'package:aves/widgets/common/grid/header.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:flutter/material.dart';
 
-class FilterChipSectionHeader extends StatelessWidget {
+class FilterChipSectionHeader<T> extends StatelessWidget {
   final ChipSectionKey sectionKey;
 
   const FilterChipSectionHeader({
@@ -12,11 +12,10 @@ class FilterChipSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(
+    return SectionHeader<T>(
       sectionKey: sectionKey,
       leading: sectionKey.leading,
       title: sectionKey.title,
-      selectable: false,
     );
   }
 

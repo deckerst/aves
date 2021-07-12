@@ -1,38 +1,22 @@
-import 'dart:ui';
-
-import 'package:aves/app_mode.dart';
-import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
-import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/collection/collection_page.dart';
-import 'package:aves/widgets/common/app_bar_subtitle.dart';
-import 'package:aves/widgets/common/app_bar_title.dart';
-import 'package:aves/widgets/common/basic/menu_row.dart';
-import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:aves/widgets/common/identity/aves_filter_chip.dart';
-import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
+import 'package:aves/widgets/common/providers/selection_provider.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:aves/widgets/filter_grids/common/app_bar.dart';
 import 'package:aves/widgets/filter_grids/common/filter_grid_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
-import 'package:aves/widgets/search/search_button.dart';
-import 'package:aves/widgets/search/search_delegate.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
 
 class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
   final CollectionSource source;
   final String title;
-  final ChipSetActionDelegate chipSetActionDelegate;
   final ChipSortFactor sortFactor;
   final bool groupable, showHeaders;
-  final ChipActionDelegate chipActionDelegate;
-  final List<ChipAction> Function(T filter) chipActionsBuilder;
+  final ChipSetActionDelegate actionDelegate;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> filterSections;
   final Widget Function() emptyBuilder;
 
@@ -43,114 +27,54 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     required this.sortFactor,
     this.groupable = false,
     this.showHeaders = false,
-    required this.chipSetActionDelegate,
-    required this.chipActionDelegate,
-    required this.chipActionsBuilder,
+    required this.actionDelegate,
     required this.filterSections,
     required this.emptyBuilder,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final isMainMode = context.select<ValueNotifier<AppMode>, bool>((vn) => vn.value == AppMode.main);
-    return FilterGridPage<T>(
-      key: const Key('filter-grid-page'),
-      appBar: SliverAppBar(
-        title: InteractiveAppBarTitle(
-          onTap: () => _goToSearch(context),
-          child: SourceStateAwareAppBarTitle(
-            title: Text(title),
+    return SelectionProvider<FilterGridItem<T>>(
+      child: Builder(
+        builder: (context) => FilterGridPage<T>(
+          key: const Key('filter-grid-page'),
+          appBar: FilterGridAppBar<T>(
             source: source,
+            title: title,
+            actionDelegate: actionDelegate,
+            groupable: groupable,
+            isEmpty: filterSections.isEmpty,
           ),
-        ),
-        actions: _buildActions(context),
-        titleSpacing: 0,
-        floating: true,
-      ),
-      filterSections: filterSections,
-      sortFactor: sortFactor,
-      showHeaders: showHeaders,
-      queryNotifier: ValueNotifier(''),
-      emptyBuilder: () => ValueListenableBuilder<SourceState>(
-        valueListenable: source.stateNotifier,
-        builder: (context, sourceState, child) {
-          return sourceState != SourceState.loading ? emptyBuilder() : const SizedBox.shrink();
-        },
-      ),
-      onTap: (filter) => Navigator.push(
-        context,
-        MaterialPageRoute(
-          settings: const RouteSettings(name: CollectionPage.routeName),
-          builder: (context) => CollectionPage(
-            collection: CollectionLens(
-              source: source,
-              filters: [filter],
-            ),
+          sections: filterSections,
+          sortFactor: sortFactor,
+          showHeaders: showHeaders,
+          selectable: true,
+          queryNotifier: ValueNotifier(''),
+          emptyBuilder: () => ValueListenableBuilder<SourceState>(
+            valueListenable: source.stateNotifier,
+            builder: (context, sourceState, child) {
+              return sourceState != SourceState.loading ? emptyBuilder() : const SizedBox.shrink();
+            },
           ),
+          onTap: (filter) => _goToCollection(context, filter),
         ),
       ),
-      onLongPress: isMainMode ? _showMenu as OffsetFilterCallback : null,
     );
   }
 
-  void _showMenu(BuildContext context, T filter, Offset? tapPosition) async {
-    final overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
-    const touchArea = Size(40, 40);
-    final selectedAction = await showMenu<ChipAction>(
-      context: context,
-      position: RelativeRect.fromRect((tapPosition ?? Offset.zero) & touchArea, Offset.zero & overlay.size),
-      items: chipActionsBuilder(filter)
-          .map((action) => PopupMenuItem(
-                value: action,
-                child: MenuRow(text: action.getText(context), icon: action.getIcon()),
-              ))
-          .toList(),
-    );
-    if (selectedAction != null) {
-      // wait for the popup menu to hide before proceeding with the action
-      Future.delayed(Durations.popupMenuAnimation * timeDilation, () => chipActionDelegate.onActionSelected(context, filter, selectedAction));
-    }
-  }
-
-  List<Widget> _buildActions(BuildContext context) {
-    return [
-      CollectionSearchButton(source: source),
-      PopupMenuButton<ChipSetAction>(
-        key: const Key('appbar-menu-button'),
-        itemBuilder: (context) {
-          return [
-            PopupMenuItem(
-              key: const Key('menu-sort'),
-              value: ChipSetAction.sort,
-              child: MenuRow(text: context.l10n.menuActionSort, icon: AIcons.sort),
-            ),
-            if (groupable)
-              PopupMenuItem(
-                value: ChipSetAction.group,
-                child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
-              ),
-            PopupMenuItem(
-              value: ChipSetAction.stats,
-              child: MenuRow(text: context.l10n.menuActionStats, icon: AIcons.stats),
-            ),
-          ];
-        },
-        onSelected: (action) {
-          // wait for the popup menu to hide before proceeding with the action
-          Future.delayed(Durations.popupMenuAnimation * timeDilation, () => chipSetActionDelegate.onActionSelected(context, action));
-        },
-      ),
-    ];
-  }
-
-  void _goToSearch(BuildContext context) {
+  void _goToCollection(BuildContext context, CollectionFilter filter) {
     Navigator.push(
-        context,
-        SearchPageRoute(
-          delegate: CollectionSearchDelegate(
+      context,
+      MaterialPageRoute(
+        settings: const RouteSettings(name: CollectionPage.routeName),
+        builder: (context) => CollectionPage(
+          collection: CollectionLens(
             source: source,
+            filters: [filter],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   static int compareFiltersByDate(FilterGridItem<CollectionFilter> a, FilterGridItem<CollectionFilter> b) {
@@ -167,21 +91,23 @@ class FilterNavigationPage<T extends CollectionFilter> extends StatelessWidget {
     return a.filter.compareTo(b.filter);
   }
 
-  static Iterable<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
-    Iterable<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
-      return filters.map((filter) => FilterGridItem(
-            filter,
-            source.recentEntry(filter),
-          ));
+  static List<FilterGridItem<T>> sort<T extends CollectionFilter>(ChipSortFactor sortFactor, CollectionSource source, Set<T> filters) {
+    List<FilterGridItem<T>> toGridItem(CollectionSource source, Set<T> filters) {
+      return filters
+          .map((filter) => FilterGridItem(
+                filter,
+                source.recentEntry(filter),
+              ))
+          .toList();
     }
 
-    Iterable<FilterGridItem<T>> allMapEntries = {};
+    List<FilterGridItem<T>> allMapEntries = [];
     switch (sortFactor) {
       case ChipSortFactor.name:
-        allMapEntries = toGridItem(source, filters).toList()..sort(compareFiltersByName);
+        allMapEntries = toGridItem(source, filters)..sort(compareFiltersByName);
         break;
       case ChipSortFactor.date:
-        allMapEntries = toGridItem(source, filters).toList()..sort(compareFiltersByDate);
+        allMapEntries = toGridItem(source, filters)..sort(compareFiltersByDate);
         break;
       case ChipSortFactor.count:
         final filtersWithCount = List.of(filters.map((filter) => MapEntry(filter, source.count(filter))));

@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 class GridSelectionGestureDetector<T> extends StatefulWidget {
   final bool selectable;
-  final List<T> entries;
+  final List<T> items;
   final ScrollController scrollController;
   final ValueNotifier<double> appBarHeightNotifier;
   final Widget child;
@@ -19,7 +19,7 @@ class GridSelectionGestureDetector<T> extends StatefulWidget {
   const GridSelectionGestureDetector({
     Key? key,
     this.selectable = true,
-    required this.entries,
+    required this.items,
     required this.scrollController,
     required this.appBarHeightNotifier,
     required this.child,
@@ -37,7 +37,7 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
   late double _scrollSpeedFactor;
   Timer? _updateTimer;
 
-  List<T> get entries => widget.entries;
+  List<T> get items => widget.items;
 
   ScrollController get scrollController => widget.scrollController;
 
@@ -49,16 +49,17 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
 
   @override
   Widget build(BuildContext context) {
+    final selectable = widget.selectable;
     return GestureDetector(
-      onLongPressStart: widget.selectable
+      onLongPressStart: selectable
           ? (details) {
-              final fromEntry = _getEntryAt(details.localPosition);
-              if (fromEntry == null) return;
+              final fromItem = _getItemAt(details.localPosition);
+              if (fromItem == null) return;
 
               final selection = context.read<Selection<T>>();
-              selection.toggleSelection(fromEntry);
-              _selecting = selection.isSelected([fromEntry]);
-              _fromIndex = entries.indexOf(fromEntry);
+              selection.toggleSelection(fromItem);
+              _selecting = selection.isSelected([fromItem]);
+              _fromIndex = items.indexOf(fromItem);
               _lastToIndex = _fromIndex;
               _scrollableInsets = EdgeInsets.only(
                 top: appBarHeight,
@@ -68,18 +69,27 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
               _pressing = true;
             }
           : null,
-      onLongPressMoveUpdate: widget.selectable
+      onLongPressMoveUpdate: selectable
           ? (details) {
               if (!_pressing) return;
               _localPosition = details.localPosition;
               _onLongPressUpdate();
             }
           : null,
-      onLongPressEnd: widget.selectable
+      onLongPressEnd: selectable
           ? (details) {
               if (!_pressing) return;
               _setScrollSpeed(0);
               _pressing = false;
+            }
+          : null,
+      onTapUp: selectable && context.select<Selection<T>, bool>((selection) => selection.isSelecting)
+          ? (details) {
+              final item = _getItemAt(details.localPosition);
+              if (item == null) return;
+
+              final selection = context.read<Selection<T>>();
+              selection.toggleSelection(item);
             }
           : null,
       child: widget.child,
@@ -100,9 +110,9 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
       _setScrollSpeed(0);
     }
 
-    final toEntry = _getEntryAt(_localPosition);
-    if (toEntry != null) {
-      _toggleSelectionToIndex(entries.indexOf(toEntry));
+    final toItem = _getItemAt(_localPosition);
+    if (toItem != null) {
+      _toggleSelectionToIndex(items.indexOf(toItem));
     }
   }
 
@@ -126,16 +136,16 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
         duration: Duration(milliseconds: millis.round()),
         curve: Curves.linear,
       );
-      // use a timer to update the entry selection, because `onLongPressMoveUpdate`
+      // use a timer to update the selection, because `onLongPressMoveUpdate`
       // is not called when the pointer stays still while the view is scrolling
       _updateTimer = Timer.periodic(scrollUpdateInterval, (_) => _onLongPressUpdate());
     }
   }
 
-  T? _getEntryAt(Offset localPosition) {
+  T? _getItemAt(Offset localPosition) {
     // as of Flutter v1.22.5, `hitTest` on the `ScrollView` render object works fine when it is static,
     // but when it is scrolling (through controller animation), result is incomplete and children are missing,
-    // so we use custom layout computation instead to find the entry.
+    // so we use custom layout computation instead to find the item.
     final offset = Offset(0, scrollController.offset - appBarHeight) + localPosition;
     final sectionedListLayout = context.read<SectionedListLayout<T>>();
     return sectionedListLayout.getItemAt(offset);
@@ -148,26 +158,26 @@ class _GridSelectionGestureDetectorState<T> extends State<GridSelectionGestureDe
     if (_selecting) {
       if (toIndex <= _fromIndex) {
         if (toIndex < _lastToIndex) {
-          selection.addToSelection(entries.getRange(toIndex, min(_fromIndex, _lastToIndex)));
+          selection.addToSelection(items.getRange(toIndex, min(_fromIndex, _lastToIndex)));
           if (_fromIndex < _lastToIndex) {
-            selection.removeFromSelection(entries.getRange(_fromIndex + 1, _lastToIndex + 1));
+            selection.removeFromSelection(items.getRange(_fromIndex + 1, _lastToIndex + 1));
           }
         } else if (_lastToIndex < toIndex) {
-          selection.removeFromSelection(entries.getRange(_lastToIndex, toIndex));
+          selection.removeFromSelection(items.getRange(_lastToIndex, toIndex));
         }
       } else if (_fromIndex < toIndex) {
         if (_lastToIndex < toIndex) {
-          selection.addToSelection(entries.getRange(max(_fromIndex, _lastToIndex), toIndex + 1));
+          selection.addToSelection(items.getRange(max(_fromIndex, _lastToIndex), toIndex + 1));
           if (_lastToIndex < _fromIndex) {
-            selection.removeFromSelection(entries.getRange(_lastToIndex, _fromIndex));
+            selection.removeFromSelection(items.getRange(_lastToIndex, _fromIndex));
           }
         } else if (toIndex < _lastToIndex) {
-          selection.removeFromSelection(entries.getRange(toIndex + 1, _lastToIndex + 1));
+          selection.removeFromSelection(items.getRange(toIndex + 1, _lastToIndex + 1));
         }
       }
       _lastToIndex = toIndex;
     } else {
-      selection.removeFromSelection(entries.getRange(min(_fromIndex, toIndex), max(_fromIndex, toIndex) + 1));
+      selection.removeFromSelection(items.getRange(min(_fromIndex, toIndex), max(_fromIndex, toIndex) + 1));
     }
   }
 }

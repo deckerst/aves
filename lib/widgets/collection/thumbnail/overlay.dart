@@ -2,11 +2,8 @@ import 'dart:math';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/selection.dart';
-import 'package:aves/theme/durations.dart';
-import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/collection/thumbnail/theme.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
+import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/identity/aves_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +19,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final children = [
-      if (entry.hasGps && context.select<ThumbnailThemeData, bool>((t) => t.showLocation)) const GpsIcon(),
+      if (entry.hasGps && context.select<GridThemeData, bool>((t) => t.showLocation)) const GpsIcon(),
       if (entry.isVideo)
         VideoIcon(
           entry: entry,
@@ -30,7 +27,7 @@ class ThumbnailEntryOverlay extends StatelessWidget {
       else if (entry.isAnimated)
         const AnimatedImageIcon()
       else ...[
-        if (entry.isRaw && context.select<ThumbnailThemeData, bool>((t) => t.showRaw)) const RawIcon(),
+        if (entry.isRaw && context.select<GridThemeData, bool>((t) => t.showRaw)) const RawIcon(),
         if (entry.isMultiPage) MultiPageIcon(entry: entry),
         if (entry.isGeotiff) const GeotiffIcon(),
         if (entry.is360) const SphericalImageIcon(),
@@ -42,57 +39,6 @@ class ThumbnailEntryOverlay extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
-    );
-  }
-}
-
-class ThumbnailSelectionOverlay extends StatelessWidget {
-  final AvesEntry entry;
-
-  static const duration = Durations.thumbnailOverlayAnimation;
-
-  const ThumbnailSelectionOverlay({
-    Key? key,
-    required this.entry,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
-    final child = isSelecting
-        ? Selector<Selection<AvesEntry>, bool>(
-            selector: (context, selection) => selection.isSelected([entry]),
-            builder: (context, isSelected, child) {
-              var child = isSelecting
-                  ? OverlayIcon(
-                      key: ValueKey(isSelected),
-                      icon: isSelected ? AIcons.selected : AIcons.unselected,
-                      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
-                    )
-                  : const SizedBox.shrink();
-              child = AnimatedSwitcher(
-                duration: duration,
-                switchInCurve: Curves.easeOutBack,
-                switchOutCurve: Curves.easeOutBack,
-                transitionBuilder: (child, animation) => ScaleTransition(
-                  scale: animation,
-                  child: child,
-                ),
-                child: child,
-              );
-              child = AnimatedContainer(
-                duration: duration,
-                alignment: AlignmentDirectional.topEnd,
-                color: isSelected ? Colors.black54 : Colors.transparent,
-                child: child,
-              );
-              return child;
-            },
-          )
-        : const SizedBox.shrink();
-    return AnimatedSwitcher(
-      duration: duration,
-      child: child,
     );
   }
 }
@@ -125,7 +71,7 @@ class _ThumbnailHighlightOverlayState extends State<ThumbnailHighlightOverlay> {
         decoration: BoxDecoration(
           border: Border.fromBorderSide(BorderSide(
             color: Theme.of(context).accentColor,
-            width: context.select<ThumbnailThemeData, double>((t) => t.highlightBorderWidth),
+            width: context.select<GridThemeData, double>((t) => t.highlightBorderWidth),
           )),
         ),
       ),

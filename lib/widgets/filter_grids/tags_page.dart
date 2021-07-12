@@ -1,4 +1,3 @@
-import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -8,8 +7,7 @@ import 'package:aves/model/source/tag.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/tag_set.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:collection/collection.dart';
@@ -35,36 +33,32 @@ class TagListPage extends StatelessWidget {
       builder: (context, s, child) {
         return StreamBuilder(
           stream: source.eventBus.on<TagsChangedEvent>(),
-          builder: (context, snapshot) => FilterNavigationPage<TagFilter>(
-            source: source,
-            title: context.l10n.tagPageTitle,
-            sortFactor: settings.tagSortFactor,
-            chipSetActionDelegate: TagChipSetActionDelegate(),
-            chipActionDelegate: ChipActionDelegate(),
-            chipActionsBuilder: (filter) => [
-              settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
-              ChipAction.setCover,
-              ChipAction.hide,
-            ],
-            filterSections: _getTagEntries(source),
-            emptyBuilder: () => EmptyContent(
-              icon: AIcons.tag,
-              text: context.l10n.tagEmpty,
-            ),
-          ),
+          builder: (context, snapshot) {
+            final gridItems = _getGridItems(source);
+            return FilterNavigationPage<TagFilter>(
+              source: source,
+              title: context.l10n.tagPageTitle,
+              sortFactor: settings.tagSortFactor,
+              actionDelegate: TagChipSetActionDelegate(gridItems),
+              filterSections: _groupToSections(gridItems),
+              emptyBuilder: () => EmptyContent(
+                icon: AIcons.tag,
+                text: context.l10n.tagEmpty,
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _getTagEntries(CollectionSource source) {
+  List<FilterGridItem<TagFilter>> _getGridItems(CollectionSource source) {
     final filters = source.sortedTags.map((tag) => TagFilter(tag)).toSet();
 
-    final sorted = FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
-    return _group(sorted);
+    return FilterNavigationPage.sort(settings.tagSortFactor, source, filters);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _group(Iterable<FilterGridItem<TagFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<TagFilter>>> _groupToSections(Iterable<FilterGridItem<TagFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<TagFilter>();
     final byPin = groupBy<FilterGridItem<TagFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
     final pinnedMapEntries = (byPin[true] ?? []);

@@ -1,16 +1,15 @@
-import 'package:aves/model/entry.dart';
 import 'package:aves/model/selection.dart';
-import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/constants.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/common/grid/section_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
-class SectionHeader extends StatelessWidget {
+class SectionHeader<T> extends StatelessWidget {
   final SectionKey sectionKey;
   final Widget? leading, trailing;
   final String title;
@@ -44,7 +43,7 @@ class SectionHeader extends StatelessWidget {
             children: [
               WidgetSpan(
                 alignment: widgetSpanAlignment,
-                child: _SectionSelectableLeading(
+                child: _SectionSelectableLeading<T>(
                   selectable: selectable,
                   sectionKey: sectionKey,
                   browsingBuilder: leading != null
@@ -78,9 +77,8 @@ class SectionHeader extends StatelessWidget {
   }
 
   void _toggleSectionSelection(BuildContext context) {
-    final collection = context.read<CollectionLens>();
-    final sectionEntries = collection.sections[sectionKey]!;
-    final selection = context.read<Selection<AvesEntry>>();
+    final sectionEntries = context.read<SectionedListLayout<T>>().sections[sectionKey]!;
+    final selection = context.read<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     if (isSelected) {
       selection.removeFromSelection(sectionEntries);
@@ -124,7 +122,7 @@ class SectionHeader extends StatelessWidget {
   }
 }
 
-class _SectionSelectableLeading extends StatelessWidget {
+class _SectionSelectableLeading<T> extends StatelessWidget {
   final bool selectable;
   final SectionKey sectionKey;
   final WidgetBuilder? browsingBuilder;
@@ -144,9 +142,9 @@ class _SectionSelectableLeading extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!selectable) return _buildBrowsing(context);
 
-    final isSelecting = context.select<Selection<AvesEntry>, bool>((selection) => selection.isSelecting);
+    final isSelecting = context.select<Selection<T>, bool>((selection) => selection.isSelecting);
     final Widget child = isSelecting
-        ? _SectionSelectingLeading(
+        ? _SectionSelectingLeading<T>(
             sectionKey: sectionKey,
             onPressed: onPressed,
           )
@@ -179,7 +177,7 @@ class _SectionSelectableLeading extends StatelessWidget {
   Widget _buildBrowsing(BuildContext context) => browsingBuilder?.call(context) ?? const SizedBox(height: leadingDimension);
 }
 
-class _SectionSelectingLeading extends StatelessWidget {
+class _SectionSelectingLeading<T> extends StatelessWidget {
   final SectionKey sectionKey;
   final VoidCallback? onPressed;
 
@@ -191,8 +189,8 @@ class _SectionSelectingLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sectionEntries = context.watch<CollectionLens>().sections[sectionKey]!;
-    final selection = context.watch<Selection<AvesEntry>>();
+    final sectionEntries = context.watch<SectionedListLayout<T>>().sections[sectionKey]!;
+    final selection = context.watch<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     return AnimatedSwitcher(
       duration: Durations.sectionHeaderAnimation,
