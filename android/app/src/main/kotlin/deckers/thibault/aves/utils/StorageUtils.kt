@@ -293,6 +293,7 @@ object StorageUtils {
                 // need a document URI (not a media content URI) to open a `DocumentFile` output stream
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isMediaStoreContentUri(mediaUri)) {
                     // cleanest API to get it
+                    PermissionManager.sanitizePersistedUriPermissions(context)
                     try {
                         val docUri = MediaStore.getDocumentUri(context, mediaUri)
                         if (docUri != null) {

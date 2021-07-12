@@ -133,8 +133,7 @@ object PermissionManager {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun revokeDirectoryAccess(context: Context, path: String): Boolean {
         return StorageUtils.convertDirPathToTreeUri(context, path)?.let {
-            val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            context.contentResolver.releasePersistableUriPermission(it, flags)
+            releaseUriPermission(context, it)
             true
         } ?: false
     }
@@ -157,5 +156,29 @@ object PermissionManager {
             accessibleDirs.add(StorageUtils.getPrimaryVolumePath(context))
         }
         return accessibleDirs
+    }
+
+    // As of Android R, `MediaStore.getDocumentUri` fails if any of the persisted
+    // URI permissions we hold points to a folder that no longer exists,
+    // so we should remove these obsolete URIs before proceeding.
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    fun sanitizePersistedUriPermissions(context: Context) {
+        try {
+            for (uriPermission in context.contentResolver.persistedUriPermissions) {
+                val uri = uriPermission.uri
+                val path = StorageUtils.convertTreeUriToDirPath(context, uri)
+                if (path != null && !File(path).exists()) {
+                    Log.d(LOG_TAG, "revoke URI permission for obsolete path=$path")
+                    releaseUriPermission(context, uri)
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "failed to sanitize persisted URI permissions", e)
+        }
+    }
+
+    private fun releaseUriPermission(context: Context, it: Uri) {
+        val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        context.contentResolver.releasePersistableUriPermission(it, flags)
     }
 }
