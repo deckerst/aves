@@ -33,6 +33,8 @@ abstract class StorageService {
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes);
 
   Future<Uint8List> openFile(String mimeType);
+
+  Future<String?> selectDirectory();
 }
 
 class PlatformStorageService implements StorageService {
@@ -216,5 +218,26 @@ class PlatformStorageService implements StorageService {
       debugPrint('openFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
     }
     return Uint8List(0);
+  }
+
+  @override
+  Future<String?> selectDirectory() async {
+    try {
+      final completer = Completer<String>();
+      storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
+        'op': 'selectDirectory',
+      }).listen(
+        (data) => completer.complete(data as String?),
+        onError: completer.completeError,
+        onDone: () {
+          if (!completer.isCompleted) completer.complete(null);
+        },
+        cancelOnError: true,
+      );
+      return completer.future;
+    } on PlatformException catch (e) {
+      debugPrint('selectDirectory failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+    }
+    return null;
   }
 }

@@ -77,7 +77,7 @@ class SectionHeader<T> extends StatelessWidget {
   }
 
   void _toggleSectionSelection(BuildContext context) {
-    final sectionEntries = context.read<SectionedListLayout<T>>().sections[sectionKey]!;
+    final sectionEntries = context.read<SectionedListLayout<T>>().sections[sectionKey] ?? [];
     final selection = context.read<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     if (isSelected) {
@@ -189,7 +189,7 @@ class _SectionSelectingLeading<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sectionEntries = context.watch<SectionedListLayout<T>>().sections[sectionKey]!;
+    final sectionEntries = context.watch<SectionedListLayout<T>>().sections[sectionKey] ?? [];
     final selection = context.watch<Selection<T>>();
     final isSelected = selection.isSelected(sectionEntries);
     return AnimatedSwitcher(
