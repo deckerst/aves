@@ -205,6 +205,7 @@ class _FilterGridAppBarState<T extends CollectionFilter> extends State<FilterGri
                 enabled: !widget.isEmpty,
               ),
               toMenuItem(ChipSetAction.stats),
+              toMenuItem(ChipSetAction.createAlbum),
             ]);
           }
 

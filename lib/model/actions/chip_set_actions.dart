@@ -10,6 +10,7 @@ enum ChipSetAction {
   selectAll,
   selectNone,
   stats,
+  createAlbum,
   // single/multiple filters
   delete,
   hide,
@@ -36,6 +37,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return context.l10n.collectionActionSelectNone;
       case ChipSetAction.stats:
         return context.l10n.menuActionStats;
+      case ChipSetAction.createAlbum:
+        return context.l10n.chipActionCreateAlbum;
       // single/multiple filters
       case ChipSetAction.delete:
         return context.l10n.chipActionDelete;
@@ -67,6 +70,8 @@ extension ExtraChipSetAction on ChipSetAction {
         return null;
       case ChipSetAction.stats:
         return AIcons.stats;
+      case ChipSetAction.createAlbum:
+        return AIcons.createAlbum;
       // single/multiple filters
       case ChipSetAction.delete:
         return AIcons.delete;

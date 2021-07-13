@@ -52,6 +52,7 @@ abstract class ChipSetActionDelegate<T extends CollectionFilter> with FeedbackMi
       case ChipSetAction.selectAll:
       case ChipSetAction.selectNone:
       case ChipSetAction.stats:
+      case ChipSetAction.createAlbum:
         return true;
       // single/multiple filters
       case ChipSetAction.delete:

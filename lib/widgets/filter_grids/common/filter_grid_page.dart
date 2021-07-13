@@ -44,6 +44,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
   final Widget appBar;
   final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
+  final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
   final ValueNotifier<String> queryNotifier;
@@ -57,6 +58,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
     required this.appBar,
     this.appBarHeight = kToolbarHeight,
     required this.sections,
+    required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
@@ -92,6 +94,7 @@ class FilterGridPage<T extends CollectionFilter> extends StatelessWidget {
                     appBar: appBar,
                     appBarHeight: appBarHeight,
                     sections: sections,
+                    newFilters: newFilters,
                     sortFactor: sortFactor,
                     showHeaders: showHeaders,
                     selectable: selectable,
@@ -117,6 +120,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
   final Widget appBar;
   final double appBarHeight;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
+  final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
   final ValueNotifier<String> queryNotifier;
@@ -130,6 +134,7 @@ class FilterGrid<T extends CollectionFilter> extends StatefulWidget {
     required this.appBar,
     required this.appBarHeight,
     required this.sections,
+    required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
@@ -166,6 +171,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
         appBar: widget.appBar,
         appBarHeight: widget.appBarHeight,
         sections: widget.sections,
+        newFilters: widget.newFilters,
         sortFactor: widget.sortFactor,
         showHeaders: widget.showHeaders,
         selectable: widget.selectable,
@@ -181,6 +187,7 @@ class _FilterGridState<T extends CollectionFilter> extends State<FilterGrid<T>> 
 class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
   final Widget appBar;
   final Map<ChipSectionKey, List<FilterGridItem<T>>> sections;
+  final Set<T> newFilters;
   final ChipSortFactor sortFactor;
   final bool showHeaders, selectable;
   final ValueNotifier<String> queryNotifier;
@@ -195,6 +202,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
     required this.appBar,
     required double appBarHeight,
     required this.sections,
+    required this.newFilters,
     required this.sortFactor,
     required this.showHeaders,
     required this.selectable,
@@ -258,6 +266,7 @@ class _FilterGridContent<T extends CollectionFilter> extends StatelessWidget {
                               filter: filter,
                               extent: tileExtent,
                               pinned: pinnedFilters.contains(filter),
+                              banner: newFilters.contains(filter) ? context.l10n.newFilterBanner : null,
                               onTap: onTap,
                             ),
                           ),

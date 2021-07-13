@@ -23,6 +23,7 @@ class AvesFilterChip extends StatefulWidget {
   final bool removable;
   final bool showGenericIcon;
   final Widget? background;
+  final String? banner;
   final Widget? details;
   final BorderRadius? borderRadius;
   final double padding;
@@ -43,6 +44,7 @@ class AvesFilterChip extends StatefulWidget {
     this.removable = false,
     this.showGenericIcon = true,
     this.background,
+    this.banner,
     this.details,
     this.borderRadius,
     this.padding = 6.0,
@@ -195,6 +197,7 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
     }
 
     final borderRadius = widget.borderRadius ?? const BorderRadius.all(Radius.circular(AvesFilterChip.defaultRadius));
+    final banner = widget.banner;
     Widget chip = Container(
       constraints: const BoxConstraints(
         minWidth: AvesFilterChip.minChipWidth,
@@ -250,6 +253,21 @@ class _AvesFilterChipState extends State<AvesFilterChip> {
               ),
             ),
           ),
+          if (banner != null)
+            LayoutBuilder(builder: (context, constraints) {
+              return ClipRRect(
+                borderRadius: borderRadius,
+                child: Transform(
+                  transform: Matrix4.identity().scaled((constraints.maxHeight / 90 - .4).clamp(.45, 1.0)),
+                  child: Banner(
+                    message: banner.toUpperCase(),
+                    location: BannerLocation.topStart,
+                    color: Theme.of(context).accentColor,
+                    child: const SizedBox(),
+                  ),
+                ),
+              );
+            }),
         ],
       ),
     );

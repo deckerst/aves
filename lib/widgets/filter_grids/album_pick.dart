@@ -66,6 +66,7 @@ class _AlbumPickPageState extends State<AlbumPickPage> {
                 ),
                 appBarHeight: AlbumPickAppBar.preferredHeight,
                 sections: AlbumListPage.groupToSections(context, gridItems),
+                newFilters: source.getNewAlbumFilters(context),
                 sortFactor: settings.albumSortFactor,
                 showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
                 selectable: false,

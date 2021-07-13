@@ -46,6 +46,7 @@ class AlbumListPage extends StatelessWidget {
                 showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
                 actionDelegate: AlbumChipSetActionDelegate(gridItems),
                 filterSections: groupToSections(context, gridItems),
+                newFilters: source.getNewAlbumFilters(context),
                 emptyBuilder: () => EmptyContent(
                   icon: AIcons.album,
                   text: context.l10n.albumEmpty,
