@@ -59,6 +59,8 @@
   "@chipActionRename": {},
   "chipActionSetCover": "Set cover",
   "@chipActionSetCover": {},
+  "chipActionCreateAlbum": "Create album",
+  "@chipActionCreateAlbum": {},
 
   "entryActionDelete": "Delete",
   "@entryActionDelete": {},
@@ -515,6 +517,8 @@
   "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "CREATE",
   "@createAlbumButtonLabel": {},
+  "newFilterBanner": "new",
+  "@newFilterBanner": {},
 
   "countryPageTitle": "Countries",
   "@countryPageTitle": {},

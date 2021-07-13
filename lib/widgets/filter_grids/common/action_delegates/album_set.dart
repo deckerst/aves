@@ -4,6 +4,7 @@ import 'package:aves/model/actions/chip_set_actions.dart';
 import 'package:aves/model/actions/move_type.dart';
 import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/highlight.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/model/source/enums.dart';
@@ -14,8 +15,10 @@ import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/aves_selection_dialog.dart';
+import 'package:aves/widgets/dialogs/create_album_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_album_dialog.dart';
 import 'package:aves/widgets/filter_grids/common/action_delegates/chip_set.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -67,6 +70,9 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
       case ChipSetAction.group:
         _showGroupDialog(context);
         break;
+      case ChipSetAction.createAlbum:
+        _createAlbum(context);
+        break;
       // single/multiple filters
       case ChipSetAction.delete:
         _showDeleteDialog(context, filters);
@@ -101,13 +107,35 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     }
   }
 
+  void _createAlbum(BuildContext context) async {
+    final newAlbum = await showDialog<String>(
+      context: context,
+      builder: (context) => const CreateAlbumDialog(),
+    );
+    if (newAlbum != null && newAlbum.isNotEmpty) {
+      final source = context.read<CollectionSource>();
+      source.createAlbum(newAlbum);
+
+      final showAction = SnackBarAction(
+        label: context.l10n.showButtonLabel,
+        onPressed: () async {
+          final filter = AlbumFilter(newAlbum, source.getAlbumDisplayName(context, newAlbum));
+          context.read<HighlightInfo>().trackItem(FilterGridItem(filter, null), highlightItem: filter);
+        },
+      );
+      showFeedback(context, context.l10n.genericSuccessFeedback, showAction);
+    }
+  }
+
   Future<void> _showDeleteDialog(BuildContext context, Set<AlbumFilter> filters) async {
     final l10n = context.l10n;
     final messenger = ScaffoldMessenger.of(context);
     final source = context.read<CollectionSource>();
-    final albums = filters.map((v) => v.album).toSet();
     final todoEntries = source.visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet();
     final todoCount = todoEntries.length;
+    final todoAlbums = filters.map((v) => v.album).toSet();
+    final filledAlbums = todoEntries.map((e) => e.directory).whereNotNull().toSet();
+    final emptyAlbums = todoAlbums.whereNot(filledAlbums.contains).toSet();
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -130,7 +158,10 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
     );
     if (confirmed == null || !confirmed) return;
 
-    if (!await checkStoragePermissionForAlbums(context, albums)) return;
+    source.forgetNewAlbums(todoAlbums);
+    source.cleanEmptyAlbums(emptyAlbums);
+
+    if (!await checkStoragePermissionForAlbums(context, filledAlbums)) return;
 
     source.pauseMonitoring();
     showOpReport<ImageOpEvent>(
@@ -149,7 +180,7 @@ class AlbumChipSetActionDelegate extends ChipSetActionDelegate<AlbumFilter> {
         }
 
         // cleanup
-        await storageService.deleteEmptyDirectories(albums);
+        await storageService.deleteEmptyDirectories(filledAlbums);
       },
     );
   }

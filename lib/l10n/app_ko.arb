@@ -29,6 +29,7 @@
   "chipActionUnpin": "고정 해제",
   "chipActionRename": "이름 변경",
   "chipActionSetCover": "대표 이미지 변경",
+  "chipActionCreateAlbum": "앨범 만들기",
 
   "entryActionDelete": "삭제",
   "entryActionExport": "내보내기",
@@ -232,8 +233,9 @@
 
   "albumPageTitle": "앨범",
   "albumEmpty": "앨범이 없습니다",
-  "createAlbumTooltip": "새 앨범 만들기",
+  "createAlbumTooltip": "앨범 만들기",
   "createAlbumButtonLabel": "추가",
+  "newFilterBanner": "신규",
 
   "countryPageTitle": "국가",
   "countryEmpty": "국가가 없습니다",

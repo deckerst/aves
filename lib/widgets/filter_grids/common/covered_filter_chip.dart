@@ -25,6 +25,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   final double extent, thumbnailExtent;
   final AvesEntry? coverEntry;
   final bool pinned;
+  final String? banner;
   final FilterCallback? onTap;
 
   const CoveredFilterChip({
@@ -34,6 +35,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
     double? thumbnailExtent,
     this.coverEntry,
     this.pinned = false,
+    this.banner,
     this.onTap,
   })  : thumbnailExtent = thumbnailExtent ?? extent,
         super(key: key);
@@ -42,7 +44,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CollectionSource>(
       builder: (context, source, child) {
-        switch (filter.runtimeType) {
+        switch (T) {
           case AlbumFilter:
             {
               final album = (filter as AlbumFilter).album;
@@ -92,6 +94,7 @@ class CoveredFilterChip<T extends CollectionFilter> extends StatelessWidget {
         filter: filter,
         showGenericIcon: false,
         background: backgroundImage,
+        banner: banner,
         details: _buildDetails(source, filter),
         borderRadius: BorderRadius.all(radius(extent)),
         padding: titlePadding,
