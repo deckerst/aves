@@ -5,6 +5,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/filters/favourite.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/filters/mime.dart';
+import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/filters/query.dart';
 import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
@@ -22,6 +23,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
     AlbumFilter.type,
     LocationFilter.type,
     TagFilter.type,
+    PathFilter.type,
   ];
 
   static CollectionFilter? fromJson(String jsonString) {
@@ -43,6 +45,8 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
           return QueryFilter.fromMap(jsonMap);
         case TagFilter.type:
           return TagFilter.fromMap(jsonMap);
+        case PathFilter.type:
+          return PathFilter.fromMap(jsonMap);
       }
     }
     debugPrint('failed to parse filter from json=$jsonString');
@@ -65,7 +69,7 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
 
   String getTooltip(BuildContext context) => getLabel(context);
 
-  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false});
+  Widget? iconBuilder(BuildContext context, double size, {bool showGenericIcon = true, bool embossed = false}) => null;
 
   Future<Color> color(BuildContext context) => SynchronousFuture(stringToColor(getLabel(context)));
 

@@ -1,4 +1,5 @@
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/filters/path.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/theme/icons.dart';
@@ -29,7 +30,7 @@ class HiddenFilterTile extends StatelessWidget {
 }
 
 class HiddenFilterPage extends StatelessWidget {
-  static const routeName = '/settings/hidden';
+  static const routeName = '/settings/hidden_filters';
 
   const HiddenFilterPage({Key? key}) : super(key: key);
 
@@ -41,7 +42,7 @@ class HiddenFilterPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Selector<Settings, Set<CollectionFilter>>(
-          selector: (context, s) => settings.hiddenFilters,
+          selector: (context, s) => settings.hiddenFilters.where((v) => v is! PathFilter).toSet(),
           builder: (context, hiddenFilters, child) {
             if (hiddenFilters.isEmpty) {
               return Column(

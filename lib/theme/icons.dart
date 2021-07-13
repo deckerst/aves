@@ -30,6 +30,7 @@ class AIcons {
   static const IconData tagOff = MdiIcons.tagOffOutline;
 
   // actions
+  static const IconData addPath = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
