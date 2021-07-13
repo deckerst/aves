@@ -41,12 +41,12 @@ class PlatformWindowService implements WindowService {
     late final int orientationCode;
     switch (orientation) {
       case Orientation.landscape:
-        // SCREEN_ORIENTATION_USER_LANDSCAPE
-        orientationCode = 11;
+        // SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        orientationCode = 6;
         break;
       case Orientation.portrait:
-        // SCREEN_ORIENTATION_USER_PORTRAIT
-        orientationCode = 12;
+        // SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        orientationCode = 7;
         break;
       default:
         // SCREEN_ORIENTATION_UNSPECIFIED
