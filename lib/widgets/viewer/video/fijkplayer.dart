@@ -52,6 +52,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
   static const initialPlayDelay = Duration(milliseconds: 100);
   static const gifLikeVideoDurationThreshold = Duration(seconds: 10);
+  static const gifLikeBitRateThreshold = 2 << 18; // 512kB/s (4Mb/s)
 
   IjkPlayerAvesVideoController(AvesEntry entry) : super(entry) {
     if (!_staticInitialized) {
@@ -120,7 +121,7 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
 
     // playing with HW acceleration seems to skip the last frames of some videos
     // so HW acceleration is always disabled for GIF-like videos where the last frames may be significant
-    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && (entry.durationMillis ?? 0) > gifLikeVideoDurationThreshold.inMilliseconds;
+    final hwAccelerationEnabled = settings.enableVideoHardwareAcceleration && !_isGifLike();
 
     // TODO TLAD [video] flaky: HW codecs sometimes fail when seek-starting some videos, e.g. MP2TS/h264(HDPR)
     if (hwAccelerationEnabled) {
@@ -185,6 +186,20 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     options.setPlayerOption('subtitle', 1);
 
     _instance.applyOptions(options);
+  }
+
+  bool _isGifLike() {
+    // short
+    final durationSecs = (entry.durationMillis ?? 0) ~/ 1000;
+    if (durationSecs == 0) return false;
+    if (durationSecs > gifLikeVideoDurationThreshold.inSeconds) return false;
+
+    // light
+    final sizeBytes = entry.sizeBytes;
+    if (sizeBytes == null) return false;
+    if (sizeBytes / durationSecs > gifLikeBitRateThreshold) return false;
+
+    return true;
   }
 
   void _fetchStreams() async {
