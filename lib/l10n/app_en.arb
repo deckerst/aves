@@ -82,6 +82,8 @@
   "@entryActionShare": {},
   "entryActionViewSource": "View source",
   "@entryActionViewSource": {},
+  "entryActionViewMotionPhotoVideo": "Open Motion Photo",
+  "@entryActionViewMotionPhotoVideo": {},
   "entryActionEdit": "Edit with…",
   "@entryActionEdit": {},
   "entryActionOpen": "Open with…",

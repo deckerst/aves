@@ -38,7 +38,6 @@ class ViewerActionEditorPage extends StatelessWidget {
     EntryAction.export,
     EntryAction.print,
     EntryAction.rotateScreen,
-    EntryAction.viewSource,
     EntryAction.flip,
     EntryAction.rotateCCW,
     EntryAction.rotateCW,

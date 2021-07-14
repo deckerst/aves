@@ -3,9 +3,8 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
@@ -47,31 +46,28 @@ class _InfoPageState extends State<InfoPage> {
             bottom: false,
             child: NotificationListener<ScrollNotification>(
               onNotification: _handleTopScroll,
-              child: NotificationListener<OpenTempEntryNotification>(
-                onNotification: (notification) {
-                  _openTempEntry(notification.entry);
-                  return true;
-                },
-                child: Selector<MediaQueryData, double>(
-                  selector: (c, mq) => mq.size.width,
-                  builder: (c, mqWidth, child) {
-                    return ValueListenableBuilder<AvesEntry?>(
-                      valueListenable: widget.entryNotifier,
-                      builder: (context, entry, child) {
-                        return entry != null
-                            ? _InfoPageContent(
+              child: Selector<MediaQueryData, double>(
+                selector: (c, mq) => mq.size.width,
+                builder: (c, mqWidth, child) {
+                  return ValueListenableBuilder<AvesEntry?>(
+                    valueListenable: widget.entryNotifier,
+                    builder: (context, entry, child) {
+                      return entry != null
+                          ? EmbeddedDataOpener(
+                              entry: entry,
+                              child: _InfoPageContent(
                                 collection: collection,
                                 entry: entry,
                                 isScrollingNotifier: widget.isScrollingNotifier,
                                 scrollController: _scrollController,
                                 split: mqWidth > 600,
                                 goToViewer: _goToViewer,
-                              )
-                            : const SizedBox.shrink();
-                      },
-                    );
-                  },
-                ),
+                              ),
+                            )
+                          : const SizedBox.shrink();
+                    },
+                  );
+                },
               ),
             ),
           ),
@@ -102,23 +98,11 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   void _goToViewer() {
-    BackUpNotification().dispatch(context);
+    ShowImageNotification().dispatch(context);
     _scrollController.animateTo(
       0,
       duration: Durations.viewerVerticalPageScrollAnimation,
       curve: Curves.easeInOut,
-    );
-  }
-
-  void _openTempEntry(AvesEntry tempEntry) {
-    Navigator.push(
-      context,
-      TransparentMaterialPageRoute(
-        settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) => EntryViewerPage(
-          initialEntry: tempEntry,
-        ),
-      ),
     );
   }
 }

@@ -1,12 +1,10 @@
 import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_dir_tile.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -112,29 +110,14 @@ class InfoSearchDelegate extends SearchDelegate {
               icon: AIcons.info,
               text: context.l10n.viewerInfoSearchEmpty,
             )
-          : NotificationListener<OpenTempEntryNotification>(
-              onNotification: (notification) {
-                _openTempEntry(context, notification.entry);
-                return true;
-              },
+          : EmbeddedDataOpener(
+              entry: entry,
               child: ListView.builder(
                 padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) => tiles[index],
                 itemCount: tiles.length,
               ),
             ),
-    );
-  }
-
-  void _openTempEntry(BuildContext context, AvesEntry tempEntry) {
-    Navigator.push(
-      context,
-      TransparentMaterialPageRoute(
-        settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) => EntryViewerPage(
-          initialEntry: tempEntry,
-        ),
-      ),
     );
   }
 }
