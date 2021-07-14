@@ -8,6 +8,7 @@ import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/basic/menu_row.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/fx/sweeper.dart';
+import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
@@ -21,7 +22,6 @@ class ViewerTopOverlay extends StatelessWidget {
   final AvesEntry mainEntry;
   final Animation<double> scale;
   final EdgeInsets? viewInsets, viewPadding;
-  final Function(EntryAction value) onActionSelected;
   final bool canToggleFavourite;
   final ValueNotifier<ViewState>? viewStateNotifier;
 
@@ -35,7 +35,6 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.canToggleFavourite,
     required this.viewInsets,
     required this.viewPadding,
-    required this.onActionSelected,
     required this.viewStateNotifier,
   }) : super(key: key);
 
@@ -99,6 +98,8 @@ class ViewerTopOverlay extends StatelessWidget {
           return targetEntry.hasGps;
         case EntryAction.viewSource:
           return targetEntry.isSvg;
+        case EntryAction.viewMotionPhotoVideo:
+          return targetEntry.isMotionPhoto;
         case EntryAction.rotateScreen:
           return settings.isRotationLocked;
         case EntryAction.share:
@@ -125,7 +126,6 @@ class ViewerTopOverlay extends StatelessWidget {
           scale: scale,
           mainEntry: mainEntry,
           pageEntry: pageEntry!,
-          onActionSelected: onActionSelected,
         );
       },
     );
@@ -153,7 +153,6 @@ class _TopOverlayRow extends StatelessWidget {
   final List<EntryAction> quickActions, inAppActions, externalAppActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
-  final Function(EntryAction value) onActionSelected;
 
   const _TopOverlayRow({
     Key? key,
@@ -163,7 +162,6 @@ class _TopOverlayRow extends StatelessWidget {
     required this.scale,
     required this.mainEntry,
     required this.pageEntry,
-    required this.onActionSelected,
   }) : super(key: key);
 
   @override
@@ -192,7 +190,7 @@ class _TopOverlayRow extends StatelessWidget {
             ],
             onSelected: (action) {
               // wait for the popup menu to hide before proceeding with the action
-              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => onActionSelected(action));
+              Future.delayed(Durations.popupMenuAnimation * timeDilation, () => _onActionSelected(context, action));
             },
           ),
         ),
@@ -202,7 +200,7 @@ class _TopOverlayRow extends StatelessWidget {
 
   Widget _buildOverlayButton(BuildContext context, EntryAction action) {
     Widget? child;
-    void onPressed() => onActionSelected(action);
+    void onPressed() => _onActionSelected(context, action);
     switch (action) {
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(
@@ -221,6 +219,7 @@ class _TopOverlayRow extends StatelessWidget {
       case EntryAction.share:
       case EntryAction.rotateScreen:
       case EntryAction.viewSource:
+      case EntryAction.viewMotionPhotoVideo:
         child = IconButton(
           icon: Icon(action.getIcon()),
           onPressed: onPressed,
@@ -255,26 +254,8 @@ class _TopOverlayRow extends StatelessWidget {
           isMenuItem: true,
         );
         break;
-      case EntryAction.delete:
-      case EntryAction.export:
-      case EntryAction.flip:
-      case EntryAction.info:
-      case EntryAction.print:
-      case EntryAction.rename:
-      case EntryAction.rotateCCW:
-      case EntryAction.rotateCW:
-      case EntryAction.share:
-      case EntryAction.rotateScreen:
-      case EntryAction.viewSource:
-      case EntryAction.debug:
+      default:
         child = MenuRow(text: action.getText(context), icon: action.getIcon());
-        break;
-      // external app actions
-      case EntryAction.edit:
-      case EntryAction.open:
-      case EntryAction.setAs:
-      case EntryAction.openMap:
-        child = Text(action.getText(context));
         break;
     }
     return PopupMenuItem(
@@ -315,6 +296,21 @@ class _TopOverlayRow extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _onActionSelected(BuildContext context, EntryAction action) {
+    var targetEntry = mainEntry;
+    if (mainEntry.isMultiPage && EntryActions.pageActions.contains(action)) {
+      final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
+      if (multiPageController != null) {
+        final multiPageInfo = multiPageController.info;
+        final pageEntry = multiPageInfo?.getPageEntryByIndex(multiPageController.page);
+        if (pageEntry != null) {
+          targetEntry = pageEntry;
+        }
+      }
+    }
+    EntryActionDelegate().onActionSelected(context, targetEntry, action);
   }
 }
 

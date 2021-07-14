@@ -98,7 +98,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               )
             : const SizedBox();
 
-    final infoPage = NotificationListener<BackUpNotification>(
+    final infoPage = NotificationListener<ShowImageNotification>(
       onNotification: (notification) {
         widget.onImagePageRequested();
         return true;
