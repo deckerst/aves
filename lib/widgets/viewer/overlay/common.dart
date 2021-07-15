@@ -3,7 +3,7 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
 
-const kOverlayBackgroundColor = Colors.black26;
+Color overlayBackgroundColor({required bool blurred}) => blurred ? Colors.black26 : Colors.black38;
 
 class OverlayButton extends StatelessWidget {
   final Animation<double> scale;
@@ -17,13 +17,14 @@ class OverlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final blurred = settings.enableOverlayBlurEffect;
     return ScaleTransition(
       scale: scale,
       child: BlurredOval(
-        enabled: settings.enableOverlayBlurEffect,
+        enabled: blurred,
         child: Material(
           type: MaterialType.circle,
-          color: kOverlayBackgroundColor,
+          color: overlayBackgroundColor(blurred: blurred),
           child: Ink(
             decoration: BoxDecoration(
               border: AvesBorder.border,
@@ -57,15 +58,16 @@ class OverlayTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final blurred = settings.enableOverlayBlurEffect;
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect(
-        enabled: settings.enableOverlayBlurEffect,
+        enabled: blurred,
         borderRadius: _borderRadius,
         child: OutlinedButton(
           onPressed: onPressed,
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(kOverlayBackgroundColor),
+            backgroundColor: MaterialStateProperty.all<Color>(overlayBackgroundColor(blurred: blurred)),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
             overlayColor: MaterialStateProperty.all<Color>(Colors.white.withOpacity(0.12)),
             minimumSize: _minSize,

@@ -65,13 +65,13 @@ class BlurredOval extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return enabled
-        ? ClipOval(
-            child: BackdropFilter(
+    return ClipOval(
+      child: enabled
+          ? BackdropFilter(
               filter: _filter,
               child: child,
-            ),
-          )
-        : child;
+            )
+          : child,
+    );
   }
 }
