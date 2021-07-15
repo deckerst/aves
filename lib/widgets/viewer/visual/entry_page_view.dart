@@ -256,7 +256,7 @@ class _EntryPageViewState extends State<EntryPageView> {
     );
   }
 
-  void _onTap() => ToggleOverlayNotification().dispatch(context);
+  void _onTap() => const ToggleOverlayNotification().dispatch(context);
 
   void _onViewStateChanged(MagnifierState v) {
     final current = _viewStateNotifier.value;
