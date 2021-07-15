@@ -78,7 +78,7 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
   Widget build(BuildContext context) {
     final hasEdgeContent = settings.showOverlayInfo || multiPageController != null;
     return BlurredRect(
-      enabled: hasEdgeContent,
+      enabled: hasEdgeContent && settings.enableOverlayBlurEffect,
       child: Selector<MediaQueryData, Tuple3<double, EdgeInsets, EdgeInsets>>(
         selector: (c, mq) => Tuple3(mq.size.width, mq.viewInsets, mq.viewPadding),
         builder: (c, mq, child) {

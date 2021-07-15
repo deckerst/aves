@@ -587,6 +587,8 @@
   "@settingsViewerShowInformationSubtitle": {},
   "settingsViewerShowShootingDetails": "Show shooting details",
   "@settingsViewerShowShootingDetails": {},
+  "settingsViewerEnableOverlayBlurEffect": "Overlay blur effect",
+  "@settingsViewerEnableOverlayBlurEffect": {},
 
   "settingsViewerQuickActionsTile": "Quick actions",
   "@settingsViewerQuickActionsTile": {},

@@ -9,6 +9,7 @@ import 'package:aves/widgets/settings/viewer/entry_background.dart';
 import 'package:aves/widgets/settings/viewer/viewer_actions_editor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class ViewerSection extends StatelessWidget {
   final ValueNotifier<String?> expandedNotifier;
@@ -20,11 +21,6 @@ class ViewerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentShowOverlayMinimap = context.select<Settings, bool>((s) => s.showOverlayMinimap);
-    final currentShowOverlayInfo = context.select<Settings, bool>((s) => s.showOverlayInfo);
-    final currentShowOverlayShootingDetails = context.select<Settings, bool>((s) => s.showOverlayShootingDetails);
-    final currentImageBackground = context.select<Settings, EntryBackground>((s) => s.imageBackground);
-
     return AvesExpansionTile(
       leading: SettingsTileLeading(
         icon: AIcons.image,
@@ -35,27 +31,51 @@ class ViewerSection extends StatelessWidget {
       showHighlight: false,
       children: [
         const ViewerActionsTile(),
-        SwitchListTile(
-          value: currentShowOverlayMinimap,
-          onChanged: (v) => settings.showOverlayMinimap = v,
-          title: Text(context.l10n.settingsViewerShowMinimap),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showOverlayMinimap,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showOverlayMinimap = v,
+            title: Text(context.l10n.settingsViewerShowMinimap),
+          ),
         ),
-        SwitchListTile(
-          value: currentShowOverlayInfo,
-          onChanged: (v) => settings.showOverlayInfo = v,
-          title: Text(context.l10n.settingsViewerShowInformation),
-          subtitle: Text(context.l10n.settingsViewerShowInformationSubtitle),
+        Selector<Settings, bool>(
+          selector: (context, s) => s.showOverlayInfo,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.showOverlayInfo = v,
+            title: Text(context.l10n.settingsViewerShowInformation),
+            subtitle: Text(context.l10n.settingsViewerShowInformationSubtitle),
+          ),
         ),
-        SwitchListTile(
-          value: currentShowOverlayShootingDetails,
-          onChanged: currentShowOverlayInfo ? (v) => settings.showOverlayShootingDetails = v : null,
-          title: Text(context.l10n.settingsViewerShowShootingDetails),
+        Selector<Settings, Tuple2<bool, bool>>(
+          selector: (context, s) => Tuple2(s.showOverlayInfo, s.showOverlayShootingDetails),
+          builder: (context, s, child) {
+            final showInfo = s.item1;
+            final current = s.item2;
+            return SwitchListTile(
+              value: current,
+              onChanged: showInfo ? (v) => settings.showOverlayShootingDetails = v : null,
+              title: Text(context.l10n.settingsViewerShowShootingDetails),
+            );
+          },
         ),
-        ListTile(
-          title: Text(context.l10n.settingsImageBackground),
-          trailing: EntryBackgroundSelector(
-            getter: () => currentImageBackground,
-            setter: (value) => settings.imageBackground = value,
+        Selector<Settings, bool>(
+          selector: (context, s) => s.enableOverlayBlurEffect,
+          builder: (context, current, child) => SwitchListTile(
+            value: current,
+            onChanged: (v) => settings.enableOverlayBlurEffect = v,
+            title: Text(context.l10n.settingsViewerEnableOverlayBlurEffect),
+          ),
+        ),
+        Selector<Settings, EntryBackground>(
+          selector: (context, s) => s.imageBackground,
+          builder: (context, current, child) => ListTile(
+            title: Text(context.l10n.settingsImageBackground),
+            trailing: EntryBackgroundSelector(
+              getter: () => current,
+              setter: (value) => settings.imageBackground = value,
+            ),
           ),
         ),
       ],

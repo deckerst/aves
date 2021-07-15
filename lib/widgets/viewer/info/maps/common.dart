@@ -153,6 +153,7 @@ class MapOverlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlurredOval(
+      enabled: settings.enableOverlayBlurEffect,
       child: Material(
         type: MaterialType.circle,
         color: kOverlayBackgroundColor,

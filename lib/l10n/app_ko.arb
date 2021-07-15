@@ -274,6 +274,7 @@
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
+  "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
   "settingsViewerQuickActionEditorTitle": "빠른 작업",
