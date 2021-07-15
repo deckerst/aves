@@ -61,13 +61,14 @@ class Settings extends ChangeNotifier {
   static const hiddenFiltersKey = 'hidden_filters';
 
   // viewer
+  static const viewerQuickActionsKey = 'viewer_quick_actions';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
-  static const viewerQuickActionsKey = 'viewer_quick_actions';
-  static const videoQuickActionsKey = 'video_quick_actions';
+  static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
 
   // video
+  static const videoQuickActionsKey = 'video_quick_actions';
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
@@ -240,6 +241,10 @@ class Settings extends ChangeNotifier {
 
   // viewer
 
+  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
+
+  set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
@@ -252,15 +257,15 @@ class Settings extends ChangeNotifier {
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
-  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
+  bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, true);
 
-  set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
+
+  // video
 
   List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, videoQuickActionsDefault, VideoAction.values);
 
   set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
-
-  // video
 
   bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, true);
 
@@ -452,6 +457,7 @@ class Settings extends ChangeNotifier {
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
+            case enableOverlayBlurEffectKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:

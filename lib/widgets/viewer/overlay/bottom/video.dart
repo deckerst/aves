@@ -117,6 +117,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect(
+        enabled: settings.enableOverlayBlurEffect,
         borderRadius: progressBarBorderRadius,
         child: GestureDetector(
           onTapDown: (details) {

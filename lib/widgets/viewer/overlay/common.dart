@@ -1,3 +1,4 @@
+import 'package:aves/model/settings/settings.dart';
 import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/common/fx/borders.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class OverlayButton extends StatelessWidget {
     return ScaleTransition(
       scale: scale,
       child: BlurredOval(
+        enabled: settings.enableOverlayBlurEffect,
         child: Material(
           type: MaterialType.circle,
           color: kOverlayBackgroundColor,
@@ -58,6 +60,7 @@ class OverlayTextButton extends StatelessWidget {
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect(
+        enabled: settings.enableOverlayBlurEffect,
         borderRadius: _borderRadius,
         child: OutlinedButton(
           onPressed: onPressed,
