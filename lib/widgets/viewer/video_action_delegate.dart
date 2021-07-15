@@ -16,19 +16,29 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/dialogs/video_speed_dialog.dart';
 import 'package:aves/widgets/dialogs/video_stream_selection_dialog.dart';
 import 'package:aves/widgets/settings/video/video.dart';
+import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
+  Timer? _overlayHidingTimer;
   final CollectionLens? collection;
 
   VideoActionDelegate({
     required this.collection,
   });
 
+  void dispose() {
+    _stopOverlayHidingTimer();
+  }
+
   void onActionSelected(BuildContext context, AvesVideoController controller, VideoAction action) {
+    // make sure overlay is not disappearing when selecting an action
+    _stopOverlayHidingTimer();
+    const ToggleOverlayNotification(visible: true).dispatch(context);
+
     switch (action) {
       case VideoAction.captureFrame:
         _captureFrame(context, controller);
@@ -170,6 +180,12 @@ class VideoActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       await controller.pause();
     } else {
       await controller.play();
+      // hide overlay
+      _overlayHidingTimer = Timer(Durations.iconAnimation + Durations.videoOverlayHideDelay, () {
+        const ToggleOverlayNotification(visible: false).dispatch(context);
+      });
     }
   }
+
+  void _stopOverlayHidingTimer() => _overlayHidingTimer?.cancel();
 }

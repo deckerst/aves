@@ -129,6 +129,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   @override
   void dispose() {
+    _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
     _verticalPager.removeListener(_onVerticalPageControllerChange);
@@ -187,7 +188,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           },
           child: NotificationListener<ToggleOverlayNotification>(
             onNotification: (notification) {
-              _overlayVisible.value = !_overlayVisible.value;
+              _overlayVisible.value = notification.visible ?? !_overlayVisible.value;
               return true;
             },
             child: Stack(
