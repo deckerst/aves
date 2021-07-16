@@ -157,7 +157,8 @@ class _FeedbackMessage extends StatefulWidget {
 }
 
 class _FeedbackMessageState extends State<_FeedbackMessage> {
-  late int _totalSecs, _elapsedSecs = 0;
+  double _percent = 0;
+  late int _remainingSecs;
   Timer? _timer;
 
   @override
@@ -165,10 +166,11 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
     super.initState();
     final duration = widget.duration;
     if (duration != null) {
-      _totalSecs = duration.inSeconds;
+      _remainingSecs = duration.inSeconds;
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-        setState(() => _elapsedSecs++);
+        setState(() => _remainingSecs--);
       });
+      WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() => _percent = 1.0));
     }
   }
 
@@ -189,14 +191,14 @@ class _FeedbackMessageState extends State<_FeedbackMessage> {
               Expanded(child: text),
               const SizedBox(width: 16),
               CircularPercentIndicator(
-                percent: (_elapsedSecs.toDouble() / (_totalSecs - 1)).clamp(0.0, 1.0),
+                percent: _percent,
                 lineWidth: 2,
                 radius: 32,
                 backgroundColor: Theme.of(context).accentColor,
                 progressColor: Colors.grey,
                 animation: true,
-                animationDuration: 1000,
-                center: Text('${_totalSecs - _elapsedSecs}'),
+                animationDuration: duration.inMilliseconds,
+                center: Text('$_remainingSecs'),
                 animateFromLastPercent: true,
                 reverse: true,
               ),
