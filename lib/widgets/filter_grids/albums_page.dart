@@ -45,7 +45,7 @@ class AlbumListPage extends StatelessWidget {
                 groupable: true,
                 showHeaders: settings.albumGroupFactor != AlbumChipGroupFactor.none,
                 actionDelegate: AlbumChipSetActionDelegate(gridItems),
-                filterSections: groupToSections(context, gridItems),
+                filterSections: groupToSections(context, source, gridItems),
                 newFilters: source.getNewAlbumFilters(context),
                 emptyBuilder: () => EmptyContent(
                   icon: AIcons.album,
@@ -67,11 +67,21 @@ class AlbumListPage extends StatelessWidget {
     return FilterNavigationPage.sort(settings.albumSortFactor, source, filters);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> groupToSections(BuildContext context, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<AlbumFilter>>> groupToSections(BuildContext context, CollectionSource source, Iterable<FilterGridItem<AlbumFilter>> sortedMapEntries) {
+    final newFilters = source.getNewAlbumFilters(context);
     final pinned = settings.pinnedFilters.whereType<AlbumFilter>();
-    final byPin = groupBy<FilterGridItem<AlbumFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
-    final pinnedMapEntries = byPin[true] ?? [];
-    final unpinnedMapEntries = byPin[false] ?? [];
+
+    final List<FilterGridItem<AlbumFilter>> newMapEntries = [], pinnedMapEntries = [], unpinnedMapEntries = [];
+    for (final item in sortedMapEntries) {
+      final filter = item.filter;
+      if (newFilters.contains(filter)) {
+        newMapEntries.add(item);
+      } else if (pinned.contains(filter)) {
+        pinnedMapEntries.add(item);
+      } else {
+        unpinnedMapEntries.add(item);
+      }
+    }
 
     var sections = <ChipSectionKey, List<FilterGridItem<AlbumFilter>>>{};
     switch (settings.albumGroupFactor) {
@@ -104,8 +114,9 @@ class AlbumListPage extends StatelessWidget {
         break;
       case AlbumChipGroupFactor.none:
         return {
-          if (pinnedMapEntries.isNotEmpty || unpinnedMapEntries.isNotEmpty)
+          if (sortedMapEntries.isNotEmpty)
             const ChipSectionKey(): [
+              ...newMapEntries,
               ...pinnedMapEntries,
               ...unpinnedMapEntries,
             ],
@@ -115,6 +126,13 @@ class AlbumListPage extends StatelessWidget {
     if (pinnedMapEntries.isNotEmpty) {
       sections = Map.fromEntries([
         MapEntry(AlbumImportanceSectionKey.pinned(context), pinnedMapEntries),
+        ...sections.entries,
+      ]);
+    }
+
+    if (newMapEntries.isNotEmpty) {
+      sections = Map.fromEntries([
+        MapEntry(AlbumImportanceSectionKey.newAlbum(context), newMapEntries),
         ...sections.entries,
       ]);
     }

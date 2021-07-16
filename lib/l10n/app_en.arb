@@ -169,6 +169,8 @@
   "keepScreenOnAlways": "Always",
   "@keepScreenOnAlways": {},
 
+  "albumTierNew": "New",
+  "@albumTierNew": {},
   "albumTierPinned": "Pinned",
   "@albumTierPinned": {},
   "albumTierSpecial": "Common",

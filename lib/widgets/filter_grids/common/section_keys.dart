@@ -32,6 +32,8 @@ class AlbumImportanceSectionKey extends ChipSectionKey {
 
   AlbumImportanceSectionKey._private(BuildContext context, this.importance) : super(title: importance.getText(context));
 
+  factory AlbumImportanceSectionKey.newAlbum(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.newAlbum);
+
   factory AlbumImportanceSectionKey.pinned(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.pinned);
 
   factory AlbumImportanceSectionKey.special(BuildContext context) => AlbumImportanceSectionKey._private(context, AlbumImportance.special);
@@ -44,11 +46,13 @@ class AlbumImportanceSectionKey extends ChipSectionKey {
   Widget get leading => Icon(importance.getIcon());
 }
 
-enum AlbumImportance { pinned, special, apps, regular }
+enum AlbumImportance { newAlbum, pinned, special, apps, regular }
 
 extension ExtraAlbumImportance on AlbumImportance {
   String getText(BuildContext context) {
     switch (this) {
+      case AlbumImportance.newAlbum:
+        return context.l10n.albumTierNew;
       case AlbumImportance.pinned:
         return context.l10n.albumTierPinned;
       case AlbumImportance.special:
@@ -62,6 +66,8 @@ extension ExtraAlbumImportance on AlbumImportance {
 
   IconData getIcon() {
     switch (this) {
+      case AlbumImportance.newAlbum:
+        return AIcons.newTier;
       case AlbumImportance.pinned:
         return AIcons.pin;
       case AlbumImportance.special:

@@ -49,6 +49,7 @@ class AIcons {
   static const IconData import = MdiIcons.fileImportOutline;
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
+  static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
   static const IconData unpin = MdiIcons.pinOffOutline;
