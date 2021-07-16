@@ -18,6 +18,7 @@ import 'package:aves/widgets/viewer/entry_vertical_pager.dart';
 import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
+import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/common.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/video.dart';
@@ -62,6 +63,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
   final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
+  final Map<MultiPageController, Future<void> Function()> _multiPageControllerPageListeners = {};
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
 
@@ -111,7 +113,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _videoActionDelegate = VideoActionDelegate(
       collection: collection,
     );
-    _initEntryControllers();
+    _initEntryControllers(entry);
     _registerWidget(widget);
     WidgetsBinding.instance!.addObserver(this);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
@@ -129,6 +131,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   @override
   void dispose() {
+    _cleanEntryControllers(_entryNotifier.value);
     _videoActionDelegate.dispose();
     _overlayAnimationController.dispose();
     _overlayVisible.removeListener(_onOverlayVisibleChange);
@@ -454,10 +457,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
     final newEntry = _currentHorizontalPage < entries.length ? entries[_currentHorizontalPage] : null;
     if (_entryNotifier.value == newEntry) return;
+    _cleanEntryControllers(_entryNotifier.value);
     _entryNotifier.value = newEntry;
     _isEntryTracked = false;
     await _pauseVideoControllers();
-    await _initEntryControllers();
+    await _initEntryControllers(newEntry);
   }
 
   void _popVisual() {
@@ -549,8 +553,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   // state controllers/monitors
 
-  Future<void> _initEntryControllers() async {
-    final entry = _entryNotifier.value;
+  Future<void> _initEntryControllers(AvesEntry? entry) async {
     if (entry == null) return;
 
     _initViewStateController(entry);
@@ -559,6 +562,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     }
     if (entry.isMultiPage) {
       await _initMultiPageController(entry);
+    }
+  }
+
+  void _cleanEntryControllers(AvesEntry? entry) {
+    if (entry == null) return;
+
+    if (entry.isMultiPage) {
+      _cleanMultiPageController(entry);
     }
   }
 
@@ -617,8 +628,19 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
         }
       }
 
+      _multiPageControllerPageListeners[multiPageController] = _onPageChange;
       multiPageController.pageNotifier.addListener(_onPageChange);
       await _onPageChange();
+    }
+  }
+
+  Future<void> _cleanMultiPageController(AvesEntry entry) async {
+    final multiPageController = _multiPageControllerPageListeners.keys.firstWhereOrNull((v) => v.entry == entry);
+    if (multiPageController != null) {
+      final _onPageChange = _multiPageControllerPageListeners.remove(multiPageController);
+      if (_onPageChange != null) {
+        multiPageController.pageNotifier.removeListener(_onPageChange);
+      }
     }
   }
 
