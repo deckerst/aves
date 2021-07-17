@@ -82,6 +82,13 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   @override
   void initState() {
     super.initState();
+    if (!settings.viewerUseCutout) {
+      windowService.setCutoutMode(false);
+    }
+    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
+      windowService.keepScreenOn(true);
+    }
+
     // make sure initial entry is actually among the filtered collection entries
     final entry = entries.contains(widget.initialEntry) ? widget.initialEntry : entries.firstOrNull;
     // opening hero, with viewer as target
@@ -117,9 +124,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     _registerWidget(widget);
     WidgetsBinding.instance!.addObserver(this);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _initOverlay());
-    if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
-      windowService.keepScreenOn(true);
-    }
   }
 
   @override
@@ -502,11 +506,15 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   }
 
   void _onLeave() {
-    _showSystemUI();
-    windowService.requestOrientation();
+    if (!settings.viewerUseCutout) {
+      windowService.setCutoutMode(true);
+    }
     if (settings.keepScreenOn == KeepScreenOn.viewerOnly) {
       windowService.keepScreenOn(false);
     }
+
+    _showSystemUI();
+    windowService.requestOrientation();
   }
 
   // system UI

@@ -66,6 +66,7 @@ class Settings extends ChangeNotifier {
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
   static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
+  static const viewerUseCutoutKey = 'viewer_use_cutout';
 
   // video
   static const videoQuickActionsKey = 'video_quick_actions';
@@ -260,6 +261,10 @@ class Settings extends ChangeNotifier {
   bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, true);
 
   set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
+
+  bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, true);
+
+  set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
 
   // video
 
@@ -458,6 +463,7 @@ class Settings extends ChangeNotifier {
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
             case enableOverlayBlurEffectKey:
+            case viewerUseCutoutKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:

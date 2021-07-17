@@ -1,5 +1,6 @@
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
@@ -68,6 +69,7 @@ class ViewerSection extends StatelessWidget {
             title: Text(context.l10n.settingsViewerEnableOverlayBlurEffect),
           ),
         ),
+        const _CutoutModeSwitch(),
         Selector<Settings, EntryBackground>(
           selector: (context, s) => s.imageBackground,
           builder: (context, current, child) => ListTile(
@@ -79,6 +81,43 @@ class ViewerSection extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CutoutModeSwitch extends StatefulWidget {
+  const _CutoutModeSwitch({Key? key}) : super(key: key);
+
+  @override
+  _CutoutModeSwitchState createState() => _CutoutModeSwitchState();
+}
+
+class _CutoutModeSwitchState extends State<_CutoutModeSwitch> {
+  late Future<bool> _canSet;
+
+  @override
+  void initState() {
+    super.initState();
+    _canSet = windowService.canSetCutoutMode();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _canSet,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!) {
+          return Selector<Settings, bool>(
+            selector: (context, s) => s.viewerUseCutout,
+            builder: (context, current, child) => SwitchListTile(
+              value: current,
+              onChanged: (v) => settings.viewerUseCutout = v,
+              title: Text(context.l10n.settingsViewerUseCutout),
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

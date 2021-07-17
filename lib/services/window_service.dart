@@ -8,6 +8,10 @@ abstract class WindowService {
   Future<bool> isRotationLocked();
 
   Future<void> requestOrientation([Orientation? orientation]);
+
+  Future<bool> canSetCutoutMode();
+
+  Future<void> setCutoutMode(bool use);
 }
 
 class PlatformWindowService implements WindowService {
@@ -59,6 +63,28 @@ class PlatformWindowService implements WindowService {
       });
     } on PlatformException catch (e) {
       debugPrint('requestOrientation failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+  }
+
+  @override
+  Future<bool> canSetCutoutMode() async {
+    try {
+      final result = await platform.invokeMethod('canSetCutoutMode');
+      if (result != null) return result as bool;
+    } on PlatformException catch (e) {
+      debugPrint('canSetCutoutMode failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return false;
+  }
+
+  @override
+  Future<void> setCutoutMode(bool use) async {
+    try {
+      await platform.invokeMethod('setCutoutMode', <String, dynamic>{
+        'use': use,
+      });
+    } on PlatformException catch (e) {
+      debugPrint('setCutoutMode failed with code=${e.code}, exception=${e.message}, details=${e.details}');
     }
   }
 }

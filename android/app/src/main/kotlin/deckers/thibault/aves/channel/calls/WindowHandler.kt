@@ -1,6 +1,7 @@
 package deckers.thibault.aves.channel.calls
 
 import android.app.Activity
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
@@ -16,6 +17,8 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
             "keepScreenOn" -> safe(call, result, ::keepScreenOn)
             "isRotationLocked" -> safe(call, result, ::isRotationLocked)
             "requestOrientation" -> safe(call, result, ::requestOrientation)
+            "canSetCutoutMode" -> result.success(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+            "setCutoutMode" -> safe(call, result, ::setCutoutMode)
             else -> result.notImplemented()
         }
     }
@@ -54,6 +57,24 @@ class WindowHandler(private val activity: Activity) : MethodCallHandler {
             return
         }
         activity.requestedOrientation = orientation
+        result.success(true)
+    }
+
+    private fun setCutoutMode(call: MethodCall, result: MethodChannel.Result) {
+        val use = call.argument<Boolean>("use")
+        if (use == null) {
+            result.error("setCutoutMode-args", "failed because of missing arguments", null)
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val mode = if (use) {
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            } else {
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+            }
+            activity.window.attributes.layoutInDisplayCutoutMode = mode
+        }
         result.success(true)
     }
 
