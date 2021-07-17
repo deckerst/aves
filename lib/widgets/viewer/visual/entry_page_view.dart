@@ -26,7 +26,7 @@ import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
-  final Size? viewportSize;
+  final Size viewportSize;
   final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
@@ -35,7 +35,7 @@ class EntryPageView extends StatefulWidget {
     Key? key,
     required this.mainEntry,
     required this.pageEntry,
-    this.viewportSize,
+    required this.viewportSize,
     this.onDisposed,
   }) : super(key: key);
 
@@ -52,7 +52,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   AvesEntry get entry => widget.pageEntry;
 
-  Size? get viewportSize => widget.viewportSize;
+  Size get viewportSize => widget.viewportSize;
 
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
@@ -85,19 +85,17 @@ class _EntryPageViewState extends State<EntryPageView> {
 
   void _registerWidget() {
     // try to initialize the view state to match magnifier initial state
-    _viewStateNotifier.value = viewportSize != null
-        ? ViewState(
-            Offset.zero,
-            ScaleBoundaries(
-              minScale: minScale,
-              maxScale: maxScale,
-              initialScale: initialScale,
-              viewportSize: viewportSize!,
-              childSize: entry.displaySize,
-            ).initialScale,
-            viewportSize,
-          )
-        : ViewState.zero;
+    _viewStateNotifier.value = ViewState(
+      Offset.zero,
+      ScaleBoundaries(
+        minScale: minScale,
+        maxScale: maxScale,
+        initialScale: initialScale,
+        viewportSize: viewportSize,
+        childSize: entry.displaySize,
+      ).initialScale,
+      viewportSize,
+    );
 
     _magnifierController = MagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));

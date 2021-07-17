@@ -591,6 +591,8 @@
   "@settingsViewerShowShootingDetails": {},
   "settingsViewerEnableOverlayBlurEffect": "Overlay blur effect",
   "@settingsViewerEnableOverlayBlurEffect": {},
+  "settingsViewerUseCutout": "Use cutout area",
+  "@settingsViewerUseCutout": {},
 
   "settingsViewerQuickActionsTile": "Quick actions",
   "@settingsViewerQuickActionsTile": {},

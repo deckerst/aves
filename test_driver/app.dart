@@ -53,4 +53,10 @@ class FakeWindowService implements WindowService {
 
   @override
   Future<void> requestOrientation([Orientation? orientation]) => SynchronousFuture(null);
+
+  @override
+  Future<bool> canSetCutoutMode() => SynchronousFuture(false);
+
+  @override
+  Future<void> setCutoutMode(bool use) => SynchronousFuture(null);
 }
