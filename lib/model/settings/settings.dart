@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/device_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
@@ -125,6 +128,21 @@ class Settings extends ChangeNotifier {
       await _prefs!.clear();
     } else {
       await Future.forEach(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+    }
+  }
+
+  Future<void> setContextualDefaults() async {
+    // performance
+    final performanceClass = await DeviceService.getPerformanceClass();
+    enableOverlayBlurEffect = performanceClass >= 30;
+
+    // availability
+    final hasPlayServices = await availability.hasPlayServices;
+    if (hasPlayServices) {
+      infoMapStyle = EntryMapStyle.googleNormal;
+    } else {
+      final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
+      infoMapStyle = styles[Random().nextInt(styles.length)];
     }
   }
 
