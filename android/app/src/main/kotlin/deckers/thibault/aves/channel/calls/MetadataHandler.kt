@@ -184,9 +184,13 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                     metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
                                     metadataMap.remove(dirName)
                                 }
+                                QuickTimeMetadata.PROF_UUID -> {
+                                    // redundant with info derived on the Dart side
+                                    metadataMap.remove(dirName)
+                                }
                                 QuickTimeMetadata.USMT_UUID -> {
                                     val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
-                                    val blocks = QuickTimeMetadata.parseUsmt(bytes)
+                                    val blocks = QuickTimeMetadata.parseUuidUsmt(bytes)
                                     if (blocks.isNotEmpty()) {
                                         metadataMap.remove(dirName)
                                         dirName = "QuickTime User Media"

@@ -9,31 +9,28 @@ class QuickTimeMetadataBlock(val type: String, val value: String, val language: 
 object QuickTimeMetadata {
     // QuickTime Profile Tags
     // cf https://exiftool.org/TagNames/QuickTime.html#Profile
-    // cf https://www.ffmpeg.org/doxygen/1.1/movenc_8c_source.html#l02839
     const val PROF_UUID = "50524f46-21d2-4fce-bb88-695cfac9c740"
 
     // QuickTime UserMedia Tags
-    // cf https://github.com/sonyxperiadev/MultimediaForAndroidLibrary/blob/master/library/src/main/java/com/sonymobile/android/media/internal/VUParser.java
-    // cf https://rubenlaguna.com/post/2007-02-25-how-to-read-title-in-sony-psp-mp4-files/
+    // cf https://exiftool.org/TagNames/QuickTime.html#UserMedia
     const val USMT_UUID = "55534d54-21d2-4fce-bb88-695cfac9c740"
 
     private const val METADATA_BOX_ID = "MTDT"
 
-    fun parseUsmt(data: ByteArray): List<QuickTimeMetadataBlock> {
+    fun parseUuidUsmt(data: ByteArray): List<QuickTimeMetadataBlock> {
         val blocks = ArrayList<QuickTimeMetadataBlock>()
-        val boxType = String(data.copyOfRange(4, 8))
-        if (boxType == METADATA_BOX_ID) {
-            blocks.addAll(parseQuicktimeMtdtBox(data))
+        val boxHeader = BoxHeader(data)
+        if (boxHeader.boxType == METADATA_BOX_ID) {
+            blocks.addAll(parseQuicktimeMtdtBox(boxHeader, data))
         }
         return blocks
     }
 
-    private fun parseQuicktimeMtdtBox(data: ByteArray): List<QuickTimeMetadataBlock> {
+    private fun parseQuicktimeMtdtBox(boxHeader: BoxHeader, data: ByteArray): List<QuickTimeMetadataBlock> {
         val blocks = ArrayList<QuickTimeMetadataBlock>()
         var bytes = data
-        val boxDataSize = BigInteger(data.copyOfRange(0, 4)).toInt()
         val blockCount = BigInteger(bytes.copyOfRange(8, 10)).toInt()
-        bytes = bytes.copyOfRange(10, boxDataSize)
+        bytes = bytes.copyOfRange(10, boxHeader.boxDataSize)
 
         for (i in 0 until blockCount) {
             val blockSize = BigInteger(bytes.copyOfRange(0, 2)).toInt()
@@ -88,5 +85,15 @@ object QuickTimeMetadata {
         val c2 = Character.toChars((i shr 5 and 0x1F) + 0x60)[0]
         val c3 = Character.toChars((i and 0x1F) + 0x60)[0]
         return "$c1$c2$c3"
+    }
+}
+
+class BoxHeader(bytes: ByteArray) {
+    var boxDataSize: Int = 0
+    var boxType: String
+
+    init {
+        boxDataSize = BigInteger(bytes.copyOfRange(0, 4)).toInt()
+        boxType = String(bytes.copyOfRange(4, 8))
     }
 }
