@@ -27,6 +27,7 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   void initState() {
     super.initState();
+    settings.setContextualDefaults();
     _termsLoader = rootBundle.loadString('assets/terms.md');
   }
 
