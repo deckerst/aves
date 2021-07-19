@@ -22,13 +22,9 @@ class PanoramaInfo {
     final projectionType = map['projectionType'] as String?;
 
     // handle missing `fullPanoHeight` (e.g. Samsung camera app panorama mode)
-    if (fHeight == null && cWidth != null && cHeight != null) {
-      // assume the cropped area is actually covering 360 degrees horizontally
-      // even when `croppedAreaLeft` is non zero
-      fWidth = cWidth;
+    if (fHeight == null && fWidth != null && cHeight != null) {
       fHeight = (fWidth / 2).round();
       cTop = ((fHeight - cHeight) / 2).round();
-      cLeft = 0;
     }
 
     Rect? croppedAreaRect;
