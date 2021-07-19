@@ -279,10 +279,10 @@ class Constants {
       sourceUrl: 'https://github.com/dart-lang/intl',
     ),
     Dependency(
-      name: 'LatLong',
+      name: 'LatLong2',
       license: 'Apache 2.0',
-      licenseUrl: 'https://github.com/MikeMitterer/dart-latlong/blob/master/LICENSE',
-      sourceUrl: 'https://github.com/MikeMitterer/dart-latlong',
+      licenseUrl: 'https://github.com/jifalops/dart-latlong/blob/master/LICENSE',
+      sourceUrl: 'https://github.com/jifalops/dart-latlong',
     ),
     Dependency(
       name: 'PDF for Dart and Flutter',

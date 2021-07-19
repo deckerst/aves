@@ -213,18 +213,23 @@ class IjkPlayerAvesVideoController extends AvesVideoController {
     allStreams.forEach((stream) {
       final type = ExtraStreamType.fromTypeString(stream[Keys.streamType]);
       if (type != null) {
+        final width = stream[Keys.width] as int?;
+        final height = stream[Keys.height] as int?;
         _streams.add(StreamSummary(
           type: type,
           index: stream[Keys.index],
           codecName: stream[Keys.codecName],
           language: stream[Keys.language],
           title: stream[Keys.title],
-          width: stream[Keys.width] as int?,
-          height: stream[Keys.height] as int?,
+          width: width,
+          height: height,
         ));
         switch (type) {
           case StreamType.video:
-            videoStreamCount++;
+            // check width/height to exclude image streams (that are included among video streams)
+            if (width != null && height != null) {
+              videoStreamCount++;
+            }
             break;
           case StreamType.audio:
             audioStreamCount++;
