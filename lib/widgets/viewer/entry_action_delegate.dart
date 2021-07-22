@@ -182,7 +182,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
-      final multiPageInfo = await metadataService.getMultiPageInfo(entry);
+      final multiPageInfo = await entry.getMultiPageInfo();
       if (multiPageInfo != null) {
         if (entry.isMotionPhoto) {
           await multiPageInfo.extractMotionPhotoVideo();

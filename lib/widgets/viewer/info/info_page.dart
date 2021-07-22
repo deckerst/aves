@@ -10,6 +10,8 @@ import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/multipage/conductor.dart';
+import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,9 +35,7 @@ class _InfoPageState extends State<InfoPage> {
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
-  CollectionLens? get collection => widget.collection;
-
-  AvesEntry? get entry => widget.entryNotifier.value;
+  static const splitScreenWidthThreshold = 600;
 
   @override
   Widget build(BuildContext context) {
@@ -51,20 +51,31 @@ class _InfoPageState extends State<InfoPage> {
                 builder: (c, mqWidth, child) {
                   return ValueListenableBuilder<AvesEntry?>(
                     valueListenable: widget.entryNotifier,
-                    builder: (context, entry, child) {
-                      return entry != null
-                          ? EmbeddedDataOpener(
-                              entry: entry,
-                              child: _InfoPageContent(
-                                collection: collection,
-                                entry: entry,
-                                isScrollingNotifier: widget.isScrollingNotifier,
-                                scrollController: _scrollController,
-                                split: mqWidth > 600,
-                                goToViewer: _goToViewer,
-                              ),
-                            )
-                          : const SizedBox.shrink();
+                    builder: (context, mainEntry, child) {
+                      if (mainEntry != null) {
+                        Widget _buildContent({AvesEntry? pageEntry}) {
+                          final targetEntry = pageEntry ?? mainEntry;
+                          return EmbeddedDataOpener(
+                            entry: targetEntry,
+                            child: _InfoPageContent(
+                              collection: widget.collection,
+                              entry: targetEntry,
+                              isScrollingNotifier: widget.isScrollingNotifier,
+                              scrollController: _scrollController,
+                              split: mqWidth > splitScreenWidthThreshold,
+                              goToViewer: _goToViewer,
+                            ),
+                          );
+                        }
+
+                        return mainEntry.isBurst
+                            ? PageEntryBuilder(
+                                multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                                builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                              )
+                            : _buildContent();
+                      }
+                      return const SizedBox();
                     },
                   );
                 },

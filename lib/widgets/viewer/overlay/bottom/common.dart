@@ -14,6 +14,7 @@ import 'package:aves/widgets/common/fx/blurred.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/multipage.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
+import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -107,30 +108,23 @@ class _ViewerBottomOverlayState extends State<ViewerBottomOverlay> {
                   _lastEntry = entry;
                 }
                 if (_lastEntry == null) return const SizedBox.shrink();
+                final mainEntry = _lastEntry!;
 
-                Widget _buildContent({MultiPageInfo? multiPageInfo, int? page}) => _BottomOverlayContent(
-                      mainEntry: _lastEntry!,
-                      pageEntry: multiPageInfo?.getPageEntryByIndex(page) ?? _lastEntry!,
+                Widget _buildContent({AvesEntry? pageEntry}) => _BottomOverlayContent(
+                      mainEntry: mainEntry,
+                      pageEntry: pageEntry ?? mainEntry,
                       details: _lastDetails,
                       position: widget.showPosition ? '${widget.index + 1}/${widget.entries.length}' : null,
                       availableWidth: availableWidth,
                       multiPageController: multiPageController,
                     );
 
-                if (multiPageController == null) return _buildContent();
-
-                return StreamBuilder<MultiPageInfo?>(
-                  stream: multiPageController!.infoStream,
-                  builder: (context, snapshot) {
-                    final multiPageInfo = multiPageController!.info;
-                    return ValueListenableBuilder<int?>(
-                      valueListenable: multiPageController!.pageNotifier,
-                      builder: (context, page, child) {
-                        return _buildContent(multiPageInfo: multiPageInfo, page: page);
-                      },
-                    );
-                  },
-                );
+                return multiPageController != null
+                    ? PageEntryBuilder(
+                        multiPageController: multiPageController!,
+                        builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                      )
+                    : _buildContent();
               },
             ),
           );
@@ -370,7 +364,7 @@ class _PositionTitleRow extends StatelessWidget {
           // but fail to get information about these pages
           final pageCount = multiPageInfo.pageCount;
           if (pageCount > 0) {
-            final page = multiPageInfo.getById(entry.pageId) ?? multiPageInfo.defaultPage;
+            final page = multiPageInfo.getById(entry.pageId ?? entry.contentId) ?? multiPageInfo.defaultPage;
             pagePosition = '${(page?.index ?? 0) + 1}/$pageCount';
           }
         }

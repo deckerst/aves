@@ -11,7 +11,7 @@ class DecoratedThumbnail extends StatelessWidget {
   final double tileExtent;
   final CollectionLens? collection;
   final ValueNotifier<bool>? cancellableNotifier;
-  final bool selectable, highlightable;
+  final bool selectable, highlightable, hero;
 
   static final Color borderColor = Colors.grey.shade700;
   static final double borderWidth = AvesBorder.borderWidth;
@@ -24,6 +24,7 @@ class DecoratedThumbnail extends StatelessWidget {
     this.cancellableNotifier,
     this.selectable = true,
     this.highlightable = true,
+    this.hero = true,
   }) : super(key: key);
 
   @override
@@ -33,7 +34,7 @@ class DecoratedThumbnail extends StatelessWidget {
     // hero tag should include a collection identifier, so that it animates
     // between different views of the entry in the same collection (e.g. thumbnails <-> viewer)
     // but not between different collection instances, even with the same attributes (e.g. reloading collection page via drawer)
-    final heroTag = hashValues(collection?.id, entry);
+    final heroTag = hero ? hashValues(collection?.id, entry.uri) : null;
     final isSvg = entry.isSvg;
     Widget child = ThumbnailImage(
       entry: entry,

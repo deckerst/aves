@@ -36,7 +36,7 @@ class CollectionSectionHeader extends StatelessWidget {
   Widget? _buildHeader(BuildContext context) {
     switch (collection.sortFactor) {
       case EntrySortFactor.date:
-        switch (collection.groupFactor) {
+        switch (collection.sectionFactor) {
           case EntryGroupFactor.album:
             return _buildAlbumHeader(context);
           case EntryGroupFactor.month:

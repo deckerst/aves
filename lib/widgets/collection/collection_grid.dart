@@ -267,13 +267,13 @@ class _CollectionScrollViewState extends State<_CollectionScrollView> {
 
   void _registerWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.addListener(_scrollToTop);
-    widget.collection.sortGroupChangeNotifier.addListener(_scrollToTop);
+    widget.collection.sortSectionChangeNotifier.addListener(_scrollToTop);
     widget.scrollController.addListener(_onScrollChange);
   }
 
   void _unregisterWidget(_CollectionScrollView widget) {
     widget.collection.filterChangeNotifier.removeListener(_scrollToTop);
-    widget.collection.sortGroupChangeNotifier.removeListener(_scrollToTop);
+    widget.collection.sortSectionChangeNotifier.removeListener(_scrollToTop);
     widget.scrollController.removeListener(_onScrollChange);
   }
 
