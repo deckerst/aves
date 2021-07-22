@@ -36,7 +36,7 @@ class VideoSection extends StatelessWidget {
       if (!standalonePage)
         SwitchListTile(
           value: currentShowVideos,
-          onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility(MimeFilter.video, v),
+          onChanged: (v) => context.read<CollectionSource>().changeFilterVisibility({MimeFilter.video}, v),
           title: Text(context.l10n.settingsVideoShowVideos),
         ),
       const VideoActionsTile(),

@@ -25,7 +25,7 @@ class CollectionDraggableThumbLabel extends StatelessWidget {
       lineBuilder: (context, entry) {
         switch (collection.sortFactor) {
           case EntrySortFactor.date:
-            switch (collection.groupFactor) {
+            switch (collection.sectionFactor) {
               case EntryGroupFactor.album:
                 return [
                   DraggableThumbLabel.formatMonthThumbLabel(context, entry.bestDate),

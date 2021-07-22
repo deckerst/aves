@@ -130,7 +130,7 @@ void selectFirstAlbum() {
 
     await driver.tap(find.descendant(
       of: find.byValueKey('filter-grid-page'),
-      matching: find.byType('DecoratedFilterChip'),
+      matching: find.byType('CoveredFilterChip'),
       firstMatchOnly: true,
     ));
     await driver.waitUntilNoTransientCallbacks();

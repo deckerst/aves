@@ -4,6 +4,7 @@ import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/viewer/entry_viewer_stack.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
+import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,21 +24,77 @@ class EntryViewerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MediaQueryDataProvider(
       child: Scaffold(
-        body: Provider<VideoConductor>(
-          create: (context) => VideoConductor(),
-          dispose: (context, value) => value.dispose(),
-          child: Provider<MultiPageConductor>(
-            create: (context) => MultiPageConductor(),
-            dispose: (context, value) => value.dispose(),
-            child: EntryViewerStack(
-              collection: collection,
-              initialEntry: initialEntry,
+        body: ViewStateConductorProvider(
+          child: VideoConductorProvider(
+            child: MultiPageConductorProvider(
+              child: EntryViewerStack(
+                collection: collection,
+                initialEntry: initialEntry,
+              ),
             ),
           ),
         ),
         backgroundColor: Navigator.canPop(context) ? Colors.transparent : Colors.black,
         resizeToAvoidBottomInset: false,
       ),
+    );
+  }
+}
+
+class ViewStateConductorProvider extends StatelessWidget {
+  final Widget? child;
+
+  const ViewStateConductorProvider({
+    Key? key,
+    this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ProxyProvider<MediaQueryData, ViewStateConductor>(
+      create: (context) => ViewStateConductor(),
+      update: (context, mq, value) {
+        value!.viewportSize = mq.size;
+        return value;
+      },
+      dispose: (context, value) => value.dispose(),
+      child: child,
+    );
+  }
+}
+
+class VideoConductorProvider extends StatelessWidget {
+  final Widget? child;
+
+  const VideoConductorProvider({
+    Key? key,
+    this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Provider<VideoConductor>(
+      create: (context) => VideoConductor(),
+      dispose: (context, value) => value.dispose(),
+      child: child,
+    );
+  }
+}
+
+class MultiPageConductorProvider extends StatelessWidget {
+  final Widget? child;
+
+  const MultiPageConductorProvider({
+    Key? key,
+    this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Provider<MultiPageConductor>(
+      create: (context) => MultiPageConductor(),
+      dispose: (context, value) => value.dispose(),
+      child: child,
     );
   }
 }

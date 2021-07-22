@@ -5,7 +5,7 @@ import 'package:aves/model/entry.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:aves/utils/constants.dart';
-import 'package:aves/widgets/collection/thumbnail/theme.dart';
+import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,11 +20,11 @@ class VideoIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thumbnailTheme = context.watch<ThumbnailThemeData>();
-    final showDuration = thumbnailTheme.showVideoDuration;
+    final gridTheme = context.watch<GridThemeData>();
+    final showDuration = gridTheme.showVideoDuration;
     Widget child = OverlayIcon(
       icon: entry.is360 ? AIcons.threeSixty : AIcons.videoThumb,
-      size: thumbnailTheme.iconSize,
+      size: gridTheme.iconSize,
       text: showDuration ? entry.durationText : null,
       iconScale: entry.is360 && showDuration ? .9 : 1,
     );
@@ -32,7 +32,7 @@ class VideoIcon extends StatelessWidget {
       child = DefaultTextStyle(
         style: TextStyle(
           color: Colors.grey.shade200,
-          fontSize: thumbnailTheme.fontSize,
+          fontSize: gridTheme.fontSize,
         ),
         child: child,
       );
@@ -48,7 +48,7 @@ class AnimatedImageIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.animated,
-      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+      size: context.select<GridThemeData, double>((t) => t.iconSize),
       iconScale: .8,
     );
   }
@@ -61,7 +61,7 @@ class GeotiffIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.geo,
-      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -73,7 +73,7 @@ class SphericalImageIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.threeSixty,
-      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -85,7 +85,7 @@ class GpsIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.location,
-      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -97,7 +97,7 @@ class RawIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return OverlayIcon(
       icon: AIcons.raw,
-      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+      size: context.select<GridThemeData, double>((t) => t.iconSize),
     );
   }
 }
@@ -112,10 +112,21 @@ class MultiPageIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    IconData icon;
+    String? text;
+    if (entry.isMotionPhoto) {
+      icon = AIcons.motionPhoto;
+    } else {
+      if(entry.isBurst) {
+        text = '${entry.burstEntries?.length}';
+      }
+      icon = AIcons.multiPage;
+    }
     return OverlayIcon(
-      icon: entry.isMotionPhoto ? AIcons.motionPhoto : AIcons.multiPage,
-      size: context.select<ThumbnailThemeData, double>((t) => t.iconSize),
+      icon: icon,
+      size: context.select<GridThemeData, double>((t) => t.iconSize),
       iconScale: .8,
+      text: text,
     );
   }
 }

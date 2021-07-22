@@ -3,14 +3,15 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/common/basic/insets.dart';
-import 'package:aves/widgets/common/behaviour/routes.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
-import 'package:aves/widgets/viewer/entry_viewer_page.dart';
+import 'package:aves/widgets/viewer/embedded/embedded_data_opener.dart';
 import 'package:aves/widgets/viewer/info/basic_section.dart';
 import 'package:aves/widgets/viewer/info/info_app_bar.dart';
 import 'package:aves/widgets/viewer/info/location_section.dart';
 import 'package:aves/widgets/viewer/info/metadata/metadata_section.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
+import 'package:aves/widgets/viewer/multipage/conductor.dart';
+import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,9 +35,7 @@ class _InfoPageState extends State<InfoPage> {
   final ScrollController _scrollController = ScrollController();
   bool _scrollStartFromTop = false;
 
-  CollectionLens? get collection => widget.collection;
-
-  AvesEntry? get entry => widget.entryNotifier.value;
+  static const splitScreenWidthThreshold = 600;
 
   @override
   Widget build(BuildContext context) {
@@ -47,31 +46,39 @@ class _InfoPageState extends State<InfoPage> {
             bottom: false,
             child: NotificationListener<ScrollNotification>(
               onNotification: _handleTopScroll,
-              child: NotificationListener<OpenTempEntryNotification>(
-                onNotification: (notification) {
-                  _openTempEntry(notification.entry);
-                  return true;
-                },
-                child: Selector<MediaQueryData, double>(
-                  selector: (c, mq) => mq.size.width,
-                  builder: (c, mqWidth, child) {
-                    return ValueListenableBuilder<AvesEntry?>(
-                      valueListenable: widget.entryNotifier,
-                      builder: (context, entry, child) {
-                        return entry != null
-                            ? _InfoPageContent(
-                                collection: collection,
-                                entry: entry,
-                                isScrollingNotifier: widget.isScrollingNotifier,
-                                scrollController: _scrollController,
-                                split: mqWidth > 600,
-                                goToViewer: _goToViewer,
+              child: Selector<MediaQueryData, double>(
+                selector: (c, mq) => mq.size.width,
+                builder: (c, mqWidth, child) {
+                  return ValueListenableBuilder<AvesEntry?>(
+                    valueListenable: widget.entryNotifier,
+                    builder: (context, mainEntry, child) {
+                      if (mainEntry != null) {
+                        Widget _buildContent({AvesEntry? pageEntry}) {
+                          final targetEntry = pageEntry ?? mainEntry;
+                          return EmbeddedDataOpener(
+                            entry: targetEntry,
+                            child: _InfoPageContent(
+                              collection: widget.collection,
+                              entry: targetEntry,
+                              isScrollingNotifier: widget.isScrollingNotifier,
+                              scrollController: _scrollController,
+                              split: mqWidth > splitScreenWidthThreshold,
+                              goToViewer: _goToViewer,
+                            ),
+                          );
+                        }
+
+                        return mainEntry.isBurst
+                            ? PageEntryBuilder(
+                                multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                                builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
                               )
-                            : const SizedBox.shrink();
-                      },
-                    );
-                  },
-                ),
+                            : _buildContent();
+                      }
+                      return const SizedBox();
+                    },
+                  );
+                },
               ),
             ),
           ),
@@ -102,23 +109,11 @@ class _InfoPageState extends State<InfoPage> {
   }
 
   void _goToViewer() {
-    BackUpNotification().dispatch(context);
+    ShowImageNotification().dispatch(context);
     _scrollController.animateTo(
       0,
       duration: Durations.viewerVerticalPageScrollAnimation,
       curve: Curves.easeInOut,
-    );
-  }
-
-  void _openTempEntry(AvesEntry tempEntry) {
-    Navigator.push(
-      context,
-      TransparentMaterialPageRoute(
-        settings: const RouteSettings(name: EntryViewerPage.routeName),
-        pageBuilder: (c, a, sa) => EntryViewerPage(
-          initialEntry: tempEntry,
-        ),
-      ),
     );
   }
 }

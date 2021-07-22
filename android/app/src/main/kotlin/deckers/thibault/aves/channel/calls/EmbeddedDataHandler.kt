@@ -17,6 +17,7 @@ import deckers.thibault.aves.metadata.Metadata
 import deckers.thibault.aves.metadata.MetadataExtractorHelper.getSafeString
 import deckers.thibault.aves.metadata.MultiPage
 import deckers.thibault.aves.metadata.XMP
+import deckers.thibault.aves.metadata.XMP.getSafeStructField
 import deckers.thibault.aves.model.FieldMap
 import deckers.thibault.aves.model.provider.ContentImageProvider
 import deckers.thibault.aves.model.provider.ImageProvider
@@ -157,18 +158,11 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                     // which is returned as a second XMP directory
                     val xmpDirs = metadata.getDirectoriesOfType(XmpDirectory::class.java)
                     try {
-                        val pathParts = dataPropPath.split('/')
-
-                        val embedBytes: ByteArray = if (pathParts.size == 1) {
-                            val propName = pathParts[0]
-                            val propNs = XMP.namespaceForPropPath(propName)
-                            xmpDirs.map { it.xmpMeta.getPropertyBase64(propNs, propName) }.first { it != null }
+                        val embedBytes: ByteArray = if (!dataPropPath.contains('/')) {
+                            val propNs = XMP.namespaceForPropPath(dataPropPath)
+                            xmpDirs.map { it.xmpMeta.getPropertyBase64(propNs, dataPropPath) }.filterNotNull().first()
                         } else {
-                            val structName = pathParts[0]
-                            val structNs = XMP.namespaceForPropPath(structName)
-                            val fieldName = pathParts[1]
-                            val fieldNs = XMP.namespaceForPropPath(fieldName)
-                            xmpDirs.map { it.xmpMeta.getStructField(structNs, structName, fieldNs, fieldName) }.first { it != null }.let {
+                            xmpDirs.map { it.xmpMeta.getSafeStructField(dataPropPath) }.filterNotNull().first().let {
                                 XMPUtils.decodeBase64(it.value)
                             }
                         }

@@ -48,7 +48,7 @@ class EntryPrinter with FeedbackMixin {
     }
 
     if (entry.isMultiPage && !entry.isMotionPhoto) {
-      final multiPageInfo = await metadataService.getMultiPageInfo(entry);
+      final multiPageInfo = await entry.getMultiPageInfo();
       if (multiPageInfo != null) {
         final pageCount = multiPageInfo.pageCount;
         if (pageCount > 1) {

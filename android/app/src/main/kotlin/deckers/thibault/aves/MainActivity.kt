@@ -36,6 +36,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, AppAdapterHandler.CHANNEL).setMethodCallHandler(AppAdapterHandler(this))
         MethodChannel(messenger, AppShortcutHandler.CHANNEL).setMethodCallHandler(AppShortcutHandler(this))
         MethodChannel(messenger, DebugHandler.CHANNEL).setMethodCallHandler(DebugHandler(this))
+        MethodChannel(messenger, DeviceHandler.CHANNEL).setMethodCallHandler(DeviceHandler())
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(ImageFileHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
@@ -114,7 +115,7 @@ class MainActivity : FlutterActivity() {
                     MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
                 }
             }
-            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST -> {
+            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST, SELECT_DIRECTORY_REQUEST -> {
                 onPermissionResult(requestCode, data?.data)
             }
         }
@@ -196,6 +197,7 @@ class MainActivity : FlutterActivity() {
         const val DELETE_PERMISSION_REQUEST = 2
         const val CREATE_FILE_REQUEST = 3
         const val OPEN_FILE_REQUEST = 4
+        const val SELECT_DIRECTORY_REQUEST = 5
 
         // permission request code to pending runnable
         val pendingResultHandlers = ConcurrentHashMap<Int, PendingResultHandler>()

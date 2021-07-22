@@ -22,6 +22,14 @@ class MultiPageInfo {
         final firstPage = _pages.removeAt(0);
         _pages.insert(0, firstPage.copyWith(isDefault: true));
       }
+
+      final burstEntries = mainEntry.burstEntries;
+      if (burstEntries != null) {
+        _pageEntries.addEntries(pages.map((pageInfo) {
+          final pageEntry = burstEntries.firstWhere((entry) => entry.uri == pageInfo.uri);
+          return MapEntry(pageInfo, pageEntry);
+        }));
+      }
     }
   }
 

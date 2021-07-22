@@ -41,7 +41,7 @@ class SectionedFilterListLayoutProvider<T extends CollectionFilter> extends Sect
 
   @override
   Widget buildHeader(BuildContext context, SectionKey sectionKey, double headerExtent) {
-    return FilterChipSectionHeader(
+    return FilterChipSectionHeader<FilterGridItem<T>>(
       sectionKey: sectionKey as ChipSectionKey,
     );
   }

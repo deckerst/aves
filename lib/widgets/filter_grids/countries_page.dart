@@ -1,4 +1,3 @@
-import 'package:aves/model/actions/chip_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/filters/location.dart';
 import 'package:aves/model/settings/settings.dart';
@@ -8,8 +7,7 @@ import 'package:aves/model/source/location.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/identity/empty.dart';
-import 'package:aves/widgets/filter_grids/common/chip_action_delegate.dart';
-import 'package:aves/widgets/filter_grids/common/chip_set_action_delegate.dart';
+import 'package:aves/widgets/filter_grids/common/action_delegates/country_set.dart';
 import 'package:aves/widgets/filter_grids/common/filter_nav_page.dart';
 import 'package:aves/widgets/filter_grids/common/section_keys.dart';
 import 'package:collection/collection.dart';
@@ -35,36 +33,32 @@ class CountryListPage extends StatelessWidget {
       builder: (context, s, child) {
         return StreamBuilder(
           stream: source.eventBus.on<CountriesChangedEvent>(),
-          builder: (context, snapshot) => FilterNavigationPage<LocationFilter>(
-            source: source,
-            title: context.l10n.countryPageTitle,
-            sortFactor: settings.countrySortFactor,
-            chipSetActionDelegate: CountryChipSetActionDelegate(),
-            chipActionDelegate: ChipActionDelegate(),
-            chipActionsBuilder: (filter) => [
-              settings.pinnedFilters.contains(filter) ? ChipAction.unpin : ChipAction.pin,
-              ChipAction.setCover,
-              ChipAction.hide,
-            ],
-            filterSections: _getCountryEntries(source),
-            emptyBuilder: () => EmptyContent(
-              icon: AIcons.location,
-              text: context.l10n.countryEmpty,
-            ),
-          ),
+          builder: (context, snapshot) {
+            final gridItems = _getGridItems(source);
+            return FilterNavigationPage<LocationFilter>(
+              source: source,
+              title: context.l10n.countryPageTitle,
+              sortFactor: settings.countrySortFactor,
+              actionDelegate: CountryChipSetActionDelegate(gridItems),
+              filterSections: _groupToSections(gridItems),
+              emptyBuilder: () => EmptyContent(
+                icon: AIcons.location,
+                text: context.l10n.countryEmpty,
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _getCountryEntries(CollectionSource source) {
+  List<FilterGridItem<LocationFilter>> _getGridItems(CollectionSource source) {
     final filters = source.sortedCountries.map((location) => LocationFilter(LocationLevel.country, location)).toSet();
 
-    final sorted = FilterNavigationPage.sort(settings.countrySortFactor, source, filters);
-    return _group(sorted);
+    return FilterNavigationPage.sort(settings.countrySortFactor, source, filters);
   }
 
-  static Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _group(Iterable<FilterGridItem<LocationFilter>> sortedMapEntries) {
+  static Map<ChipSectionKey, List<FilterGridItem<LocationFilter>>> _groupToSections(Iterable<FilterGridItem<LocationFilter>> sortedMapEntries) {
     final pinned = settings.pinnedFilters.whereType<LocationFilter>();
     final byPin = groupBy<FilterGridItem<LocationFilter>, bool>(sortedMapEntries, (e) => pinned.contains(e.filter));
     final pinnedMapEntries = (byPin[true] ?? []);

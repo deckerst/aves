@@ -130,7 +130,7 @@ class _CreateAlbumDialogState extends State<CreateAlbumDialog> {
     // when the field gets focus, we wait for the soft keyboard to appear
     // then scroll to the bottom to make sure the field is in view
     if (_nameFieldFocusNode.hasFocus) {
-      await Future.delayed(Durations.softKeyboardDisplayDelay);
+      await Future.delayed(Durations.softKeyboardDisplayDelay + const Duration(milliseconds: 500));
       _scrollToBottom();
     }
   }

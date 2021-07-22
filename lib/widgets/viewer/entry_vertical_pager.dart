@@ -18,7 +18,7 @@ class ViewerVerticalPageView extends StatefulWidget {
   final PageController horizontalPager, verticalPager;
   final void Function(int page) onVerticalPageChanged, onHorizontalPageChanged;
   final VoidCallback onImagePageRequested;
-  final void Function(String uri) onViewDisposed;
+  final void Function(AvesEntry mainEntry, AvesEntry? pageEntry) onViewDisposed;
 
   const ViewerVerticalPageView({
     Key? key,
@@ -98,7 +98,7 @@ class _ViewerVerticalPageViewState extends State<ViewerVerticalPageView> {
               )
             : const SizedBox();
 
-    final infoPage = NotificationListener<BackUpNotification>(
+    final infoPage = NotificationListener<ShowImageNotification>(
       onNotification: (notification) {
         widget.onImagePageRequested();
         return true;

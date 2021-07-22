@@ -7,7 +7,7 @@ import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/item_pick_dialog.dart';
-import 'package:aves/widgets/filter_grids/common/decorated_filter_chip.dart';
+import 'package:aves/widgets/filter_grids/common/covered_filter_chip.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -89,7 +89,7 @@ class _CoverSelectionDialogState extends State<CoverSelectionDialog> {
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(bottom: 16),
-                child: DecoratedFilterChip(
+                child: CoveredFilterChip(
                   filter: filter,
                   extent: extent,
                   coverEntry: _isCustom ? _customEntry : _recentEntry,

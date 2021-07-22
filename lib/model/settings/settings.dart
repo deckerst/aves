@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/actions/video_actions.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/settings/enums.dart';
+import 'package:aves/model/settings/map_style.dart';
 import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/source/enums.dart';
+import 'package:aves/services/device_service.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/utils/pedantic.dart';
 import 'package:collection/collection.dart';
@@ -61,13 +64,15 @@ class Settings extends ChangeNotifier {
   static const hiddenFiltersKey = 'hidden_filters';
 
   // viewer
+  static const viewerQuickActionsKey = 'viewer_quick_actions';
   static const showOverlayMinimapKey = 'show_overlay_minimap';
   static const showOverlayInfoKey = 'show_overlay_info';
   static const showOverlayShootingDetailsKey = 'show_overlay_shooting_details';
-  static const viewerQuickActionsKey = 'viewer_quick_actions';
-  static const videoQuickActionsKey = 'video_quick_actions';
+  static const enableOverlayBlurEffectKey = 'enable_overlay_blur_effect';
+  static const viewerUseCutoutKey = 'viewer_use_cutout';
 
   // video
+  static const videoQuickActionsKey = 'video_quick_actions';
   static const enableVideoHardwareAccelerationKey = 'video_hwaccel_mediacodec';
   static const enableVideoAutoPlayKey = 'video_auto_play';
   static const videoLoopModeKey = 'video_loop';
@@ -123,6 +128,21 @@ class Settings extends ChangeNotifier {
       await _prefs!.clear();
     } else {
       await Future.forEach(_prefs!.getKeys().whereNot(internalKeys.contains), _prefs!.remove);
+    }
+  }
+
+  Future<void> setContextualDefaults() async {
+    // performance
+    final performanceClass = await DeviceService.getPerformanceClass();
+    enableOverlayBlurEffect = performanceClass >= 30;
+
+    // availability
+    final hasPlayServices = await availability.hasPlayServices;
+    if (hasPlayServices) {
+      infoMapStyle = EntryMapStyle.googleNormal;
+    } else {
+      final styles = EntryMapStyle.values.whereNot((v) => v.isGoogleMaps).toList();
+      infoMapStyle = styles[Random().nextInt(styles.length)];
     }
   }
 
@@ -192,9 +212,9 @@ class Settings extends ChangeNotifier {
 
   // collection
 
-  EntryGroupFactor get collectionGroupFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
+  EntryGroupFactor get collectionSectionFactor => getEnumOrDefault(collectionGroupFactorKey, EntryGroupFactor.month, EntryGroupFactor.values);
 
-  set collectionGroupFactor(EntryGroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
+  set collectionSectionFactor(EntryGroupFactor newValue) => setAndNotify(collectionGroupFactorKey, newValue.toString());
 
   EntrySortFactor get collectionSortFactor => getEnumOrDefault(collectionSortFactorKey, EntrySortFactor.date, EntrySortFactor.values);
 
@@ -240,6 +260,10 @@ class Settings extends ChangeNotifier {
 
   // viewer
 
+  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
+
+  set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+
   bool get showOverlayMinimap => getBoolOrDefault(showOverlayMinimapKey, false);
 
   set showOverlayMinimap(bool newValue) => setAndNotify(showOverlayMinimapKey, newValue);
@@ -252,15 +276,19 @@ class Settings extends ChangeNotifier {
 
   set showOverlayShootingDetails(bool newValue) => setAndNotify(showOverlayShootingDetailsKey, newValue);
 
-  List<EntryAction> get viewerQuickActions => getEnumListOrDefault(viewerQuickActionsKey, viewerQuickActionsDefault, EntryAction.values);
+  bool get enableOverlayBlurEffect => getBoolOrDefault(enableOverlayBlurEffectKey, true);
 
-  set viewerQuickActions(List<EntryAction> newValue) => setAndNotify(viewerQuickActionsKey, newValue.map((v) => v.toString()).toList());
+  set enableOverlayBlurEffect(bool newValue) => setAndNotify(enableOverlayBlurEffectKey, newValue);
+
+  bool get viewerUseCutout => getBoolOrDefault(viewerUseCutoutKey, true);
+
+  set viewerUseCutout(bool newValue) => setAndNotify(viewerUseCutoutKey, newValue);
+
+  // video
 
   List<VideoAction> get videoQuickActions => getEnumListOrDefault(videoQuickActionsKey, videoQuickActionsDefault, VideoAction.values);
 
   set videoQuickActions(List<VideoAction> newValue) => setAndNotify(videoQuickActionsKey, newValue.map((v) => v.toString()).toList());
-
-  // video
 
   bool get enableVideoHardwareAcceleration => getBoolOrDefault(enableVideoHardwareAccelerationKey, true);
 
@@ -452,6 +480,8 @@ class Settings extends ChangeNotifier {
             case showOverlayMinimapKey:
             case showOverlayInfoKey:
             case showOverlayShootingDetailsKey:
+            case enableOverlayBlurEffectKey:
+            case viewerUseCutoutKey:
             case enableVideoHardwareAccelerationKey:
             case enableVideoAutoPlayKey:
             case subtitleShowOutlineKey:

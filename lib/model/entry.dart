@@ -4,6 +4,7 @@ import 'package:aves/geo/countries.dart';
 import 'package:aves/model/entry_cache.dart';
 import 'package:aves/model/favourites.dart';
 import 'package:aves/model/metadata.dart';
+import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/video/metadata.dart';
 import 'package:aves/ref/mime_types.dart';
@@ -39,6 +40,8 @@ class AvesEntry {
   CatalogMetadata? _catalogMetadata;
   AddressDetails? _addressDetails;
 
+  List<AvesEntry>? burstEntries;
+
   final AChangeNotifier imageChangeNotifier = AChangeNotifier(), metadataChangeNotifier = AChangeNotifier(), addressChangeNotifier = AChangeNotifier();
 
   // TODO TLAD make it dynamic if it depends on OS/lib versions
@@ -64,6 +67,7 @@ class AvesEntry {
     required int? dateModifiedSecs,
     required this.sourceDateTakenMillis,
     required int? durationMillis,
+    this.burstEntries,
   }) {
     this.path = path;
     this.sourceTitle = sourceTitle;
@@ -80,6 +84,7 @@ class AvesEntry {
     String? path,
     int? contentId,
     int? dateModifiedSecs,
+    List<AvesEntry>? burstEntries,
   }) {
     final copyContentId = contentId ?? this.contentId;
     final copied = AvesEntry(
@@ -96,6 +101,7 @@ class AvesEntry {
       dateModifiedSecs: dateModifiedSecs ?? this.dateModifiedSecs,
       sourceDateTakenMillis: sourceDateTakenMillis,
       durationMillis: durationMillis,
+      burstEntries: burstEntries ?? this.burstEntries,
     )
       ..catalogMetadata = _catalogMetadata?.copyWith(contentId: copyContentId)
       ..addressDetails = _addressDetails?.copyWith(contentId: copyContentId);
@@ -227,10 +233,6 @@ class AvesEntry {
   bool get isGeotiff => _catalogMetadata?.isGeotiff ?? false;
 
   bool get is360 => _catalogMetadata?.is360 ?? false;
-
-  bool get isMultiPage => _catalogMetadata?.isMultiPage ?? false;
-
-  bool get isMotionPhoto => isMultiPage && mimeType == MimeTypes.jpeg;
 
   bool get canEdit => path != null;
 
@@ -651,6 +653,51 @@ class AvesEntry {
       await favourites.remove([this]);
     }
   }
+
+  // multipage
+
+  static final _burstFilenamePattern = RegExp(r'^(\d{8}_\d{6})_(\d+)$');
+
+  bool get isMultiPage => (_catalogMetadata?.isMultiPage ?? false) || isBurst;
+
+  bool get isBurst => burstEntries?.isNotEmpty == true;
+
+  bool get isMotionPhoto => isMultiPage && !isBurst && mimeType == MimeTypes.jpeg;
+
+  String? get burstKey {
+    if (filenameWithoutExtension != null) {
+      final match = _burstFilenamePattern.firstMatch(filenameWithoutExtension!);
+      if (match != null) {
+        return '$directory/${match.group(1)}';
+      }
+    }
+    return null;
+  }
+
+  Future<MultiPageInfo?> getMultiPageInfo() async {
+    if (isBurst) {
+      return MultiPageInfo(
+        mainEntry: this,
+        pages: burstEntries!
+            .mapIndexed((index, entry) => SinglePageInfo(
+                  index: index,
+                  pageId: entry.contentId!,
+                  isDefault: index == 0,
+                  uri: entry.uri,
+                  mimeType: entry.mimeType,
+                  width: entry.width,
+                  height: entry.height,
+                  rotationDegrees: entry.rotationDegrees,
+                  durationMillis: entry.durationMillis,
+                ))
+            .toList(),
+      );
+    } else {
+      return await metadataService.getMultiPageInfo(this);
+    }
+  }
+
+  // sort
 
   // compare by:
   // 1) title ascending

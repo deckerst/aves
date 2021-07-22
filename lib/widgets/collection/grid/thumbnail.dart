@@ -1,5 +1,6 @@
 import 'package:aves/app_mode.dart';
 import 'package:aves/model/entry.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
@@ -31,10 +32,11 @@ class InteractiveThumbnail extends StatelessWidget {
         final appMode = context.read<ValueNotifier<AppMode>>().value;
         switch (appMode) {
           case AppMode.main:
-            if (collection.isBrowsing) {
+            final selection = context.read<Selection<AvesEntry>>();
+            if (selection.isSelecting) {
+              selection.toggleSelection(entry);
+            } else {
               _goToViewer(context);
-            } else if (collection.isSelecting) {
-              collection.toggleSelection(entry);
             }
             break;
           case AppMode.pickExternal:
@@ -74,7 +76,7 @@ class InteractiveThumbnail extends StatelessWidget {
             id: collection.id,
             listenToSource: false,
           );
-          assert(viewerCollection.sortedEntries.contains(entry));
+          assert(viewerCollection.sortedEntries.map((e) => e.contentId).contains(entry.contentId));
           return EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,

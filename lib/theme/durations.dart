@@ -60,6 +60,7 @@ class Durations {
   static const collectionScrollMonitoringTimerDelay = Duration(milliseconds: 100);
   static const highlightJumpDelay = Duration(milliseconds: 400);
   static const highlightScrollInitDelay = Duration(milliseconds: 800);
+  static const videoOverlayHideDelay = Duration(milliseconds: 500);
   static const videoProgressTimerInterval = Duration(milliseconds: 300);
   static Duration staggeredAnimationDelay = Durations.staggeredAnimation ~/ 6 * timeDilation;
   static const doubleBackTimerDelay = Duration(milliseconds: 1000);

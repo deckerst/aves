@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:aves/model/multipage.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/widgets/collection/thumbnail/decorated.dart';
-import 'package:aves/widgets/collection/thumbnail/theme.dart';
+import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/viewer/multipage/controller.dart';
+import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MultiPageOverlay extends StatefulWidget {
   final MultiPageController controller;
@@ -91,7 +93,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     final horizontalMargin = SizedBox(width: marginWidth);
     const separator = SizedBox(width: separatorWidth);
 
-    return ThumbnailTheme(
+    return GridTheme(
       extent: extent,
       showLocation: false,
       child: StreamBuilder<MultiPageInfo?>(
@@ -126,6 +128,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
                         cancellableNotifier: _cancellableNotifier,
                         selectable: false,
                         highlightable: false,
+                        hero: false,
                       ),
                     ),
                     IgnorePointer(
@@ -148,9 +151,18 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
     );
   }
 
+  void _setPage(int newPage) {
+    final oldPage = controller.page;
+    if (oldPage == newPage) return;
+
+    final oldPageEntry = controller.info!.getPageEntryByIndex(oldPage);
+    controller.page = newPage;
+    context.read<ViewStateConductor>().reset(oldPageEntry);
+  }
+
   Future<void> _goToPage(int page) async {
     _syncScroll = false;
-    controller.page = page;
+    _setPage(page);
     await _scrollController.animateTo(
       pageToScrollOffset(page),
       duration: Durations.viewerOverlayPageScrollAnimation,
@@ -161,7 +173,7 @@ class _MultiPageOverlayState extends State<MultiPageOverlay> {
 
   void _onScrollChange() {
     if (_syncScroll) {
-      controller.page = scrollOffsetToPage(_scrollController.offset);
+      _setPage(scrollOffsetToPage(_scrollController.offset));
     }
   }
 

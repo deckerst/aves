@@ -10,8 +10,11 @@ import 'package:flutter/widgets.dart';
 
 mixin AlbumMixin on SourceBase {
   final Set<String?> _directories = {};
+  final Set<String> _newAlbums = {};
 
   List<String> get rawAlbums => List.unmodifiable(_directories);
+
+  Set<AlbumFilter> getNewAlbumFilters(BuildContext context) => Set.unmodifiable(_newAlbums.map((v) => AlbumFilter(v, getAlbumDisplayName(context, v))));
 
   int compareAlbumsByName(String a, String b) {
     final ua = getAlbumDisplayName(null, a);
@@ -109,7 +112,7 @@ mixin AlbumMixin on SourceBase {
   }
 
   void cleanEmptyAlbums([Set<String?>? albums]) {
-    final emptyAlbums = (albums ?? _directories).where(_isEmptyAlbum).toSet();
+    final emptyAlbums = (albums ?? _directories).where((v) => _isEmptyAlbum(v) && !_newAlbums.contains(v)).toSet();
     if (emptyAlbums.isNotEmpty) {
       _directories.removeAll(emptyAlbums);
       _notifyAlbumChange();
@@ -147,6 +150,22 @@ mixin AlbumMixin on SourceBase {
 
   AvesEntry? albumRecentEntry(AlbumFilter filter) {
     return _filterRecentEntryMap.putIfAbsent(filter.album, () => sortedEntriesByDate.firstWhereOrNull(filter.test));
+  }
+
+  void createAlbum(String directory) {
+    _newAlbums.add(directory);
+    addDirectories({directory});
+  }
+
+  void renameNewAlbum(String source, String destination) {
+    if (_newAlbums.remove(source)) {
+      cleanEmptyAlbums({source});
+      createAlbum(destination);
+    }
+  }
+
+  void forgetNewAlbums(Set<String> directories) {
+    _newAlbums.removeAll(directories);
   }
 }
 

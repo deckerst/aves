@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:aves/model/highlight.dart';
 import 'package:aves/theme/durations.dart';
+import 'package:aves/widgets/common/grid/theme.dart';
 import 'package:aves/widgets/common/providers/media_query_data_provider.dart';
 import 'package:aves/widgets/common/tile_extent_controller.dart';
 import 'package:collection/collection.dart';
@@ -79,7 +80,10 @@ class _GridScaleGestureDetectorState<T> extends State<GridScaleGestureDetector<T
             builder: (extent) => SizedBox(
               width: extent,
               height: extent,
-              child: widget.scaledBuilder(_metadata!.item, extent),
+              child: GridTheme(
+                extent: extent,
+                child: widget.scaledBuilder(_metadata!.item, extent),
+              ),
             ),
             center: thumbnailCenter,
             viewportWidth: gridWidth,

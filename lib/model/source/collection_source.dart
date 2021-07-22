@@ -162,6 +162,7 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     final pinned = settings.pinnedFilters.contains(oldFilter);
     final oldCoverContentId = covers.coverContentId(oldFilter);
     final coverEntry = oldCoverContentId != null ? todoEntries.firstWhereOrNull((entry) => entry.contentId == oldCoverContentId) : null;
+    renameNewAlbum(sourceAlbum, destinationAlbum);
     await updateAfterMove(
       todoEntries: todoEntries,
       copy: false,
@@ -275,13 +276,13 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     return recentEntry(filter);
   }
 
-  void changeFilterVisibility(CollectionFilter filter, bool visible) {
+  void changeFilterVisibility(Set<CollectionFilter> filters, bool visible) {
     final hiddenFilters = settings.hiddenFilters;
     if (visible) {
-      hiddenFilters.remove(filter);
+      hiddenFilters.removeAll(filters);
     } else {
-      hiddenFilters.add(filter);
-      settings.searchHistory = settings.searchHistory..remove(filter);
+      hiddenFilters.addAll(filters);
+      settings.searchHistory = settings.searchHistory..removeWhere(filters.contains);
     }
     settings.hiddenFilters = hiddenFilters;
 
@@ -292,10 +293,10 @@ abstract class CollectionSource with SourceBase, AlbumMixin, LocationMixin, TagM
     updateLocations();
     updateTags();
 
-    eventBus.fire(FilterVisibilityChangedEvent(filter, visible));
+    eventBus.fire(FilterVisibilityChangedEvent(filters, visible));
 
     if (visible) {
-      refreshMetadata(visibleEntries.where(filter.test).toSet());
+      refreshMetadata(visibleEntries.where((entry) => filters.any((f) => f.test(entry))).toSet());
     }
   }
 }
@@ -319,10 +320,10 @@ class EntryMovedEvent {
 }
 
 class FilterVisibilityChangedEvent {
-  final CollectionFilter filter;
+  final Set<CollectionFilter> filters;
   final bool visible;
 
-  const FilterVisibilityChangedEvent(this.filter, this.visible);
+  const FilterVisibilityChangedEvent(this.filters, this.visible);
 }
 
 class ProgressEvent {

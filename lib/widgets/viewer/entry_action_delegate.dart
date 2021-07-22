@@ -23,23 +23,15 @@ import 'package:aves/widgets/dialogs/aves_dialog.dart';
 import 'package:aves/widgets/dialogs/rename_entry_dialog.dart';
 import 'package:aves/widgets/filter_grids/album_pick.dart';
 import 'package:aves/widgets/viewer/debug/debug_page.dart';
+import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:aves/widgets/viewer/printer.dart';
 import 'package:aves/widgets/viewer/source_viewer_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMixin {
-  final CollectionLens? collection;
-  final VoidCallback showInfo;
-
-  EntryActionDelegate({
-    required this.collection,
-    required this.showInfo,
-  });
-
   void onActionSelected(BuildContext context, AvesEntry entry, EntryAction action) {
     switch (action) {
       case EntryAction.toggleFavourite:
@@ -52,7 +44,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         _showExportDialog(context, entry);
         break;
       case EntryAction.info:
-        showInfo();
+        ShowInfoNotification().dispatch(context);
         break;
       case EntryAction.rename:
         _showRenameDialog(context, entry);
@@ -99,6 +91,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
         break;
       case EntryAction.viewSource:
         _goToSourceViewer(context, entry);
+        break;
+      case EntryAction.viewMotionPhotoVideo:
+        OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context);
         break;
       case EntryAction.debug:
         _goToDebug(context, entry);
@@ -158,8 +153,9 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
     if (!await entry.delete()) {
       showFeedback(context, context.l10n.genericFailureFeedback);
     } else {
-      if (collection != null) {
-        await collection!.source.removeEntries({entry.uri});
+      final source = context.read<CollectionSource>();
+      if (source.initialized) {
+        await source.removeEntries({entry.uri});
       }
       EntryDeletedNotification(entry).dispatch(context);
     }
@@ -186,7 +182,7 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
 
     final selection = <AvesEntry>{};
     if (entry.isMultiPage) {
-      final multiPageInfo = await metadataService.getMultiPageInfo(entry);
+      final multiPageInfo = await entry.getMultiPageInfo();
       if (multiPageInfo != null) {
         if (entry.isMotionPhoto) {
           await multiPageInfo.extractMotionPhotoVideo();
@@ -212,8 +208,8 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       onDone: (processed) {
         final movedOps = processed.where((e) => e.success);
         final movedCount = movedOps.length;
-        final _collection = collection;
-        final showAction = _collection != null && movedCount > 0
+        final isMainMode = context.read<ValueNotifier<AppMode>>().value == AppMode.main;
+        final showAction = isMainMode && movedCount > 0
             ? SnackBarAction(
                 label: context.l10n.showButtonLabel,
                 onPressed: () async {

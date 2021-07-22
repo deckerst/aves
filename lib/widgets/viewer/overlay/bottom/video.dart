@@ -114,9 +114,11 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
 
   Widget _buildProgressBar() {
     const progressBarBorderRadius = 123.0;
+    final blurred = settings.enableOverlayBlurEffect;
     return SizeTransition(
       sizeFactor: scale,
       child: BlurredRRect(
+        enabled: blurred,
         borderRadius: progressBarBorderRadius,
         child: GestureDetector(
           onTapDown: (details) {
@@ -135,7 +137,7 @@ class _VideoControlOverlayState extends State<VideoControlOverlay> with SingleTi
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16) + const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
-              color: kOverlayBackgroundColor,
+              color: overlayBackgroundColor(blurred: blurred),
               border: AvesBorder.border,
               borderRadius: const BorderRadius.all(Radius.circular(progressBarBorderRadius)),
             ),

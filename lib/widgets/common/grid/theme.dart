@@ -4,12 +4,12 @@ import 'package:aves/model/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ThumbnailTheme extends StatelessWidget {
+class GridTheme extends StatelessWidget {
   final double extent;
   final bool? showLocation;
   final Widget child;
 
-  const ThumbnailTheme({
+  const GridTheme({
     Key? key,
     required this.extent,
     this.showLocation,
@@ -18,12 +18,12 @@ class ThumbnailTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProxyProvider<Settings, ThumbnailThemeData>(
+    return ProxyProvider<Settings, GridThemeData>(
       update: (_, settings, __) {
         final iconSize = min(28.0, (extent / 4)).roundToDouble();
         final fontSize = (iconSize / 2).floorToDouble();
         final highlightBorderWidth = extent * .1;
-        return ThumbnailThemeData(
+        return GridThemeData(
           iconSize: iconSize,
           fontSize: fontSize,
           highlightBorderWidth: highlightBorderWidth,
@@ -37,11 +37,11 @@ class ThumbnailTheme extends StatelessWidget {
   }
 }
 
-class ThumbnailThemeData {
+class GridThemeData {
   final double iconSize, fontSize, highlightBorderWidth;
   final bool showLocation, showRaw, showVideoDuration;
 
-  const ThumbnailThemeData({
+  const GridThemeData({
     required this.iconSize,
     required this.fontSize,
     required this.highlightBorderWidth,

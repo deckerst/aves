@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.6] - 2021-07-22
+### Added
+- Albums / Countries / Tags: multiple selection
+- Albums: action to create empty albums
+- Collection: burst shot grouping (Samsung naming pattern)
+- Collection: support motion photos defined by XMP Container namespace
+- Settings: hidden paths to exclude folders and their subfolders
+- Settings: option to disable viewer overlay blur effect (for older/slower devices)
+- Settings: option to exclude cutout area in viewer
+
+### Changed
+- Video: restored overlay hiding when pressing play button
+
+### Fixed
+- Viewer: fixed manual screen rotation to follow sensor
+
 ## [v1.4.5] - 2021-07-08
 ### Added
 - Video: added OGV/Theora/Vorbis support

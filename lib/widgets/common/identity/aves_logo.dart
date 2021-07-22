@@ -76,8 +76,6 @@ class AvesLogoPainter extends CustomPainter {
     path3.relativeArcToPoint(Offset(dim * 1.917, dim * -4.63), radius: Radius.circular(dim * 2.712), rotation: 112.5, clockwise: false);
     path3.close();
 
-
-
     canvas.drawPath(
       path0,
       Paint()

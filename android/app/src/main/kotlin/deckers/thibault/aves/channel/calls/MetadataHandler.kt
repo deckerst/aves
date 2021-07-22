@@ -184,12 +184,33 @@ class MetadataHandler(private val context: Context) : MethodCallHandler {
                                     metadataMap["Spherical Video"] = HashMap(GSpherical(bytes).describe())
                                     metadataMap.remove(dirName)
                                 }
-                                SonyVideoMetadata.USMT_UUID -> {
+                                QuickTimeMetadata.PROF_UUID -> {
+                                    // redundant with info derived on the Dart side
+                                    metadataMap.remove(dirName)
+                                }
+                                QuickTimeMetadata.USMT_UUID -> {
                                     val bytes = dir.getByteArray(Mp4UuidBoxDirectory.TAG_USER_DATA)
-                                    val fields = SonyVideoMetadata.parseUsmt(bytes)
-                                    if (fields.isNotEmpty()) {
-                                        dirMap.remove("Data")
-                                        dirMap.putAll(fields)
+                                    val blocks = QuickTimeMetadata.parseUuidUsmt(bytes)
+                                    if (blocks.isNotEmpty()) {
+                                        metadataMap.remove(dirName)
+                                        dirName = "QuickTime User Media"
+                                        val usmt = metadataMap[dirName] ?: HashMap()
+                                        metadataMap[dirName] = usmt
+
+                                        blocks.forEach {
+                                            var key = it.type
+                                            var value = it.value
+                                            val language = it.language
+
+                                            var i = 0
+                                            while (usmt.containsKey(key)) {
+                                                key = it.type + " (${++i})"
+                                            }
+                                            if (language != "und") {
+                                                value += " ($language)"
+                                            }
+                                            usmt[key] = value
+                                        }
                                     }
                                 }
                             }

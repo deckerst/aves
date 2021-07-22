@@ -1,5 +1,3 @@
-enum Activity { browse, select }
-
 enum SourceState { loading, cataloguing, locating, ready }
 
 enum ChipSortFactor { date, name, count }
