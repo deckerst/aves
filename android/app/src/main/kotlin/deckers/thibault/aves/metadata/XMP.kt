@@ -4,7 +4,9 @@ import android.util.Log
 import com.adobe.internal.xmp.XMPError
 import com.adobe.internal.xmp.XMPException
 import com.adobe.internal.xmp.XMPMeta
+import com.adobe.internal.xmp.properties.XMPProperty
 import deckers.thibault.aves.utils.LogUtils
+import deckers.thibault.aves.utils.MimeTypes
 import java.util.*
 
 object XMP {
@@ -15,6 +17,15 @@ object XMP {
     const val DC_SCHEMA_NS = "http://purl.org/dc/elements/1.1/"
     const val PHOTOSHOP_SCHEMA_NS = "http://ns.adobe.com/photoshop/1.0/"
     const val XMP_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/"
+    private const val XMP_GIMG_SCHEMA_NS = "http://ns.adobe.com/xap/1.0/g/img/"
+
+    // other namespaces
+    private const val GAUDIO_SCHEMA_NS = "http://ns.google.com/photos/1.0/audio/"
+    const val GCAMERA_SCHEMA_NS = "http://ns.google.com/photos/1.0/camera/"
+    private const val GDEPTH_SCHEMA_NS = "http://ns.google.com/photos/1.0/depthmap/"
+    const val GIMAGE_SCHEMA_NS = "http://ns.google.com/photos/1.0/image/"
+    const val CONTAINER_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/"
+    private const val CONTAINER_ITEM_SCHEMA_NS = "http://ns.google.com/photos/1.0/container/item/"
 
     const val SUBJECT_PROP_NAME = "dc:subject"
     const val TITLE_PROP_NAME = "dc:title"
@@ -26,11 +37,13 @@ object XMP {
     private const val SPECIFIC_LANG = "en-US"
 
     private val schemas = hashMapOf(
-        "GAudio" to "http://ns.google.com/photos/1.0/audio/",
-        "GDepth" to "http://ns.google.com/photos/1.0/depthmap/",
-        "GImage" to "http://ns.google.com/photos/1.0/image/",
+        "Container" to CONTAINER_SCHEMA_NS,
+        "GAudio" to GAUDIO_SCHEMA_NS,
+        "GDepth" to GDEPTH_SCHEMA_NS,
+        "GImage" to GIMAGE_SCHEMA_NS,
+        "Item" to CONTAINER_ITEM_SCHEMA_NS,
         "xmp" to XMP_SCHEMA_NS,
-        "xmpGImg" to "http://ns.adobe.com/xap/1.0/g/img/",
+        "xmpGImg" to XMP_GIMG_SCHEMA_NS,
     )
 
     fun namespaceForPropPath(propPath: String) = schemas[propPath.split(":")[0]]
@@ -44,9 +57,11 @@ object XMP {
 
     // motion photo
 
-    const val GCAMERA_SCHEMA_NS = "http://ns.google.com/photos/1.0/camera/"
-
     const val GCAMERA_VIDEO_OFFSET_PROP_NAME = "GCamera:MicroVideoOffset"
+    const val CONTAINER_DIRECTORY_PROP_NAME = "Container:Directory"
+    const val CONTAINER_ITEM_PROP_NAME = "Container:Item"
+    const val CONTAINER_ITEM_LENGTH_PROP_NAME = "Item:Length"
+    const val CONTAINER_ITEM_MIME_PROP_NAME = "Item:Mime"
 
     // panorama
     // cf https://developers.google.com/streetview/spherical-metadata
@@ -79,7 +94,26 @@ object XMP {
 
     fun XMPMeta.isMotionPhoto(): Boolean {
         try {
-            return doesPropertyExist(GCAMERA_SCHEMA_NS, GCAMERA_VIDEO_OFFSET_PROP_NAME)
+            // GCamera motion photo
+            if (doesPropertyExist(GCAMERA_SCHEMA_NS, GCAMERA_VIDEO_OFFSET_PROP_NAME)) return true
+
+            // Container motion photo
+            if (doesPropertyExist(CONTAINER_SCHEMA_NS, CONTAINER_DIRECTORY_PROP_NAME)) {
+                val count = countArrayItems(CONTAINER_SCHEMA_NS, CONTAINER_DIRECTORY_PROP_NAME)
+                if (count == 2) {
+                    var hasImage = false
+                    var hasVideo = false
+                    for (i in 1 until count + 1) {
+                        val mime = getSafeStructField("$CONTAINER_DIRECTORY_PROP_NAME[$i]/$CONTAINER_ITEM_PROP_NAME/$CONTAINER_ITEM_MIME_PROP_NAME")?.value
+                        val length = getSafeStructField("$CONTAINER_DIRECTORY_PROP_NAME[$i]/$CONTAINER_ITEM_PROP_NAME/$CONTAINER_ITEM_LENGTH_PROP_NAME")?.value
+                        hasImage = hasImage || MimeTypes.isImage(mime) && length != null
+                        hasVideo = hasVideo || MimeTypes.isVideo(mime) && length != null
+                    }
+                    if (hasImage && hasVideo) return true
+                }
+            }
+
+            return false
         } catch (e: XMPException) {
             if (e.errorCode != XMPError.BADSCHEMA) {
                 // `BADSCHEMA` code is reported when we check a property
@@ -187,5 +221,22 @@ object XMP {
         } catch (e: XMPException) {
             Log.w(LOG_TAG, "failed to get date for XMP schema=$schema, propName=$propName", e)
         }
+    }
+
+    // e.g. 'Container:Directory[42]/Container:Item/Item:Mime'
+    fun XMPMeta.getSafeStructField(path: String): XMPProperty? {
+        val separator = path.lastIndexOf("/")
+        if (separator != -1) {
+            val structName = path.substring(0, separator)
+            val structNs = namespaceForPropPath(structName)
+            val fieldName = path.substring(separator + 1)
+            val fieldNs = namespaceForPropPath(fieldName)
+            try {
+                return getStructField(structNs, structName, fieldNs, fieldName)
+            } catch (e: XMPException) {
+                Log.w(LOG_TAG, "failed to get XMP struct field for path=$path", e)
+            }
+        }
+        return null
     }
 }

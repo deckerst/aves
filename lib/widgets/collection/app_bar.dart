@@ -5,6 +5,7 @@ import 'package:aves/model/actions/collection_actions.dart';
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
+import 'package:aves/model/selection.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
@@ -45,10 +46,10 @@ class CollectionAppBar extends StatefulWidget {
 }
 
 class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerProviderStateMixin {
-  final TextEditingController _searchFieldController = TextEditingController();
   final EntrySetActionDelegate _actionDelegate = EntrySetActionDelegate();
   late AnimationController _browseToSelectAnimation;
   late Future<bool> _canAddShortcutsLoader;
+  final ValueNotifier<bool> _isSelectingNotifier = ValueNotifier(false);
 
   CollectionLens get collection => widget.collection;
 
@@ -63,6 +64,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
       duration: Durations.iconAnimation,
       vsync: this,
     );
+    _isSelectingNotifier.addListener(_onActivityChange);
     _canAddShortcutsLoader = AppShortcutService.canPin();
     _registerWidget(widget);
     WidgetsBinding.instance!.addPostFrameCallback((_) => _updateHeight());
@@ -78,35 +80,34 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   @override
   void dispose() {
     _unregisterWidget(widget);
+    _isSelectingNotifier.removeListener(_onActivityChange);
     _browseToSelectAnimation.dispose();
-    _searchFieldController.dispose();
     super.dispose();
   }
 
   void _registerWidget(CollectionAppBar widget) {
-    widget.collection.activityNotifier.addListener(_onActivityChange);
     widget.collection.filterChangeNotifier.addListener(_updateHeight);
   }
 
   void _unregisterWidget(CollectionAppBar widget) {
-    widget.collection.activityNotifier.removeListener(_onActivityChange);
     widget.collection.filterChangeNotifier.removeListener(_updateHeight);
   }
 
   @override
   Widget build(BuildContext context) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
-    return ValueListenableBuilder<Activity>(
-      valueListenable: collection.activityNotifier,
-      builder: (context, activity, child) {
+    return Selector<Selection<AvesEntry>, bool>(
+      selector: (context, selection) => selection.isSelecting,
+      builder: (context, isSelecting, child) {
+        _isSelectingNotifier.value = isSelecting;
         return AnimatedBuilder(
           animation: collection.filterChangeNotifier,
           builder: (context, child) {
             final removableFilters = appMode != AppMode.pickInternal;
             return SliverAppBar(
-              leading: appMode.hasDrawer ? _buildAppBarLeading() : null,
-              title: _buildAppBarTitle(),
-              actions: _buildActions(),
+              leading: appMode.hasDrawer ? _buildAppBarLeading(isSelecting) : null,
+              title: _buildAppBarTitle(isSelecting),
+              actions: _buildActions(isSelecting),
               bottom: hasFilters
                   ? FilterBar(
                       filters: collection.filters,
@@ -123,15 +124,15 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  Widget _buildAppBarLeading() {
+  Widget _buildAppBarLeading(bool isSelecting) {
     VoidCallback? onPressed;
     String? tooltip;
-    if (collection.isBrowsing) {
+    if (isSelecting) {
+      onPressed = () => context.read<Selection<AvesEntry>>().browse();
+      tooltip = MaterialLocalizations.of(context).backButtonTooltip;
+    } else {
       onPressed = Scaffold.of(context).openDrawer;
       tooltip = MaterialLocalizations.of(context).openAppDrawerTooltip;
-    } else if (collection.isSelecting) {
-      onPressed = collection.browse;
-      tooltip = MaterialLocalizations.of(context).backButtonTooltip;
     }
     return IconButton(
       key: const Key('appbar-leading-button'),
@@ -144,8 +145,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
     );
   }
 
-  Widget? _buildAppBarTitle() {
-    if (collection.isBrowsing) {
+  Widget? _buildAppBarTitle(bool isSelecting) {
+    if (isSelecting) {
+      return Selector<Selection<AvesEntry>, int>(
+        selector: (context, selection) => selection.selection.length,
+        builder: (context, count, child) => Text(context.l10n.collectionSelectionPageTitle(count)),
+      );
+    } else {
       final appMode = context.watch<ValueNotifier<AppMode>>().value;
       Widget title = Text(appMode.isPicking ? context.l10n.collectionPickPageTitle : context.l10n.collectionPageTitle);
       if (appMode == AppMode.main) {
@@ -158,36 +164,25 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         onTap: appMode.canSearch ? _goToSearch : null,
         child: title,
       );
-    } else if (collection.isSelecting) {
-      return AnimatedBuilder(
-        animation: collection.selectionChangeNotifier,
-        builder: (context, child) {
-          final count = collection.selection.length;
-          return Text(context.l10n.collectionSelectionPageTitle(count));
-        },
-      );
     }
-    return null;
   }
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(bool isSelecting) {
     final appMode = context.watch<ValueNotifier<AppMode>>().value;
     return [
-      if (collection.isBrowsing && appMode.canSearch)
+      if (!isSelecting && appMode.canSearch)
         CollectionSearchButton(
           source: source,
           parentCollection: collection,
         ),
-      if (collection.isSelecting)
-        ...EntryActions.selection.map((action) => AnimatedBuilder(
-              animation: collection.selectionChangeNotifier,
-              builder: (context, child) {
-                return IconButton(
-                  icon: Icon(action.getIcon()),
-                  onPressed: collection.selection.isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
-                  tooltip: action.getText(context),
-                );
-              },
+      if (isSelecting)
+        ...EntryActions.selection.map((action) => Selector<Selection<AvesEntry>, bool>(
+              selector: (context, selection) => selection.selection.isEmpty,
+              builder: (context, isEmpty, child) => IconButton(
+                icon: Icon(action.getIcon()),
+                onPressed: isEmpty ? null : () => _actionDelegate.onEntryActionSelected(context, action),
+                tooltip: action.getText(context),
+              ),
             )),
       FutureBuilder<bool>(
         future: _canAddShortcutsLoader,
@@ -196,8 +191,9 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
           return PopupMenuButton<CollectionAction>(
             key: const Key('appbar-menu-button'),
             itemBuilder: (context) {
+              final selection = context.read<Selection<AvesEntry>>();
               final isNotEmpty = !collection.isEmpty;
-              final hasSelection = collection.selection.isNotEmpty;
+              final hasSelection = selection.selection.isNotEmpty;
               return [
                 PopupMenuItem(
                   key: const Key('menu-sort'),
@@ -210,7 +206,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                     value: CollectionAction.group,
                     child: MenuRow(text: context.l10n.menuActionGroup, icon: AIcons.group),
                   ),
-                if (collection.isBrowsing && appMode == AppMode.main) ...[
+                if (!selection.isSelecting && appMode == AppMode.main) ...[
                   PopupMenuItem(
                     value: CollectionAction.select,
                     enabled: isNotEmpty,
@@ -227,7 +223,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                       child: MenuRow(text: context.l10n.collectionActionAddShortcut, icon: AIcons.addShortcut),
                     ),
                 ],
-                if (collection.isSelecting) ...[
+                if (selection.isSelecting) ...[
                   const PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.copy,
@@ -247,7 +243,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
                   const PopupMenuDivider(),
                   PopupMenuItem(
                     value: CollectionAction.selectAll,
-                    enabled: collection.selection.length < collection.entryCount,
+                    enabled: selection.selection.length < collection.entryCount,
                     child: MenuRow(text: context.l10n.collectionActionSelectAll),
                   ),
                   PopupMenuItem(
@@ -269,11 +265,10 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
   }
 
   void _onActivityChange() {
-    if (collection.isSelecting) {
+    if (context.read<Selection<AvesEntry>>().isSelecting) {
       _browseToSelectAnimation.forward();
     } else {
       _browseToSelectAnimation.reverse();
-      _searchFieldController.clear();
     }
   }
 
@@ -289,13 +284,13 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         _actionDelegate.onCollectionActionSelected(context, action);
         break;
       case CollectionAction.select:
-        collection.select();
+        context.read<Selection<AvesEntry>>().select();
         break;
       case CollectionAction.selectAll:
-        collection.addToSelection(collection.sortedEntries);
+        context.read<Selection<AvesEntry>>().addToSelection(collection.sortedEntries);
         break;
       case CollectionAction.selectNone:
-        collection.clearSelection();
+        context.read<Selection<AvesEntry>>().clearSelection();
         break;
       case CollectionAction.stats:
         _goToStats();
@@ -307,7 +302,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         final value = await showDialog<EntryGroupFactor>(
           context: context,
           builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
-            initialValue: settings.collectionGroupFactor,
+            initialValue: settings.collectionSectionFactor,
             options: {
               EntryGroupFactor.album: context.l10n.collectionGroupAlbum,
               EntryGroupFactor.month: context.l10n.collectionGroupMonth,
@@ -320,7 +315,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         // wait for the dialog to hide as applying the change may block the UI
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
-          settings.collectionGroupFactor = value;
+          settings.collectionSectionFactor = value;
         }
         break;
       case CollectionAction.sort:
@@ -372,13 +367,14 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
 
   void _goToSearch() {
     Navigator.push(
-        context,
-        SearchPageRoute(
-          delegate: CollectionSearchDelegate(
-            source: collection.source,
-            parentCollection: collection,
-          ),
-        ));
+      context,
+      SearchPageRoute(
+        delegate: CollectionSearchDelegate(
+          source: collection.source,
+          parentCollection: collection,
+        ),
+      ),
+    );
   }
 
   void _goToStats() {

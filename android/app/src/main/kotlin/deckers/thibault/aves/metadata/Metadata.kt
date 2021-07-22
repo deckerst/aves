@@ -24,7 +24,7 @@ object Metadata {
     val VIDEO_LOCATION_PATTERN: Pattern = Pattern.compile("([+-][.0-9]+)([+-][.0-9]+).*")
 
     private val VIDEO_DATE_SUBSECOND_PATTERN = Pattern.compile("(\\d{6})(\\.\\d+)")
-    private val VIDEO_TIMEZONE_PATTERN = Pattern.compile("(Z|[+-]\\d{4})$")
+    private val VIDEO_TIME_ZONE_PATTERN = Pattern.compile("(Z|[+-]\\d{4})$")
 
     // directory names, as shown when listing all metadata
     const val DIR_GPS = "GPS" // from metadata-extractor
@@ -71,7 +71,7 @@ object Metadata {
 
         // optional time zone
         var timeZone: TimeZone? = null
-        val timeZoneMatcher = VIDEO_TIMEZONE_PATTERN.matcher(dateString)
+        val timeZoneMatcher = VIDEO_TIME_ZONE_PATTERN.matcher(dateString)
         if (timeZoneMatcher.find()) {
             timeZone = TimeZone.getTimeZone("GMT${timeZoneMatcher.group().replace("Z", "")}")
             dateString = timeZoneMatcher.replaceAll("")

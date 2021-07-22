@@ -30,6 +30,7 @@ class AIcons {
   static const IconData tagOff = MdiIcons.tagOffOutline;
 
   // actions
+  static const IconData addPath = Icons.add_circle_outline;
   static const IconData addShortcut = Icons.add_to_home_screen_outlined;
   static const IconData replay10 = Icons.replay_10_outlined;
   static const IconData skip10 = Icons.forward_10_outlined;
@@ -48,8 +49,10 @@ class AIcons {
   static const IconData import = MdiIcons.fileImportOutline;
   static const IconData info = Icons.info_outlined;
   static const IconData layers = Icons.layers_outlined;
+  static const IconData newTier = Icons.fiber_new_outlined;
   static const IconData openOutside = Icons.open_in_new_outlined;
   static const IconData pin = Icons.push_pin_outlined;
+  static const IconData unpin = MdiIcons.pinOffOutline;
   static const IconData play = Icons.play_arrow;
   static const IconData pause = Icons.pause;
   static const IconData print = Icons.print_outlined;

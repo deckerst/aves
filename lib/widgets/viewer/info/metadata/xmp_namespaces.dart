@@ -29,8 +29,6 @@ class XmpNamespace {
         return XmpExifNamespace(rawProps);
       case XmpGAudioNamespace.ns:
         return XmpGAudioNamespace(rawProps);
-      case XmpGCameraNamespace.ns:
-        return XmpGCameraNamespace(rawProps);
       case XmpGDepthNamespace.ns:
         return XmpGDepthNamespace(rawProps);
       case XmpGImageNamespace.ns:

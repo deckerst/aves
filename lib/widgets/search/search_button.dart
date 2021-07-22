@@ -26,12 +26,13 @@ class CollectionSearchButton extends StatelessWidget {
 
   void _goToSearch(BuildContext context) {
     Navigator.push(
-        context,
-        SearchPageRoute(
-          delegate: CollectionSearchDelegate(
-            source: source,
-            parentCollection: parentCollection,
-          ),
-        ));
+      context,
+      SearchPageRoute(
+        delegate: CollectionSearchDelegate(
+          source: source,
+          parentCollection: parentCollection,
+        ),
+      ),
+    );
   }
 }

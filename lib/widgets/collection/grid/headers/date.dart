@@ -5,7 +5,7 @@ import 'package:aves/widgets/common/grid/header.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DaySectionHeader extends StatelessWidget {
+class DaySectionHeader<T> extends StatelessWidget {
   final DateTime? date;
 
   const DaySectionHeader({
@@ -45,14 +45,14 @@ class DaySectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(
+    return SectionHeader<T>(
       sectionKey: EntryDateSectionKey(date),
       title: _formatDate(context, date),
     );
   }
 }
 
-class MonthSectionHeader extends StatelessWidget {
+class MonthSectionHeader<T> extends StatelessWidget {
   final DateTime? date;
 
   const MonthSectionHeader({
@@ -71,7 +71,7 @@ class MonthSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SectionHeader(
+    return SectionHeader<T>(
       sectionKey: EntryDateSectionKey(date),
       title: _formatDate(context, date),
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:aves/theme/durations.dart';
@@ -14,10 +15,14 @@ mixin FeedbackMixin {
 
   // provide the messenger if feedback happens as the widget is disposed
   void showFeedbackWithMessenger(ScaffoldMessengerState messenger, String message, [SnackBarAction? action]) {
+    final duration = action != null ? Durations.opToastActionDisplay : Durations.opToastDisplay;
     messenger.showSnackBar(SnackBar(
-      content: Text(message),
+      content: _FeedbackMessage(
+        message: message,
+        duration: action != null ? duration : null,
+      ),
       action: action,
-      duration: action != null ? Durations.opToastActionDisplay : Durations.opToastDisplay,
+      duration: duration,
     ));
   }
 
@@ -134,5 +139,70 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
             );
           }),
     );
+  }
+}
+
+class _FeedbackMessage extends StatefulWidget {
+  final String message;
+  final Duration? duration;
+
+  const _FeedbackMessage({
+    Key? key,
+    required this.message,
+    this.duration,
+  }) : super(key: key);
+
+  @override
+  _FeedbackMessageState createState() => _FeedbackMessageState();
+}
+
+class _FeedbackMessageState extends State<_FeedbackMessage> {
+  double _percent = 0;
+  late int _remainingSecs;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    final duration = widget.duration;
+    if (duration != null) {
+      _remainingSecs = duration.inSeconds;
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        setState(() => _remainingSecs--);
+      });
+      WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() => _percent = 1.0));
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Text(widget.message);
+    final duration = widget.duration;
+    return duration == null
+        ? text
+        : Row(
+            children: [
+              Expanded(child: text),
+              const SizedBox(width: 16),
+              CircularPercentIndicator(
+                percent: _percent,
+                lineWidth: 2,
+                radius: 32,
+                backgroundColor: Theme.of(context).accentColor,
+                progressColor: Colors.grey,
+                animation: true,
+                animationDuration: duration.inMilliseconds,
+                center: Text('$_remainingSecs'),
+                animateFromLastPercent: true,
+                reverse: true,
+              ),
+            ],
+          );
   }
 }

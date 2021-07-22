@@ -29,6 +29,7 @@
   "chipActionUnpin": "고정 해제",
   "chipActionRename": "이름 변경",
   "chipActionSetCover": "대표 이미지 변경",
+  "chipActionCreateAlbum": "앨범 만들기",
 
   "entryActionDelete": "삭제",
   "entryActionExport": "내보내기",
@@ -40,6 +41,7 @@
   "entryActionPrint": "인쇄",
   "entryActionShare": "공유",
   "entryActionViewSource": "소스 코드 보기",
+  "entryActionViewMotionPhotoVideo": "모션 포토 보기",
   "entryActionEdit": "편집…",
   "entryActionOpen": "다른 앱에서 열기…",
   "entryActionSetAs": "다음 용도로 사용…",
@@ -86,6 +88,7 @@
   "keepScreenOnViewerOnly": "뷰어 이용 시 작동",
   "keepScreenOnAlways": "항상 켜짐",
 
+  "albumTierNew": "신규",
   "albumTierPinned": "고정",
   "albumTierSpecial": "기본",
   "albumTierApps": "앱",
@@ -124,7 +127,8 @@
   "renameAlbumDialogLabel": "앨범 이름",
   "renameAlbumDialogLabelAlreadyExistsHelper": "사용 중인 이름입니다",
 
-  "deleteAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범의 항목 {count}개를 삭제하시겠습니까?}}",
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, other{이 앨범들의 항목 {count}개를 삭제하시겠습니까?}}",
 
   "renameEntryDialogLabel": "이름",
 
@@ -231,8 +235,9 @@
 
   "albumPageTitle": "앨범",
   "albumEmpty": "앨범이 없습니다",
-  "createAlbumTooltip": "새 앨범 만들기",
+  "createAlbumTooltip": "앨범 만들기",
   "createAlbumButtonLabel": "추가",
+  "newFilterBanner": "신규",
 
   "countryPageTitle": "국가",
   "countryEmpty": "국가가 없습니다",
@@ -270,6 +275,8 @@
   "settingsViewerShowInformation": "상세 정보 표시",
   "settingsViewerShowInformationSubtitle": "제목, 날짜, 장소 등 표시",
   "settingsViewerShowShootingDetails": "촬영 정보 표시",
+  "settingsViewerEnableOverlayBlurEffect": "오버레이 흐림 효과",
+  "settingsViewerUseCutout": "컷아웃 영역 사용",
 
   "settingsViewerQuickActionsTile": "빠른 작업",
   "settingsViewerQuickActionEditorTitle": "빠른 작업",
@@ -299,9 +306,9 @@
   "settingsSubtitleThemeTextOpacity": "글자 투명도",
   "settingsSubtitleThemeBackgroundColor": "배경 색상",
   "settingsSubtitleThemeBackgroundOpacity": "배경 투명도",
-  "settingsSubtitleThemeTextAlignmentLeft":  "왼쪽",
+  "settingsSubtitleThemeTextAlignmentLeft": "왼쪽",
   "settingsSubtitleThemeTextAlignmentCenter": "가운데",
-  "settingsSubtitleThemeTextAlignmentRight":  "오른쪽",
+  "settingsSubtitleThemeTextAlignmentRight": "오른쪽",
 
   "settingsSectionPrivacy": "개인정보 보호",
   "settingsEnableCrashReport": "오류 보고서 보내기",
@@ -311,6 +318,13 @@
   "settingsHiddenFiltersTitle": "숨겨진 필터",
   "settingsHiddenFiltersBanner": "이 필터에 맞는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
   "settingsHiddenFiltersEmpty": "숨겨진 필터가 없습니다",
+
+  "settingsHiddenPathsTile": "숨겨진 경로",
+  "settingsHiddenPathsTitle": "숨겨진 경로",
+  "settingsHiddenPathsBanner": "이 경로에 있는 사진과 동영상이 숨겨지고 있으며 이 앱에서 보여지지 않을 것입니다.",
+  "settingsHiddenPathsEmpty": "숨겨진 경로가 없습니다",
+  "settingsHiddenPathsRemoveTooltip": "제거",
+  "addPathTooltip": "경로 추가",
 
   "settingsStorageAccessTile": "저장공간 접근",
   "settingsStorageAccessTitle": "저장공간 접근",

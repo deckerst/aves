@@ -59,6 +59,8 @@
   "@chipActionRename": {},
   "chipActionSetCover": "Set cover",
   "@chipActionSetCover": {},
+  "chipActionCreateAlbum": "Create album",
+  "@chipActionCreateAlbum": {},
 
   "entryActionDelete": "Delete",
   "@entryActionDelete": {},
@@ -80,6 +82,8 @@
   "@entryActionShare": {},
   "entryActionViewSource": "View source",
   "@entryActionViewSource": {},
+  "entryActionViewMotionPhotoVideo": "Open Motion Photo",
+  "@entryActionViewMotionPhotoVideo": {},
   "entryActionEdit": "Edit with…",
   "@entryActionEdit": {},
   "entryActionOpen": "Open with…",
@@ -165,6 +169,8 @@
   "keepScreenOnAlways": "Always",
   "@keepScreenOnAlways": {},
 
+  "albumTierNew": "New",
+  "@albumTierNew": {},
   "albumTierPinned": "Pinned",
   "@albumTierPinned": {},
   "albumTierSpecial": "Common",
@@ -272,8 +278,14 @@
   "renameAlbumDialogLabelAlreadyExistsHelper": "Directory already exists",
   "@renameAlbumDialogLabelAlreadyExistsHelper": {},
 
-  "deleteAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this album and its item?} other{Are you sure you want to delete this album and its {count} items?}}",
-  "@deleteAlbumConfirmationDialogMessage": {
+  "deleteSingleAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete this album and its item?} other{Are you sure you want to delete this album and its {count} items?}}",
+  "@deleteSingleAlbumConfirmationDialogMessage": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "deleteMultiAlbumConfirmationDialogMessage": "{count, plural, =1{Are you sure you want to delete these albums and their item?} other{Are you sure you want to delete these albums and their {count} items?}}",
+  "@deleteMultiAlbumConfirmationDialogMessage": {
     "placeholders": {
       "count": {}
     }
@@ -509,6 +521,8 @@
   "@createAlbumTooltip": {},
   "createAlbumButtonLabel": "CREATE",
   "@createAlbumButtonLabel": {},
+  "newFilterBanner": "new",
+  "@newFilterBanner": {},
 
   "countryPageTitle": "Countries",
   "@countryPageTitle": {},
@@ -575,6 +589,10 @@
   "@settingsViewerShowInformationSubtitle": {},
   "settingsViewerShowShootingDetails": "Show shooting details",
   "@settingsViewerShowShootingDetails": {},
+  "settingsViewerEnableOverlayBlurEffect": "Overlay blur effect",
+  "@settingsViewerEnableOverlayBlurEffect": {},
+  "settingsViewerUseCutout": "Use cutout area",
+  "@settingsViewerUseCutout": {},
 
   "settingsViewerQuickActionsTile": "Quick actions",
   "@settingsViewerQuickActionsTile": {},
@@ -630,11 +648,11 @@
   "@settingsSubtitleThemeBackgroundColor": {},
   "settingsSubtitleThemeBackgroundOpacity": "Background opacity",
   "@settingsSubtitleThemeBackgroundOpacity": {},
-  "settingsSubtitleThemeTextAlignmentLeft":  "Left",
+  "settingsSubtitleThemeTextAlignmentLeft": "Left",
   "@settingsSubtitleThemeTextAlignmentLeft": {},
   "settingsSubtitleThemeTextAlignmentCenter": "Center",
   "@settingsSubtitleThemeTextAlignmentCenter": {},
-  "settingsSubtitleThemeTextAlignmentRight":  "Right",
+  "settingsSubtitleThemeTextAlignmentRight": "Right",
   "@settingsSubtitleThemeTextAlignmentRight": {},
 
   "settingsSectionPrivacy": "Privacy",
@@ -652,6 +670,19 @@
   "@settingsHiddenFiltersBanner": {},
   "settingsHiddenFiltersEmpty": "No hidden filters",
   "@settingsHiddenFiltersEmpty": {},
+
+  "settingsHiddenPathsTile": "Hidden paths",
+  "@settingsHiddenPathsTile": {},
+  "settingsHiddenPathsTitle": "Hidden Paths",
+  "@settingsHiddenPathsTitle": {},
+  "settingsHiddenPathsBanner": "Photos and videos in these folders, or any of their subfolders, will not appear in your collection.",
+  "@settingsHiddenPathsBanner": {},
+  "settingsHiddenPathsEmpty": "No hidden paths",
+  "@settingsHiddenPathsEmpty": {},
+  "settingsHiddenPathsRemoveTooltip": "Remove",
+  "@settingsHiddenPathsRemoveTooltip": {},
+  "addPathTooltip": "Add path",
+  "@addPathTooltip": {},
 
   "settingsStorageAccessTile": "Storage access",
   "@settingsStorageAccessTile": {},

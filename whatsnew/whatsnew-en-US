@@ -1,7 +1,7 @@
 Thanks for using Aves!
-v1.4.5:
-- improved SVG support
-- OGV/Theora/Vorbis video support
-- viewer action to rotate screen
-- import/export settings
+v1.4.6:
+- burst shot grouping
+- improved motion photo support
+- select multiple albums
+- hide paths to exclude folders and their subfolders
 Full changelog available on Github

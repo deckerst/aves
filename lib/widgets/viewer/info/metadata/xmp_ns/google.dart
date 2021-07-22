@@ -1,7 +1,7 @@
 import 'package:aves/widgets/common/extensions/build_context.dart';
+import 'package:aves/widgets/viewer/embedded/notifications.dart';
 import 'package:aves/widgets/viewer/info/common.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_namespaces.dart';
-import 'package:aves/widgets/viewer/info/notifications.dart';
 import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
 
@@ -69,36 +69,4 @@ class XmpGImageNamespace extends XmpGoogleNamespace {
 
   @override
   String get displayTitle => 'Google Image';
-}
-
-class XmpGCameraNamespace extends XmpNamespace {
-  static const ns = 'GCamera';
-  static const videoOffsetKey = 'GCamera:MicroVideoOffset';
-  static const videoDataKey = 'Data';
-
-  late bool _isMotionPhoto;
-
-  XmpGCameraNamespace(Map<String, String> rawProps) : super(ns, rawProps) {
-    _isMotionPhoto = rawProps.keys.any((key) => key == videoOffsetKey);
-  }
-
-  @override
-  Map<String, String> get buildProps {
-    return _isMotionPhoto
-        ? Map.fromEntries({
-            const MapEntry(videoDataKey, '[skipped]'),
-            ...rawProps.entries,
-          })
-        : rawProps;
-  }
-
-  @override
-  Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) {
-    return {
-      videoDataKey: InfoLinkHandler(
-        linkText: (context) => context.l10n.viewerInfoOpenLinkText,
-        onTap: (context) => OpenEmbeddedDataNotification.motionPhotoVideo().dispatch(context),
-      ),
-    };
-  }
 }
