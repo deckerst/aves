@@ -105,7 +105,7 @@ class PlatformMetadataService implements MetadataService {
         'uri': entry.uri,
         'sizeBytes': entry.sizeBytes,
       });
-      final pageMaps = (result as List).cast<Map>();
+      final pageMaps = ((result as List?) ?? []).cast<Map>();
       if (entry.isMotionPhoto && pageMaps.isNotEmpty) {
         final imagePage = pageMaps[0];
         imagePage['width'] = entry.width;

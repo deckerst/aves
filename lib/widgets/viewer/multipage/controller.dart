@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/multipage.dart';
-import 'package:aves/services/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +23,9 @@ class MultiPageController {
   set page(int? page) => pageNotifier.value = page;
 
   MultiPageController(this.entry) {
-    metadataService.getMultiPageInfo(entry).then((value) {
+    entry.getMultiPageInfo().then((value) {
       if (value == null || _disposed) return;
-      pageNotifier.value = value.defaultPage!.index;
+      pageNotifier.value = value.defaultPage?.index ?? 0;
       _info = value;
       _infoStreamController.add(_info);
     });

@@ -302,7 +302,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         final value = await showDialog<EntryGroupFactor>(
           context: context,
           builder: (context) => AvesSelectionDialog<EntryGroupFactor>(
-            initialValue: settings.collectionGroupFactor,
+            initialValue: settings.collectionSectionFactor,
             options: {
               EntryGroupFactor.album: context.l10n.collectionGroupAlbum,
               EntryGroupFactor.month: context.l10n.collectionGroupMonth,
@@ -315,7 +315,7 @@ class _CollectionAppBarState extends State<CollectionAppBar> with SingleTickerPr
         // wait for the dialog to hide as applying the change may block the UI
         await Future.delayed(Durations.dialogTransitionAnimation * timeDilation);
         if (value != null) {
-          settings.collectionGroupFactor = value;
+          settings.collectionSectionFactor = value;
         }
         break;
       case CollectionAction.sort:

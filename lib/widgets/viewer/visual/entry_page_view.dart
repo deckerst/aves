@@ -14,6 +14,7 @@ import 'package:aves/widgets/viewer/hero.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
+import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:aves/widgets/viewer/visual/error.dart';
 import 'package:aves/widgets/viewer/visual/raster.dart';
 import 'package:aves/widgets/viewer/visual/state.dart';
@@ -26,7 +27,6 @@ import 'package:provider/provider.dart';
 
 class EntryPageView extends StatefulWidget {
   final AvesEntry mainEntry, pageEntry;
-  final Size viewportSize;
   final VoidCallback? onDisposed;
 
   static const decorationCheckSize = 20.0;
@@ -35,7 +35,6 @@ class EntryPageView extends StatefulWidget {
     Key? key,
     required this.mainEntry,
     required this.pageEntry,
-    required this.viewportSize,
     this.onDisposed,
   }) : super(key: key);
 
@@ -44,15 +43,13 @@ class EntryPageView extends StatefulWidget {
 }
 
 class _EntryPageViewState extends State<EntryPageView> {
+  late ValueNotifier<ViewState> _viewStateNotifier;
   late MagnifierController _magnifierController;
-  final ValueNotifier<ViewState> _viewStateNotifier = ValueNotifier(ViewState.zero);
   final List<StreamSubscription> _subscriptions = [];
 
   AvesEntry get mainEntry => widget.mainEntry;
 
   AvesEntry get entry => widget.pageEntry;
-
-  Size get viewportSize => widget.viewportSize;
 
   static const initialScale = ScaleLevel(ref: ScaleReference.contained);
   static const minScale = ScaleLevel(ref: ScaleReference.contained);
@@ -68,9 +65,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   void didUpdateWidget(covariant EntryPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.pageEntry.uri != widget.pageEntry.uri || oldWidget.pageEntry.displaySize != widget.pageEntry.displaySize) {
-      // do not reset the magnifier view state unless main entry or page entry dimensions change,
-      // in effect locking the zoom & position when browsing entry pages of the same size
+    if (oldWidget.pageEntry != widget.pageEntry) {
       _unregisterWidget();
       _registerWidget();
     }
@@ -84,19 +79,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }
 
   void _registerWidget() {
-    // try to initialize the view state to match magnifier initial state
-    _viewStateNotifier.value = ViewState(
-      Offset.zero,
-      ScaleBoundaries(
-        minScale: minScale,
-        maxScale: maxScale,
-        initialScale: initialScale,
-        viewportSize: viewportSize,
-        childSize: entry.displaySize,
-      ).initialScale,
-      viewportSize,
-    );
-
+    _viewStateNotifier = context.read<ViewStateConductor>().getOrCreateController(entry);
     _magnifierController = MagnifierController();
     _subscriptions.add(_magnifierController.stateStream.listen(_onViewStateChanged));
     _subscriptions.add(_magnifierController.scaleBoundariesStream.listen(_onViewScaleBoundariesChanged));
@@ -134,7 +117,7 @@ class _EntryPageViewState extends State<EntryPageView> {
 
     return Consumer<HeroInfo?>(
       builder: (context, info, child) => Hero(
-        tag: info != null && info.entry == mainEntry ? hashValues(info.collectionId, mainEntry) : hashCode,
+        tag: info != null && info.entry == mainEntry ? hashValues(info.collectionId, mainEntry.uri) : hashCode,
         transitionOnUserGestures: true,
         child: child!,
       ),
@@ -241,7 +224,7 @@ class _EntryPageViewState extends State<EntryPageView> {
   }) {
     return Magnifier(
       // key includes modified date to refresh when the image is modified by metadata (e.g. rotated)
-      key: ValueKey('${entry.pageId}_${entry.dateModifiedSecs}'),
+      key: ValueKey('${entry.uri}_${entry.pageId}_${entry.dateModifiedSecs}'),
       controller: _magnifierController,
       childSize: displaySize ?? entry.displaySize,
       minScale: minScale,
@@ -260,14 +243,12 @@ class _EntryPageViewState extends State<EntryPageView> {
     final current = _viewStateNotifier.value;
     final viewState = ViewState(v.position, v.scale, current.viewportSize);
     _viewStateNotifier.value = viewState;
-    ViewStateNotification(entry.uri, viewState).dispatch(context);
   }
 
   void _onViewScaleBoundariesChanged(ScaleBoundaries v) {
     final current = _viewStateNotifier.value;
     final viewState = ViewState(current.position, current.scale, v.viewportSize);
     _viewStateNotifier.value = viewState;
-    ViewStateNotification(entry.uri, viewState).dispatch(context);
   }
 
   static ScaleState _vectorScaleStateCycle(ScaleState actual) {

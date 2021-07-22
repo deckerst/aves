@@ -76,7 +76,7 @@ class InteractiveThumbnail extends StatelessWidget {
             id: collection.id,
             listenToSource: false,
           );
-          assert(viewerCollection.sortedEntries.contains(entry));
+          assert(viewerCollection.sortedEntries.map((e) => e.contentId).contains(entry.contentId));
           return EntryViewerPage(
             collection: viewerCollection,
             initialEntry: entry,

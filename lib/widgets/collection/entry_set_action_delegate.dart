@@ -8,6 +8,7 @@ import 'package:aves/model/filters/album.dart';
 import 'package:aves/model/highlight.dart';
 import 'package:aves/model/selection.dart';
 import 'package:aves/model/source/collection_lens.dart';
+import 'package:aves/model/source/collection_source.dart';
 import 'package:aves/services/android_app_service.dart';
 import 'package:aves/services/image_op_events.dart';
 import 'package:aves/services/services.dart';
@@ -33,10 +34,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
         _showDeleteDialog(context);
         break;
       case EntryAction.share:
-        final selection = context.read<Selection<AvesEntry>>().selection;
-        AndroidAppService.shareEntries(selection).then((success) {
-          if (!success) showNoMatchingAppDialog(context);
-        });
+        _share(context);
         break;
       default:
         break;
@@ -59,18 +57,31 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
     }
   }
 
-  void _refreshMetadata(BuildContext context) {
-    final collection = context.read<CollectionLens>();
+  Set<AvesEntry> _getExpandedSelectedItems(Selection<AvesEntry> selection) {
+    return selection.selection.expand((entry) => entry.burstEntries ?? {entry}).toSet();
+  }
+
+  void _share(BuildContext context) {
     final selection = context.read<Selection<AvesEntry>>();
-    collection.source.refreshMetadata(selection.selection);
+    final selectedItems = _getExpandedSelectedItems(selection);
+    AndroidAppService.shareEntries(selectedItems).then((success) {
+      if (!success) showNoMatchingAppDialog(context);
+    });
+  }
+
+  void _refreshMetadata(BuildContext context) {
+    final source = context.read<CollectionSource>();
+    final selection = context.read<Selection<AvesEntry>>();
+    final selectedItems = _getExpandedSelectedItems(selection);
+
+    source.refreshMetadata(selectedItems);
     selection.browse();
   }
 
   Future<void> _moveSelection(BuildContext context, {required MoveType moveType}) async {
-    final collection = context.read<CollectionLens>();
-    final source = collection.source;
+    final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = selection.selection;
+    final selectedItems = _getExpandedSelectedItems(selection);
 
     final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
     if (moveType == MoveType.move) {
@@ -144,6 +155,7 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
               label: context.l10n.showButtonLabel,
               onPressed: () async {
                 final highlightInfo = context.read<HighlightInfo>();
+                final collection = context.read<CollectionLens>();
                 var targetCollection = collection;
                 if (collection.filters.any((f) => f is AlbumFilter)) {
                   final filter = AlbumFilter(destinationAlbum, source.getAlbumDisplayName(context, destinationAlbum));
@@ -179,10 +191,9 @@ class EntrySetActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAware
   }
 
   Future<void> _showDeleteDialog(BuildContext context) async {
-    final collection = context.read<CollectionLens>();
-    final source = collection.source;
+    final source = context.read<CollectionSource>();
     final selection = context.read<Selection<AvesEntry>>();
-    final selectedItems = selection.selection;
+    final selectedItems = _getExpandedSelectedItems(selection);
     final selectionDirs = selectedItems.map((e) => e.directory).whereNotNull().toSet();
     final todoCount = selectedItems.length;
 

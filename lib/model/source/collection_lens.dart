@@ -13,6 +13,7 @@ import 'package:aves/model/source/location.dart';
 import 'package:aves/model/source/section_keys.dart';
 import 'package:aves/model/source/tag.dart';
 import 'package:aves/utils/change_notifier.dart';
+import 'package:aves/utils/collection_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
@@ -21,9 +22,9 @@ import 'enums.dart';
 class CollectionLens with ChangeNotifier {
   final CollectionSource source;
   final Set<CollectionFilter> filters;
-  EntryGroupFactor groupFactor;
+  EntryGroupFactor sectionFactor;
   EntrySortFactor sortFactor;
-  final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortGroupChangeNotifier = AChangeNotifier();
+  final AChangeNotifier filterChangeNotifier = AChangeNotifier(), sortSectionChangeNotifier = AChangeNotifier();
   final List<StreamSubscription> _subscriptions = [];
   int? id;
   bool listenToSource;
@@ -38,7 +39,7 @@ class CollectionLens with ChangeNotifier {
     this.id,
     this.listenToSource = true,
   })  : filters = (filters ?? {}).whereNotNull().toSet(),
-        groupFactor = settings.collectionGroupFactor,
+        sectionFactor = settings.collectionSectionFactor,
         sortFactor = settings.collectionSortFactor {
     id ??= hashCode;
     if (listenToSource) {
@@ -73,7 +74,7 @@ class CollectionLens with ChangeNotifier {
 
   int get entryCount => _filteredSortedEntries.length;
 
-  // sorted as displayed to the user, i.e. sorted then grouped, not an absolute order on all entries
+  // sorted as displayed to the user, i.e. sorted then sectioned, not an absolute order on all entries
   List<AvesEntry>? _sortedEntries;
 
   List<AvesEntry> get sortedEntries {
@@ -84,9 +85,9 @@ class CollectionLens with ChangeNotifier {
   bool get showHeaders {
     if (sortFactor == EntrySortFactor.size) return false;
 
-    if (sortFactor == EntrySortFactor.date && groupFactor == EntryGroupFactor.none) return false;
+    if (sortFactor == EntrySortFactor.date && sectionFactor == EntryGroupFactor.none) return false;
 
-    final albumSections = sortFactor == EntrySortFactor.name || (sortFactor == EntrySortFactor.date && groupFactor == EntryGroupFactor.album);
+    final albumSections = sortFactor == EntrySortFactor.name || (sortFactor == EntrySortFactor.date && sectionFactor == EntryGroupFactor.album);
     final filterByAlbum = filters.any((f) => f is AlbumFilter);
     if (albumSections && filterByAlbum) return false;
 
@@ -113,9 +114,33 @@ class CollectionLens with ChangeNotifier {
     filterChangeNotifier.notifyListeners();
   }
 
+  final bool groupBursts = true;
+
   void _applyFilters() {
     final entries = source.visibleEntries;
     _filteredSortedEntries = List.of(filters.isEmpty ? entries : entries.where((entry) => filters.every((filter) => filter.test(entry))));
+
+    if (groupBursts) {
+      _groupBursts();
+    }
+  }
+
+  void _groupBursts() {
+    final byBurstKey = groupBy<AvesEntry, String?>(_filteredSortedEntries, (entry) => entry.burstKey).whereNotNullKey();
+    byBurstKey.forEach((burstKey, entries) {
+      if (entries.length > 1) {
+        entries.sort(AvesEntry.compareByName);
+        final mainEntry = entries.first;
+        final burstEntry = mainEntry.copyWith(burstEntries: entries);
+
+        entries.skip(1).toList().forEach((subEntry) {
+          _filteredSortedEntries.remove(subEntry);
+        });
+        final index = _filteredSortedEntries.indexOf(mainEntry);
+        _filteredSortedEntries.removeAt(index);
+        _filteredSortedEntries.insert(index, burstEntry);
+      }
+    });
   }
 
   void _applySort() {
@@ -132,10 +157,10 @@ class CollectionLens with ChangeNotifier {
     }
   }
 
-  void _applyGroup() {
+  void _applySection() {
     switch (sortFactor) {
       case EntrySortFactor.date:
-        switch (groupFactor) {
+        switch (sectionFactor) {
           case EntryGroupFactor.album:
             sections = groupBy<AvesEntry, EntryAlbumSectionKey>(_filteredSortedEntries, (entry) => EntryAlbumSectionKey(entry.directory));
             break;
@@ -168,11 +193,11 @@ class CollectionLens with ChangeNotifier {
   }
 
   // metadata change should also trigger a full refresh
-  // as dates impact sorting and grouping
+  // as dates impact sorting and sectioning
   void _refresh() {
     _applyFilters();
     _applySort();
-    _applyGroup();
+    _applySection();
   }
 
   void _onFavouritesChanged() {
@@ -183,21 +208,21 @@ class CollectionLens with ChangeNotifier {
 
   void _onSettingsChanged() {
     final newSortFactor = settings.collectionSortFactor;
-    final newGroupFactor = settings.collectionGroupFactor;
+    final newSectionFactor = settings.collectionSectionFactor;
 
     final needSort = sortFactor != newSortFactor;
-    final needGroup = needSort || groupFactor != newGroupFactor;
+    final needSection = needSort || sectionFactor != newSectionFactor;
 
     if (needSort) {
       sortFactor = newSortFactor;
       _applySort();
     }
-    if (needGroup) {
-      groupFactor = newGroupFactor;
-      _applyGroup();
+    if (needSection) {
+      sectionFactor = newSectionFactor;
+      _applySection();
     }
-    if (needSort || needGroup) {
-      sortGroupChangeNotifier.notifyListeners();
+    if (needSort || needSection) {
+      sortSectionChangeNotifier.notifyListeners();
     }
   }
 
@@ -206,8 +231,27 @@ class CollectionLens with ChangeNotifier {
   }
 
   void onEntryRemoved(Set<AvesEntry> entries) {
+    if (groupBursts) {
+      // find impacted burst groups
+      final obsoleteBurstEntries = <AvesEntry>{};
+      final burstKeys = entries.map((entry) => entry.burstKey).whereNotNull().toSet();
+      if (burstKeys.isNotEmpty) {
+        _filteredSortedEntries.where((entry) => entry.isBurst && burstKeys.contains(entry.burstKey)).forEach((mainEntry) {
+          final subEntries = mainEntry.burstEntries!;
+          // remove the deleted sub-entries
+          subEntries.removeWhere(entries.contains);
+          if (subEntries.isEmpty) {
+            // remove the burst entry itself
+            obsoleteBurstEntries.add(mainEntry);
+          }
+          // TODO TLAD [burst] recreate the burst main entry if the first sub-entry got deleted
+        });
+        entries.addAll(obsoleteBurstEntries);
+      }
+    }
+
     // we should remove obsolete entries and sections
-    // but do not apply sort/group
+    // but do not apply sort/section
     // as section order change would surprise the user while browsing
     _filteredSortedEntries.removeWhere(entries.contains);
     _sortedEntries?.removeWhere(entries.contains);

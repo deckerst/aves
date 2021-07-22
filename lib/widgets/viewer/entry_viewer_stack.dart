@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/model/highlight.dart';
-import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/enums.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
@@ -24,17 +23,17 @@ import 'package:aves/widgets/viewer/overlay/bottom/panorama.dart';
 import 'package:aves/widgets/viewer/overlay/bottom/video.dart';
 import 'package:aves/widgets/viewer/overlay/notifications.dart';
 import 'package:aves/widgets/viewer/overlay/top.dart';
+import 'package:aves/widgets/viewer/page_entry_builder.dart';
 import 'package:aves/widgets/viewer/video/conductor.dart';
 import 'package:aves/widgets/viewer/video/controller.dart';
 import 'package:aves/widgets/viewer/video_action_delegate.dart';
-import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class EntryViewerStack extends StatefulWidget {
   final CollectionLens? collection;
@@ -62,7 +61,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   late Animation<Offset> _bottomOverlayOffset;
   EdgeInsets? _frozenViewInsets, _frozenViewPadding;
   late VideoActionDelegate _videoActionDelegate;
-  final List<Tuple2<String, ValueNotifier<ViewState>>> _viewStateNotifiers = [];
   final Map<MultiPageController, Future<void> Function()> _multiPageControllerPageListeners = {};
   final ValueNotifier<HeroInfo?> _heroInfoNotifier = ValueNotifier(null);
   bool _isEntryTracked = true;
@@ -90,7 +88,11 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     }
 
     // make sure initial entry is actually among the filtered collection entries
-    final entry = entries.contains(widget.initialEntry) ? widget.initialEntry : entries.firstOrNull;
+    // `initialEntry` may be a dynamic burst entry from another collection lens
+    // so it is, strictly speaking, not contained in the lens used by the viewer,
+    // but it can be found by content ID
+    final initialEntry = widget.initialEntry;
+    final entry = entries.firstWhereOrNull((v) => v.contentId == initialEntry.contentId) ?? entries.firstOrNull;
     // opening hero, with viewer as target
     _heroInfoNotifier.value = HeroInfo(collection?.id, entry);
     _entryNotifier.value = entry;
@@ -169,6 +171,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
   @override
   Widget build(BuildContext context) {
+    final viewStateConductor = context.read<ViewStateConductor>();
     return WillPopScope(
       onWillPop: () {
         if (_currentVerticalPage.value == infoPage) {
@@ -186,8 +189,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
           onNotification: (dynamic notification) {
             if (notification is FilterSelectedNotification) {
               _goToCollection(notification.filter);
-            } else if (notification is ViewStateNotification) {
-              _updateViewState(notification.uri, notification.viewState);
             } else if (notification is EntryDeletedNotification) {
               _onEntryDeleted(context, notification.entry);
             }
@@ -208,7 +209,7 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
                   onVerticalPageChanged: _onVerticalPageChanged,
                   onHorizontalPageChanged: _onHorizontalPageChanged,
                   onImagePageRequested: () => _goToVerticalPage(imagePage),
-                  onViewDisposed: (uri) => _updateViewState(uri, null),
+                  onViewDisposed: (mainEntry, pageEntry) => viewStateConductor.reset(pageEntry ?? mainEntry),
                 ),
                 _buildTopOverlay(),
                 _buildBottomOverlay(),
@@ -221,23 +222,14 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
     );
   }
 
-  void _updateViewState(String uri, ViewState? viewState) {
-    final viewStateNotifier = _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == uri)?.item2;
-    viewStateNotifier?.value = viewState ?? ViewState.zero;
-  }
-
   Widget _buildTopOverlay() {
     Widget child = ValueListenableBuilder<AvesEntry?>(
       valueListenable: _entryNotifier,
       builder: (context, mainEntry, child) {
         if (mainEntry == null) return const SizedBox.shrink();
 
-        return NotificationListener<ShowInfoNotification>(
-          onNotification: (notification) {
-            _goToVerticalPage(infoPage);
-            return true;
-          },
-          child: EmbeddedDataOpener(
+        Widget _buildContent({AvesEntry? pageEntry}) {
+          return EmbeddedDataOpener(
             entry: mainEntry,
             child: ViewerTopOverlay(
               mainEntry: mainEntry,
@@ -245,9 +237,21 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
               canToggleFavourite: hasCollection,
               viewInsets: _frozenViewInsets,
               viewPadding: _frozenViewPadding,
-              viewStateNotifier: _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == mainEntry.uri)?.item2,
             ),
-          ),
+          );
+        }
+
+        return NotificationListener<ShowInfoNotification>(
+          onNotification: (notification) {
+            _goToVerticalPage(infoPage);
+            return true;
+          },
+          child: mainEntry.isMultiPage
+              ? PageEntryBuilder(
+                  multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                  builder: (pageEntry) => _buildContent(pageEntry: pageEntry),
+                )
+              : _buildContent(),
         );
       },
     );
@@ -282,14 +286,17 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
       valueListenable: _entryNotifier,
       builder: (context, mainEntry, child) {
         if (mainEntry == null) return const SizedBox.shrink();
+        final multiPageController = mainEntry.isMultiPage ? context.read<MultiPageConductor>().getController(mainEntry) : null;
 
-        Widget? _buildExtraBottomOverlay(AvesEntry pageEntry) {
+        Widget? _buildExtraBottomOverlay({AvesEntry? pageEntry}) {
+          final targetEntry = pageEntry ?? mainEntry;
+          Widget? child;
           // a 360 video is both a video and a panorama but only the video controls are displayed
-          if (pageEntry.isVideo) {
-            return Selector<VideoConductor, AvesVideoController?>(
-              selector: (context, vc) => vc.getController(pageEntry),
+          if (targetEntry.isVideo) {
+            child = Selector<VideoConductor, AvesVideoController?>(
+              selector: (context, vc) => vc.getController(targetEntry),
               builder: (context, videoController, child) => VideoControlOverlay(
-                entry: pageEntry,
+                entry: targetEntry,
                 controller: videoController,
                 scale: _bottomOverlayScale,
                 onActionSelected: (action) {
@@ -299,40 +306,31 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
                 },
               ),
             );
-          } else if (pageEntry.is360) {
-            return PanoramaOverlay(
-              entry: pageEntry,
+          } else if (targetEntry.is360) {
+            child = PanoramaOverlay(
+              entry: targetEntry,
               scale: _bottomOverlayScale,
             );
           }
-          return null;
+          return child != null
+              ? ExtraBottomOverlay(
+                  viewInsets: _frozenViewInsets,
+                  viewPadding: _frozenViewPadding,
+                  child: child,
+                )
+              : null;
         }
 
-        final multiPageController = mainEntry.isMultiPage ? context.read<MultiPageConductor>().getController(mainEntry) : null;
-        final extraBottomOverlay = multiPageController != null
-            ? StreamBuilder<MultiPageInfo?>(
-                stream: multiPageController.infoStream,
-                builder: (context, snapshot) {
-                  final multiPageInfo = multiPageController.info;
-                  if (multiPageInfo == null) return const SizedBox.shrink();
-                  return ValueListenableBuilder<int?>(
-                    valueListenable: multiPageController.pageNotifier,
-                    builder: (context, page, child) {
-                      final pageEntry = multiPageInfo.getPageEntryByIndex(page);
-                      return _buildExtraBottomOverlay(pageEntry) ?? const SizedBox();
-                    },
-                  );
-                })
-            : _buildExtraBottomOverlay(mainEntry);
+        final extraBottomOverlay = mainEntry.isMultiPage
+            ? PageEntryBuilder(
+                multiPageController: multiPageController,
+                builder: (pageEntry) => _buildExtraBottomOverlay(pageEntry: pageEntry) ?? const SizedBox(),
+              )
+            : _buildExtraBottomOverlay();
 
         return Column(
           children: [
-            if (extraBottomOverlay != null)
-              ExtraBottomOverlay(
-                viewInsets: _frozenViewInsets,
-                viewPadding: _frozenViewPadding,
-                child: extraBottomOverlay,
-              ),
+            if (extraBottomOverlay != null) extraBottomOverlay,
             SlideTransition(
               position: _bottomOverlayOffset,
               child: ViewerBottomOverlay(
@@ -564,7 +562,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
   Future<void> _initEntryControllers(AvesEntry? entry) async {
     if (entry == null) return;
 
-    _initViewStateController(entry);
     if (entry.isVideo) {
       await _initVideoController(entry);
     }
@@ -578,20 +575,6 @@ class _EntryViewerStackState extends State<EntryViewerStack> with FeedbackMixin,
 
     if (entry.isMultiPage) {
       _cleanMultiPageController(entry);
-    }
-  }
-
-  void _initViewStateController(AvesEntry entry) {
-    final uri = entry.uri;
-    var controller = _viewStateNotifiers.firstWhereOrNull((kv) => kv.item1 == uri);
-    if (controller != null) {
-      _viewStateNotifiers.remove(controller);
-    } else {
-      controller = Tuple2(uri, ValueNotifier<ViewState>(ViewState.zero));
-    }
-    _viewStateNotifiers.insert(0, controller);
-    while (_viewStateNotifiers.length > 3) {
-      _viewStateNotifiers.removeLast().item2.dispose();
     }
   }
 

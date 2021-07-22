@@ -1,7 +1,6 @@
 import 'package:aves/model/actions/entry_actions.dart';
 import 'package:aves/model/entry.dart';
 import 'package:aves/model/favourites.dart';
-import 'package:aves/model/multipage.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/theme/durations.dart';
 import 'package:aves/theme/icons.dart';
@@ -12,7 +11,8 @@ import 'package:aves/widgets/viewer/entry_action_delegate.dart';
 import 'package:aves/widgets/viewer/multipage/conductor.dart';
 import 'package:aves/widgets/viewer/overlay/common.dart';
 import 'package:aves/widgets/viewer/overlay/minimap.dart';
-import 'package:aves/widgets/viewer/visual/state.dart';
+import 'package:aves/widgets/viewer/page_entry_builder.dart';
+import 'package:aves/widgets/viewer/visual/conductor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -23,7 +23,6 @@ class ViewerTopOverlay extends StatelessWidget {
   final Animation<double> scale;
   final EdgeInsets? viewInsets, viewPadding;
   final bool canToggleFavourite;
-  final ValueNotifier<ViewState>? viewStateNotifier;
 
   static const double outerPadding = 8;
   static const double innerPadding = 8;
@@ -35,7 +34,6 @@ class ViewerTopOverlay extends StatelessWidget {
     required this.canToggleFavourite,
     required this.viewInsets,
     required this.viewPadding,
-    required this.viewStateNotifier,
   }) : super(key: key);
 
   @override
@@ -50,33 +48,19 @@ class ViewerTopOverlay extends StatelessWidget {
             final buttonWidth = OverlayButton.getSize(context);
             final availableCount = ((mqWidth - outerPadding * 2 - buttonWidth) / (buttonWidth + innerPadding)).floor();
 
-            Widget? child;
-            if (mainEntry.isMultiPage) {
-              final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
-              if (multiPageController != null) {
-                child = StreamBuilder<MultiPageInfo?>(
-                  stream: multiPageController.infoStream,
-                  builder: (context, snapshot) {
-                    final multiPageInfo = multiPageController.info;
-                    return ValueListenableBuilder<int?>(
-                      valueListenable: multiPageController.pageNotifier,
-                      builder: (context, page, child) {
-                        return _buildOverlay(availableCount, mainEntry, pageEntry: multiPageInfo?.getPageEntryByIndex(page));
-                      },
-                    );
-                  },
-                );
-              }
-            }
-
-            return child ??= _buildOverlay(availableCount, mainEntry);
+            return mainEntry.isMultiPage
+                ? PageEntryBuilder(
+                    multiPageController: context.read<MultiPageConductor>().getController(mainEntry),
+                    builder: (pageEntry) => _buildOverlay(context, availableCount, mainEntry, pageEntry: pageEntry),
+                  )
+                : _buildOverlay(context, availableCount, mainEntry);
           },
         ),
       ),
     );
   }
 
-  Widget _buildOverlay(int availableCount, AvesEntry mainEntry, {AvesEntry? pageEntry}) {
+  Widget _buildOverlay(BuildContext context, int availableCount, AvesEntry mainEntry, {AvesEntry? pageEntry}) {
     pageEntry ??= mainEntry;
 
     bool _canDo(EntryAction action) {
@@ -130,22 +114,25 @@ class ViewerTopOverlay extends StatelessWidget {
       },
     );
 
-    return settings.showOverlayMinimap && viewStateNotifier != null
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buttonRow,
-              const SizedBox(height: 8),
-              FadeTransition(
-                opacity: scale,
-                child: Minimap(
-                  entry: pageEntry,
-                  viewStateNotifier: viewStateNotifier!,
-                ),
-              )
-            ],
+    if (settings.showOverlayMinimap) {
+      final viewStateConductor = context.read<ViewStateConductor>();
+      final viewStateNotifier = viewStateConductor.getOrCreateController(pageEntry);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          buttonRow,
+          const SizedBox(height: 8),
+          FadeTransition(
+            opacity: scale,
+            child: Minimap(
+              entry: pageEntry,
+              viewStateNotifier: viewStateNotifier,
+            ),
           )
-        : buttonRow;
+        ],
+      );
+    }
+    return buttonRow;
   }
 }
 
@@ -153,6 +140,8 @@ class _TopOverlayRow extends StatelessWidget {
   final List<EntryAction> quickActions, inAppActions, externalAppActions;
   final Animation<double> scale;
   final AvesEntry mainEntry, pageEntry;
+
+  AvesEntry get favouriteTargetEntry => mainEntry.isBurst ? pageEntry : mainEntry;
 
   const _TopOverlayRow({
     Key? key,
@@ -204,7 +193,7 @@ class _TopOverlayRow extends StatelessWidget {
     switch (action) {
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(
-          entry: mainEntry,
+          entry: favouriteTargetEntry,
           onPressed: onPressed,
         );
         break;
@@ -250,7 +239,7 @@ class _TopOverlayRow extends StatelessWidget {
       // in app actions
       case EntryAction.toggleFavourite:
         child = _FavouriteToggler(
-          entry: mainEntry,
+          entry: favouriteTargetEntry,
           isMenuItem: true,
         );
         break;
@@ -300,7 +289,7 @@ class _TopOverlayRow extends StatelessWidget {
 
   void _onActionSelected(BuildContext context, EntryAction action) {
     var targetEntry = mainEntry;
-    if (mainEntry.isMultiPage && EntryActions.pageActions.contains(action)) {
+    if (mainEntry.isMultiPage && (mainEntry.isBurst || EntryActions.pageActions.contains(action))) {
       final multiPageController = context.read<MultiPageConductor>().getController(mainEntry);
       if (multiPageController != null) {
         final multiPageInfo = multiPageController.info;

@@ -112,10 +112,21 @@ class MultiPageIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    IconData icon;
+    String? text;
+    if (entry.isMotionPhoto) {
+      icon = AIcons.motionPhoto;
+    } else {
+      if(entry.isBurst) {
+        text = '${entry.burstEntries?.length}';
+      }
+      icon = AIcons.multiPage;
+    }
     return OverlayIcon(
-      icon: entry.isMotionPhoto ? AIcons.motionPhoto : AIcons.multiPage,
+      icon: icon,
       size: context.select<GridThemeData, double>((t) => t.iconSize),
       iconScale: .8,
+      text: text,
     );
   }
 }
