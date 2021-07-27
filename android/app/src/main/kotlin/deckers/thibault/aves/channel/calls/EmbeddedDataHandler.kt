@@ -193,7 +193,7 @@ class EmbeddedDataHandler(private val context: Context) : MethodCallHandler {
                 }
             }
         }
-        val authority = "${context.applicationContext.packageName}.fileprovider"
+        val authority = "${context.applicationContext.packageName}.file_provider"
         val uri = if (displayName != null) {
             // add extension to ease type identification when sharing this content
             val displayNameWithExtension = if (extension == null || displayName.endsWith(extension, ignoreCase = true)) {
