@@ -1,5 +1,6 @@
 package deckers.thibault.aves
 
+import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -40,6 +41,7 @@ class MainActivity : FlutterActivity() {
         MethodChannel(messenger, EmbeddedDataHandler.CHANNEL).setMethodCallHandler(EmbeddedDataHandler(this))
         MethodChannel(messenger, ImageFileHandler.CHANNEL).setMethodCallHandler(ImageFileHandler(this))
         MethodChannel(messenger, GeocodingHandler.CHANNEL).setMethodCallHandler(GeocodingHandler(this))
+        MethodChannel(messenger, GlobalSearchHandler.CHANNEL).setMethodCallHandler(GlobalSearchHandler(this))
         MethodChannel(messenger, MediaStoreHandler.CHANNEL).setMethodCallHandler(MediaStoreHandler(this))
         MethodChannel(messenger, MetadataHandler.CHANNEL).setMethodCallHandler(MetadataHandler(this))
         MethodChannel(messenger, StorageHandler.CHANNEL).setMethodCallHandler(StorageHandler(this))
@@ -145,6 +147,17 @@ class MainActivity : FlutterActivity() {
                     "action" to "pick",
                     "mimeType" to intent.type,
                 )
+            }
+            Intent.ACTION_SEARCH -> {
+                return hashMapOf(
+                    "action" to "search",
+                    "query" to intent.getStringExtra(SearchManager.QUERY),
+                    "mimeType" to intent.getStringExtra(SearchManager.EXTRA_DATA_KEY),
+                    "uri" to intent.dataString
+                )
+            }
+            else -> {
+                Log.w(LOG_TAG, "unhandled intent action=${intent?.action}")
             }
         }
         return HashMap()

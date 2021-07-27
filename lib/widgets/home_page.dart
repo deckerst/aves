@@ -6,6 +6,7 @@ import 'package:aves/model/settings/screen_on.dart';
 import 'package:aves/model/settings/settings.dart';
 import 'package:aves/model/source/collection_lens.dart';
 import 'package:aves/model/source/collection_source.dart';
+import 'package:aves/services/global_search.dart';
 import 'package:aves/services/services.dart';
 import 'package:aves/services/viewer_service.dart';
 import 'package:aves/utils/android_file_utils.dart';
@@ -75,6 +76,7 @@ class _HomePageState extends State<HomePage> {
       final action = intentData['action'];
       switch (action) {
         case 'view':
+        case 'search':
           _viewerEntry = await _initViewerEntry(
             uri: intentData['uri'],
             mimeType: intentData['mimeType'],
@@ -107,6 +109,7 @@ class _HomePageState extends State<HomePage> {
       final source = context.read<CollectionSource>();
       await source.init();
       unawaited(source.refresh());
+      unawaited(GlobalSearch.registerCallback());
     }
 
     // `pushReplacement` is not enough in some edge cases
