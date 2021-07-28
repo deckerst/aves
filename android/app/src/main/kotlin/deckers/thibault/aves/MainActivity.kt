@@ -149,11 +149,14 @@ class MainActivity : FlutterActivity() {
                 )
             }
             Intent.ACTION_SEARCH -> {
-                return hashMapOf(
+                val viewUri = intent.dataString
+                return if (viewUri != null) hashMapOf(
+                    "action" to "view",
+                    "uri" to viewUri,
+                    "mimeType" to intent.getStringExtra(SearchManager.EXTRA_DATA_KEY),
+                ) else hashMapOf(
                     "action" to "search",
                     "query" to intent.getStringExtra(SearchManager.QUERY),
-                    "mimeType" to intent.getStringExtra(SearchManager.EXTRA_DATA_KEY),
-                    "uri" to intent.dataString
                 )
             }
             else -> {
