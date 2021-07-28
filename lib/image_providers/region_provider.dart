@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/services.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -62,7 +63,8 @@ class RegionProvider extends ImageProvider<RegionProviderKey> {
   void pause() => imageFileService.cancelRegion(key);
 }
 
-class RegionProviderKey {
+@immutable
+class RegionProviderKey extends Equatable {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
@@ -71,6 +73,9 @@ class RegionProviderKey {
   final bool isFlipped;
   final Rectangle<int> region;
   final Size imageSize;
+
+  @override
+  List<Object?> get props => [uri, pageId, rotationDegrees, isFlipped, sampleSize, region, imageSize];
 
   const RegionProviderKey({
     required this.uri,
@@ -82,24 +87,6 @@ class RegionProviderKey {
     required this.region,
     required this.imageSize,
   });
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is RegionProviderKey && other.uri == uri && other.mimeType == mimeType && other.pageId == pageId && other.rotationDegrees == rotationDegrees && other.isFlipped == isFlipped && other.sampleSize == sampleSize && other.region == region && other.imageSize == imageSize;
-  }
-
-  @override
-  int get hashCode => hashValues(
-        uri,
-        mimeType,
-        pageId,
-        rotationDegrees,
-        isFlipped,
-        sampleSize,
-        region,
-        imageSize,
-      );
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, sampleSize=$sampleSize, region=$region, imageSize=$imageSize}';

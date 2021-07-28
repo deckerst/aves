@@ -1,7 +1,6 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class TypeFilter extends CollectionFilter {
@@ -14,8 +13,8 @@ class TypeFilter extends CollectionFilter {
   static const _sphericalVideo = 'spherical_video'; // subset of videos
 
   final String itemType;
-  late EntryFilter _test;
-  late IconData _icon;
+  late final EntryFilter _test;
+  late final IconData _icon;
 
   static final animated = TypeFilter._private(_animated);
   static final geotiff = TypeFilter._private(_geotiff);
@@ -23,11 +22,18 @@ class TypeFilter extends CollectionFilter {
   static final panorama = TypeFilter._private(_panorama);
   static final sphericalVideo = TypeFilter._private(_sphericalVideo);
 
+  @override
+  List<Object?> get props => [itemType];
+
   TypeFilter._private(this.itemType) {
     switch (itemType) {
       case _animated:
         _test = (entry) => entry.isAnimated;
         _icon = AIcons.animated;
+        break;
+      case _geotiff:
+        _test = (entry) => entry.isGeotiff;
+        _icon = AIcons.geo;
         break;
       case _motionPhoto:
         _test = (entry) => entry.isMotionPhoto;
@@ -40,10 +46,6 @@ class TypeFilter extends CollectionFilter {
       case _sphericalVideo:
         _test = (entry) => entry.isVideo && entry.is360;
         _icon = AIcons.threeSixty;
-        break;
-      case _geotiff:
-        _test = (entry) => entry.isGeotiff;
-        _icon = AIcons.geo;
         break;
     }
   }
@@ -91,16 +93,4 @@ class TypeFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$itemType';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is TypeFilter && other.itemType == itemType;
-  }
-
-  @override
-  int get hashCode => hashValues(type, itemType);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{itemType=$itemType}';
 }

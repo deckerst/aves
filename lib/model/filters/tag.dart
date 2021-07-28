@@ -1,14 +1,16 @@
 import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class TagFilter extends CollectionFilter {
   static const type = 'tag';
 
   final String tag;
-  late EntryFilter _test;
+  late final EntryFilter _test;
+
+  @override
+  List<Object?> get props => [tag];
 
   TagFilter(this.tag) {
     if (tag.isEmpty) {
@@ -49,16 +51,4 @@ class TagFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$tag';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is TagFilter && other.tag == tag;
-  }
-
-  @override
-  int get hashCode => hashValues(type, tag);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{tag=$tag}';
 }

@@ -3,19 +3,21 @@ import 'package:aves/ref/mime_types.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/utils/mime_utils.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class MimeFilter extends CollectionFilter {
   static const type = 'mime';
 
   final String mime;
-  late EntryFilter _test;
-  late String _label;
-  late IconData _icon;
+  late final EntryFilter _test;
+  late final String _label;
+  late final IconData _icon;
 
   static final image = MimeFilter(MimeTypes.anyImage);
   static final video = MimeFilter(MimeTypes.anyVideo);
+
+  @override
+  List<Object?> get props => [mime];
 
   MimeFilter(this.mime) {
     IconData? icon;
@@ -73,16 +75,4 @@ class MimeFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$mime';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is MimeFilter && other.mime == mime;
-  }
-
-  @override
-  int get hashCode => hashValues(type, mime);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{mime=$mime}';
 }

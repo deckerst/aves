@@ -11,10 +11,12 @@ import 'package:aves/model/filters/tag.dart';
 import 'package:aves/model/filters/type.dart';
 import 'package:aves/utils/color_utils.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-abstract class CollectionFilter implements Comparable<CollectionFilter> {
+@immutable
+abstract class CollectionFilter extends Equatable implements Comparable<CollectionFilter> {
   static const List<String> categoryOrder = [
     QueryFilter.type,
     FavouriteFilter.type,
@@ -88,20 +90,15 @@ abstract class CollectionFilter implements Comparable<CollectionFilter> {
   }
 }
 
-class FilterGridItem<T extends CollectionFilter> {
+@immutable
+class FilterGridItem<T extends CollectionFilter> with EquatableMixin {
   final T filter;
   final AvesEntry? entry;
 
+  @override
+  List<Object?> get props => [filter, entry?.uri];
+
   const FilterGridItem(this.filter, this.entry);
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is FilterGridItem && other.filter == filter && other.entry == entry;
-  }
-
-  @override
-  int get hashCode => hashValues(filter, entry);
 }
 
 typedef EntryFilter = bool Function(AvesEntry);

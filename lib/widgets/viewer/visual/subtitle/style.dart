@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class SubtitleStyle with Diagnosticable {
+class SubtitleStyle extends Equatable with Diagnosticable {
   final TextAlign? hAlign;
   final TextAlignVertical? vAlign;
   final Color? borderColor;
@@ -14,6 +15,23 @@ class SubtitleStyle with Diagnosticable {
   bool get scaling => (scaleX ?? 1) != 1 || (scaleY ?? 1) != 1;
 
   bool get shearing => (shearX ?? 0) != 0 || (shearY ?? 0) != 0;
+
+  @override
+  List<Object?> get props => [
+        hAlign,
+        vAlign,
+        borderColor,
+        borderWidth,
+        edgeBlur,
+        rotationX,
+        rotationY,
+        rotationZ,
+        scaleX,
+        scaleY,
+        shearX,
+        shearY,
+        drawingPaths?.length,
+      ];
 
   const SubtitleStyle({
     this.hAlign,
@@ -80,27 +98,4 @@ class SubtitleStyle with Diagnosticable {
     properties.add(DoubleProperty('shearY', shearY));
     properties.add(DiagnosticsProperty<List<Path>>('drawingPaths', drawingPaths));
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is SubtitleStyle && other.hAlign == hAlign && other.vAlign == vAlign && other.borderColor == borderColor && other.borderWidth == borderWidth && other.edgeBlur == edgeBlur && other.rotationX == rotationX && other.rotationY == rotationY && other.rotationZ == rotationZ && other.scaleX == scaleX && other.scaleY == scaleY && other.shearX == shearX && other.shearY == shearY && other.drawingPaths == drawingPaths;
-  }
-
-  @override
-  int get hashCode => hashValues(
-        hAlign,
-        vAlign,
-        borderColor,
-        borderWidth,
-        edgeBlur,
-        rotationX,
-        rotationY,
-        rotationZ,
-        scaleX,
-        scaleY,
-        shearX,
-        shearY,
-        drawingPaths?.length,
-      );
 }

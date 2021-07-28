@@ -1,6 +1,7 @@
 import 'dart:ui' as ui show Codec;
 
 import 'package:aves/services/services.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -63,7 +64,8 @@ class ThumbnailProvider extends ImageProvider<ThumbnailProviderKey> {
   void pause() => imageFileService.cancelThumbnail(key);
 }
 
-class ThumbnailProviderKey {
+@immutable
+class ThumbnailProviderKey extends Equatable {
   // do not store the entry as it is, because the key should be constant
   // but the entry attributes may change over time
   final String uri, mimeType;
@@ -72,6 +74,9 @@ class ThumbnailProviderKey {
   final bool isFlipped;
   final int dateModifiedSecs;
   final double extent;
+
+  @override
+  List<Object?> get props => [uri, pageId, dateModifiedSecs, extent];
 
   const ThumbnailProviderKey({
     required this.uri,
@@ -82,20 +87,6 @@ class ThumbnailProviderKey {
     required this.dateModifiedSecs,
     this.extent = 0,
   });
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is ThumbnailProviderKey && other.uri == uri && other.pageId == pageId && other.dateModifiedSecs == dateModifiedSecs && other.extent == extent;
-  }
-
-  @override
-  int get hashCode => hashValues(
-        uri,
-        pageId,
-        dateModifiedSecs,
-        extent,
-      );
 
   @override
   String toString() => '$runtimeType#${shortHash(this)}{uri=$uri, mimeType=$mimeType, pageId=$pageId, rotationDegrees=$rotationDegrees, isFlipped=$isFlipped, dateModifiedSecs=$dateModifiedSecs, extent=$extent}';
