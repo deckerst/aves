@@ -1,11 +1,12 @@
 import 'package:aves/model/filters/filters.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 class PathFilter extends CollectionFilter {
   static const type = 'path';
 
   final String path;
+
+  @override
+  List<Object?> get props => [path];
 
   const PathFilter(this.path);
 
@@ -31,16 +32,4 @@ class PathFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$path';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is PathFilter && other.path == path;
-  }
-
-  @override
-  int get hashCode => hashValues(type, path);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{path=$path}';
 }

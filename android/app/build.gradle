@@ -55,6 +55,10 @@ android {
 
     defaultConfig {
         applicationId appId
+        // minSdkVersion constraints:
+        // - Flutter & other plugins: 16
+        // - google_maps_flutter v2.0.5: 20
+        // - Aves native: 19
         minSdkVersion 20
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()

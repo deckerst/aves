@@ -17,6 +17,7 @@ dependencies:
   connectivity_plus:
   country_code:
   decorated_icon:
+  equatable:
   event_bus:
   expansion_tile_card:
     git:

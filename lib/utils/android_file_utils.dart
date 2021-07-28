@@ -3,6 +3,7 @@ import 'package:aves/services/services.dart';
 import 'package:aves/utils/change_notifier.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -155,8 +156,11 @@ class StorageVolume {
 }
 
 @immutable
-class VolumeRelativeDirectory {
+class VolumeRelativeDirectory extends Equatable {
   final String volumePath, relativeDir;
+
+  @override
+  List<Object?> get props => [volumePath, relativeDir];
 
   const VolumeRelativeDirectory({
     required this.volumePath,
@@ -187,13 +191,4 @@ class VolumeRelativeDirectory {
     final volume = androidFileUtils.storageVolumes.firstWhereOrNull((volume) => volume.path == volumePath);
     return volume?.getDescription(context) ?? volumePath;
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is VolumeRelativeDirectory && other.volumePath == volumePath && other.relativeDir == relativeDir;
-  }
-
-  @override
-  int get hashCode => hashValues(volumePath, relativeDir);
 }

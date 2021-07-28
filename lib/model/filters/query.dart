@@ -12,7 +12,10 @@ class QueryFilter extends CollectionFilter {
 
   final String query;
   final bool colorful;
-  late EntryFilter _test;
+  late final EntryFilter _test;
+
+  @override
+  List<Object?> get props => [query];
 
   QueryFilter(this.query, {this.colorful = true}) {
     var upQuery = query.toUpperCase();
@@ -63,16 +66,4 @@ class QueryFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$query';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is QueryFilter && other.query == query;
-  }
-
-  @override
-  int get hashCode => hashValues(type, query);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{query=$query}';
 }

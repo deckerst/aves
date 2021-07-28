@@ -12,12 +12,17 @@ import 'package:aves/widgets/viewer/info/metadata/xmp_ns/photoshop.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/tiff.dart';
 import 'package:aves/widgets/viewer/info/metadata/xmp_ns/xmp.dart';
 import 'package:collection/collection.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class XmpNamespace {
+@immutable
+class XmpNamespace extends Equatable {
   final String namespace;
   final Map<String, String> rawProps;
+
+  @override
+  List<Object?> get props => [namespace];
 
   const XmpNamespace(this.namespace, this.rawProps);
 
@@ -119,20 +124,6 @@ class XmpNamespace {
   String formatValue(XmpProp prop) => prop.value;
 
   Map<String, InfoLinkHandler> linkifyValues(List<XmpProp> props) => {};
-
-  // identity
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is XmpNamespace && other.namespace == namespace;
-  }
-
-  @override
-  int get hashCode => namespace.hashCode;
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{namespace=$namespace}';
 }
 
 class XmpProp {

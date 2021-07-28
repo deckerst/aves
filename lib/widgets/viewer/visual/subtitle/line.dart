@@ -1,12 +1,16 @@
 import 'package:aves/widgets/viewer/visual/subtitle/span.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable
-class StyledSubtitleLine with Diagnosticable {
+class StyledSubtitleLine extends Equatable with Diagnosticable {
   final List<StyledSubtitleSpan> spans;
   final List<Path>? clip;
   final Offset? position;
+
+  @override
+  List<Object?> get props => [spans, clip, position];
 
   const StyledSubtitleLine({
     required this.spans,
@@ -33,17 +37,4 @@ class StyledSubtitleLine with Diagnosticable {
     properties.add(DiagnosticsProperty<List<Path>>('clip', clip));
     properties.add(DiagnosticsProperty<Offset>('position', position));
   }
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is StyledSubtitleLine && other.spans == spans && other.clip == clip && other.position == position;
-  }
-
-  @override
-  int get hashCode => hashValues(
-        spans,
-        clip,
-        position,
-      );
 }

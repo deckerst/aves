@@ -2,7 +2,6 @@ import 'package:aves/model/filters/filters.dart';
 import 'package:aves/theme/icons.dart';
 import 'package:aves/widgets/common/extensions/build_context.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 class LocationFilter extends CollectionFilter {
@@ -10,14 +9,17 @@ class LocationFilter extends CollectionFilter {
   static const locationSeparator = ';';
 
   final LocationLevel level;
-  String _location;
-  String? _countryCode;
-  late EntryFilter _test;
+  late final String _location;
+  late final String? _countryCode;
+  late final EntryFilter _test;
 
-  LocationFilter(this.level, this._location) {
-    final split = _location.split(locationSeparator);
-    if (split.isNotEmpty) _location = split[0];
-    if (split.length > 1) _countryCode = split[1];
+  @override
+  List<Object?> get props => [level, _location, _countryCode];
+
+  LocationFilter(this.level, String location) {
+    final split = location.split(locationSeparator);
+    _location = split.isNotEmpty ? split[0] : location;
+    _countryCode = split.length > 1 ? split[1] : null;
 
     if (_location.isEmpty) {
       _test = (entry) => !entry.hasGps;
@@ -74,18 +76,6 @@ class LocationFilter extends CollectionFilter {
 
   @override
   String get key => '$type-$level-$_location';
-
-  @override
-  bool operator ==(Object other) {
-    if (other.runtimeType != runtimeType) return false;
-    return other is LocationFilter && other.level == level && other._location == _location;
-  }
-
-  @override
-  int get hashCode => hashValues(type, level, _location);
-
-  @override
-  String toString() => '$runtimeType#${shortHash(this)}{level=$level, location=$_location}';
 
   // U+0041 Latin Capital letter A
   // U+1F1E6 🇦 REGIONAL INDICATOR SYMBOL LETTER A
