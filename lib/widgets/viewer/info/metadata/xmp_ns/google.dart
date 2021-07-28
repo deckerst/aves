@@ -6,7 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';
 
 abstract class XmpGoogleNamespace extends XmpNamespace {
-  XmpGoogleNamespace(String ns, Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGoogleNamespace(String ns, Map<String, String> rawProps) : super(ns, rawProps);
 
   List<Tuple2<String, String>> get dataProps;
 
@@ -35,7 +35,7 @@ abstract class XmpGoogleNamespace extends XmpNamespace {
 class XmpGAudioNamespace extends XmpGoogleNamespace {
   static const ns = 'GAudio';
 
-  XmpGAudioNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGAudioNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];
@@ -47,7 +47,7 @@ class XmpGAudioNamespace extends XmpGoogleNamespace {
 class XmpGDepthNamespace extends XmpGoogleNamespace {
   static const ns = 'GDepth';
 
-  XmpGDepthNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGDepthNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   List<Tuple2<String, String>> get dataProps => const [
@@ -62,7 +62,7 @@ class XmpGDepthNamespace extends XmpGoogleNamespace {
 class XmpGImageNamespace extends XmpGoogleNamespace {
   static const ns = 'GImage';
 
-  XmpGImageNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpGImageNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   List<Tuple2<String, String>> get dataProps => const [Tuple2('$ns:Data', '$ns:Mime')];

@@ -114,7 +114,7 @@ class XmpNoteNamespace extends XmpNamespace {
   // `xmpNote:HasExtendedXMP` is structural and should not be displayed to users
   static const hasExtendedXmp = '$ns:HasExtendedXMP';
 
-  XmpNoteNamespace(Map<String, String> rawProps) : super(ns, rawProps);
+  const XmpNoteNamespace(Map<String, String> rawProps) : super(ns, rawProps);
 
   @override
   bool extractData(XmpProp prop) {
