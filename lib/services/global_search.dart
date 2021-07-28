@@ -49,7 +49,7 @@ Future<List<Map<String, String?>>> _getSuggestions(dynamic args) async {
     final query = args['query'];
     final locale = args['locale'];
     if (query is String && locale is String) {
-      final entries = await metadataDb.searchEntries(query, limit: 10);
+      final entries = await metadataDb.searchEntries(query, limit: 9);
       suggestions.addAll(entries.map((entry) {
         final date = entry.bestDate;
         return {

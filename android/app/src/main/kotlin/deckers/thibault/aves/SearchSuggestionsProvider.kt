@@ -2,6 +2,7 @@ package deckers.thibault.aves
 
 import android.app.SearchManager
 import android.content.ContentProvider
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -45,6 +46,10 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
 
             val matrixCursor = MatrixCursor(columns)
             context?.let { context ->
+                val searchShortcutTitle = "${context.resources.getString(R.string.search_shortcut_short_label)} $query"
+                val searchShortcutIcon = context.resourceUri(R.mipmap.ic_shortcut_search)
+                matrixCursor.addRow(arrayOf(null, null, null, searchShortcutTitle, null, searchShortcutIcon))
+
                 runBlocking {
                     getSuggestions(context, query).forEach {
                         val data = it["data"]
@@ -169,6 +174,15 @@ class SearchSuggestionsProvider : MethodChannel.MethodCallHandler, ContentProvid
                     cont.resume(true)
                 }
             }
+        }
+
+        private fun Context.resourceUri(resourceId: Int): Uri = with(resources) {
+            Uri.Builder()
+                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+                .authority(getResourcePackageName(resourceId))
+                .appendPath(getResourceTypeName(resourceId))
+                .appendPath(getResourceEntryName(resourceId))
+                .build()
         }
     }
 }

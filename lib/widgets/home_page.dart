@@ -40,7 +40,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AvesEntry? _viewerEntry;
-  String? _shortcutRouteName;
+  String? _shortcutRouteName, _shortcutSearchQuery;
   List<String>? _shortcutFilters;
 
   static const allowedShortcutRoutes = [CollectionPage.routeName, AlbumListPage.routeName, SearchPage.routeName];
@@ -76,7 +76,6 @@ class _HomePageState extends State<HomePage> {
       final action = intentData['action'];
       switch (action) {
         case 'view':
-        case 'search':
           _viewerEntry = await _initViewerEntry(
             uri: intentData['uri'],
             mimeType: intentData['mimeType'],
@@ -91,6 +90,10 @@ class _HomePageState extends State<HomePage> {
           // some apps define multiple types, separated by a space (maybe other signs too, like `,` `;`?)
           String? pickMimeTypes = intentData['mimeType'];
           debugPrint('pick mimeType=$pickMimeTypes');
+          break;
+        case 'search':
+          _shortcutRouteName = SearchPage.routeName;
+          _shortcutSearchQuery = intentData['query'];
           break;
         default:
           // do not use 'route' as extra key, as the Flutter framework acts on it
@@ -157,7 +160,10 @@ class _HomePageState extends State<HomePage> {
         );
       case SearchPage.routeName:
         return SearchPageRoute(
-          delegate: CollectionSearchDelegate(source: source),
+          delegate: CollectionSearchDelegate(
+            source: source,
+            initialQuery: _shortcutSearchQuery,
+          ),
         );
       case CollectionPage.routeName:
       default:
