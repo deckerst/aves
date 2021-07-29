@@ -24,7 +24,7 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- to access media with unredacted metadata with scoped storage (Android Q+) -->
+    <!-- to access media with original metadata with scoped storage (Android Q+) -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <!-- TODO TLAD remove this permission when this is fixed: https://github.com/flutter/flutter/issues/42451 -->
@@ -39,14 +39,16 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupOnly="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_launcher_round">
-        <!-- TODO TLAD Android 12 https://developer.android.com/about/versions/12/behavior-changes-12#exported -->
+        android:roundIcon="@mipmap/ic_launcher_round"
+        tools:targetApi="lollipop">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:theme="@style/NormalTheme"
