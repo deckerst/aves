@@ -1,5 +1,6 @@
 package deckers.thibault.aves
 
+import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Intent
 import android.net.Uri
@@ -95,31 +96,34 @@ class MainActivity : FlutterActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            DOCUMENT_TREE_ACCESS_REQUEST -> {
-                val treeUri = data?.data
-                if (resultCode != RESULT_OK || treeUri == null) {
-                    onPermissionResult(requestCode, null)
-                    return
-                }
+            DOCUMENT_TREE_ACCESS_REQUEST -> onDocumentTreeAccessResult(data, resultCode, requestCode)
+            DELETE_PERMISSION_REQUEST -> onDeletePermissionResult(resultCode)
+            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST, SELECT_DIRECTORY_REQUEST -> onPermissionResult(requestCode, data?.data)
+        }
+    }
 
-                // save access permissions across reboots
-                val takeFlags = (data.flags
-                        and (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
-                contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+    @SuppressLint("WrongConstant")
+    private fun onDocumentTreeAccessResult(data: Intent?, resultCode: Int, requestCode: Int) {
+        val treeUri = data?.data
+        if (resultCode != RESULT_OK || treeUri == null) {
+            onPermissionResult(requestCode, null)
+            return
+        }
 
-                // resume pending action
-                onPermissionResult(requestCode, treeUri)
-            }
-            DELETE_PERMISSION_REQUEST -> {
-                // delete permission may be requested on Android 10+ only
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
-                }
-            }
-            CREATE_FILE_REQUEST, OPEN_FILE_REQUEST, SELECT_DIRECTORY_REQUEST -> {
-                onPermissionResult(requestCode, data?.data)
-            }
+        // save access permissions across reboots
+        val takeFlags = (data.flags
+                and (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                or Intent.FLAG_GRANT_WRITE_URI_PERMISSION))
+        contentResolver.takePersistableUriPermission(treeUri, takeFlags)
+
+        // resume pending action
+        onPermissionResult(requestCode, treeUri)
+    }
+
+    private fun onDeletePermissionResult(resultCode: Int) {
+        // delete permission may be requested on Android 10+ only
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            MediaStoreImageProvider.pendingDeleteCompleter?.complete(resultCode == RESULT_OK)
         }
     }
 

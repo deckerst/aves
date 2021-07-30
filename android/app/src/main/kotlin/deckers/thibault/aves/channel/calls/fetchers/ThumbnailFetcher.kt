@@ -24,6 +24,7 @@ import deckers.thibault.aves.utils.MimeTypes.isHeic
 import deckers.thibault.aves.utils.MimeTypes.isVideo
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterContentResolverThumbnail
 import deckers.thibault.aves.utils.MimeTypes.needRotationAfterGlide
+import deckers.thibault.aves.utils.StorageUtils
 import deckers.thibault.aves.utils.UriUtils.tryParseId
 import io.flutter.plugin.common.MethodChannel
 
@@ -130,7 +131,7 @@ class ThumbnailFetcher internal constructor(
                 svgFetch -> SvgThumbnail(context, uri)
                 tiffFetch -> TiffImage(context, uri, pageId)
                 multiTrackFetch -> MultiTrackImage(context, uri, pageId)
-                else -> uri
+                else -> StorageUtils.getGlideSafeUri(uri, mimeType)
             }
             Glide.with(context)
                 .asBitmap()
