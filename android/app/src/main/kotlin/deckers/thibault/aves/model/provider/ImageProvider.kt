@@ -142,7 +142,7 @@ abstract class ImageProvider {
             } else if (sourceMimeType == MimeTypes.TIFF) {
                 TiffImage(context, sourceUri, pageId)
             } else {
-                sourceUri
+                StorageUtils.getGlideSafeUri(sourceUri, sourceMimeType)
             }
 
             // request a fresh image with the highest quality format

@@ -120,7 +120,7 @@ class ImageByteStreamHandler(private val activity: Activity, private val argumen
         } else if (mimeType == MimeTypes.TIFF) {
             TiffImage(activity, uri, pageId)
         } else {
-            uri
+            StorageUtils.getGlideSafeUri(uri, mimeType)
         }
 
         val target = Glide.with(activity)

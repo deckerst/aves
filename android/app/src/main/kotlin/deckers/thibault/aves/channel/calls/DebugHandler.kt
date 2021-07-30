@@ -1,6 +1,5 @@
 package deckers.thibault.aves.channel.calls
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -105,7 +104,7 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
 
         var contentUri: Uri = uri
-        if (uri.scheme == ContentResolver.SCHEME_CONTENT && MediaStore.AUTHORITY.equals(uri.host, ignoreCase = true)) {
+        if (StorageUtils.isMediaStoreContentUri(uri)) {
             uri.tryParseId()?.let { id ->
                 contentUri = when {
                     isImage(mimeType) -> ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
