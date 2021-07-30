@@ -259,6 +259,8 @@ void main() {
       FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Seneca', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Pictures/Cicero', '1'),
       FakeMediaStoreService.newImage('${FakeStorageService.removablePath}Marcus Aurelius', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Hannah Arendt', '1'),
+      FakeMediaStoreService.newImage('${FakeStorageService.primaryPath}Pictures/Arendt', '1'),
     };
 
     await androidFileUtils.init();
@@ -276,6 +278,8 @@ void main() {
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Seneca'), 'Seneca');
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Pictures/Cicero'), 'Cicero');
           expect(source.getAlbumDisplayName(context, '${FakeStorageService.removablePath}Marcus Aurelius'), 'Marcus Aurelius');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Hannah Arendt'), 'Hannah Arendt');
+          expect(source.getAlbumDisplayName(context, '${FakeStorageService.primaryPath}Pictures/Arendt'), 'Arendt');
           return const Placeholder();
         },
       ),

@@ -29,7 +29,8 @@ mixin AlbumMixin on SourceBase {
   void _notifyAlbumChange() => eventBus.fire(AlbumsChangedEvent());
 
   String getAlbumDisplayName(BuildContext? context, String dirPath) {
-    assert(!dirPath.endsWith(pContext.separator));
+    final separator = pContext.separator;
+    assert(!dirPath.endsWith(separator));
 
     if (context != null) {
       final type = androidFileUtils.getAlbumType(dirPath);
@@ -52,8 +53,9 @@ mixin AlbumMixin on SourceBase {
     String unique(String dirPath, Set<String?> others) {
       final parts = pContext.split(dirPath);
       for (var i = parts.length - 1; i > 0; i--) {
-        final testName = pContext.joinAll(['', ...parts.skip(i)]);
-        if (others.every((item) => !item!.endsWith(testName))) return testName;
+        final name = pContext.joinAll(['', ...parts.skip(i)]);
+        final testName = '$separator$name';
+        if (others.every((item) => !item!.endsWith(testName))) return name;
       }
       return dirPath;
     }
