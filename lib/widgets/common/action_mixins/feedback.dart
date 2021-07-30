@@ -72,6 +72,9 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   Stream<T> get opStream => widget.opStream;
 
+  static const radius = 160.0;
+  static const strokeWidth = 16.0;
+
   @override
   void initState() {
     super.initState();
@@ -104,40 +107,55 @@ class _ReportOverlayState<T> extends State<ReportOverlay<T>> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final progressColor = Theme.of(context).accentColor;
     return AbsorbPointer(
       child: StreamBuilder<T>(
-          stream: opStream,
-          builder: (context, snapshot) {
-            final processedCount = processed.length.toDouble();
-            final total = widget.itemCount;
-            assert(processedCount <= total);
-            final percent = min(1.0, processedCount / total);
-            return FadeTransition(
-              opacity: _animation,
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.black,
-                      Colors.black54,
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: CircularPercentIndicator(
-                    percent: percent,
-                    lineWidth: 16,
-                    radius: 160,
-                    backgroundColor: Colors.white24,
-                    progressColor: Theme.of(context).accentColor,
-                    animation: true,
-                    center: Text(NumberFormat.percentPattern().format(percent)),
-                    animateFromLastPercent: true,
-                  ),
+        stream: opStream,
+        builder: (context, snapshot) {
+          final processedCount = processed.length.toDouble();
+          final total = widget.itemCount;
+          assert(processedCount <= total);
+          final percent = min(1.0, processedCount / total);
+          return FadeTransition(
+            opacity: _animation,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.black,
+                    Colors.black54,
+                  ],
                 ),
               ),
-            );
-          }),
+              child: Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: radius,
+                      height: radius,
+                      padding: const EdgeInsets.all(strokeWidth / 2),
+                      child: CircularProgressIndicator(
+                        color: progressColor.withOpacity(.1),
+                        strokeWidth: strokeWidth,
+                      ),
+                    ),
+                    CircularPercentIndicator(
+                      percent: percent,
+                      lineWidth: strokeWidth,
+                      radius: radius,
+                      backgroundColor: Colors.white24,
+                      progressColor: progressColor,
+                      animation: true,
+                      center: Text(NumberFormat.percentPattern().format(percent)),
+                      animateFromLastPercent: true,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
