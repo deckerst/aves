@@ -39,7 +39,7 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
         handler = Handler(Looper.getMainLooper())
 
         when (op) {
-            "requestVolumeAccess" -> requestVolumeAccess()
+            "requestVolumeAccess" -> GlobalScope.launch(Dispatchers.IO) { requestVolumeAccess() }
             "createFile" -> GlobalScope.launch(Dispatchers.IO) { createFile() }
             "openFile" -> GlobalScope.launch(Dispatchers.IO) { openFile() }
             "selectDirectory" -> GlobalScope.launch(Dispatchers.IO) { selectDirectory() }
@@ -83,18 +83,20 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             putExtra(Intent.EXTRA_TITLE, name)
         }
         MainActivity.pendingResultHandlers[MainActivity.CREATE_FILE_REQUEST] = PendingResultHandler(null, { uri ->
-            try {
-                activity.contentResolver.openOutputStream(uri)?.use { output ->
-                    output as FileOutputStream
-                    // truncate is necessary when overwriting a longer file
-                    output.channel.truncate(0)
-                    output.write(bytes)
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    activity.contentResolver.openOutputStream(uri)?.use { output ->
+                        output as FileOutputStream
+                        // truncate is necessary when overwriting a longer file
+                        output.channel.truncate(0)
+                        output.write(bytes)
+                    }
+                    success(true)
+                } catch (e: Exception) {
+                    error("createFile-write", "failed to write file at uri=$uri", e.message)
                 }
-                success(true)
-            } catch (e: Exception) {
-                error("createFile-write", "failed to write file at uri=$uri", e.message)
+                endOfStream()
             }
-            endOfStream()
         }, {
             success(null)
             endOfStream()
@@ -115,13 +117,15 @@ class StorageAccessStreamHandler(private val activity: Activity, arguments: Any?
             type = mimeType
         }
         MainActivity.pendingResultHandlers[MainActivity.OPEN_FILE_REQUEST] = PendingResultHandler(null, { uri ->
-            activity.contentResolver.openInputStream(uri)?.use { input ->
-                val buffer = ByteArray(BUFFER_SIZE)
-                var len: Int
-                while (input.read(buffer).also { len = it } != -1) {
-                    success(buffer.copyOf(len))
+            GlobalScope.launch(Dispatchers.IO) {
+                activity.contentResolver.openInputStream(uri)?.use { input ->
+                    val buffer = ByteArray(BUFFER_SIZE)
+                    var len: Int
+                    while (input.read(buffer).also { len = it } != -1) {
+                        success(buffer.copyOf(len))
+                    }
+                    endOfStream()
                 }
-                endOfStream()
             }
         }, {
             success(ByteArray(0))

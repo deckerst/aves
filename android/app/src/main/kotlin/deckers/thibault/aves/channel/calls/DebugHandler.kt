@@ -36,7 +36,7 @@ import java.util.*
 class DebugHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getContextDirs" -> result.success(getContextDirs())
+            "getContextDirs" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContextDirs) }
             "getEnv" -> result.success(System.getenv())
             "getBitmapFactoryInfo" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getBitmapFactoryInfo) }
             "getContentResolverMetadata" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getContentResolverMetadata) }
@@ -48,24 +48,28 @@ class DebugHandler(private val context: Context) : MethodCallHandler {
         }
     }
 
-    private fun getContextDirs() = hashMapOf(
-        "cacheDir" to context.cacheDir,
-        "filesDir" to context.filesDir,
-        "obbDir" to context.obbDir,
-        "externalCacheDir" to context.externalCacheDir,
-    ).apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            putAll(
-                hashMapOf(
-                    "codeCacheDir" to context.codeCacheDir,
-                    "noBackupFilesDir" to context.noBackupFilesDir,
+    private fun getContextDirs(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
+        val dirs = hashMapOf(
+            "cacheDir" to context.cacheDir,
+            "filesDir" to context.filesDir,
+            "obbDir" to context.obbDir,
+            "externalCacheDir" to context.externalCacheDir,
+        ).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                putAll(
+                    hashMapOf(
+                        "codeCacheDir" to context.codeCacheDir,
+                        "noBackupFilesDir" to context.noBackupFilesDir,
+                    )
                 )
-            )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            put("dataDir", context.dataDir)
-        }
-    }.mapValues { it.value?.path }
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                put("dataDir", context.dataDir)
+            }
+        }.mapValues { it.value?.path }
+
+        result.success(dirs)
+    }
 
     private fun getBitmapFactoryInfo(call: MethodCall, result: MethodChannel.Result) {
         val uri = call.argument<String>("uri")?.let { Uri.parse(it) }

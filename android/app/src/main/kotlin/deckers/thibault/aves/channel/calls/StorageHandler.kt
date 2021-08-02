@@ -23,13 +23,13 @@ import java.util.*
 class StorageHandler(private val context: Context) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "getStorageVolumes" -> safe(call, result, ::getStorageVolumes)
-            "getFreeSpace" -> safe(call, result, ::getFreeSpace)
-            "getGrantedDirectories" -> safe(call, result, ::getGrantedDirectories)
-            "getInaccessibleDirectories" -> safe(call, result, ::getInaccessibleDirectories)
-            "getRestrictedDirectories" -> safe(call, result, ::getRestrictedDirectories)
+            "getStorageVolumes" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getStorageVolumes) }
+            "getFreeSpace" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getFreeSpace) }
+            "getGrantedDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getGrantedDirectories) }
+            "getInaccessibleDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getInaccessibleDirectories) }
+            "getRestrictedDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::getRestrictedDirectories) }
             "revokeDirectoryAccess" -> safe(call, result, ::revokeDirectoryAccess)
-            "deleteEmptyDirectories" -> safe(call, result, ::deleteEmptyDirectories)
+            "deleteEmptyDirectories" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::deleteEmptyDirectories) }
             "scanFile" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::scanFile) }
             else -> result.notImplemented()
         }
@@ -38,7 +38,7 @@ class StorageHandler(private val context: Context) : MethodCallHandler {
     private fun getStorageVolumes(@Suppress("UNUSED_PARAMETER") call: MethodCall, result: MethodChannel.Result) {
         val volumes = ArrayList<Map<String, Any>>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val sm = context.getSystemService(StorageManager::class.java)
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
             if (sm != null) {
                 for (volumePath in getVolumePaths(context)) {
                     try {
