@@ -25,7 +25,7 @@ object PermissionManager {
 
         var intent: Intent? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val sm = activity.getSystemService(StorageManager::class.java)
+            val sm = activity.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
             intent = sm?.getStorageVolume(File(path))?.createOpenDocumentTreeIntent()
         }
 

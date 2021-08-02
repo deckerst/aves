@@ -187,14 +187,13 @@ object StorageUtils {
     // /storage/10F9-3F13/Pictures/ -> 10F9-3F13
     private fun getVolumeUuidForTreeUri(context: Context, anyPath: String): String? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.getSystemService(StorageManager::class.java)?.let { sm ->
-                sm.getStorageVolume(File(anyPath))?.let { volume ->
-                    if (volume.isPrimary) {
-                        return "primary"
-                    }
-                    volume.uuid?.let { uuid ->
-                        return uuid.uppercase(Locale.ROOT)
-                    }
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            sm?.getStorageVolume(File(anyPath))?.let { volume ->
+                if (volume.isPrimary) {
+                    return "primary"
+                }
+                volume.uuid?.let { uuid ->
+                    return uuid.uppercase(Locale.ROOT)
                 }
             }
         }
@@ -222,7 +221,8 @@ object StorageUtils {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.getSystemService(StorageManager::class.java)?.let { sm ->
+            val sm = context.getSystemService(Context.STORAGE_SERVICE) as? StorageManager
+            if (sm != null) {
                 for (volumePath in getVolumePaths(context)) {
                     try {
                         val volume = sm.getStorageVolume(File(volumePath))

@@ -9,11 +9,14 @@ import deckers.thibault.aves.utils.LogUtils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class GlobalSearchHandler(private val context: Activity) : MethodCallHandler {
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "registerCallback" -> safe(call, result, ::registerCallback)
+            "registerCallback" -> GlobalScope.launch(Dispatchers.IO) { safe(call, result, ::registerCallback) }
             else -> result.notImplemented()
         }
     }
@@ -25,7 +28,6 @@ class GlobalSearchHandler(private val context: Activity) : MethodCallHandler {
             return
         }
 
-        Log.i(LOG_TAG, "register global search callback")
         context.getSharedPreferences(SearchSuggestionsProvider.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
             .edit()
             .putLong(SearchSuggestionsProvider.CALLBACK_HANDLE_KEY, callbackHandle)
