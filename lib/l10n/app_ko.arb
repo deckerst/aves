@@ -31,6 +31,7 @@
   "chipActionSetCover": "대표 이미지 변경",
   "chipActionCreateAlbum": "앨범 만들기",
 
+  "entryActionCopyToClipboard": "클립보드에 복사",
   "entryActionDelete": "삭제",
   "entryActionExport": "내보내기",
   "entryActionInfo": "상세정보",

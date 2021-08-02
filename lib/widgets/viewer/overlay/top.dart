@@ -86,11 +86,12 @@ class ViewerTopOverlay extends StatelessWidget {
           return targetEntry.isMotionPhoto;
         case EntryAction.rotateScreen:
           return settings.isRotationLocked;
-        case EntryAction.share:
+        case EntryAction.copyToClipboard:
+        case EntryAction.edit:
         case EntryAction.info:
         case EntryAction.open:
-        case EntryAction.edit:
         case EntryAction.setAs:
+        case EntryAction.share:
           return true;
         case EntryAction.debug:
           return kDebugMode;
@@ -197,6 +198,7 @@ class _TopOverlayRow extends StatelessWidget {
           onPressed: onPressed,
         );
         break;
+      case EntryAction.copyToClipboard:
       case EntryAction.delete:
       case EntryAction.export:
       case EntryAction.flip:

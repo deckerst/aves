@@ -37,6 +37,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.toggleFavourite:
         entry.toggleFavourite();
         break;
+      case EntryAction.copyToClipboard:
+        AndroidAppService.copyToClipboard(entry.uri, entry.bestTitle).then((success) {
+          showFeedback(context, success ? context.l10n.genericSuccessFeedback : context.l10n.genericFailureFeedback);
+        });
+        break;
       case EntryAction.delete:
         _showDeleteDialog(context, entry);
         break;
@@ -46,11 +51,11 @@ class EntryActionDelegate with FeedbackMixin, PermissionAwareMixin, SizeAwareMix
       case EntryAction.info:
         ShowInfoNotification().dispatch(context);
         break;
-      case EntryAction.rename:
-        _showRenameDialog(context, entry);
-        break;
       case EntryAction.print:
         EntryPrinter(entry).print(context);
+        break;
+      case EntryAction.rename:
+        _showRenameDialog(context, entry);
         break;
       case EntryAction.rotateCCW:
         _rotate(context, entry, clockwise: false);

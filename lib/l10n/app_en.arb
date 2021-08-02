@@ -62,6 +62,8 @@
   "chipActionCreateAlbum": "Create album",
   "@chipActionCreateAlbum": {},
 
+  "entryActionCopyToClipboard": "Copy to clipboard",
+  "@entryActionCopyToClipboard": {},
   "entryActionDelete": "Delete",
   "@entryActionDelete": {},
   "entryActionExport": "Export",

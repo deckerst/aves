@@ -38,6 +38,19 @@ class AndroidAppService {
     return Uint8List(0);
   }
 
+  static Future<bool> copyToClipboard(String uri, String? label) async {
+    try {
+      final result = await platform.invokeMethod('copyToClipboard', <String, dynamic>{
+        'uri': uri,
+        'label': label,
+      });
+      if (result != null) return result as bool;
+    } on PlatformException catch (e) {
+      debugPrint('copyToClipboard failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+    }
+    return false;
+  }
+
   static Future<bool> edit(String uri, String mimeType) async {
     try {
       final result = await platform.invokeMethod('edit', <String, dynamic>{
