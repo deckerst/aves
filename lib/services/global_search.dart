@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:aves/services/services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -16,7 +15,7 @@ class GlobalSearch {
         'callbackHandle': PluginUtilities.getCallbackHandle(_init)?.toRawHandle(),
       });
     } on PlatformException catch (e) {
-      debugPrint('registerCallback failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('registerCallback', e);
     }
   }
 }

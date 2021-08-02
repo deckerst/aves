@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:aves/model/entry.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class AndroidAppService {
@@ -20,7 +20,7 @@ class AndroidAppService {
       }
       return packages;
     } on PlatformException catch (e) {
-      debugPrint('getPackages failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getPackages', e);
     }
     return {};
   }
@@ -33,7 +33,7 @@ class AndroidAppService {
       });
       if (result != null) return result as Uint8List;
     } on PlatformException catch (e) {
-      debugPrint('getAppIcon failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('getAppIcon', e);
     }
     return Uint8List(0);
   }
@@ -46,7 +46,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('copyToClipboard failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('copyToClipboard', e);
     }
     return false;
   }
@@ -59,7 +59,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('edit failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('edit', e);
     }
     return false;
   }
@@ -72,7 +72,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('open failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('open', e);
     }
     return false;
   }
@@ -84,7 +84,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('openMap failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('openMap', e);
     }
     return false;
   }
@@ -97,7 +97,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('setAs failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('setAs', e);
     }
     return false;
   }
@@ -112,7 +112,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('shareEntries failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('shareEntries', e);
     }
     return false;
   }
@@ -126,7 +126,7 @@ class AndroidAppService {
       });
       if (result != null) return result as bool;
     } on PlatformException catch (e) {
-      debugPrint('shareSingle failed with code=${e.code}, exception=${e.message}, details=${e.details}');
+      await reportService.recordChannelError('shareSingle', e);
     }
     return false;
   }

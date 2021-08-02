@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:aves/services/output_buffer.dart';
+import 'package:aves/services/services.dart';
 import 'package:aves/utils/android_file_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +48,7 @@ class PlatformStorageService implements StorageService {
       final result = await platform.invokeMethod('getStorageVolumes');
       return (result as List).cast<Map>().map((map) => StorageVolume.fromMap(map)).toSet();
     } on PlatformException catch (e) {
-      debugPrint('getStorageVolumes failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getStorageVolumes', e);
     }
     return {};
   }
@@ -60,7 +61,7 @@ class PlatformStorageService implements StorageService {
       });
       return result as int?;
     } on PlatformException catch (e) {
-      debugPrint('getFreeSpace failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getFreeSpace', e);
     }
     return null;
   }
@@ -71,7 +72,7 @@ class PlatformStorageService implements StorageService {
       final result = await platform.invokeMethod('getGrantedDirectories');
       return (result as List).cast<String>();
     } on PlatformException catch (e) {
-      debugPrint('getGrantedDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getGrantedDirectories', e);
     }
     return [];
   }
@@ -83,7 +84,7 @@ class PlatformStorageService implements StorageService {
         'path': path,
       });
     } on PlatformException catch (e) {
-      debugPrint('revokeDirectoryAccess failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('revokeDirectoryAccess', e);
     }
     return;
   }
@@ -98,7 +99,7 @@ class PlatformStorageService implements StorageService {
         return (result as List).cast<Map>().map(VolumeRelativeDirectory.fromMap).toSet();
       }
     } on PlatformException catch (e) {
-      debugPrint('getInaccessibleDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getInaccessibleDirectories', e);
     }
     return {};
   }
@@ -111,7 +112,7 @@ class PlatformStorageService implements StorageService {
         return (result as List).cast<Map>().map(VolumeRelativeDirectory.fromMap).toSet();
       }
     } on PlatformException catch (e) {
-      debugPrint('getRestrictedDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('getRestrictedDirectories', e);
     }
     return {};
   }
@@ -134,7 +135,7 @@ class PlatformStorageService implements StorageService {
       );
       return completer.future;
     } on PlatformException catch (e) {
-      debugPrint('requestVolumeAccess failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('requestVolumeAccess', e);
     }
     return false;
   }
@@ -148,7 +149,7 @@ class PlatformStorageService implements StorageService {
       });
       if (result != null) return result as int;
     } on PlatformException catch (e) {
-      debugPrint('deleteEmptyDirectories failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('deleteEmptyDirectories', e);
     }
     return 0;
   }
@@ -164,7 +165,7 @@ class PlatformStorageService implements StorageService {
       });
       if (result != null) return Uri.tryParse(result);
     } on PlatformException catch (e) {
-      debugPrint('scanFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('scanFile', e);
     }
     return null;
   }
@@ -172,7 +173,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<bool?> createFile(String name, String mimeType, Uint8List bytes) async {
     try {
-      final completer = Completer<bool>();
+      final completer = Completer<bool?>();
       storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'createFile',
         'name': name,
@@ -188,7 +189,7 @@ class PlatformStorageService implements StorageService {
       );
       return completer.future;
     } on PlatformException catch (e) {
-      debugPrint('createFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('createFile', e);
     }
     return false;
   }
@@ -215,7 +216,7 @@ class PlatformStorageService implements StorageService {
       );
       return completer.future;
     } on PlatformException catch (e) {
-      debugPrint('openFile failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('openFile', e);
     }
     return Uint8List(0);
   }
@@ -223,7 +224,7 @@ class PlatformStorageService implements StorageService {
   @override
   Future<String?> selectDirectory() async {
     try {
-      final completer = Completer<String>();
+      final completer = Completer<String?>();
       storageAccessChannel.receiveBroadcastStream(<String, dynamic>{
         'op': 'selectDirectory',
       }).listen(
@@ -236,7 +237,7 @@ class PlatformStorageService implements StorageService {
       );
       return completer.future;
     } on PlatformException catch (e) {
-      debugPrint('selectDirectory failed with code=${e.code}, exception=${e.message}, details=${e.details}}');
+      await reportService.recordChannelError('selectDirectory', e);
     }
     return null;
   }
